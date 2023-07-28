@@ -78,8 +78,7 @@ const AnnotationLayer = ({
   pagesRendered = 0,
   onFetch,
 }: Props) => {
-  // const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
-  const inlineComments = useRef<CommentModel[]>([]);
+  const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
 
   // Sorted List of annotations sorted by order of appearance on the page
   const [annotationsSortedByY, setAnnotationsSortedByY] = useState<
@@ -90,7 +89,7 @@ const AnnotationLayer = ({
   const annotationsSortedByYRef = useRef<AnnotationType[]>([]);
 
   // Orphans are annotations that could not be found on page
-  const orphanThreadIds = useRef<string[]>([]);
+  const [orphanThreadIds, setOrphanThreadIds] = useState<string[]>([]);
 
   // Setting this to true will redraw the annotations on the page.
   const [needsRedraw, setNeedsRedraw] = useState<
@@ -156,7 +155,7 @@ const AnnotationLayer = ({
         pageSize: 10000,
       });
       const comments = rawComments.map((raw) => parseComment({ raw }));
-      inlineComments.current = comments;
+      setInlineComments(comments);
     };
 
     _setWindowDimensions();
@@ -165,7 +164,7 @@ const AnnotationLayer = ({
 
   // Once we have comments, we want to group them by threads and draw them on the page
   useEffect(() => {
-    const _comments = inlineComments.current.filter((comment) => {
+    const _comments = inlineComments.filter((comment) => {
       if (displayPreference === "all" || !displayPreference) return true;
       if (displayPreference === "mine") {
         return comment.createdBy.id === currentUser?.id;
@@ -178,7 +177,7 @@ const AnnotationLayer = ({
 
     throttledSetNeedsRedraw({ drawMode: "SKIP_EXISTING" });
     onFetch && onFetch(Object.values(_commentThreads).length);
-  }, [inlineComments.current, displayPreference]);
+  }, [inlineComments, displayPreference]);
 
   // As more pages are rendered (in the case of papers), we want to try to find annotations.
   // Note: When a pages is zoomed in/out as with papers, this hook will be retriggered
@@ -200,7 +199,9 @@ const AnnotationLayer = ({
           drawingMode: needsRedraw?.drawMode,
         });
 
-      orphanThreadIds.current = nextOrphanThreadIds;
+      console.log("|||orphanThreadIds", orphanThreadIds);
+
+      setOrphanThreadIds(nextOrphanThreadIds);
       setNeedsRedraw(false);
       _setAnnotations(foundAnnotations);
 
@@ -216,7 +217,6 @@ const AnnotationLayer = ({
       });
 
       _setAnnotations(updated);
-      // setAnnotationsSortedByY(updated);
     }
   }, [needsRedraw]);
 
@@ -346,8 +346,8 @@ const AnnotationLayer = ({
       if (!commentThreads.current) return;
 
       const orphanThreads = {};
-      for (let i = 0; i < orphanThreadIds.current.length; i++) {
-        const id = orphanThreadIds.current[i];
+      for (let i = 0; i < orphanThreadIds.length; i++) {
+        const id = orphanThreadIds[i];
         orphanThreads[id] = commentThreads.current[id];
       }
 
@@ -374,12 +374,12 @@ const AnnotationLayer = ({
       const sortedAnnotationsWithFoundOrphans =
         _sortAnnotationsByAppearanceInPage(annotationsWithFoundOrphans);
 
-      orphanThreadIds.current = nextOrphanThreadIds;
+      setOrphanThreadIds(nextOrphanThreadIds);
       _setAnnotations(sortedAnnotationsWithFoundOrphans);
     };
 
     let interval;
-    if (orphanThreadIds.current.length > 0) {
+    if (orphanThreadIds.length > 0) {
       interval = setInterval(checkOrphanThreads, 250);
     }
 
@@ -388,7 +388,7 @@ const AnnotationLayer = ({
         clearInterval(interval);
       }
     };
-  }, [orphanThreadIds.current.length]);
+  }, [orphanThreadIds]);
 
   // Handle click event.
   // Since click events happen in a canvas, we need to detect a user's click x,y coordinates and determine
@@ -745,27 +745,27 @@ const AnnotationLayer = ({
       replaceComment({
         prev: parent,
         next: parent,
-        list: inlineComments.current,
+        list: inlineComments,
       });
 
-      inlineComments.current = [...inlineComments.current];
+      setInlineComments([...inlineComments]);
     } else {
-      inlineComments.current = [...inlineComments.current, comment];
+      setInlineComments([...inlineComments, comment]);
     }
   };
 
   const _onRemove = ({ comment }: { comment: CommentModel }) => {
     const found = findComment({
       id: comment.id,
-      comments: inlineComments.current,
+      comments: inlineComments,
     });
     if (found) {
       removeComment({
         comment: found.comment,
-        list: inlineComments.current,
+        list: inlineComments,
       });
 
-      inlineComments.current = [...inlineComments.current];
+      setInlineComments([...inlineComments]);
     } else {
       localWarn(
         `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
@@ -776,15 +776,15 @@ const AnnotationLayer = ({
   const _onUpdate = ({ comment }: { comment: CommentModel }) => {
     const found = findComment({
       id: comment.id,
-      comments: inlineComments.current,
+      comments: inlineComments,
     });
     if (found) {
       replaceComment({
         prev: found.comment,
         next: comment,
-        list: inlineComments.current,
+        list: inlineComments,
       });
-      inlineComments.current = [...inlineComments.current];
+      setInlineComments([...inlineComments]);
     } else {
       localWarn(
         `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
@@ -795,7 +795,7 @@ const AnnotationLayer = ({
   const _onSupport = (data: any) => {
     const found = findComment({
       id: data.object_id,
-      comments: inlineComments.current,
+      comments: inlineComments,
     });
     if (found) {
       const updatedComment = { ...found.comment };
@@ -918,6 +918,8 @@ const AnnotationLayer = ({
     }
   );
 
+  console.log("_annotationsSortedByY", _annotationsSortedByY);
+
   return (
     <div className={css(styles.annotationLayer)}>
       <ContentSupportModal
@@ -951,7 +953,7 @@ const AnnotationLayer = ({
           value={{
             sort: sortOpts[0].value,
             filter: COMMENT_FILTERS.ANNOTATION,
-            comments: inlineComments.current,
+            comments: inlineComments,
             context: COMMENT_CONTEXTS.ANNOTATION,
             onCreate: _onCreate,
             onUpdate: _onUpdate,
