@@ -215,8 +215,18 @@ const PDFViewer = ({
 
         // Get viewport with scale 1 to find original page size
         const unscaledViewport = page.getViewport({ scale: 1 });
-        // Calculate the new scale
-        const _scale = viewerWidthRef.current / unscaledViewport.width;
+        // // Calculate the new scale
+        // const _scale = viewerWidthRef.current / unscaledViewport.width;
+        // // Get the scaled viewport
+        // const viewport = page.getViewport({ scale: _scale });
+
+        const viewportAspectRatio =
+          unscaledViewport.width / unscaledViewport.height;
+        const viewerAspectRatio =
+          viewerWidthRef.current / unscaledViewport.height;
+        const _scale =
+          viewerAspectRatio < viewportAspectRatio ? viewerAspectRatio : 1;
+
         // Get the scaled viewport
         const viewport = page.getViewport({ scale: _scale });
 
