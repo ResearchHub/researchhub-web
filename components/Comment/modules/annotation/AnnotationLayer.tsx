@@ -200,7 +200,6 @@ const AnnotationLayer = ({
           drawingMode: needsRedraw?.drawMode,
         });
 
-      console.log("|||nextOrphanThreadIds", nextOrphanThreadIds);
       _setOrphans(nextOrphanThreadIds);
       setNeedsRedraw(false);
       _setAnnotations(foundAnnotations);
@@ -580,12 +579,18 @@ const AnnotationLayer = ({
       if (existingAnnotation && drawingMode === "SKIP_EXISTING") {
         foundAnnotations.push(existingAnnotation);
       } else {
-        const xrange = XRange.createFromSerialized({
-          serialized: threadGroup.thread.anchor,
-          xpathPrefix: XPathUtil.getXPathFromNode(contentRef.current) || "",
-        });
+        let isOrphan = false;
 
-        if (xrange) {
+        try {
+          const xrange = XRange.createFromSerialized({
+            serialized: threadGroup.thread.anchor,
+            xpathPrefix: XPathUtil.getXPathFromNode(contentRef.current) || "",
+          });
+
+          if (!xrange) {
+            throw "could not create xrange";
+          }
+
           const annotation = createAnnotation({
             xrange,
             threadId: threadGroup.threadId,
@@ -595,7 +600,11 @@ const AnnotationLayer = ({
           });
 
           foundAnnotations.push(annotation);
-        } else {
+        } catch (error) {
+          isOrphan = true;
+        }
+
+        if (isOrphan) {
           // There are many reasons why an anchor could not be found.
           // The most common ones are: 1) Page has changed structure and the xpath is no longer valid
           // and 2) The content within the page has changed from the original.
@@ -922,8 +931,6 @@ const AnnotationLayer = ({
       );
     }
   );
-
-  console.log("_annotationsSortedByY", _annotationsSortedByY);
 
   return (
     <div className={css(styles.annotationLayer)}>

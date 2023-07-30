@@ -10,9 +10,11 @@ import DocumentExpandedNav from "~/components/Document/DocumentExpandedNav";
 import { zoomOptions } from "~/components/Document/lib/PDFViewer/config";
 import { DocumentContext } from "./lib/DocumentContext";
 import { DocumentMetadata, GenericDocument } from "./lib/types";
-import DocumentPlaceholder from "./DocumentPlaceholder";
 import throttle from "lodash/throttle";
 import { LEFT_SIDEBAR_MAX_WIDTH } from "../Home/sidebar/RootLeftSidebar";
+import DocumentPlaceholder from "./lib/Placeholders/DocumentPlaceholder";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleExclamation } from "@fortawesome/pro-light-svg-icons";
 
 const PDFViewer = dynamic(() => import("./lib/PDFViewer/_PDFViewer"), {
   ssr: false,
@@ -43,7 +45,6 @@ const DocumentViewer = ({
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [annotationCount, setAnnotationCount] = useState<number>(0);
   const contentRef = useRef(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasLoadError, setHasLoadError] = useState<boolean>(false);
   const [fullScreenSelectedZoom, setFullScreenSelectedZoom] =
     useState<number>(1.25);
@@ -231,7 +232,7 @@ const DocumentViewer = ({
           maxWidth: actualContentWidth,
         }}
       >
-        {/* {commentDisplayPreference !== "none" && (
+        {commentDisplayPreference !== "none" && (
           <AnnotationLayer
             document={doc}
             contentRef={contentRef}
@@ -239,23 +240,37 @@ const DocumentViewer = ({
             displayPreference={commentDisplayPreference}
             onFetch={onAnnotationFetched}
           />
-        )} */}
+        )}
 
         {documentContext.documentType === "paper" ? (
-          <PDFViewer
-            pdfUrl={pdfUrl}
-            scale={actualZoom}
-            contentRef={contentRef}
-            viewerWidth={actualContentWidth}
-            onLoadSuccess={() => null}
-            onLoadError={() => null}
-            onPageRender={setPagesRendered}
-            showWhenLoading={
-              <div style={{ padding: 20 }}>
-                <DocumentPlaceholder />
+          <>
+            {hasLoadError ? (
+              <div className={css(styles.error)}>
+                <FontAwesomeIcon
+                  icon={faCircleExclamation}
+                  style={{ fontSize: 44 }}
+                />
+                <span style={{ fontSize: 22 }}>
+                  There was an error loading the PDF.
+                </span>
               </div>
-            }
-          />
+            ) : (
+              <PDFViewer
+                pdfUrl={pdfUrl}
+                scale={actualZoom}
+                contentRef={contentRef}
+                viewerWidth={actualContentWidth}
+                onLoadSuccess={() => null}
+                onLoadError={setHasLoadError}
+                onPageRender={setPagesRendered}
+                showWhenLoading={
+                  <div style={{ padding: 20 }}>
+                    <DocumentPlaceholder />
+                  </div>
+                }
+              />
+            )}
+          </>
         ) : (
           <div
             ref={contentRef}
@@ -317,6 +332,15 @@ const styles = StyleSheet.create({
     position: "relative",
     zIndex: 3,
     paddingTop: 25,
+  },
+  error: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    alignItems: "center",
+    rowGap: "15px",
+    justifyContent: "center",
+    marginTop: "20%",
   },
 });
 

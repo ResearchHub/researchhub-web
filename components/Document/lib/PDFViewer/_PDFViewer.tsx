@@ -22,8 +22,6 @@ import {
   version,
 } from "pdfjs-dist/build/pdf";
 import { PDFPageView, EventBus } from "pdfjs-dist/web/pdf_viewer";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleExclamation } from "@fortawesome/pro-light-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 
 GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.js`;
@@ -40,16 +38,14 @@ interface Props {
   contentRef: any;
   showWhenLoading?: any;
   scale: number;
-  searchText?: string;
   onLoadSuccess: ({ numPages, contentRef }) => void;
-  onLoadError: () => void;
+  onLoadError: (error) => void;
   onPageRender: (pageNum) => void;
 }
 
 const PDFViewer = ({
   pdfUrl,
   showWhenLoading,
-  searchText = "",
   onLoadSuccess,
   onLoadError,
   onPageRender,
@@ -68,7 +64,6 @@ const PDFViewer = ({
   const [pagesLoaded, setPagesLoaded] = useState<Page[]>([]);
   const [pagesLoading, setPagesLoading] = useState<number[]>([]);
   const observer = useRef<HTMLDivElement>(null);
-  const [hasLoadError, setHasLoadError] = useState<boolean>(false);
   const eventBus = new EventBus();
 
   const loadPage = useCallback(
@@ -86,13 +81,14 @@ const PDFViewer = ({
       // Get the scaled viewport
       const viewport = page.getViewport({ scale: scaleRef.current });
 
-      console.log("----------------------------------------------");
-      console.log("_scale", _scale);
-      console.log("unscaledViewport.width", unscaledViewport.width);
-      console.log("viewerAspectRatio", viewerAspectRatio);
+      // console.log("----------------------------------------------");
+      // console.log("_scale", _scale);
+      // console.log("unscaledViewport.width", unscaledViewport.width);
+      // console.log("viewerAspectRatio", viewerAspectRatio);
 
       const pageContainer = document.createElement("div");
       pageContainer.style.position = "relative";
+      pageContainer.style.overflow = "hidden";
 
       const pdfPageView = new PDFPageView({
         container: pageContainer,
@@ -132,7 +128,9 @@ const PDFViewer = ({
         },
       ]);
       setPagesLoading(pagesLoading.filter((page) => page !== pageNum));
+      onPageRender(pageNum);
     },
+
     [pdfDocument, numPages, scale, eventBus, isReadyToRender]
   );
 
@@ -146,7 +144,6 @@ const PDFViewer = ({
         setNumPages(pdfDocument.numPages);
       } catch (error) {
         onLoadError && onLoadError(error);
-        setHasLoadError(true);
         console.log("error loading pdf", error);
       }
     };
@@ -197,24 +194,11 @@ const PDFViewer = ({
     }
   }, [scale]);
 
-  if (hasLoadError) {
-    return (
-      <div className={css(styles.error)}>
-        <FontAwesomeIcon icon={faCircleExclamation} style={{ fontSize: 44 }} />
-        <span style={{ fontSize: 22 }}>
-          There was an error loading the PDF.
-        </span>
-      </div>
-    );
-  }
-
   return (
     <div style={{ position: "relative" }} ref={contentRef}>
       <div
         ref={containerRef}
         style={{
-          // width: viewerWidthRef.current,
-          // overflow: "hidden",
           boxSizing: "border-box",
         }}
       ></div>
@@ -223,16 +207,6 @@ const PDFViewer = ({
   );
 };
 
-const styles = StyleSheet.create({
-  error: {
-    display: "flex",
-    flexDirection: "column",
-    height: "100%",
-    alignItems: "center",
-    rowGap: "15px",
-    justifyContent: "center",
-    marginTop: "20%",
-  },
-});
+const styles = StyleSheet.create({});
 
 export default PDFViewer;
