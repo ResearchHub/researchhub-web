@@ -56,7 +56,7 @@ export const annotationToSerializedAnchorPosition = ({
   ignoreXPathPrefix,
 }: {
   annotation: Annotation;
-  ignoreXPathPrefix: string;
+  ignoreXPathPrefix?: string;
 }): SerializedAnchorPosition => {
   const serializedXrange = annotation.xrange.serialize({ ignoreXPathPrefix });
 
@@ -77,7 +77,7 @@ export const selectionToSerializedAnchorPosition = ({
   ignoreXPathPrefix,
 }: {
   selection: Selection;
-  ignoreXPathPrefix: string;
+  ignoreXPathPrefix?: string;
 }): SerializedAnchorPosition => {
   const serializedXrange = selection.xrange.serialize({ ignoreXPathPrefix });
 
@@ -99,7 +99,7 @@ export const urlSelectionToAnnotation = ({
   relativeEl,
 }: {
   urlSelection: any;
-  ignoreXPathPrefix: string;
+  ignoreXPathPrefix?: string;
   relativeEl: any;
 }): Annotation => {
   const serializedSelection = JSON.parse(decodeURIComponent(urlSelection));

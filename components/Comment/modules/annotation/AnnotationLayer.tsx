@@ -341,6 +341,7 @@ const AnnotationLayer = ({
   // Periodically check for orphan threads that could not be found on the page.
   // Sometimes, as the page's structure settles, orphans are created temporarily.
   useEffect(() => {
+    // return;
     const checkOrphanThreads = () => {
       if (!commentThreads.current) return;
 
@@ -474,8 +475,6 @@ const AnnotationLayer = ({
             const [key, value] = hashPairs[selectionIdx].split("=");
             const annotation = urlSelectionToAnnotation({
               urlSelection: value,
-              ignoreXPathPrefix:
-                XPathUtil.getXPathFromNode(contentRef.current) || "",
               relativeEl: contentRef.current,
             });
 
@@ -582,6 +581,14 @@ const AnnotationLayer = ({
         let isOrphan = false;
 
         try {
+          console.log(
+            "XXXXPathUtil.getXPathFromNode(contentRef.current)",
+            XPathUtil.getXPathFromNode(contentRef.current)
+          );
+          console.log(
+            "XXXthreadGroup.thread.anchor.startContainerPath",
+            threadGroup.thread.anchor?.startContainerPath
+          );
           const xrange = XRange.createFromSerialized({
             serialized: threadGroup.thread.anchor,
             xpathPrefix: XPathUtil.getXPathFromNode(contentRef.current) || "",
@@ -639,11 +646,9 @@ const AnnotationLayer = ({
   const _createNewAnnotation = ({
     event,
     selection,
-    ignoreXPathPrefix,
   }: {
     event: any;
     selection: Selection;
-    ignoreXPathPrefix: string;
   }) => {
     event.stopPropagation();
 
@@ -673,7 +678,6 @@ const AnnotationLayer = ({
     const newAnnotation = createAnnotation({
       serializedAnchorPosition: selectionToSerializedAnchorPosition({
         selection,
-        ignoreXPathPrefix,
       }),
       relativeEl: contentRef.current,
       isNew: true,
@@ -717,9 +721,6 @@ const AnnotationLayer = ({
     try {
       const serialized = annotationToSerializedAnchorPosition({
         annotation,
-        // IMPORTANT: We always want to get a fresh xpath to the container contentEl right before serializing
-        // because DOM changes (i.e. full screen mode) can cause the xpath of it to change.
-        ignoreXPathPrefix: XPathUtil.getXPathFromNode(contentRef.current) || "",
       });
 
       const comment = await createCommentAPI({
@@ -992,8 +993,6 @@ const AnnotationLayer = ({
                   _createNewAnnotation({
                     event,
                     selection,
-                    ignoreXPathPrefix:
-                      XPathUtil.getXPathFromNode(contentRef.current) || "",
                   })
                 }
                 onLinkClick={() => _handleCreateSharableLink()}

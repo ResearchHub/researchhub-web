@@ -5,7 +5,6 @@ import "~/components/EditorsDashboard/stylesheets/date.css";
 import "~/components/Modals/Stylesheets/Dnd.css";
 import "~/components/Paper/progressbar.css";
 import "~/components/Paper/Tabs/stylesheets/custom-editor.css";
-import "~/components/Paper/Tabs/stylesheets/ReactPdf.css";
 import "~/components/SearchSuggestion/authorinput.css";
 import "~/components/TextEditor/stylesheets/QuillTextEditor.css";
 import "~/pages/user/stylesheets/toggle.css";
@@ -15,8 +14,7 @@ import "react-placeholder/lib/reactPlaceholder.css";
 import "react-quill/dist/quill.snow.css";
 import "react-tagsinput/react-tagsinput.css";
 import "~/components/Comment/lib/quill.css";
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-import "react-pdf/dist/esm/Page/TextLayer.css";
+import "pdfjs-dist/web/pdf_viewer.css";
 import { Analytics } from "@vercel/analytics/react";
 import { configureStore } from "~/redux/configureStore";
 import { init as initApm } from "@elastic/apm-rum";
@@ -29,7 +27,6 @@ import Base from "./Base";
 import nookies from "nookies";
 import Router, { useRouter } from "next/router";
 import withRedux from "next-redux-wrapper";
-import Script from "next/script";
 
 if (process.env.ELASTIC_APM_URL) {
   initApm({

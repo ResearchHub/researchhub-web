@@ -102,6 +102,11 @@ const PDFViewer = ({
       pdfPageView.setPdfPage(page);
       await pdfPageView.draw();
 
+      // We want to add an ID element to simplify fetching xpath to elements within pdfjs
+      // Having an ID shorten the length of the xpath string making it more reliable
+      const textLayerDiv = pageContainer.querySelector(".textLayer");
+      if (textLayerDiv) textLayerDiv.id = `textLayer-page-${pageNum}`;
+
       if (containerRef.current) {
         containerRef.current.appendChild(pageContainer);
       }
@@ -206,7 +211,5 @@ const PDFViewer = ({
     </div>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default PDFViewer;
