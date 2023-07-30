@@ -231,7 +231,7 @@ const DocumentViewer = ({
           maxWidth: actualContentWidth,
         }}
       >
-        {commentDisplayPreference !== "none" && (
+        {/* {commentDisplayPreference !== "none" && (
           <AnnotationLayer
             document={doc}
             contentRef={contentRef}
@@ -239,7 +239,7 @@ const DocumentViewer = ({
             displayPreference={commentDisplayPreference}
             onFetch={onAnnotationFetched}
           />
-        )}
+        )} */}
 
         {documentContext.documentType === "paper" ? (
           <PDFViewer
