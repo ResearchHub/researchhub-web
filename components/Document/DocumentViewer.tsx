@@ -49,8 +49,9 @@ const DocumentViewer = ({
   const [fullScreenSelectedZoom, setFullScreenSelectedZoom] =
     useState<number>(1.25);
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [pagesRendered, setPagesRendered] = useState<number>(0);
+  const [pageRendered, setPageRendered] = useState<{ pageNum: number }>({
+    pageNum: 0,
+  });
   const [windowDimensions, setWindowDimensions] = useState<{
     width: number;
     height: number;
@@ -201,7 +202,7 @@ const DocumentViewer = ({
   }
 
   const commentDisplayPreference = documentContext.preferences?.comments;
-  const pdfUrl = doc.formats.find((f) => f.type === "pdf")?.url;  //"https://researchhub-paper-dev1.s3.amazonaws.com/uploads/papers/2023/06/08/Formation_TCM_Self-Assembly_Nanostrategy.pdf?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=dlczHX3QkG%2FmmBa%2F%2FRJbeQFgnp4%3D&Expires=1691416890"
+  const pdfUrl = doc.formats.find((f) => f.type === "pdf")?.url; //"https://researchhub-paper-dev1.s3.amazonaws.com/uploads/papers/2023/06/08/Formation_TCM_Self-Assembly_Nanostrategy.pdf?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=dlczHX3QkG%2FmmBa%2F%2FRJbeQFgnp4%3D&Expires=1691416890"
   const actualContentWidth = isExpanded
     ? viewerWidth * fullScreenSelectedZoom
     : viewerWidth * selectedZoom;
@@ -236,7 +237,7 @@ const DocumentViewer = ({
           <AnnotationLayer
             document={doc}
             contentRef={contentRef}
-            pagesRendered={pagesRendered}
+            pageRendered={pageRendered}
             displayPreference={commentDisplayPreference}
             onFetch={onAnnotationFetched}
           />
@@ -262,7 +263,7 @@ const DocumentViewer = ({
                 viewerWidth={actualContentWidth}
                 onLoadSuccess={() => null}
                 onLoadError={setHasLoadError}
-                onPageRender={setPagesRendered}
+                onPageRender={setPageRendered}
                 showWhenLoading={
                   <div style={{ padding: 20 }}>
                     <DocumentPlaceholder />

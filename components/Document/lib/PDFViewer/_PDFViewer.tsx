@@ -40,7 +40,7 @@ interface Props {
   scale: number;
   onLoadSuccess: ({ numPages, contentRef }) => void;
   onLoadError: (error) => void;
-  onPageRender: (pageNum) => void;
+  onPageRender: ({ pageNum }: { pageNum: number }) => void;
 }
 
 const PDFViewer = ({
@@ -53,8 +53,6 @@ const PDFViewer = ({
   contentRef,
   scale,
 }: Props) => {
-
-  
   const viewerWidthRef = useRef<number>(viewerWidth);
   const scaleRef = useRef<number>(scale);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -71,19 +69,18 @@ const PDFViewer = ({
     async (pageNum) => {
       setPagesLoading([...pagesLoading, pageNum]);
       const page = await pdfDocument.getPage(pageNum);
-      const viewport = page.getViewport({ scale: 1.0 });
+      const viewport = page.getViewport({ scale: scaleRef.current });
       const pageContainer = document.createElement("div");
       pageContainer.style.position = "relative";
 
       const pdfPageView = new PDFPageView({
         container: pageContainer,
         id: pageNum,
-        scale: 1.0,
+        scale: scaleRef.current,
         defaultViewport: viewport,
         eventBus,
         textLayerMode: 2,
       });
-
 
       pdfPageView.setPdfPage(page);
       await pdfPageView.draw();
@@ -129,7 +126,7 @@ const PDFViewer = ({
         },
       ]);
       setPagesLoading(pagesLoading.filter((page) => page !== pageNum));
-      onPageRender(pageNum);
+      onPageRender({ pageNum });
     },
 
     [pdfDocument, numPages, scale, eventBus, isReadyToRender]
@@ -184,15 +181,19 @@ const PDFViewer = ({
       const _pagesLoading = [...pagesLoaded.map((p) => p.pageNumber)];
       setPagesLoading(_pagesLoading);
 
-      pagesLoaded.forEach(async (page: Page) => {
+      pagesLoaded.forEach(async (page: Page, index) => {
         page.pdfPageView.update({ scale: scaleRef.current });
         await page.pdfPageView.draw();
+        onPageRender({ pageNum: index + 1 });
       });
     }
   }, [scale]);
 
   return (
-    <div style={{ position: "relative", width: viewerWidthRef.current }} ref={contentRef}>
+    <div
+      style={{ position: "relative", width: viewerWidthRef.current }}
+      ref={contentRef}
+    >
       <div
         ref={containerRef}
         style={{

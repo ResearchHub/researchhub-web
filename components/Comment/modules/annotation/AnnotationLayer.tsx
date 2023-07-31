@@ -66,7 +66,7 @@ const { setMessage, showMessage } = MessageActions;
 interface Props {
   contentRef: any;
   document: GenericDocument;
-  pagesRendered: number; // The number of pages rendered so far
+  pageRendered: { pageNum: number }; // The last page rendered
   displayPreference: "all" | "mine" | "none";
   onFetch?: (commentThreads) => void;
 }
@@ -75,7 +75,7 @@ const AnnotationLayer = ({
   contentRef,
   document: doc,
   displayPreference,
-  pagesRendered = 0,
+  pageRendered = { pageNum: 0 },
   onFetch,
 }: Props) => {
   const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
@@ -183,21 +183,15 @@ const AnnotationLayer = ({
   // As more pages are rendered (in the case of papers), we want to try to find annotations.
   // Note: When a pages is zoomed in/out as with papers, this hook will be retriggered
   useEffect(() => {
-    console.log('Page ' + pagesRendered + " rendered") 
     throttledSetNeedsRedraw({ drawMode: "ALL" });
-  }, [pagesRendered]);
+  }, [pageRendered]);
 
   useEffect(() => {
     if (needsRedraw) {
-      const readyThreads = getThreadsReadyForRender({
-        threads: commentThreads.current,
-        pagesRendered,
-      });
-
       const { orphanThreadIds: nextOrphanThreadIds, foundAnnotations } =
         _drawAnnotations({
           annotationsSortedByY: annotationsSortedByYRef.current,
-          threads: readyThreads,
+          threads: commentThreads.current,
           drawingMode: needsRedraw?.drawMode,
         });
 
@@ -319,31 +313,31 @@ const AnnotationLayer = ({
     };
   }, [contentRef, annotationsSortedByY]);
 
-  useEffect(() => {
-    const _handleResize = throttle(() => {
-      console.log('zoom change')
-      throttledSetNeedsRedraw({ drawMode: "ALL" });
-    }, 1000);
+  // useEffect(() => {
+  //   const _handleResize = throttle(() => {
+  //     console.log('zoom change')
+  //     throttledSetNeedsRedraw({ drawMode: "ALL" });
+  //   }, 1000);
 
-    const resizeObserver = new ResizeObserver((entries) => {
-      _handleResize();
-    });
+  //   const resizeObserver = new ResizeObserver((entries) => {
+  //     setNeedsRedraw({ drawMode: "all"});
+  //   });
 
-    if (contentRef.current) {
-      resizeObserver.observe(contentRef.current);
-    }
+  //   if (contentRef.current) {
+  //     resizeObserver.observe(contentRef.current);
+  //   }
 
-    return () => {
-      if (contentRef.current) {
-        resizeObserver.unobserve(contentRef.current);
-      }
-    };
-  }, [contentRef]);
+  //   return () => {
+  //     if (contentRef.current) {
+  //       resizeObserver.unobserve(contentRef.current);
+  //     }
+  //   };
+  // }, [contentRef]);
 
   // Periodically check for orphan threads that could not be found on the page.
   // Sometimes, as the page's structure settles, orphans are created temporarily.
   useEffect(() => {
-    return;
+    return; // Temprarily turning this off
     const checkOrphanThreads = () => {
       if (!commentThreads.current) return;
 
@@ -588,8 +582,8 @@ const AnnotationLayer = ({
             // xpathPrefix: XPathUtil.getXPathFromNode(contentRef.current) || "",
           });
 
-          console.log('threadGroup', threadGroup)
-          console.log('xrange', xrange)
+          console.log("threadGroup", threadGroup);
+          console.log("xrange", xrange);
 
           if (!xrange) {
             throw "could not create xrange";
@@ -845,23 +839,6 @@ const AnnotationLayer = ({
     }
   };
 
-  const getThreadsReadyForRender = ({
-    threads,
-    pagesRendered,
-  }: {
-    threads: { [key: string]: CommentThreadGroup };
-    pagesRendered: number;
-  }): { [key: string]: CommentThreadGroup } => {
-    const readyThreads = {};
-    Object.keys(threads).forEach((threadId) => {
-      const threadGroup = threads[threadId];
-      if ((threadGroup?.thread?.anchor?.pageNumber || 0) <= pagesRendered) {
-        readyThreads[threadId] = threadGroup;
-      }
-    });
-    return readyThreads;
-  };
-
   const _calcTextSelectionMenuPos = ({
     selectionMouseCoordinates,
     renderingMode,
@@ -931,8 +908,7 @@ const AnnotationLayer = ({
   );
 
   // const showAvatars =
-  
-  
+
   return (
     <div className={css(styles.annotationLayer)}>
       <ContentSupportModal
