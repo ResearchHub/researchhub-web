@@ -11,6 +11,35 @@ export const getEducationalCarouselElements = () => [
   {
     title: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
+        <img
+          src="/static/beaker.svg"
+          style={{ marginRight: 6, marginTop: -3, height: 20 }}
+        />
+        {" What is ResearchHub?"}
+      </div>
+    ),
+    body: (
+      <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
+        {
+          "A tool for the open publication and discussion of scientific research. ResearchHub’s users are rewarded with ResearchCoin (RSC) for publishing, reviewing, criticizing, and collaborating in the open."
+        }
+
+        <div className={css(DEFAULT_ITEM_STYLE.learnMore)}>
+          <ALink
+            theme="solidPrimary"
+            overrideStyle={[DEFAULT_ITEM_STYLE.link]}
+            href="https://docs.researchhub.com/welcome/what-is-researchhub"
+            target="_blank"
+          >
+            Learn more about ResearchHub
+          </ALink>
+        </div>
+      </div>
+    ),
+  },
+  {
+    title: (
+      <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
         <span style={{ marginRight: 8, marginTop: 3 }}>
           <RSC style={styles.RSC} />
         </span>
