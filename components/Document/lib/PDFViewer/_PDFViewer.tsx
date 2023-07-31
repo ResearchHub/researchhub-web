@@ -53,9 +53,10 @@ const PDFViewer = ({
   contentRef,
   scale,
 }: Props) => {
+
+  
   const viewerWidthRef = useRef<number>(viewerWidth);
   const scaleRef = useRef<number>(scale);
-  // const [currentScale, setCurrentScale] = useState<number>(scale);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isReadyToRender, setIsReadyToRender] = useState<boolean>(false);
   const [numPages, setNumPages] = useState<number>(0);
@@ -70,42 +71,37 @@ const PDFViewer = ({
     async (pageNum) => {
       setPagesLoading([...pagesLoading, pageNum]);
       const page = await pdfDocument.getPage(pageNum);
-
-      const unscaledViewport = page.getViewport({ scale: scaleRef.current });
-      const viewportAspectRatio =
-        unscaledViewport.width / unscaledViewport.height;
-      const viewerAspectRatio =
-        viewerWidthRef.current / unscaledViewport.height;
-      const _scale = viewerAspectRatio;
-      // viewerAspectRatio < viewportAspectRatio ? viewerAspectRatio : 1.0;
-      // Get the scaled viewport
-      const viewport = page.getViewport({ scale: scaleRef.current });
-
-      // console.log("----------------------------------------------");
-      // console.log("_scale", _scale);
-      // console.log("unscaledViewport.width", unscaledViewport.width);
-      // console.log("viewerAspectRatio", viewerAspectRatio);
-
+      const viewport = page.getViewport({ scale: 1.0 });
       const pageContainer = document.createElement("div");
       pageContainer.style.position = "relative";
-      pageContainer.style.overflow = "hidden";
 
       const pdfPageView = new PDFPageView({
         container: pageContainer,
         id: pageNum,
-        scale: _scale,
+        scale: 1.0,
         defaultViewport: viewport,
         eventBus,
         textLayerMode: 2,
       });
 
+
       pdfPageView.setPdfPage(page);
       await pdfPageView.draw();
+
+      const pageDiv = pageContainer.querySelector(".page");
+      // This refers to PDFjs annotations layer, not our own.
+      const annotationsDiv = pageContainer.querySelector(".annotationLayer");
+
+      if (pageDiv) pageDiv.style.margin = "0 auto";
+      if (annotationsDiv) annotationsDiv.style.margin = "0 auto";
 
       // We want to add an ID element to simplify fetching xpath to elements within pdfjs
       // Having an ID shorten the length of the xpath string making it more reliable
       const textLayerDiv = pageContainer.querySelector(".textLayer");
-      if (textLayerDiv) textLayerDiv.id = `textLayer-page-${pageNum}`;
+      if (textLayerDiv) {
+        textLayerDiv.id = `textLayer-page-${pageNum}`;
+        textLayerDiv.style.margin = "0 auto";
+      }
 
       if (containerRef.current) {
         containerRef.current.appendChild(pageContainer);
@@ -158,11 +154,7 @@ const PDFViewer = ({
 
   useLayoutEffect(() => {
     function updateWidth() {
-      const clientWidth = Number(containerRef.current?.clientWidth);
-      if (clientWidth > 0) {
-        viewerWidthRef.current = clientWidth;
-        setIsReadyToRender(true);
-      }
+      setIsReadyToRender(true);
     }
 
     window.addEventListener("resize", updateWidth);
@@ -170,7 +162,7 @@ const PDFViewer = ({
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const isPageAlreadyLoadedOrLoading =
       pagesLoading.includes(nextPage) ||
       pagesLoaded.filter((p) => p.pageNumber == nextPage).length > 0;
@@ -187,7 +179,7 @@ const PDFViewer = ({
   useEffect(() => {
     if (scale !== scaleRef.current) {
       scaleRef.current = scale;
-      viewerWidthRef.current = scaleRef.current * viewerWidth;
+      viewerWidthRef.current = viewerWidth;
 
       const _pagesLoading = [...pagesLoaded.map((p) => p.pageNumber)];
       setPagesLoading(_pagesLoading);
@@ -200,7 +192,7 @@ const PDFViewer = ({
   }, [scale]);
 
   return (
-    <div style={{ position: "relative" }} ref={contentRef}>
+    <div style={{ position: "relative", width: viewerWidthRef.current }} ref={contentRef}>
       <div
         ref={containerRef}
         style={{

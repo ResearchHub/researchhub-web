@@ -299,7 +299,8 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   scroll: {
-    overflow: "scroll",
+    overflowX: "scroll",
+    // overflowY: "hidden",
   },
   expandedWrapper: {
     position: "fixed",

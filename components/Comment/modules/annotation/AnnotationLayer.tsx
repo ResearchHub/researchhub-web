@@ -933,6 +933,9 @@ const AnnotationLayer = ({
     }
   );
 
+  // const showAvatars =
+  
+  
   return (
     <div className={css(styles.annotationLayer)}>
       <ContentSupportModal
