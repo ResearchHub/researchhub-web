@@ -341,7 +341,7 @@ const AnnotationLayer = ({
   // Periodically check for orphan threads that could not be found on the page.
   // Sometimes, as the page's structure settles, orphans are created temporarily.
   useEffect(() => {
-    // return;
+    return;
     const checkOrphanThreads = () => {
       if (!commentThreads.current) return;
 
@@ -581,18 +581,13 @@ const AnnotationLayer = ({
         let isOrphan = false;
 
         try {
-          console.log(
-            "XXXXPathUtil.getXPathFromNode(contentRef.current)",
-            XPathUtil.getXPathFromNode(contentRef.current)
-          );
-          console.log(
-            "XXXthreadGroup.thread.anchor.startContainerPath",
-            threadGroup.thread.anchor?.startContainerPath
-          );
           const xrange = XRange.createFromSerialized({
             serialized: threadGroup.thread.anchor,
-            xpathPrefix: XPathUtil.getXPathFromNode(contentRef.current) || "",
+            // xpathPrefix: XPathUtil.getXPathFromNode(contentRef.current) || "",
           });
+
+          console.log('threadGroup', threadGroup)
+          console.log('xrange', xrange)
 
           if (!xrange) {
             throw "could not create xrange";
@@ -625,8 +620,8 @@ const AnnotationLayer = ({
             threadGroup.thread.anchor?.startContainerPath,
             "end:",
             threadGroup.thread.anchor?.endContainerPath,
-            "xpathPrefix:",
-            contentElXpath,
+            // "xpathPrefix:",
+            // contentElXpath,
             "contentElFromXpath",
             XPathUtil.getNodeFromXPath(contentElXpath),
             "startNodeFromXpath",
