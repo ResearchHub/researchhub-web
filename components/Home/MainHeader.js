@@ -38,7 +38,7 @@ const MainHeader = (props) => {
           inputStyle={{
             fontWeight: 500,
             minHeight: "unset",
-            backgroundColor: "#FFF",
+            backgroundColor: colors.WHITE(),
             display: "flex",
             justifyContent: "space-between",
           }}
@@ -56,7 +56,7 @@ const MainHeader = (props) => {
           inputStyle={{
             fontWeight: 500,
             minHeight: "unset",
-            backgroundColor: "#FFF",
+            backgroundColor: colors.WHITE(),
             display: "flex",
             justifyContent: "space-between",
           }}
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    color: "#FFF",
+    color: colors.WHITE(),
     fontFamily: "Roboto",
     cursor: "default",
   },
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     },
   },
   title: {
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     width: "100%",
     fontWeight: 400,
     fontSize: 30,
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
   },
   titleBoxShadow: {
-    boxShadow: "0 4px 41px -24px rgba(0,0,0,0.16)",
+    boxShadow: `0 4px 41px -24px ${colors.PURE_BLACK(0.16)}`,
   },
   topbar: {
     paddingTop: 30,

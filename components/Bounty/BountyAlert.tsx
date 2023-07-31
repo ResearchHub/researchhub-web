@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
     marginRight: 7,
   },
   popover: {
-    background: "#fff",
+    background: colors.WHITE(),
     padding: 16,
     borderRadius: 4,
     marginTop: 8,

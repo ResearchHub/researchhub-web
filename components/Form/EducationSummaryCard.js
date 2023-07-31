@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     cursor: "pointer",
     background: colors.ICY_GREY,
-    border: "1px solid rgb(232, 232, 242)",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",

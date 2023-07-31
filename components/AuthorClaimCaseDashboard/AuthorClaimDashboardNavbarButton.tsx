@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   authorClaimDashboardNavbarButton: {
     alignItems: "center",
     boxSizing: "border-box",
-    color: "##241F3A",
+    color: "colors.TEXT_DARKER_GREY",
     cursor: "pointer",
     display: "flex",
     fontSize: 18,
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#F2F2F2",
     borderRadius: 4,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     display: "flex",
     height: 20,
     justifyContent: "center",

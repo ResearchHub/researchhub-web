@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     width: 44,
-    border: "1px solid #E8E8F2",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     margin: "15px 0",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",

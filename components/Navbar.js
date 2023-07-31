@@ -211,8 +211,8 @@ const styles = StyleSheet.create({
   },
   navbarContainer: {
     alignItems: "center",
-    background: "#fff",
-    backgroundColor: "#FFF",
+    // background: "#fff",
+    backgroundColor: colors.WHITE(),
     borderBottom: "1px solid #e8e8ef",
     boxSizing: "border-box",
     display: "flex",
@@ -288,9 +288,9 @@ const styles = StyleSheet.create({
   login: {
     color: colors.NEW_BLUE(),
     border: "1px solid #E7E7E7",
-    background: "#FFF",
+    background: colors.WHITE(),
     ":hover": {
-      backgroundColor: "rgba(250, 250, 250, 1)",
+      backgroundColor: colors.LIGHT_GRAY_BACKGROUND(1),
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
     fontSize: 18,
     width: 40,
-    color: "#FFF",
+    color: colors.WHITE(), // colors.NEW_BLUE(),
     textAlign: "center",
   },
   burgerIcon: {
@@ -383,6 +383,7 @@ const styles = StyleSheet.create({
       display: "none",
       width: 0,
     },
+    color: colors.BLACK_TEXT(),
   },
   slidingPaneBody: {
     display: "none",

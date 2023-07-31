@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     display: "none",
     zIndex: 2,
-    background: "white",
+    background: colors.white,
     userSelect: "none",
     textTransform: "capitalize",
     padding: 0,

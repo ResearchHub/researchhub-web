@@ -7,6 +7,7 @@
 import { Document, Outline, Page, pdfjs } from "react-pdf";
 import { useCallback, useRef, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
+import colors from "~/config/themes/colors";
 
 // FIXME: Replace with local worker.
 // Needs to set up a custom webpack config to do this.
@@ -33,6 +34,7 @@ const PDFViewer = ({
 }: Props) => {
   const [numPages, setNumPages] = useState<null | number>(null);
   const [pagesRendered, setPagesRendered] = useState<number>(1); // Start by rendering one page
+  const [renderedPages, setRenderedPages] = useState<number[]>([]);
   const observer = useRef(null); // Observe the last rendered page to see if it's in view, if not, load more pages
 
   function onDocumentLoadSuccess({ numPages }) {
@@ -96,9 +98,19 @@ const PDFViewer = ({
               pageNumber={index + 1}
               width={viewerWidth}
               customTextRenderer={textRenderer}
-              onRenderSuccess={() => onPageRender(index + 1)}
+              onRenderSuccess={() => {
+                onPageRender(index + 1);
+                if (!renderedPages.includes(index + 1)) {
+                  setRenderedPages([...renderedPages, index + 1]);
+                }
+              }}
               loading={showWhenLoading || "Loading..."}
+              renderAnnotationLayer={false}
+              renderTextLayer={false}
             />
+            {!renderedPages.includes(index + 2) && (
+              <div className={css(styles.darkModeOverlay)}></div>
+            )}
           </div>
         ))}
       </Document>
@@ -108,6 +120,16 @@ const PDFViewer = ({
 
 const styles = StyleSheet.create({
   container: {},
+  darkModeOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: colors.PDF_OVERLAY(), //"rgba(102, 102, 102, 0.4)", // semi-transparent black
+    mixBlendMode: "multiply",
+    pointerEvents: "none", // to ensure it doesn't interfere with user interactions
+  },
 });
 
 export default PDFViewer;

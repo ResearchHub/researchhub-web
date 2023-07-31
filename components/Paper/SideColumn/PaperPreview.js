@@ -63,7 +63,7 @@ const PaperPreview = ({
             width={140}
             height="100%"
             previewStyles={previewStyles}
-            color="#efefef"
+            color={colors.PLACEHOLDER_CARD_BACKGROUND}
           />
         }
       >

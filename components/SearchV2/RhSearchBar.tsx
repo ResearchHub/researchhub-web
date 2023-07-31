@@ -239,6 +239,7 @@ function RhSearchBarExpandableInput({
 
 const styles = StyleSheet.create({
   rhSearchBarExpandableInputDisplay: {
+    backgroundColor: colors.GREY_ICY_BLUE_HUE,
     display: "none",
     width: 0,
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
@@ -257,13 +258,15 @@ const styles = StyleSheet.create({
     top: 0,
     width: "calc(100% - 80px)" /* adjusted leftbar width */,
     zIndex: 10,
+    background: colors.GREY_ICY_BLUE_HUE,
+    color: colors.BLACK(0.8),
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       padding: "0 52px",
       width: "100%" /* adjusted leftbar width */,
     },
   },
   rhSearchBarInputDisplay: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.GREY_ICY_BLUE_HUE,
     display: "block",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
@@ -273,7 +276,8 @@ const styles = StyleSheet.create({
   },
   rhSearchBarInput: {
     alignItems: "center",
-    background: "white",
+    background: colors.GREY_ICY_BLUE_HUE,
+    color: colors.BLACK(0.8),
     border: `1px solid ${colors.GREY_BORDER}`,
     borderRadius: 4,
     boxSizing: "border-box",
@@ -301,6 +305,7 @@ const styles = StyleSheet.create({
     left: "86px",
     top: 20,
     zIndex: 11,
+    color: colors.BLACK(1),
     ":hover": {
       background: colors.GREY(0.14) /* matching NavbarRightButtonGroup */,
     },
@@ -318,6 +323,7 @@ const styles = StyleSheet.create({
     right: 6,
     top: 4,
     zIndex: 2,
+    color: colors.BLACK(0.8),
     ":hover": {
       background: colors.GREY(0.14) /* matching NavbarRightButtonGroup */,
     },

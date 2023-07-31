@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     zIndex: 50,
     height: "auto",
     width: 200,
-    background: "white",
+    background: colors.WHITE(),
     boxShadow: "0px 0px 10px 0px #00000026",
     color: colors.BLACK(0.8),
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {

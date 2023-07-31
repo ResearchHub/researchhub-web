@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     textDecoration: "unset",
     color: "unset",
     ":hover": {
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
   },
   hubIcon: {
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   mainText: {
     fontSize: 18,
     // fontSize: 16,
-    color: "rgb(35, 32, 56)",
+    color: colors.DARK_DESATURATED_BLUE(),
     fontWeight: "500",
     flexWrap: "wrap",
     wordBreak: "break-word",
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     padding: "2px 1px 2px 1px",
   },
   paperCount: {
-    color: "rgb(145, 143, 155)",
+    color: colors.DARK_GREYISH_BLUE2(),
     fontSize: 14,
     fontWeight: 400,
   },

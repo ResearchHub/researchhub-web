@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
     border: "1px solid",
     borderColor: formColors.BORDER,
-    background: "#FFF",
+    background: colors.WHITE(),
     margin: "0px 15px",
     // ':hover': {
     //   marginRight: 17,

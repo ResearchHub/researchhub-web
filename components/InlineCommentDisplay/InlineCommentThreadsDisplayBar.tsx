@@ -15,7 +15,7 @@ type Props = {
   shouldShowContextTitle?: boolean;
 };
 
-const MEDIA_WIDTH_LIMIT = 1199;/* arbitary iPad size */
+const MEDIA_WIDTH_LIMIT = 1199; /* arbitary iPad size */
 
 export default function InlineCommentThreadsDisplayBarWithMediaSize(
   props: Props
@@ -73,7 +73,7 @@ function InlineCommentThreadsDisplayBar({
   );
 
   return (
-    (<div className={css(styles.inlineCommentThreadsDisplayBar)}>
+    <div className={css(styles.inlineCommentThreadsDisplayBar)}>
       <div className={css(styles.header)}>
         <div
           className={css(styles.backButton)}
@@ -86,7 +86,7 @@ function InlineCommentThreadsDisplayBar({
         </div>
       </div>
       {commentThreadCards}
-    </div>)
+    </div>
   );
 }
 
@@ -100,7 +100,7 @@ export const burgerMenuStyle = {
   bmCrossButton: {
     height: "26px",
     width: "26px",
-    color: "#FFF",
+    color: colors.WHITE(),
     display: "none",
     visibility: "hidden",
   },
@@ -117,7 +117,7 @@ export const burgerMenuStyle = {
     width: "85%",
   },
   bmMenu: {
-    background: "#fff",
+    background: colors.WHITE(),
     fontSize: "1.15em",
     overflowY: "auto",
     width: "100%",
@@ -132,7 +132,7 @@ export const burgerMenuStyle = {
     justifyContent: "flex-start",
     alignItems: "flex-start",
     overflow: "auto",
-    borderTop: "1px solid rgba(255,255,255,.2)",
+    borderTop: `1px solid ${colors.WHITE(0.2)}`,
     ":focus": {
       outline: "none",
     },
@@ -140,13 +140,13 @@ export const burgerMenuStyle = {
   bmItem: {
     display: "inline-block",
     margin: "15px 0 15px 0",
-    color: "#FFF",
+    color: colors.WHITE(),
     ":focus": {
       outline: "none",
     },
   },
   bmOverlay: {
-    background: "rgba(0, 0, 0, 0.3)",
+    background: colors.PURE_BLACK(0.3),
     left: 0,
     right: 0,
     top: 0,

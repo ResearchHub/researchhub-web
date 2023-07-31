@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     },
   },
   headerText: {
-    color: "#fff",
+    color: colors.WHITE(),
     fontWeight: 500,
     fontSize: 24,
     marginBottom: 16,
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     objectFit: "contain",
   },
   bodyText: {
-    color: "#fff",
+    color: colors.WHITE(),
     fontSize: 16,
     fontWeight: 400,
     "@media only screen and (max-width: 1199px)": {
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 1399px)": {
       fontSize: 15,
-    }
+    },
   },
   imgWrap: {
     display: "unset",

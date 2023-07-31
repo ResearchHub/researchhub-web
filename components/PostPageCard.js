@@ -181,7 +181,11 @@ class PostPageCard extends Component {
             <ReactPlaceholder
               ready={post.isReady}
               showLoadingAnimation
-              customPlaceholder={<AbstractPlaceholder color="#efefef" />}
+              customPlaceholder={
+                <AbstractPlaceholder
+                  color={colors.PLACEHOLDER_CARD_BACKGROUND}
+                />
+              }
             >
               {post?.unifiedDocument?.documentType === "bounty" && (
                 <div className={css(styles.table)}>

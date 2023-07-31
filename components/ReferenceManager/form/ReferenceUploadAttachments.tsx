@@ -27,7 +27,7 @@ export default function ReferenceUploadAttachments({
       }}
     >
       <Typography
-        color="rgba(36, 31, 58, 1)"
+        color={colors.BLACK(1)}
         fontSize="14px"
         fontWeight={600}
         lineHeight="22px"

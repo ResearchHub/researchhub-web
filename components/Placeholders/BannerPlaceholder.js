@@ -7,7 +7,7 @@ const BannerPlaceholder = (props) => {
     <div className={css(styles.card) + " show-loading-animation"}>
       <RectShape
         className={css(styles.banner)}
-        color={props.color ? props.color : "#EFEFEF"}
+        color={props.color ? props.color : colors.PLACEHOLDER_CARD_BACKGROUND}
       />
     </div>
   );

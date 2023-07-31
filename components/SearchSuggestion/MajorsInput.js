@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     height: 19,
     fontWeight: "500",
     width: "100%",
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     display: "flex",
     justifyContent: "flex-start",
     textAlign: "left",
@@ -231,9 +231,11 @@ const styles = StyleSheet.create({
   dropDown: {
     position: "absolute",
     boxSizing: "border-box",
-    background: "#FFF",
-    border: "#E8E8F2 1px solid",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    background: colors.WHITE(),
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
+    boxShadow: `0 1px 3px ${colors.PURE_BLACK(
+      0.12
+    )}, 0 1px 2px ${colors.PURE_BLACK(0.24)}`,
     top: 55,
     width: "100%",
     display: "flex",
@@ -268,7 +270,7 @@ const styles = StyleSheet.create({
     padding: "10px 20px",
     minHeight: 35,
     maxHeight: 35,
-    border: "1px solid #FAFAFA",
+    border: `1px solid ${colors.INPUT_BACKGROUND_GREY}`,
     backgroundColor: "#f7f7fb",
     cursor: "pointer",
     marginBottom: 5,
@@ -289,7 +291,7 @@ const styles = StyleSheet.create({
   uniMeta: {
     fontSize: 14,
     fontWeight: 400,
-    color: "#918F9B",
+    color: colors.DARK_GREYISH_BLUE2(),
     "@media only screen and (max-width: 665px)": {
       fontSize: 13,
     },

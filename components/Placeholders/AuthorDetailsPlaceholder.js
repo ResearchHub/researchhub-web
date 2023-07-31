@@ -1,8 +1,12 @@
 import { StyleSheet, css } from "aphrodite";
 import { RectShape, RoundShape } from "react-placeholder/lib/placeholders";
 import { breakpoints } from "~/config/themes/screen";
+import colors from "~/config/themes/colors";
 
-const AuthorDetailsPlaceholder = ({ color = "#EFEFEF", rows = 1 }) => {
+const AuthorDetailsPlaceholder = ({
+  color = colors.PLACEHOLDER_CARD_BACKGROUND,
+  rows = 1,
+}) => {
   return (
     <div className={css(styles.container) + " show-loading-animation"}>
       <div className={css(styles.avatarWrapper)}>

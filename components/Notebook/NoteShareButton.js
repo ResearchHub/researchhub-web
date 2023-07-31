@@ -60,11 +60,11 @@ const NoteShareButton = ({
 
 const styles = StyleSheet.create({
   popoverContainer: {
-    background: "white",
+    background: colors.WHITE(),
     width: "auto",
     minHeight: 50,
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     borderRadius: 4,
     display: "flex",
     flexDirection: "column",

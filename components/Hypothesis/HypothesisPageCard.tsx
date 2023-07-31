@@ -477,9 +477,9 @@ const styles = StyleSheet.create({
   hypothesisCard: {
     display: "flex",
     flexDirection: "row",
-    border: "1.5px solid #F0F0F0",
-    backgroundColor: "#fff",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    border: `1.5px solid ${colors.VERY_LIGHT_GREY()}`,
+    backgroundColor: colors.WHITE(),
+    boxShadow: `0px 3px 4px ${colors.PURE_BLACK(0.02)}`,
     padding: "20px 30px 30px 20px",
     boxSizing: "border-box",
     borderRadius: 4,
@@ -622,8 +622,8 @@ const styles = StyleSheet.create({
   actionIcon: {
     padding: 5,
     borderRadius: "50%",
-    backgroundColor: "rgba(36, 31, 58, 0.03)",
-    color: "rgba(36, 31, 58, 0.35)",
+    backgroundColor: colors.BLACK(0.03),
+    color: colors.BLACK(0.35),
     width: 20,
     minWidth: 20,
     maxWidth: 20,
@@ -635,9 +635,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 15,
     cursor: "pointer",
-    border: "1px solid rgba(36, 31, 58, 0.1)",
+    border: `1px solid ${colors.BLACK(0.1)}`,
     ":hover": {
-      color: "rgba(36, 31, 58, 0.8)",
+      color: colors.BLACK(0.8),
       backgroundColor: "#EDEDF0",
       borderColor: "#d8d8de",
     },
@@ -660,7 +660,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: 500,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     width: 120,
     opacity: 0.7,
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {

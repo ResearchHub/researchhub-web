@@ -41,7 +41,7 @@ export default function HypothesisCitationConsensusCard({
   const totalVoteCount = downCount + neutralCount + upCount;
 
   return (
-    (<div className={css(styles.hypothesisCitationConsensusCard)}>
+    <div className={css(styles.hypothesisCitationConsensusCard)}>
       <div className={css(styles.title)}>{"Current conclusion"}</div>
       <div className={css(styles.body)}>
         <div className={css(styles.consensusTextGroup)}>
@@ -107,16 +107,16 @@ export default function HypothesisCitationConsensusCard({
           )}
         </div>
       </div>
-    </div>)
+    </div>
   );
 }
 
 const styles = StyleSheet.create({
   hypothesisCitationConsensusCard: {
-    backgroundColor: "#fff",
-    border: "1.5px solid #F0F0F0",
+    backgroundColor: colors.WHITE(),
+    border: `1.5px solid ${colors.VERY_LIGHT_GREY()}`,
     borderRadius: 4,
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    boxShadow: `0px 3px 4px ${colors.PURE_BLACK(0.02)}`,
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",

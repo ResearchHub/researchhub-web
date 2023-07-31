@@ -156,7 +156,7 @@ export default function BasicTogglableNavbarLeft({
         <Box
           sx={{
             alignItems: "center",
-            color: "rgba(170, 168, 180, 1)",
+            color: colors.VOTE_ARRROW,
             cursor: "pointer",
             display: "flex",
             borderBottom: "1px solid #E9EAEF",
@@ -167,7 +167,7 @@ export default function BasicTogglableNavbarLeft({
           <OrganizationPopover isReferenceManager={true} />
         </Box>
       </Box>
-      <List sx={{ background: "#FAFAFC", color: "rgba(36, 31, 58, 1)" }}>
+      <List sx={{ background: "#FAFAFC", color: colors.BLACK(1) }}>
         <BasicTogglableNavbarButton
           icon={
             <FontAwesomeIcon
@@ -215,7 +215,7 @@ export default function BasicTogglableNavbarLeft({
           }}
         >
           <Typography
-            color={"rgba(124, 121, 137, 1)"}
+            color={colors.MEDIUM_GREY2()}
             component="div"
             fontSize={14}
             fontWeight={700}

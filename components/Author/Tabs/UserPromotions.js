@@ -52,7 +52,9 @@ const UserPromotions = (props) => {
       <ReactPlaceholder
         ready={!fetching}
         showLoadingAnimation
-        customPlaceholder={<PaperPlaceholder color="#efefef" />}
+        customPlaceholder={
+          <PaperPlaceholder color={colors.PLACEHOLDER_CARD_BACKGROUND} />
+        }
       >
         {promotionCards.length > 0 ? (
           promotionCards.map((p) => p)
@@ -158,7 +160,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     userSelect: "none",
     ":hover": {
-      color: "#FFF",
+      color: colors.WHITE(),
       backgroundColor: colors.BLUE(),
     },
   },

@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   tooltipInput: {
-    background: "#fff",
+    background: colors.WHITE(),
     border: "none",
     outline: "none",
     boxSizing: "border-box",
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     bottom: -60,
     left: "50%",
     transform: "translateX(-50%)",
-    background: "#fff",
+    background: colors.WHITE(),
     boxShadow: "0 5px 10px 0 #ddd",
     padding: 10,
     borderRadius: 8,
@@ -95,20 +95,20 @@ const styles = StyleSheet.create({
     height: 30,
     overflow: "hidden",
 
-    border: "1px solid #E8E8F2",
-    backgroundColor: "#FBFBFD",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     ":focus": {
       borderColor: "#D2D2E6",
     },
 
     fontWeight: "400",
     borderRadius: 2,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
   },
   submitTooltipButton: {
     background: colors.BLUE(1),
     //borderRadius: "0 8px 8px 0",
-    color: "#fff",
+    color: colors.WHITE(),
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

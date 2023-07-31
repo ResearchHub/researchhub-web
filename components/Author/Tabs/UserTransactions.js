@@ -82,7 +82,9 @@ class UserTransaction extends Component {
       <ReactPlaceholder
         ready={transactions && !this.props.fetching}
         showLoadingAnimation
-        customPlaceholder={<PaperPlaceholder color="#efefef" />}
+        customPlaceholder={
+          <PaperPlaceholder color={colors.PLACEHOLDER_CARD_BACKGROUND} />
+        }
       >
         {transactions && transactions.withdrawals.length ? (
           transactions.withdrawals.map((transaction, i) => {
@@ -174,7 +176,7 @@ var styles = StyleSheet.create({
     cursor: "pointer",
     userSelect: "none",
     ":hover": {
-      color: "#FFF",
+      color: colors.WHITE(),
       backgroundColor: colors.BLUE(),
     },
   },

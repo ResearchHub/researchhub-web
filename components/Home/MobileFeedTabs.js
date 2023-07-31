@@ -59,9 +59,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     padding: "20px 0 15px",
     cursor: "pointer",
-    background: "#fff",
+    background: colors.WHITE(),
     fontWeight: 500,
-    borderBottom: "1px solid #EDEDED",
+    borderBottom: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     fontSize: 14,
     color: colors.BLACK(0.6),
     ":hover": {
@@ -69,10 +69,10 @@ const styles = StyleSheet.create({
     },
   },
   tabLeft: {
-    borderRight: "1px solid #EDEDED",
+    borderRight: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
   },
   tabRight: {
-    borderLeft: "1px solid #EDEDED",
+    borderLeft: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
   },
   active: {
     border: "none",

@@ -15,6 +15,7 @@ import moment from "moment";
 import ReactPlaceholder from "react-placeholder";
 import { fetchLeadingHubs } from "./api/fetchLeadingHubs";
 import HubLeaderDashboardCard from "./HubLeaderDashboardCard";
+import colors from "~/config/themes/colors";
 
 type UseEffectFetchEditorsArgs = {
   filters: EditorDashFilters;
@@ -156,7 +157,10 @@ export default function HubLeaderDashboard(): ReactElement<"div"> {
           <ReactPlaceholder
             ready={!isLoading}
             customPlaceholder={
-              <LeaderboardFeedPlaceholder color="#efefef" rows={5} />
+              <LeaderboardFeedPlaceholder
+                color={colors.PLACEHOLDER_CARD_BACKGROUND}
+                rows={5}
+              />
             }
           >
             <div className={css(styles.editorCardContainer)}>{editorCards}</div>

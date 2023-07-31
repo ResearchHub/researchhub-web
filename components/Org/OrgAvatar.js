@@ -31,12 +31,12 @@ const OrgAvatar = ({ org, size = 30, fontSize = 14 }) => {
 const styles = StyleSheet.create({
   container: {
     position: "relative",
-    color: "black",
+    color: colors.PURE_BLACK(),
   },
   initialsContainer: {
     height: "100%",
     borderRadius: "100px",
-    background: "#FBFBFD",
+    background: colors.LIGHT_GREY_BLUE2,
     border: "1px solid #E5E5F0",
     color: "#7C7989",
     display: "flex",

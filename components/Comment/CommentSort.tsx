@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     padding: "6px 10px 6px 10px",
     fontSize: 16,
     border: `1px solid ${colors.border}`,
-    background: "white",
+    background: colors.white,
   },
   trigger: {},
   dropdown: {
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
     height: "auto",
     width: 150,
-    background: "white",
+    background: colors.white,
     padding: 0,
     borderRadius: 4,
     marginTop: 5,

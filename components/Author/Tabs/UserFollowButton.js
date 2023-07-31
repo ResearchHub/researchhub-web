@@ -74,7 +74,7 @@ const UserFollowButton = (props) => {
         <Loader
           loading={true}
           size={10}
-          color={isFollowing ? "#FFF" : colors.BLUE()}
+          color={isFollowing ? colors.WHITE() : colors.BLUE()}
         />
       );
     }

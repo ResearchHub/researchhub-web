@@ -41,6 +41,7 @@ import UserApiTokenInputField from "~/components/shared/UserApiTokenInputField";
 import API from "~/config/api";
 import Button from "~/components/Form/Button";
 import { Helpers } from "@quantfive/js-web-config";
+import DarkModeToggle from "./DarkModeToggle";
 
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
   return {
@@ -740,6 +741,7 @@ class UserSettings extends Component {
           <UserApiTokenInputField />
           {this.renderFrequencySelect()}
           {this.renderSubscribedHubs()}
+          <DarkModeToggle />
           <div className={css(styles.container)}>
             <div className={css(styles.listLabel)} id={"hubListTitle"}>
               {"Notifications"}
@@ -795,10 +797,10 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     boxSizing: "border-box",
-    background: "#fff",
-    border: "1.5px solid #F0F0F0",
+    background: colors.WHITE(),
+    border: `1.5px solid ${colors.VERY_LIGHT_GREY()}`,
     borderRadius: 4,
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    boxShadow: `0px 3px 4px ${colors.PURE_BLACK(0.02)}`,
     padding: "25px 50px",
     margin: "40px 0 50px",
     "@media only screen and (max-width: 767px)": {
@@ -839,7 +841,7 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: "30px 10px",
-    borderTop: "1px solid #EDEDED",
+    borderTop: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
   },
   formSelectContainer: {
     padding: 0,
@@ -894,7 +896,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     cursor: "pointer",
     backgroundColor: colors.BLUE(),
-    color: "#FFF",
+    color: colors.WHITE(),
     position: "absolute",
     right: 5,
   },
@@ -910,7 +912,7 @@ const styles = StyleSheet.create({
     width: 32,
     ":hover": {
       color: colors.BLACK(),
-      backgroundColor: "#EDEDED",
+      backgroundColor: colors.LIGHT_GREY_BACKGROUND,
     },
   },
   emailInputContainer: {
@@ -990,7 +992,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: "10px 0",
-    borderTop: "1px solid #EDEDED",
+    borderTop: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     fontWeight: 300,
     ":hover": {
       fontWeight: 500,
@@ -1006,7 +1008,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginRight: 3,
     ":hover": {
-      backgroundColor: "#fff",
+      backgroundColor: colors.WHITE(),
     },
   },
   buttonContainer: {

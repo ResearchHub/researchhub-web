@@ -4,6 +4,7 @@ import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
 import { useState, useEffect } from "react";
 import useEffectShowHorizontalMobileScroll from "../utils/useEffectShowHorizontalMobileScroll";
 import { css, StyleSheet } from "aphrodite";
+import colors from "~/config/themes/colors";
 
 const FeedMenuMobileScrollControls = ({ tabsContainerRef, viewportWidth }) => {
   const [showMobileLeftScroll, setShowMobileLeftScroll] = useState(false);
@@ -84,15 +85,15 @@ const styles = StyleSheet.create({
   mobileLeftScroll: {
     left: 70,
     padding: "8px 24px 7px 8px",
-    background:
-      "linear-gradient(270deg, rgba(255, 255, 255, 0) 0px, rgb(255, 255, 255) 50%)",
+    background: `linear-gradient(270deg, ${colors.WHITE(0)} 0px, 
+      ${colors.WHITE(1)} 50%)`,
   },
 
   mobileRightScroll: {
     right: 0,
     padding: "8px 8px 7px 24px",
-    background:
-      "linear-gradient(90deg, rgba(255, 255, 255, 0) 0px, rgb(255, 255, 255) 50%)",
+    background: `linear-gradient(270deg, ${colors.WHITE(0)} 0px, 
+      ${colors.WHITE(1)} 50%)`,
   },
 });
 

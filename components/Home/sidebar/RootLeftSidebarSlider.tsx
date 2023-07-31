@@ -256,14 +256,15 @@ const styles = StyleSheet.create({
   googleIcon: {
     width: 25,
     height: 25,
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    boxShadow: `0 1px 3px ${colors.PURE_BLACK(0.12)}, 
+    0 1px 2px ${colors.PURE_BLACK(0.24)}`,
     borderRadius: "50%",
   },
   googleLabelMobile: {
     fontVariant: "small-caps",
     fontSize: 14,
     letterSpacing: 0.7,
-    color: "#fff",
+    color: colors.WHITE(),
   },
   referralProgramItem: {
     // color: colors.ORANGE_DARK2(),

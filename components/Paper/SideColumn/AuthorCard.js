@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     width: "100%",
     ":hover": {
       cursor: "pointer",
-      background: "#FAFAFA",
+      background: colors.INPUT_BACKGROUND_GREY,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
   },
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   },
   userImage: {
     borderRadius: "50%",
-    border: "1px solid #ededed",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     width: 30,
     height: 30,
     minWidth: 30,

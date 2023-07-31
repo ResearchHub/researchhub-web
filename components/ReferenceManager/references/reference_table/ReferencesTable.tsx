@@ -358,7 +358,7 @@ export default function ReferencesTable({
                   style={{
                     background:
                       rowDraggedOver === row.row.id && colors.NEW_BLUE(1),
-                    color: rowDraggedOver === row.row.id && "#fff",
+                    color: rowDraggedOver === row.row.id && colors.WHITE(),
                   }}
                   onDragEnter={() => folderRow && setRowDraggedOver(row.row.id)}
                   onDragLeave={() => folderRow && setRowDraggedOver(null)}

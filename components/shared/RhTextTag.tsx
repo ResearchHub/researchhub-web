@@ -1,4 +1,5 @@
 import { ReactElement, ReactNode } from "react";
+import colors from "~/config/themes/colors";
 
 type Props = {
   backgroundColor?: string;
@@ -36,9 +37,9 @@ export default function RhTextTag({
       <div
         style={{
           alignItems: "center",
-          background: backgroundColor ?? "black",
+          background: backgroundColor ?? colors.PURE_BLACK(),
           borderRadius: "8px",
-          color: textColor ?? "#fff",
+          color: textColor ?? colors.WHITE(),
           display: "flex",
           fontSize: fontSize ?? "inherit",
           textTransform: textTransform,

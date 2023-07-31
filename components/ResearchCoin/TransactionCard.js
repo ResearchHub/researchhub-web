@@ -255,13 +255,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     cursor: "pointer",
-    borderBottom: "1px solid #EDEDED",
+    borderBottom: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     marginBottom: 10,
     borderRadius: 3,
-    background: "white",
-    border: "1px solid #EDEDED",
+    background: colors.WHITE(),
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     ":hover": {
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
     ":last-child": {
       borderBottom: 0,
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   },
   metatext: {
     fontSize: 14,
-    color: "rgba(36, 31, 58, 0.5)",
+    color: colors.BLACK(0.5),
     marginBottom: 5,
     width: "100%",
     wordBreak: "break-all",

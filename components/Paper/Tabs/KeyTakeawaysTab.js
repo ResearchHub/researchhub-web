@@ -206,7 +206,9 @@ class BulletsContainer extends Component {
         <ReactPlaceholder
           ready={false}
           showLoadingAnimation
-          customPlaceholder={<BulletPlaceholder color="#efefef" />}
+          customPlaceholder={
+            <BulletPlaceholder color={colors.PLACEHOLDER_CARD_BACKGROUND} />
+          }
         >
           <div></div>
         </ReactPlaceholder>
@@ -326,7 +328,7 @@ class BulletsContainer extends Component {
             <Button
               label={
                 pendingSubmission ? (
-                  <Loader loading={true} size={20} color={"#fff"} />
+                  <Loader loading={true} size={20} color={colors.WHITE()} />
                 ) : (
                   "Submit"
                 )
@@ -393,11 +395,11 @@ class BulletsContainer extends Component {
 
 const styles = StyleSheet.create({
   bulletsContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     padding: 50,
-    border: "1.5px solid #F0F0F0",
+    border: `1.5px solid ${colors.VERY_LIGHT_GREY()}`,
     boxSizing: "border-box",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    boxShadow: `0px 3px 4px ${colors.PURE_BLACK(0.02)}`,
     borderRadius: 4,
 
     "@media only screen and (max-width: 767px)": {
@@ -406,7 +408,7 @@ const styles = StyleSheet.create({
   },
   bulletContainer: {
     width: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     marginBottom: 20,
     boxSizing: "border-box",
     position: "relative",
@@ -513,8 +515,8 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     borderRadius: 3,
     padding: "25px 0",
-    border: `1px solid #F0F0F0`,
-    backgroundColor: "#FBFBFD",
+    border: `1px solid ${colors.VERY_LIGHT_GREY()}`,
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     cursor: "pointer",
     ":hover": {
       borderColor: colors.BLUE(),
@@ -557,7 +559,7 @@ const styles = StyleSheet.create({
 
   subtitle: {
     fontSize: 16,
-    color: "rgba(36, 31, 58, 0.8)",
+    color: colors.BLACK(0.8),
     marginTop: 10,
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
@@ -567,7 +569,7 @@ const styles = StyleSheet.create({
   button: {
     border: "1px solid",
     padding: "8px 25px",
-    color: "#fff",
+    color: colors.WHITE(),
     background: colors.PURPLE(1),
     fontSize: 16,
     borderRadius: 4,
@@ -603,9 +605,9 @@ const dropdownStyles = StyleSheet.create({
     position: "absolute",
     bottom: -75,
     right: 0,
-    boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
+    boxShadow: `${colors.DARK_GREYISH_BLUE(0.39)} 0px 3px 10px 0px`,
     boxSizing: "border-box",
-    background: "#fff",
+    background: colors.WHITE(),
     border: "1px solid #eee",
     borderRadius: 4,
     zIndex: 2,

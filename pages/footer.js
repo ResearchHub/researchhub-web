@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     textDecoration: "none",
   },
   social: {
-    background: "rgba(255, 255, 255, .7)",
+    background: colors.WHITE(0.7),
     height: 35,
     width: 35,
     display: "flex",
@@ -225,11 +225,11 @@ const styles = StyleSheet.create({
     // marginTop: 3,
   },
   ccby: {
-    color: "#fff",
+    color: colors.WHITE(),
     marginLeft: 5,
   },
   tab: {
-    color: "#fff",
+    color: colors.WHITE(),
     opacity: 0.8,
     marginRight: 16,
     cursor: "pointer",
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     },
   },
   arr: {
-    color: "#fff",
+    color: colors.WHITE(),
     opacity: 0.8,
   },
 });

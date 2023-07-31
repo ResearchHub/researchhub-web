@@ -160,9 +160,9 @@ const styles = StyleSheet.create({
     zIndex: 1000000,
     borderRadius: 100,
     minWidth: config.toggle.width,
-    background: "white",
+    background: colors.white,
     cursor: "pointer",
-    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.15)",
+    boxShadow: `0px 0px 10px ${colors.PURE_BLACK(0.15)}`,
     userSelect: "none",
     border: `1px solid ${colors.border}`,
     ":hover": {

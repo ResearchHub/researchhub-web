@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRight } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
+import colors from "~/config/themes/colors";
 
 type Args = {
   variant: "contained" | "text" | "shadow";
@@ -35,8 +36,8 @@ const UniswapButton = ({ variant, label = "RSC is available on" }: Args) => {
 const styles = StyleSheet.create({
   containedVariant: {
     border: "1px solid",
-    background: "white",
-    color: "black",
+    background: colors.WHITE(),
+    color: colors.PURE_BLACK(),
     ":hover": {
       cursor: "pointer",
       transition: "0.3s",
@@ -48,10 +49,10 @@ const styles = StyleSheet.create({
     marginRight: 3,
   },
   shadowVariant: {
-    // filter: "drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.15))",
+    // filter: `drop-shadow(0px 0px 10px ${colors.PURE_BLACK(0.15)})`,
     boxShadow:
       "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px !important",
-    background: "white",
+    background: colors.WHITE(),
     ":hover": {
       background: "rgb(248 246 247)",
       cursor: "pointer",
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     columnGap: "5px",
     textDecoration: "none",
-    color: "black",
+    color: colors.PURE_BLACK(),
     fontWeight: 500,
   },
   externalIcon: {

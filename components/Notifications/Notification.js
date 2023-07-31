@@ -128,7 +128,11 @@ class Notification extends Component {
           <ReactPlaceholder
             ready={!this.state.fetching}
             showLoadingAnimation
-            customPlaceholder={<NotificationPlaceholder color="#efefef" />}
+            customPlaceholder={
+              <NotificationPlaceholder
+                color={colors.PLACEHOLDER_CARD_BACKGROUND}
+              />
+            }
           >
             {this.state.notifications && this.state.notifications.length ? (
               this.renderNotifications()
@@ -192,7 +196,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.BLUE(),
     borderRadius: "50%",
-    color: "#fff",
+    color: colors.WHITE(),
     display: "flex",
     float: "left",
     fontSize: 8,
@@ -213,9 +217,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 38,
     right: 0,
-    boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
+    boxShadow: `${colors.DARK_GREYISH_BLUE(0.39)} 0px 3px 10px 0px`,
     boxSizing: "border-box",
-    background: "#fff",
+    background: colors.WHITE(),
     border: "1px solid #eee",
     borderRadius: 4,
     opacity: 0,
@@ -250,7 +254,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     padding: 20,
     borderBottom: "1px solid #dddfe2",
-    backgroundColor: "#FAFAFA",
+    backgroundColor: colors.INPUT_BACKGROUND_GREYVER_WHITE,
     fontSize: 14,
   },
 });

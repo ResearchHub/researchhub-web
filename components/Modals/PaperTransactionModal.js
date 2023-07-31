@@ -946,7 +946,7 @@ const styles = StyleSheet.create({
   mainHeader: {
     fontWeight: "500",
     fontSize: 22,
-    color: "#000 ",
+    color: colors.PURE_BLACK(),
     width: "100%",
     marginTop: 20,
     marginBottom: 10,
@@ -978,8 +978,8 @@ const styles = StyleSheet.create({
     padding: "5px 5px 5px 10px",
     boxSizing: "border-box",
     color: colors.BLACK(0.9),
-    background: "#FBFBFD",
-    border: "1px solid #E8E8F2",
+    background: colors.LIGHT_GREY_BLUE2,
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     borderRadius: 2,
   },
   error: {
@@ -1056,7 +1056,7 @@ const styles = StyleSheet.create({
     color: "#A5A5A5",
     fontSize: 20,
     ":hover": {
-      color: "#000",
+      color: colors.PURE_BLACK(),
     },
   },
   connectStatus: {
@@ -1115,7 +1115,7 @@ const styles = StyleSheet.create({
     width: 250,
   },
   confirmation: {
-    color: "#000",
+    color: colors.PURE_BLACK(),
     marginBottom: 10,
   },
   transactionHashLink: {
@@ -1141,7 +1141,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
   toggle: {
-    color: "rgba(36, 31, 58, 0.6)",
+    color: colors.BLACK(0.6),
     cursor: "pointer",
     padding: "2px 8px",
     fontSize: 14,

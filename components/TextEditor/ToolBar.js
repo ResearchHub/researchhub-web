@@ -58,7 +58,7 @@ export const ToolBar = (props) => {
           (props.loading ? (
             <FormButton
               onClick={null}
-              label={<Loader loading={true} color={"#FFF"} size={20} />}
+              label={<Loader loading={true} color={colors.WHITE()} size={20} />}
               size={props.smallToolBar && "med"}
               customButtonStyle={
                 props.smallToolBar ? styles.smallButton : styles.buttonStyle
@@ -94,19 +94,19 @@ const styles = StyleSheet.create({
   toolbarSummary: {
     borderBottom: "1px solid",
     borderTop: 0,
-    borderColor: "rgb(235, 235, 235)",
-    background: "#fff",
+    borderColor: colors.LIGHT_GREY(),
+    background: colors.WHITE(),
     paddingLeft: 0,
   },
   toolbar: {
     borderTop: "1px solid",
-    borderColor: "rgb(235, 235, 235)",
+    borderColor: colors.LIGHT_GREY(),
     padding: 16,
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
     justifyContent: "space-between",
-    background: "#fff",
+    background: colors.WHITE(),
     "@media only screen and (max-width: 577px)": {
       flexDirection: "column",
     },
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     padding: 5,
     ":hover": {
       color: colors.BLACK(1),
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
     "@media only screen and (max-width: 415px)": {
       margin: 5,
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   submit: {
     background: colors.PURPLE(1),
-    color: "#fff",
+    color: colors.WHITE(),
     border: "none",
     // fontVariant: "small-caps",
     padding: "12px 36px",

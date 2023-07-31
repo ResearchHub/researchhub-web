@@ -295,7 +295,7 @@ const InviteModal = ({
                           <ClipLoader
                             sizeUnit={"px"}
                             size={24}
-                            color={"#fff"}
+                            color={colors.WHITE()}
                             loading={true}
                           />
                         }
@@ -564,7 +564,7 @@ const styles = StyleSheet.create({
   copyIcon: {
     fontSize: 22,
     zIndex: 3,
-    background: "white",
+    background: colors.WHITE(),
   },
   noShow: {
     display: "none",
@@ -578,7 +578,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: -70,
     top: "50%",
-    color: "white",
+    color: colors.WHITE(),
     transform: "translateY(-50%)",
   },
   inlineNodeStyles: {

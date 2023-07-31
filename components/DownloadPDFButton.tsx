@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     width: "138px",
     height: "30px",
     padding: "2px 12px",
-    color: "#fff",
+    color: colors.WHITE(),
     backgroundColor: colors.BLUE(),
     borderColor: colors.BLUE(),
     borderRadius: "4px",
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     fontSize: "14px",
     lineHeight: "26px",
     marginLeft: "6px",
-    color: "#FFFFFF",
+    color: colors.WHITE(),
   },
   labelContainer: {
     display: "flex",

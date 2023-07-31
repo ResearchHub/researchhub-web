@@ -62,7 +62,7 @@ class OrcidConnectModal extends Component {
 
 const styles = StyleSheet.create({
   modal: {
-    background: "#fff",
+    background: colors.WHITE(),
     outline: "none",
     position: "absolute",
     left: "50%",
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     position: "relative",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     padding: "50px 0px 50px 0px",
     width: 625,
     overflowY: "scroll",
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     height: 30,
     width: 426,
     fontSize: 26,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
   },
   subtitle: {
     marginTop: 10,
@@ -123,15 +123,19 @@ const styles = StyleSheet.create({
     height: 55,
     width: 230,
     marginBottom: 15,
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    boxShadow: `0 1px 3px ${colors.PURE_BLACK(
+      0.12
+    )}, 0 1px 2px ${colors.PURE_BLACK(0.24)}`,
   },
   orchidButton: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     color: colors.BLUE(1),
     border: `1px solid ${colors.BLUE()}`,
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    boxShadow: `0 1px 3px ${colors.PURE_BLACK(
+      0.12
+    )}, 0 1px 2px ${colors.PURE_BLACK(0.24)}`,
     ":hover": {
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
   },
   orchidLabel: {
@@ -140,7 +144,9 @@ const styles = StyleSheet.create({
   iconStyle: {
     height: 33,
     width: 33,
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    boxShadow: `0 1px 3px ${colors.PURE_BLACK(
+      0.12
+    )}, 0 1px 2px ${colors.PURE_BLACK(0.24)}`,
     borderRadius: "50%",
   },
   inputContainer: {

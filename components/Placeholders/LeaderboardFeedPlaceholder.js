@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 
 import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
+import colors from "../../config/themes/colors";
 
 const LeaderboardFeedPlaceholder = ({ color, rows }) => {
   return new Array(rows).fill(0).map((_, i) => {
@@ -36,13 +37,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 15,
     boxSizing: "border-box",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     cursor: "pointer",
-    border: "1px solid #EDEDED",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     overflow: "hidden",
     width: "100%",
     ":hover": {
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
   },
 

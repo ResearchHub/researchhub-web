@@ -607,7 +607,7 @@ const styles = StyleSheet.create({
   },
   entry: {
     borderRadius: 4,
-    background: "white",
+    background: colors.WHITE(),
     border: `1px solid ${colors.GREY(0.5)}`,
     width: "100%",
     display: "flex",
@@ -633,7 +633,7 @@ const styles = StyleSheet.create({
     color: colors.RED(0.6),
     ":hover": {
       backgroundColor: "#EDEDF0",
-      color: "rgba(36, 31, 58, 0.8)",
+      color: colors.BLACK(0.8),
     },
   },
   redo: {
@@ -741,7 +741,7 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: "50%",
     ":hover": {
-      color: "rgba(36, 31, 58, 0.8)",
+      color: colors.BLACK(0.8),
       backgroundColor: "#EDEDF0",
       borderColor: "#d8d8de",
     },

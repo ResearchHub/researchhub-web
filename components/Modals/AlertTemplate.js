@@ -2,6 +2,7 @@ import Modal from "react-modal";
 import { StyleSheet, css } from "aphrodite";
 import { modalStyles } from "~/config/themes/styles";
 import Ripples from "react-ripples";
+import colors from "~/config/themes/colors";
 
 const AlertTemplate = ({ style, options, message, close }) => {
   function closeAlert() {
@@ -16,7 +17,7 @@ const AlertTemplate = ({ style, options, message, close }) => {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundColor: colors.PURE_BLACK(0.5),
         zIndex: "1000005",
         borderRadius: 5,
       },
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
     minWidth: 257,
     maxWidth: 400,
     border: "1px solid #F3F3F8",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     boxSizing: "border-box",
   },
   text: {
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
     color: "#065FD4",
     cursor: "pointer",
     ":hover": {
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
   },
   border: {

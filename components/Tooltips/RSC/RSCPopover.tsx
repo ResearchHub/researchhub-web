@@ -7,6 +7,7 @@ import { useExchangeRate } from "~/components/contexts/ExchangeRateContext";
 import { formatBountyAmount } from "~/config/types/bounty";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import ContentBadge from "~/components/ContentBadge";
+import colors from "~/config/themes/colors";
 
 const RSCPopover = ({ amount }: { amount: number }): ReactElement | null => {
   const { rscToUSDDisplay } = useExchangeRate();
@@ -74,7 +75,7 @@ const RSCPopover = ({ amount }: { amount: number }): ReactElement | null => {
 
 const styles = StyleSheet.create({
   container: {
-    background: "#fff",
+    background: colors.WHITE(),
     // padding: 12,
     borderRadius: 4,
     lineHeight: 1.4,

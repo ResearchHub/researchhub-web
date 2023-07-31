@@ -149,8 +149,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     zIndex: 5,
     padding: "8px 15px 7px 24px",
-    background:
-      "linear-gradient(90deg, rgba(255, 255, 255, 0) 0px, rgb(255, 255, 255) 50%)",
+    background: `linear-gradient(90deg, ${colors.WHITE(0)} 0px, 
+    ${colors.WHITE(1)} 50%)`,
   },
   container: {
     display: "flex",

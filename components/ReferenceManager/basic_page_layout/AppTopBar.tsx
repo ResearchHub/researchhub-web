@@ -1,5 +1,6 @@
 import { Theme, styled } from "@mui/material/styles";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
+import colors from "~/config/themes/colors";
 
 interface AppTopBarProps extends MuiAppBarProps {
   appPaddingLeft?: string;
@@ -24,9 +25,9 @@ const AppTopBar = styled(MuiAppBar, {
   ({ appPaddingLeft, navNavWidth, isLeftNavOpen, theme }: AppTopBarProps) => ({
     alignItems: "center",
     flexDirection: "row",
-    background: "#fff",
+    background: colors.WHITE(),
     boxShadow: "none",
-    color: "black",
+    color: colors.PURE_BLACK(),
     display: "flex",
     fontSize: 16,
     justifyContent: "space-between",

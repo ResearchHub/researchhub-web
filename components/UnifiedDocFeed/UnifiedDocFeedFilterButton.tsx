@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   unifiedDocFeedFilterButton: {
     alignItems: "center",
     boxSizing: "border-box",
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     cursor: "pointer",
     display: "flex",
     fontSize: 18,

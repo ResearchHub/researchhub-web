@@ -53,7 +53,7 @@ export default function ReferenceItemFieldSelect({
       }}
     >
       <Typography
-        color="rgba(36, 31, 58, 1)"
+        color={colors.BLACK(1)}
         fontSize="14px"
         fontWeight={600}
         lineHeight="22px"
@@ -73,7 +73,7 @@ export default function ReferenceItemFieldSelect({
         onChange={(event: SelectChangeEvent): void =>
           onChange(event.target.value)
         }
-        sx={{ background: "#fff" }}
+        sx={{ background: colors.WHITE() }}
         value={value}
         MenuProps={{ MenuListProps: { sx: { height: "320px" } } }}
         size="small"

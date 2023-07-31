@@ -408,7 +408,11 @@ function NotePublishModal({
                 isWhite={false}
                 label={
                   loading ? (
-                    <FontAwesomeIcon icon={faSpinnerThird} color="#fff" spin />
+                    <FontAwesomeIcon
+                      icon={faSpinnerThird}
+                      color={colors.WHITE()}
+                      spin
+                    />
                   ) : isPublished ? (
                     "Republish"
                   ) : (
@@ -458,7 +462,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   guidelinesContent: {
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     fontSize: 16,
     fontStyle: "normal",
     fontWeight: "normal",

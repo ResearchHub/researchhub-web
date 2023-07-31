@@ -27,6 +27,7 @@ import {
   LEFT_SIDEBAR_MIN_WIDTH,
 } from "~/components/Home/sidebar/RootLeftSidebar";
 import { breakpoints } from "~/config/themes/screen";
+import colors from "~/config/themes/colors";
 // import AnnotationLayer from "~/components/Comment/modules/annotation/AnnotationLayer";
 
 const savePostApi = ({ id, postHtml }) => {
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
     borderRadius: "4px",
     border: `1px solid ${config.border}`,
     marginTop: 15,
-    background: "white",
+    background: colors.WHITE(),
     width: "100%",
     boxSizing: "border-box",
   },

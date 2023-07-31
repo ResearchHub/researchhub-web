@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   citationTitle: {
     boxSizing: "border-box",
-    color: "black",
+    color: colors.PURE_BLACK(),
     fontSize: 16,
     fontStyle: "italic",
     maxWidth: 860,
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   postMetaWrap: {
     width: "100%",
     height: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
   },
   threadComposerContainer: {
     alignItems: "center",

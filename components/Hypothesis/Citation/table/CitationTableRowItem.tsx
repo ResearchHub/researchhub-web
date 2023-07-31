@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     backgroundColor: colors.NEW_BLUE(),
     borderRadius: 50,
-    color: "#fff",
+    color: colors.WHITE(),
     display: "flex",
     fontSize: 13,
     fontWeight: 500,
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   },
   typeIcon: {
     alignItems: "center",
-    color: "#fff",
+    color: colors.WHITE(),
     display: "flex",
     justifyContent: "center",
     width: 72,
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
   },
   link: {
-    color: "black",
+    color: colors.PURE_BLACK(),
     cursor: "pointer",
     textDecoration: "none",
     overflow: "unset",

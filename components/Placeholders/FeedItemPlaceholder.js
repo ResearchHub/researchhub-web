@@ -2,8 +2,12 @@ import { StyleSheet, css } from "aphrodite";
 import { RectShape, RoundShape } from "react-placeholder/lib/placeholders";
 import PaperPlaceholder from "./PaperPlaceholder";
 import { breakpoints } from "~/config/themes/screen";
+import colors from "~/config/themes/colors";
 
-const FeedItemPlaceholder = ({ color = "#EFEFEF", rows = 1 }) => {
+const FeedItemPlaceholder = ({
+  color = colors.PLACEHOLDER_CARD_BACKGROUND,
+  rows = 1,
+}) => {
   return Array.from({ length: rows }).map((k, i) => (
     <div
       className={css(styles.container) + " show-loading-animation"}

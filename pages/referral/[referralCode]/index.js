@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   container: {
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
   },
   text: {
     lineHeight: 1.4,
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     fontWeight: 500,
     // fontSize: 33,
     flexWrap: "wrap",

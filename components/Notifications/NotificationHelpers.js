@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   // TIMESTAMP
   timestamp: {
     fontWeight: "normal",
-    color: "#918f9b",
+    color: colors.DARK_GREYISH_BLUE2(),
     fontSize: 12,
     fontFamily: "Roboto",
   },
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   // MODERATORDECISIONTAG
   tag: {
     fontSize: 8,
-    color: "#FFF",
+    color: colors.WHITE(),
     padding: "3px 8px",
     borderRadius: 4,
     textTransform: "uppercase",

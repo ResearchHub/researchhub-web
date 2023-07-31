@@ -67,7 +67,12 @@ class CategoryList extends Component {
     return (
       <div className={css(styles.categoryListContainer)}>
         <SideColumn
-          customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={9} />}
+          customPlaceholder={
+            <HubEntryPlaceholder
+              color={colors.PLACEHOLDER_CARD_BACKGROUND}
+              rows={9}
+            />
+          }
           title={"Categories"}
           renderListItem={this.renderCategoryEntry}
           ready={this.props.categories.length > 0}
@@ -110,31 +115,31 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 3,
     borderLeft: "3px solid #fff",
-    borderBottom: "1px solid #F0F0F0",
+    borderBottom: `1px solid ${colors.VERY_LIGHT_GREY()}`,
     color: colors.BLACK(0.6),
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
       color: colors.NEW_BLUE(),
       transition: "all ease-out 0.1s",
     },
     ":active": {
       color: colors.NEW_BLUE(),
-      background:
-        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+        ${colors.NEW_BLUE(0)} 100%)`,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
     ":focus": {
       color: colors.NEW_BLUE(),
-      background:
-        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+        ${colors.NEW_BLUE(0)} 100%)`,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
   },
   active: {
     color: colors.NEW_BLUE(),
-    background:
-      "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+    background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+        ${colors.NEW_BLUE(0)} 100%)`,
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
   last: {

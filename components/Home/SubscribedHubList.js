@@ -173,7 +173,12 @@ class SubscribedHubList extends Component {
           <ReactPlaceholder
             showLoadingAnimation
             ready={this.state.ready}
-            customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={5} />}
+            customPlaceholder={
+              <HubEntryPlaceholder
+                color={colors.PLACEHOLDER_CARD_BACKGROUND}
+                rows={5}
+              />
+            }
           >
             <div className={css(styles.hubsListContainer)}>
               {this.renderHubEntry()}
@@ -195,7 +200,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: "15px 0 1px",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     borderRadius: 4,
     boxSizing: "border-box",
     width: "100%",
@@ -254,18 +259,18 @@ const styles = StyleSheet.create({
     borderLeft: "3px solid #FFF",
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREYROUND_GREY,
     },
     ":active": {
       color: colors.NEW_BLUE(),
-      background:
-        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      background: `linear-gradient(90deg, ${NEW_BLUE(0.1)} 0%, 
+        ${NEW_BLUE(0)} 100%)`,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
     ":focus": {
       color: colors.NEW_BLUE(),
-      background:
-        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      background: `linear-gradient(90deg, ${NEW_BLUE(0.1)} 0%, 
+        ${NEW_BLUE(0)} 100%)`,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
   },
@@ -282,7 +287,7 @@ const styles = StyleSheet.create({
     objectFit: "cover",
     marginRight: 10,
     background: "#EAEAEA",
-    border: "1px solid #ededed",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
   },
   hubLink: {
     textDecoration: "none",
@@ -295,8 +300,8 @@ const styles = StyleSheet.create({
   },
   current: {
     color: colors.NEW_BLUE(),
-    background:
-      "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+    background: `linear-gradient(90deg, ${NEW_BLUE(0.1)} 0%, 
+        ${NEW_BLUE(0)} 100%)`,
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
   hubsList: {
@@ -324,7 +329,7 @@ const styles = StyleSheet.create({
   viewMoreButton: {
     display: "flex",
     justifyContent: "flex-end",
-    color: "rgba(78, 83, 255)",
+    color: colors.BLUE(),
     fontWeight: 300,
     textTransform: "capitalize",
     fontSize: 16,
@@ -332,7 +337,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "100%",
     ":hover": {
-      color: "rgba(78, 83, 255, .5)",
+      color: colors.BLUE(0.5),
       textDecoration: "underline",
     },
   },

@@ -11,6 +11,7 @@ import { AuthActions } from "~/redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import Login from "./Login/Login";
 import Button from "./Form/Button";
+import colors from "~/config/themes/colors";
 
 class ResearchHubBanner extends Component {
   constructor(props) {
@@ -108,7 +109,7 @@ var styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    color: "#FFF",
+    color: colors.WHITE(),
     fontFamily: "Roboto",
     cursor: "default",
   },
@@ -161,7 +162,7 @@ var styles = StyleSheet.create({
     fontSize: 26,
     top: 20,
     right: 50,
-    color: "white",
+    color: colors.WHITE(),
     zIndex: 3,
     "@media only screen and (max-width: 580px)": {
       right: 20,
@@ -193,7 +194,7 @@ var styles = StyleSheet.create({
   readMore: {
     cursor: "pointer",
     textDecoration: "underline",
-    color: "#FFF",
+    color: colors.WHITE(),
     ":hover": {
       fontWeight: 400,
     },
@@ -245,9 +246,9 @@ var styles = StyleSheet.create({
   mainFeed: {
     height: "100%",
     width: "85%",
-    backgroundColor: "#FCFCFC",
-    borderLeft: "1px solid #ededed",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.PAGE_WRAPPER,
+    borderLeft: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
+    backgroundColor: colors.WHITE(),
     "@media only screen and (max-width: 768px)": {
       width: "100%",
     },
@@ -255,7 +256,7 @@ var styles = StyleSheet.create({
   feedTitle: {
     display: "flex",
     alignItems: "center",
-    color: "#000",
+    color: colors.PURE_BLACK(),
     fontWeight: "400",
     fontSize: 33,
     flexWrap: "wrap",
@@ -286,7 +287,7 @@ var styles = StyleSheet.create({
     position: "sticky",
     paddingLeft: 70,
     paddingRight: 70,
-    backgroundColor: "#FCFCFC",
+    backgroundColor: colors.PAGE_WRAPPER,
     alignItems: "center",
     zIndex: 2,
     top: 65,

@@ -133,7 +133,9 @@ class DragNDrop extends Component {
       height: 163,
       width: "100%",
       padding: isDynamic && this.state.dragOver ? 15 : 0,
-      backgroundColor: this.state.dragOver ? "#FFF" : "#FBFBFD",
+      backgroundColor: this.state.dragOver
+        ? colors.WHITE()
+        : colors.LIGHT_GREY_BLUE2,
       border: `0.5px dashed ${
         error || !this.state.isPDF ? colors.RED(1) : colors.BLUE(1)
       }`,
@@ -301,7 +303,7 @@ const style = {
   },
   uploadedPaper: {
     border: "none",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
   },
 };
 
@@ -312,7 +314,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 163,
     width: 525,
-    backgroundColor: "#FBFBFD",
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     border: `0.5 dashed ${colors.BLUE(1)}`,
   },
   label: {

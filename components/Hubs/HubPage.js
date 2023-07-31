@@ -453,6 +453,7 @@ var styles = StyleSheet.create({
     width: "inherit",
     height: "inherit",
     maxWidth: 2000,
+    backgroundColor: colors.WHITE(), // colors.GREY_ICY_BLUE_HUE,
   },
   column: {
     display: "flex",
@@ -467,7 +468,7 @@ var styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    color: "#FFF",
+    color: colors.WHITE(),
     fontFamily: "Roboto",
     cursor: "default",
   },
@@ -502,7 +503,7 @@ var styles = StyleSheet.create({
   readMore: {
     cursor: "pointer",
     textDecoration: "underline",
-    color: "#FFF",
+    color: colors.WHITE(),
     ":hover": {
       fontWeight: 400,
     },
@@ -568,7 +569,7 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "unset",
     padding: "0px 15px",
-    boxShadow: "0 0 15px rgba(0, 0, 0, 0.14)",
+    boxShadow: `0 0 15px ${colors.PURE_BLACK(0.14)}`,
   },
   sidebar: {
     // display: "table-cell",
@@ -594,7 +595,7 @@ var styles = StyleSheet.create({
     width: "100%",
   },
   titleBoxShadow: {
-    boxShadow: "0 4px 41px -24px rgba(0,0,0,0.16)",
+    boxShadow: `0 4px 41px -24px ${colors.PURE_BLACK(0.16)}`,
   },
   mobileInfoTab: {
     display: "none",

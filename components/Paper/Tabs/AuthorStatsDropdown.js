@@ -40,10 +40,10 @@ const AuthorStatsDropdown = (props) => {
 const styles = StyleSheet.create({
   root: {
     width: "100%",
-    border: "1.5px solid #F0F0F0",
+    border: `1.5px solid ${colors.VERY_LIGHT_GREY()}`,
     borderRadius: "0px 0px 4px 4px",
     boxSizing: "border-box",
-    background: "#FFF",
+    background: colors.WHITE(),
     display: "flex",
     flexDirection: "column",
   },
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     },
   },
   borderBottom: {
-    borderBottom: "1.5px solid #F0F0F0",
+    borderBottom: `1.5px solid ${colors.VERY_LIGHT_GREY()}`,
   },
   icon: {
     fontSize: 18,

@@ -18,7 +18,7 @@ export default function PaperUploadV2Container(): ReactElement<"div"> {
 
 const styles = StyleSheet.create({
   paperUploadV2Container: {
-    backgroundColor: "#FCFCFC",
+    backgroundColor: colors.PAGE_WRAPPER,
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",

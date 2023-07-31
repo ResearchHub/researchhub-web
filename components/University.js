@@ -30,7 +30,7 @@ function buildText(name, city, country) {
 
 const styles = StyleSheet.create({
   extraInfo: {
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     opacity: 0.5,
     fontSize: 14,
   },

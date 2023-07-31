@@ -106,12 +106,12 @@ const UserPrompt = (props) => {
 
 const styles = StyleSheet.create({
   promptContainer: {
-    boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
+    boxShadow: `0 0 24px ${colors.PURE_BLACK(0.14)}`,
     borderRadius: 8,
     position: "fixed",
     right: 20,
     padding: 20,
-    background: "#FFF",
+    background: colors.WHITE(),
     zIndex: 5,
   },
   header: {
@@ -154,11 +154,11 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    background: "#FFF",
+    background: colors.WHITE(),
     cursor: "pointer",
-    boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
+    boxShadow: `0 0 24px ${colors.PURE_BLACK(0.14)}`,
     ":hover": {
-      boxShadow: "0 0 24px rgba(0, 0, 0, 0.34)",
+      boxShadow: `0 0 24px ${colors.PURE_BLACK(0.34)}`,
     },
   },
 });

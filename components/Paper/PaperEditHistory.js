@@ -90,7 +90,7 @@ var styles = StyleSheet.create({
     marginBottom: 10,
   },
   action: {
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     fontSize: 16,
     opacity: 0.6,
     display: "flex",
@@ -128,7 +128,7 @@ var styles = StyleSheet.create({
   },
   revisionTitle: {
     padding: 16,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     textTransform: "uppercase",
   },
 });

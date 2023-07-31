@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     borderRadius: "4px",
     padding: "0 25px",
-    color: "white",
+    color: colors.WHITE(),
     display: "flex",
     alignItems: "center",
     height: 40,
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   closeBounty: {
-    background: "white",
+    background: colors.WHITE(),
     color: colors.NEW_BLUE(),
     border: `1px solid ${colors.NEW_BLUE()}`,
   },
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     marginRight: 7,
   },
   popover: {
-    background: "#fff",
+    background: colors.WHITE(),
     padding: 16,
     borderRadius: 4,
     marginTop: 8,

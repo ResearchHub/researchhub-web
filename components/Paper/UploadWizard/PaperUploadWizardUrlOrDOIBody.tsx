@@ -190,7 +190,7 @@ function PaperUploadWizardURLBody({
               <ClipLoader
                 sizeUnit={"px"}
                 size={8}
-                color={"#fff"}
+                color={colors.WHITE()}
                 loading={true}
               />
             ) : (

@@ -29,7 +29,12 @@ const ColumnHubs = (props) => {
     <ReactPlaceholder
       showLoadingAnimation
       ready={!isNullOrUndefined(hubs)}
-      customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
+      customPlaceholder={
+        <HubEntryPlaceholder
+          color={colors.PLACEHOLDER_CARD_BACKGROUND}
+          rows={1}
+        />
+      }
     >
       {paper && hubs && hubs.length > 0 && (
         <Fragment>

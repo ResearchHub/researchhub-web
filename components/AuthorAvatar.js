@@ -64,7 +64,8 @@ const AuthorAvatar = (props) => {
               borderRadius: "50%",
               border,
               // border: border ? border : "3px solid #F1F1F1",
-              boxShadow: dropShadow && "0px 2px 4px rgba(185, 185, 185, 0.25)",
+              boxShadow:
+                dropShadow && `0px 2px 4px ${colors.STANDARD_BOX_SHADOW}`,
             }}
             onError={(e) => {
               setError(true);

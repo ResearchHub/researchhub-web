@@ -37,7 +37,7 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
           {document.authors.length > 0 ? (
             <AuthorList authors={document.authors} />
           ) : (
-            <span>Not available</span>
+            <span className={css(linkStyles.blankAndBlue)}>Not available</span>
           )}
           {isPaper(document) && (
             <span
@@ -71,7 +71,12 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
       ? [
           {
             title: "Published",
-            value: document.publishedDate,
+            value: (
+              <span className={css(linkStyles.blankAndBlue)}>
+                {" "}
+                {document.publishedDate}{" "}
+              </span>
+            ),
           },
         ]
       : []),

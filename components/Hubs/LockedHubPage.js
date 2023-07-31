@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-start",
     paddingTop: 80,
-    backgroundColor: "#FCFCFC",
+    backgroundColor: colors.PAGE_WRAPPER,
     minHeight: "100vh",
     overflow: "auto",
     "@media only screen and (max-width: 815px)": {
@@ -275,8 +275,8 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    backgroundColor: "#FFF",
-    border: "1px solid #EDEDED",
+    backgroundColor: colors.WHITE(),
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     "@media only screen and (max-width: 1302px)": {
       width: 200,
     },
@@ -287,8 +287,8 @@ const styles = StyleSheet.create({
   contentContainer: {
     height: 633,
     width: 953,
-    backgroundColor: "#FFF",
-    border: "1px solid #EDEDED",
+    backgroundColor: colors.WHITE(),
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
     },
   },
   progressBar: {
-    backgroundColor: "#EDEDED",
+    backgroundColor: colors.LIGHT_GREY_BACKGROUND,
   },
   footer: {
     color: "#9B99A2",

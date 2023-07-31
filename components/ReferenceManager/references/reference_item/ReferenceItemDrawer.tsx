@@ -36,6 +36,7 @@ import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import Stack from "@mui/material/Stack";
 import ReferenceItemFieldCreatorTagInput from "../../form/ReferenceItemFieldCreatorTagInput";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
+import colors from "~/config/themes/colors";
 
 type Props = {};
 
@@ -278,7 +279,11 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
             size="large"
           >
             <Typography fontSize="14px" fontWeight="400">
-              {isSubmitting ? <ClipLoader color="#fff" size={14} /> : "Update"}
+              {isSubmitting ? (
+                <ClipLoader color={colors.WHITE()} size={14} />
+              ) : (
+                "Update"
+              )}
             </Typography>
           </PrimaryButton>
         </div>

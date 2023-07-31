@@ -312,7 +312,7 @@ const badge = StyleSheet.create({
   review: {},
   bounty: {
     background: colors.ORANGE_DARK(1),
-    color: "white",
+    color: colors.WHITE(),
     display: "unset",
   },
   answer: {
@@ -321,7 +321,7 @@ const badge = StyleSheet.create({
   },
   acceptedAnswer: {
     background: colors.NEW_GREEN(),
-    color: "white",
+    color: colors.WHITE(),
   },
   container: {
     background: colors.LIGHT_GREY(),
@@ -510,14 +510,14 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     fontSize: 12,
     marginLeft: 14,
-    color: "#918f9b",
+    color: colors.DARK_GREYISH_BLUE2(),
     "@media only screen and (max-width: 415px)": {
       marginLeft: 5,
       fontSize: 9,
     },
   },
   icon: {
-    color: "#918f9b",
+    color: colors.DARK_GREYISH_BLUE2(),
     fontSize: 13,
     "@media only screen and (max-width: 767px)": {
       fontSize: 12,
@@ -527,7 +527,7 @@ const styles = StyleSheet.create({
     },
   },
   active: {
-    color: "#000",
+    color: colors.PURE_BLACK(),
   },
   expandButtonWrapper: {
     display: "flex",
@@ -578,7 +578,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     color: colors.BLACK(),
     ":hover": {
-      color: "#000",
+      color: colors.PURE_BLACK(),
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 16,
@@ -589,9 +589,9 @@ const styles = StyleSheet.create({
     top: 20,
     right: -4,
     width: 120,
-    boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
+    boxShadow: `${colors.DARK_GREYISH_BLUE(0.39)} 0px 3px 10px 0px`,
     boxSizing: "border-box",
-    background: "#fff",
+    background: colors.WHITE(),
     border: "1px solid #eee",
     borderRadius: 4,
     zIndex: 3,

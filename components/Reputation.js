@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   coinIcon: {
     height: 20,
     borderRadius: "50%",
-    boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    boxShadow: `0px 2px 4px ${colors.STANDARD_BOX_SHADOW}`,
     "@media only screen and (max-width: 900px)": {
       height: 20,
     },

@@ -11,16 +11,28 @@ const CitationPreviewPlaceholder = () => (
       className={css(styles.placeholderContainer) + " show-loading-animation"}
     >
       <div className={css(styles.previewPlaceholder)}>
-        <PreviewPlaceholder hideAnimation={false} color="#efefef" />
+        <PreviewPlaceholder
+          hideAnimation={false}
+          color={colors.PLACEHOLDER_CARD_BACKGROUND}
+        />
       </div>
       <div className={css(styles.previewPlaceholder)}>
-        <PreviewPlaceholder hideAnimation={false} color="#efefef" />
+        <PreviewPlaceholder
+          hideAnimation={false}
+          color={colors.PLACEHOLDER_CARD_BACKGROUND}
+        />
       </div>
       <div className={css(styles.previewPlaceholder)}>
-        <PreviewPlaceholder hideAnimation={false} color="#efefef" />
+        <PreviewPlaceholder
+          hideAnimation={false}
+          color={colors.PLACEHOLDER_CARD_BACKGROUND}
+        />
       </div>
       <div className={css(styles.previewPlaceholder)}>
-        <PreviewPlaceholder hideAnimation={false} color="#efefef" />
+        <PreviewPlaceholder
+          hideAnimation={false}
+          color={colors.PLACEHOLDER_CARD_BACKGROUND}
+        />
       </div>
     </div>
   </div>
@@ -30,7 +42,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 30,
     padding: 50,
-    background: "#fff",
+    background: colors.WHITE(),
     border: "1.5px solid rgb(240, 240, 240)",
   },
   placeholderContainer: {

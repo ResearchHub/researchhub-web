@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     ":hover": {
       cursor: "pointer",
-      background: "#FAFAFA",
+      background: colors.INPUT_BACKGROUND_GREYROUND_GREY,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
     ":hover .url": {
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     objectFit: "contain",
     marginRight: 10,
     background: "#EAEAEA",
-    border: "1px solid #ededed",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     "@media only screen and (max-width: 415px)": {
       height: 25,
       width: 25,

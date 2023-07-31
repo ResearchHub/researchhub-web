@@ -963,7 +963,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     position: "relative",
     boxSizing: "border-box",
-    // backgroundColor: "#FFF",
+    // backgroundColor: colors.WHITE(),
     paddingRight: 0,
     cursor: "default",
     justifyContent: "space-between",
@@ -1078,7 +1078,7 @@ const styles = StyleSheet.create({
   },
   removedText: {
     fontSize: 16,
-    color: "rgb(35, 32, 56)",
+    color: colors.DARK_DESATURATED_BLUE(),
     fontStyle: "italic",
   },
   withPadding: {

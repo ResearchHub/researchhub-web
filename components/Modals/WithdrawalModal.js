@@ -810,7 +810,7 @@ const styles = StyleSheet.create({
   tabActive: {
     color: colors.BLUE(),
     border: "none",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
   },
   oneTab: {
     width: "100%",
@@ -856,7 +856,7 @@ const styles = StyleSheet.create({
     height: 30,
     width: "100%",
     fontSize: 26,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     textAlign: "center",
     marginBottom: 20,
     // test css
@@ -952,8 +952,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FFF",
-    border: `1px solid rgb(232, 232, 242)`,
+    backgroundColor: colors.WHITE(),
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     top: 38,
     left: 10,
     zIndex: 4,
@@ -985,7 +985,7 @@ const styles = StyleSheet.create({
   mainHeader: {
     fontWeight: "500",
     fontSize: 16,
-    color: "#000 ",
+    color: colors.PURE_BLACK(),
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
     },
@@ -1150,7 +1150,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
   toggle: {
-    color: "rgba(36, 31, 58, 0.8)",
+    color: colors.BLACK(0.8),
     cursor: "pointer",
     padding: "2px 8px",
     fontSize: 14,

@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 500,
     fontSize: 16,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     "@media only screen and (max-width: 378px)": {
       fontSize: 15,
     },

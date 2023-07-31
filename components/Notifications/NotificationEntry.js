@@ -170,9 +170,9 @@ const styles = StyleSheet.create({
     },
   },
   read: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     ":hover": {
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
   },
   authorAvatar: {
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     textDecoration: "unset",
   },
   username: {
-    color: "#000",
+    color: colors.PURE_BLACK(),
     textDecoration: "none",
     fontWeight: "bold",
     cursor: "pointer",
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   },
   timestamp: {
     fontWeight: "normal",
-    color: "#918f9b",
+    color: colors.DARK_GREYISH_BLUE2(),
     fontSize: 12,
     fontFamily: "Roboto",
   },
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
   },
   tagApproved: {
     fontSize: 8,
-    color: "#FFF",
+    color: colors.WHITE(),
     padding: "3px 8px",
     background: colors.BLUE(),
     borderRadius: 4,
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
   },
   tagDenied: {
     fontSize: 8,
-    color: "#FFF",
+    color: colors.WHITE(),
     padding: "3px 8px",
     background: colors.RED(),
     borderRadius: 4,

@@ -46,11 +46,11 @@ const styles = StyleSheet.create({
     width: "100%",
     transition: "all ease-out 0.1s",
     borderRadius: 3,
-    borderBottom: "1px solid #F0F0F0",
+    borderBottom: `1px solid ${colors.VERY_LIGHT_GREY()}`,
     borderLeft: "3px solid #FFF",
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
   },
   container: {
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     objectFit: "cover",
     marginRight: 10,
     background: "#EAEAEA",
-    border: "1px solid #ededed",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
   },
   space: {},
   label: {},

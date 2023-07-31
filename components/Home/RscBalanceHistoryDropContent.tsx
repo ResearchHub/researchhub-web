@@ -164,7 +164,7 @@ export default function RscBalanceHistoryDropContent({
           ready={isDataFetched}
           customPlaceholder={Array.from(new Array(8)).map((_, idx) => (
             <PreviewPlaceholder
-              color="#efefef"
+              color={colors.PLACEHOLDER_CARD_BACKGROUND}
               hideAnimation={false}
               key={`placeholder-${idx}`}
               previewStyles={styles.previewPlaceholder}
@@ -218,12 +218,12 @@ export default function RscBalanceHistoryDropContent({
 
 const styles = StyleSheet.create({
   rscBalanceHistoryDropContent: {
-    background: "#fff",
+    background: colors.WHITE(),
     border: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     borderRadius: 4,
     minWidth: 320,
     marginTop: 8,
-    boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
+    boxShadow: `0 0 24px ${colors.PURE_BLACK(0.14)}`,
   },
   header: {
     width: "100%",
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     background: colors.NEW_BLUE(),
     borderRadius: 4,
-    color: "#fff",
+    color: colors.WHITE(),
     cursor: "pointer",
     display: "flex",
     fontSize: 16,

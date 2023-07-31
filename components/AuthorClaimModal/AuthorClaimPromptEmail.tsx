@@ -180,7 +180,7 @@ function AuthorClaimPromptEmail({
                   size={8}
                   loading
                   containerStyle={modalBodyStyles.loaderStyle}
-                  color="#fff"
+                  color={colors.WHITE()}
                 />
               ) : (
                 "Verify Email"
@@ -200,7 +200,7 @@ function AuthorClaimPromptEmail({
 export const verifStyles = StyleSheet.create({
   rootContainer: {
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     padding: "50px 40px",
     borderRadius: 5,
     transition: "all ease-in-out 0.4s",
@@ -220,7 +220,7 @@ export const verifStyles = StyleSheet.create({
       fontWeight: 500,
       fontSize: "14px",
       lineHeight: "16px",
-      color: "#241F3A",
+      color: colors.TEXT_DARKER_GREY,
     },
   },
   buttonContainer: {
@@ -231,7 +231,7 @@ export const verifStyles = StyleSheet.create({
     marginTop: 40,
   },
   buttonSecondary: {
-    background: "#fff",
+    background: colors.WHITE(),
     border: "none",
     color: colors.BLUE(1),
     fontSize: "16px",
@@ -282,7 +282,7 @@ export const verifStyles = StyleSheet.create({
     height: 30,
     width: "100%",
     fontSize: 26,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     "@media only screen and (max-width: 557px)": {
       fontSize: 24,
       width: 380,
@@ -309,7 +309,7 @@ export const verifStyles = StyleSheet.create({
   },
   subText: {
     alignItems: "center",
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREYXT_DARKER_GREY,
     display: "flex",
     fontSize: "16px",
     fontWeight: "normal",

@@ -116,9 +116,9 @@ const styles = StyleSheet.create({
     width: 22,
     objectFit: "cover",
     borderRadius: 3,
-    dropShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    dropShadow: `0px 2px 4px ${colors.STANDARD_BOX_SHADOW}`,
     opacity: 1,
-    bordder: "1px solid #EDEDED",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     "@media only screen and (max-width: 767px)": {
       height: 18,
       width: 18,
@@ -135,8 +135,8 @@ const styles = StyleSheet.create({
     },
   },
   grayTag: {
-    backgroundColor: "rgba(36, 31, 58, 0.03)",
-    border: "1px solid rgba(36, 31, 58, 0.1)",
+    backgroundColor: colors.BLACK(0.03),
+    border: `1px solid ${colors.BLACK(0.1)}`,
     borderRadius: 3,
     boxSizing: "border-box",
     ":hover": {
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     },
   },
   grayLabel: {
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     opacity: 0.8,
   },
   atag: {

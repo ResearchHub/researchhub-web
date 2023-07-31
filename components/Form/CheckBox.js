@@ -48,7 +48,9 @@ const CheckBox = ({
       >
         {isSquare ? (
           <span
-            style={{ color: `${active ? "#FFF" : "#FBFBFD"}` }}
+            style={{
+              color: `${active ? colors.WHITE() : colors.LIGHT_GREY_BLUE2}`,
+            }}
             className={css(checkStyleOverride)}
           >
             {<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FBFBFD",
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     ":hover": {
       borderColor: "#D2D2E6",
     },
@@ -98,7 +100,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FBFBFD",
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     ":hover": {
       borderColor: "#D2D2E6",
     },
@@ -107,13 +109,13 @@ const styles = StyleSheet.create({
     height: 12,
     width: 12,
     borderRadius: "50%",
-    backgroundColor: "#FBFBFD",
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
   },
   dotSmall: {
     height: 6,
     width: 6,
     borderRadius: "50%",
-    backgroundColor: "#FBFBFD",
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
   },
   centered: {
     transform: "translate(-53%, -44.5%)",
@@ -129,7 +131,7 @@ const styles = StyleSheet.create({
     borderRadius: 0,
   },
   white: {
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
   },
   label: {
     fontFamily: "Roboto",

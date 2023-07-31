@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     },
   },
   section: {
-    background: "white",
+    background: colors.WHITE(),
     padding: "16px 20px",
     borderRadius: "2px",
     border: `1px solid ${genericCardColors.BORDER}`,

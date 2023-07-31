@@ -99,7 +99,7 @@ class ReCaptchaPrompt extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    background: "#FFF",
+    background: colors.WHITE(),
     padding: 30,
     display: "flex",
     flexDirection: "column",

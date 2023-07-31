@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontWeight: 500,
     marginBottom: 10,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     display: "flex",
     justifyContent: "flex-start",
   },

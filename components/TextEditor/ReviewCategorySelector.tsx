@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     display: "none",
     zIndex: 6,
-    background: "white",
+    background: colors.WHITE(),
     padding: "15px 0 10px 0",
     borderRadius: 4,
     marginTop: 5,

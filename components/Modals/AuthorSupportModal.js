@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
     },
   },
   confirmation: {
-    color: "#000",
+    color: colors.PURE_BLACK(),
     marginBottom: 10,
   },
   transactionHashLink: {

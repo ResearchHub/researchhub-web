@@ -770,7 +770,7 @@ function AuthorPage(props) {
               labelStyle={styles.moderatorLabel}
               label={
                 !fetchedUser ? (
-                  <Loader loading={true} color={"#FFF"} size={15} />
+                  <Loader loading={true} color={colors.WHITE()} size={15} />
                 ) : isAuthorUserSuspended ? (
                   "Reinstate User"
                 ) : (
@@ -802,7 +802,7 @@ function AuthorPage(props) {
                 labelStyle={styles.moderatorLabel}
                 label={
                   !fetchedUser ? (
-                    <Loader loading={true} color={"#FFF"} size={15} />
+                    <Loader loading={true} color={colors.WHITE()} size={15} />
                   ) : (
                     "Reinstate User"
                   )
@@ -1095,7 +1095,7 @@ export async function getStaticProps(ctx) {
 
 const styles = StyleSheet.create({
   profilePageRoot: {
-    background: "#FFF",
+    background: colors.WHITE(),
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       maxWidth: breakpoints.xxsmall.str,
     },
@@ -1123,7 +1123,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: "30px 0px",
     margin: "auto",
-    background: "#FAFAFA",
+    background: colors.INPUT_BACKGROUND_GREY,
     minHeight: "55vh",
   },
   profileHeader: {
@@ -1179,7 +1179,7 @@ const styles = StyleSheet.create({
     height: 35,
     width: 175,
     background: colors.RED(0.9),
-    color: "#FFF",
+    color: colors.WHITE(),
     border: `1px solid ${colors.RED()}`,
     borderRadius: 5,
     cursor: "pointer",
@@ -1188,7 +1188,7 @@ const styles = StyleSheet.create({
     border: "none",
     userSelect: "none",
     ":hover": {
-      color: "#FFF",
+      color: colors.WHITE(),
       background: colors.RED(1),
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
@@ -1199,7 +1199,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     background: colors.DARK_GREEN(0.9),
     ":hover": {
-      color: "#FFF",
+      color: colors.WHITE(),
       background: colors.DARK_GREEN(1),
     },
   },
@@ -1241,7 +1241,7 @@ const styles = StyleSheet.create({
     display: "none",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "flex",
-      background: "#FFF",
+      background: colors.WHITE(),
     },
   },
   socialLinks: {
@@ -1323,7 +1323,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "column",
     width: "100%",
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     lineHeight: 1.5,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       textAlign: "left",
@@ -1355,11 +1355,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer",
-    color: "#fff",
+    color: colors.WHITE(),
     marginLeft: 5,
     marginRight: 5,
     textDecorations: "none",
-    boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    boxShadow: `0px 2px 4px ${colors.STANDARD_BOX_SHADOW}`,
   },
   linkedin: {
     background: "#0077B5",
@@ -1407,22 +1407,22 @@ const styles = StyleSheet.create({
   },
   descriptionTextarea: {
     width: "100%",
-    background: "#fff",
+    background: colors.WHITE(),
     height: 80,
     resize: "none",
     fontSize: 16,
     marginBottom: 16,
     fontFamily: "Roboto, sans-serif",
     outline: "none",
-    border: "1px solid #E8E8F2",
-    backgroundColor: "#FBFBFD",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     ":focus": {
       borderColor: "#D2D2E6",
     },
 
     padding: 15,
     fontWeight: "400",
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     borderRadius: 2,
   },
   actionContainer: {
@@ -1441,14 +1441,14 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     color: colors.BLUE(),
-    background: "#fff",
+    background: colors.WHITE(),
     ":hover": {
-      color: "#fff",
+      color: colors.WHITE(),
       background: colors.BLUE(),
     },
   },
   saveButton: {
-    color: "#fff",
+    color: colors.WHITE(),
     width: 126,
     height: 45,
     fontSize: 15,
@@ -1465,9 +1465,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     boxSizing: "border-box",
-    background: "#fff",
-    border: "1.5px solid #F0F0F0",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    background: colors.WHITE(),
+    border: `1.5px solid ${colors.VERY_LIGHT_GREY()}`,
+    boxShadow: `0px 3px 4px ${colors.PURE_BLACK(0.02)}`,
     padding: "24px 20px 24px 20px",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 20,
@@ -1488,14 +1488,14 @@ const styles = StyleSheet.create({
     width: 300,
     marginBottom: 16,
 
-    border: "1px solid #E8E8F2",
-    backgroundColor: "#FBFBFD",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     ":focus": {
       borderColor: "#D2D2E6",
     },
     padding: 16,
     fontWeight: "500",
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     borderRadius: 2,
   },
   noSocial: {
@@ -1512,7 +1512,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   socialInput: {
-    background: "#fff",
+    background: colors.WHITE(),
     border: "none",
     outline: "none",
     boxSizing: "border-box",
@@ -1525,7 +1525,7 @@ const styles = StyleSheet.create({
     bottom: -90,
     left: "50%",
     transform: "translateX(-50%)",
-    background: "#fff",
+    background: colors.WHITE(),
     boxShadow: "0 5px 10px 0 #ddd",
     padding: 10,
     borderRadius: 8,
@@ -1542,19 +1542,19 @@ const styles = StyleSheet.create({
     width: "fit-content",
     height: 30,
     overflow: "hidden",
-    border: "1px solid #E8E8F2",
-    backgroundColor: "#FBFBFD",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     ":focus": {
       borderColor: "#D2D2E6",
     },
 
     fontWeight: "400",
     borderRadius: 2,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
   },
   submitSocialButton: {
     background: colors.BLUE(1),
-    color: "#fff",
+    color: colors.WHITE(),
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -1598,8 +1598,8 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     boxSizing: "border-box",
     position: "absolute",
-    background: "rgba(0, 0, 0, .3)",
-    color: "#fff",
+    background: colors.PURE_BLACK(0.3),
+    color: colors.WHITE(),
     bottom: 0,
   },
   reputationContainer: {
@@ -1657,7 +1657,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     display: "block",
     alignItems: "center",
-    color: "rgba(36, 31, 58, 0.25)",
+    color: colors.BLACK(0.25),
   },
   rhIcon: {
     width: 13,
@@ -1674,7 +1674,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     "@media only screen and (max-width: 415px)": {
       height: 50,
-      background: "#fff",
+      background: colors.WHITE(),
     },
   },
   orcidSection: {

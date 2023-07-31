@@ -3,6 +3,7 @@ import { css, StyleSheet } from "aphrodite";
 import { ReactElement } from "react";
 import Image from "next/image";
 import Bounty from "~/config/types/bounty";
+import colors from "~/config/themes/colors";
 
 type Props = {
   originalBounty?: Bounty
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
     background: "#3971FF",
     width: 200,
     height: 50,
-    color: "#fff",
+    color: colors.WHITE(),
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

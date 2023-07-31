@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     padding: 0,
     lineHeight: 1.6,
     fontSize: 14,
-    color: "#000",
+    color: colors.PURE_BLACK(),
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     width: "100%",
     lineHeight: 1.6,
     fontSize: 14,
-    color: "#000",
+    color: colors.PURE_BLACK(),
     boxSizing: "border-box",
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
@@ -212,8 +212,8 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     padding: 16,
-    borderTop: "1px solid rgb(235, 235, 235)",
-    background: "#FFF",
+    borderTop: `1px solid ${colors.LIGHT_GREY()}`,
+    background: colors.WHITE(),
   },
   divider: {
     width: 10,

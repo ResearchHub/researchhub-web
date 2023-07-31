@@ -88,7 +88,7 @@ export default function HubLeaderDashboardCard({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     border: `1px solid ${colors.GREY(0.5)}`,
     borderTop: 0,
     cursor: "pointer",

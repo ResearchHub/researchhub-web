@@ -198,7 +198,7 @@ const overlayStyles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: colors.PURE_BLACK(0.2),
     zIndex: "11",
     borderRadius: 5,
   },
@@ -211,7 +211,7 @@ const mobileOverlayStyles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: colors.PURE_BLACK(0.2),
     zIndex: "11",
     borderRadius: 5,
   },
@@ -219,7 +219,7 @@ const mobileOverlayStyles = {
 
 const styles = StyleSheet.create({
   modal: {
-    background: "#fff",
+    background: colors.WHITE(),
     outline: "none",
     position: "absolute",
     left: "50%",
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     position: "relative",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     padding: 50,
     overflow: "scroll",
     "@media only screen and (max-width: 767px)": {
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     height: 30,
     width: 426,
     fontSize: 26,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     "@media only screen and (max-width: 665px)": {
       width: 360,
     },
@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
     height: 19,
     fontWeight: "500",
     width: "100%",
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     display: "flex",
     justifyContent: "space-between",
     textAlign: "left",

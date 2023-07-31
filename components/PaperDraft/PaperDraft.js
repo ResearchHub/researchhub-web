@@ -142,9 +142,9 @@ class PaperDraft extends Component {
         showLoadingAnimation
         customPlaceholder={
           <div style={{ paddingTop: 30 }}>
-            <AbstractPlaceholder color="#efefef" />
-            <AbstractPlaceholder color="#efefef" />
-            <AbstractPlaceholder color="#efefef" />
+            <AbstractPlaceholder color={colors.PLACEHOLDER_CARD_BACKGROUND} />
+            <AbstractPlaceholder color={colors.PLACEHOLDER_CARD_BACKGROUND} />
+            <AbstractPlaceholder color={colors.PLACEHOLDER_CARD_BACKGROUND} />
           </div>
         }
       >
@@ -175,7 +175,7 @@ class PaperDraft extends Component {
           >
             <div
               style={{
-                caretColor: !isInEditMode ? "transparent" : "black",
+                caretColor: !isInEditMode ? "transparent" : colors.PURE_BLACK(),
               }}
               className={css(isInEditMode && styles.editorActive)}
             >
@@ -201,7 +201,7 @@ class PaperDraft extends Component {
             <Button
               label={
                 isSaving ? (
-                  <Loader loading={true} size={10} color={"#FFF"} />
+                  <Loader loading={true} size={10} color={colors.WHITE()} />
                 ) : (
                   "Save"
                 )
@@ -235,12 +235,12 @@ const styles = StyleSheet.create({
   },
   pencilIcon: {
     marginLeft: 8,
-    color: "rgba(36, 31, 58, 0.4)",
+    color: colors.BLACK(0.4),
     fontSize: 14,
     cursor: "pointer",
   },
   toolbar: {
-    background: "#fff",
+    background: colors.WHITE(),
     border: "1px solid #ddd",
     fontFamily: `'Georgia', serif`,
     fontSize: 14,
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     position: "sticky",
     bottom: 0,
     zIndex: 2,
-    background: "#fff",
+    background: colors.WHITE(),
     border: "1px solid #ddd",
     padding: 15,
     boxSizing: "border-box",
@@ -272,8 +272,8 @@ const styles = StyleSheet.create({
     display: "none",
   },
   editorActive: {
-    border: "1px solid #E8E8F2",
-    backgroundColor: "#FBFBFD",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     padding: 20,
     ":hover": {
       borderColor: "#B3B3B3",

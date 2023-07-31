@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     boxSizing: "border-box",
-    background: "#FFFFFF",
+    background: colors.WHITE(),
     "@media only screen and (min-width: 1024px)": {
       minWidth: 720,
     },

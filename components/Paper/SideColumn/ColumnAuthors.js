@@ -137,7 +137,12 @@ class ColumnAuthors extends Component {
       <ReactPlaceholder
         showLoadingAnimation
         ready={ready}
-        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
+        customPlaceholder={
+          <HubEntryPlaceholder
+            color={colors.PLACEHOLDER_CARD_BACKGROUND}
+            rows={1}
+          />
+        }
       >
         <AuthorClaimModal
           auth={auth}
@@ -234,7 +239,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.BLUE(),
     border: 0,
     borderRadius: 4,
-    color: "#fff",
+    color: colors.WHITE(),
     cursor: "pointer",
     display: "flex",
     fontSize: 14,
@@ -288,7 +293,7 @@ const styles = StyleSheet.create({
     },
   },
   viewMoreButton: {
-    color: "rgba(78, 83, 255)",
+    color: colors.BLUE(),
     textTransform: "capitalize",
     fontSize: 16,
     padding: "10px 17px",
@@ -298,7 +303,7 @@ const styles = StyleSheet.create({
     borderLeft: `3px solid #FFF`,
     transition: "all ease-out 0.1s",
     ":hover": {
-      background: "#FAFAFA",
+      background: colors.INPUT_BACKGROUND_GREY,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
     "@media only screen and (max-width: 415px)": {

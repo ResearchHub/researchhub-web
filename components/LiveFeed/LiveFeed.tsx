@@ -182,7 +182,9 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
           {Array(10)
             .fill(null)
             .map(() => (
-              <LiveFeedCardPlaceholder color="#efefef" />
+              <LiveFeedCardPlaceholder
+                color={colors.PLACEHOLDER_CARD_BACKGROUND}
+              />
             ))}
         </div>
       ) : (
@@ -227,7 +229,7 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.GREY_LINE(1.0)}`,
     borderRadius: "4px",
     padding: 16,
-    background: "white",
+    background: colors.WHITE(),
     ":hover": {
       transition: "0.2s",
       background: colors.LIGHTER_GREY(1.0),

@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     minWidth: "85%",
     maxWidth: "85%",
     fontSize: 20,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     marginBottom: 20,
     "@media only screen and (max-width: 761px)": {
       fontSize: 18,
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
     width: "calc(100% - 76px)",
     minWidth: "calc(100% - 76px)",
     maxWidth: "calc(100% - 76px)",
-    border: "1px solid rgb(232, 232, 242)",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     borderRadius: 4,
   },
   body: {

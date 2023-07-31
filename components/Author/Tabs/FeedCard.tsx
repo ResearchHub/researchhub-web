@@ -505,14 +505,14 @@ const styles = StyleSheet.create({
   },
   feedCard: {
     alignItems: "flex-start",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     cursor: "pointer",
     display: "flex",
     padding: "16px 0px",
     textDecoration: "none",
     width: "100%",
     ":hover": {
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
   },
   noBorder: {
@@ -658,7 +658,7 @@ const styles = StyleSheet.create({
   },
   featuredBadge: {
     background: colors.BLUE(1),
-    color: "#fff",
+    color: colors.WHITE(),
     padding: "4px 12px",
     marginTop: -15,
     marginBottom: 10,
@@ -696,8 +696,8 @@ const styles = StyleSheet.create({
   },
   preview: {
     alignItems: "center",
-    backgroundColor: "#FFF",
-    border: "1px solid rgba(36, 31, 58, 0.1)",
+    backgroundColor: colors.WHITE(),
+    border: `1px solid ${colors.BLACK(0.1)}`,
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
@@ -750,7 +750,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   metadataIcon: {
-    color: "#918F9B",
+    color: colors.DARK_GREYISH_BLUE2(),
     fontSize: 12,
     marginRight: 5,
   },

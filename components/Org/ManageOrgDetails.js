@@ -9,6 +9,7 @@ import OrgAvatar from "~/components/Org/OrgAvatar";
 import OrgCoverImgModal from "~/components/Org/OrgCoverImgModal";
 import { captureEvent } from "~/config/utils/events";
 import { Helpers } from "@quantfive/js-web-config";
+import colors from "~/config/themes/colors";
 
 const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
   const [orgName, setOrgName] = useState(org.name);
@@ -121,8 +122,8 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     boxSizing: "border-box",
     position: "absolute",
-    background: "rgba(0, 0, 0, .3)",
-    color: "white",
+    background: colors.PURE_BLACK(0.3),
+    color: colors.WHITE(),
     bottom: 0,
   },
   avatarForm: {

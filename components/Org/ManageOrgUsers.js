@@ -267,7 +267,12 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
           />
           {isInviteInProgress ? (
             <div className={css(styles.loaderWrapper)}>
-              <Loader key={"loader"} loading={true} size={25} color={"white"} />
+              <Loader
+                key={"loader"}
+                loading={true}
+                size={25}
+                color={colors.WHITE()}
+              />
             </div>
           ) : (
             <Button
@@ -311,7 +316,7 @@ const styles = StyleSheet.create({
     overflowY: "scroll",
   },
   popoverBodyContent: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     borderRadius: 4,
     boxShadow: "0px 0px 10px 0px #00000026",
     display: "flex",

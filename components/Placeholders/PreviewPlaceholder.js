@@ -1,5 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import { RectShape } from "react-placeholder/lib/placeholders";
+import colors from "../../config/themes/colors";
 
 const PreviewPlaceholder = ({
   color,
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
   placeholderContainer: {
     borderRadius: 3,
     // border: "1px solid rgb(237, 237, 237)",
-    background: "#fff",
+    background: colors.WHITE(),
     height: "100%",
     width: "100%",
     display: "flex",

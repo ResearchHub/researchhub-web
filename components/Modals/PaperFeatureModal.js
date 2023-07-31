@@ -535,7 +535,7 @@ class PaperFeatureModal extends Component {
                 <Button
                   label={
                     pendingSubmission ? (
-                      <Loader loading={true} size={20} color={"#fff"} />
+                      <Loader loading={true} size={20} color={colors.WHITE()} />
                     ) : (
                       "Submit"
                     )
@@ -611,7 +611,7 @@ class PaperFeatureModal extends Component {
                 <Button
                   label={
                     pendingSubmission ? (
-                      <Loader loading={true} size={20} color={"#fff"} />
+                      <Loader loading={true} size={20} color={colors.WHITE()} />
                     ) : (
                       "Submit"
                     )
@@ -734,7 +734,7 @@ const styles = StyleSheet.create({
   submitButton: {
     marginLeft: 5,
     cursor: "pointer",
-    color: "#fff",
+    color: colors.WHITE(),
     height: 37,
     width: 126,
     minWidth: 126,
@@ -760,7 +760,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-end",
     maxHeight: "60vh",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     boxSizing: "border-box",
     borderRadius: 4,
     position: "sticky",
@@ -779,8 +779,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "100%",
     padding: "10px 0px 15px",
-    backgroundColor: "#FFF",
-    borderBottom: "1px solid rgb(235, 235, 235)",
+    backgroundColor: colors.WHITE(),
+    borderBottom: `1px solid ${colors.LIGHT_GREY()}`,
   },
   header: {
     fontWeight: 500,
@@ -789,7 +789,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   guidelines: {
-    color: "rgba(36, 31, 58, 0.8)",
+    color: colors.BLACK(0.8),
     textAlign: "left",
     letterSpacing: 0.2,
     width: "100%",
@@ -797,9 +797,9 @@ const styles = StyleSheet.create({
   },
   commentStyles: {
     paddingTop: 5,
-    backgroundColor: "#fbfbfd",
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     borderRadius: 4,
-    border: "1px solid #F0F0F0",
+    border: `1px solid ${colors.VERY_LIGHT_GREY()}`,
     boxSizing: "border-box",
     marginTop: 20,
     lineHeight: 1.6,

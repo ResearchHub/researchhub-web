@@ -37,7 +37,7 @@ export default function PrimaryButton({
       <Box
         // component="span"
         sx={{
-          color: "#fff",
+          color: colors.WHITE(),
           textTransform: "none",
           fontSize: 18,
           height: 20,

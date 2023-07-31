@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   starContainer: {
-    color: "#E8B504",
+    color: colors.EDITOR_TAG_TEXT,
     fontSize: 11,
     marginRight: 3,
   },

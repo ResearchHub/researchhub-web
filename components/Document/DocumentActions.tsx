@@ -265,8 +265,8 @@ const styles = StyleSheet.create({
   actionIcon: {
     padding: 8,
     borderRadius: "50%",
-    backgroundColor: "rgba(36, 31, 58, 0.03)",
-    color: "rgba(36, 31, 58, 0.35)",
+    backgroundColor: colors.BLACK(0.03),
+    color: colors.BLACK(0.35),
     width: 20,
     minWidth: 20,
     maxWidth: 20,
@@ -278,9 +278,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 15,
     cursor: "pointer",
-    border: "1px solid rgba(36, 31, 58, 0.1)",
+    border: `1px solid ${colors.BLACK(0.1)}`,
     ":hover": {
-      color: "rgba(36, 31, 58, 0.8)",
+      color: colors.BLACK(0.8),
       backgroundColor: "#EDEDF0",
       borderColor: "#d8d8de",
     },

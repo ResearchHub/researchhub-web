@@ -30,6 +30,7 @@ import nookies from "nookies";
 import Router, { useRouter } from "next/router";
 import withRedux from "next-redux-wrapper";
 import Script from "next/script";
+import { ThemeProvider } from "../contexts/ThemeContext";
 
 if (process.env.ELASTIC_APM_URL) {
   initApm({
@@ -158,13 +159,15 @@ const MyApp = ({
 
   return (
     <Provider store={store}>
-      <Base
-        Component={Component}
-        pageProps={pageProps}
-        appProps={appProps}
-        rootLeftSidebarForceMin={rootLeftSidebarForceMin}
-      />
-      <Analytics />
+      <ThemeProvider>
+        <Base
+          Component={Component}
+          pageProps={pageProps}
+          appProps={appProps}
+          rootLeftSidebarForceMin={rootLeftSidebarForceMin}
+        />
+        <Analytics />
+      </ThemeProvider>
     </Provider>
   );
 };

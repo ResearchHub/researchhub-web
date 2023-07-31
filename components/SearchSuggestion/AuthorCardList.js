@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     fontWeight: 500,
     fontSize: 16,
-    color: "#FFF",
+    color: colors.WHITE(),
   },
   nameContactWrapper: {
     display: "flex",
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   name: {
     fontFamily: "Roboto",
     fontSize: 18,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     "@media only screen and (max-width: 415px)": {
       fontSize: 16,
     },
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     ":hover": {
-      backgroundColor: "#fff",
+      backgroundColor: colors.WHITE(),
     },
     "@media only screen and (max-width: 415px)": {
       width: 40,

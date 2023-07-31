@@ -652,7 +652,7 @@ class Index extends Component {
                 inputStyle={{
                   fontWeight: 500,
                   minHeight: "unset",
-                  backgroundColor: "#FFF",
+                  backgroundColor: colors.WHITE(),
                   display: "flex",
                   justifyContent: "space-between",
                 }}
@@ -683,7 +683,7 @@ class Index extends Component {
                   inputStyle={{
                     fontWeight: 500,
                     minHeight: "unset",
-                    backgroundColor: "#FFF",
+                    backgroundColor: colors.WHITE(),
                     display: "flex",
                     justifyContent: "space-between",
                   }}
@@ -700,7 +700,7 @@ class Index extends Component {
                 inputStyle={{
                   fontWeight: 500,
                   minHeight: "unset",
-                  backgroundColor: "#FFF",
+                  backgroundColor: colors.WHITE(),
                   display: "flex",
                   justifyContent: "space-between",
                 }}
@@ -734,9 +734,15 @@ class Index extends Component {
                 showLoadingAnimation
                 customPlaceholder={
                   this.state.type === "papers" ? (
-                    <PaperPlaceholder color="#efefef" rows={3} />
+                    <PaperPlaceholder
+                      color={colors.PLACEHOLDER_CARD_BACKGROUND}
+                      rows={3}
+                    />
                   ) : (
-                    <LeaderboardFeedPlaceholder color="#efefef" rows={5} />
+                    <LeaderboardFeedPlaceholder
+                      color={colors.PLACEHOLDER_CARD_BACKGROUND}
+                      rows={5}
+                    />
                   )
                 }
               />
@@ -795,31 +801,31 @@ export const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 3,
     borderLeft: "3px solid #fff",
-    borderBottom: "1px solid #F0F0F0",
+    borderBottom: `1px solid ${colors.VERY_LIGHT_GREY()}`,
     color: colors.BLACK(0.6),
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
       color: colors.NEW_BLUE(),
       transition: "all ease-out 0.1s",
     },
     ":active": {
       color: colors.NEW_BLUE(),
-      background:
-        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+        ${colors.NEW_BLUE(0)} 100%)`,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
     ":focus": {
       color: colors.NEW_BLUE(),
-      background:
-        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+        ${colors.NEW_BLUE(0)} 100%)`,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
   },
   current: {
     color: colors.NEW_BLUE(),
-    background:
-      "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+    background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+        ${colors.NEW_BLUE(0)} 100%)`,
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
   last: {
@@ -843,16 +849,16 @@ export const styles = StyleSheet.create({
   },
   user: {
     boxSizing: "border-box",
-    borderBottom: "1px solid #EDEDED",
+    borderBottom: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     padding: 16,
     ":hover": {
       transition: "all ease-out 0.1s",
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
   },
   leaderboardSection: {
-    border: "1px solid #EDEDED",
-    background: "#fff",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
+    background: colors.WHITE(),
     position: "relative",
   },
   leaderboardNav: {
@@ -864,7 +870,7 @@ export const styles = StyleSheet.create({
     marginLeft: 60,
   },
   navItem: {
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     opacity: 0.5,
   },
   timeRep: {
@@ -916,7 +922,7 @@ export const mainFeedStyles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    color: "#FFF",
+    color: colors.WHITE(),
     fontFamily: "Roboto",
     cursor: "default",
   },
@@ -951,7 +957,7 @@ export const mainFeedStyles = StyleSheet.create({
   readMore: {
     cursor: "pointer",
     textDecoration: "underline",
-    color: "#FFF",
+    color: colors.WHITE(),
     ":hover": {
       fontWeight: 400,
     },
@@ -972,7 +978,7 @@ export const mainFeedStyles = StyleSheet.create({
     },
   },
   body: {
-    backgroundColor: "#FCFCFC",
+    backgroundColor: colors.PAGE_WRAPPER,
     width: "100%",
     alignItems: "flex-start",
   },
@@ -983,7 +989,7 @@ export const mainFeedStyles = StyleSheet.create({
     position: "relative",
     position: "sticky",
     top: 65,
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
@@ -1042,9 +1048,9 @@ export const mainFeedStyles = StyleSheet.create({
   mainFeed: {
     height: "100%",
     width: "82%",
-    backgroundColor: "#FCFCFC",
-    borderLeft: "1px solid #ededed",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.PAGE_WRAPPER,
+    borderLeft: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
+    backgroundColor: colors.WHITE(),
     "@media only screen and (min-width: 900px)": {
       width: "67%",
     },
@@ -1056,7 +1062,7 @@ export const mainFeedStyles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     fontWeight: 400,
     fontSize: 30,
     flexWrap: "wrap",
@@ -1104,7 +1110,7 @@ export const mainFeedStyles = StyleSheet.create({
     },
   },
   titleBoxShadow: {
-    boxShadow: "0 4px 41px -24px rgba(0,0,0,0.16)",
+    boxShadow: `0 4px 41px -24px ${colors.PURE_BLACK(0.16)}`,
   },
   topbar: {
     paddingTop: 30,
@@ -1301,14 +1307,14 @@ export const mainFeedStyles = StyleSheet.create({
   },
   mobileHubListContainer: {
     display: "none",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     "@media only screen and (max-width: 768px)": {
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
       width: "100%",
-      borderTop: "1px solid #EDEDED",
+      borderTop: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     },
   },
   mobileList: {
@@ -1327,7 +1333,7 @@ export const mainFeedStyles = StyleSheet.create({
     width: 500,
     textAlign: "center",
     fontSize: 18,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     marginTop: 20,
     "@media only screen and (max-width: 415px)": {
       width: "85%",
@@ -1337,7 +1343,7 @@ export const mainFeedStyles = StyleSheet.create({
     width: 500,
     textAlign: "center",
     fontSize: 14,
-    color: "#4e4c5f",
+    color: colors.VERY_DARK_GREYISH_BLUE(),
     marginTop: 10,
     marginBottom: 15,
     "@media only screen and (max-width: 415px)": {
@@ -1399,7 +1405,7 @@ export const mainFeedStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     cursor: "pointer",
-    color: "#FFF",
+    color: colors.WHITE(),
     backgroundColor: colors.BLUE(),
     borderRadius: 3,
     border: "none",
@@ -1416,18 +1422,18 @@ export const mainFeedStyles = StyleSheet.create({
     },
   },
   subscribed: {
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     color: colors.BLUE(1),
     border: `1px solid ${colors.BLUE(1)}`,
     ":hover": {
       border: `1px solid ${colors.BLUE(1)}`,
       backgroundColor: colors.BLUE(1),
-      color: "#FFF",
+      color: colors.WHITE(),
     },
   },
   leaderboard: {
     display: "none",
-    background: "#FCFCFC",
+    background: colors.PAGE_WRAPPER,
     "@media only screen and (min-width: 900px)": {
       display: "block",
       width: "20%",
@@ -1443,7 +1449,7 @@ export const mainFeedStyles = StyleSheet.create({
   },
   subscribeHover: {
     ":hover": {
-      color: "#fff",
+      color: colors.WHITE(),
       backgroundColor: colors.RED(1),
       border: `1px solid ${colors.RED(1)}`,
     },
@@ -1474,7 +1480,7 @@ export const mainFeedStyles = StyleSheet.create({
     cursor: "pointer",
     userSelect: "none",
     ":hover": {
-      color: "#FFF",
+      color: colors.WHITE(),
       backgroundColor: colors.BLUE(),
     },
   },

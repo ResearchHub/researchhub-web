@@ -28,7 +28,7 @@ export const itemStyle = StyleSheet.create({
     alignItems: "center",
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     boxSizing: "border-box",
-    color: "black",
+    color: colors.PURE_BLACK(),
     cursor: "pointer",
     display: "flex",
     minHeight: 55,

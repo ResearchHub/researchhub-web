@@ -90,7 +90,7 @@ export default function ReferenceCollaboratorsSection({
       }}
     >
       <Typography
-        color="rgba(36, 31, 58, 1)"
+        color={colors.BLACK(1)}
         fontSize="14px"
         fontWeight={600}
         lineHeight="22px"
@@ -127,7 +127,7 @@ export default function ReferenceCollaboratorsSection({
         <Box
           sx={{
             alignItems: "center",
-            background: "#fff",
+            background: colors.WHITE(),
             border: `1px solid ${colors.NEW_BLUE()}`,
             cursor: "pointer",
             display: "flex",
@@ -144,7 +144,7 @@ export default function ReferenceCollaboratorsSection({
           }}
         >
           {disabled ? (
-            <ClipLoader color={"#fff"} size={14} />
+            <ClipLoader color={colors.WHITE()} size={14} />
           ) : (
             <div
               style={{

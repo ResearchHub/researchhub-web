@@ -103,7 +103,7 @@ function AwardUserRow({
                   wordBreak: "break-word",
                   padding: "12px 15px",
                   borderRadius: 4,
-                  border: "1px solid rgb(235, 235, 235)",
+                  border: `1px solid ${colors.LIGHT_GREY()}`,
                 }}
               >
                 {comment?.data?.plain_text}
@@ -727,7 +727,7 @@ const styles = StyleSheet.create({
   },
   awardAction: {
     width: "100%",
-    boxShadow: "0px 4px 20px rgba(36, 31, 58, 0.1)",
+    boxShadow: `0px 4px 20px ${colors.BLACK(0.1)}`,
     padding: 35,
     boxSizing: "border-box",
     marginTop: "auto",
@@ -787,12 +787,12 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     color: colors.NEW_BLUE(1),
-    background: "#fff",
+    background: colors.WHITE(),
     border: "none",
 
     ":hover": {
       color: colors.NEW_BLUE(1),
-      background: "#fff",
+      background: colors.WHITE(),
       border: "none",
 
       opacity: 0.6,

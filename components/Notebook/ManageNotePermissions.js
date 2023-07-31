@@ -475,7 +475,12 @@ const ManageNotePermissions = ({
           />
           {isInviteInProgress ? (
             <div className={css(styles.loaderWrapper)}>
-              <Loader key={"loader"} loading={true} size={25} color={"white"} />
+              <Loader
+                key={"loader"}
+                loading={true}
+                size={25}
+                color={colors.WHITE()}
+              />
             </div>
           ) : (
             <Button

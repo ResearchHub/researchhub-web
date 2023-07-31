@@ -204,7 +204,7 @@ export default function AddNewSourceBodySearch({
               <ClipLoader
                 sizeUnit={"px"}
                 size={8}
-                color={"#fff"}
+                color={colors.WHITE()}
                 loading={true}
               />
             )
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     objectFit: "contain",
   },
   bodyText: {
-    color: "#fff",
+    color: colors.WHITE(),
     fontSize: 16,
     fontWeight: 400,
     "@media only screen and (max-width: 1199px)": {
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     },
   },
   whiteBackground: {
-    background: "#fff",
+    background: colors.WHITE(),
   },
   uploadNewPaperButton: {
     alignItems: "center",

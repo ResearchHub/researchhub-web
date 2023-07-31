@@ -132,7 +132,7 @@ class OrcidLoginPage extends Component {
                 <Button
                   label={
                     this.state.loading ? (
-                      <Loader loading={true} size={20} color={"#FFF"} />
+                      <Loader loading={true} size={20} color={colors.WHITE()} />
                     ) : (
                       "Submit"
                     )
@@ -160,7 +160,7 @@ const overlay = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    backgroundColor: colors.PURE_BLACK(0.3),
     zIndex: "11",
     borderRadius: 5,
   },
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    background: "url(/static/background/background-modal.png) #FCFCFC",
+    background: `url(/static/background/background-modal.png) ${colors.PAGE_WRAPPER}`,
     backgroundSize: "cover",
     paddingTop: 50,
     height: "100vh",
@@ -184,10 +184,12 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     borderRadius: 10,
     border: "1px solid #E7E7E7",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    boxShadow: `0 1px 3px ${colors.PURE_BLACK(
+      0.12
+    )}, 0 1px 2px ${colors.PURE_BLACK(0.24)}`,
   },
   headerContainer: {
     maringTop: 10,

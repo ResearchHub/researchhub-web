@@ -134,7 +134,7 @@ const ContentBadgeBase = ({
             <div className={css(styles.row)}>
               <span className={css(styles.icon)}>
                 <ResearchCoinIcon
-                  color="rgb(232, 181, 4)"
+                  color={colors.EDITOR_TAG_TEXT}
                   version={4}
                   height={15}
                   width={15}
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
       height: "100%",
       opacity: 0,
       borderRadius: 5,
-      boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+      boxShadow: `0 5px 15px ${colors.PURE_BLACK(0.1)}`,
       transition: "opacity 0.3s ease-in-out",
       top: 0,
       left: 0,
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
     background: colors.LIGHT_GREY(1.0),
   },
   badgeFor_award: {
-    color: "rgba(232, 181, 4, 1)",
+    color: colors.EDITOR_TAG_TEXT,
     background: "#FDF8E6",
   },
   badgeFor_ANSWER: {

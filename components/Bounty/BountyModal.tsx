@@ -414,7 +414,7 @@ const bountyTooltip = StyleSheet.create({
   bodyContainer: {},
   title: {
     textAlign: "center",
-    color: "white",
+    color: colors.WHITE(),
     fontWeight: 500,
     marginBottom: 8,
   },
@@ -441,7 +441,7 @@ const infoSectionStyles = StyleSheet.create({
   bountyInfo: {
     textAlign: "left",
     fontSize: 16,
-    background: "rgba(240, 240, 240, 0.3)",
+    background: colors.VERY_LIGHT_GREY(0.3),
     color: colors.DARKER_GREY(),
     paddingTop: 15,
     paddingBottom: 15,
@@ -497,7 +497,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
     padding: "5px 7px",
     border: `2px solid rgb(229 229 230)`,
-    background: "#FBFBFD",
+    background: colors.LIGHT_GREY_BLUE2,
     fontSize: 16,
     [`[type="number"]`]: {
       "-webkit-appearance": "none",
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     // background: colors.ORANGE_LIGHT(),
-    color: "#fff",
+    color: colors.WHITE(),
     borderRadius: "4px",
     minWidth: 140,
     paddingLeft: 8,

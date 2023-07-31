@@ -66,7 +66,7 @@ var styles = StyleSheet.create({
     border: "1px solid",
     borderColor: colors.PURPLE(1),
     padding: "8px 32px",
-    background: "#fff",
+    background: colors.WHITE(),
     color: colors.PURPLE(1),
     fontSize: 16,
     borderRadius: 4,
@@ -74,8 +74,8 @@ var styles = StyleSheet.create({
     outline: "none",
     cursor: "pointer",
     ":hover": {
-      borderColor: "#FFF",
-      color: "#FFF",
+      borderColor: colors.WHITE(),
+      color: colors.WHITE(),
       backgroundColor: colors.PURPLE(1),
     },
     "@media only screen and (max-width: 415px)": {

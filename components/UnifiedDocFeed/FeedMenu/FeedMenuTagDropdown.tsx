@@ -65,7 +65,7 @@ const FeedMenuTagDropdown = ({
 const styles = StyleSheet.create({
   additionalOpts: {
     position: "absolute",
-    background: "white",
+    background: colors.WHITE(),
     top: 33,
     left: 2,
     width: 150,

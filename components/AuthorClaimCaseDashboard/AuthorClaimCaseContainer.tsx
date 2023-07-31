@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     userSelect: "none",
     ":hover": {
-      color: "#FFF",
+      color: colors.WHITE(),
       backgroundColor: colors.BLUE(),
     },
   },

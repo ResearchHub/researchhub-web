@@ -67,10 +67,10 @@ const styles = StyleSheet.create({
   buttonApprove: {
     backgroundColor: colors.NEW_BLUE(1),
     border: `1px solid ${colors.NEW_BLUE(1)}`,
-    color: "#fff",
+    color: colors.WHITE(),
   },
   buttonDisapprove: {
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     border: `1px solid ${colors.NEW_BLUE(1)}`,
   },
   disableButton: {

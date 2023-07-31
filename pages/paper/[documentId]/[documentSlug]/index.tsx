@@ -23,6 +23,7 @@ import {
   LEFT_SIDEBAR_MAX_WIDTH,
   LEFT_SIDEBAR_MIN_WIDTH,
 } from "~/components/Home/sidebar/RootLeftSidebar";
+import colors from "~/config/themes/colors";
 
 interface Args {
   documentData?: any;
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
     borderRadius: "4px",
     border: `1px solid ${config.border}`,
     marginTop: 15,
-    background: "white",
+    background: colors.WHITE(),
     width: "100%",
     boxSizing: "border-box",
   },
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
   },
   uploadPdfWrapper: {
     marginTop: 25,
-    background: "white",
+    background: colors.WHITE(),
     padding: 45,
     border: `1px solid ${config.border}`,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {

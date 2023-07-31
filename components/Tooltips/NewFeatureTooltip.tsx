@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     // background: colors.NEW_BLUE(),
     borderRadius: 4,
-    color: "white",
+    color: colors.WHITE(),
     padding: "10px 15px",
     boxSizing: "border-box",
     boxShadow:
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   btn: {
-    background: "white",
+    background: colors.WHITE(),
     borderRadius: 2,
     width: "auto",
     height: "auto",

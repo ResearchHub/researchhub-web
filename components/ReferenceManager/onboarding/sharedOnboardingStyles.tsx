@@ -10,14 +10,14 @@ const sharedOnboardingStyles = StyleSheet.create({
   },
   subtext: {
     fontSize: 24,
-    color: "#AAA8B4",
+    color: colors.VOTE_ARRROW,
     marginTop: 12,
     marginBottom: 30,
     textAlign: "center",
   },
   continueButton: {
     background: colors.NEW_BLUE(1),
-    color: "#fff",
+    color: colors.WHITE(),
     // maxWidth: 440,
     width: "100%",
     border: 0,
@@ -37,7 +37,7 @@ const sharedOnboardingStyles = StyleSheet.create({
       },
     },
     ":hover": {
-      borderColor: "#E8E8F2",
+      borderColor: colors.LIGHT_GREYISH_BLUE,
       outline: "none",
       boxShadow: "none",
       ":focus": {

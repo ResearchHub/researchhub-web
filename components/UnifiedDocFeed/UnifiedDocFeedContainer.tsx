@@ -166,13 +166,19 @@ function UnifiedDocFeedContainer({
             isHomePage,
           })}
         />
-       )}
+      )}
       <FeedMenu />
       {unifiedDocsLoading || isServer() ? (
         <div className={css(styles.initPlaceholder)}>
-          <UnifiedDocFeedCardPlaceholder color="#efefef" />
-          <UnifiedDocFeedCardPlaceholder color="#efefef" />
-          <UnifiedDocFeedCardPlaceholder color="#efefef" />
+          <UnifiedDocFeedCardPlaceholder
+            color={colors.PLACEHOLDER_CARD_BACKGROUND}
+          />
+          <UnifiedDocFeedCardPlaceholder
+            color={colors.PLACEHOLDER_CARD_BACKGROUND}
+          />
+          <UnifiedDocFeedCardPlaceholder
+            color={colors.PLACEHOLDER_CARD_BACKGROUND}
+          />
         </div>
       ) : (
         <div className={css(styles.feedPosts)}>
@@ -265,7 +271,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     userSelect: "none",
     ":hover": {
-      color: "#FFF",
+      color: colors.WHITE(),
       backgroundColor: colors.BLUE(),
     },
   },

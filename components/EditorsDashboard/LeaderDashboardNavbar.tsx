@@ -12,6 +12,7 @@ import {
 import "react-dates/initialize";
 import { DateRangePicker } from "react-dates";
 import "react-dates/lib/css/_datepicker.css";
+import colors from "~/config/themes/colors";
 
 export type EditorDashFilters = {
   selectedHub: any;
@@ -28,7 +29,7 @@ type Props = {
 const INPUT_STYLE = {
   fontWeight: 500,
   minHeight: "unset",
-  backgroundColor: "#FFF",
+  backgroundColor: colors.WHITE(),
   display: "flex",
   justifyContent: "space-between",
 };
@@ -161,7 +162,7 @@ export default function LeaderDashboardNavbar({
 
 const styles = StyleSheet.create({
   LeaderDashboardNavbar: {
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     justifyContent: "space-between",
     display: "flex",
     width: "100%",
@@ -230,7 +231,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   applyHref: {
-    color: "rgb(78, 83, 255)",
+    color: colors.BLUE(),
   },
   navButtons: {
     alignItems: "center",

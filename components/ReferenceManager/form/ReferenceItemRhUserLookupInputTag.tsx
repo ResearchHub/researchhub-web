@@ -76,7 +76,10 @@ export default function ReferenceItemRhUserLookupInputTag({
                 padding: "0 8px 0 0",
               }}
             >
-              <ExpandMore fontSize="medium" sx={{ color: "#AAA8B4" }} />
+              <ExpandMore
+                fontSize="medium"
+                sx={{ color: colors.VOTE_ARRROW }}
+              />
               {role ?? "VIEWER"}
             </div>
           }

@@ -102,7 +102,7 @@ class BaseModal extends Component {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "rgba(0,0,0,0.2)",
+        backgroundColor: colors.PURE_BLACK(0.2),
         zIndex: this.props.zIndex ? this.props.zIndex : "11",
         ...overlayStyleOverride,
       },
@@ -202,7 +202,7 @@ class BaseModal extends Component {
 
 const styles = StyleSheet.create({
   modal: {
-    background: "#fff",
+    background: colors.WHITE(),
     outline: "none",
     position: "absolute",
     left: "50%",
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     position: "relative",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     padding: 50,
     overflowY: "auto",
     opacity: 0,
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     height: 30,
     width: "100%",
     fontSize: 26,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     "@media only screen and (max-width: 725px)": {
       width: 450,
     },

@@ -7,7 +7,7 @@ import {
 import { ReactNode, ReactElement, SyntheticEvent } from "react";
 
 import { breakpoints } from "~/config/themes/screen";
-import { iconColors } from "~/config/themes/colors";
+import colors, { iconColors } from "~/config/themes/colors";
 import { useSelector } from "react-redux";
 import { RootState } from "~/redux";
 import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   exitButtonDefault: {
-    color: "#fff",
+    color: colors.WHITE(),
     fontWeight: 500,
     fontSize: 16,
     [`@media only screen and (min-width: ${breakpoints.mobile.str})`]: {

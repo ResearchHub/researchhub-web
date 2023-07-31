@@ -503,7 +503,7 @@ class Editor extends Component {
                 <ClipLoader
                   sizeUnit={"px"}
                   size={20}
-                  color={"#fff"}
+                  color={colors.WHITE()}
                   loading={true}
                 />
               }
@@ -766,7 +766,7 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   readOnly: {
-    background: "white",
+    background: colors.WHITE(),
     padding: "12px 15px",
     borderRadius: "4px",
     border: `1px solid ${colors.LIGHT_GREY()}`,
@@ -834,7 +834,7 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.GREY_LINE()}`,
     padding: "15px",
     borderRadius: "4px",
-    background: "white",
+    background: colors.WHITE(),
     boxSizing: "border-box",
   },
   bountyAdded: {
@@ -893,7 +893,7 @@ const styles = StyleSheet.create({
   },
   submit: {
     background: colors.PURPLE(),
-    color: "#fff",
+    color: colors.WHITE(),
   },
   added: {
     background: "rgba(19, 145, 26, .2)",
@@ -914,7 +914,7 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
     fontSize: 30,
-    color: "#fff",
+    color: colors.WHITE(),
     cursor: "pointer",
     zIndex: 3,
   },
@@ -960,11 +960,11 @@ const styles = StyleSheet.create({
   },
   bold: {
     fontWeight: 500,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
   },
   stickyBottom: {
     position: "sticky",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     top: 59,
     zIndex: 3,
   },
@@ -1022,13 +1022,13 @@ const toolbarStyles = StyleSheet.create({
   toolbarSummary: {
     borderBottom: "1px solid",
     borderTop: 0,
-    borderColor: "rgb(235, 235, 235)",
-    background: "#fff",
+    borderColor: colors.LIGHT_GREY(),
+    background: colors.WHITE(),
     paddingLeft: 0,
   },
   toolbar: {
     // borderTop: "1px solid",
-    borderColor: "rgb(235, 235, 235)",
+    borderColor: colors.LIGHT_GREY(),
     paddingTop: 15,
     paddingRight: 0,
     paddingBottom: 0,
@@ -1037,7 +1037,7 @@ const toolbarStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "space-between",
-    background: "#fff",
+    background: colors.WHITE(),
   },
   iconRow: {
     display: "flex",
@@ -1048,7 +1048,7 @@ const toolbarStyles = StyleSheet.create({
   },
   submit: {
     background: colors.PURPLE(1),
-    color: "#fff",
+    color: colors.WHITE(),
     border: "none",
     padding: "12px 36px",
     fontSize: 16,

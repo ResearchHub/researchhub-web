@@ -692,7 +692,7 @@ const styles = StyleSheet.create({
     right: -15,
   },
   focusedCommentThread: {
-    boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.2)",
+    boxShadow: `0px 0px 15px ${colors.black02}`,
   },
   inlineContainer: {},
   drawerContainer: {},
@@ -711,7 +711,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     transition: "transform 0.4s ease",
     padding: 10,
-    background: "white",
+    background: colors.white,
     boxSizing: "border-box",
   },
   commentEditor: {

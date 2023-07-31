@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   icon: {
     height: 20,
     borderRadius: "50%",
-    boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    boxShadow: `0px 2px 4px ${colors.STANDARD_BOX_SHADOW}`,
   },
   count: {
     fontSize: 15,
@@ -169,9 +169,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginLeft: 3,
     color: colors.BLUE(),
-    background: "#FFF",
+    background: colors.WHITE(),
     borderRadius: "50%",
-    boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    boxShadow: `0px 2px 4px ${colors.STANDARD_BOX_SHADOW}`,
     ":hover": {
       transform: "scale(1.05)",
     },

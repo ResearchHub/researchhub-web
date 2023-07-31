@@ -48,7 +48,7 @@ export default function PermissionsDashboardNavbar({
 const styles = StyleSheet.create({
   permissionsDashboardNavbar: {
     alignItems: "center",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     display: "flex",
     width: "100%",
     maxWidth: 800,
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   permissionsDashboardNavbarButton: {
     alignItems: "center",
     boxSizing: "border-box",
-    color: "##241F3A",
+    color: "colors.TEXT_DARKER_GREY",
     cursor: "pointer",
     display: "flex",
     fontSize: 18,

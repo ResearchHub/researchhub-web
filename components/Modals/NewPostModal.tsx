@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     padding: 40,
     borderRadius: 5,
     transition: "all ease-in-out 0.4s",
@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
     height: "30px",
     width: "100%",
     fontSize: "26px",
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     "@media only screen and (max-width: 415px)": {
       fontSize: "24px",
     },

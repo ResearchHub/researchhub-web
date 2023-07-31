@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   rootContainer: {
     display: "flex",
     flexDirection: "column",
-    background: "#FFFFFF",
+    background: colors.WHITE(),
     border: "1px solid #DEDEE6",
     borderRadius: "3px",
     padding: "20px 40px 30px 40px",

@@ -40,7 +40,7 @@ const OnboardHubList = (props) => {
                   loading={true}
                   size={3}
                   type={"beat"}
-                  color={"#000"}
+                  color={colors.PURE_BLACK()}
                   containerStyle={styles.loaderStyle}
                 />
               </div>

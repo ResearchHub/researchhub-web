@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
     display: "none",
   },
   popoverBodyContent: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     borderRadius: 4,
     boxShadow: "0px 0px 10px 0px #00000026",
     display: "flex",
@@ -288,13 +288,13 @@ const styles = StyleSheet.create({
   },
   blueHover: {
     ":hover": {
-      color: "#fff",
+      color: colors.WHITE(),
       backgroundColor: "#3971ff",
     },
   },
   redHover: {
     ":hover": {
-      color: "#fff",
+      color: colors.WHITE(),
       backgroundColor: colors.RED(0.8),
     },
   },

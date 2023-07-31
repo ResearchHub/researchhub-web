@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     position: "relative",
     width: "100%",
-    background: "white",
+    background: colors.WHITE(),
     padding: "25px 25px 25px 25px",
   },
   topLine: {

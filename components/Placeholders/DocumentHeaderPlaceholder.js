@@ -7,7 +7,9 @@ import {
 import { voteWidgetIcons } from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 
-const DocumentHeaderPlaceholder = ({ color = "#EFEFEF" }) => {
+const DocumentHeaderPlaceholder = ({
+  color = colors.PLACEHOLDER_CARD_BACKGROUND,
+}) => {
   const metaRow = (index) => (
     <div key={index} className={css(styles.row, styles.metaRow)}>
       <div className={css(styles.metaKey)}>
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    color: "#EFEFEF",
+    color: colors.PLACEHOLDER_CARD_BACKGROUND,
   },
   additionalDetails: {
     display: "flex",

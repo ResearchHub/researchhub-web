@@ -8,18 +8,20 @@ export const modalStyles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: colors.PURE_BLACK(0.2),
     zIndex: "11",
     borderRadius: 5,
   },
   modal: {
-    background: "#fff",
+    background: colors.WHITE(),
     outline: "none",
     position: "absolute",
     left: "50%",
     top: "50%",
     transform: "translate(-50%, -50%)",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    boxShadow: `0 1px 3px ${colors.PURE_BLACK(
+      0.12
+    )}, 0 1px 2px ${colors.PURE_BLACK(0.24)}`,
   },
   modalContent: {
     display: "flex",
@@ -27,7 +29,7 @@ export const modalStyles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     position: "relative",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     padding: "50px 0px 30px 0px",
     width: 625,
     height: "100%",
@@ -52,7 +54,7 @@ export const modalStyles = StyleSheet.create({
     fontWeight: "500",
     width: 426,
     fontSize: 26,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
   },
   subtitle: {
     marginTop: 10,
@@ -112,7 +114,7 @@ export const selectStyles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 500,
     height: "100%",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
   },
 });
 
@@ -146,7 +148,7 @@ export const hubStyles = StyleSheet.create({
     border: "1px solid #fff",
     ":hover": {
       borderColor: "rgb(237, 237, 237)",
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
   },
   list: {
@@ -168,7 +170,7 @@ export const defaultStyles = StyleSheet.create({
     fontSize: 33,
     fontWeight: 500,
     marginRight: 30,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     cursor: "default",
     userSelect: "none",
   },
@@ -177,7 +179,7 @@ export const defaultStyles = StyleSheet.create({
     cursor: "default",
     display: "flex",
     alignItems: "center",
-    color: "#000",
+    color: colors.PURE_BLACK(),
     fontWeight: "400",
     fontSize: "33px",
     flexWrap: "wrap",
@@ -225,7 +227,7 @@ export const defaultStyles = StyleSheet.create({
     backgroundColor: colors.NEW_BLUE(1),
     border: "none",
     borderRadius: 4,
-    color: "white",
+    color: colors.WHITE(),
     cursor: "pointer",
     fontFamily: "Roboto",
     fontSize: 16,
@@ -239,7 +241,7 @@ export const defaultStyles = StyleSheet.create({
     },
   },
   secondaryButton: {
-    background: "#fff",
+    background: colors.WHITE(),
     border: "1px solid",
     borderColor: colors.PURPLE(1),
     borderRadius: 4,
@@ -254,8 +256,8 @@ export const defaultStyles = StyleSheet.create({
     textDecoration: "none",
     verticalAlign: "center",
     ":hover": {
-      borderColor: "#FFF",
-      color: "#FFF",
+      borderColor: colors.WHITE(),
+      color: colors.WHITE(),
       backgroundColor: colors.PURPLE(1),
     },
     "@media only screen and (max-width: 415px)": {

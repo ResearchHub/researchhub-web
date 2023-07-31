@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     border: "1px solid rgb(237, 237, 237)",
     padding: "23px 15px",
     paddingLeft: 80,
-    background: "#fff",
+    background: colors.WHITE(),
   },
   textRow: {
     marginBottom: 16,

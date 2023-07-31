@@ -69,7 +69,9 @@ class CitationCard extends Component {
           <ReactPlaceholder
             ready={false}
             showLoadingAnimation
-            customPlaceholder={<PreviewPlaceholder color="#efefef" />}
+            customPlaceholder={
+              <PreviewPlaceholder color={colors.PLACEHOLDER_CARD_BACKGROUND} />
+            }
           >
             <div />
           </ReactPlaceholder>
@@ -146,7 +148,10 @@ class CitationCard extends Component {
             ready={false}
             showLoadingAnimation={false}
             customPlaceholder={
-              <PreviewPlaceholder hideAnimation={true} color="#efefef" />
+              <PreviewPlaceholder
+                hideAnimation={true}
+                color={colors.PLACEHOLDER_CARD_BACKGROUND}
+              />
             }
           />
         </div>
@@ -240,7 +245,7 @@ const styles = StyleSheet.create({
     webkitLineClamp: 3,
     fontSize: 16,
     fontWeight: 500,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     width: 220,
     minWidth: 220,
     maxWidth: 220,
@@ -288,7 +293,7 @@ const carousel = StyleSheet.create({
     width: 160,
     height: 220,
     minHeight: 220,
-    border: "1.5px solid rgba(36, 31, 58, 0.1)",
+    border: `1.5px solid ${colors.BLACK(0.1)}`,
     borderRadius: 3,
     marginRight: 30,
     display: "flex",
@@ -300,11 +305,11 @@ const carousel = StyleSheet.create({
     position: "relative",
   },
   bottomControl: {
-    background: "rgba(36, 31, 58, 0.65)",
+    background: colors.BLACK(0.65),
     borderRadius: 230,
     height: 30,
     minWidth: 85,
-    color: "#FFF",
+    color: colors.WHITE(),
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -322,9 +327,9 @@ const carousel = StyleSheet.create({
     fontSize: 18,
     userSelect: "none",
     paddingTop: 1,
-    color: "rgba(255, 255, 255, 0.45)",
+    color: colors.WHITE(0.45),
     ":hover": {
-      color: "#FFF",
+      color: colors.WHITE(),
     },
   },
   left: {

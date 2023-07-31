@@ -10,7 +10,7 @@ const DocumentPlaceholder = ({ repeatCount = 15 }: Args) => {
     <div
       style={{
         width: "100%",
-        background: "white",
+        background: globalColors.WHITE(),
         boxSizing: "border-box",
         padding: 50,
       }}

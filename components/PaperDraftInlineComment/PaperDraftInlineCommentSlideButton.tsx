@@ -127,7 +127,7 @@ function PaperDraftInlineCommentSlideButton({
 const styles = StyleSheet.create({
   PaperDraftInlineCommentSlideButton: {
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     border: `2px solid ${colors.BLUE(1)}`,
     borderRadius: 5,
     color: colors.BLUE(1),

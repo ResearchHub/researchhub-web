@@ -16,6 +16,7 @@ const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
 // Component
 import FeedCard from "~/components/Author/Tabs/FeedCard";
+import colors from "~/config/themes/colors";
 
 const TRANSITION_TIME = 300;
 
@@ -149,7 +150,7 @@ class UploadPaperModal extends Component {
 
 const styles = StyleSheet.create({
   modal: {
-    background: "#fff",
+    background: colors.WHITE(),
     outline: "none",
     position: "absolute",
     left: "50%",
@@ -181,7 +182,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     position: "relative",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     padding: 50,
     "@media only screen and (max-width: 767px)": {
       padding: 25,
@@ -212,14 +213,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#4f4d5f",
     marginBottom: 25,
-    textShadow: "1px 1px 2px #FAFAFA",
+    textShadow: `1px 1px 2px ${colors.INPUT_BACKGROUND_GREY}`,
   },
   title: {
     fontWeight: "500",
     height: 30,
     width: 426,
     fontSize: 26,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     "@media only screen and (max-width: 665px)": {
       fontSize: 21,
       width: 360,
@@ -287,7 +288,9 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     width: "100%",
     maxWidth: 600,
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    boxShadow: `0 1px 3px ${colors.PURE_BLACK(
+      0.12
+    )}, 0 1px 2px ${colors.PURE_BLACK(0.24)}`,
   },
   searchResultContainer: {
     display: "flex",
@@ -296,7 +299,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     overflowY: "auto",
-    boxShadow: "inset 0 1px 3px rgba(0,0,0,0.24)",
+    boxShadow: `inset 0 1px 3px ${colors.PURE_BLACK(0.24)}`,
   },
   uploadContainer: {
     display: "flex",
@@ -371,7 +374,7 @@ const styles = StyleSheet.create({
     color: "#a5a4ae",
     fontSize: 14,
     ":hover": {
-      color: "#232038",
+      color: colors.DARK_DESATURATED_BLUE(),
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
@@ -389,7 +392,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     "@media only screen and (max-width: 415px)": {
       width: "100%",
-      backgroundColor: "#FFF",
+      backgroundColor: colors.WHITE(),
       display: "flex",
       justifyContent: "center",
       position: "sticky",
@@ -416,7 +419,7 @@ const styles = StyleSheet.create({
   },
   searchEntryContainer: {
     width: "100%",
-    // backgroundColor: "#fff",
+    // backgroundColor: colors.WHITE(),
   },
   divider: {
     width: "100%",

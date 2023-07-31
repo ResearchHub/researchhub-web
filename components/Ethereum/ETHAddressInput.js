@@ -152,8 +152,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FFF",
-    border: `1px solid rgb(232, 232, 242)`,
+    backgroundColor: colors.WHITE(),
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     top: 38,
     left: 10,
     zIndex: 4,
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     cursor: "pointer",
     color: colors.BLACK(0.4),
-    color: "#FBFBFD",
+    color: colors.LIGHT_GREY_BLUE2,
   },
 
   connectStatus: {
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     ":hover": {
-      borderColor: "#E8E8F2",
+      borderColor: colors.LIGHT_GREYISH_BLUE,
     },
     ":focus": {
       borderColor: "#3f85f7",

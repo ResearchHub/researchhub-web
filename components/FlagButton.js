@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
   },
   flagged: {
-    color: "#000",
+    color: colors.PURE_BLACK(),
   },
 });
 

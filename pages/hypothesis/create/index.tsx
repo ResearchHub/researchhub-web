@@ -45,7 +45,7 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   background: {
-    backgroundColor: "#FCFCFC",
+    backgroundColor: colors.PAGE_WRAPPER,
     display: "flex",
     justifyContent: "center",
     alignItems: "flex-start",

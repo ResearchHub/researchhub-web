@@ -375,7 +375,7 @@ const LoginModal = ({
                   <ClipLoader
                     sizeUnit={"px"}
                     size={16}
-                    color={"#fff"}
+                    color={colors.WHITE()}
                     loading={true}
                   />
                 ) : (
@@ -394,7 +394,7 @@ const LoginModal = ({
             >
               <span
                 style={{
-                  background: "white",
+                  background: colors.WHITE(),
                   padding: "5px 15px",
                   position: "absolute",
                   left: "50%",
@@ -479,7 +479,7 @@ const LoginModal = ({
                   <ClipLoader
                     sizeUnit={"px"}
                     size={16}
-                    color={"#fff"}
+                    color={colors.WHITE()}
                     loading={true}
                   />
                 ) : (
@@ -568,7 +568,7 @@ const LoginModal = ({
                   <ClipLoader
                     sizeUnit={"px"}
                     size={16}
-                    color={"#fff"}
+                    color={colors.WHITE()}
                     loading={true}
                   />
                 ) : (
@@ -650,7 +650,7 @@ const LoginModal = ({
                   <ClipLoader
                     sizeUnit={"px"}
                     size={16}
-                    color={"#fff"}
+                    color={colors.WHITE()}
                     loading={true}
                   />
                 ) : (
@@ -723,11 +723,13 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
   title: {
+    color: colors.BLACK_TEXT(),
     fontSize: 18,
     fontWeight: 500,
     marginBottom: 8,
   },
   subtitle: {
+    color: colors.BLACK_TEXT(0.5),
     fontSize: 16,
     margin: 0,
     lineHeight: "1.5em",
@@ -770,7 +772,7 @@ const styles = StyleSheet.create({
     minHeight: 40,
   },
   googleButton: {
-    background: "white",
+    background: colors.WHITE(), // colors.GREY_ICY_BLUE_HUE,
     border: `1px solid ${colors.BLACK()}`,
     borderRadius: "4px",
     color: colors.BLACK(),
@@ -783,6 +785,7 @@ const styles = StyleSheet.create({
   modalContentStyle: {
     padding: 0,
     width: 460,
+    backgroundColor: colors.WHITE(), // colors.GREY_ICY_BLUE_HUE,
     display: "block",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
@@ -790,6 +793,7 @@ const styles = StyleSheet.create({
     },
   },
   titleWrapper: {
+    color: colors.BLACK_TEXT(),
     padding: 15,
     marginBottom: 15,
     justifyContent: "center",

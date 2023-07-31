@@ -9,6 +9,7 @@ import AddNewSourceBodySearch, {
 import AddNewSourceBodyStandBy from "./AddNewSourceBodyStandBy";
 import BaseModal from "~/components/Modals/BaseModal";
 import PaperUploadV2Create from "~/components/Paper/Upload/PaperUploadV2Create";
+import colors from "~/config/themes/colors";
 
 const { NEW_PAPER_UPLOAD, SEARCH, STAND_BY } = NEW_SOURCE_BODY_TYPES;
 
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "unset",
     position: "relative",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     padding: 24,
     opacity: 0,
     borderRadius: 5,

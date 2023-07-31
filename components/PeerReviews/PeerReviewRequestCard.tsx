@@ -107,7 +107,7 @@ function PeerReviewRequestCard({
 
 const styles = StyleSheet.create({
   PeerReviewRequestCard: {
-    backgroundColor: "white",
+    backgroundColor: colors.WHITE(),
     padding: "30px 30px",
     border: `1px solid ${colors.GREY(0.5)}`,
     borderRadius: "4px",
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   manageButton: {
     background: colors.BLUE(),
-    color: "white",
+    color: colors.WHITE(),
     borderRadius: "4px",
     ":hover": {
       background: colors.BLUE(),

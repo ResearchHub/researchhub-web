@@ -1,6 +1,7 @@
 import { StyleSheetServer } from "aphrodite";
 import * as Sentry from "@sentry/browser";
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import colors from "~/config/themes/colors";
 
 process.on("unhandledRejection", (err) => {
   Sentry.captureException(err);
@@ -63,7 +64,7 @@ export default class MyDocument extends Document {
           />
           <link rel="manifest" href="/static/favicons/site.webmanifest" async />
           <meta name="msapplication-TileColor" content="#da532c" />
-          <meta name="theme-color" content="#ffffff" />
+          <meta name="theme-color" content={colors.WHITE()} />
           <style
             data-aphrodite
             dangerouslySetInnerHTML={{ __html: css.content }}

@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   sourceSearchInput: { position: "relative", width: "100%", minHeight: 75 },
   inputSection: {},
   itemsList: {
-    background: "#fff",
+    background: colors.WHITE(),
     border: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     borderRadius: 4,
     display: "flex",

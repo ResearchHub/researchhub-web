@@ -2,6 +2,7 @@ import { ReactElement } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
+import colors from "~/config/themes/colors";
 
 type Props = {
   color: string;
@@ -81,8 +82,8 @@ export default function UnifiedDocFeedCardPlaceholder({
 
 const styles = StyleSheet.create({
   docFeedCardPlaceholder: {
-    backgroundColor: "#FFF",
-    borderTop: "1px solid #EDEDED",
+    backgroundColor: colors.WHITE(),
+    borderTop: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     boxSizing: "border-box",
     display: "flex",
     justifyContent: "space-between",

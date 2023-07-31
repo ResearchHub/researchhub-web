@@ -1,4 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
+import colors from "~/config/themes/colors";
 
 const ColumnContainer = (props) => {
   const { overrideStyles, onClick } = props;
@@ -16,7 +17,7 @@ const ColumnContainer = (props) => {
 const styles = StyleSheet.create({
   root: {
     width: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     boxSizing: "border-box",
   },
 });

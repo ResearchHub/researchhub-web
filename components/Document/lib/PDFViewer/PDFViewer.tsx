@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
     display: "flex",
     columnGap: "10px",
     justifyContent: "flex-end",
-    background: "white",
+    background: colors.WHITE(),
     paddingLeft: 15,
     paddingBottom: 15,
     border: "1px solid #aeaeae",
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
     display: "flex",
     columnGap: "10px",
     justifyContent: "flex-end",
-    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.15)",
+    boxShadow: `0px 0px 10px ${colors.PURE_BLACK(0.15)}`,
     userSelect: "none",
     padding: "10px 18px",
     borderRadius: "42px",
@@ -431,12 +431,12 @@ const styles = StyleSheet.create({
     marginTop: "30%",
   },
   viewerNavBtn: {
-    background: "white",
+    background: colors.WHITE(),
     border: "1px solid #aeaeae",
     height: 33,
     width: 33,
     boxSizing: "border-box",
-    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.15)",
+    boxShadow: `0px 0px 10px ${colors.PURE_BLACK(0.15)}`,
   },
 });
 

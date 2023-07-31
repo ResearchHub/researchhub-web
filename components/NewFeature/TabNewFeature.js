@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     fontSize: 12,
     padding: "2px 6px",
-    color: "#fff",
+    color: colors.WHITE(),
     letterSpacing: 0.7,
   },
 });

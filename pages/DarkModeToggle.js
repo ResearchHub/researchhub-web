@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Toggle from "react-toggle";
 import { useTheme } from "../contexts/ThemeContext";
 import { css, StyleSheet } from "aphrodite";
 
 const DarkModeToggle = () => {
-  const { theme, toggleTheme, darkTheme } = useTheme();
+  const [checked, setChecked] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  useEffect(() => {
+    console.log("theme changes: ", theme.id);
+    setChecked(theme.id === "dark");
+  }, [theme]);
 
   return (
     <div className={css(styles.checkboxEntry)}>
@@ -12,10 +17,10 @@ const DarkModeToggle = () => {
         {"Dark Mode"}
       </div>
       <Toggle
-        key={"prefersDarkModeOn"}
+        key={theme?.id}
         className={"react-toggle"}
-        checked={theme === darkTheme}
-        id={"prefersDarkModeOn"}
+        checked={checked}
+        id={theme?.id}
         onChange={toggleTheme}
       />
     </div>
@@ -28,7 +33,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: "10px 0",
-    borderTop: "1px solid #EDEDED",
+    borderTop: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     fontWeight: 300,
     ":hover": {
       fontWeight: 500,

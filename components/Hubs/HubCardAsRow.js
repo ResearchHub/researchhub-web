@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 10,
     cursor: "pointer",
-    background: "white",
+    background: colors.WHITE(),
     boxSizing: "border-box",
     borderRadius: 2,
     ":hover": {

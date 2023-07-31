@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     height: 19,
     fontWeight: "500",
     width: "100%",
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     display: "flex",
     justifyContent: "flex-start",
     textAlign: "left",
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   },
   error: {
     backgroundColor: colors.ICY_GREY,
-    border: "1px solid rgb(232, 232, 242)",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     overflow: "hidden",
     paddingLeft: 15,
     paddingTop: 0,

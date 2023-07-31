@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     borderLeft: `3px solid #FFF`,
     ":hover": {
       cursor: "pointer",
-      background: "#FAFAFA",
+      background: colors.INPUT_BACKGROUND_GREY,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
       transition: "all ease-in-out 0.2s",
     },

@@ -429,7 +429,7 @@ class PaperProgress extends Component {
             />
             <div className={css(styles.percentage)}>
               {this.state.loading ? (
-                <Loader loading={true} size={13} color={"#FFF"} />
+                <Loader loading={true} size={13} color={colors.WHITE()} />
               ) : (
                 `${this.state.progress}%`
               )}
@@ -457,16 +457,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     padding: 50,
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     minHeight: 80,
     boxSizing: "border-box",
     border: "1.5px solid",
     borderColor: "rgb(240, 240, 240)",
     marginBottom: 30,
-    boxShadow: "rgba(0, 0, 0, 0.02) 0px 3px 4px",
+    boxShadow: `${colors.PURE_BLACK(0.02)} 0px 3px 4px`,
     borderTop: "none",
     borderRadius: 4,
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
@@ -542,7 +542,7 @@ const styles = StyleSheet.create({
   },
   percentage: {
     position: "absolute",
-    color: "#FFF",
+    color: colors.WHITE(),
     top: "50%",
     right: "50%",
     transform: "translate(50%,-50%)",

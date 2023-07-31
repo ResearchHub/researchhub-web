@@ -147,8 +147,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingTop: 15,
-    backgroundColor: "#FFF",
-    border: "1px solid #ededed",
+    backgroundColor: colors.WHITE(),
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     borderRadius: 4,
     boxSizing: "border-box",
     width: "100%",
@@ -196,18 +196,18 @@ const styles = StyleSheet.create({
     },
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
     ":active": {
       color: colors.NEW_BLUE(),
-      background:
-        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      background: `linear-gradient(90deg, ${NEW_BLUE(0.1)} 0%, 
+        ${NEW_BLUE(0)} 100%)`,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
     ":focus": {
       color: colors.NEW_BLUE(),
-      background:
-        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      background: `linear-gradient(90deg, ${NEW_BLUE(0.1)} 0%, 
+        ${NEW_BLUE(0)} 100%)`,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
   },
@@ -218,8 +218,8 @@ const styles = StyleSheet.create({
   },
   activeListItem: {
     color: colors.NEW_BLUE(),
-    background:
-      "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+    background: `linear-gradient(90deg, ${NEW_BLUE(0.1)} 0%, 
+        ${NEW_BLUE(0)} 100%)`,
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
   hubImage: {
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   },
   current: {
     borderColor: "rgb(237, 237, 237)",
-    backgroundColor: "#FAFAFA",
+    backgroundColor: colors.INPUT_BACKGROUND_GREY,
     ":hover": {
       borderColor: "rgb(227, 227, 227)",
       backgroundColor: "#EAEAEA",

@@ -304,7 +304,9 @@ const DiscussionTab = (props) => {
           <ReactPlaceholder
             ready={!fetching}
             showLoadingAnimation
-            customPlaceholder={<PaperPlaceholder color="#efefef" />}
+            customPlaceholder={
+              <PaperPlaceholder color={colors.PLACEHOLDER_CARD_BACKGROUND} />
+            }
           >
             {threads.length > 0
               ? threads.map((thread, i) => {
@@ -858,7 +860,7 @@ var styles = StyleSheet.create({
     alignItems: "center",
   },
   guidelines: {
-    color: "rgba(36, 31, 58, 0.8)",
+    color: colors.BLACK(0.8),
     textAlign: "center",
     letterSpacing: 0.7,
     marginBottom: 16,
@@ -875,7 +877,7 @@ var styles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "center",
     flexDirection: "column",
-    // backgroundColor: "#FFF",
+    // backgroundColor: colors.WHITE(),
 
     "@media only screen and (max-width: 415px)": {
       fontSize: 16,
@@ -888,19 +890,19 @@ var styles = StyleSheet.create({
     width: "100%",
     borderRadius: 3,
     padding: "25px 0",
-    border: `1px solid #F0F0F0`,
-    backgroundColor: "#FBFBFD",
+    border: `1px solid ${colors.VERY_LIGHT_GREY()}`,
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     cursor: "pointer",
     ":hover": {
       borderColor: colors.BLUE(),
     },
   },
   plainBox: {
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     "@media only screen and (max-width: 415px)": {
       width: "100%",
       fontSize: 16,
-      backgroundColor: "#FFF",
+      backgroundColor: colors.WHITE(),
     },
   },
   right: {
@@ -948,7 +950,7 @@ var styles = StyleSheet.create({
     width: "100%",
   },
   action: {
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     fontSize: 16,
     opacity: 0.6,
     display: "flex",
@@ -957,7 +959,7 @@ var styles = StyleSheet.create({
   addDiscussionButton: {
     border: "1px solid",
     marginLeft: 10,
-    color: "#fff",
+    color: colors.WHITE(),
     background: colors.PURPLE(1),
     fontSize: 16,
     borderRadius: 5,
@@ -976,7 +978,7 @@ var styles = StyleSheet.create({
     background: "unset",
     fontSize: 14,
     ":hover": {
-      backgroundColor: "#FFF",
+      backgroundColor: colors.WHITE(),
       color: colors.PURPLE(),
       textDecoration: "underline",
     },
@@ -992,7 +994,7 @@ var styles = StyleSheet.create({
     background: "unset",
     fontSize: 14,
     ":hover": {
-      backgroundColor: "#FFF",
+      backgroundColor: colors.WHITE(),
       color: colors.PURPLE(),
       textDecoration: "underline",
     },
@@ -1083,11 +1085,11 @@ var styles = StyleSheet.create({
     },
   },
   emptyState: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     padding: 30,
-    border: "1.5px solid #F0F0F0",
+    border: `1.5px solid ${colors.VERY_LIGHT_GREY()}`,
     boxSizing: "border-box",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    boxShadow: `0px 3px 4px ${colors.PURE_BLACK(0.02)}`,
     borderRadius: 4,
 
     "@media only screen and (max-width: 767px)": {
@@ -1149,7 +1151,7 @@ var styles = StyleSheet.create({
   overrideFormSelect: {
     marginTop: 0,
     marginBottom: 0,
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     width: "unset",
     minHeight: 0,
   },
@@ -1191,7 +1193,7 @@ var styles = StyleSheet.create({
     cursor: "pointer",
     marginBottom: 10,
     ":hover": {
-      color: "#FFF",
+      color: colors.WHITE(),
       backgroundColor: colors.BLUE(),
     },
   },
@@ -1215,7 +1217,7 @@ var styles = StyleSheet.create({
     fontWeight: 500,
     cursor: "pointer",
     marginRight: 8,
-    color: "rgba(36, 31, 58, 0.6)",
+    color: colors.BLACK(0.6),
     borderRadius: 4,
     ":hover": {
       color: colors.BLUE(),
@@ -1307,7 +1309,7 @@ const stylesEditor = StyleSheet.create({
   },
   discussionTextEditor: {
     width: "100%",
-    backgroundColor: "#FBFBFD",
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
   },
   label: {
     fontFamily: "Roboto",

@@ -85,7 +85,7 @@ const SubscribeButton = (props) => {
                 loading={true}
                 containerStyle={styles.loader}
                 size={10}
-                color={"#FFF"}
+                color={colors.WHITE()}
               />
             )}
           </span>
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     cursor: "pointer",
-    color: "#FFF",
+    color: colors.WHITE(),
     backgroundColor: colors.BLUE(),
     borderRadius: 3,
     border: "none",
@@ -124,17 +124,17 @@ const styles = StyleSheet.create({
     },
   },
   subscribed: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     color: colors.BLUE(),
     border: `1.5px solid ${colors.BLUE()}`,
     ":hover": {
-      color: "#FFF",
+      color: colors.WHITE(),
       backgroundColor: colors.BLUE(),
     },
   },
   subscribeHover: {
     ":hover": {
-      color: "#fff",
+      color: colors.WHITE(),
       backgroundColor: colors.RED(1),
       border: `1px solid ${colors.RED(1)}`,
     },

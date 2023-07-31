@@ -105,7 +105,7 @@ const SummaryEditCard = (props) => {
 const styles = StyleSheet.create({
   selectedEdit: {
     background: "#F0F1F7",
-    borderColor: "#D7D7E3",
+    borderColor: colors.LIGHT_GREY_BLUE,
   },
   editHistoryCard: {
     // width: 320,
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     borderBottom: "0.75px solid #F0F1F7",
     ":hover": {
       background: "#F0F1F7",
-      borderColor: "#D7D7E3",
+      borderColor: colors.LIGHT_GREY_BLUE,
     },
     "@media only screen and (max-width: 767px)": {
       width: "100%",

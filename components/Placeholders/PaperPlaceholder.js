@@ -6,6 +6,7 @@ import {
   RectShape,
   RoundShape,
 } from "react-placeholder/lib/placeholders";
+import colors from "../../config/themes/colors";
 
 const PaperPlaceholder = ({ color, rows }) => {
   const Placeholders = new Array(rows).map((el, index) => {
@@ -57,16 +58,16 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     padding: 15,
     boxSizing: "border-box",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     cursor: "pointer",
-    border: "1px solid #EDEDED",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     marginTop: 10,
     marginBottom: 10,
     borderRadius: 3,
     overflow: "hidden",
     width: "100%",
     ":hover": {
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
   },
   placeholderContainer: {

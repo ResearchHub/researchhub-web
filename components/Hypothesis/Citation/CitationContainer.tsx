@@ -5,7 +5,10 @@ import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import CitationTable from "./table/CitationTable";
 import CitationAddNewButton from "./CitationAddNewButton";
-import TextDropdown, { TextDropdownOptions } from "~/components/shared/TextDropdown";
+import TextDropdown, {
+  TextDropdownOptions,
+} from "~/components/shared/TextDropdown";
+import colors from "~/config/themes/colors";
 
 type Props = { lastFetchTime: number; onCitationUpdate: Function };
 
@@ -78,10 +81,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   citationGroup: {
-    backgroundColor: "#fff",
-    border: "1.5px solid #F0F0F0", // copying existing cards for borders
+    backgroundColor: colors.WHITE(),
+    border: `1.5px solid ${colors.VERY_LIGHT_GREY()}`, // copying existing cards for borders
     borderRadius: 3,
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)", // copying existing cards
+    boxShadow: `0px 3px 4px ${colors.PURE_BLACK(0.02)}`, // copying existing cards
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",

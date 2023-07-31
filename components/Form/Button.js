@@ -130,11 +130,11 @@ const styles = StyleSheet.create({
   },
   variantContained: {
     backgroundColor: colors.NEW_BLUE(1),
-    color: "white",
+    color: colors.WHITE(),
     border: `1px solid ${colors.NEW_BLUE(1)}`,
   },
   variantOutlined: {
-    backgroundColor: "white",
+    backgroundColor: colors.WHITE(),
     color: colors.NEW_BLUE(1),
     border: `1px solid ${colors.NEW_BLUE(1)}`,
   },
@@ -162,14 +162,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   isWhite: {
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     border: `1px solid ${colors.NEW_BLUE(1)}`,
     color: colors.NEW_BLUE(1),
     ":hover": {
-      borderColor: "#FFF",
-      boxShadow: "2px 2x 2px 2px #EDEDED",
+      borderColor: colors.WHITE(),
+      boxShadow: `2px 2x 2px 2px ${colors.LIGHT_GREY_BACKGROUND}`,
       backgroundColor: colors.NEW_BLUE(1),
-      color: "#FFF",
+      color: colors.WHITE(),
     },
   },
   label: {

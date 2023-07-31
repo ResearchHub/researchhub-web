@@ -88,7 +88,7 @@ export const BoltSvg = ({ height, width, color, opacity }) => {
       viewBox="0 0 9 13"
     >
       <path
-        fill={color ? color : "#241F3A"}
+        fill={color ? color : colors.TEXT_DARKER_GREY}
         d="M5.063 5.318H9L3.937 13V7.682H0L5.063 0v5.318z"
         opacity={opacity ? opacity : "0.5"}
         width={width ? width : "9"}
@@ -207,7 +207,7 @@ export function PaperPromotionIconLarge({ color }) {
         fillRule="evenodd"
         clipRule="evenodd"
         d="M4.34406 16.188C3.97782 16.188 3.68092 16.479 3.68092 16.838C3.68092 17.1969 3.97782 17.4879 4.34406 17.4879H4.86321V20.9253L0.313369 27.9636C-0.0242333 28.4905 -0.0890862 28.9418 0.118969 29.3173C0.327024 29.6931 0.750675 29.881 1.38983 29.881H11.8104C12.4494 29.881 12.873 29.6931 13.0809 29.3173C13.2891 28.9418 13.2243 28.4906 12.8867 27.9637L8.33657 20.9254V17.4879H8.85343C9.21968 17.4879 9.51657 17.1969 9.51657 16.838C9.51657 16.479 9.21967 16.188 8.85343 16.188H4.34406ZM6.02364 17.4879H7.18133V21.2553L7.36217 21.5305L9.52184 24.6399H3.68618L5.84277 21.5305L6.02364 21.2553V17.4879Z"
-        fill={color ? color : "#241F3A"}
+        fill={color ? color : colors.TEXT_DARKER_GREY}
         fillOpacity={color ? ".8" : "0.35"}
       />
       <rect
@@ -216,7 +216,7 @@ export function PaperPromotionIconLarge({ color }) {
         width="2.57732"
         height="2.52903"
         rx="1.26452"
-        fill={color ? color : "#241F3A"}
+        fill={color ? color : colors.TEXT_DARKER_GREY}
         fillOpacity={color ? ".8" : "0.35"}
       />
       <rect
@@ -225,7 +225,7 @@ export function PaperPromotionIconLarge({ color }) {
         width="2.57732"
         height="2.52903"
         rx="1.26452"
-        fill={color ? color : "#241F3A"}
+        fill={color ? color : colors.TEXT_DARKER_GREY}
         fillOpacity={color ? ".8" : "0.35"}
       />
       <rect
@@ -234,7 +234,7 @@ export function PaperPromotionIconLarge({ color }) {
         width="1.98822"
         height="1.95097"
         rx="0.975484"
-        fill={color ? color : "#241F3A"}
+        fill={color ? color : colors.TEXT_DARKER_GREY}
         fillOpacity={color ? ".8" : "0.35"}
       />
       <circle cx="22" cy="8" r="8" fill="#3971FF" />
@@ -549,7 +549,7 @@ const styles = StyleSheet.create({
     fontWeight: 200,
     transform: "rotate(45deg)",
     fontSize: 36,
-    color: "black",
+    color: colors.PURE_BLACK(),
     display: "inline-block",
   },
 

@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     fontSize: 13,
     ":hover": {
-      color: "#000",
+      color: colors.PURE_BLACK(),
     },
   },
   contentContainer: {

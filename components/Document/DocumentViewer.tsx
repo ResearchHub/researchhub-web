@@ -1,6 +1,7 @@
 import config from "./lib/config";
 import { GenericDocument } from "./lib/types";
 import { StyleSheet, css } from "aphrodite";
+import colors from "~/config/themes/colors";
 
 interface Props {
   document: GenericDocument;
@@ -16,7 +17,7 @@ const styles = StyleSheet.create({
     border: `1px solid ${config.border}`,
     marginTop: 15,
     minHeight: 1500,
-    background: "white",
+    background: colors.WHITE(),
   },
 });
 

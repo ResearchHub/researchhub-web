@@ -127,7 +127,7 @@ export default function NewPostButton({
         popoverContent={
           <div
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: colors.WHITE(),
               borderRadius: 4,
               boxShadow: `3px 2px 12px ${colors.STANDARD_BOX_SHADOW}`,
               position: "fixed",

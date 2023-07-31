@@ -121,7 +121,10 @@ class FileTab extends Component {
             ready={false}
             showLoadingAnimation={false}
             customPlaceholder={
-              <PreviewPlaceholder hideAnimation={true} color="#efefef" />
+              <PreviewPlaceholder
+                hideAnimation={true}
+                color={colors.PLACEHOLDER_CARD_BACKGROUND}
+              />
             }
           />
         </div>
@@ -168,11 +171,11 @@ const styles = StyleSheet.create({
     },
   },
   container: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     padding: 50,
-    border: "1.5px solid #F0F0F0",
+    border: `1.5px solid ${colors.VERY_LIGHT_GREY()}`,
     boxSizing: "border-box",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    boxShadow: `0px 3px 4px ${colors.PURE_BLACK(0.02)}`,
     borderRadius: 4,
     marginTop: 30,
     "@media only screen and (max-width: 767px)": {
@@ -194,7 +197,7 @@ const styles = StyleSheet.create({
     },
   },
   count: {
-    color: "rgba(36, 31, 58, 0.5)",
+    color: colors.BLACK(0.5),
     fontSize: 17,
     fontWeight: 500,
     marginLeft: 15,
@@ -224,13 +227,13 @@ const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 50,
-    color: "rgb(78, 83, 255)",
+    color: colors.BLUE(),
     height: 50,
     marginBottom: 25,
   },
   citationEmptySubtext: {
     fontSize: 16,
-    color: "rgba(36, 31, 58, 0.8)",
+    color: colors.BLACK(0.8),
     fontWeight: 400,
     marginTop: 10,
     "@media only screen and (max-width: 415px)": {
@@ -280,7 +283,7 @@ const styles = StyleSheet.create({
     width: 160,
     height: 220,
     minHeight: 220,
-    border: "1.5px solid rgba(36, 31, 58, 0.1)",
+    border: `1.5px solid ${colors.BLACK(0.1)}`,
     borderRadius: 3,
     marginRight: 30,
     display: "flex",

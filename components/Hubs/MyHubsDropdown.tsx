@@ -54,7 +54,7 @@ const MyHubsDropdown = ({ hubState, isOpen = false }: Args) => {
 const styles = StyleSheet.create({
   myHubsDropdown: {
     position: "absolute",
-    background: "white",
+    background: colors.WHITE(),
     top: 30,
     left: 0,
     width: 270,

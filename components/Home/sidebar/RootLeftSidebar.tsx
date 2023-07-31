@@ -384,7 +384,7 @@ function RootLeftSidebar({
                         width={20}
                         height={20}
                         version={4}
-                        color={"#AAA8B4"}
+                        color={colors.VOTE_ARRROW}
                         overrideStyle={styles.rscIcon}
                       />
                     </>
@@ -591,6 +591,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     height: NAVBAR_HEIGHT,
     marginBottom: 20,
+    // backgroundColor: "rgba(249, 249, 252, 0.5)", // TODO: Update the logo png with dark mode friendly version instead
     [`@media only screen and (min-width: ${breakpoints.large.int}px)`]: {
       width: "100%",
     },

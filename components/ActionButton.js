@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     },
   },
   deleteIcon: {
-    color: "rgba(36, 31, 58, 0.35)",
+    color: colors.BLACK(0.35),
     fontSize: 18,
     cursor: "pointer",
     ":hover": {
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     color: colors.RED(1),
   },
   active: {
-    color: "#FFF",
+    color: colors.WHITE(),
     background: colors.GREY(1),
   },
 });

@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     borderRadius: 4,
-    border: "1px solid #ededed",
-    boxShadow: "0px 0x 20px rgba(0, 0, 0, 0.25)",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
+    boxShadow: `0px 0x 20px ${colors.PURE_BLACK(0.25)}`,
     objectFit: "cover",
     "@media only screen and (max-width: 760px)": {
       maxHeight: 150,

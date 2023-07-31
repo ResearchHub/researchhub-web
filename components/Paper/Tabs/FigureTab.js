@@ -332,7 +332,11 @@ class FigureTab extends Component {
                   <ReactPlaceholder
                     ready={false}
                     showLoadingAnimation
-                    customPlaceholder={<PreviewPlaceholder color="#efefef" />}
+                    customPlaceholder={
+                      <PreviewPlaceholder
+                        color={colors.PLACEHOLDER_CARD_BACKGROUND}
+                      />
+                    }
                   />
                 </div>
               </div>
@@ -362,11 +366,11 @@ const styles = StyleSheet.create({
     transition: "all ease-in-out 0.2s",
   },
   container: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     padding: 50,
-    border: "1.5px solid #F0F0F0",
+    border: `1.5px solid ${colors.VERY_LIGHT_GREY()}`,
     boxSizing: "border-box",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    boxShadow: `0px 3px 4px ${colors.PURE_BLACK(0.02)}`,
     borderRadius: 4,
     "@media only screen and (max-width: 767px)": {
       padding: 25,
@@ -397,7 +401,7 @@ const styles = StyleSheet.create({
     },
   },
   count: {
-    color: "rgba(36, 31, 58, 0.5)",
+    color: colors.BLACK(0.5),
     fontSize: 17,
     fontWeight: 500,
     marginLeft: 15,
@@ -441,12 +445,12 @@ const styles = StyleSheet.create({
     },
   },
   bottomControl: {
-    background: "rgba(36, 31, 58, 0.65)",
+    background: colors.BLACK(0.65),
     borderRadius: 230,
     height: 30,
     minWidth: 85,
     whiteSpace: "nowrap",
-    color: "#FFF",
+    color: colors.WHITE(),
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -464,7 +468,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     fontSize: 14,
     padding: "10px 16px",
-    color: "#FFF",
+    color: colors.WHITE(),
     border: `1px solid ${colors.BLUE()}`,
     backgroundColor: colors.BLUE(),
     borderRadius: 4,
@@ -473,7 +477,7 @@ const styles = StyleSheet.create({
     transition: "all ease-out 0.2s",
     ":hover": {
       backgroundColor: "#3E43E8",
-      color: "#FFF",
+      color: colors.WHITE(),
     },
     "@media only screen and (max-width: 1024px)": {
       opacity: 1,

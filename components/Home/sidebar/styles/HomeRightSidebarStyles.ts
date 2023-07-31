@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     maxWidth: 320,
     position: "relative",
     width: "100%",
-    background: "white",
+    background: colors.WHITE(), // colors.GREY_ICY_BLUE_HUE,
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       display: "none",
     },

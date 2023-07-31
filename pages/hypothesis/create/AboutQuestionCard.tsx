@@ -1,6 +1,7 @@
 import { Fragment, useEffect } from "react";
 import { css, StyleSheet } from "aphrodite";
 import Collapsible from "../../../components/Form/Collapsible";
+import colors from "~/config/themes/colors";
 
 export type AboutQuestionCardProps = {
   customStyle: any;
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
   aboutContainer: {
     display: "flex",
     flexDirection: "column",
-    background: "#FFFFFF",
+    background: colors.WHITE(),
     border: "1px solid #DEDEE6",
     borderRadius: "3px",
     padding: "24px 21px",
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
 
     margin: "auto 18px",
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     opacity: 0.4,
   },
   rhIcon: {
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: "18px",
     lineHeight: "21px",
-    color: "#000000",
+    color: colors.PURE_BLACK(),
     marginTop: 24,
   },
   collapsibleContent: {
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     fontSize: "16px",
     lineHeight: "26px",
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
   },
   chevronDown: {
     marginLeft: "auto",

@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     background: colors.NEW_BLUE(1),
     border: "1px solid",
     borderRadius: 5,
-    color: "#fff",
+    color: colors.WHITE(),
     cursor: "pointer",
     fontSize: 16,
     height: 45,

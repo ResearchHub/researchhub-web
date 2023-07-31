@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   title: {
     display: "flex",
     alignItems: "center",
-    background: "#fff",
+    background: colors.WHITE(),
     boxSizing: "border-box",
     height: 40,
     fontWeight: 500,
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     transition: "all ease-out 0.1s",
     ":hover": {
       cursor: "pointer",
-      background: "#FAFAFA",
+      background: colors.INPUT_BACKGROUND_GREY,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
       color: colors.BLUE(),
     },
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   active: {
-    background: "#FAFAFA",
+    background: colors.INPUT_BACKGROUND_GREY,
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     color: colors.BLUE(),
   },

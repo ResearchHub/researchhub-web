@@ -129,7 +129,7 @@ export default function AuthorClaimCaseCard({
 const styles = StyleSheet.create({
   authorClaimCaseCard: {
     cursor: "pointer",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     border: `1px solid ${colors.GREY(0.5)}`,
     borderRadius: 4,
     display: "flex",

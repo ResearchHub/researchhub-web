@@ -115,7 +115,7 @@ const DropdownButton = ({
 
 const styles = StyleSheet.create({
   popoverBodyContent: {
-    backgroundColor: "white",
+    backgroundColor: colors.WHITE(),
     borderRadius: 4,
     // boxShadow: "0px 0px 10px 0px #00000026",
     display: "flex",

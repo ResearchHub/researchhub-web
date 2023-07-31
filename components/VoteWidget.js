@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
     },
   },
   pillContainer: {
-    background: "rgba(240, 240, 240, 0.5)",
+    background: colors.VERY_LIGHT_GREY(0.5),
     width: 28,
     margin: "4px auto",
     color: colors.NEW_GREEN(),
@@ -422,10 +422,10 @@ const styles = StyleSheet.create({
   divider: {
     margin: "5px 0 15px",
     width: "100%",
-    border: "1px solid rgba(36, 31, 58, 0.1)",
+    border: `1px solid ${colors.BLACK(0.1)}`,
   },
   scoreContainer: {
-    color: "rgba(36, 31, 58, 0.4)",
+    color: colors.BLACK(0.4),
     fontWeight: "bold",
     fontSize: 14,
     ":hover": {
@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
     padding: 15,
     fontSize: 14,
     // background: colors.BLUE(1),
-    background: "rgba(0, 0, 0, 0.7)",
+    background: colors.PURE_BLACK(0.7),
     opacity: 1,
   },
 });

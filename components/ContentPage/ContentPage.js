@@ -1,5 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import { Component } from "react";
+import colors from "../../config/themes/colors";
 
 class ContentPage extends Component {
   render() {
@@ -23,7 +24,7 @@ class ContentPage extends Component {
 
 const styles = StyleSheet.create({
   content: {
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     minHeight: "100vh",
   },
   column: {
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
     display: "table-cell",
     maxWidth: 1200,
     height: "100%",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     "@media only screen and (max-width: 768px)": {
       width: "100%",
     },

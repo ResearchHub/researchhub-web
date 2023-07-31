@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     cursor: "pointer",
-    borderBottom: "1px solid #EDEDED",
+    borderBottom: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     marginBottom: 10,
     borderRadius: 3,
     position: "relative",
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     },
   },
   progress: {
-    color: "#FFF",
+    color: colors.WHITE(),
     backgroundColor: "#48C055",
     borderColor: "#48C055",
     textTransform: "unset",
@@ -271,9 +271,9 @@ const styles = StyleSheet.create({
   },
   completed: {
     textTransform: "unset",
-    color: "#241F3A",
-    background: "rgba(36, 31, 58, 0.03)",
-    border: "1px solid rgba(36, 31, 58, 0.15)",
+    color: colors.TEXT_DARKER_GREY,
+    background: colors.BLACK(0.03),
+    border: `1px solid ${colors.BLACK(0.15)}`,
   },
   confirmed: {
     color: "#2a6218",
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "flex-start",
     fontSize: 14,
-    color: "rgba(36, 31, 58, 0.5)",
+    color: colors.BLACK(0.5),
     marginBottom: 5,
   },
   vote: {
@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.BLUE(0.11),
   },
   icon: {
-    color: "rgba(36, 31, 58, 0.25)",
+    color: colors.BLACK(0.25),
     fontSize: 18,
     marginRight: 8,
     // width: 20,
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
     },
   },
   iconPointer: {
-    color: "rgba(36, 31, 58, 0.25)",
+    color: colors.BLACK(0.25),
     fontSize: 18,
     marginRight: 8,
     // transform: "scaleX(-1)",
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
     },
   },
   stats: {
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     fontSize: 16,
     fontWeight: 500,
     "@media only screen and (max-width: 767px)": {
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
     cursor: "pointer",
-    color: "rgba(36, 31, 58, 0.5)",
+    color: colors.BLACK(0.5),
     opacity: 0.6,
     ":hover": {
       opacity: 1,

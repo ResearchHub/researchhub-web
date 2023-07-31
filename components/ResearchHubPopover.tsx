@@ -1,5 +1,6 @@
 import { ArrowContainer, Popover } from "react-tiny-popover";
 import { Fragment, ReactElement } from "react";
+import colors from "~/config/themes/colors";
 
 type Props = {
   align?: "start" | "center" | "end";
@@ -37,7 +38,7 @@ export default function ResearchHubPopover({
         !!withArrow ? (
           <ArrowContainer
             arrowClassName="popover-arrow"
-            arrowColor={"#fff"}
+            arrowColor={colors.WHITE()}
             arrowSize={10}
             childRect={childRect}
             className="popover-arrow-container"
@@ -49,7 +50,7 @@ export default function ResearchHubPopover({
         ) : (
           <div
             style={{
-              background: "#fff",
+              background: colors.WHITE(),
               boxShadow: "0px 0px 10px 0px #00000026",
               borderRadius: 4,
               ...popoverStyle,

@@ -51,7 +51,7 @@ class PromotionGraph extends Component {
         0,
       ]);
       options.legend = { position: "top", alignment: "center" };
-      options.series = { 0: { color: "rgb(78, 83, 255)" } };
+      options.series = { 0: { color: color.BLUE() } };
       options.hAxis = {
         gridlines: {
           color: "transparent",
@@ -77,12 +77,12 @@ class PromotionGraph extends Component {
         },
         baselineColor: "transparent",
         textStyle: {
-          color: "#ffffff",
+          color: colors.WHITE(),
         },
       };
     } else if (data.length === 2) {
       options.legend = { position: "top", alignment: "center" };
-      options.series = { 0: { color: "rgb(78, 83, 255)" } };
+      options.series = { 0: { color: colors.BLUE() } };
       options.hAxis = {
         gridlines: {
           color: "transparent",
@@ -108,7 +108,7 @@ class PromotionGraph extends Component {
         },
         baselineColor: "transparent",
         textStyle: {
-          color: "#ffffff",
+          color: colors.WHITE(),
         },
       };
     } else {
@@ -119,7 +119,7 @@ class PromotionGraph extends Component {
           maxLines: 1,
         },
         series: {
-          0: { color: "rgb(78, 83, 255)" },
+          0: { color: colors.BLUE() },
         },
         backgroundColor: { fill: "transparent" },
         hAxis: {
@@ -147,7 +147,7 @@ class PromotionGraph extends Component {
           },
           baselineColor: "transparent",
           textStyle: {
-            color: "#ffffff",
+            color: colors.WHITE(),
           },
         },
       };

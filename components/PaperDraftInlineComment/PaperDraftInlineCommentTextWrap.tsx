@@ -16,6 +16,7 @@ import {
   useRef,
   RefObject,
 } from "react";
+import colors from "~/config/themes/colors";
 
 type UseEffectPrepareSlideButtonArgs = {
   decoratedText: string;
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
   },
   popoverBodyStyle: {
     background: "rgb(0,0,0)",
-    color: "rgb(255, 255, 255)",
+    color: colors.WHITE(),
     cursor: "pointer",
     fontSize: 14,
     padding: "8px 16px",

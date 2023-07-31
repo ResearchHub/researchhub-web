@@ -35,7 +35,7 @@ export const customStyles = {
 
 export const formGenericStyles = StyleSheet.create({
   background: {
-    backgroundColor: "#FCFCFC",
+    backgroundColor: colors.PAGE_WRAPPER,
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
@@ -50,7 +50,7 @@ export const formGenericStyles = StyleSheet.create({
   title: {
     fontWeight: 500,
     fontSize: 28,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     "@media only screen and (max-width: 665px)": {
       fontSize: 25,
     },
@@ -82,8 +82,8 @@ export const formGenericStyles = StyleSheet.create({
   },
   pageContent: {
     position: "relative",
-    backgroundColor: "#FFF",
-    boxShadow: "2px 2x 2px 2px #EDEDED",
+    backgroundColor: colors.WHITE(),
+    boxShadow: `2px 2x 2px 2px ${colors.LIGHT_GREY_BACKGROUND}`,
     // border: "1px solid #ddd",
     borderRadius: 4,
     padding: "30px 60px",
@@ -97,14 +97,14 @@ export const formGenericStyles = StyleSheet.create({
     [`@media only screen and (max-width: 767px)`]: {
       width: "calc(100% - 16px)",
       padding: 16,
-      boxSizing: 'border-box',
+      boxSizing: "border-box",
       border: 0,
     },
   },
   textArea: {
     "@media only screen and (max-width: 767px)": {
       marginTop: 16,
-    }
+    },
   },
   header: {
     fontSize: 22,
@@ -114,7 +114,7 @@ export const formGenericStyles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingBottom: 8,
-    borderBottom: `1px solid #EBEBEB`,
+    borderBottom: `1px solid ${colors.GREY_BORDER}`,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 18,
     },
@@ -195,7 +195,7 @@ export const formGenericStyles = StyleSheet.create({
     marginBottom: 10,
     width: 600,
     "@media only screen and (max-width: 767px)": {
-      width: '100%',
+      width: "100%",
     },
     "@media only screen and (max-width: 415px)": {
       width: 338,
@@ -210,7 +210,7 @@ export const formGenericStyles = StyleSheet.create({
     marginBottom: 20,
     width: 600,
     "@media only screen and (max-width: 767px)": {
-      width: '100%',
+      width: "100%",
     },
     "@media only screen and (max-width: 415px)": {
       width: 338,
@@ -282,7 +282,7 @@ export const formGenericStyles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FCFCFC",
+    backgroundColor: colors.PAGE_WRAPPER,
     marginTop: 30,
     paddingBottom: 20,
     marginBottom: 10,
@@ -367,8 +367,8 @@ export const formGenericStyles = StyleSheet.create({
   discussionTextEditor: {
     width: 600,
     height: 300,
-    border: "1px solid #E8E8F2",
-    backgroundColor: "#FBFBFD",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     "@media only screen and (max-width: 665px)": {
       width: 380,
     },
@@ -471,7 +471,7 @@ export const formGenericStyles = StyleSheet.create({
     cursor: "pointer",
     backgroundColor: "#f7f7fb",
     padding: "3px 10px",
-    border: "1px solid rgb(232, 232, 242)",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     borderBottomColor: "#f7f7fb",
     position: "absolute",
     right: -1,

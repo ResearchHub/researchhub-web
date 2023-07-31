@@ -167,7 +167,7 @@ function UserApiTokenInputField({
 const styles = StyleSheet.create({
   container: {
     padding: "30px 10px",
-    borderTop: "1px solid #EDEDED",
+    borderTop: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
   },
   labelContainer: {
     width: "100%",
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     cursor: "pointer",
     backgroundColor: colors.BLUE(),
-    color: "#FFF",
+    color: colors.WHITE(),
     position: "absolute",
     right: 5,
     top: 10,

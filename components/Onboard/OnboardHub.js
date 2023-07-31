@@ -54,19 +54,19 @@ const styles = StyleSheet.create({
   root: {
     width: 220,
     height: 187,
-    border: "1px solid #EDEDED",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     borderRadius: 3,
-    background: "#FFFFFF",
+    background: colors.WHITE(),
     boxSizing: "border-box",
     cursor: "pointer",
     ":hover": {
       border: "1px solid #C4C4C4",
-      filter: "drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))",
+      filter: `drop-shadow(0px 4px 4px ${colors.PURE_BLACK(0.25)}))`,
     },
   },
   subscribed: {
     border: "1px solid #C4C4C4",
-    filter: "drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))",
+    filter: `drop-shadow(0px 4px 4px ${colors.PURE_BLACK(0.25)}))`,
   },
   header: {
     display: "flex",
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 500,
     fontSize: 16,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     textTransform: "capitalize",
     paddingRight: 10,
   },
@@ -91,13 +91,13 @@ const styles = StyleSheet.create({
     width: 25,
     minWidth: 25,
     borderRadius: "50%",
-    background: "rgba(36, 31, 58, 0.03)",
-    color: "rgba(36, 31, 58, 0.5)",
-    border: "1px solid rgba(36, 31, 58, 0.1)",
+    background: colors.BLACK(0.03),
+    color: colors.BLACK(0.5),
+    border: `1px solid ${colors.BLACK(0.1)}`,
     boxSizing: "border-box",
   },
   active: {
-    background: "#FFFFFF",
+    background: colors.WHITE(),
     color: colors.BLUE(),
     // borderColor: colors.BLUE()
   },
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     width: "100%",
     objectFit: "cover",
     userSelect: "none",
-    background: "#FAFAFA",
+    background: colors.INPUT_BACKGROUND_GREY,
   },
 });
 

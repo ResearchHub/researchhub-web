@@ -88,7 +88,10 @@ class SideColumn extends Component {
                 customPlaceholder ? (
                   customPlaceholder
                 ) : (
-                  <customPlaceholderPlaceholder color="#efefef" rows={5} />
+                  <customPlaceholderPlaceholder
+                    color={colors.PLACEHOLDER_CARD_BACKGROUND}
+                    rows={5}
+                  />
                 )
               }
             >
@@ -109,8 +112,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: "15px 0 1px",
-    backgroundColor: "#FFF",
-    border: "1px solid #ededed",
+    backgroundColor: colors.WHITE(),
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     borderRadius: 4,
     boxSizing: "border-box",
     width: "100%",
@@ -167,24 +170,24 @@ const styles = StyleSheet.create({
     transition: "all ease-out 0.1s",
     borderRadius: 3,
     borderLeft: "3px solid #fff",
-    borderBottom: "1px solid #F0F0F0",
+    borderBottom: `1px solid ${colors.VERY_LIGHT_GREY()}`,
     padding: "10px 15px",
     color: colors.BLACK(0.6),
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
       color: colors.NEW_BLUE(),
     },
     ":active": {
       color: colors.NEW_BLUE(),
-      background:
-        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+      ${colors.NEW_BLUE(0)} 100%)`,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
     ":focus": {
       color: colors.NEW_BLUE(),
-      background:
-        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+      ${colors.NEW_BLUE(0)} 100%)`,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
   },
@@ -200,12 +203,12 @@ const styles = StyleSheet.create({
     objectFit: "cover",
     marginRight: 10,
     background: "#EAEAEA",
-    border: "1px solid #ededed",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
   },
   current: {
     color: colors.NEW_BLUE(),
-    background:
-      "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+    background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+      ${colors.NEW_BLUE(0)} 100%)`,
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
   list: {
@@ -241,17 +244,17 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   viewMoreButton: {
-    color: "rgba(78, 83, 255)",
+    color: colors.BLUE(),
     fontWeight: 300,
     textTransform: "capitalize",
     fontSize: 16,
     padding: 20,
-    borderTop: "1px solid #F0F0F0",
+    borderTop: `1px solid ${colors.VERY_LIGHT_GREY()}`,
     boxSizing: "border-box",
     width: "100%",
     cursor: "pointer",
     ":hover": {
-      color: "rgba(78, 83, 255, .5)",
+      color: colors.BLUE(0.5),
       textDecoration: "underline",
     },
   },

@@ -61,7 +61,7 @@ export default ShareModal;
 
 const styles = StyleSheet.create({
   modal: {
-    background: "#fff",
+    background: colors.WHITE(),
     outline: "none",
     position: "absolute",
     left: "50%",
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     position: "relative",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     padding: "50px 0px 50px 0px",
     width: 625,
     height: "100%",
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     height: 30,
     width: 426,
     fontSize: 26,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
   },
   subtitle: {
     marginTop: 10,

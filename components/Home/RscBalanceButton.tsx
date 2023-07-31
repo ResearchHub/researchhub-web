@@ -139,11 +139,11 @@ const styles = StyleSheet.create({
     height: 18,
     width: 18,
     borderRadius: "50%",
-    boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    boxShadow: `0px 2px 4px ${colors.STANDARD_BOX_SHADOW}`,
   },
   rscDelta: {
     // background: colors.BLUE(1),
-    // color: "white",
+    // color: colors.WHITE(),
     background: colors.LIGHT_GREEN(0.5),
     color: colors.PASTEL_GREEN_TEXT,
     padding: 4,
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     display: "flex",
     position: "absolute",
     borderRadius: "50px",
-    boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
+    boxShadow: `0 0 24px ${colors.PURE_BLACK(0.14)}`,
   },
   usdAmount: {
     fontSize: 12,

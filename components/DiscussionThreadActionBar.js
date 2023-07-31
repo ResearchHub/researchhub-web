@@ -107,13 +107,13 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     fontSize: 14,
     marginLeft: 8,
-    color: "#918f9b",
+    color: colors.DARK_GREYISH_BLUE2(),
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
   },
   iconChat: {
-    color: "#918f9b",
+    color: colors.DARK_GREYISH_BLUE2(),
   },
 });
 

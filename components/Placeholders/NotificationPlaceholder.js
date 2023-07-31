@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
+import colors from "../../config/themes/colors";
 
 const NotificationPlaceholder = ({ color }) => (
   <Fragment>
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     // border: "1px solid rgb(237, 237, 237)",
     padding: 8,
-    background: "#fff",
+    background: colors.WHITE(),
     boxSizing: "border-box",
     width: "100%",
     margin: "0 auto",

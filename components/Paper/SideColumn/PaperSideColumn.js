@@ -27,10 +27,10 @@ const PaperSideColumn = (props) => {
 const styles = StyleSheet.create({
   root: {
     width: "100%",
-    border: "1.5px solid #F0F0F0",
+    border: `1.5px solid ${colors.VERY_LIGHT_GREY()}`,
     borderRadius: 4,
-    backgroundColor: "#fff",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    backgroundColor: colors.WHITE(),
+    boxShadow: `0px 3px 4px ${colors.PURE_BLACK(0.02)}`,
     boxSizing: "border-box",
     paddingBottom: 5,
     "@media only screen and (max-width: 767px)": {
@@ -48,23 +48,23 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    borderBottom: "1px solid #F0F0F0",
+    borderBottom: `1px solid ${colors.VERY_LIGHT_GREY()}`,
     fontWeight: 500,
-    background: "#FAFAFA",
+    background: colors.INPUT_BACKGROUND_GREY,
   },
   left: {
-    borderRight: "1px solid #F0F0F0",
+    borderRight: `1px solid ${colors.VERY_LIGHT_GREY()}`,
   },
   right: {
-    borderLeft: "1px solid #F0F0F0",
+    borderLeft: `1px solid ${colors.VERY_LIGHT_GREY()}`,
   },
   active: {
     border: "unset",
     borderBottom: `3px solid ${colors.NEW_BLUE()}`,
-    background: "#fff",
+    background: colors.WHITE(),
     color: colors.BLUE(),
-    background:
-      "linear-gradient(0deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+    background: `linear-gradient(90deg, ${NEW_BLUE(0.1)} 0%, 
+        ${NEW_BLUE(0)} 100%)`,
     boxSizing: "border-box",
   },
   rhIcon: {

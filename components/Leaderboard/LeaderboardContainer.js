@@ -78,7 +78,12 @@ const LeaderboardContainer = (props) => {
       <ReactPlaceholder
         ready={false}
         ready={!fetchingUsers}
-        customPlaceholder={<LeaderboardPlaceholder color="#efefef" rows={5} />}
+        customPlaceholder={
+          <LeaderboardPlaceholder
+            color={colors.PLACEHOLDER_CARD_BACKGROUND}
+            rows={5}
+          />
+        }
       >
         <div className={css(styles.leaderboardUsers)}>
           {renderLeaderboardUsers(users)}
@@ -103,12 +108,12 @@ LeaderboardContainer.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    background: "#fff",
+    background: colors.WHITE(),
     display: "block",
     top: 100,
     borderRadius: 4,
     width: "100%",
-    border: "1px solid #ededed",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     padding: "15px 0",
     boxSizing: "border-box",
   },
@@ -142,7 +147,7 @@ const styles = StyleSheet.create({
     transition: "all ease-out 0.1s",
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
   },
   linkContainer: {
@@ -150,14 +155,14 @@ const styles = StyleSheet.create({
   },
   link: {
     textDecoration: "none",
-    color: "rgba(78, 83, 255)",
+    color: colors.BLUE(),
     fontWeight: 300,
     textTransform: "capitalize",
     fontSize: 16,
     padding: "3px 5px",
     paddingLeft: 25,
     ":hover": {
-      color: "rgba(78, 83, 255, .5)",
+      color: colors.BLUE(0.5),
     },
   },
 });

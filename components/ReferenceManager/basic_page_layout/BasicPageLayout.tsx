@@ -13,6 +13,7 @@ import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import HistoryIcon from "@mui/icons-material/History";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import Person2Icon from "@mui/icons-material/Person2";
+import colors from "~/config/themes/colors";
 
 type Props = { children: ReactNode };
 
@@ -43,7 +44,7 @@ export default function BasicPageLayout({ children }: Props) {
           }}
         >
           <Typography
-            color="black"
+            color={colors.PURE_BLACK()}
             fontSize={16}
             fontWeight={600}
             noWrap
@@ -55,7 +56,7 @@ export default function BasicPageLayout({ children }: Props) {
             className="TopBarRightSection"
             sx={{
               alignItems: "center",
-              color: "rgba(124, 121, 137, 1)",
+              color: colors.MEDIUM_GREY2(),
               display: "flex",
               height: 40,
               justifyContent: "space-between",

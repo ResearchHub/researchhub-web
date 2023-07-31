@@ -12,10 +12,9 @@ export default function PostingGuidelinesModal({
   isOpen,
   closeModal,
 }: Props): ReactElement {
-
   const handleClose = () => {
     closeModal();
-  }
+  };
 
   return (
     <BaseModal
@@ -38,22 +37,22 @@ export default function PostingGuidelinesModal({
         </ul>
       </div>
     </BaseModal>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-  "rootContainer": {
+  rootContainer: {
     width: "100%",
     textAlign: "left",
   },
-  "modalStyle": {
+  modalStyle: {
     minWidth: 600,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       minWidth: "unset",
     },
   },
   guidelinesContent: {
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     fontSize: 16,
     fontStyle: "normal",
     fontWeight: "normal",

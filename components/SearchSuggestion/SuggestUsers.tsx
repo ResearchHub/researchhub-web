@@ -158,12 +158,12 @@ const styles = StyleSheet.create({
     boxShadow:
       "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
     ":nth-child(1n) > div": {
-      backgroundColor: "white",
+      backgroundColor: colors.WHITE(),
     },
   },
   userDropdownEmpty: {
     padding: "6px 10px",
-    backgroundColor: "white",
+    backgroundColor: colors.WHITE(),
     whiteSpace: "pre",
   },
   userRow: {

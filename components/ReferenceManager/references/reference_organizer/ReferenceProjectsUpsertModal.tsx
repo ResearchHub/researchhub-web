@@ -116,7 +116,7 @@ export default function ReferenceProjectsUpsertModal({
             }}
           >
             <Typography
-              color="rgba(36, 31, 58, 1)"
+              color={colors.BLACK(1)}
               fontSize="14px"
               fontWeight={600}
               lineHeight="22px"
@@ -217,7 +217,11 @@ export default function ReferenceProjectsUpsertModal({
                 borderRadius: "4px",
               }}
             >
-              <Typography fontSize="14px" fontWeight="400" color="#fff">
+              <Typography
+                fontSize="14px"
+                fontWeight="400"
+                color={colors.WHITE()}
+              >
                 {upsertPurpose === "update" ? "Update" : "Create"}
               </Typography>
             </div>

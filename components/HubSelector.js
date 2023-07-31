@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     objectFit: "cover",
     marginRight: 10,
     background: colors.LIGHT_GREY(),
-    border: "1px solid #ededed",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
   },
   hubLink: {
     textDecoration: "none",

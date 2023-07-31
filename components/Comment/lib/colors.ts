@@ -38,10 +38,12 @@ const colors = {
   },
   dot: "rgb(200 200 202)",
   gray: globalColors.BLACK(0.6),
+  white: globalColors.WHITE(),
+  black02: globalColors.BLACK(0.2),
   placeholder: globalColors.PLACEHOLDER_CARD_BACKGROUND,
   annotation: {
     selected: "rgb(252, 187, 41, 0.3)",
-    sharedViaUrl: `rgba(57, 113, 255, 0.25)`,
+    sharedViaUrl: globalColors.NEW_BLUE(0.25),
     unselected: "rgba(255, 255, 0, 0.3)",
   },
 };

@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
       borderBottom: 0,
     },
     ":hover": {
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
   },
   readContainer: {
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
 
     ":hover": {
       backgroundColor: colors.BLUE(1),
-      color: "#FFF",
+      color: colors.WHITE(),
     },
     "@media only screen and (max-width: 321px)": {
       minWidth: "unset",
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     paddingBottom: 10,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     "@media only screen and (max-width: 436px)": {
       fontSize: 18,
     },
@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
     lineHeight: "1.3",
     whiteSpace: "pre-wrap",
     wordBreak: "break-word",
-    color: "rgb(78, 76, 95)",
+    color: colors.VERY_DARK_GREYISH_BLUE(),
     "@media only screen and (max-width: 436px)": {
       fontSize: 14,
     },

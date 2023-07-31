@@ -31,7 +31,10 @@ class SidebarList extends Component {
                   showLoadingAnimation
                   ready={false}
                   customPlaceholder={
-                    <HubEntryPlaceholder color="#efefef" rows={9} />
+                    <HubEntryPlaceholder
+                      color={colors.PLACEHOLDER_CARD_BACKGROUND}
+                      rows={9}
+                    />
                   }
                 />
               </Fragment>
@@ -98,7 +101,7 @@ const styles = StyleSheet.create({
   },
   current: {
     borderColor: "rgb(237, 237, 237)",
-    backgroundColor: "#FAFAFA",
+    backgroundColor: colors.INPUT_BACKGROUND_GREY,
     ":hover": {
       borderColor: "rgb(227, 227, 227)",
       backgroundColor: "#EAEAEA",
@@ -131,13 +134,13 @@ const styles = StyleSheet.create({
   },
   link: {
     textDecoration: "none",
-    color: "rgba(78, 83, 255)",
+    color: colors.BLUE(),
     fontWeight: 300,
     textTransform: "capitalize",
     fontSize: 16,
     padding: "3px 5px",
     ":hover": {
-      color: "rgba(78, 83, 255, .5)",
+      color: colors.BLUE(0.5),
       textDecoration: "underline",
     },
   },

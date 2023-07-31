@@ -26,8 +26,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 16,
     marginBottom: 4,
-    border: "1px solid #ededed",
-    background: "#fff",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
+    background: colors.WHITE(),
     textAlign: "center",
 
     "@media only screen and (min-width: 1024px)": {

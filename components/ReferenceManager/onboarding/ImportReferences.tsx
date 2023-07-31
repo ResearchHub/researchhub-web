@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     // position: "absolute",
     // left: -24,
     // top: "50%",
-    color: "#AAA8B4",
+    color: colors.VOTE_ARRROW,
     padding: 8,
     cursor: "pointer",
     // transform: "translateY(-50%)",

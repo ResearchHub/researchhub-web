@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     borderRadius: 3,
     boxSizing: "border-box",
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     fontSize: 16,
     fontWeight: 400,
     height: 52,

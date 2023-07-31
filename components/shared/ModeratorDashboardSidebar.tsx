@@ -110,7 +110,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
 const style = StyleSheet.create({
   count: {
     backgroundColor: colors.RED(),
-    color: "white",
+    color: colors.WHITE(),
     fontSize: 10,
     padding: 3,
     borderRadius: "50%",

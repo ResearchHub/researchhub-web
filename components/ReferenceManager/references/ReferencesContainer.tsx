@@ -479,7 +479,7 @@ function ReferencesContainer({
                     <div className={css(styles.button)}>
                       <FontAwesomeIcon
                         icon={faPlus}
-                        color="#fff"
+                        color={colors.WHITE()}
                         fontSize="20px"
                         style={{ marginRight: 8 }}
                       />
@@ -600,7 +600,7 @@ const styles = StyleSheet.create({
     background: colors.NEW_BLUE(),
     borderRadius: 4,
     boxSizing: "border-box",
-    color: "#fff",
+    color: colors.WHITE(),
     cursor: "pointer",
     display: "flex",
     fontSize: 14,
@@ -610,7 +610,7 @@ const styles = StyleSheet.create({
   },
   secondary: {
     border: `1px solid ${colors.NEW_BLUE()}`,
-    background: "#fff",
+    background: colors.WHITE(),
     color: colors.NEW_BLUE(),
     marginRight: 8,
     marginLeft: 16,

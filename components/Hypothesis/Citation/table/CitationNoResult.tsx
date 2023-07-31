@@ -1,6 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement } from "react";
 import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
+import colors from "~/config/themes/colors";
 
 export default function CitationNoResult({
   citationType,
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
   emptyPlaceholderText: {
     textAlign: "center",
     fontSize: 18,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     marginTop: 16,
     "@media only screen and (max-width: 767px)": {
       fontSize: 14,
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
   emptyPlaceholderSubtitle: {
     textAlign: "center",
     fontSize: 14,
-    color: "#4e4c5f",
+    color: colors.VERY_DARK_GREYISH_BLUE(),
     marginTop: 10,
     marginBottom: 15,
     "@media only screen and (max-width: 767px)": {

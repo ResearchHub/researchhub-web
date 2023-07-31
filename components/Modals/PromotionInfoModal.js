@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   card: {
-    border: "1px solid #E8E8F2",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     padding: "20px 15px",
     borderRadius: 4,
     marginTop: 25,
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     padding: "6px 20px",
     borderRadius: 4,
     backgroundColor: colors.BLUE(),
-    color: "#FFF",
+    color: colors.WHITE(),
     cursor: "pointer",
     ":hover": {
       backgroundColor: "#3E43E8",

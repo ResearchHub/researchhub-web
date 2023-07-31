@@ -70,7 +70,7 @@ export default function ReferenceDoiSearchInput({
       }}
     >
       <Typography
-        color="rgba(36, 31, 58, 1)"
+        color={colors.BLACK(1)}
         fontSize="14px"
         fontWeight={600}
         lineHeight="22px"
@@ -104,7 +104,7 @@ export default function ReferenceDoiSearchInput({
           size="small"
           value={doiOrUrl}
           sx={{
-            background: "#fff",
+            background: colors.WHITE(),
           }}
         />
         <Box

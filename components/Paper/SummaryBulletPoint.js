@@ -167,7 +167,7 @@ const SummaryBulletPoint = (props) => {
             <Button
               label={
                 pending ? (
-                  <Loader loading={true} size={20} color={"#fff"} />
+                  <Loader loading={true} size={20} color={colors.WHITE()} />
                 ) : (
                   "Submit"
                 )
@@ -292,14 +292,14 @@ const styles = StyleSheet.create({
   bulletpoint: {
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "#FBFBFD",
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     alignItems: "flex-start",
     boxSizing: "border-box",
     borderRadius: 3,
     padding: "25px 20px",
     paddingBottom: 10,
     marginBottom: 10,
-    border: "1px solid #F0F0F0",
+    border: `1px solid ${colors.VERY_LIGHT_GREY()}`,
     position: "relative",
     "@media only screen and (max-width: 415px)": {
       padding: 8,
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   bulletpointText: {
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     fontWeight: 400,
     fontSize: 15,
     width: "100%",
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   contributorText: {
-    color: "rgba(36, 31, 58, 0.4)",
+    color: colors.BLACK(0.4),
     fontStyle: "italic",
     fontSize: 14,
     marginRight: 8,
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     top: 6,
     right: 8,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     opacity: 0.6,
   },
   editContainer: {
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     right: 8,
     fontSize: 12,
     cursor: "pointer",
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     color: colors.RED(),
     opacity: 0.6,
     ":hover": {
@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
     right: 10,
     fontSize: 12,
     cursor: "pointer",
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     color: colors.BLUE(),
     opacity: 0.6,
     ":hover": {

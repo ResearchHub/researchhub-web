@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     width: "100%",
     fontWeight: "500",
     marginBottom: 10,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
   },
   image: {
     borderRadius: "8px",

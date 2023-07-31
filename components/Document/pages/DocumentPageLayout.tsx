@@ -15,6 +15,7 @@ import { truncateText } from "~/config/utils/string";
 import buildOpenGraphData, { OpenGraphData } from "../lib/buildOpenGraphData";
 import HeadComponent from "~/components/Head";
 import { useRouter } from "next/router";
+import colors from "~/config/themes/colors";
 
 interface Args {
   document: GenericDocument;
@@ -89,10 +90,10 @@ const styles = StyleSheet.create({
     },
   },
   pageWrapperAlternate: {
-    background: "white",
+    background: colors.WHITE(),
   },
   topArea: {
-    background: "white",
+    background: colors.WHITE(), // colors.GREY_ICY_BLUE_HUE,
     paddingTop: 25,
   },
   bodyArea: {

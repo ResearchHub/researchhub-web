@@ -120,7 +120,7 @@ const ReactTransitionComponent = ({ children, state, trail }) => {
 
 const styles = StyleSheet.create({
   container: {
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
   },
   rsc: {
     color: colors.NEW_BLUE(1),
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   user: {
     paddingTop: 16,
     paddingBottom: 16,
-    borderBottom: "1px solid #EFEFEF",
+    borderBottom: `1px solid ${colors.PLACEHOLDER_CARD_BACKGROUND}`,
   },
   banner: {
     height: 300,
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   invitedFriendsTitle: {
     fontWeight: 500,
     fontSize: 18,
-    borderBottom: "1px solid #EFEFEF",
+    borderBottom: `1px solid ${colors.PLACEHOLDER_CARD_BACKGROUND}`,
     paddingBottom: 21,
     marginTop: 50,
   },
@@ -211,14 +211,14 @@ const styles = StyleSheet.create({
   copySuccessMessageStyle: {
     position: "absolute",
     right: -70,
-    color: "#fff",
+    color: colors.WHITE(),
   },
   inlineNodeStyles: {
     paddingRight: 0,
     right: 16,
   },
   title: {
-    color: "#fff",
+    color: colors.WHITE(),
     fontWeight: 500,
     fontSize: 40,
     textAlign: "center",
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     textAlign: "center",
-    color: "#fff",
+    color: colors.WHITE(),
     fontWeight: 400,
     fontSize: 18,
     opacity: 0.8,

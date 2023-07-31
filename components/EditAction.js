@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   button: {
     cursor: "pointer",
     ":hover": {
-      color: "#000",
+      color: colors.PURE_BLACK(),
     },
   },
 });

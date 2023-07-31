@@ -84,6 +84,7 @@ export const DEFAULT_ITEM_STYLE = StyleSheet.create({
     marginBottom: 8,
     textOverflow: "ellipsis",
     width: "100%",
+    color: colors.BLACK(),
   },
   emphasized: {
     fontWeight: 600,

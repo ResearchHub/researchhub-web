@@ -355,7 +355,7 @@ const CommentEditor = ({
                       <ClipLoader
                         sizeUnit={"px"}
                         size={18}
-                        color={"#fff"}
+                        color={colors.white}
                         loading={true}
                       />
                     </div>
@@ -393,8 +393,8 @@ const styles = StyleSheet.create({
   commentEditor: {
     display: "flex",
     padding: "15px",
-    boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.2)",
-    backgroundColor: "white",
+    boxShadow: `0px 0px 15px ${colors.black02}`,
+    backgroundColor: colors.white,
     borderRadius: 4,
     flex: "none",
     flexDirection: "column",

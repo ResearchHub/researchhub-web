@@ -266,7 +266,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
             >
               <Typography fontSize="14px" fontWeight="400">
                 {isSubmitting ? (
-                  <ClipLoader color="#fff" size={14} />
+                  <ClipLoader color={colors.WHITE()} size={14} />
                 ) : (
                   "Add entry"
                 )}

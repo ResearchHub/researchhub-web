@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     border: "none",
     backgroundColor: "#3971FF",
     borderRadius: 4,
-    color: "#fff",
+    color: colors.WHITE(),
     cursor: "pointer",
     display: "flex",
     fontSize: 16,
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   },
   popoverBodyContent: {
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     borderRadius: 4,
     boxShadow: "0px 0px 10px 0px #00000026",
     display: "flex",

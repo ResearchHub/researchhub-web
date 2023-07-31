@@ -15,6 +15,7 @@ import { bindActionCreators } from "redux";
 
 // Redux
 import { MessageActions } from "~/redux/message";
+import colors from "~/config/themes/colors";
 
 const Loader = dynamic(() => import("./Loader"));
 
@@ -69,7 +70,7 @@ class Message extends Component {
             <Loader loading={true} Component={this.loader} />
           </div>
         ) : (
-          <span style={inlineStyle.check} color="#fff">
+          <span style={inlineStyle.check} color={colors.WHITE()}>
             {message.error ? (
               <FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>
             ) : (
@@ -87,7 +88,7 @@ class Message extends Component {
 
 const inlineStyle = {
   check: {
-    color: "#FFF",
+    color: colors.WHITE(),
     fontSize: 40,
   },
 };
@@ -98,7 +99,7 @@ var styles = StyleSheet.create({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    background: "rgba(0, 0, 0, .8)",
+    background: colors.PURE_BLACK(0.8),
     padding: "16px",
     borderRadius: "8px",
     display: "flex",
@@ -120,7 +121,7 @@ var styles = StyleSheet.create({
     display: "none",
   },
   message: {
-    color: "#fff",
+    color: colors.WHITE(),
     fontSize: "16px",
     fontWeight: "300",
     textAlign: "center",

@@ -38,7 +38,7 @@ DiscussionCard.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#FFFFF",
+    backgroundColor: colors.WHITE(),
     padding: "15px 5px 15px 5px",
     borderRadius: 10,
     border: "1px solid #FFFFFF",
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       width: "calc(100% - 40px)",
       padding: 16,
-      backgroundColor: "#FFF",
+      backgroundColor: colors.WHITE(),
       marginBottom: 10,
       ":hover": {
         // border: "solid 1px #D2D2E6",
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
       width: "calc(100% - 40px)",
       padding: 16,
       border: "solid 1px #F7F7FB",
-      backgroundColor: "#FFF",
+      backgroundColor: colors.WHITE(),
       marginBottom: 10,
       ":hover": {
         border: "solid 1px #D2D2E6",
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   hoverEvents: {
     cursor: "pointer",
     ":hover": {
-      backgroundColor: "rgba(243, 243, 248, 0.7)",
+      backgroundColor: colors.PAPER_TAB_BACKGROUND(0.7),
     },
   },
   topContainer: {
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   actionContainer: {
     display: "flex",
     flexDirection: "row",
-    color: "#000",
+    color: colors.PURE_BLACK(),
     fontSize: 14,
     "@media only screen and (max-width: 415px)": {
       justifyContent: "space-between",

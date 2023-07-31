@@ -256,7 +256,7 @@ var styles = StyleSheet.create({
     marginTop: 12,
     marginBottom: 12,
     borderRadius: 4,
-    background: "white",
+    background: colors.WHITE(),
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       padding: "8px 8px 4px 8px",
     },

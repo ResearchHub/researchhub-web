@@ -86,7 +86,10 @@ const UserStateBanner = (props) => {
           <span style={{ maxWidth: 600 }}>
             We’ve noticed suspicious activity from your account. If you believe
             this to be a mistake, please contact us at{" "}
-            <a style={{ color: "#fff" }} href="mailto:hello@researchhub.com">
+            <a
+              style={{ color: colors.WHITE() }}
+              href="mailto:hello@researchhub.com"
+            >
               hello@researchhub.com
             </a>{" "}
             so we can investigate.
@@ -115,7 +118,7 @@ const styles = StyleSheet.create({
     minWidth: "100%",
     minHeight: 60,
     maxHeight: 120,
-    color: "#FFF",
+    color: colors.WHITE(),
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -123,7 +126,7 @@ const styles = StyleSheet.create({
     position: "relative",
     whiteSpace: "pre-wrap",
     zIndex: 2,
-    boxShadow: "rgba(0, 0, 0, 0.16) 0px 4px 41px -24px",
+    boxShadow: `${colors.PURE_BLACK(0.16)} 0px 4px 41px -24px`,
     borderBottom: "rgb(151,151,151, .2) 1px solid",
     "@media only screen and (max-width: 415px)": {
       flexDirection: "column",
@@ -207,7 +210,7 @@ const styles = StyleSheet.create({
   icon: {
     fontSize: 16,
     marginRight: 5,
-    color: "#FFF",
+    color: colors.WHITE(),
   },
 });
 

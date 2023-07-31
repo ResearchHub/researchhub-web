@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     left: 0,
     zIndex: 10,
     padding: "5px 12px",
-    background: "white",
+    background: colors.WHITE(),
     boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",
   },
   orderingContainer: {},

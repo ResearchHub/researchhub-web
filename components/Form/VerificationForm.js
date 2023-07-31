@@ -198,9 +198,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     background: "#111",
-    color: "#fff",
+    color: colors.WHITE(),
     borderRadius: "50%",
-    boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
+    boxShadow: `${colors.DARK_GREYISH_BLUE(0.39)} 0px 3px 10px 0px`,
   },
 });
 

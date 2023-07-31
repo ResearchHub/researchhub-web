@@ -187,7 +187,7 @@ const ContributorBounty = (props) => {
 
 const styles = StyleSheet.create({
   username: {
-    color: "#000",
+    color: colors.PURE_BLACK(),
     textDecoration: "none",
     fontWeight: "bold",
     cursor: "pointer",

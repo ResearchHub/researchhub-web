@@ -29,7 +29,7 @@ export function convertEditorValueToHtml(value) {
       top: 10,
       right: 10,
       fontSize: 30,
-      color: "#fff",
+      color: colors.WHITE(),
       cursor: "pointer",
       zIndex: 3,
     },
@@ -77,11 +77,11 @@ export function convertEditorValueToHtml(value) {
     },
     bold: {
       fontWeight: 500,
-      color: "#241F3A",
+      color: colors.TEXT_DARKER_GREY,
     },
     stickyBottom: {
       position: "sticky",
-      backgroundColor: "#fff",
+      backgroundColor: colors.WHITE(),
       top: 59,
       zIndex: 3,
     },

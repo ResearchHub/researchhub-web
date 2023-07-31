@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     padding: "30px 10px",
     backgroundColor: "#F7F7FB",
     cursor: "pointer",
-    border: "1px solid #EDEDED",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     borderRadius: 3,
     position: "relative",
     transition: "all ease-in-out 0.1s",
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
     border: `1px dashed ${colors.BLUE(1)}`,
     borderColor: colors.BLUE(1),
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
   },
   blankStateImg: {
     height: 80,
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
   editIcon: {
     color: "#C1C2CE",
     ":hover": {
-      color: "#000",
+      color: colors.PURE_BLACK(),
     },
   },
   addPaperIcon: {
@@ -415,11 +415,11 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   input: {
-    border: "1px solid #E8E8F2",
-    backgroundColor: "#FBFBFD",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     fontWeight: "400",
     borderRadius: 2,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     highlight: "none",
     outline: "none",
     // width: '100%',

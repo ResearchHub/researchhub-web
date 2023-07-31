@@ -117,7 +117,12 @@ const ActivityList = (props) => {
       <ReactPlaceholder
         ready={!isFetching}
         showLoadingAnimation
-        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={3} />}
+        customPlaceholder={
+          <HubEntryPlaceholder
+            color={colors.PLACEHOLDER_CARD_BACKGROUND}
+            rows={3}
+          />
+        }
       >
         <SideColumnTitle
           title={"Latest Activity"}
@@ -147,8 +152,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   renderList: {
-    boxShadow:
-      "inset 25px 0px 25px -25px rgba(255,255,255,1), inset -25px 0px 25px -25px rgba(255,255,255,1)",
+    boxShadow: `inset 25px 0px 25px -25px ${colors.WHITE(1)}, 
+      inset -25px 0px 25px -25px ${colors.WHITE(1)}`,
   },
   link: {
     textTransform: "initial",
@@ -164,7 +169,7 @@ const styles = StyleSheet.create({
     top: 0,
     padding: "15px 20px 10px 20px",
     zIndex: 2,
-    background: "#FFF",
+    background: colors.WHITE(),
     width: "100%",
 
     justifyContent: "space-between",
@@ -173,14 +178,14 @@ const styles = StyleSheet.create({
     },
   },
   viewMoreButton: {
-    color: "rgba(78, 83, 255)",
+    color: colors.BLUE(),
     fontWeight: 300,
     textTransform: "capitalize",
     fontSize: 16,
     padding: "15px 0 15px 20px",
     cursor: "pointer",
     ":hover": {
-      color: "rgba(78, 83, 255, .5)",
+      color: colors.BLUE(0.5),
     },
   },
 });

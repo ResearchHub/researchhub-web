@@ -15,6 +15,7 @@ import Loader from "../Loader/Loader";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import moment from "moment";
 import ReactPlaceholder from "react-placeholder";
+import colors from "~/config/themes/colors";
 
 type UseEffectFetchEditorsArgs = {
   filters: EditorDashFilters;
@@ -189,7 +190,10 @@ export default function EditorsDashboard(): ReactElement<"div"> {
           <ReactPlaceholder
             ready={!isLoading}
             customPlaceholder={
-              <LeaderboardFeedPlaceholder color="#efefef" rows={5} />
+              <LeaderboardFeedPlaceholder
+                color={colors.PLACEHOLDER_CARD_BACKGROUND}
+                rows={5}
+              />
             }
           >
             <div className={css(styles.editorCardContainer)}>{editorCards}</div>
@@ -250,7 +254,7 @@ export const styles = StyleSheet.create({
     marginLeft: "auto",
   },
   navItem: {
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     opacity: 0.5,
   },
   last: {

@@ -130,11 +130,11 @@ const styles = StyleSheet.create({
   menu: {
     position: "absolute",
     zIndex: 100,
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     border: "1px solid rgb(222 222 222)",
     borderRadius: "4px",
     padding: "8px",
-    boxShadow: "rgba(129, 148, 167, 0.2) 0px 3px 10px 0px",
+    boxShadow: `${colors.DARK_GREYISH_BLUE(0.2)} 0px 3px 10px 0px`,
   },
   menuItem: {
     display: "flex",

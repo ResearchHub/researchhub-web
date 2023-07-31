@@ -40,7 +40,7 @@ const PaperBanner = (props) => {
             <br />
             {"Please visit our "}
             <a
-              style={{ color: "#4E53FF" }}
+              style={{ color: colors.BLUE() }}
               href="https://www.notion.so/researchhub/Paper-Submission-Guidelines-a2cfa1d9b53c431a91c9816e17f212e1"
               target="_blank"
               rel="noreferrer noopener"
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    boxShadow: "0px 0px 0px 0px rgba(0, 0, 0, 0.9)",
+    boxShadow: `0px 0px 0px 0px ${colors.PURE_BLACK(0.9)}`,
     "@media only screen and (max-width: 767px)": {
       padding: "15px 20px",
     },

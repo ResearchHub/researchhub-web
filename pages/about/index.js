@@ -355,8 +355,8 @@ class Index extends Component {
                   boxSizing: "border-box",
                 }}
                 wrapperStyle={{
-                  boxShadow:
-                    "inset 40px 0px 25px -25px rgba(255, 255, 255, 0.18), inset -25px 0px 40px -25px rgba(255, 255, 255, 0.18)",
+                  boxShadow: `inset 40px 0px 25px -25px ${colors.WHITE(0.18)}, 
+                  inset -25px 0px 40px -25px ${colors.WHITE(0.18)}`,
                 }}
                 itemStyle={{
                   border: "none",
@@ -639,7 +639,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     maxWidth: "100%",
     overflow: "hidden",
-    background: "#FFF",
+    background: colors.WHITE(),
   },
   banner: {
     height: 320,
@@ -747,7 +747,7 @@ const styles = StyleSheet.create({
     transition: "all ease-in-out 0.4s",
   },
   title: {
-    color: "#FFF",
+    color: colors.WHITE(),
     fontSize: 50,
     fontWeight: 400,
     padding: "30px 0 0 0",
@@ -756,7 +756,7 @@ const styles = StyleSheet.create({
     },
   },
   subtitle: {
-    color: "#FFF",
+    color: colors.WHITE(),
     fontSize: 33,
     fontWeight: 300,
     margin: 0,
@@ -806,7 +806,7 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontSize: 33,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     "@media only screen and (max-width: 800px)": {
       fontSize: 28,
     },
@@ -822,7 +822,7 @@ const styles = StyleSheet.create({
   },
   subtext: {
     fontSize: 18,
-    // color: "#4e4c5f",
+    // color: colors.VERY_DARK_GREYISH_BLUE(),
     lineHeight: 1.6,
     maxWidth: 515,
     whiteSpace: "pre-wrap",
@@ -896,7 +896,7 @@ const styles = StyleSheet.create({
   valueText: {
     maxWidth: 327,
     fontSize: 18,
-    color: "#4e4c5f",
+    color: colors.VERY_DARK_GREYISH_BLUE(),
     lineHeight: 1.6,
     "@media only screen and (max-width: 800px)": {
       fontSize: 16,
@@ -957,7 +957,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   contactText: {
-    color: "#4e4c5f",
+    color: colors.VERY_DARK_GREYISH_BLUE(),
     fontSize: 18,
     "@media only screen and (max-width: 800px)": {
       fontSize: 16,
@@ -997,7 +997,7 @@ const styles = StyleSheet.create({
     height: 300,
     minWidth: 295,
     maxWidth: 295,
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     boxShadow: "rgba(93, 83, 254, 0.18) 0px 4px 15px",
     zIndex: 3,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {

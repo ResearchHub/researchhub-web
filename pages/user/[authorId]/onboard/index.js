@@ -284,7 +284,11 @@ const Index = (props) => {
             <ReactPlaceholder
               ready={props.hubs.topHubs.length}
               showLoadingAnimation
-              customPlaceholder={<OnboardPlaceholder color="#efefef" />}
+              customPlaceholder={
+                <OnboardPlaceholder
+                  color={colors.PLACEHOLDER_CARD_BACKGROUND}
+                />
+              }
             >
               <OnboardHubList
                 hubs={hubs}
@@ -343,7 +347,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   root: {
-    backgroundColor: "#FCFCFC",
+    backgroundColor: colors.PAGE_WRAPPER,
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
@@ -357,7 +361,7 @@ const styles = StyleSheet.create({
     margin: 0,
     fontWeight: 500,
     fontSize: 28,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     "@media only screen and (max-width: 665px)": {
       fontSize: 25,
     },
@@ -395,7 +399,7 @@ const styles = StyleSheet.create({
   },
   pageContainer: {
     position: "relative",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     border: "1px solid #ddd",
     borderRadius: 4,
     padding: "30px 60px",
@@ -452,8 +456,8 @@ const styles = StyleSheet.create({
     padding: 10,
     outline: "none",
     boxSizing: "border-box",
-    background: "#FBFBFD",
-    border: "#E8E8F2 1px solid",
+    background: colors.LIGHT_GREY_BLUE2,
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     borderRadius: 3,
     fontSize: 16,
     ":hover": {

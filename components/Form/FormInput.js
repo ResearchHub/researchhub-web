@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontWeight: 500,
     marginBottom: 10,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     display: "flex",
     justifyContent: "flex-start",
   },
@@ -196,12 +196,12 @@ const styles = StyleSheet.create({
   input: {
     display: "flex",
     alignItems: "center",
-    border: "1px solid #E8E8F2",
-    backgroundColor: "#FBFBFD",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     padding: 15,
     fontWeight: "400",
     borderRadius: 2,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     highlight: "none",
     outline: "none",
     cursor: "default",
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 15,
     bottom: 10,
-    color: "#c5c4cc",
+    color: colors.SEARCH_ICON_COLOR,
     pointerEvents: "none",
   },
   inlineNodeRight: {

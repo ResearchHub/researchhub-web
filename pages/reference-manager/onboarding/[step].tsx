@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     zIndex: 5,
-    background: "#fff",
+    background: colors.WHITE(),
     width: "calc(100% - 80px)",
     minHeight: "100%",
     textAlign: "center",

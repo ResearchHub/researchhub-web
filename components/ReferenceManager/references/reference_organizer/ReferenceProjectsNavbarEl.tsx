@@ -134,7 +134,7 @@ export default function ReferenceProjectsNavbarEl({
               noWrap
               variant="h6"
               ml={"6px"}
-              color={"#241F3A"}
+              color={colors.TEXT_DARKER_GREY}
             >
               {projectName}
             </Typography>

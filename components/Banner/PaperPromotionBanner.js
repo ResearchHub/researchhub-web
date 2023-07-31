@@ -130,10 +130,10 @@ const styles = StyleSheet.create({
     whiteSpace: "pre-wrap",
     cursor: "pointer",
     zIndex: 2,
-    boxShadow: "rgba(0, 0, 0, 0.16) 0px 4px 41px -24px",
+    boxShadow: `${colors.PURE_BLACK(0.16)} 0px 4px 41px -24px`,
     borderBottom: "rgb(151,151,151, .2) 1px solid",
     ":hover": {
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
     ":hover #promotionLink": {
       textDecoration: "underline",

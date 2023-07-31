@@ -194,7 +194,9 @@ class LimitationTab extends Component {
         <ReactPlaceholder
           ready={false}
           showLoadingAnimation
-          customPlaceholder={<BulletPlaceholder color="#efefef" />}
+          customPlaceholder={
+            <BulletPlaceholder color={colors.PLACEHOLDER_CARD_BACKGROUND} />
+          }
         />
       );
     } else if (limits.length === 0 && !showForm) {
@@ -307,7 +309,7 @@ class LimitationTab extends Component {
                 <Button
                   label={
                     pendingSubmission ? (
-                      <Loader loading={true} size={20} color={"#fff"} />
+                      <Loader loading={true} size={20} color={colors.WHITE()} />
                     ) : (
                       "Submit"
                     )
@@ -329,7 +331,7 @@ class LimitationTab extends Component {
 const styles = StyleSheet.create({
   bulletContainer: {
     width: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     marginBottom: 20,
     boxSizing: "border-box",
   },
@@ -429,8 +431,8 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     borderRadius: 3,
     padding: 16,
-    border: `1px solid #F0F0F0`,
-    backgroundColor: "#FBFBFD",
+    border: `1px solid ${colors.VERY_LIGHT_GREY()}`,
+    backgroundColor: colors.LIGHT_GREY_BLUE2,
     cursor: "pointer",
     ":hover": {
       borderColor: colors.BLUE(),
@@ -466,7 +468,7 @@ const styles = StyleSheet.create({
   },
   subText: {
     fontSize: 16,
-    color: "rgba(36, 31, 58, 0.8)",
+    color: colors.BLACK(0.8),
     marginTop: 5,
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
@@ -489,9 +491,9 @@ const dropdownStyles = StyleSheet.create({
     position: "absolute",
     bottom: -75,
     right: 0,
-    boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
+    boxShadow: `${colors.DARK_GREYISH_BLUE(0.39)} 0px 3px 10px 0px`,
     boxSizing: "border-box",
-    background: "#fff",
+    background: colors.WHITE(),
     border: "1px solid #eee",
     borderRadius: 4,
     zIndex: 2,

@@ -293,7 +293,7 @@ class ManageBulletPointsModal extends Component {
             <Button
               label={
                 pendingSubmission ? (
-                  <Loader loading={true} size={20} color={"#fff"} />
+                  <Loader loading={true} size={20} color={colors.WHITE()} />
                 ) : (
                   "Save"
                 )
@@ -316,7 +316,7 @@ const overlayStyles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: colors.PURE_BLACK(0.2),
     zIndex: "11",
   },
 };
@@ -328,7 +328,7 @@ const mobileOverlayStyles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: colors.PURE_BLACK(0.2),
     zIndex: "11",
     borderRadius: 5,
   },
@@ -336,7 +336,7 @@ const mobileOverlayStyles = {
 
 const styles = StyleSheet.create({
   modal: {
-    background: "#fff",
+    background: colors.WHITE(),
     outline: "none",
     position: "absolute",
     left: "50%",
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     padding: 50,
     position: "relative",
     overflow: "auto",
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     fontWeight: 500,
     fontSize: 28,
     flexWrap: "wrap",
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     opacity: 0.6,
     fontWeight: 400,
     fontSize: 16,
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
     position: "fixed",
     bottom: 0,
     right: 0,
-    background: "#fff",
+    background: colors.WHITE(),
     width: "calc(100% - 66px)",
     padding: 16,
     paddingRight: 0,

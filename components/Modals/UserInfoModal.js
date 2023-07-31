@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     padding: 30,
     borderRadius: 5,
     transition: "all ease-in-out 0.4s",
@@ -535,8 +535,8 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     boxSizing: "border-box",
     position: "absolute",
-    background: "rgba(0, 0, 0, .3)",
-    color: "#fff",
+    background: colors.PURE_BLACK(0.3),
+    color: colors.WHITE(),
     bottom: 0,
   },
   titleHeader: {
@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
-    background: "#FFF",
+    background: colors.WHITE(),
     zIndex: 2,
   },
   buttonCustomStyle: {
@@ -673,7 +673,7 @@ const styles = StyleSheet.create({
     height: 30,
     width: "100%",
     fontSize: 26,
-    color: "#232038",
+    color: colors.DARK_DESATURATED_BLUE(),
     "@media only screen and (max-width: 557px)": {
       fontSize: 24,
     },

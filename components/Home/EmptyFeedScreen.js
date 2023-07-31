@@ -5,6 +5,7 @@ import NewPostButton from "../NewPostButton";
 
 import PropTypes from "prop-types";
 import Router from "next/router";
+import colors from "~/config/themes/colors";
 
 const EmptyFeedScreen = (props) => {
   const navigateToPaperUploadPage = () => {
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
   emptyPlaceholderText: {
     textAlign: "center",
     fontSize: 22,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     marginTop: 20,
     "@media only screen and (max-width: 767px)": {
       fontSize: 16,
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
   emptyPlaceholderSubtitle: {
     textAlign: "center",
     fontSize: 18,
-    color: "#4e4c5f",
+    color: colors.VERY_DARK_GREYISH_BLUE(),
     marginTop: 10,
     marginBottom: 15,
     "@media only screen and (max-width: 767px)": {
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
     },
   },
   title: {
-    color: "#FFF",
+    color: colors.WHITE(),
     fontSize: 28,
     fontWeight: 400,
     margin: 0,

@@ -8,6 +8,7 @@ import { ValueOf } from "../../config/types/root_types";
 import AuthorClaimDashboardNavbarButton from "./AuthorClaimDashboardNavbarButton";
 import { ReactElement, useEffect, useMemo, useState } from "react";
 import { getCaseCounts, Counts } from "./api/AuthorClaimCaseGetCounts";
+import colors from "~/config/themes/colors";
 
 type ButtonConfig = {
   label: ValueOf<typeof AUTHOR_CLAIM_STATUS_LABEL>;
@@ -86,7 +87,7 @@ export default function AuthorClaimDashboardNavbar({
 const styles = StyleSheet.create({
   authorClaimDashboardNavbar: {
     alignItems: "flex-end",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     display: "flex",
     minHeight: 120,
     width: "100%",

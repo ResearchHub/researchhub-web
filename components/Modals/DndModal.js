@@ -173,7 +173,7 @@ class DndModal extends Component {
             <Button
               label={
                 pendingSubmission ? (
-                  <Loader loading={true} size={20} color={"#fff"} />
+                  <Loader loading={true} size={20} color={colors.WHITE()} />
                 ) : (
                   "Submit"
                 )

@@ -4,6 +4,7 @@ import Button from "../Form/Button";
 import { Fragment, ReactElement, useMemo } from "react";
 import { ID } from "../../config/types/root_types";
 import { useRouter } from "next/router";
+import colors from "~/config/themes/colors";
 
 type Props = {
   auth: any;
@@ -71,15 +72,16 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "unset",
     // padding: "0px 15px",
-    boxShadow: "0 0 15px rgba(0, 0, 0, 0.14)",
+    boxShadow: `0 0 15px ${colors.PURE_BLACK(0.14)}`,
     "@media only screen and (max-width: 415px)": {
       height: 50,
       fontSize: 18,
     },
   },
   blur: {
-    background:
-      "linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, #FCFCFC 100%)",
+    background: `linear-gradient(180deg, ${colors.LIGHT_GRAY_BACKGROUND(
+      0
+    )} 0%, ${colors.PAGE_WRAPPER} 100%)`,
     height: "100%",
     position: "absolute",
     zIndex: 3,

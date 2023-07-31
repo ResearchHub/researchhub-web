@@ -25,8 +25,8 @@ const TextSelectionMenu = ({ onCommentClick, onLinkClick }) => {
 
 const styles = StyleSheet.create({
   container: {
-    boxShadow: "0px 4px 20px rgba(36, 31, 58, 0.1)",
-    background: "white",
+    boxShadow: `0px 4px 20px ${colors.BLACK(0.1)}`,
+    background: colors.WHITE(),
     borderRadius: "4px",
   },
   option: {

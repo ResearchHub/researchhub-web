@@ -103,9 +103,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 400,
     color: colors.TEXT_DARKER_GREY,
-    opacity: .8,
+    opacity: 0.8,
     marginBottom: 16,
-    lineHeight: '20px',
+    lineHeight: "20px",
     "@media only screen and (max-width: 1199px)": {
       fontSize: 14,
     },
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    color: "#fff",
+    color: colors.WHITE(),
     cursor: "pointer",
   },
 });

@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   statusIcon: {
     position: "absolute",
-    background: "white",
+    background: colors.WHITE(),
     borderRadius: 50,
     height: 17,
     fontSize: 17,

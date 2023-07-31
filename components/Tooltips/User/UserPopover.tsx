@@ -119,7 +119,7 @@ const UserPopover = ({ userId }: { userId: ID }): ReactElement | null => {
           <div className={css(styles.row)}>
             <div
               className={css(styles.iconColumn)}
-              style={{ color: "rgba(36, 31, 58, 0.25)", marginRight: 4 }}
+              style={{ color: colors.BLACK(0.25), marginRight: 4 }}
             >
               <FontAwesomeIcon icon={faGraduationCap} />
             </div>
@@ -162,7 +162,7 @@ const UserPopover = ({ userId }: { userId: ID }): ReactElement | null => {
 
 const styles = StyleSheet.create({
   container: {
-    background: "#fff",
+    background: colors.WHITE(),
     padding: 16,
     width: 300,
     maxWidth: 300,

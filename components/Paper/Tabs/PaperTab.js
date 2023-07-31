@@ -330,7 +330,7 @@ var styles = StyleSheet.create({
     borderRadius: 4,
   },
   downloadIcon: {
-    color: "#FFF",
+    color: colors.WHITE(),
     marginRight: 10,
   },
   pdfDocument: {

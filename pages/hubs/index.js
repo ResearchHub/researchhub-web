@@ -27,6 +27,7 @@ import { getHubs, getCategories } from "~/components/Hubs/api/fetchHubs";
 // Redux
 import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
+import colors from "~/config/themes/colors";
 
 class Index extends Component {
   constructor(props) {
@@ -244,7 +245,7 @@ const styles = StyleSheet.create({
     },
   },
   body: {
-    backgroundColor: "#FCFCFC",
+    backgroundColor: colors.PAGE_WRAPPER,
     alignItems: "flex-start",
     justifyContent: "center",
   },
@@ -274,7 +275,7 @@ const styles = StyleSheet.create({
     fontSize: 33,
     fontWeight: 500,
     marginRight: 30,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     cursor: "default",
     userSelect: "none",
   },
@@ -305,8 +306,8 @@ const styles = StyleSheet.create({
       left: -10,
       bottom: 0,
       pointerEvents: "none",
-      backgroundImage:
-        "linear-gradient(to left, rgba(255,255,255,0), white 85%)",
+      backgroundImage: `linear-gradient(to left, 
+          ${colors.WHITE(0)}, white 85%)`,
       width: "10%",
     },
 
@@ -318,15 +319,15 @@ const styles = StyleSheet.create({
       right: -10,
       bottom: 0,
       pointerEvents: "none",
-      backgroundImage:
-        "linear-gradient(to right, rgba(255,255,255,0), white 85%)",
+      backgroundImage: `linear-gradient(to right, 
+        ${colors.WHITE(0)}, white 85%)`,
       width: "10%",
     },
 
     [`@media only screen and (max-width: ${breakpoints.xxlarge.str})`]: {
       top: -2,
       position: "sticky",
-      backgroundColor: "#FFF",
+      backgroundColor: colors.WHITE(),
       zIndex: 3,
       display: "flex",
       height: "unset",
@@ -339,10 +340,10 @@ const styles = StyleSheet.create({
   categoryLabel: {
     cursor: "default",
     userSelect: "none",
-    borderBottom: "1px solid #ededed",
+    borderBottom: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     fontSize: 22,
     fontWeight: 500,
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     paddingTop: 20,
     paddingBottom: 10,
     marginTop: 30,

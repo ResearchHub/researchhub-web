@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
+import colors from "~/config/themes/colors";
 
 const EmptyState = (props) => {
   let { text, subtext, icon } = props;
@@ -35,13 +36,13 @@ const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 50,
-    color: "rgb(78, 83, 255)",
+    color: colors.BLUE(),
     height: 50,
     marginBottom: 25,
   },
   subtext: {
     fontSize: 16,
-    color: "rgba(36, 31, 58, 0.8)",
+    color: colors.BLACK(0.8),
     fontWeight: 400,
     marginTop: 10,
     "@media only screen and (max-width: 415px)": {

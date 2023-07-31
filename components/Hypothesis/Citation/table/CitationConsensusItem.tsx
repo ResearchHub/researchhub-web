@@ -97,7 +97,7 @@ function getDetailedText({
   const isPlural = !isNaN(totalCount) && totalCount > 1;
   const answer = doesMajoritySupport ? "yes" : "no";
   return (
-    (<div
+    <div
       className={css(
         styles.resultWrap,
         Boolean(disableText ?? false) && styles.hideText
@@ -136,11 +136,11 @@ function getDetailedText({
             : `Leaning towards ${answer}`
         }`}</span>
         <ReactTooltip
-          backgroundColor="#E69A8DFF"
+          backgroundColor={colors.TOOLTIP_BACKGROUND_BLACK}
           effect="solid"
           id={`consensus-detailed-text-${nullthrows(citationID)}`}
           place="top"
-          textColor="#5F4B8BFF"
+          textColor={colors.TOOLTIP_TEXT_COLOR_WHITE}
           type="dark"
         >
           {isNeutral
@@ -150,7 +150,7 @@ function getDetailedText({
             : `${Math.floor(majorityPercent)}% of researchers think ${answer}`}
         </ReactTooltip>
       </div>
-    </div>)
+    </div>
   );
 }
 
@@ -391,7 +391,7 @@ function CitationConsensusItem({
     ) : null;
 
   return (
-    (<div className={css(styles.citationConsensusItem)}>
+    <div className={css(styles.citationConsensusItem)}>
       <div className={css(styles.wrapper)}>
         {consensusBar}
         {hasCurrUserVoted || !shouldAllowVote ? null : (
@@ -434,7 +434,7 @@ function CitationConsensusItem({
           </div>
         )}
       </div>
-    </div>)
+    </div>
   );
 }
 
@@ -541,7 +541,7 @@ const styles = StyleSheet.create({
     height: "inherit",
   },
   sentimentMidpoint: {
-    background: "#fff",
+    background: colors.WHITE(),
     border: `1px solid ${colors.GREY(1)}`,
     borderRadius: "50%",
     height: 10,

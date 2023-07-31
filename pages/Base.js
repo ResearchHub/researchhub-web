@@ -26,6 +26,7 @@ import {
   w3mProvider,
 } from "@web3modal/ethereum";
 import { Web3Modal } from "@web3modal/react";
+import colors from "../config/themes/colors";
 
 const config = createConfig({
   autoConnect: true,
@@ -167,7 +168,7 @@ function Base({
 
 const styles = StyleSheet.create({
   pageWrapper: {
-    background: "#fff",
+    background: colors.WHITE(),
     display: "flex",
     minHeight: "100vh",
     position: "relative",

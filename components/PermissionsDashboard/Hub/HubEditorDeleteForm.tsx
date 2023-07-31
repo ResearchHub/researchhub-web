@@ -13,6 +13,7 @@ import Button from "~/components/Form/Button";
 import FormInput from "~/components/Form/FormInput";
 import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
+import colors from "~/config/themes/colors";
 
 type FormState = {
   selectedHub: any;
@@ -95,7 +96,11 @@ export default function HubEditorDeleteForm(): ReactElement<"div"> {
         >
           <Button
             label={
-              isSubmitting ? <Loader size={8} loading color="#fff" /> : "Submit"
+              isSubmitting ? (
+                <Loader size={8} loading color={colors.WHITE()} />
+              ) : (
+                "Submit"
+              )
             }
             type="submit"
             customButtonStyle={verifStyles.buttonCustomStyle}

@@ -92,7 +92,9 @@ const ReferredUserList = () => {
       <ReactPlaceholder
         ready={!isFetching}
         // @ts-ignore
-        customPlaceholder={<LeaderboardPlaceholder color="#efefef" />}
+        customPlaceholder={
+          <LeaderboardPlaceholder color={colors.PLACEHOLDER_CARD_BACKGROUND} />
+        }
       >
         {referredUsers.length === 0 ? (
           <div>

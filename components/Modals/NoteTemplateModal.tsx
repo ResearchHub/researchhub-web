@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: colors.WHITE(),
     borderRadius: 5,
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",

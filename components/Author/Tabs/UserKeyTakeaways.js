@@ -72,7 +72,9 @@ const UserKeyTakeaways = ({ items, fetchItems, fetched, itemsNext }) => {
     <ReactPlaceholder
       ready={fetched}
       showLoadingAnimation
-      customPlaceholder={<PaperPlaceholder color="#efefef" />}
+      customPlaceholder={
+        <PaperPlaceholder color={colors.PLACEHOLDER_CARD_BACKGROUND} />
+      }
     >
       {keytakeaways.length > 0 ? (
         <>
@@ -151,7 +153,7 @@ var styles = StyleSheet.create({
     cursor: "pointer",
     userSelect: "none",
     ":hover": {
-      color: "#FFF",
+      color: colors.WHITE(),
       backgroundColor: colors.BLUE(),
     },
   },

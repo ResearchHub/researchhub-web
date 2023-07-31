@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { genericCardColors } from "~/config/themes/colors";
+import colors, { genericCardColors } from "~/config/themes/colors";
 import { ReactElement } from "react";
 import { StyleSheet, css } from "aphrodite";
 import CheckBox from "./Form/CheckBox";
@@ -72,14 +72,14 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: "18px",
     lineHeight: "21px",
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
   },
   mediaDescription: {
     display: "flex",
     fontWeight: "normal",
     fontSize: "14px",
     lineHeight: "22px",
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     opacity: 0.7,
     marginTop: "10px",
     width: "373px",
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     // height: 500,
     borderRadius: "4px",
     background: genericCardColors.BACKGROUND,
-    border: "1.5px solid #F0F0F0",
+    border: `1.5px solid ${colors.VERY_LIGHT_GREY()}`,
     margin: "5px 0px",
     padding: "20px",
   },
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignSelf: "stretch",
     borderRadius: "4px",
-    backgroundColor: "#FFF",
+    backgroundColor: colors.WHITE(),
     border: "none",
     padding: "20px 20px 20px 36px",
     ":hover": {
