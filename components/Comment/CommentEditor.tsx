@@ -207,6 +207,24 @@ const CommentEditor = ({
     }
   };
 
+  useEffect(() => {
+    const _handleKeyDown = (event) => {
+      if (!(quill && isReady)) return;
+      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log("I am here");
+        _handleSubmit(event);
+      }
+    };
+
+    document.addEventListener("keydown", _handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", _handleKeyDown);
+    };
+  }, [quill, isReady, _content]);
+
   const isLoggedIn = auth.authChecked && auth.isLoggedIn;
   return (
     <div
