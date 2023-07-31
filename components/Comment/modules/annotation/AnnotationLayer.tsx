@@ -313,26 +313,26 @@ const AnnotationLayer = ({
     };
   }, [contentRef, annotationsSortedByY]);
 
-  // useEffect(() => {
-  //   const _handleResize = throttle(() => {
-  //     console.log('zoom change')
-  //     throttledSetNeedsRedraw({ drawMode: "ALL" });
-  //   }, 1000);
+  useEffect(() => {
+    const _handleResize = () => {
+      console.log("zoom change");
+      throttledSetNeedsRedraw({ drawMode: "ALL" });
+    };
 
-  //   const resizeObserver = new ResizeObserver((entries) => {
-  //     setNeedsRedraw({ drawMode: "all"});
-  //   });
+    const resizeObserver = new ResizeObserver((entries) => {
+      _handleResize();
+    });
 
-  //   if (contentRef.current) {
-  //     resizeObserver.observe(contentRef.current);
-  //   }
+    if (contentRef.current) {
+      resizeObserver.observe(contentRef.current);
+    }
 
-  //   return () => {
-  //     if (contentRef.current) {
-  //       resizeObserver.unobserve(contentRef.current);
-  //     }
-  //   };
-  // }, [contentRef]);
+    return () => {
+      if (contentRef.current) {
+        resizeObserver.unobserve(contentRef.current);
+      }
+    };
+  }, [contentRef]);
 
   // Periodically check for orphan threads that could not be found on the page.
   // Sometimes, as the page's structure settles, orphans are created temporarily.
@@ -581,9 +581,6 @@ const AnnotationLayer = ({
             serialized: threadGroup.thread.anchor,
             // xpathPrefix: XPathUtil.getXPathFromNode(contentRef.current) || "",
           });
-
-          console.log("threadGroup", threadGroup);
-          console.log("xrange", xrange);
 
           if (!xrange) {
             throw "could not create xrange";

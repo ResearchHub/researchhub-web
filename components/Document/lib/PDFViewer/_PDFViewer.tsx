@@ -235,7 +235,7 @@ interface Props {
   contentRef: any;
   showWhenLoading?: any;
   scale: number;
-  onLoadSuccess: ({ numPages, contentRef }) => void;
+  onLoadSuccess?: ({ numPages, contentRef }) => void;
   onLoadError: (error) => void;
   onPageRender: ({ pageNum }: { pageNum: number }) => void;
 }

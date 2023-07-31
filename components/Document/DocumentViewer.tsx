@@ -261,7 +261,6 @@ const DocumentViewer = ({
                 scale={actualZoom}
                 contentRef={contentRef}
                 viewerWidth={actualContentWidth}
-                onLoadSuccess={() => null}
                 onLoadError={setHasLoadError}
                 onPageRender={setPageRendered}
                 showWhenLoading={
@@ -301,7 +300,7 @@ const styles = StyleSheet.create({
   },
   scroll: {
     overflowX: "scroll",
-    // overflowY: "hidden",
+    overflowY: "hidden",
   },
   expandedWrapper: {
     position: "fixed",
