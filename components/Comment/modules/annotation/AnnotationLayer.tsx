@@ -183,6 +183,7 @@ const AnnotationLayer = ({
   // As more pages are rendered (in the case of papers), we want to try to find annotations.
   // Note: When a pages is zoomed in/out as with papers, this hook will be retriggered
   useEffect(() => {
+    console.log('Page ' + pagesRendered + " rendered") 
     throttledSetNeedsRedraw({ drawMode: "ALL" });
   }, [pagesRendered]);
 
@@ -320,6 +321,7 @@ const AnnotationLayer = ({
 
   useEffect(() => {
     const _handleResize = throttle(() => {
+      console.log('zoom change')
       throttledSetNeedsRedraw({ drawMode: "ALL" });
     }, 1000);
 
