@@ -31,17 +31,19 @@ const NoteShareButton = ({
       }
       positions={["bottom", "top"]}
       onClickOutside={(e) => {
-        const childPopoverFound = e.path.find((el) => {
-          if (typeof el?.getAttribute === "function") {
-            if ((el.getAttribute("class") || "").includes("perm-popover")) {
-              return true;
-            }
-          }
-        });
+        setIsOpen(false);
 
-        if (!childPopoverFound) {
-          setIsOpen(false);
-        }
+        // const childPopoverFound = e.path.find((el) => {
+        //   if (typeof el?.getAttribute === "function") {
+        //     if ((el.getAttribute("class") || "").includes("perm-popover")) {
+        //       return true;
+        //     }
+        //   }
+        // });
+
+        // if (!childPopoverFound) {
+        //   setIsOpen(false);
+        // }
       }}
       targetContent={
         <span
