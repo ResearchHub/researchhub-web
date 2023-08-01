@@ -150,10 +150,11 @@ const CommentEditor = ({
   }, [_content, isReady]);
 
   useEffect(() => {
-    if (isReady && focusOnMount) {
+    if (quill && focusOnMount) {
+      quill?.enable();
       focusEditor({ quill });
     }
-  }, [isReady]);
+  }, [isReady, quill]);
 
   useEffect(() => {
     // Remove module event listeners when editor is unmounted
@@ -213,17 +214,20 @@ const CommentEditor = ({
       if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
         event.preventDefault();
         event.stopPropagation();
-        console.log("I am here");
         _handleSubmit(event);
       }
     };
 
-    document.addEventListener("keydown", _handleKeyDown);
+    if (editorRef.current) {
+      editorRef.current.addEventListener("keydown", _handleKeyDown);
+    }
 
     return () => {
-      document.removeEventListener("keydown", _handleKeyDown);
+      if (editorRef.current) {
+        editorRef.current.removeEventListener("keydown", _handleKeyDown);
+      }
     };
-  }, [quill, isReady, _content]);
+  }, [quill, isReady, _content, editorRef]);
 
   const isLoggedIn = auth.authChecked && auth.isLoggedIn;
   return (

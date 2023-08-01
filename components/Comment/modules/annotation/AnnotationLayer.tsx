@@ -1118,6 +1118,7 @@ const AnnotationLayer = ({
                             handleCancel={(event) =>
                               _handleCancelThread({ threadId, event })
                             }
+                            focusOnMount={true}
                             editorStyleOverride={styles.commentEditor}
                             editorId={`${key}-editor`}
                             handleSubmit={(commentProps) =>

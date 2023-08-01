@@ -202,7 +202,7 @@ const DocumentViewer = ({
   }
 
   const commentDisplayPreference = documentContext.preferences?.comments;
-  const pdfUrl = doc.formats.find((f) => f.type === "pdf")?.url; //"https://researchhub-paper-dev1.s3.amazonaws.com/uploads/papers/2023/06/08/Formation_TCM_Self-Assembly_Nanostrategy.pdf?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=dlczHX3QkG%2FmmBa%2F%2FRJbeQFgnp4%3D&Expires=1691416890"
+  const pdfUrl = doc.formats.find((f) => f.type === "pdf")?.url;
   const actualContentWidth = isExpanded
     ? viewerWidth * fullScreenSelectedZoom
     : viewerWidth * selectedZoom;
@@ -274,6 +274,7 @@ const DocumentViewer = ({
         ) : (
           <div
             ref={contentRef}
+            id="postBody"
             className={css(styles.postBody) + " rh-post"}
             dangerouslySetInnerHTML={{ __html: postHtml! }}
           />
