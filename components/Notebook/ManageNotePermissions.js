@@ -392,11 +392,13 @@ const ManageNotePermissions = ({
             <OrgAvatar org={accessObj.organization} />
             <div className={css(styles.nameWrapper)}>
               <span className={css(styles.name)}>{displayName}</span>
-              <div className={css(styles.memberCount)}>
-                {accessObj?.organization?.member_count > 1
-                  ? `${accessObj.organization.member_count} members`
-                  : ""}
-              </div>
+              {accessObj?.organization?.member_count > 1 && (
+                <div className={css(styles.memberCount)}>
+                  {accessObj?.organization?.member_count > 1
+                    ? `${accessObj.organization.member_count} members`
+                    : ""}
+                </div>
+              )}
             </div>
           </div>
         ) : null}
@@ -530,10 +532,12 @@ const styles = StyleSheet.create({
   entity: {
     display: "flex",
     alignItems: "center",
-    width: "60%",
-    overflowX: "hidden",
+    flex: 1,
+    minWidth: "50%",
   },
   overrideTargetButton: {
+    display: "flex",
+    alignItems: "center",
     ":hover": {
       background: "unset",
     },
@@ -560,6 +564,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginLeft: 10,
     marginRight: 30,
+    flex: 1,
   },
   inviteForm: {
     display: "flex",
