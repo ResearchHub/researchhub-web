@@ -697,7 +697,7 @@ const infoSectionStyles = StyleSheet.create({
   bountyInfo: {
     textAlign: "left",
     fontSize: 16,
-    background: "rgba(240, 240, 240, 0.3)",
+    background: colors.VERY_LIGHT_GREY(0.3),
     color: colors.DARKER_GREY(),
     paddingTop: 15,
     paddingBottom: 15,

@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
   mainWrapperForBounty: {
-    // boxShadow: "0px 0px 15px rgba(255, 148, 22, 0.5)",
+    // boxShadow: `0px 0px 15px ${colors.ORANGE_LIGHT2(0.5)})`,
     // borderRadius: 10,
     // padding: 10,
     // background: colors.WHITE(),

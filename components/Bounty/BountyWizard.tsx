@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   },
   numStepsContainer: {
     marginLeft: "auto",
-    background: "#F2FBF3",
+    background: colors.GREY_LIME_GREEN(),
     color: "#7C7989",
     fontWeight: 500,
     fontSize: 14,

@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 
 import PreviewPlaceholder from "./PreviewPlaceholder";
+import colors from "~/config/themes/colors";
 
 const CitationPreviewPlaceholder = () => (
   <div className={css(styles.container)}>
@@ -43,7 +44,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     padding: 50,
     background: colors.WHITE(),
-    border: "1.5px solid rgb(240, 240, 240)",
+    border: `1.5px solid ${colors.VERY_LIGHT_GREY()}`,
   },
   placeholderContainer: {
     display: "flex",

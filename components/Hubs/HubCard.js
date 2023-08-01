@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
     fontSize: "16px",
     color: colors.TEXT_DARKER_GREY,
     borderRadius: "8px",
-    boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
+    boxShadow: `0 4px 15px ${colors.SOFT_BLUE(0.18)}`,
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "42.5vmin",
       height: "42.5vmin",

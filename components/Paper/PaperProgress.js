@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
     minHeight: 80,
     boxSizing: "border-box",
     border: "1.5px solid",
-    borderColor: "rgb(240, 240, 240)",
+    borderColor: colors.VERY_LIGHT_GREY(),
     marginBottom: 30,
     boxShadow: `${colors.PURE_BLACK(0.02)} 0px 3px 4px`,
     borderTop: "none",

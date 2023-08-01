@@ -36,15 +36,15 @@ const colors = {
   avatar: {
     background: globalColors.LIGHT_GREY(1.0),
   },
-  dot: "rgb(200 200 202)",
+  dot: globalColors.GREYISH_BLUE(),
   gray: globalColors.BLACK(0.6),
   white: globalColors.WHITE(),
   black02: globalColors.BLACK(0.2),
   placeholder: globalColors.PLACEHOLDER_CARD_BACKGROUND,
   annotation: {
-    selected: "rgb(252, 187, 41, 0.3)",
+    selected: globalColors.BRIGHT_ORANGE(0.3),
     sharedViaUrl: globalColors.NEW_BLUE(0.25),
-    unselected: "rgba(255, 255, 0, 0.3)",
+    unselected: globalColors.PURE_YELLOW(0.3),
   },
 };
 

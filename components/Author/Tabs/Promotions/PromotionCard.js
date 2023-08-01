@@ -293,8 +293,8 @@ const styles = StyleSheet.create({
   },
   failed: {
     color: colors.RED(),
-    backgroundColor: "rgba(235, 51, 35, 0.2)",
-    borderColor: "rgba(235, 51, 35, 0.2)",
+    backgroundColor: colors.VIVID_RED(0.2),
+    borderColor: colors.VIVID_RED(0.2),
     ":hover": {
       borderColor: colors.RED(),
     },

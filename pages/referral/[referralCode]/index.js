@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   },
   reasonIconFlask: {
     padding: "8px 15px",
-    color: "rgb(70,123,255)",
+    color: colors.LIGHT_BLUE2(),
     fontSize: 26,
   },
   reasonText: {

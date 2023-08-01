@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
   },
   bountyAlert: {
     userSelect: "none",
-    background: "rgba(242, 251, 243, 0.3)",
+    background: colors.GREY_LIME_GREEN(0.3),
     borderRadius: "4px",
     padding: "15px 25px",
     alignItems: "center",

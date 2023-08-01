@@ -998,7 +998,7 @@ const styles = StyleSheet.create({
     minWidth: 295,
     maxWidth: 295,
     backgroundColor: colors.WHITE(),
-    boxShadow: "rgba(93, 83, 254, 0.18) 0px 4px 15px",
+    boxShadow: `0 4px 15px ${colors.SOFT_BLUE(0.18)}`,
     zIndex: 3,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       padding: "20px 25px 20px 25px",

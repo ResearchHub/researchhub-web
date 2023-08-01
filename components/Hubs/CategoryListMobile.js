@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     background: colors.WHITE(),
     boxSizing: "border-box",
     color: colors.PURPLE(),
-    border: "1.5px solid rgba(151, 151, 151, 0.2)",
+    border: `${colors.DARK_GREY(0.2)} 1.5px solid`,
     cursor: "pointer",
     boxShadow: `0 0 15px ${colors.WHITE(0.14)}`,
     ":hover": {

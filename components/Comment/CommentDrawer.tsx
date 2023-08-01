@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     left: "calc(50% - 15px)",
   },
   sidebar: {
-    boxShadow: "8px 30px 30px rgba(21, 21, 21, 0.2)",
+    boxShadow: `8px 30px 30px ${colors.MOSTLY_BLACK_GREY(0.2)}`,
     borderLeft: `1px solid ${moduleColors.border}`,
     borderBottom: `1px solid ${moduleColors.border}`,
     position: "sticky",

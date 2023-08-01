@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     whiteSpace: "pre-wrap",
     zIndex: 2,
     boxShadow: `${colors.PURE_BLACK(0.16)} 0px 4px 41px -24px`,
-    borderBottom: "rgb(151,151,151, .2) 1px solid",
+    borderBottom: `${colors.DARK_GREY(0.2)} 1px solid`,
     "@media only screen and (max-width: 415px)": {
       flexDirection: "column",
     },

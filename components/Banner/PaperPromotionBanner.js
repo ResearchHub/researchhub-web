@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     zIndex: 2,
     boxShadow: `${colors.PURE_BLACK(0.16)} 0px 4px 41px -24px`,
-    borderBottom: "rgb(151,151,151, .2) 1px solid",
+    borderBottom: `${colors.DARK_GREY(0.2)} 1px solid`,
     ":hover": {
       backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },

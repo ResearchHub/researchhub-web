@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
     background: colors.LIGHTER_GREY(),
     boxSizing: "border-box",
     padding: "0 25px",
-    boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+    boxShadow: `${colors.VERY_DARK_GREY(0.2)} 0px 2px 8px 0px`,
   },
   error: {
     display: "flex",

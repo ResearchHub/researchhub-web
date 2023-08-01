@@ -69,10 +69,22 @@ let colors = {
   BANNER_PALE_BLUE: "#E9F2FF", // rgba(233, 242, 255, 1)
   BANNER_GREY_BLUE: "#F2F2F6", // rgba(242, 242, 246, 1)
   LIGHT_GREYISH_BLUE: "#e8e8f2", // rgba(232, 232, 242, 1)
+  LIGHT_GRAYISH_BLUE2: (opacity = 1) => `rgba(236, 239, 241, ${opacity})`, // #eceff1
+  GREYISH_BLUE: (opacity = 1) => `rgba(200, 200, 202, ${opacity})`, // #c8c8ca
   DARK_GREYISH_BLUE: (opacity = 1) => `rgba(129, 148, 167, ${opacity})`,
   DARK_GREYISH_BLUE2: (opacity = 1) => `rgba(145, 143, 155, ${opacity})`, // #918f9b
   VERY_DARK_GREYISH_BLUE: (opacity = 1) => `rgba(78, 76, 95, ${opacity})`, // #4e4c5f
   DARK_DESATURATED_BLUE: (opacity = 1) => `rgba(35, 32, 56, ${opacity})`, // #232038
+  LIGHT_BLUE2: (opacity = 1) => `rgba(70, 123, 255, ${opacity})`, // #467bff
+  VIVID_RED: (opacity = 1) => `rgba(235, 51, 35, ${opacity})`, // #eb3323
+  GREY_LIME_GREEN: (opacity = 1) => `rgba(242, 251, 243, ${opacity})`, // #f2fbf3
+  MOSTLY_BLACK_GREY: (opacity = 1) => `rgba(21, 21, 21, ${opacity})`, // #151515
+  PURE_YELLOW: (opacity = 1) => `rgba(255, 255, 0, ${opacity})`, // #ffff00
+  BRIGHT_ORANGE: (opacity = 1) => `rgba(252, 187, 41, ${opacity})`, // #fcbb29
+  VERY_DARK_GREY: (opacity = 1) => `rgba(99, 99, 99, ${opacity})`, // #636363
+  DARK_GREY: (opacity = 1) => `rgba(151, 151, 151, ${opacity})`, // #979797
+  SOFT_BLUE: (opacity = 1) => `rgba(93, 83, 254, ${opacity})`, // #5d53fe
+  VERY_DARK_BLUE: (opacity = 1) => `rgba(17, 51, 83, ${opacity})`, // #113353
 };
 
 let mode = "light";
@@ -149,10 +161,22 @@ if (mode === "dark") {
     BANNER_PALE_BLUE: "#1A2138", // Adjusted
     BANNER_GREY_BLUE: "#2A2A35", // Adjusted
     LIGHT_GREYISH_BLUE: "#1a1a28", // Adjusted
+    LIGHT_GRAYISH_BLUE2: (opacity = 1) => `rgba(40, 43, 45, ${opacity})`, // Adjusted
+    GREYISH_BLUE: (opacity = 1) => `rgba(80, 80, 82, ${opacity})`, // Adjusted
     DARK_GREYISH_BLUE: (opacity = 1) => `rgba(79, 88, 97, ${opacity})`, // Adjusted
     DARK_GREYISH_BLUE2: (opacity = 1) => `rgba(175, 173, 185, ${opacity})`, // Adjusted
     VERY_DARK_GREYISH_BLUE: (opacity = 1) => `rgba(98, 96, 115, ${opacity})`, // Adjusted
     DARK_DESATURATED_BLUE: (opacity = 1) => `rgba(75, 72, 96, ${opacity})`, // Adjusted
+    LIGHT_BLUE2: (opacity = 1) => `rgba(50, 103, 235, ${opacity})`, // Adjusted
+    VIVID_RED: (opacity = 1) => `rgba(215, 31, 15, ${opacity})`, // Adjusted
+    GREY_LIME_GREEN: (opacity = 1) => `rgba(62, 71, 63, ${opacity})`, // Adjusted
+    MOSTLY_BLACK_GREY: (opacity = 1) => `rgba(62, 71, 63, ${opacity})`, // Adjusted
+    PURE_YELLOW: (opacity = 1) => `rgba(235, 235, 80, ${opacity})`, // Adjusted
+    BRIGHT_ORANGE: (opacity = 1) => `rgba(235, 170, 24, ${opacity})`, // Adjusted
+    VERY_DARK_GREY: (opacity = 1) => `rgba(150, 150, 150, ${opacity})`, // Adjusted
+    DARK_GREY: (opacity = 1) => `rgba(180, 180, 180, ${opacity})`, // Adjusted
+    SOFT_BLUE: (opacity = 1) => `rgba(83, 73, 234, ${opacity})`, // Adjusted
+    VERY_DARK_BLUE: (opacity = 1) => `rgba(37, 71, 103, ${opacity})`, // Adjusted
   };
 }
 
