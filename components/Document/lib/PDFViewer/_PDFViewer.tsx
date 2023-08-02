@@ -193,7 +193,6 @@ const PDFViewer = ({
       const { [nextPage]: _, ...newPageBuffer } = pageBuffer;
       setPageBuffer(newPageBuffer);
       if (nextPage <= numPagesToPreload) {
-        console.log("nextPage", nextPage);
         setNextPage((prevNextPage) => prevNextPage + 1);
       }
 
