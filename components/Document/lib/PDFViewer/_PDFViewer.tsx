@@ -65,6 +65,9 @@ const PDFViewer = ({
   const [pagesLoading, setPagesLoading] = useState<number[]>([]);
   const pagesLoadingRef = useRef<number[]>([]);
   const [pageBuffer, setPageBuffer] = useState<{ [pageNum: number]: Page }>({});
+  const [renderedPages, setRenderedPages] = useState<{
+    [pageNum: number]: Page;
+  }>({});
   const observer = useRef<HTMLDivElement>(null);
   const eventBus = new EventBus();
 
@@ -125,7 +128,7 @@ const PDFViewer = ({
       );
     },
 
-    [pdfDocument, numPages, scale, eventBus, isReadyToRender]
+    [pdfDocument, numPages, eventBus, isReadyToRender]
   );
 
   useEffect(() => {
@@ -173,11 +176,11 @@ const PDFViewer = ({
       scaleRef.current = scale;
       viewerWidthRef.current = viewerWidth;
 
-      Object.keys(pageBuffer).forEach(async (pageNumber, index) => {
-        const page = pageBuffer[pageNumber];
+      Object.keys(renderedPages).forEach(async (pageNumber, index) => {
+        const page = renderedPages[pageNumber];
         page.pdfPageView.update({ scale: scaleRef.current });
         await page.pdfPageView.draw();
-        onPageRender({ pageNum: index + 1 });
+        onPageRender({ pageNum: parseInt(pageNumber) });
       });
 
       setPagesLoading([]);
@@ -192,6 +195,14 @@ const PDFViewer = ({
       }
       const { [nextPage]: _, ...newPageBuffer } = pageBuffer;
       setPageBuffer(newPageBuffer);
+
+      setRenderedPages((prevRenderedPages) => {
+        return {
+          ...prevRenderedPages,
+          [nextPage]: page,
+        };
+      });
+
       if (nextPage <= numPagesToPreload) {
         setNextPage((prevNextPage) => prevNextPage + 1);
       }
