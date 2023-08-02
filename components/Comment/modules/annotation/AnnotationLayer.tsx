@@ -96,6 +96,11 @@ const AnnotationLayer = ({
   // An interval used to periodically check for orphans on the page.
   const orphanSearchIntervalRef = useRef<any>(null);
 
+  // Holds information about new comments that have not yet been committed.
+  const newCommentDataRef = useRef<{
+    [key: string]: { isEmpty: boolean; content: any };
+  }>({});
+
   // Setting this to true will redraw the annotations on the page.
   const [needsRedraw, setNeedsRedraw] = useState<
     { drawMode: "SKIP_EXISTING" | "ALL" } | false
@@ -400,23 +405,6 @@ const AnnotationLayer = ({
     }
   }, [selectedThreadId]);
 
-  const hasAnnotationBeenSeen = ({
-    annotation,
-  }: {
-    annotation: AnnotationType;
-  }) => {
-    const relativeElOffsetTop =
-      window.scrollY + contentRef.current.getBoundingClientRect().y;
-    const anchorOffsetTop =
-      relativeElOffsetTop + annotation.anchorCoordinates[0].y;
-
-    if (window.scrollY >= anchorOffsetTop - 300) {
-      return true;
-    }
-
-    return false;
-  };
-
   // When a resize happens, we want to how to render annotations. i.e. drawer, sidebar, inline
   useEffect(() => {
     if (!contentRef.current) return;
@@ -496,6 +484,19 @@ const AnnotationLayer = ({
         _setSelectedThreadId(selectedAnnotation.threadId);
       } else {
         _setSelectedThreadId(null);
+
+        // Clear new annotations that are empty
+        Object.keys(newCommentDataRef.current).forEach((newCommentId) => {
+          const newComment = newCommentDataRef.current[newCommentId];
+
+          if (newComment.isEmpty) {
+            _setAnnotations(
+              annotationsSortedByYRef.current.filter(
+                (annotation) => annotation.threadId !== newCommentId
+              )
+            );
+          }
+        });
       }
     };
 
@@ -504,7 +505,7 @@ const AnnotationLayer = ({
     return () => {
       document.removeEventListener("click", _handleClick);
     };
-  }, [annotationsSortedByY, selection.xrange]);
+  }, [selection?.xrange]);
 
   const _scrollToAnnotation = ({
     annotation,
@@ -931,6 +932,10 @@ const AnnotationLayer = ({
     }
   };
 
+  const _onNewEditorChange = ({ isEmpty, content, threadId }) => {
+    newCommentDataRef.current[threadId] = { isEmpty, content };
+  };
+
   const _handleCreateSharableLink = () => {
     createShareableLink({ selection });
     dispatch(setMessage(`Link copied`));
@@ -1154,6 +1159,7 @@ const AnnotationLayer = ({
                     >
                       {annotation.isNew ? (
                         <div
+                          onClick={(e) => e.stopPropagation()}
                           className={
                             css(styles.commentEditorWrapper) +
                             " CommentEditorForAnnotation"
@@ -1162,6 +1168,13 @@ const AnnotationLayer = ({
                           <CommentEditor
                             handleCancel={(event) =>
                               _handleCancelThread({ threadId, event })
+                            }
+                            onChange={({ content, isEmpty }) =>
+                              _onNewEditorChange({
+                                threadId: annotation.threadId,
+                                content,
+                                isEmpty,
+                              })
                             }
                             focusOnMount={true}
                             editorStyleOverride={styles.commentEditor}
