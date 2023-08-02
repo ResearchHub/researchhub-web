@@ -15,7 +15,7 @@ const repositionAnnotations = ({
   const MIN_SPACE_BETWEEN_THREAD = 15; // Threads will be at least this distance apart
   const _annotationsSortedByY = [...annotationsSortedByY];
   const repositioned: { [threadId: string]: AnnotationType } = {}; // Keep track of threads that have been repositioned.
-  console.log("repositionAnnotations");
+
   // Reset x position of all threads
   for (let i = 0; i < _annotationsSortedByY.length; i++) {
     if (

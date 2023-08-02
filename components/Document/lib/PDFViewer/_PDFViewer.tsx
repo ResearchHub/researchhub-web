@@ -22,6 +22,7 @@ import {
   version,
 } from "pdfjs-dist/build/pdf";
 import { PDFPageView, EventBus } from "pdfjs-dist/web/pdf_viewer";
+import config from "~/components/Document/lib/config";
 
 GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.js`;
 
@@ -35,9 +36,9 @@ interface Props {
   pdfUrl?: string;
   viewerWidth?: number;
   contentRef: any;
+  numPagesToPreload?: number;
   showWhenLoading?: any;
   scale: number;
-  numPagesToPreload?: number;
   onLoadSuccess?: ({ numPages, contentRef }) => void;
   onLoadError: (error) => void;
   onPageRender: ({ pageNum }: { pageNum: number }) => void;
@@ -47,11 +48,11 @@ const PDFViewer = ({
   pdfUrl,
   showWhenLoading,
   onLoadSuccess,
+  numPagesToPreload = config.numPdfPagesToPreload,
   onLoadError,
   onPageRender,
   viewerWidth = 860,
   contentRef,
-  numPagesToPreload = 1,
   scale,
 }: Props) => {
   const viewerWidthRef = useRef<number>(viewerWidth);
@@ -61,8 +62,9 @@ const PDFViewer = ({
   const [numPages, setNumPages] = useState<number>(0);
   const [pdfDocument, setPdfDocument] = useState<any>(null);
   const [nextPage, setNextPage] = useState<number>(1);
-  const [pagesLoaded, setPagesLoaded] = useState<Page[]>([]);
   const [pagesLoading, setPagesLoading] = useState<number[]>([]);
+  const pagesLoadingRef = useRef<number[]>([]);
+  const [pageBuffer, setPageBuffer] = useState<{ [pageNum: number]: Page }>({});
   const observer = useRef<HTMLDivElement>(null);
   const eventBus = new EventBus();
 
@@ -70,8 +72,11 @@ const PDFViewer = ({
     async (pageNum) => {
       setPagesLoading((prevPagesLoading) => {
         if (prevPagesLoading.includes(pageNum)) {
+          pagesLoadingRef.current = prevPagesLoading;
           return prevPagesLoading;
         }
+
+        pagesLoadingRef.current = [...prevPagesLoading, pageNum];
         return [...prevPagesLoading, pageNum];
       });
 
@@ -108,42 +113,16 @@ const PDFViewer = ({
         textLayerDiv.style.margin = "0 auto";
       }
 
-      if (containerRef.current) {
-        containerRef.current.appendChild(pageContainer);
-      }
-
-      setPagesLoaded((prevPagesLoaded) => [
-        ...prevPagesLoaded,
-        {
-          pdfPageView,
-          pageNumber: pageNum,
-          pageContainer,
-        },
-      ]);
+      setPageBuffer((prevPageBuffer) => {
+        return {
+          ...prevPageBuffer,
+          [pageNum]: { pdfPageView, pageNumber: pageNum, pageContainer },
+        };
+      });
 
       setPagesLoading((prevPagesLoading) =>
         prevPagesLoading.filter((page) => page !== pageNum)
       );
-      onPageRender({ pageNum });
-
-      if (pageNum % 3 === 0) {
-        // If the page is the third page in a set
-        // @ts-ignore
-        if (observer.current) observer.current.disconnect();
-        // @ts-ignore
-        observer.current = new IntersectionObserver(
-          (entries) => {
-            if (entries[0].isIntersecting && pageNum < numPages) {
-              setNextPage(pageNum + 1);
-            }
-          },
-          {
-            rootMargin: "0px 0px -100% 0px",
-          }
-        );
-        // @ts-ignore
-        observer.current.observe(pageContainer);
-      }
     },
 
     [pdfDocument, numPages, scale, eventBus, isReadyToRender]
@@ -178,38 +157,24 @@ const PDFViewer = ({
 
   useEffect(() => {
     const isPageAlreadyLoadedOrLoading =
-      pagesLoading.includes(nextPage) ||
-      pagesLoaded.filter((p) => p.pageNumber == nextPage).length > 0;
+      pageBuffer[nextPage] || pagesLoadingRef.current.includes(nextPage);
 
     if (
       nextPage <= numPages &&
       isReadyToRender &&
       !isPageAlreadyLoadedOrLoading
     ) {
-      for (let i = 0; i < numPagesToPreload; i++) {
-        if (nextPage + i <= numPages) {
-          loadPage(nextPage + i);
-        }
-      }
+      loadPage(nextPage);
     }
-  }, [
-    nextPage,
-    loadPage,
-    pdfDocument,
-    numPages,
-    viewerWidth,
-    numPagesToPreload,
-  ]);
+  }, [nextPage, loadPage, pdfDocument, numPages, viewerWidth]);
 
   useEffect(() => {
     if (scale !== scaleRef.current) {
       scaleRef.current = scale;
       viewerWidthRef.current = viewerWidth;
 
-      const _pagesLoading = [...pagesLoaded.map((p) => p.pageNumber)];
-      setPagesLoading(_pagesLoading);
-
-      pagesLoaded.forEach(async (page: Page, index) => {
+      Object.keys(pageBuffer).forEach(async (pageNumber, index) => {
+        const page = pageBuffer[pageNumber];
         page.pdfPageView.update({ scale: scaleRef.current });
         await page.pdfPageView.draw();
         onPageRender({ pageNum: index + 1 });
@@ -218,6 +183,41 @@ const PDFViewer = ({
       setPagesLoading([]);
     }
   }, [scale]);
+
+  useEffect(() => {
+    if (pageBuffer[nextPage]) {
+      const page = pageBuffer[nextPage];
+      if (containerRef.current) {
+        containerRef.current.appendChild(page.pageContainer);
+      }
+      const { [nextPage]: _, ...newPageBuffer } = pageBuffer;
+      setPageBuffer(newPageBuffer);
+      if (nextPage <= numPagesToPreload) {
+        console.log("nextPage", nextPage);
+        setNextPage((prevNextPage) => prevNextPage + 1);
+      }
+
+      setTimeout(() => {
+        onPageRender({ pageNum: nextPage }); // call the callback here
+      }, 0);
+
+      // @ts-ignore
+      if (observer.current) observer.current.disconnect();
+      // @ts-ignore
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && nextPage < numPages) {
+            setNextPage(nextPage + 1);
+          }
+        },
+        {
+          rootMargin: "0px 0px -100% 0px",
+        }
+      );
+      // @ts-ignore
+      observer.current.observe(page.pageContainer);
+    }
+  }, [pageBuffer, nextPage, numPages, numPagesToPreload]);
 
   return (
     <div
