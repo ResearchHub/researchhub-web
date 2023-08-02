@@ -15,6 +15,11 @@ import { LEFT_SIDEBAR_MAX_WIDTH } from "../Home/sidebar/RootLeftSidebar";
 import DocumentPlaceholder from "./lib/Placeholders/DocumentPlaceholder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/pro-light-svg-icons";
+import {
+  Comment as CommentType,
+  CommentThreadGroup,
+} from "../Comment/lib/types";
+import config from "./lib/config";
 
 const PDFViewer = dynamic(() => import("./lib/PDFViewer/_PDFViewer"), {
   ssr: false,
@@ -49,6 +54,9 @@ const DocumentViewer = ({
   const [fullScreenSelectedZoom, setFullScreenSelectedZoom] =
     useState<number>(1.25);
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
+  const [numPagesToPreload, setNumPagesToPreload] = useState<number>(
+    config.numPdfPagesToPreload
+  );
   const [pageRendered, setPageRendered] = useState<{ pageNum: number }>({
     pageNum: 0,
   });
@@ -197,8 +205,35 @@ const DocumentViewer = ({
     }
   }
 
-  function onAnnotationFetched(count) {
-    setAnnotationCount(count);
+  function onCommentsFetched({
+    threads,
+    comments,
+    urlPosition,
+  }: {
+    threads: { [threadId: string]: CommentThreadGroup };
+    comments: CommentType[];
+    urlPosition: any;
+  }) {
+    setAnnotationCount(Object.values(threads).length);
+
+    let furthestPageToPreload = config.numPdfPagesToPreload;
+
+    if (
+      urlPosition?.pageNumber &&
+      urlPosition?.pageNumber > furthestPageToPreload
+    ) {
+      furthestPageToPreload = urlPosition?.pageNumber;
+    }
+
+    comments.forEach((comment) => {
+      const commentPageNum = comment?.thread?.anchor?.pageNumber || 1;
+
+      if (commentPageNum > furthestPageToPreload) {
+        furthestPageToPreload = commentPageNum;
+      }
+    });
+
+    setNumPagesToPreload(furthestPageToPreload);
   }
 
   const commentDisplayPreference = documentContext.preferences?.comments;
@@ -239,7 +274,7 @@ const DocumentViewer = ({
             contentRef={contentRef}
             pageRendered={pageRendered}
             displayPreference={commentDisplayPreference}
-            onFetch={onAnnotationFetched}
+            onFetch={onCommentsFetched}
           />
         )}
 
@@ -262,6 +297,7 @@ const DocumentViewer = ({
                 contentRef={contentRef}
                 viewerWidth={actualContentWidth}
                 onLoadError={setHasLoadError}
+                numPagesToPreload={numPagesToPreload}
                 onPageRender={setPageRendered}
                 showWhenLoading={
                   <div style={{ padding: 20 }}>
@@ -328,12 +364,6 @@ const styles = StyleSheet.create({
   },
   postHeader: {
     marginBottom: 45,
-  },
-  topArea: {
-    background: "white",
-    position: "relative",
-    zIndex: 3,
-    paddingTop: 25,
   },
   error: {
     display: "flex",

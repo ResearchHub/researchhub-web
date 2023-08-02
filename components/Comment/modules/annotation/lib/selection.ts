@@ -95,27 +95,20 @@ export const selectionToSerializedAnchorPosition = ({
 
 export const urlSelectionToAnnotation = ({
   urlSelection,
-  ignoreXPathPrefix,
   relativeEl,
 }: {
   urlSelection: any;
-  ignoreXPathPrefix?: string;
   relativeEl: any;
 }): Annotation => {
-  const serializedSelection = JSON.parse(decodeURIComponent(urlSelection));
-
   const xrange = XRange.createFromSerialized({
-    serialized: serializedSelection,
-    xpathPrefix: ignoreXPathPrefix,
+    serialized: urlSelection,
   });
 
   if (!xrange) {
     throw "Could not create XRange from serialized URL";
   }
 
-  const serializedXrange = xrange.serialize({
-    ignoreXPathPrefix,
-  });
+  const serializedXrange = xrange.serialize({});
 
   const annotation = createAnnotation({
     xrange,
@@ -124,7 +117,7 @@ export const urlSelectionToAnnotation = ({
     serializedAnchorPosition: {
       ...serializedXrange,
       text: xrange.textContent(),
-      pageNumber: serializedSelection.pageNumber,
+      pageNumber: urlSelection.pageNumber,
     },
   });
 

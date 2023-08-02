@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     position: "fixed",
     height: 40,
     width: "100%",
-    zIndex: 2,
+    zIndex: 4,
     background: colors.LIGHTER_GREY(),
     boxSizing: "border-box",
     padding: "0 15px",

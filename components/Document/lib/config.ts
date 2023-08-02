@@ -5,6 +5,7 @@ const config = {
   background: "#FCFCFC",
   controlsWidth: 260,
   border: globalColors.GREY_LINE(1.0),
+  numPdfPagesToPreload: 3,
 };
 
 export default config;

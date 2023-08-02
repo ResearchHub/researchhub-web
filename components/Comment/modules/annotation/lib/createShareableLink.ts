@@ -1,39 +1,28 @@
 import pick from "lodash/pick";
 import copyTextToClipboard from "~/config/utils/copyTextToClipboard";
 import { SerializedAnchorPosition } from "./types";
+import { Selection } from "./useSelection";
 
-const createShareableLink = ({
-  threadId,
-  selectionXRange,
-  contentElXpath,
-}: {
-  threadId?: string;
-  selectionXRange?: any;
-  contentElXpath?: string;
-}) => {
+const createShareableLink = ({ selection }: { selection: Selection }) => {
   const url = new URL(window.location.href);
-  let hash = "";
-  if (threadId) {
-    hash = `#thread=${threadId}`;
-  } else if (selectionXRange) {
-    const serializedAnchor: SerializedAnchorPosition =
-      selectionXRange.serialize({ ignoreXPathPrefix: contentElXpath });
-
-    const serialized = encodeURIComponent(
-      JSON.stringify(
-        pick(
-          serializedAnchor,
-          "startContainerPath",
-          "startOffset",
-          "endContainerPath",
-          "endOffset"
-        )
+  const serializedAnchor: SerializedAnchorPosition = {
+    ...selection.xrange.serialize({}),
+    pageNumber: selection.pageNumber,
+  };
+  const serialized = encodeURIComponent(
+    JSON.stringify(
+      pick(
+        serializedAnchor,
+        "startContainerPath",
+        "startOffset",
+        "endContainerPath",
+        "endOffset",
+        "pageNumber"
       )
-    );
+    )
+  );
 
-    url.hash = `#selection=${serialized}`;
-  }
-
+  url.hash = `#selection=${serialized}`;
   copyTextToClipboard(url.href);
 };
 

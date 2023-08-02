@@ -91,7 +91,7 @@ const useSelection = ({ contentRef }): Selection => {
 
           try {
             _selection.pageNumber = parseInt(
-              e.target.closest(".react-pdf__Page").attributes[
+              e.target.closest("[data-page-number]").attributes[
                 "data-page-number"
               ].value
             );
