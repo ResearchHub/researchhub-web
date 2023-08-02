@@ -504,7 +504,7 @@ const AnnotationLayer = ({
     return () => {
       document.removeEventListener("click", _handleClick);
     };
-  }, [annotationsSortedByY, , selection.xrange]);
+  }, [annotationsSortedByY, selection.xrange]);
 
   const _scrollToAnnotation = ({
     annotation,

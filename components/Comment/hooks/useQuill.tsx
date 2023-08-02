@@ -124,9 +124,20 @@ export const useQuill = ({ options, editorId }: Args) => {
       }));
 
       // We can only register image upload handler only once quill instance is available
-      quill.getModule("toolbar").addHandler("image", () => {
-        handleImageUpload(quill);
-      });
+      quill
+        .getModule("toolbar")
+        .addHandler("image", () => handleImageUpload(quill));
+
+      // Tooltips can extend beyond the boundary of the editor
+      // and in the context of annotations, clicking on them will result in the editor being dismissed
+      try {
+        const tooltip = document.querySelector(".ql-tooltip");
+        if (tooltip) {
+          tooltip.addEventListener("click", function (event) {
+            event.stopPropagation();
+          });
+        }
+      } catch (error) {}
     }
   }, [obj, options, modulesRegistered]);
 
