@@ -176,14 +176,16 @@ const PDFViewer = ({
       scaleRef.current = scale;
       viewerWidthRef.current = viewerWidth;
 
-      Object.keys(renderedPages).forEach(async (pageNumber, index) => {
+      const redrawPagePromises = Object.keys(renderedPages).map(async (pageNumber, index) => {
         const page = renderedPages[pageNumber];
         page.pdfPageView.update({ scale: scaleRef.current });
         await page.pdfPageView.draw();
         onPageRender({ pageNum: parseInt(pageNumber) });
       });
-
-      setPagesLoading([]);
+  
+      Promise.all(redrawPagePromises).then(() => {
+        setPagesLoading([]);
+      });
     }
   }, [scale]);
 
