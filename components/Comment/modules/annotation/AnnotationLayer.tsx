@@ -61,6 +61,7 @@ import {
 } from "./lib/selection";
 import getAnnotationFromPosition from "./lib/getAnnotationFromPosition";
 import { truncateText } from "~/config/utils/string";
+import AnnotationTextBubble from "./AnnotationTextBubble";
 
 const { setMessage, showMessage } = MessageActions;
 
@@ -185,44 +186,6 @@ const AnnotationLayer = ({
       window.removeEventListener("hashchange", handleHashChange, false);
     };
   }, []);
-
-  // useEffect(() => {
-  //   if (positionFromUrl) {
-  //     window.scrollTo({
-  //       top: positionFromUrl.anchorCoordinates[0].y,
-  //       behavior: "smooth",
-  //     });
-  //   }
-  // }, [positionFromUrl])
-
-  // Navigate to comment thread id in URL
-  // useEffect(() => {
-  //   const handleHashChange = () => {
-  //     const [key, value] = window.location.hash.split("=");
-
-  //     if (key === "#threadId") {
-  //       _setSelectedThreadId(value);
-  //       if (!orphanThreadIdsRef.current.includes(value)) {
-  //         _setOrphans([...orphanThreadIdsRef.current, value]);
-  //       }
-  //     }
-  //     else if (key === "#selection") {
-  //       try {
-  //         serializedPositionFromUrl.current = JSON.parse(decodeURIComponent(value));
-  //       }
-  //       catch(error) {
-  //         console.log('Failed to parse selection from URL', value, "error was:", error)
-  //       }
-  //     }
-  //   };
-
-  //   handleHashChange();
-  //   window.addEventListener("hashchange", handleHashChange, false);
-
-  //   return () => {
-  //     window.removeEventListener("hashchange", handleHashChange, false);
-  //   };
-  // }, []);
 
   // Fetch comments from API and group them
   useEffect(() => {
@@ -542,41 +505,6 @@ const AnnotationLayer = ({
       document.removeEventListener("click", _handleClick);
     };
   }, [annotationsSortedByY, , selection.xrange]);
-
-  // If a serialized position to an annotation is shared via the URL, we want to unserialize it and scroll
-  // the user to its position.
-  // useEffect(() => {
-  //   if (contentRef.current && window.location.hash.length > 0) {
-  //     const hashPairs = window.location.hash.split("&");
-  //     const selectionIdx = hashPairpositionFromUrls.findIndex((pair) =>
-  //       pair.includes("selection")
-  //     );
-
-  //     if (selectionIdx > -1) {
-  //       let MAX_ATTEMPTS_REMAINING = 5; // Since the page is in transition, we want to retry x number of times
-  //       const interval = setInterval(() => {
-  //         if (MAX_ATTEMPTS_REMAINING === 0) {
-  //           clearInterval(interval);
-  //           return;
-  //         }
-
-  //         try {
-  //           const [key, value] = hashPairs[selectionIdx].split("=");
-  //           const annotation = urlSelectionToAnnotation({
-  //             urlSelection: value,
-  //             relativeEl: contentRef.current,
-  //           });
-
-  //           setPositionFromUrl(annotation);
-  //           clearInterval(interval);
-  //           _scrollToAnnotation({ annotation });
-  //         } catch (error) {}
-
-  //         MAX_ATTEMPTS_REMAINING--;
-  //       }, 1000);
-  //     }
-  //   }
-  // }, [contentRef]);
 
   const _scrollToAnnotation = ({
     annotation,
@@ -1274,11 +1202,10 @@ const AnnotationLayer = ({
                 <>
                   {selectedThread && (
                     <>
-                      <div className={css(styles.annotationText)}>
-                        {truncateText(
-                          selectedThread?.thread?.anchor?.text || "",
-                          350
-                        )}
+                      <div className={css(styles.annotationTextBubbleWrapper)}>
+                        <AnnotationTextBubble
+                          text={selectedThread?.thread?.anchor?.text || ""}
+                        />
                       </div>
                       <AnnotationCommentThread
                         document={doc}
@@ -1336,14 +1263,8 @@ const styles = StyleSheet.create({
   },
   inlineContainer: {},
   drawerContainer: {},
-  annotationText: {
-    background: colors.annotation.unselected,
-    padding: "15px 20px",
-    borderRadius: "0 4px 4px 0",
+  annotationTextBubbleWrapper: {
     marginBottom: 15,
-    fontStyle: "italic",
-    fontSize: 15,
-    borderLeft: "2px solid rgb(255, 212, 0)",
   },
   sidebarComment: {
     width: config.annotation.sidebarCommentWidth,

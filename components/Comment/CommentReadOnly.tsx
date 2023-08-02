@@ -14,6 +14,7 @@ import {
 import { CommentTreeContext } from "./lib/contexts";
 import { COMMENT_CONTEXTS, Comment as CommentType } from "./lib/types";
 import { truncateText } from "~/config/utils/string";
+import AnnotationTextBubble from "./modules/annotation/AnnotationTextBubble";
 
 type Args = {
   content: any;
@@ -60,12 +61,12 @@ const CommentReadOnly = ({
   const isAnnotationContext =
     commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION;
   const htmlToRender = isPreview && previewHtml ? previewHtml : fullHtml;
-  const annotationText = truncateText(comment?.thread?.anchor?.text || "", 350);
+  const annotationText = comment?.thread?.anchor?.text || "";
   return (
     <div>
-      {!isAnnotationContext && annotationText.length > 0 && (
-        <div className={css(styles.annotationText)}>{annotationText}</div>
-      )}
+      {!isAnnotationContext &&
+        annotationText.length > 0 &&
+        !comment?.parent && <AnnotationTextBubble text={annotationText} />}
       <div
         className={`CommentEditor ${
           isNarrowWidthContext ? "CommentEditorForNarrowWidth" : ""
@@ -115,15 +116,6 @@ const CommentReadOnly = ({
 };
 
 const styles = StyleSheet.create({
-  annotationText: {
-    background: colors.annotation.unselected,
-    padding: "15px 20px",
-    borderRadius: "0 4px 4px 0",
-    marginBottom: 15,
-    fontStyle: "italic",
-    fontSize: 15,
-    borderLeft: "2px solid rgb(255, 212, 0)",
-  },
   readMore: {
     fontWeight: 500,
     fontSize: 14,
