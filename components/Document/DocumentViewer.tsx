@@ -1,9 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-const AnnotationLayer = dynamic(
-  () => import("~/components/Comment/modules/annotation/AnnotationLayer")
-);
 import { breakpoints } from "~/config/themes/screen";
 import DocumentControls from "~/components/Document/DocumentControls";
 import DocumentExpandedNav from "~/components/Document/DocumentExpandedNav";
@@ -20,7 +17,9 @@ import {
   CommentThreadGroup,
 } from "../Comment/lib/types";
 import config from "./lib/config";
-
+const AnnotationLayer = dynamic(
+  () => import("~/components/Comment/modules/annotation/AnnotationLayer")
+);
 const PDFViewer = dynamic(() => import("./lib/PDFViewer/_PDFViewer"), {
   ssr: false,
 });
@@ -54,6 +53,7 @@ const DocumentViewer = ({
   const [fullScreenSelectedZoom, setFullScreenSelectedZoom] =
     useState<number>(1.25);
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
+  const [isPdfReady, setIsPdfReady] = useState<boolean>(false);
   const [numPagesToPreload, setNumPagesToPreload] = useState<number>(
     config.numPdfPagesToPreload
   );
@@ -67,6 +67,10 @@ const DocumentViewer = ({
     width: 0,
     height: 0,
   });
+
+  const onPdfReady = ({ numPages }) => {
+    setIsPdfReady(true);
+  };
 
   const throttledSetDimensions = useCallback(
     throttle(() => {
@@ -291,20 +295,24 @@ const DocumentViewer = ({
                 </span>
               </div>
             ) : (
-              <PDFViewer
-                pdfUrl={pdfUrl}
-                scale={actualZoom}
-                contentRef={contentRef}
-                viewerWidth={actualContentWidth}
-                onLoadError={setHasLoadError}
-                numPagesToPreload={numPagesToPreload}
-                onPageRender={setPageRendered}
-                showWhenLoading={
-                  <div style={{ padding: 20 }}>
-                    <DocumentPlaceholder />
-                  </div>
-                }
-              />
+              <>
+                {!isPdfReady && <DocumentPlaceholder />}
+                <PDFViewer
+                  pdfUrl={pdfUrl}
+                  scale={actualZoom}
+                  onReady={onPdfReady}
+                  contentRef={contentRef}
+                  viewerWidth={actualContentWidth}
+                  onLoadError={setHasLoadError}
+                  numPagesToPreload={numPagesToPreload}
+                  onPageRender={setPageRendered}
+                  showWhenLoading={
+                    <div style={{ padding: 20 }}>
+                      <DocumentPlaceholder />
+                    </div>
+                  }
+                />
+              </>
             )}
           </>
         ) : (

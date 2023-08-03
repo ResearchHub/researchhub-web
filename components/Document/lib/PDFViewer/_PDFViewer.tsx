@@ -39,7 +39,7 @@ interface Props {
   numPagesToPreload?: number;
   showWhenLoading?: any;
   scale: number;
-  onLoadSuccess?: ({ numPages, contentRef }) => void;
+  onReady?: ({ numPages }) => void;
   onLoadError: (error) => void;
   onPageRender: ({ pageNum }: { pageNum: number }) => void;
 }
@@ -47,7 +47,7 @@ interface Props {
 const PDFViewer = ({
   pdfUrl,
   showWhenLoading,
-  onLoadSuccess,
+  onReady,
   numPagesToPreload = config.numPdfPagesToPreload,
   onLoadError,
   onPageRender,
@@ -139,6 +139,7 @@ const PDFViewer = ({
         pdfDocument = await loadingTask.promise;
         setPdfDocument(pdfDocument);
         setNumPages(pdfDocument.numPages);
+        onReady && onReady({ numPages: pdfDocument.numPages });
       } catch (error) {
         onLoadError && onLoadError(error);
         console.log("error loading pdf", error);
@@ -176,13 +177,15 @@ const PDFViewer = ({
       scaleRef.current = scale;
       viewerWidthRef.current = viewerWidth;
 
-      const redrawPagePromises = Object.keys(renderedPages).map(async (pageNumber, index) => {
-        const page = renderedPages[pageNumber];
-        page.pdfPageView.update({ scale: scaleRef.current });
-        await page.pdfPageView.draw();
-        onPageRender({ pageNum: parseInt(pageNumber) });
-      });
-  
+      const redrawPagePromises = Object.keys(renderedPages).map(
+        async (pageNumber, index) => {
+          const page = renderedPages[pageNumber];
+          page.pdfPageView.update({ scale: scaleRef.current });
+          await page.pdfPageView.draw();
+          onPageRender({ pageNum: parseInt(pageNumber) });
+        }
+      );
+
       Promise.all(redrawPagePromises).then(() => {
         setPagesLoading([]);
       });

@@ -63,8 +63,8 @@ import {
 } from "./lib/selection";
 import getAnnotationFromPosition from "./lib/getAnnotationFromPosition";
 import AnnotationTextBubble from "./AnnotationTextBubble";
-
 const { setMessage, showMessage } = MessageActions;
+const DEBUG = false;
 
 interface Props {
   contentRef: any;
@@ -669,10 +669,12 @@ const AnnotationLayer = ({
     orphanThreadIds: Array<string>;
     foundAnnotations: Array<AnnotationType>;
   } => {
-    console.log(
-      `%cDrawing anchors / Mode: ${drawingMode} `,
-      "color: #F3A113; font-weight: bold;"
-    );
+    if (DEBUG) {
+      console.log(
+        `%cDrawing anchors / Mode: ${drawingMode} `,
+        "color: #F3A113; font-weight: bold;"
+      );
+    }
 
     const orphanThreadIds: Array<string> = [];
     const foundAnnotations: Array<AnnotationType> = [];
@@ -719,24 +721,27 @@ const AnnotationLayer = ({
             // The most common ones are: 1) Page has changed structure and the xpath is no longer valid
             // and 2) The content within the page has changed from the original.
 
-            const contentElXpath =
-              XPathUtil.getXPathFromNode(contentRef.current) || "";
-            console.log(
-              "[Annotation] No xrange found for thread. Orphan thread is:",
-              threadGroup.thread,
-              "start:",
-              threadGroup.thread.anchor?.startContainerPath,
-              "end:",
-              threadGroup.thread.anchor?.endContainerPath,
-              // "xpathPrefix:",
-              // contentElXpath,
-              "contentElFromXpath",
-              XPathUtil.getNodeFromXPath(contentElXpath),
-              "startNodeFromXpath",
-              XPathUtil.getNodeFromXPath(
-                contentElXpath + threadGroup.thread.anchor?.startContainerPath
-              )
-            );
+            if (DEBUG) {
+              const contentElXpath =
+                XPathUtil.getXPathFromNode(contentRef.current) || "";
+              console.log(
+                "[Annotation] No xrange found for thread. Orphan thread is:",
+                threadGroup.thread,
+                "start:",
+                threadGroup.thread.anchor?.startContainerPath,
+                "end:",
+                threadGroup.thread.anchor?.endContainerPath,
+                // "xpathPrefix:",
+                // contentElXpath,
+                "contentElFromXpath",
+                XPathUtil.getNodeFromXPath(contentElXpath),
+                "startNodeFromXpath",
+                XPathUtil.getNodeFromXPath(
+                  contentElXpath + threadGroup.thread.anchor?.startContainerPath
+                )
+              );
+            }
+
             orphanThreadIds.push(threadGroup.threadId);
           }
         }
