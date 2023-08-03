@@ -264,13 +264,13 @@ const styles = StyleSheet.create({
   },
   contributorCount: {},
   contributorUpChange: {
-    color: `rgb(25 160 40)`,
+    color: colors.DARK_LIME_GREEN2(),
   },
   contributorNoChange: {
-    color: `${colors.ORANGE()}`,
+    color: colors.ORANGE(),
   },
   contributorDownChange: {
-    color: `${colors.RED()}`,
+    color: colors.RED(),
   },
   countLabel: {
     fontSize: 16,
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   },
   mobileLabel: {
     marginRight: "auto",
-    color: "rgb(36, 31, 58)",
+    color: colors.BLACK(),
     opacity: 0.5,
 
     [`@media only screen and (min-width: ${breakpoints.desktop.int}px)`]: {

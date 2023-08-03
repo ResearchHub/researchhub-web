@@ -1,6 +1,7 @@
 import { ReactElement, SyntheticEvent } from "react";
 import { Box, Button } from "@mui/material";
 import { isEmpty } from "~/config/utils/nullchecks";
+import colors from "~/config/themes/colors";
 
 interface Props {
   children: ReactElement | string;
@@ -23,12 +24,12 @@ export default function PrimaryButton({
       onClick={onClick}
       size={size}
       sx={{
-        background: "#3971FF",
+        background: colors.NEW_BLUE(),
         width: "100%",
         height: isEmpty(size) ? 50 : undefined,
         margin: margin,
         "&:hover": {
-          background: "#3971FF",
+          background: colors.NEW_BLUE(),
           opacity: 0.8,
           transition: ".3s ease-in-out",
         },

@@ -27,6 +27,7 @@ import ReferenceUploadAttachments from "../../form/ReferenceUploadAttachments";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useReferenceActiveProjectContext } from "../reference_organizer/context/ReferenceActiveProjectContext";
+import colors from "~/config/themes/colors";
 
 const CALCULATED_LEFT_MARGIN =
   240 /* LOCAL_LEFT_NAV_WIDTH */ +
@@ -156,8 +157,8 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
     >
       <Box
         sx={{
-          background: "rgba(250, 250, 252, 1)",
-          borderLeft: "1px solid #E9EAEF",
+          background: colors.LIGHT_GRAY_BACKGROUND2(1),
+          borderLeft: `1px solid ${colors.LIGHT_GREYISH_BLUE5()}`,
           boxSizing: "border-box",
           marginLeft: `${CALCULATED_LEFT_MARGIN}px`,
           marginTop: `${ROOT_NAVBAR_HEIGHT}px`,
@@ -174,8 +175,8 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
           justifyContent="space-between"
           spacing={1}
           sx={{
-            background: "rgba(250, 250, 252, 1)",
-            borderBottom: "1px solid #E9EAEF",
+            background: colors.LIGHT_GRAY_BACKGROUND2(1),
+            borderBottom: `1px solid ${colors.LIGHT_GREYISH_BLUE5()}`,
             height: "40px",
             padding: "16px 24px",
             position: "sticky",
@@ -201,7 +202,10 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
             marginBottom: "100px",
           }}
         >
-          <Box sx={{ borderBottom: `1px solid #E9EAEF` }} mb="14px">
+          <Box
+            sx={{ borderBottom: `1px solid ${colors.LIGHT_GREYISH_BLUE5()}` }}
+            mb="14px"
+          >
             <ReferenceDoiSearchInput
               onSearchSuccess={(doiMetaData: any): void => {
                 setSelectedReferenceType(
@@ -241,8 +245,8 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
           padding="16px 24px"
           width="100%"
           sx={{
-            background: "rgb(250, 250, 252)",
-            borderTop: "1px solid #E9EAEF",
+            background: colors.LIGHT_GRAY_BACKGROUND2(),
+            borderTop: `1px solid ${colors.LIGHT_GREYISH_BLUE5()}`,
             left: 0,
             boxSizing: "border-box",
           }}

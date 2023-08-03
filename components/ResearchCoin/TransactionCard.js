@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
   },
   clockIcon: {
     marginRight: 8,
-    color: "rgb(190, 190, 190)",
+    color: colors.GRAY190(),
   },
   black: {
     fontWeight: 500,

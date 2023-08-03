@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
   },
   reasonIcon: {
     padding: "8px 10px",
-    boxShadow: "0px 0px 10px 0px #00000026",
+    boxShadow: `0px 0px 10px 0px ${colors.PURE_BLACK(0.15)}`,
     borderRadius: "4px",
   },
   reasonIconFlask: {

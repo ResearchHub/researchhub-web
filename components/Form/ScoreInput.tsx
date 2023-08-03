@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   "barFill": {
-    background: "#3971FF1A",
+    background: colors.NEW_BLUE(0.1),
     height: "100%",
   },
   "cover": {

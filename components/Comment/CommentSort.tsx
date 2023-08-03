@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginTop: 5,
     marginLeft: 5,
-    boxShadow:
-      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
+    boxShadow: `${colors.boxshadow20} 0px 0px 15px, 
+      ${colors.boxshadow15} 0px 0px 3px 1px`,
   },
   dropdownOpen: {
     display: "block",

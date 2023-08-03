@@ -1157,7 +1157,7 @@ const styles = StyleSheet.create({
     border: "1px solid #FFF",
     ":hover": {
       color: colors.BLUE(),
-      background: "rgb(234, 235, 254)",
+      background: colors.LIGHT_GRAYISH_BLUE4(),
       borderRadius: 4,
     },
   },
@@ -1165,7 +1165,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   activeToggle: {
-    background: "#eaebfe",
+    background: colors.LIGHT_GRAYISH_BLUE4(),
     borderRadius: 4,
     color: colors.BLUE(),
     ":hover": {

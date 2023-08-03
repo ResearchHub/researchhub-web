@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     width: 20,
     borderRadius: "50%",
     ":hover": {
-      borderColor: "rgb(179, 179, 179)",
+      borderColor: colors.GRAY179(),
     },
   },
   checkIcon: {

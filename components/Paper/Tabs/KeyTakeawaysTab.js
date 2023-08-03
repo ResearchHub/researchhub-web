@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   bulletpointIcon: {
-    color: "#3971FF",
+    color: colors.NEW_BLUE(),
     height: 50,
     width: 50,
     fontSize: 25,
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    border: `1.5px solid #3971FF`,
+    border: `1.5px solid ${colors.NEW_BLUE()}`,
   },
   bulletHeaderContainer: {
     display: "flex",
@@ -497,7 +497,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     userSelect: "none",
     ":hover": {
-      color: "#3971FF",
+      color: colors.NEW_BLUE(),
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
     },
   },
   emptyStateIcon: {
-    color: "#3971FF",
+    color: colors.NEW_BLUE(),
     height: 30,
     minHeight: 30,
     maxHeight: 30,
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 20,
     paddingTop: 2,
-    border: `1.5px solid #3971FF`,
+    border: `1.5px solid ${colors.NEW_BLUE()}`,
   },
   icon: {
     fontSize: 35,

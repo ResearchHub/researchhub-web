@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
     zIndex: 999999,
     top: 0,
     right: 0,
-    background: "rgb(230, 230, 230, 1.0)",
+    background: colors.VERY_LIGHT_GREY3(1.0),
     width: "100%",
   },
   closeBtn: {

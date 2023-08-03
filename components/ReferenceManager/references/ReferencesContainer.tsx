@@ -368,7 +368,7 @@ function ReferencesContainer({
                             <span
                               style={{
                                 margin: 8,
-                                color: "rgb(115, 108, 100)",
+                                color: colors.DARY_GRAYISH_ORANGE(),
                               }}
                             >
                               /
@@ -583,7 +583,7 @@ const styles = StyleSheet.create({
   },
   projectLink: {
     textDecoration: "none",
-    color: "rgb(115, 108, 100)",
+    color: colors.DARY_GRAYISH_ORANGE(),
 
     ":hover": {
       color: colors.BLACK(),

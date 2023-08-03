@@ -78,7 +78,7 @@ const progressStyles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: "50%",
-    border: "3px solid #E9EAEF",
+    border: `3px solid ${colors.LIGHT_GREYISH_BLUE5()}`,
     background: colors.WHITE(),
     cursor: "pointer",
 
@@ -685,7 +685,7 @@ const alertStyles = StyleSheet.create({
 
 const infoSectionStyles = StyleSheet.create({
   specialInfoRow: {
-    borderBottom: "1px solid rgb(232 232 242)",
+    borderBottom: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     padding: 0,
     marginLeft: 30,
     marginRight: 30,
@@ -770,7 +770,7 @@ const styles = StyleSheet.create({
     marginRight: -10,
     textAlign: "right",
     padding: "5px 7px",
-    border: `2px solid rgb(229 229 230)`,
+    border: `2px solid ${colors.LIGHT_GRAYISH_BLUE3()}`,
     background: colors.LIGHT_GREY_BLUE2,
     fontSize: 16,
     [`[type="number"]`]: {
@@ -824,7 +824,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   values: {
-    borderTop: `1px solid rgb(229 229 230)`,
+    borderTop: `1px solid ${colors.LIGHT_GRAYISH_BLUE3()}`,
     paddingTop: 16,
     marginTop: 16,
     marginBottom: 25,
@@ -883,7 +883,7 @@ const styles = StyleSheet.create({
   },
   netAmountLine: {
     paddingTop: 16,
-    borderTop: `1px solid rgb(229 229 230)`,
+    borderTop: `1px solid ${colors.LIGHT_GRAYISH_BLUE3()}`,
     fontWeight: 500,
   },
   netAmountValue: {

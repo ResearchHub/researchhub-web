@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 
 import { TextBlock, TextRow } from "react-placeholder/lib/placeholders";
+import colors from "../../config/themes/colors";
 
 const BulletPlaceholder = ({ color }) => (
   <div className={css(styles.placeholderContainer) + " show-loading-animation"}>
@@ -21,7 +22,7 @@ const BulletPlaceholder = ({ color }) => (
 const styles = StyleSheet.create({
   placeholderContainer: {
     borderRadius: 3,
-    border: "1px solid rgb(237, 237, 237)",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     padding: "23px 15px",
     paddingLeft: 80,
     background: colors.WHITE(),

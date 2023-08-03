@@ -9,6 +9,7 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
+import colors from "~/config/themes/colors";
 
 class PaperEditHistory extends Component {
   constructor(props) {
@@ -108,7 +109,7 @@ var styles = StyleSheet.create({
   editHistoryContainer: {
     position: "absolute",
     right: -280,
-    background: "#F9F9FC",
+    background: colors.GREY_ICY_BLUE_HUE,
   },
   selectedEdit: {
     background: "#F0F1F7",

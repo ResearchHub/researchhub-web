@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   twitter: {
-    background: "#3971FF",
+    background: colors.NEW_BLUE(),
     width: 200,
     height: 50,
     color: colors.WHITE(),
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   copyURLButton: {
     marginTop: 16,
-    color: "#3971FF",
+    color: colors.NEW_BLUE(),
     cursor: "pointer",
   },
 });

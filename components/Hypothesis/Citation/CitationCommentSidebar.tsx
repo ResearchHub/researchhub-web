@@ -247,7 +247,7 @@ const regBurgerMenuStyleOverride = {
     width: "30%",
     maxWidth: 420 /* matched with citationCommentThreadComposer */,
     borderLeft: `1px solid ${colors.LIGHT_GREY(1)}`,
-    boxShadow: `0px 0px 0px 4px rgb(0 0 0 / 2%)`,
+    boxShadow: `0px 0px 0px 4px ${colors.PURE_BLACK(0.02)}`,
     [`@media only screen and (max-width: ${breakpoints.xxlarge.str})`]: {
       maxWidth: "unset",
       width: "85%",
@@ -276,7 +276,7 @@ const subLargeBurgerMenuStyleOverride = {
     zIndex: 10,
     overflowY: "auto",
     borderLeft: `1px solid ${colors.LIGHT_GREY(1)}`,
-    boxShadow: `0px 0px 0px 4px rgb(0 0 0 / 2%)`,
+    boxShadow: `0px 0px 0px 4px ${colors.PURE_BLACK(0.02)}`,
     width: "60%",
   },
   bmItemList: {

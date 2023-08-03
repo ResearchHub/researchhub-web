@@ -25,7 +25,7 @@ const NotificationPlaceholder = ({ color }) => (
 const styles = StyleSheet.create({
   placeholderContainer: {
     borderRadius: 3,
-    // border: "1px solid rgb(237, 237, 237)",
+    // border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     padding: 8,
     background: colors.WHITE(),
     boxSizing: "border-box",

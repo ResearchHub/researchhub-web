@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
     },
   },
   sidebar: {
-    background: "#f9f9fc",
+    background: colors.GREY_ICY_BLUE_HUE,
     borderLeft: `1px solid ${colors.GREY(0.3)}`,
     borderRadius: "0px 5px 5px 0px",
     display: "flex",

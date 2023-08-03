@@ -97,7 +97,7 @@ export default function ReferenceProjectsNavbarEl({
             {/* <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} /> */}
             <FontAwesomeIcon
               icon={isOpen ? faAngleDown : faAngleRight}
-              color={"rgba(55, 53, 47, 0.35)"}
+              color={colors.VERY_DARK_GRAYISH_YELLOW(0.35)}
               className={css(styles.arrowIcon)}
               onClick={(e) => {
                 e.stopPropagation();

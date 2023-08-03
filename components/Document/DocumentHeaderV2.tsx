@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     },
   },
   tabsWrapper: {
-    borderTop: `1px solid #E9EAEF`,
+    borderTop: `1px solid ${colors.LIGHT_GREYISH_BLUE5()}`,
     marginTop: 20,
     [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       paddingLeft: 15,
@@ -368,11 +368,11 @@ const styles = StyleSheet.create({
     zIndex: 100,
     padding: "6.5px 0px",
     top: 0,
-    // background: "rgb(249, 249, 252)",
+    // background: colors.GREY_ICY_BLUE_HUE,
     background: colors.WHITE(),
     boxShadow: `${colors.PURE_BLACK(0.1)} 0px 1px 6px`,
-    borderBottom: `1px solid #E9EAEF`,
-    // borderTop: `1px solid #E9EAEF`,
+    borderBottom: `1px solid ${colors.LIGHT_GREYISH_BLUE5()}`,
+    // borderTop: `1px solid ${colors.LIGHT_GREYISH_BLUE5()}`,
   },
   stickyVisible: {
     display: "block",

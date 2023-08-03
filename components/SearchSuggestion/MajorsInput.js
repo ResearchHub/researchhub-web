@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     marginBottom: 5,
     ":hover": {
-      borderColor: "#B3B3B3",
+      borderColor: colors.GRAY179(),
     },
   },
   uniName: {

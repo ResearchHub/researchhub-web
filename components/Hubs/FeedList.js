@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     objectFit: "cover",
     marginRight: 10,
-    background: "#EAEAEA",
+    background: colors.LIGHT_GREY2(),
   },
   link: {
     textDecoration: "none",
@@ -243,11 +243,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   current: {
-    borderColor: "rgb(237, 237, 237)",
+    borderColor: colors.LIGHT_GREY_BACKGROUND,
     backgroundColor: colors.INPUT_BACKGROUND_GREY,
     ":hover": {
-      borderColor: "rgb(227, 227, 227)",
-      backgroundColor: "#EAEAEA",
+      borderColor: colors.VERY_LIGHT_GREY2(),
+      backgroundColor: colors.LIGHT_GREY2(),
     },
   },
   icon: {

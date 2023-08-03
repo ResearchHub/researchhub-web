@@ -208,8 +208,8 @@ const dropdownStyles = StyleSheet.create({
     borderRadius: 4,
     marginTop: 5,
     width: 220,
-    boxShadow:
-      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
+    boxShadow: `${colors.DARK_GREYISH_BLUE3(0.2)} 0px 0px 15px, 
+      ${colors.DARK_GREYISH_BLUE3(0.15)} 0px 0px 3px 1px`,
   },
   dropdownGroup: {
     color: colors.NEW_BLUE(),

@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     height: "auto",
     width: 200,
     background: colors.WHITE(),
-    boxShadow: "0px 0px 10px 0px #00000026",
+    boxShadow: `0px 0px 10px 0px ${colors.PURE_BLACK(0.15)}`,
     color: colors.BLACK(0.8),
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       left: -10,

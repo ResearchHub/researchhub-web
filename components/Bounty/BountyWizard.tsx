@@ -54,7 +54,7 @@ const choiceStyles = StyleSheet.create({
   choiceContainer: {
     height: 128,
     padding: 16,
-    border: "1.5px solid #E9EAEF",
+    border: `1.5px solid ${colors.LIGHT_GREYISH_BLUE5()}`,
     borderRadius: 4,
     display: "flex",
     alignItems: "center",

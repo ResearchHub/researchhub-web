@@ -147,7 +147,7 @@ export const hubStyles = StyleSheet.create({
     borderRadius: 3,
     border: "1px solid #fff",
     ":hover": {
-      borderColor: "rgb(237, 237, 237)",
+      borderColor: colors.LIGHT_GREY_BACKGROUND,
       backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
   },

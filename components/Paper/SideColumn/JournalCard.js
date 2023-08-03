@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     objectFit: "contain",
     marginRight: 10,
-    background: "#EAEAEA",
+    background: colors.LIGHT_GREY2(),
     border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     "@media only screen and (max-width: 415px)": {
       height: 25,

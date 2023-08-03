@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     ":hover": {
       cursor: "pointer",
       transition: "0.3s",
-      background: "rgb(255 237 245)",
+      background: colors.VERY_PALE_PINK(),
     },
   },
   rscText: {
@@ -50,11 +50,11 @@ const styles = StyleSheet.create({
   },
   shadowVariant: {
     // filter: `drop-shadow(0px 0px 10px ${colors.PURE_BLACK(0.15)})`,
-    boxShadow:
-      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px !important",
+    boxShadow: `${colors.DARK_GREYISH_BLUE3(0.2)} 0px 0px 15px, 
+      ${colors.DARK_GREYISH_BLUE3(0.15)} 0px 0px 3px 1px !important`,
     background: colors.WHITE(),
     ":hover": {
-      background: "rgb(248 246 247)",
+      background: colors.LIGHT_GRAYISH_PINK(),
       cursor: "pointer",
       transition: "0.2s",
     },

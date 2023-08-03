@@ -1,5 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactNode, ReactElement } from "react";
+import colors from "~/config/themes/colors";
 
 type Props = {
   body: ReactNode;
@@ -32,7 +33,7 @@ export default function SiteWideBanner({
 
 const styles = StyleSheet.create({
   siteWideBanner: {
-    backgroundColor: "rgb(65 114 239)",
+    backgroundColor: colors.BRIGHT_BLUE(),
     boxSizing: "border-box",
     display: "flex",
     fontFamily: "Roboto",

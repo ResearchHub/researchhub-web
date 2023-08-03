@@ -3,7 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
 
 // Config
-import { formColors } from "~/config/themes/colors";
+import colors, { formColors } from "~/config/themes/colors";
 import { row } from "~/config/themes/styles";
 
 const OptionCard = (props) => {
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     userSelect: "none",
     ":hover": {
-      borderColor: "#3971FF",
+      borderColor: colors.NEW_BLUE(),
     },
   },
   selectInput: {
@@ -64,16 +64,16 @@ const styles = StyleSheet.create({
     // ':hover': {
     //   marginRight: 17,
     //   boxSizing: 'border-box',
-    //   border: `6px solid #3971FF`
+    //   border: `6px solid ${colors.NEW_BLUE()}`
     // }
   },
   activeRoot: {
-    borderColor: "#3971FF",
+    borderColor: colors.NEW_BLUE(),
   },
   activeSelectInput: {
     marginRight: 17,
     boxSizing: "border-box",
-    border: `6px solid #3971FF`,
+    border: `6px solid ${colors.NEW_BLUE()}`,
   },
 });
 

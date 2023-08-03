@@ -501,7 +501,7 @@ function DocumentHeader({
                       height={20}
                       width={20}
                       version={4}
-                      color={"rgb(119 220 130)"}
+                      color={colors.SOFT_LIME_GREEN()}
                     />
                   </span>
                   <span className={css(styles.boostAmountText)}>

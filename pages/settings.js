@@ -955,7 +955,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     boxSizing: "border-box",
     marginBottom: 5,
-    backgroundColor: "rgb(237, 238, 254)",
+    backgroundColor: colors.LIGHT_BLUE(),
     color: colors.PURPLE(1),
     fontWeight: 500,
     textTransform: "uppercase",
@@ -966,7 +966,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     width: "unset",
     ":hover": {
-      backgroundColor: "rgb(237, 238, 254)",
+      backgroundColor: colors.LIGHT_BLUE(),
       borderColor: colors.BLUE(),
     },
   },

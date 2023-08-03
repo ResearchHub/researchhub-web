@@ -722,7 +722,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   awardUserRow: {
-    borderBottom: "1px solid rgb(233, 234, 239)",
+    borderBottom: `1px solid ${colors.LIGHT_GREYISH_BLUE5()}`,
     paddingBottom: 16,
   },
   awardAction: {
@@ -746,7 +746,7 @@ const styles = StyleSheet.create({
     // marginRight: "auto",
   },
   rowHeader: {
-    borderBottom: "1px solid #E9EAEF",
+    borderBottom: `1px solid ${colors.LIGHT_GREYISH_BLUE5()}}`,
     paddingBottom: 16,
     fontWeight: 500,
     fontSize: 18,
@@ -779,7 +779,7 @@ const styles = StyleSheet.create({
   },
   warningLabel: {
     padding: 12,
-    background: "#FAFAFC",
+    background: colors.LIGHT_GRAY_BACKGROUND2(),
     color: "#FF5353",
     width: "100%",
     boxSizing: "border-box",

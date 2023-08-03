@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
     },
   },
   iconBlue: {
-    color: "#eaebfe",
+    color: colors.LIGHT_GRAYISH_BLUE4(),
   },
   iconDisabled: {
     color: voteWidgetColors.ARROW,

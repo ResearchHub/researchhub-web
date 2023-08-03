@@ -304,8 +304,8 @@ const styles = StyleSheet.create({
     borderTop: `1px solid ${colors.LIGHT_GREY_BORDER}`,
   },
   trade: {
-    borderColor: "rgb(251, 17, 142)",
-    color: "rgb(251, 17, 142)",
+    borderColor: colors.VIVID_PINK(),
+    color: colors.VIVID_PINK(),
     textDecoration: "none",
     position: "relative",
   },

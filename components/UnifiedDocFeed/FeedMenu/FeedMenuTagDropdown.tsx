@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     zIndex: 5,
     padding: 5,
     paddingBottom: 10,
-    boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",
+    boxShadow: `${colors.PURE_BLACK(0.15)} 0px 0px 10px 0px`,
   },
   additionalOptsRightAlign: {
     left: "unset",

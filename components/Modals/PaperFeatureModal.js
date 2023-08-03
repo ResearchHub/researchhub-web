@@ -725,7 +725,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     userSelect: "none",
     ":hover": {
-      color: "#3971FF",
+      color: colors.NEW_BLUE(),
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
@@ -747,7 +747,7 @@ const styles = StyleSheet.create({
     userSelect: "none",
     backgroundColor: colors.BLUE(),
     ":hover": {
-      color: "#3971FF",
+      color: colors.NEW_BLUE(),
     },
   },
   disabled: {

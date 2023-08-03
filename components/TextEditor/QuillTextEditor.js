@@ -896,12 +896,12 @@ const styles = StyleSheet.create({
     color: colors.WHITE(),
   },
   added: {
-    background: "rgba(19, 145, 26, .2)",
-    color: "rgba(19, 145, 26)",
+    background: colors.DARK_LIME_GREEN(0.2),
+    color: colors.DARK_LIME_GREEN(),
   },
   removed: {
-    background: "rgba(173, 34, 21, .2)",
-    color: "rgb(173, 34, 21)",
+    background: colors.DARK_RED(0.2),
+    color: colors.DARK_RED(),
   },
   image: {
     display: "block",
@@ -996,7 +996,7 @@ const toolbarStyles = StyleSheet.create({
     color: colors.BLACK(1),
   },
   button: {
-    color: "rgb(204, 204, 204)",
+    color: colors.LIGHT_GRAY204(),
     cursor: "pointer",
     marginLeft: 24,
     ":hover": {

@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.WHITE(),
     padding: "15px 5px 15px 5px",
     borderRadius: 10,
-    border: "1px solid #FFFFFF",
+    border: `1px solid ${colors.WHITE()}`,
     "@media only screen and (max-width: 415px)": {
       paddingLeft: 10,
       paddingRight: 10,

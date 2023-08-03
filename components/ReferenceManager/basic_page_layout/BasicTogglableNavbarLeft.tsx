@@ -146,7 +146,7 @@ export default function BasicTogglableNavbarLeft({
       sx={{
         borderLeft: "1px solid #e8e8ef",
         zIndex: 4,
-        background: "#FAFAFC",
+        background: colors.LIGHT_GRAY_BACKGROUND2(),
         height: "100%",
         minHeight: "calc(100vh - 68px)",
       }}
@@ -159,7 +159,7 @@ export default function BasicTogglableNavbarLeft({
             color: colors.VOTE_ARRROW,
             cursor: "pointer",
             display: "flex",
-            borderBottom: "1px solid #E9EAEF",
+            borderBottom: `1px solid ${colors.LIGHT_GREYISH_BLUE5()}`,
             flexDirection: "row",
             justifyContent: "space-between",
           }}
@@ -167,7 +167,12 @@ export default function BasicTogglableNavbarLeft({
           <OrganizationPopover isReferenceManager={true} />
         </Box>
       </Box>
-      <List sx={{ background: "#FAFAFC", color: colors.BLACK(1) }}>
+      <List
+        sx={{
+          background: colors.LIGHT_GRAY_BACKGROUND2(),
+          color: colors.BLACK(1),
+        }}
+      >
         <BasicTogglableNavbarButton
           icon={
             <FontAwesomeIcon
@@ -200,7 +205,7 @@ export default function BasicTogglableNavbarLeft({
       <Divider />
       <List
         sx={{
-          background: "#FAFAFC",
+          background: colors.LIGHT_GRAY_BACKGROUND2(),
           display: "flex",
           flexDirection: "column",
           paddingBottom: "16px",
@@ -245,11 +250,11 @@ export default function BasicTogglableNavbarLeft({
         >
           <FontAwesomeIcon
             icon={faPlus}
-            color="rgb(57, 113, 255)"
+            color={colors.NEW_BLUE()}
             style={{ fontSize: 14 }}
           />
           <Typography
-            color="#3971FF"
+            color={colors.NEW_BLUE()}
             component="div"
             fontSize={14}
             letterSpacing={"1.2px"}

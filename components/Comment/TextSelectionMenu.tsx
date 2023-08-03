@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   divider: {
     width: "75%",
     margin: "0 auto",
-    borderBottom: `1px solid #E9EAEF`,
+    borderBottom: `1px solid ${colors.LIGHT_GREYISH_BLUE5()}`,
   },
 });
 

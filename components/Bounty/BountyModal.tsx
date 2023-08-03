@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
     marginRight: -10,
     textAlign: "right",
     padding: "5px 7px",
-    border: `2px solid rgb(229 229 230)`,
+    border: `2px solid ${colors.LIGHT_GRAYISH_BLUE3()}`,
     background: colors.LIGHT_GREY_BLUE2,
     fontSize: 16,
     [`[type="number"]`]: {
@@ -608,7 +608,7 @@ const styles = StyleSheet.create({
   },
   netAmountLine: {
     paddingTop: 16,
-    borderTop: `2px solid rgb(229 229 230)`,
+    borderTop: `2px solid ${colors.LIGHT_GRAYISH_BLUE3()}`,
     fontWeight: 500,
     marginBottom: 0,
   },

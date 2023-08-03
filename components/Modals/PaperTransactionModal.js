@@ -1153,7 +1153,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   activeToggle: {
-    background: "#eaebfe",
+    background: colors.LIGHT_GRAYISH_BLUE4(),
     borderRadius: 4,
     color: colors.BLUE(),
   },

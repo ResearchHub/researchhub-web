@@ -9,6 +9,7 @@ import { ModalActions } from "~/redux/modals";
 
 // Config
 import { convertHttpToHttps } from "~/config/utils/routing";
+import colors from "~/config/themes/colors";
 
 const PaperPDFModal = (props) => {
   const { paper, modals, openPaperPDFModal, onClose } = props;
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     height: "90vh",
     width: "90vw",
-    background: "rgb(50, 54, 57)",
+    background: colors.VERY_DARK_GRAYISH_BLUE2(),
   },
   closeButton: {
     height: 12,

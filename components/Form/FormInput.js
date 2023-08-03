@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     outline: "none",
     cursor: "default",
     ":hover": {
-      borderColor: "#B3B3B3",
+      borderColor: colors.GRAY179(),
     },
     ":focus": {
       borderColor: "#3f85f7",

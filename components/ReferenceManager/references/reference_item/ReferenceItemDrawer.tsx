@@ -161,7 +161,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
       <Box
         sx={{
           padding: "32px 24px 0",
-          background: "rgb(250 250 252)",
+          background: colors.LIGHT_GRAY_BACKGROUND2(),
           boxSizing: "border-box",
           width: "472px",
         }}
@@ -229,8 +229,8 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
         flexDirection="row"
         alignItems="center"
         sx={{
-          background: "rgb(250, 250, 252)",
-          borderTop: "1px solid #E9EAEF",
+          background: colors.LIGHT_GRAY_BACKGROUND2(),
+          borderTop: `1px solid ${colors.LIGHT_GREYISH_BLUE5()}`,
           bottom: 0,
           boxSizing: "border-box",
           left: 0,

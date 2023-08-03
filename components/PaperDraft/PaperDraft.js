@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.LIGHT_GREY_BLUE2,
     padding: 20,
     ":hover": {
-      borderColor: "#B3B3B3",
+      borderColor: colors.GRAY179(),
     },
     ":focus": {
       borderColor: "#3f85f7",

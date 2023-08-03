@@ -153,15 +153,15 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
 
 const styles = StyleSheet.create({
   commentActiveHighlight: {
-    backgroundColor: "rgb(140 230 180)",
+    backgroundColor: colors.ACTIVE_LIME_GREEN(),
     cursor: "pointer",
   },
   commentTextHighLight: {
-    backgroundColor: "rgb(204 243 221)",
+    backgroundColor: colors.LIME_GREEN(),
     cursor: "pointer",
   },
   popoverBodyStyle: {
-    background: "rgb(0,0,0)",
+    background: colors.PURE_BLACK(),
     color: colors.WHITE(),
     cursor: "pointer",
     fontSize: 14,

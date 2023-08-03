@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
     padding: "5px 12px",
     background: colors.WHITE(),
-    boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",
+    boxShadow: `${colors.PURE_BLACK(0.15)} 0px 0px 10px 0px`,
   },
   orderingContainer: {},
   divider: {

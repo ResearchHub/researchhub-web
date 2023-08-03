@@ -703,8 +703,8 @@ const LoginModal = ({
 const styles = StyleSheet.create({
   miscError: {
     margin: "0 20px 10px 20px",
-    background: "rgb(255, 244, 229)",
-    color: "rgb(237, 108, 2)",
+    background: colors.VERY_PALE_ORANGE(),
+    color: colors.VIVID_ORANGE(),
     padding: "10px 20px",
     borderRadius: "4px",
     columnGap: "10px",

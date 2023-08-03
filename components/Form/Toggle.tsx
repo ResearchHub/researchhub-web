@@ -39,7 +39,7 @@ export default function Toggle({
 const styles = StyleSheet.create({
   "toggle": {
     display: "flex",
-    background: "#3971FF1A",
+    background: colors.NEW_BLUE(0.1),
     borderRadius: 50,
     padding: 5,
   },

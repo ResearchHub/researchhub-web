@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     width: 30,
   },
   sidebar: {
-    background: "#f9f9fc",
+    background: colors.GREY_ICY_BLUE_HUE,
     borderRight: `1px solid ${colors.GREY(0.3)}`,
     display: "flex",
     flexDirection: "column",
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   popoverBodyContent: {
     backgroundColor: colors.WHITE(),
     borderRadius: 4,
-    boxShadow: "0px 0px 10px 0px #00000026",
+    boxShadow: `0px 0px 10px 0px ${colors.PURE_BLACK(0.15)}`,
     display: "flex",
     flexDirection: "column",
     userSelect: "none",

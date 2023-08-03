@@ -656,14 +656,14 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: "25px 10px 20px 10px",
     backgroundColor: colors.WHITE(),
-    border: "1px solid rgb(237, 237, 237)",
+    border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     borderRadius: 5,
     cursor: "pointer",
     position: "relative",
     marginBottom: 15,
     overflow: "visible",
     ":hover": {
-      borderColor: "#AAAAAA",
+      borderColor: colors.GRAY170(),
     },
   },
   isRemoved: {
@@ -752,7 +752,7 @@ const styles = StyleSheet.create({
   },
   type: {
     fontSize: 13,
-    // color: "#AAAAAA",
+    // color: colors.GRAY170(),
     color: colors.YELLOW(),
     position: "absolute",
     bottom: 5,

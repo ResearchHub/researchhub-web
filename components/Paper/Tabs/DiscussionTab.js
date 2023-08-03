@@ -974,7 +974,7 @@ var styles = StyleSheet.create({
     marginTop: 0,
     border: "none",
     height: "unset",
-    color: "rgba(26, 31, 58, 0.6)",
+    color: colors.VERY_DARK_DESATURATED_BLUE(0.6),
     background: "unset",
     fontSize: 14,
     ":hover": {
@@ -1014,7 +1014,7 @@ var styles = StyleSheet.create({
   editHistoryContainer: {
     position: "absolute",
     right: -280,
-    background: "#F9F9FC",
+    background: colors.GREY_ICY_BLUE_HUE,
   },
   selectedEdit: {
     background: "#F0F1F7",

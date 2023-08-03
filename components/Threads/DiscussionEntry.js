@@ -990,7 +990,7 @@ const styles = StyleSheet.create({
   },
   contentEdit: {
     border: `1px soild`,
-    borderColor: "rgb(170, 170, 170)",
+    borderColor: colors.GRAY170(),
     background: "unset",
     padding: "0",
   },

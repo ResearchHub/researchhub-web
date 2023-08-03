@@ -35,7 +35,7 @@ function PaperPromotionIcon({
           onMouseLeave={() => setHover(false)}
         >
           <span className={css(styles.icon, customStyle)}>
-            <Icon color={hover && "rgb(36, 31, 58)"} emptyState={false} />
+            <Icon color={hover && colors.BLACK()} emptyState={false} />
           </span>
           <span className={css(styles.count) + " count"}>{boostAmount}</span>
         </div>

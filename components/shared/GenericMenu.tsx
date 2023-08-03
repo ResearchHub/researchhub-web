@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 100,
     backgroundColor: colors.WHITE(),
-    border: "1px solid rgb(222 222 222)",
+    border: `1px solid ${colors.LIGHT_GRAY222()}`,
     borderRadius: "4px",
     padding: "8px",
     boxShadow: `${colors.DARK_GREYISH_BLUE(0.2)} 0px 3px 10px 0px`,

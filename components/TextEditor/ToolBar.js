@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(1),
   },
   button: {
-    color: "rgb(204, 204, 204)",
+    color: colors.LIGHT_GRAY204(),
     cursor: "pointer",
     marginLeft: 24,
     ":hover": {

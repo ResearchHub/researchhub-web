@@ -19,6 +19,9 @@ import Button from "../Form/Button";
 import DraggableCard from "~/components/Paper/DraggableCard";
 import Loader from "~/components/Loader/Loader";
 
+// Config
+import colors from "~/config/themes/colors";
+
 class ManageBulletPointsModal extends Component {
   constructor(props) {
     super(props);
@@ -455,7 +458,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     userSelect: "none",
     ":hover": {
-      color: "#3971FF",
+      color: colors.NEW_BLUE(),
     },
   },
 });

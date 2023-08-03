@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     cursor: "pointer",
-    background: "#F9F9FC",
+    background: colors.GREY_ICY_BLUE_HUE,
     borderTop: "0.75px solid #F0F1F7",
     borderBottom: "0.75px solid #F0F1F7",
     ":hover": {

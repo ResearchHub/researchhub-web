@@ -4,6 +4,7 @@ import { ModalActions } from "~/redux/modals";
 import { PaperPromotionIconLarge } from "~/config/themes/icons";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import colors from "~/config/themes/colors";
 
 const PaperPromotionButton = ({
   customStyle,
@@ -26,7 +27,7 @@ const PaperPromotionButton = ({
       >
         <span className={css(styles.icon, customStyle)}>
           <div className={css(styles.offset)}>
-            <PaperPromotionIconLarge color={hover && "rgb(36, 31, 58)"} />
+            <PaperPromotionIconLarge color={hover && colors.BLACK()} />
           </div>
         </span>
       </div>

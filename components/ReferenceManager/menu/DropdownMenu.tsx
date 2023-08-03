@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import type { MenuItemProps } from "@mui/material/MenuItem";
+import colors from "~/config/themes/colors";
 
 type DropdownMenuItemProps = {
   itemLabel: ReactNode;
@@ -65,7 +66,7 @@ export default function DropdownMenu({
         }}
         size={size}
         sx={{
-          background: "rgba(250, 250, 252, 1)",
+          background: colors.LIGHT_GRAY_BACKGROUND2(1),
           textTransform: " unset !important",
           padding: 0,
         }}

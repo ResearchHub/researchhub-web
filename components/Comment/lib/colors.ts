@@ -41,6 +41,8 @@ const colors = {
   white: globalColors.WHITE(),
   black02: globalColors.BLACK(0.2),
   placeholder: globalColors.PLACEHOLDER_CARD_BACKGROUND,
+  boxshadow20: globalColors.DARK_GREYISH_BLUE3(0.2),
+  boxshadow15: globalColors.DARK_GREYISH_BLUE3(0.15),
   annotation: {
     selected: globalColors.BRIGHT_ORANGE(0.3),
     sharedViaUrl: globalColors.NEW_BLUE(0.25),

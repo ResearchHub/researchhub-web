@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    color: "rgb(36, 31, 58)",
+    color: colors.BLACK(),
     fontWeight: 500,
     marginTop: 0,
     marginBottom: 15,

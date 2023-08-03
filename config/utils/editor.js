@@ -3,6 +3,7 @@ import ModalImage from "react-modal-image";
 import { css, StyleSheet } from "aphrodite";
 import QuillToPlaintext from "quill-to-plaintext";
 import Plain from "slate-plain-serializer";
+import colors from "~/config/themes/colors";
 
 export function convertEditorValueToHtml(value) {
   if (typeof value === "object" && value.hasOwnProperty("ops")) {
@@ -11,12 +12,12 @@ export function convertEditorValueToHtml(value) {
 
   const styles = StyleSheet.create({
     added: {
-      background: "rgba(19, 145, 26, .2)",
-      color: "rgba(19, 145, 26)",
+      background: colors.DARK_LIME_GREEN(0.2),
+      color: colors.DARK_LIME_GREEN(),
     },
     removed: {
-      background: "rgba(173, 34, 21, .2)",
-      color: "rgb(173, 34, 21)",
+      background: colors.DARK_RED(0.2),
+      color: colors.DARK_RED(),
     },
     image: {
       display: "block",

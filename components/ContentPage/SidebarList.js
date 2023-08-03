@@ -100,11 +100,11 @@ const styles = StyleSheet.create({
     padding: "8px",
   },
   current: {
-    borderColor: "rgb(237, 237, 237)",
+    borderColor: colors.LIGHT_GREY_BACKGROUND,
     backgroundColor: colors.INPUT_BACKGROUND_GREY,
     ":hover": {
-      borderColor: "rgb(227, 227, 227)",
-      backgroundColor: "#EAEAEA",
+      borderColor: colors.VERY_LIGHT_GREY2(),
+      backgroundColor: colors.LIGHT_GREY2(),
     },
   },
   list: {

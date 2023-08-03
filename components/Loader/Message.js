@@ -109,8 +109,8 @@ var styles = StyleSheet.create({
     whiteSpace: "pre-wrap",
   },
   load: {
-    background: "rgb(249, 249, 252)",
-    boxShadow: "0px 0px 10px 0px #00000026",
+    background: colors.GREY_ICY_BLUE_HUE,
+    boxShadow: `0px 0px 10px 0px ${colors.PURE_BLACK(0.15)}`,
   },
   loadContainer: {
     position: "relative",

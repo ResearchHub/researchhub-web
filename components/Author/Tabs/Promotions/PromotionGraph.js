@@ -5,6 +5,7 @@ import Loader from "../../../Loader/Loader";
 
 import { formatDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
+import colors from "~/config/themes/colors";
 
 class PromotionGraph extends Component {
   constructor(props) {
@@ -51,7 +52,7 @@ class PromotionGraph extends Component {
         0,
       ]);
       options.legend = { position: "top", alignment: "center" };
-      options.series = { 0: { color: color.BLUE() } };
+      options.series = { 0: { color: colors.BLUE() } };
       options.hAxis = {
         gridlines: {
           color: "transparent",

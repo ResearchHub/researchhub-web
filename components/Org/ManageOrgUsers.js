@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
   popoverBodyContent: {
     backgroundColor: colors.WHITE(),
     borderRadius: 4,
-    boxShadow: "0px 0px 10px 0px #00000026",
+    boxShadow: `0px 0px 10px 0px ${colors.PURE_BLACK(0.15)}`,
     display: "flex",
     flexDirection: "column",
     marginLeft: 10,

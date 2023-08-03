@@ -155,8 +155,8 @@ const styles = StyleSheet.create({
     width: "auto",
     left: -15,
     zIndex: 1,
-    boxShadow:
-      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
+    boxShadow: `${colors.DARK_GREYISH_BLUE3(0.2)} 0px 0px 15px, 
+      ${colors.DARK_GREYISH_BLUE3(0.15)} 0px 0px 3px 1px`,
     ":nth-child(1n) > div": {
       backgroundColor: colors.WHITE(),
     },
