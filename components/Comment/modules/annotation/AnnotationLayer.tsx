@@ -35,7 +35,9 @@ import { CommentTreeContext } from "../../lib/contexts";
 import { sortOpts } from "../../lib/options";
 import AnnotationCommentThread from "./AnnotationCommentThread";
 import Annotation from "./Annotation";
-import repositionAnnotations from "./lib/repositionAnnotations";
+import repositionAnnotations, {
+  resetPositions,
+} from "./lib/repositionAnnotations";
 import createShareableLink from "./lib/createShareableLink";
 import XPathUtil from "./lib/xrange/XPathUtil";
 import CommentDrawer from "../../CommentDrawer";
@@ -474,6 +476,29 @@ const AnnotationLayer = ({
             _purgeComment({ threadId: newCommentId });
           }
         });
+
+        // Reset positions to original
+        const nextAnnotationsSortedByY = resetPositions({
+          annotationsSortedByY: annotationsSortedByYRef.current,
+        });
+
+        const repositioned = repositionAnnotations({
+          annotationsSortedByY: nextAnnotationsSortedByY,
+          selectedThreadId: null,
+          threadRefs,
+        });
+
+        for (let i = 0; i < repositioned.length; i++) {
+          const repositionedIdx = nextAnnotationsSortedByY.findIndex(
+            (a) => a.threadId === repositioned[i].threadId
+          );
+
+          if (repositionedIdx > -1) {
+            nextAnnotationsSortedByY[repositionedIdx] = repositioned[i];
+          }
+        }
+
+        _setAnnotations(nextAnnotationsSortedByY);
       }
     };
 

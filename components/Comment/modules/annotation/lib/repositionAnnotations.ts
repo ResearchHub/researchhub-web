@@ -1,6 +1,24 @@
 import { ID } from "~/config/types/root_types";
 import { Annotation as AnnotationType } from "./types";
 
+// Warning: This function is not pure. It mutates the input array.
+export const resetPositions = ({
+  annotationsSortedByY,
+}: {
+  annotationsSortedByY: AnnotationType[];
+}): AnnotationType[] => {
+  const nextAnnotationsSortedByY: AnnotationType[] = [];
+  for (let i = 0; i < annotationsSortedByY.length; i++) {
+    const annotation = { ...annotationsSortedByY[i] };
+    const firstAnchorRect = annotation.anchorCoordinates[0];
+    annotation.threadCoordinates.x = annotation.threadCoordinates.x;
+    annotation.threadCoordinates.y = firstAnchorRect.y;
+    nextAnnotationsSortedByY[i] = annotation;
+  }
+
+  return nextAnnotationsSortedByY;
+};
+
 const repositionAnnotations = ({
   annotationsSortedByY,
   selectedThreadId,
