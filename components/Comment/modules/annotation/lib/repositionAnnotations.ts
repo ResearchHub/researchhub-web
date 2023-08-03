@@ -1,7 +1,6 @@
 import { ID } from "~/config/types/root_types";
 import { Annotation as AnnotationType } from "./types";
 
-// Warning: This function is not pure. It mutates the input array.
 export const resetPositions = ({
   annotationsSortedByY,
 }: {

@@ -136,6 +136,7 @@ const AnnotationLayer = ({
   const onFetchAlreadyInvoked = useRef<boolean>(false);
 
   const [threadRefs, setThreadRefs] = useState<any[]>([]);
+  const threadRefsRef = useRef<any[]>([]);
   const commentThreads = useRef<{ [threadId: string]: CommentThreadGroup }>({});
   const uncomittedCommentThreads = useRef<{
     [threadId: string]: CommentThreadGroup;
@@ -342,11 +343,14 @@ const AnnotationLayer = ({
   // Create a sorted list of threads that maps to sorted list of annotations
   // threadRefs[i] will always map to annotationsSortedByY[i] and vice versa
   useEffect(() => {
-    setThreadRefs((refs) =>
-      Array(annotationsSortedByY.length)
+    setThreadRefs((refs) => {
+      const next = Array(annotationsSortedByY.length)
         .fill(null)
-        .map((_, i) => refs[i] || createRef())
-    );
+        .map((_, i) => refs[i] || createRef());
+
+      threadRefsRef.current = next;
+      return next;
+    });
   }, [annotationsSortedByY.length]);
 
   // Move things around when a particular annotation is selected.
@@ -485,7 +489,7 @@ const AnnotationLayer = ({
         const repositioned = repositionAnnotations({
           annotationsSortedByY: nextAnnotationsSortedByY,
           selectedThreadId: null,
-          threadRefs,
+          threadRefs: threadRefsRef.current,
         });
 
         for (let i = 0; i < repositioned.length; i++) {
