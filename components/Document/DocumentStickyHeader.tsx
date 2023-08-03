@@ -1,24 +1,14 @@
-import {
-  DocumentMetadata,
-  GenericDocument,
-  isPaper,
-  isPost,
-} from "./lib/types";
+import { DocumentMetadata, GenericDocument, isPaper } from "./lib/types";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import DocumentVote from "./DocumentVote";
-import IconButton from "../Icons/IconButton";
-import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import colors from "~/config/themes/colors";
 import config from "./lib/config";
 import { breakpoints } from "~/config/themes/screen";
-import Link from "next/link";
-import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import HorizontalTabBar from "../HorizontalTabBar";
 import { getTabs } from "./lib/tabbedNavigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeftLong } from "@fortawesome/pro-regular-svg-icons";
 import BackBtn from "../shared/BackBtn";
+import DocumentOptions from "./DocumentOptions";
 
 interface Props {
   document: GenericDocument;
@@ -33,7 +23,11 @@ const DocumentStickyHeader = ({ document, handleTip, metadata }: Props) => {
   return (
     <div className={css(styles.stickyWrapper)}>
       <div className={css(styles.backBtnWrapper)}>
-        <BackBtn label={isPaper(document) ? "Paper" : "Post"} href="/" />
+        <BackBtn
+          labelStyle={styles.backLabel}
+          label={isPaper(document) ? "Paper" : "Post"}
+          href="/"
+        />
       </div>
       <div className={css(styles.sticky)}>
         <DocumentVote
@@ -47,20 +41,9 @@ const DocumentStickyHeader = ({ document, handleTip, metadata }: Props) => {
         <div className={css(styles.tabsWrapper)}>
           <HorizontalTabBar tabs={tabs} />
         </div>
-        <div className={css(styles.actionWrapper)}>
-          <PermissionNotificationWrapper
-            modalMessage="edit document"
-            permissionKey="UpdatePaper"
-            loginRequired={true}
-            onClick={() => handleTip()}
-            hideRipples={true}
-          >
-            <IconButton variant="round" overrideStyle={styles.btn}>
-              <ResearchCoinIcon version={6} width={21} height={21} />
-              <span>Tip</span>
-            </IconButton>
-          </PermissionNotificationWrapper>
-        </div>
+      </div>
+      <div className={css(styles.optionsWrapper)}>
+        <DocumentOptions document={document} />
       </div>
     </div>
   );
@@ -72,17 +55,20 @@ const styles = StyleSheet.create({
     left: 28,
     top: 10,
     fontWeight: 500,
-    fontSize: 22,
-    [`@media (max-width: ${breakpoints.bigDesktop.str})`]: {
+    fontSize: 20,
+    [`@media (max-width: 1100px)`]: {
       display: "none",
     },
   },
   stickyWrapper: {
     position: "relative",
+    display: "flex",
+    alignItems: "center",
   },
-  backButton: {
-    border: 0,
-    marginRight: 3,
+  backLabel: {
+    [`@media (max-width: 1300px)`]: {
+      display: "none",
+    },
   },
   titleWrapper: {
     display: "flex",
@@ -123,13 +109,19 @@ const styles = StyleSheet.create({
   navWrapper: {
     display: "flex",
   },
-  actionWrapper: {
+  optionsWrapper: {
+    position: "absolute",
+    right: 15,
     display: "flex",
     columnGap: "10px",
     marginLeft: "auto",
     justifyContent: "flex-end",
+    marginRight: 15,
     [`@media (max-width: ${breakpoints.small.str})`]: {
       display: "none",
+    },
+    [`@media (max-width: 1200px)`]: {
+      position: "static",
     },
   },
   smallScreenVote: {

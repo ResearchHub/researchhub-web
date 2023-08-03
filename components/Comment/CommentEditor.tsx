@@ -1,7 +1,7 @@
 import { useQuill } from "./hooks/useQuill";
 import CommentEditorToolbar from "./CommentEditorToolbar";
 import { css, StyleSheet } from "aphrodite";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import {
@@ -14,7 +14,7 @@ import {
 import { AuthorProfile, ID, parseUser } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
 import CommentTypeSelector from "./CommentTypeSelector";
-import { COMMENT_CONTEXTS, COMMENT_TYPES } from "./lib/types";
+import { COMMENT_TYPES } from "./lib/types";
 import useQuillContent from "./hooks/useQuillContent";
 import colors from "./lib/colors";
 import { commentTypes } from "./lib/options";
@@ -40,7 +40,6 @@ import { ModalActions } from "~/redux/modals";
 import globalColors from "~/config/themes/colors";
 import CommentEditorPlaceholder from "./CommentEditorPlaceholder";
 import { breakpoints } from "~/config/themes/screen";
-
 const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {
@@ -59,6 +58,7 @@ type CommentEditorArgs = {
   focusOnMount?: boolean;
   editorStyleOverride?: any;
   onChange?: Function;
+  displayCurrentUser?: boolean;
 };
 
 const CommentEditor = ({
@@ -77,6 +77,7 @@ const CommentEditor = ({
   handleClose,
   editorStyleOverride,
   onChange,
+  displayCurrentUser = true,
 }: CommentEditorArgs) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
@@ -115,19 +116,21 @@ const CommentEditor = ({
     commentType: _commentType,
   });
 
-  if (minimalMode) {
-    useEffectHandleClick({
-      ref: editorRef,
-      onInsideClick: () => {
+  useEffectHandleClick({
+    ref: editorRef,
+    onInsideClick: () => {
+      if (minimalMode) {
         setIsMinimalMode(false);
         isMinimalModeRef.current = false;
         quill && !quill.hasFocus() && quill.focus();
-      },
-      onOutsideClick: () => {
+      }
+    },
+    onOutsideClick: () => {
+      if (minimalMode) {
         setIsMinimalMode(true);
-      },
-    });
-  }
+      }
+    },
+  });
 
   useEffect(() => {
     if (isReady) {
@@ -147,10 +150,11 @@ const CommentEditor = ({
   }, [_content, isReady]);
 
   useEffect(() => {
-    if (isReady && focusOnMount) {
+    if (quill && focusOnMount) {
+      quill?.enable();
       focusEditor({ quill });
     }
-  }, [isReady]);
+  }, [isReady, quill]);
 
   useEffect(() => {
     // Remove module event listeners when editor is unmounted
@@ -203,6 +207,27 @@ const CommentEditor = ({
       setIsSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    const _handleKeyDown = (event) => {
+      if (!(quill && isReady)) return;
+      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+        event.preventDefault();
+        event.stopPropagation();
+        _handleSubmit(event);
+      }
+    };
+
+    if (editorRef.current) {
+      editorRef.current.addEventListener("keydown", _handleKeyDown);
+    }
+
+    return () => {
+      if (editorRef.current) {
+        editorRef.current.removeEventListener("keydown", _handleKeyDown);
+      }
+    };
+  }, [quill, isReady, _content, editorRef]);
 
   const isLoggedIn = auth.authChecked && auth.isLoggedIn;
   return (
@@ -291,7 +316,7 @@ const CommentEditor = ({
             </>
           )}
 
-          {author && !allowBounty && (
+          {displayCurrentUser && author && !allowBounty && (
             <div
               className={css(styles.authorRow, isMinimalMode && styles.hidden)}
             >

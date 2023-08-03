@@ -149,6 +149,7 @@ function FlagButtonV2({
         modalStyle={customModalStyle.modalStyle}
         title={modalHeaderText}
         titleStyle={customModalStyle.modalHeaderText}
+        zIndex={1000000000}
       />
     </Fragment>
   );

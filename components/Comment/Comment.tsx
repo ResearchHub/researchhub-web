@@ -1,5 +1,6 @@
 import { GenericDocument } from "../Document/lib/types";
 import CommentHeader from "./CommentHeader";
+import CommentHeaderForAnnotation from "./CommentHeaderForAnnotation";
 import CommentReadOnly from "./CommentReadOnly";
 import { css, StyleSheet } from "aphrodite";
 import CommentActions from "./CommentActions";
@@ -56,6 +57,8 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
   });
   const commentTreeState = useContext(CommentTreeContext);
   const dispatch = useDispatch();
+  const annotationContext =
+    commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION;
 
   const _handleToggleReply = () => {
     if (isReplyOpen && confirm("Discard changes?")) {
@@ -189,19 +192,28 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
   return (
     <div>
       <div>
-        <div
-          className={css(
-            styles.mainWrapper,
-            hasOpenBounties && styles.mainWrapperForBounty
-          )}
-        >
-          <div className={css(styles.headerWrapper)}>
-            <CommentHeader
-              authorProfile={comment.createdBy.authorProfile}
-              comment={comment}
-              document={document}
-              handleEdit={handleEdit}
-            />
+        <div className={css(styles.mainWrapper)}>
+          <div
+            className={css(
+              styles.headerWrapper,
+              annotationContext && styles.headerWrapperAnnotationContext
+            )}
+          >
+            {annotationContext ? (
+              <CommentHeaderForAnnotation
+                authorProfile={comment.createdBy.authorProfile}
+                comment={comment}
+                document={document}
+                handleEdit={handleEdit}
+              />
+            ) : (
+              <CommentHeader
+                authorProfile={comment.createdBy.authorProfile}
+                comment={comment}
+                document={document}
+                handleEdit={handleEdit}
+              />
+            )}
           </div>
           <div
             className={css(
@@ -210,9 +222,12 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                 styles.contentWrapperForAnnotation
             )}
           >
-            {/* <CommentBadges comment={comment} /> */}
             {isEditMode ? (
               <CommentEditor
+                displayCurrentUser={annotationContext ? false : true}
+                editorStyleOverride={
+                  annotationContext ? styles.annotationEditor : undefined
+                }
                 handleSubmit={async (props) => {
                   try {
                     let comment = (await handleCommentUpdate(
@@ -240,13 +255,13 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                     setIsEditMode(false);
                   }
                 }}
+                handleCancel={() => _handleCloseEdit()}
                 commentType={comment.commentType}
                 content={comment.content}
                 commentId={comment.id}
                 author={currentUser?.authorProfile}
                 editorId={`edit-${comment.id}`}
                 allowCommentTypeSelection={false}
-                handleClose={() => _handleCloseEdit()}
               />
             ) : (
               <div
@@ -256,6 +271,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                 )}
               >
                 <CommentReadOnly
+                  comment={comment}
                   content={comment.content}
                   previewMaxCharLength={previewMaxChars}
                 />
@@ -381,10 +397,15 @@ const styles = StyleSheet.create({
   headerWrapper: {
     marginBottom: 15,
   },
+  headerWrapperAnnotationContext: {
+    marginBottom: 5,
+  },
   editorWrapper: {
     marginTop: 15,
   },
-  actionsWrapper: {},
+  actionsWrapper: {
+    marginBottom: 5,
+  },
   mainWrapper: {},
   contentWrapper: {
     paddingLeft: 22,
@@ -395,13 +416,6 @@ const styles = StyleSheet.create({
     borderLeft: "none",
     paddingLeft: 0,
     marginLeft: 0,
-  },
-  mainWrapperForBounty: {
-    // boxShadow: "0px 0px 15px rgba(255, 148, 22, 0.5)",
-    // borderRadius: 10,
-    // padding: 10,
-    // background: "white",
-    // marginBottom: 5,
   },
   commentReadOnlyWrapper: {
     marginBottom: 15,
@@ -450,6 +464,11 @@ const styles = StyleSheet.create({
   contributeBtnLabel: {
     fontWeight: 500,
     lineHeight: "22px",
+  },
+  annotationEditor: {
+    border: `1px solid ${colors.border}`,
+    boxShadow: "none",
+    marginBottom: 15,
   },
 });
 

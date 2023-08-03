@@ -1,5 +1,5 @@
 import { NextRouter } from "next/router";
-import { PaperIcon, QuestionIcon, PostIcon } from "~/config/themes/icons";
+import { PaperIcon, QuestionIcon } from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComments, faStar } from "@fortawesome/pro-solid-svg-icons";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";

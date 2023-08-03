@@ -3,6 +3,7 @@ import { NullableString } from "~/config/types/root_types";
 import { silentEmptyFnc } from "~/config/utils/nullchecks";
 import CheckBox from "~/components//Form/CheckBox";
 import { css, StyleSheet } from "aphrodite";
+import colors from "~/config/themes/colors";
 
 export type RhRadioInputOption = {
   id: string;
@@ -15,6 +16,8 @@ type Props = {
   labelDescriptionStyle?: any;
   onChange: (id: string) => void;
   selectedID: NullableString;
+  checkboxStyleOverride?: any;
+  checkboxWrapOverride?: any;
 };
 
 export default function ResearchHubRadioChoices({
@@ -23,6 +26,8 @@ export default function ResearchHubRadioChoices({
   labelDescriptionStyle,
   onChange,
   selectedID,
+  checkboxStyleOverride = null,
+  checkboxWrapOverride = null,
 }: Props): ReactElement {
   const formattedInputs = inputOptions.map(
     ({ label, id, description }: RhRadioInputOption) => (
@@ -35,19 +40,25 @@ export default function ResearchHubRadioChoices({
           onChange(id);
         }}
       >
-        <div className={css(styles.checkboxWrap)}>
+        <div className={css(styles.checkboxWrap, checkboxWrapOverride)}>
           <CheckBox
             active={selectedID === id}
             isSquare={false}
             onChange={silentEmptyFnc}
-            small
+            checkboxStyleOverride={checkboxStyleOverride}
           />
         </div>
         <div className={css(styles.contentWrap)}>
-          <label htmlFor={id}>{label}</label>
-          {description &&
-            <div className={css(labelDescriptionStyle, styles.labelDescription)}>{description}</div>
-          }
+          <label className={css(styles.label)} htmlFor={id}>
+            {label}
+          </label>
+          {description && (
+            <div
+              className={css(labelDescriptionStyle, styles.labelDescription)}
+            >
+              {description}
+            </div>
+          )}
         </div>
       </div>
     )
@@ -60,17 +71,23 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
     cursor: "pointer",
+    alignItems: "center",
   },
   checkboxWrap: {
     display: "flex",
     paddingTop: 3,
+    cursor: "pointer",
   },
   contentWrap: {
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
   },
   labelDescription: {
     marginTop: 4,
     fontSize: 14,
+  },
+  label: {
+    cursor: "pointer",
+    color: colors.BLACK_TEXT(),
   },
 });

@@ -28,7 +28,6 @@ import { useReferenceActiveProjectContext } from "../reference_organizer/context
 import { useReferencesTableContext } from "./context/ReferencesTableContext";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 import colors from "~/config/themes/colors";
-import PDFViewer from "~/components/Document/lib/PDFViewer/PDFViewer";
 import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 import DroppableZone from "~/components/DroppableZone";
 
@@ -415,7 +414,7 @@ export default function ReferencesTable({
       >
         {"Infinite pagination!!!!!"}
       </div> */}
-        {pdfIsOpen && (
+        {/* {pdfIsOpen && (
           <PDFViewer
             pdfUrl={pdfUrl}
             expanded={true}
@@ -427,7 +426,7 @@ export default function ReferencesTable({
               // setViewerWidth(zoom.newWidth);
             }}
           />
-        )}
+        )} */}
       </div>
     </DroppableZone>
   );

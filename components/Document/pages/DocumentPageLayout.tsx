@@ -15,6 +15,7 @@ import { truncateText } from "~/config/utils/string";
 import buildOpenGraphData, { OpenGraphData } from "../lib/buildOpenGraphData";
 import HeadComponent from "~/components/Head";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 interface Args {
   document: GenericDocument;
@@ -23,6 +24,7 @@ interface Args {
   tabName?: string;
   children?: any;
   metadata: DocumentMetadata;
+  isExpanded?: boolean;
 }
 
 const toPlaintext = (text) => {
@@ -38,7 +40,6 @@ const DocumentPageLayout = ({
   errorCode,
 }: Args) => {
   const router = useRouter();
-
   let openGraphData: OpenGraphData = { meta: {}, graph: [] };
   try {
     openGraphData = buildOpenGraphData({
@@ -54,6 +55,7 @@ const DocumentPageLayout = ({
     console.log("Error building open graph data", e);
   }
 
+  const pdfUrl = document.formats.find((f) => f.type === "pdf")?.url;
   return (
     <div
       className={css(
@@ -93,6 +95,8 @@ const styles = StyleSheet.create({
   },
   topArea: {
     background: "white",
+    position: "relative",
+    zIndex: 4,
     paddingTop: 25,
   },
   bodyArea: {

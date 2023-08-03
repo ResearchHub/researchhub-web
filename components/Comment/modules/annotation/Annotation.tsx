@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Annotation as AnnotationType } from "./lib/types";
 import colors from "../../lib/colors";
 import { StyleSheet, css } from "aphrodite";
@@ -12,51 +12,45 @@ const Annotation = ({
   focused: boolean;
   color?: string;
 }) => {
-  const [canvasRefs, setCanvasRefs] = useState<any[]>([]);
+  const [rects, setRects] = useState(annotation.anchorCoordinates);
 
   useEffect(() => {
-    const refs = annotation.anchorCoordinates.map(() =>
-      createRef<HTMLCanvasElement>()
-    );
-    setCanvasRefs(refs);
-  }, []);
-
-  useEffect(() => {
-    canvasRefs.forEach((canvasRef, i) => {
-      const ctx = canvasRef.current.getContext("2d");
-
-      if (ctx) {
-        const { anchorCoordinates } = annotation;
-        const { x, y, width, height } = anchorCoordinates[i];
-        canvasRef.current.width = width;
-        canvasRef.current.height = height;
-
-        if (color) {
-          ctx.fillStyle = color;
-        } else if (focused) {
-          ctx.fillStyle = colors.annotation.selected;
-        } else {
-          ctx.fillStyle = colors.annotation.unselected;
-        }
-
-        ctx.fillRect(0, 0, width, height);
-      }
-    });
-  }, [canvasRefs, focused]);
+    setRects(annotation.anchorCoordinates);
+  }, [annotation]);
 
   return (
     <>
-      {canvasRefs.map((canvasRef, i) => (
-        <canvas
-          ref={canvasRef}
-          className={css(styles.annotation)}
-          style={{
-            position: "absolute",
-            top: annotation.anchorCoordinates[i].y,
-            left: annotation.anchorCoordinates[i].x,
-          }}
-        />
-      ))}
+      {rects.map((rect, i) => {
+        if (!rect) return null;
+
+        const fill = color
+          ? color
+          : focused
+          ? colors.annotation.selected
+          : colors.annotation.unselected;
+
+        return (
+          <svg
+            key={`svg-${i}`}
+            className={css(styles.annotation)}
+            style={{
+              position: "absolute",
+              top: rect.y,
+              left: rect.x,
+              width: rect.width,
+              height: rect.height,
+              borderBottom: color
+                ? color
+                : focused
+                ? "2px solid rgb(234 166 1)"
+                : "2px solid rgb(255 212 0)",
+              cursor: "pointer",
+            }}
+          >
+            <rect x="0" y="0" width="100%" height="100%" fill={fill} />
+          </svg>
+        );
+      })}
     </>
   );
 };

@@ -104,21 +104,24 @@ XPathUtil.getXPathFromNode = function (node) {
 };
 
 XPathUtil.getNodeFromXPath = function (xpath) {
-  const aNode = document;
-  const xpe = new XPathEvaluator();
-  const nsResolver = xpe.createNSResolver(
-    aNode.ownerDocument == null
-      ? aNode.documentElement
-      : aNode.ownerDocument.documentElement
-  );
-  const result = xpe.evaluate(xpath, aNode, nsResolver, 0, null);
-  const found = [];
-  let res;
-  while ((res = result.iterateNext())) found.push(res);
+  try {
+    const aNode = document;
+    const xpe = new XPathEvaluator();
+    const nsResolver = xpe.createNSResolver(
+      aNode.ownerDocument == null
+        ? aNode.documentElement
+        : aNode.ownerDocument.documentElement
+    );
+    const result = xpe.evaluate(xpath, aNode, nsResolver, 0, null);
+    const found = [];
+    let res;
+    while ((res = result.iterateNext())) found.push(res);
 
-  return found[0];
+    return found[0];
+  } catch (error) {
+    console.log("Failed to locate node from xpath: ", xpath, "error:", error);
+  }
 };
-
 
 // A simple XPath evaluator using only standard DOM methods which can
 // evaluate queries of the form /tag[index]/tag[index].

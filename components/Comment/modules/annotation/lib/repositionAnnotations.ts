@@ -1,6 +1,23 @@
 import { ID } from "~/config/types/root_types";
 import { Annotation as AnnotationType } from "./types";
 
+export const resetPositions = ({
+  annotationsSortedByY,
+}: {
+  annotationsSortedByY: AnnotationType[];
+}): AnnotationType[] => {
+  const nextAnnotationsSortedByY: AnnotationType[] = [];
+  for (let i = 0; i < annotationsSortedByY.length; i++) {
+    const annotation = { ...annotationsSortedByY[i] };
+    const firstAnchorRect = annotation.anchorCoordinates[0];
+    annotation.threadCoordinates.x = annotation.threadCoordinates.x;
+    annotation.threadCoordinates.y = firstAnchorRect.y;
+    nextAnnotationsSortedByY[i] = annotation;
+  }
+
+  return nextAnnotationsSortedByY;
+};
+
 const repositionAnnotations = ({
   annotationsSortedByY,
   selectedThreadId,
@@ -32,7 +49,6 @@ const repositionAnnotations = ({
     (_annotation) => _annotation.threadId === selectedThreadId
   );
 
-  // const beforeFocalPoint = annotationsSortedByY.slice(0, focalPointIndex);
   const focalPoint =
     focalPointIndex >= 0 ? { ..._annotationsSortedByY[focalPointIndex] } : null;
 

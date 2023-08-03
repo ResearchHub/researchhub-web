@@ -22,7 +22,7 @@ export const contextConfig = {
     previewMaxImages: 1,
   },
   annotation: {
-    previewMaxChars: 150,
+    previewMaxChars: 200,
   },
 };
 
@@ -36,6 +36,7 @@ export const apiConfig = {
 
 const config = {
   toggle: {
+    // Deprecated
     width: 75,
   },
   comment: {
@@ -47,9 +48,11 @@ const config = {
     width: 50,
   },
   annotation: {
-    sidebarBuffer: 15,
-    sidebarCommentWidth: 250,
-    inlineCommentWidth: 450,
+    maxSelectionChars: 1250, // Highlighted text greater than this will not be allowed
+    maxPreviewComments: 2,
+    sidebarBuffer: 15, // Space between content and comments
+    sidebarCommentWidth: 270,
+    inlineCommentWidth: 350,
   },
 };
 

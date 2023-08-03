@@ -31,7 +31,7 @@ export enum COMMENT_FILTERS {
 
 export enum COMMENT_CONTEXTS {
   GENERIC = "GENERIC",
-  SIDEBAR = "SIDEBAR",
+  SIDEBAR = "SIDEBAR", // Deprecated
   DRAWER = "DRAWER",
   ANNOTATION = "ANNOTATION",
   FEED = "FEED",
@@ -53,6 +53,7 @@ export type Comment = {
   id: ID;
   createdDate: string;
   updatedDate: string;
+  updatedTimestamp: number;
   awardedBountyAmount: number;
   bounties: Bounty[];
   timeAgo: string;
@@ -90,6 +91,7 @@ export const parseComment = ({
     id: raw.id,
     createdDate: formatDateStandard(raw.created_date),
     updatedDate: formatDateStandard(raw.updated_date),
+    updatedTimestamp: new Date(raw.updated_date).getTime(),
     timeAgo: timeSince(raw.created_date),
     createdBy: parseUser(raw.created_by),
     isEdited: raw.is_edited,
@@ -123,6 +125,24 @@ export const parseComment = ({
   parsed.bounties = parseBountyList(raw.bounties || [], relatedItem);
 
   return parsed;
+};
+
+export const groupByPageNumber = (
+  commentThreadGroups: CommentThreadGroup[]
+): { [pageNumber: string]: CommentThreadGroup } => {
+  const groups: { [pageNumber: string]: CommentThreadGroup } = {};
+  commentThreadGroups.forEach((group) => {
+    const pageNumber = group.thread.anchor?.pageNumber || "0";
+    if (!groups[pageNumber]) {
+      groups[pageNumber] = group;
+    } else {
+      groups[pageNumber].comments = groups[pageNumber].comments.concat(
+        group.comments
+      );
+    }
+  });
+
+  return groups;
 };
 
 export const groupByThread = (

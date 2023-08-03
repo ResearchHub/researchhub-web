@@ -95,7 +95,7 @@ XRange.prototype.serialize = function ({
       endContainerPath: XPathUtil.getXPathFromNode(this.rangyObj.endContainer),
       endOffset: this.rangyObj.endOffset,
       collapsed: this.rangyObj.collapsed,
-      textContent: this.textContent(),
+      text: this.textContent(),
     };
 
     serialized = serializedAbsolutePos;
@@ -233,7 +233,7 @@ XRange.createFromSerialized = function ({
     var xr = new XRange({});
     xr._unserialize(_serialized);
 
-    if (serialized.index) {
+    if (_serialized.index) {
       xr.setIndex(_serialized.index);
     }
 
@@ -322,7 +322,37 @@ XRange.prototype.getCoordinates = function ({ relativeEl }) {
     width: rect.width,
     height: rect.height,
   }));
-  return positions;
+
+  // There could be a lot of position rectangles the represent selected text.
+  // Sometimes thousands. We want to consolidate them into the smallest number of rectangles possible because
+  // later on, we will be drawing a <Canvas /> element for each rectangle. As you can imagine, we will run into
+  // serious performance issues if we have thousands of <Canvas /> elements.
+  const consolidatedPositions = [];
+  for (let i = 0; i < positions.length; i++) {
+    let { x: x1, y: y1, width: w1, height: h1 } = positions[i];
+
+    // Sometimes the range object will return tiny rectangles that mess up the flow of consolidating rectangles
+    // Not quite sure why this happen but what I do know is that we can safely ignore these.
+    if (
+      positions[i].x === 0 ||
+      positions[i].y === 0 ||
+      positions[i].width === 0 ||
+      positions[i].height === 0
+    ) {
+      i++;
+      continue;
+    }
+
+    let j = i + 1;
+    while (j < positions.length && positions[j].x > x1) {
+      w1 = positions[j].x + positions[j].width - x1;
+      j++;
+    }
+    consolidatedPositions.push({ x: x1, y: y1, width: w1, height: h1 });
+    i = j - 1; // Fast forward to the last position that was consolidated
+  }
+
+  return consolidatedPositions;
 };
 
 export default XRange;

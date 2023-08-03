@@ -64,12 +64,7 @@ const Navbar = (props) => {
   const isPost = ["post"].includes(router.pathname.split("/")[1]);
   const isPaper = ["paper"].includes(router.pathname.split("/")[1]);
 
-  const unstickyNavbar = router.pathname.includes(
-    "/paper/[documentId]/[documentSlug]",
-    "/post/[documentId]/[documentSlug]",
-    "/[documentType]/[documentId]/[documentSlug]",
-    "/hubs"
-  );
+  const unstickyNavbar = router.pathname.includes("/hubs") || isPost || isPaper;
 
   const pathname = router?.pathname ?? "";
   const headerLabel = pathname.includes("notebook") ? (
@@ -209,7 +204,7 @@ const Navbar = (props) => {
 
 const styles = StyleSheet.create({
   backBtnWrapper: {
-    fontSize: 22,
+    fontSize: 20,
     [`@media (max-width: ${breakpoints.medium.str})`]: {
       fontSize: 20,
     },

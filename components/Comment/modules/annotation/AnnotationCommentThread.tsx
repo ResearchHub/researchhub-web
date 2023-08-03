@@ -3,17 +3,18 @@ import CommentEditor from "../../CommentEditor";
 import Comment from "../../Comment";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../lib/colors";
+import config from "../../lib/config";
 import { Comment as CommentType } from "../../lib/types";
 import { useContext, useState } from "react";
 import { genClientId } from "~/config/utils/id";
 import { createCommentAPI } from "../../lib/api";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import { CommentTreeContext } from "../../lib/contexts";
-import CommentList from "../../CommentList";
 import IconButton from "../../../Icons/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
+import flattenComments from "../../lib/flattenComments";
 const { setMessage, showMessage } = MessageActions;
 
 interface Props {
@@ -21,26 +22,8 @@ interface Props {
   document: GenericDocument;
   isFocused?: boolean;
   rootComment: CommentType;
-}
-
-export function flattenComments(comments: CommentType[]): {
-  comments: CommentType[];
-  childCount: number;
-} {
-  const flattenedComments: CommentType[] = [];
-  let childCount = 0;
-
-  function walkThrough(comment: CommentType) {
-    flattenedComments.push(comment);
-
-    if (comment.children) {
-      comment.children.forEach(walkThrough);
-      childCount += comment.children.length;
-    }
-  }
-
-  comments.forEach(walkThrough);
-  return { comments: flattenedComments, childCount };
+  onCancel: Function;
+  renderingMode: "inline" | "drawer" | "sidebar";
 }
 
 const AnnotationCommentThread = ({
@@ -48,6 +31,8 @@ const AnnotationCommentThread = ({
   document,
   isFocused = false,
   rootComment,
+  onCancel,
+  renderingMode,
 }: Props) => {
   const commentTreeState = useContext(CommentTreeContext);
   const [pendingComment, setPendingComment] = useState<{
@@ -58,9 +43,10 @@ const AnnotationCommentThread = ({
   const dispatch = useDispatch();
 
   const { comments, childCount } = flattenComments([rootComment]);
-  const commentsToRender = !isFocused ? comments.slice(0, 2) : comments;
+  const commentsToRender = isFocused
+    ? comments
+    : comments.slice(0, config.annotation.maxPreviewComments);
   const remainingComments = childCount + 1 - commentsToRender.length;
-  console.log("commentsToRender", commentsToRender);
 
   const _handleCreateThreadReply = async ({ content, mentions }) => {
     try {
@@ -70,9 +56,10 @@ const AnnotationCommentThread = ({
         documentType: document.apiDocumentType,
         threadId,
         mentions,
+        parentComment: rootComment,
       });
 
-      commentTreeState.onCreate({ comment: _comment });
+      commentTreeState.onCreate({ comment: _comment, parent: rootComment });
     } catch (error) {
       dispatch(setMessage("Could not create a comment at this time"));
       // @ts-ignore
@@ -82,11 +69,16 @@ const AnnotationCommentThread = ({
   };
 
   return (
-    <div className={css(styles.commentListWrapper)}>
+    <div
+      className={css(
+        styles.commentListWrapper,
+        isFocused && renderingMode === "inline" && styles.expanded
+      )}
+    >
       {commentsToRender.map((comment, idx) => (
         <div key={`${threadId}-${idx}`} className={css(styles.commentWrapper)}>
           <Comment
-            key={comment.id}
+            key={`${comment.id}-${comment.updatedTimestamp}`}
             comment={comment}
             ignoreChildren={true}
             document={document}
@@ -116,7 +108,12 @@ const AnnotationCommentThread = ({
         <div className={css(styles.editorWrapper)}>
           <CommentEditor
             key={clientId}
-            minimalMode={true}
+            minimalMode={
+              comments.length > 0 &&
+              comments.length < config.annotation.maxPreviewComments &&
+              renderingMode !== "drawer"
+            }
+            placeholder="Add a comment..."
             editorId={clientId}
             handleSubmit={async ({ content, mentions }) => {
               await _handleCreateThreadReply({ content, mentions });
@@ -125,6 +122,7 @@ const AnnotationCommentThread = ({
             handleCancel={() => {
               setClientId(genClientId());
               setPendingComment({ isEmpty: true, content: null });
+              onCancel && onCancel();
             }}
             onChange={({ content, isEmpty }) =>
               setPendingComment({ content, isEmpty })
@@ -138,7 +136,10 @@ const AnnotationCommentThread = ({
 
 const styles = StyleSheet.create({
   commentListWrapper: {
-    maxHeight: 300,
+    padding: 10,
+  },
+  expanded: {
+    maxHeight: 500,
     overflowY: "scroll",
   },
   childrenList: {

@@ -4,7 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import CommentAvatars from "./CommentAvatars";
 import colors from "./lib/colors";
 import { getClosedBounties, getOpenBounties } from "./lib/bounty";
-import { Comment, COMMENT_CONTEXTS, COMMENT_TYPES } from "./lib/types";
+import { Comment } from "./lib/types";
 import CommentMenu from "./CommentMenu";
 import CommentBadges from "./CommentBadges";
 import UserTooltip from "../Tooltips/User/UserTooltip";
@@ -12,10 +12,6 @@ import ALink from "../ALink";
 import { useContext } from "react";
 import { CommentTreeContext } from "./lib/contexts";
 import { breakpoints } from "~/config/themes/screen";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/pro-regular-svg-icons";
-import { timeSince, timeTo } from "~/config/utils/dates";
-
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
   comment: Comment;
@@ -45,16 +41,17 @@ const CommentHeader = ({
     .filter((person) => person!.id !== comment.createdBy.id);
 
   const commentTreeState = useContext(CommentTreeContext);
-  const hasAnyBounties = openBounties.length > 0 || closedBounties.length > 0;
+
   return (
     <div className={css(styles.commentHeader)}>
       <CommentBadges comment={comment} />
-      <div className={css(styles.details)}>
+      <div className={css(styles.details, styles.detailsForAnnotation)}>
         <CommentAvatars
           people={[comment.createdBy, ...bountyContributors]}
           spacing={-20}
           withTooltip={true}
           wrapperStyle={styles.avatars}
+          size={22}
         />
 
         <div className={css(styles.nameWrapper)}>
@@ -67,41 +64,14 @@ const CommentHeader = ({
                     <ALink
                       href={`/user/${authorProfile?.id}/overview`}
                       key={`/user/${authorProfile?.id}/overview-key`}
+                      weight={500}
                     >
                       {authorProfile.firstName} {authorProfile.lastName}
                     </ALink>
                   }
                 />
-                {hasAnyBounties && bountyContributors.length > 0 && (
-                  <>
-                    {commentTreeState.context !== COMMENT_CONTEXTS.SIDEBAR && (
-                      <div className={css(styles.additionalAuthor)}>
-                        {`, `}
-                        <UserTooltip
-                          createdBy={bountyContributors[0]}
-                          targetContent={
-                            <ALink
-                              href={`/user/${bountyContributors[0].id}/overview`}
-                              key={`/user/${bountyContributors[0].id}/overview-key`}
-                            >
-                              {bountyContributors[0].firstName}{" "}
-                              {bountyContributors[0].lastName}
-                            </ALink>
-                          }
-                        />
-                      </div>
-                    )}
-                    <>{` and others`}</>
-                  </>
-                )}
               </div>
-              {hasAnyBounties ? (
-                <div className={css(styles.verb)}>{` opened a bounty`}</div>
-              ) : comment.commentType === COMMENT_TYPES.REVIEW ? (
-                <div className={css(styles.verb)}>{` peer reviewed`}</div>
-              ) : (
-                <div className={css(styles.verb)}>{` commented`}</div>
-              )}
+              <div className={css(styles.time)}>{comment.timeAgo}</div>
             </div>
             <div className={css(styles.menuWrapper)}>
               <CommentMenu
@@ -110,21 +80,6 @@ const CommentHeader = ({
                 document={document}
               />
             </div>
-          </div>
-          <div className={css(styles.time)}>
-            {comment.timeAgo}
-            {closedBounties.length > 0 && (
-              <>
-                <span className={css(styles.dot)}>•</span>
-                <span className={css(styles.expiringText)}>
-                  <FontAwesomeIcon
-                    style={{ fontSize: 13, marginRight: 5 }}
-                    icon={faClock}
-                  />
-                  {`Ended ` + timeSince(closedBounties[0].expiration_date)}
-                </span>
-              </>
-            )}
           </div>
         </div>
       </div>
@@ -146,15 +101,22 @@ const styles = StyleSheet.create({
   expiringText: {},
   commentHeader: {
     fontSize: 14,
+    maxWidth: "95%",
   },
   verb: {
     color: colors.secondary.text,
   },
   time: {
     color: colors.secondary.text,
+    fontSize: 12,
+    marginTop: 3,
+    marginLeft: 3,
   },
   details: {
     display: "flex",
+  },
+  detailsForAnnotation: {
+    alignItems: "center",
   },
   avatarWrapper: {
     height: 30,
@@ -163,6 +125,7 @@ const styles = StyleSheet.create({
   },
   nameWrapper: {
     marginLeft: 6,
+    marginTop: 5,
     width: "100%",
   },
   nameRow: {
@@ -185,12 +148,12 @@ const styles = StyleSheet.create({
     display: "flex",
     whiteSpace: "pre",
     alignItems: "center",
+    fontSize: 14,
   },
   menuWrapper: {
     marginLeft: "auto",
     marginTop: -10,
     display: "flex",
-    alignItems: "center",
   },
   additionalAuthor: {
     display: "flex",
@@ -201,9 +164,6 @@ const styles = StyleSheet.create({
   },
   avatars: {
     alignItems: "flex-start",
-  },
-  badgesWrapper: {
-    marginBottom: 10,
   },
 });
 

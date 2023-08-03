@@ -1,10 +1,24 @@
 import { css, StyleSheet } from "aphrodite";
-import { RHUser } from "~/config/types/root_types";
+import { ID, RHUser } from "~/config/types/root_types";
 import AuthorAvatar from "../AuthorAvatar";
 import UserTooltip from "../Tooltips/User/UserTooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import colors from "./lib/colors";
+
+const _dedupePeople = (people: Array<RHUser | null>): Array<RHUser | null> => {
+  const uniquePeople: Array<RHUser | null> = [];
+  const ids: Array<ID> = [];
+
+  people.forEach((p) => {
+    if (!ids.includes(p?.id)) {
+      uniquePeople.push(p);
+      ids.push(p?.id);
+    }
+  });
+
+  return uniquePeople;
+};
 
 type CommentAvatarsArgs = {
   people: Array<RHUser | null>;
@@ -23,8 +37,8 @@ const CommentAvatars = ({
   wrapperStyle,
   maxPeople = 3,
 }: CommentAvatarsArgs) => {
-  const avatarPeople = people.slice(0, maxPeople);
-  const remainderPeople = people.length - maxPeople;
+  const avatarPeople = _dedupePeople(people).slice(0, maxPeople);
+  const remainderPeople = avatarPeople.length - maxPeople;
 
   return (
     <div className={css(styles.avatarsWrapper, wrapperStyle)}>
@@ -35,6 +49,7 @@ const CommentAvatars = ({
               author={p?.authorProfile}
               size={size}
               trueSize={true}
+              disableLink={true}
               anonymousAvatarStyle={styles.anonymousAvatar}
             />
           </div>

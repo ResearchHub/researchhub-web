@@ -12,16 +12,20 @@ import {
   quillDeltaToHtml,
 } from "./lib/quill";
 import { CommentTreeContext } from "./lib/contexts";
-import { COMMENT_CONTEXTS } from "./lib/types";
+import { COMMENT_CONTEXTS, Comment as CommentType } from "./lib/types";
+import { truncateText } from "~/config/utils/string";
+import AnnotationTextBubble from "./modules/annotation/AnnotationTextBubble";
 
 type Args = {
   content: any;
+  comment?: CommentType;
   previewMaxCharLength?: number;
   previewMaxImageLength?: number;
 };
 
 const CommentReadOnly = ({
   content,
+  comment,
   previewMaxCharLength = contextConfig.generic.previewMaxChars,
   previewMaxImageLength = contextConfig.generic.previewMaxImages,
 }: Args) => {
@@ -54,13 +58,20 @@ const CommentReadOnly = ({
   const isNarrowWidthContext =
     commentTreeState.context === COMMENT_CONTEXTS.SIDEBAR ||
     commentTreeState.context === COMMENT_CONTEXTS.DRAWER;
+  const isAnnotationContext =
+    commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION;
   const htmlToRender = isPreview && previewHtml ? previewHtml : fullHtml;
+  const annotationText = comment?.thread?.anchor?.text || "";
+
   return (
     <div>
+      {!isAnnotationContext &&
+        annotationText.length > 0 &&
+        !comment?.parent && <AnnotationTextBubble text={annotationText} />}
       <div
         className={`CommentEditor ${
           isNarrowWidthContext ? "CommentEditorForNarrowWidth" : ""
-        }`}
+        } ${isAnnotationContext ? "CommentEditorForAnnotation" : ""}`}
       >
         <div
           className={
@@ -69,6 +80,15 @@ const CommentReadOnly = ({
           }
         >
           <div
+            onClick={(e) => {
+              // @ts-ignore
+              if (e.target.nodeName === "A") {
+                // Anchor links include links to other comment threads and if we don't
+                // stop propagation, we will be inefficiently focusing two comment threads.
+                // The first, is the one one clicked on, and the second being the one the link refers to.
+                e.stopPropagation();
+              }
+            }}
             className="ql-editor"
             dangerouslySetInnerHTML={{ __html: htmlToRender }}
           />

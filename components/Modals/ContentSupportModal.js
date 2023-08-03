@@ -175,7 +175,11 @@ class ContentSupportModal extends Component {
         modalContentStyle={styles.modalContentStyle}
         subtitleStyle={styles.subtitleStyle}
       >
-        <form className={css(styles.form)} onSubmit={this.confirmTransaction}>
+        <form
+          className={css(styles.form)}
+          onSubmit={this.confirmTransaction}
+          onClick={(e) => e.stopPropagation()}
+        >
           {this.renderInputs()}
           <div className={css(styles.buttonContainer)}>
             <Button

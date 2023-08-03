@@ -6,6 +6,7 @@ import colors from "~/config/themes/colors";
 
 export interface MenuOption {
   label?: string;
+  group?: string;
   value: any;
   html?: React.ReactElement;
   icon?: React.ReactElement;
@@ -13,6 +14,8 @@ export interface MenuOption {
   onClick?: Function;
   softHide?: boolean;
   preventDefault?: boolean;
+  disableHover?: boolean;
+  disableStyle?: boolean;
 }
 
 interface MenuProps {
@@ -69,6 +72,7 @@ const Menu = ({
     }),
   };
 
+  let currentOptionGroup: string | undefined = undefined;
   return (
     <div className={css(styles.genericMenuWrapper)}>
       <div
@@ -92,21 +96,41 @@ const Menu = ({
           style={{ width, ...directionStyles }}
         >
           {options.map((option, index) => {
-            const { label, icon, href, value, html, preventDefault } = option;
+            const {
+              label,
+              icon,
+              href,
+              value,
+              html,
+              preventDefault,
+              disableHover,
+              disableStyle,
+            } = option;
 
             const content = (
-              <div
-                key={`${id}-${index}`}
-                className={css(styles.menuItem)}
-                onClick={
-                  preventDefault ? undefined : () => handleSelect(option)
-                }
-              >
-                {icon && <div className={css(styles.menuItemIcon)}>{icon}</div>}
-                {html ? html : label}
-              </div>
+              <>
+                {option.group !== currentOptionGroup && (
+                  <div className={css(styles.groupHeader)}>{option.group}</div>
+                )}
+                <div
+                  key={`${id}-${index}`}
+                  className={css(
+                    !disableStyle && styles.menuItem,
+                    !disableHover && styles.menuItemHover
+                  )}
+                  onClick={
+                    preventDefault ? undefined : () => handleSelect(option)
+                  }
+                >
+                  {icon && (
+                    <div className={css(styles.menuItemIcon)}>{icon}</div>
+                  )}
+                  {html ? html : label}
+                </div>
+              </>
             );
 
+            currentOptionGroup = option.group;
             if (href) {
               return (
                 <Link href={href} key={value}>
@@ -140,7 +164,7 @@ const styles = StyleSheet.create({
     display: "flex",
     padding: "8px 12px",
     alignItems: "center",
-    marginBottom: "10px",
+    lineHeight: "19px",
     cursor: "pointer",
     boxSizing: "border-box",
     fontSize: 14,
@@ -148,12 +172,31 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     fontWeight: 400,
     width: "100%",
+    ":last-child": {
+      marginBottom: 0,
+    },
+  },
+  groupHeader: {
+    marginTop: 10,
+    paddingTop: 15,
+    paddingBottom: 10,
+    paddingLeft: 10,
+    borderTop: `2px solid ${colors.LIGHT_GREY(1.0)}`,
+    color: colors.MEDIUM_GREY(1.0),
+    textTransform: "uppercase",
+    fontSize: 12,
+    fontWeight: 600,
+    letterSpacing: "1.2px",
+    ":first-child": {
+      borderTop: "none",
+      paddingTop: 0,
+      marginTop: 10,
+    },
+  },
+  menuItemHover: {
     ":hover": {
       background: colors.LIGHTER_GREY(1.0),
       transition: "0.2s",
-    },
-    ":last-child": {
-      marginBottom: 0,
     },
   },
   softHideClosed: {
