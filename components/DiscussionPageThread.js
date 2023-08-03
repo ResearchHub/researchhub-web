@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
   commentStylesEdit: {
     padding: 16,
     lineHeight: 1.6,
-    background: "#FAFAFD",
+    background: colors.LIGHT_GRAY_BACKGROUND3(),
   },
   backButton: {
     color: colors.BLACK(0.5),
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     minHeight: 200,
     boxShadow: `0px 0px 0px 5px ${colors.LIGHT_YELLOW(1)}`,
     border: "1px solid #E7E7E7",
-    backgroundColor: "#FBFBFB",
+    backgroundColor: colors.LIGHT_GRAY_BACKGROUND4(),
     margin: "15px 0",
     paddingBottom: 20,
     width: "calc(100% - 76px)",

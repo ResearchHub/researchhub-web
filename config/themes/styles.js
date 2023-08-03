@@ -145,7 +145,7 @@ export const hubStyles = StyleSheet.create({
     width: "100%",
     transition: "all ease-out 0.1s",
     borderRadius: 3,
-    border: "1px solid #fff",
+    border: `1px solid ${colors.WHITE()}`,
     ":hover": {
       borderColor: colors.LIGHT_GREY_BACKGROUND,
       backgroundColor: colors.INPUT_BACKGROUND_GREY,
@@ -237,7 +237,7 @@ export const defaultStyles = StyleSheet.create({
     outline: "none",
     userSelect: "none",
     ":hover": {
-      backgroundColor: "#3E43E8",
+      backgroundColor: colors.BRIGHT_BLUE2(),
     },
   },
   secondaryButton: {

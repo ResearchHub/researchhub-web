@@ -320,26 +320,26 @@ const styles = StyleSheet.create({
     letterSpacing: 1.1,
     borderRadius: 5,
     fontWeight: 500,
-    border: "1px solid #FFF",
+    border: `1px solid ${colors.WHITE()}`,
     "@media only screen and (max-width: 620px)": {
       fontSize: 11,
       padding: "5px 15px",
     },
   },
   confirmed: {
-    color: "#2a6218",
-    backgroundColor: "#D5F3D7",
-    borderColor: "#D5F3D7",
+    color: colors.VERY_DARK_LIME_GREEN(),
+    backgroundColor: colors.LIGHT_GRAYISH_LIME_GREEN(),
+    borderColor: colors.LIGHT_GRAYISH_LIME_GREEN(),
     ":hover": {
-      borderColor: "#2a6218",
+      borderColor: colors.VERY_DARK_LIME_GREEN(),
     },
   },
   pending: {
-    color: "#DCAA72",
-    backgroundColor: "#FDF2DE",
-    borderColor: "#FDF2DE",
+    color: colors.SOFT_ORANGE(),
+    backgroundColor: colors.LIGHT_GRAYISH_ORANGE(),
+    borderColor: colors.LIGHT_GRAYISH_ORANGE(),
     ":hover": {
-      borderColor: "#DCAA72",
+      borderColor: colors.SOFT_ORANGE(),
     },
   },
   failed: {

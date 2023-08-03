@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     outline: "none",
     padding: "8px 32px",
     ":hover": {
-      backgroundColor: "#3E43E8",
+      backgroundColor: colors.BRIGHT_BLUE2(),
     },
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       padding: "6px 24px",

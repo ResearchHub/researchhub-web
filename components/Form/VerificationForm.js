@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   subtext: {
-    color: "#757575",
+    color: colors.DARKER_GREY117(),
     fontSize: 14,
     marginTop: 15,
   },
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    background: "#111",
+    background: colors.MOSTLY_BLACK_GREY2(),
     color: colors.WHITE(),
     borderRadius: "50%",
     boxShadow: `${colors.DARK_GREYISH_BLUE(0.39)} 0px 3px 10px 0px`,

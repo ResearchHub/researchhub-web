@@ -476,7 +476,7 @@ const styles = StyleSheet.create({
     opacity: 0,
     transition: "all ease-out 0.2s",
     ":hover": {
-      backgroundColor: "#3E43E8",
+      backgroundColor: colors.BRIGHT_BLUE2(),
       color: colors.WHITE(),
     },
     "@media only screen and (max-width: 1024px)": {

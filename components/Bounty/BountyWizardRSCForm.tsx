@@ -84,16 +84,16 @@ const progressStyles = StyleSheet.create({
 
     ":hover": {
       background: "#E5EDFF",
-      border: "1px solid #fff",
+      border: `1px solid ${colors.WHITE()}`,
     },
   },
   filled: {
     background: colors.NEW_BLUE(1),
-    border: "1px solid #fff",
+    border: `1px solid ${colors.WHITE()}`,
 
     ":hover": {
       background: colors.NEW_BLUE(1),
-      border: "1px solid #fff",
+      border: `1px solid ${colors.WHITE()}`,
     },
   },
   innerCircle: {

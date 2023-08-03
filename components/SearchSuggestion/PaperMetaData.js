@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "100%",
     padding: "30px 10px",
-    backgroundColor: "#F7F7FB",
+    backgroundColor: colors.LIGHT_GRAYISH_BLUE7(),
     cursor: "pointer",
     border: `1px solid ${colors.LIGHT_GREY_BACKGROUND}`,
     borderRadius: 3,

@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   pillContent: {
-    background: "#F5F5F9",
+    background: colors.LIGHT_GRAYISH_BLUE8(),
     borderRadius: "5px",
     padding: "2px 10px",
     color: colors.BLACK(0.5),

@@ -967,7 +967,7 @@ var styles = StyleSheet.create({
     outline: "none",
     cursor: "pointer",
     ":hover": {
-      backgroundColor: "#3E43E8",
+      backgroundColor: colors.BRIGHT_BLUE2(),
     },
   },
   plainButton: {
@@ -1106,7 +1106,7 @@ var styles = StyleSheet.create({
     height: 50,
   },
   twitterIcon: {
-    color: "#00ACEE",
+    color: colors.PURE_BLUE(),
   },
   asterick: {
     color: colors.NEW_BLUE(),

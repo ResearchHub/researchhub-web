@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     minHeight: 55,
     maxHeight: 55,
     border: `1px solid ${colors.INPUT_BACKGROUND_GREY}`,
-    backgroundColor: "#f7f7fb",
+    backgroundColor: colors.LIGHT_GRAYISH_BLUE7(),
     cursor: "pointer",
     marginBottom: 5,
     ":hover": {

@@ -1069,7 +1069,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FBFBFB",
+    backgroundColor: colors.LIGHT_GRAY_BACKGROUND4(),
     cursor: "default",
   },
   errorIcon: {
@@ -1095,7 +1095,7 @@ const styles = StyleSheet.create({
     border: "2px solid #f8de5a",
   },
   connected: {
-    backgroundColor: "#d5f3d7",
+    backgroundColor: colors.LIGHT_GRAYISH_LIME_GREEN(),
     border: "2px solid #7ae9b1",
   },
   invalidAddress: {
@@ -1109,7 +1109,7 @@ const styles = StyleSheet.create({
     color: colors.GREEN(),
   },
   pendingConnection: {
-    backgroundColor: "#FDF2DE",
+    backgroundColor: colors.LIGHT_GRAYISH_ORANGE(),
     border: `2px solid ${colors.YELLOW()}`,
   },
   confirmation: {
@@ -1154,7 +1154,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     padding: "2px 8px",
     fontSize: 14,
-    border: "1px solid #FFF",
+    border: `1px solid ${colors.WHITE()}`,
     ":hover": {
       color: colors.BLUE(),
       background: colors.LIGHT_GRAYISH_BLUE4(),

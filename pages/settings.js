@@ -855,7 +855,7 @@ const styles = StyleSheet.create({
   multiTagStyle: {
     margin: "5px 0",
     marginRight: 5,
-    border: "1px solid #fff",
+    border: `1px solid ${colors.WHITE()}`,
     padding: "5px 8px",
     ":hover": {
       border: `1px solid ${colors.BLUE()}`,
@@ -960,7 +960,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     textTransform: "uppercase",
     padding: "8px 12px",
-    border: "1px solid #fff",
+    border: `1px solid ${colors.WHITE()}`,
     letterSpacing: 1,
     fontSize: 12,
     marginRight: 5,

@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       width: "calc(100% - 40px)",
       padding: 16,
-      border: "solid 1px #F7F7FB",
+      border: `solid 1px ${colors.LIGHT_GRAYISH_BLUE7()}`,
       backgroundColor: colors.WHITE(),
       marginBottom: 10,
       ":hover": {

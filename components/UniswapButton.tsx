@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   externalIcon: {
-    color: "#FE0F7A",
+    color: colors.VIVID_PINK2_UNISWAP_ICON(),
     paddingTop: 3,
     marginLeft: 2,
   },

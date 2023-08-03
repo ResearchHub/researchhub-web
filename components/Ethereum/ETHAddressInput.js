@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     border: "2px solid #f8de5a",
   },
   connected: {
-    backgroundColor: "#d5f3d7",
+    backgroundColor: colors.LIGHT_GRAYISH_LIME_GREEN(),
     border: "2px solid #7ae9b1",
   },
   invalidAddress: {

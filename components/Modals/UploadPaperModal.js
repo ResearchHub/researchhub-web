@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     padding: "10px 15px",
     boxSizing: "border-box",
     position: "relative",
-    backgroundColor: "#F7F7FB",
+    backgroundColor: colors.LIGHT_GRAYISH_BLUE7(),
     "@media only screen and (max-width: 665px)": {
       width: 380,
     },
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
   divider: {
     width: "100%",
     height: 5,
-    background: "#F7F7FB",
+    background: colors.LIGHT_GRAYISH_BLUE7(),
   },
   paper: {
     width: "100%",

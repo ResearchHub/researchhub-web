@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   },
   categoryLink: {
     textDecoration: "none",
-    color: "#111",
+    color: colors.MOSTLY_BLACK_GREY2(),
     display: "flex",
     alignItems: "center",
     width: "100%",

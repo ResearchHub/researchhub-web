@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   },
   navbarContainer: {
     alignItems: "center",
-    // background: "#fff",
+    // background: colors.WHITE(),
     backgroundColor: colors.WHITE(),
     borderBottom: `1px solid ${colors.GREY_LINE()}`,
     boxSizing: "border-box",

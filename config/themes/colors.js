@@ -6,6 +6,7 @@ let colors = {
   DARK_YELLOW: (opacity = 1) => `rgb(239, 160, 0, ${opacity})`, // #EFA000
   DARK_YELLOW: (opacity = 1) => `rgba(235, 175, 61, ${opacity})`, // #EBAF3D
   DARKER_GREY: (opacity = 1) => `rgba(102, 102, 102, ${opacity})`, // #666666
+  DARKER_GREY117: (opacity = 1) => `rgba(117, 117, 117, ${opacity})`, // #757575
   EDITOR_TAG_BACKGROUND: "rgba(232, 181, 4, 0.1)",
   EDITOR_TAG_TEXT: "#E8B504", //rgba(232, 181, 4, 1)
   ERROR_BACKGROUND: (opacity = 1) => `rgba(255, 83, 83, ${opacity})`, // #FF5353
@@ -20,6 +21,8 @@ let colors = {
   INPUT_BACKGROUND_GREY: "rgba(250, 250, 250, 1)", // #FAFAFA
   LIGHT_GRAY_BACKGROUND: (opacity = 1) => `rgba(250, 250, 250, ${opacity})`, // #FAFAFA
   LIGHT_GRAY_BACKGROUND2: (opacity = 1) => `rgba(250, 250, 252, ${opacity})`, // #fafafc
+  LIGHT_GRAY_BACKGROUND3: (opacity = 1) => `rgba(250, 250, 253, ${opacity})`, // #fafafd
+  LIGHT_GRAY_BACKGROUND4: (opacity = 1) => `rgba(251, 251, 251, ${opacity})`, // #fbfbfb
   LIGHT_BLUE: (opacity = 1) => `rgba(237, 238, 254, ${opacity})`, // #EDEFFE
   LIGHT_GREEN: (opacity = 1) => `rgba(236, 249, 235, ${opacity})`, // #ECF9EB
   LIGHT_GREY_BACKGROUND: "#EDEDED", // rgba(237, 237, 237, 1)
@@ -43,6 +46,7 @@ let colors = {
   ORANGE_LIGHT2: (opacity = 1) => `rgb(255, 148, 22, ${opacity})`, // #FF9416
   ORANGE: (opacity = 1) => `rgba(255, 176, 0, ${opacity})`, // #FFB000
   ORANGE_LIGHTER: (opacity = 1) => `rgb(252, 242, 220, ${opacity})`, // #FCF2DC
+  LIGHT_GRAYISH_ORANGE: (opacity = 1) => `rgba(253, 242, 222, ${opacity})`, // #FDF2DE
   PASTEL_GREEN_TEXT: "#88cb88", //rgba(136, 203, 136, 1)
   PLACEHOLDER_CARD_BACKGROUND: "#efefef", //rgba(239, 239, 239, 1)
   PURPLE_LIGHT: (opacity = 1) => `rgb(112, 60, 255, ${opacity})`, // #703CFF
@@ -54,6 +58,7 @@ let colors = {
   TOOLTIP_BACKGROUND_BLACK: "#E69A8DFF", //rgba(230, 154, 141, 1)
   TOOLTIP_TEXT_COLOR_WHITE: "#5F4B8BFF", //rgba(95, 75, 139, 1)
   YELLOW: (opacity = 1) => `rgba(240, 182, 65, ${opacity})`, // #F0B641
+  SOFT_YELLOW: (opacity = 1) => `rgba(246, 230, 83, ${opacity})`, // #F6E653
   WHITE: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // #FFFFFF
   PURE_BLACK: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // #000000
   DARKER_BLUE: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`, // #0000FF
@@ -77,6 +82,8 @@ let colors = {
   LIGHT_GRAYISH_BLUE4: (opacity = 1) => `rgba(234, 235, 254, ${opacity})`, // #eaebfe
   LIGHT_GREYISH_BLUE5: (opacity = 1) => `rgba(233, 234, 239, ${opacity})`, // #e9eaef
   LIGHT_GRAYISH_BLUE6: (opacity = 1) => `rgba(210, 210, 230, ${opacity})`, // #d2d2e6
+  LIGHT_GRAYISH_BLUE7: (opacity = 1) => `rgba(247, 247, 251, ${opacity})`, // #f7f7fb
+  LIGHT_GRAYISH_BLUE8: (opacity = 1) => `rgba(245, 245, 249, ${opacity})`, // #f5f5f9
   GREYISH_BLUE: (opacity = 1) => `rgba(200, 200, 202, ${opacity})`, // #c8c8ca
   GREYISH_BLUE2: (opacity = 1) => `rgba(170, 167, 185, ${opacity})`, // #aaa7b9
   DARK_GREYISH_BLUE: (opacity = 1) => `rgba(129, 148, 167, ${opacity})`, // #8194a7
@@ -84,6 +91,7 @@ let colors = {
   DARK_GREYISH_BLUE3: (opacity = 1) => `rgba(101, 119, 134, ${opacity})`, // #657786
   DARK_GREYISH_BLUE4: (opacity = 1) => `rgba(122, 120, 135, ${opacity})`, // #7a7887
   DARK_GREYISH_BLUE5: (opacity = 1) => `rgba(167, 166, 176, ${opacity})`, // #a7a6b0
+  DARK_GREYISH_BLUE6: (opacity = 1) => `rgba(120, 124, 126, ${opacity})`, // #787c7e
   VERY_DARK_GREYISH_BLUE: (opacity = 1) => `rgba(78, 76, 95, ${opacity})`, // #4e4c5f
   VERY_DARK_GRAYISH_BLUE2: (opacity = 1) => `rgba(50, 54, 57, ${opacity})`, // #323639
   VERY_DARK_GRAYISH_BLUE3: (opacity = 1) => `rgba(79, 77, 95, ${opacity})`, // #4f4d5f
@@ -92,7 +100,9 @@ let colors = {
   LIGHT_BLUE2: (opacity = 1) => `rgba(70, 123, 255, ${opacity})`, // #467bff
   VIVID_RED: (opacity = 1) => `rgba(235, 51, 35, ${opacity})`, // #eb3323
   GREY_LIME_GREEN: (opacity = 1) => `rgba(242, 251, 243, ${opacity})`, // #f2fbf3
+  LIGHT_GRAYISH_LIME_GREEN: (opacity = 1) => `rgba(213, 243, 215, ${opacity})`, // #d5f3d7
   MOSTLY_BLACK_GREY: (opacity = 1) => `rgba(21, 21, 21, ${opacity})`, // #151515
+  MOSTLY_BLACK_GREY2: (opacity = 1) => `rgba(17, 17, 17, ${opacity})`, // #111111
   PURE_YELLOW: (opacity = 1) => `rgba(255, 255, 0, ${opacity})`, // #ffff00
   BRIGHT_ORANGE: (opacity = 1) => `rgba(252, 187, 41, ${opacity})`, // #fcbb29
   VERY_DARK_GREY: (opacity = 1) => `rgba(99, 99, 99, ${opacity})`, // #636363
@@ -103,12 +113,16 @@ let colors = {
   LIGHT_GRAYISH_YELLOW: (opacity = 1) => `rgba(253, 248, 230, ${opacity})`, // #fdf8e6
   DARK_LIME_GREEN: (opacity = 1) => `rgba(19, 145, 26, ${opacity})`, // #13911a
   DARK_LIME_GREEN2: (opacity = 1) => `rgba(25, 160, 40, ${opacity})`, // #19a028
+  DARK_LIME_GREEN3: (opacity = 1) => `rgba(5, 109, 78, ${opacity})`, // #056d4e
+  VERY_DARK_LIME_GREEN: (opacity = 1) => `rgba(42, 98, 24, ${opacity})`, // #2a6218
   DARK_RED: (opacity = 1) => `rgba(173, 34, 21, ${opacity})`, // #ad2215
   GRAY170: (opacity = 1) => `rgba(170, 170, 170, ${opacity})`, // #aaaaaa
   GRAY179: (opacity = 1) => `rgba(179, 179, 179, ${opacity})`, // #b3b3b3
   LIGHT_GRAY204: (opacity = 1) => `rgba(204, 204, 204, ${opacity})`, // #cccccc
   LIGHT_GRAY222: (opacity = 1) => `rgba(222, 222, 222, ${opacity})`, // #dedede
   LIGHT_GRAY238: (opacity = 1) => `rgba(238, 238, 238, ${opacity})`, // #eeeeee
+  LIGHT_GRAY199: (opacity = 1) => `rgba(199, 199, 199, ${opacity})`, // #c7c7c7
+  LIGHT_GRAY242: (opacity = 1) => `rgba(242, 242, 242, ${opacity})`, // #f2f2f2
   GRAY190: (opacity = 1) => `rgba(190, 190, 190, ${opacity})`, // #bebebe
   DARY_GRAYISH_ORANGE: (opacity = 1) => `rgba(115, 108, 100, ${opacity})`, // #736c64
   LIME_GREEN: (opacity = 1) => `rgba(204, 243, 221, ${opacity})`, // #ccf3dd
@@ -116,8 +130,12 @@ let colors = {
   SOFT_LIME_GREEN: (opacity = 1) => `rgba(119, 220, 130, ${opacity})`, // #77dc82
   VIVID_ORANGE: (opacity = 1) => `rgba(237, 108, 2, ${opacity})`, // #ed6c02
   VERY_PALE_ORANGE: (opacity = 1) => `rgba(255, 244, 229, ${opacity})`, // #fff4e5
+  SOFT_ORANGE: (opacity = 1) => `rgba(220, 170, 114, ${opacity})`, // #dcaa72
   VIVID_PINK: (opacity = 1) => `rgba(251, 17, 142, ${opacity})`, // #fb118e
+  VIVID_PINK2_UNISWAP_ICON: (opacity = 1) => `rgba(254, 15, 122, ${opacity})`, // #fe0f7a
   BRIGHT_BLUE: (opacity = 1) => `rgba(65, 114, 239, ${opacity})`, // #4172ef
+  BRIGHT_BLUE2: (opacity = 1) => `rgba(62, 67, 232, ${opacity})`, // #3e43e8
+  PURE_BLUE: (opacity = 1) => `rgba(0, 172, 238, ${opacity})`, // #00acee
   LIGHT_GRAYISH_PINK: (opacity = 1) => `rgba(248, 246, 247, ${opacity})`, // #f8f6f7
   VERY_PALE_PINK: (opacity = 1) => `rgba(255, 237, 245, ${opacity})`, // #ffedf5
 };
@@ -134,6 +152,7 @@ if (mode === "dark") {
     DARK_GREEN: (opacity = 1) => `rgba(94, 102, 67, ${opacity})`, // Darkened
     DARK_YELLOW: (opacity = 1) => `rgba(120, 95, 0, ${opacity})`, // Darkened
     DARKER_GREY: (opacity = 1) => `rgba(153, 153, 153, ${opacity})`, // Lightened
+    DARKER_GREY117: (opacity = 1) => `rgba(180, 180, 180, ${opacity})`, // Lightened
     EDITOR_TAG_BACKGROUND: "rgba(23, 74, 251, 0.1)", // Adjusted
     EDITOR_TAG_TEXT: "#1722FB", // Adjusted
     ERROR_BACKGROUND: (opacity = 1) => `rgba(255, 83, 83, ${opacity})`, // Unchanged
@@ -147,6 +166,8 @@ if (mode === "dark") {
     INPUT_BACKGROUND_GREY: "rgba(5, 5, 5, 1)", // Darkened
     LIGHT_GRAY_BACKGROUND: (opacity = 1) => `rgba(5, 5, 5, ${opacity})`, // Darkened
     LIGHT_GRAY_BACKGROUND2: (opacity = 1) => `rgba(5, 5, 3, ${opacity})`, // Darkened
+    LIGHT_GRAY_BACKGROUND3: (opacity = 1) => `rgba(30, 30, 33, ${opacity})`, // Darkened
+    LIGHT_GRAY_BACKGROUND4: (opacity = 1) => `rgba(28, 28, 28, ${opacity})`, // Darkened
     LIGHT_BLUE: (opacity = 1) => `rgba(18, 17, 1, ${opacity})`, // Darkened
     LIGHT_GREEN: (opacity = 1) => `rgba(19, 6, 20, ${opacity})`, // Adjusted
     LIGHT_GREY_BACKGROUND: "#121212", // Darkened
@@ -170,6 +191,7 @@ if (mode === "dark") {
     ORANGE_LIGHT2: (opacity = 1) => `rgb(0, 107, 233, ${opacity})`, // Adjusted
     ORANGE: (opacity = 1) => `rgba(15, 79, 255, ${opacity})`, // Adjusted
     ORANGE_LIGHTER: (opacity = 1) => `rgb(3, 13, 35, ${opacity})`, // Darkened
+    LIGHT_GRAYISH_ORANGE: (opacity = 1) => `rgba(63, 52, 42, ${opacity})`, // Darkened
     PASTEL_GREEN_TEXT: "#773877", // Adjusted
     PLACEHOLDER_CARD_BACKGROUND: "#101010", // Darkened
     PURPLE_LIGHT: (opacity = 1) => `rgb(143, 195, 0, ${opacity})`, // Adjusted
@@ -181,6 +203,7 @@ if (mode === "dark") {
     TOOLTIP_BACKGROUND_BLACK: "#196758FF", // Adjusted
     TOOLTIP_TEXT_COLOR_WHITE: "#A0B4B9FF", // Adjusted
     YELLOW: (opacity = 1) => `rgba(15, 73, 190, ${opacity})`, // Adjusted
+    SOFT_YELLOW: (opacity = 1) => `rgba(180, 165, 40, ${opacity})`, // Adjusted
     WHITE: (opacity = 1) => `rgba(40, 40, 40, ${opacity})`, // Adjusted
     PURE_BLACK: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // Inverted
     DARKER_BLUE: (opacity = 1) => `rgba(50, 50, 255, ${opacity})`, // Adjusted
@@ -204,6 +227,8 @@ if (mode === "dark") {
     LIGHT_GRAYISH_BLUE4: (opacity = 1) => `rgba(60, 61, 80, ${opacity})`, // Adjusted
     LIGHT_GREYISH_BLUE5: (opacity = 1) => `rgba(40, 41, 46, ${opacity})`, // Adjusted
     LIGHT_GRAYISH_BLUE6: (opacity = 1) => `rgba(60, 60, 80, ${opacity})`, // Adjusted
+    LIGHT_GRAYISH_BLUE7: (opacity = 1) => `rgba(40, 40, 45, ${opacity})`, // Adjusted
+    LIGHT_GRAYISH_BLUE8: (opacity = 1) => `rgba(40, 40, 45, ${opacity})`, // Adjusted
     GREYISH_BLUE: (opacity = 1) => `rgba(80, 80, 82, ${opacity})`, // Adjusted
     GREYISH_BLUE2: (opacity = 1) => `rgba(190, 187, 205, ${opacity})`, // Adjusted
     DARK_GREYISH_BLUE: (opacity = 1) => `rgba(79, 88, 97, ${opacity})`, // Adjusted
@@ -211,6 +236,7 @@ if (mode === "dark") {
     DARK_GREYISH_BLUE3: (opacity = 1) => `rgba(141, 159, 174, ${opacity})`, // Adjusted
     DARK_GREYISH_BLUE4: (opacity = 1) => `rgba(72, 70, 85, ${opacity})`, // Adjusted
     DARK_GREYISH_BLUE5: (opacity = 1) => `rgba(90, 90, 100, ${opacity})`, // Adjusted
+    DARK_GREYISH_BLUE6: (opacity = 1) => `rgba(180, 184, 186, ${opacity})`, // Adjusted
     VERY_DARK_GREYISH_BLUE: (opacity = 1) => `rgba(98, 96, 115, ${opacity})`, // Adjusted
     VERY_DARK_GRAYISH_BLUE2: (opacity = 1) => `rgba(110, 114, 117, ${opacity})`, // Adjusted
     VERY_DARK_GRAYISH_BLUE3: (opacity = 1) => `rgba(110, 108, 126, ${opacity})`, // Adjusted
@@ -220,7 +246,9 @@ if (mode === "dark") {
     LIGHT_BLUE2: (opacity = 1) => `rgba(50, 103, 235, ${opacity})`, // Adjusted
     VIVID_RED: (opacity = 1) => `rgba(215, 31, 15, ${opacity})`, // Adjusted
     GREY_LIME_GREEN: (opacity = 1) => `rgba(62, 71, 63, ${opacity})`, // Adjusted
+    LIGHT_GRAYISH_LIME_GREEN: (opacity = 1) => `rgba(85, 115, 87, ${opacity})`, // Adjusted
     MOSTLY_BLACK_GREY: (opacity = 1) => `rgba(62, 71, 63, ${opacity})`, // Adjusted
+    MOSTLY_BLACK_GREY2: (opacity = 1) => `rgba(238, 238, 238, ${opacity})`, // Adjusted
     PURE_YELLOW: (opacity = 1) => `rgba(235, 235, 80, ${opacity})`, // Adjusted
     BRIGHT_ORANGE: (opacity = 1) => `rgba(235, 170, 24, ${opacity})`, // Adjusted
     VERY_DARK_GREY: (opacity = 1) => `rgba(150, 150, 150, ${opacity})`, // Adjusted
@@ -232,12 +260,16 @@ if (mode === "dark") {
     LIGHT_GRAYISH_YELLOW: (opacity = 1) => `rgba(133, 128, 110, ${opacity})`, // Adjusted
     DARK_LIME_GREEN: (opacity = 1) => `rgba(50, 175, 57, ${opacity})`, // Adjusted
     DARK_LIME_GREEN2: (opacity = 1) => `rgba(15, 100, 25, ${opacity})`, // Adjusted
+    DARK_LIME_GREEN3: (opacity = 1) => `rgba(3, 65, 47, ${opacity})`, // Adjusted
+    VERY_DARK_LIME_GREEN: (opacity = 1) => `rgba(112, 168, 94, ${opacity})`, // Adjusted
     DARK_RED: (opacity = 1) => `rgba(193, 54, 41, ${opacity})`, // Adjusted
     GRAY170: (opacity = 1) => `rgba(200, 200, 200, ${opacity})`, // Adjusted
     GRAY179: (opacity = 1) => `rgba(100, 100, 100, ${opacity})`, // Adjusted
     LIGHT_GRAY204: (opacity = 1) => `rgba(85, 85, 85, ${opacity})`, // Adjusted
     LIGHT_GRAY222: (opacity = 1) => `rgba(33, 33, 33, ${opacity})`, // Adjusted
     LIGHT_GRAY238: (opacity = 1) => `rgba(34, 34, 34, ${opacity})`, // Adjusted
+    LIGHT_GRAY199: (opacity = 1) => `rgba(56, 56, 56, ${opacity})`, // Adjusted
+    LIGHT_GRAY242: (opacity = 1) => `rgba(58, 58, 58, ${opacity})`, // Adjusted
     GRAY190: (opacity = 1) => `rgba(65, 65, 65, ${opacity})`, // Adjusted
     DARY_GRAYISH_ORANGE: (opacity = 1) => `rgba(140, 133, 125, ${opacity})`, // Adjusted
     LIME_GREEN: (opacity = 1) => `rgba(102, 183, 161, ${opacity})`, // Adjusted
@@ -245,10 +277,14 @@ if (mode === "dark") {
     SOFT_LIME_GREEN: (opacity = 1) => `rgba(60, 170, 80, ${opacity})`, // Adjusted
     VIVID_ORANGE: (opacity = 1) => `rgba(190, 85, 0, ${opacity})`, // Adjusted
     VERY_PALE_ORANGE: (opacity = 1) => `rgba(128, 100, 70, ${opacity})`, // Adjusted
+    SOFT_ORANGE: (opacity = 1) => `rgba(110, 85, 57, ${opacity})`, // Adjusted
     VIVID_PINK: (opacity = 1) => `rgba(191, 12, 108, ${opacity})`, // Adjusted
-    BRIGHT_BLUE: (opacity = 1) => `rgba(40, 90, 215, ${opacity})`, // #Adjusted
-    LIGHT_GRAYISH_PINK: (opacity = 1) => `rgba(80, 78, 79, ${opacity})`, // #Adjusted
-    VERY_PALE_PINK: (opacity = 1) => `rgba(105, 67, 85, ${opacity})`, // #Adjusted
+    VIVID_PINK2_UNISWAP_ICON: (opacity = 1) => `rgba(180, 10, 90, ${opacity})`, // Adjusted
+    BRIGHT_BLUE: (opacity = 1) => `rgba(40, 90, 215, ${opacity})`, // Adjusted
+    BRIGHT_BLUE2: (opacity = 1) => `rgba(40, 45, 150, ${opacity})`, // Adjusted
+    PURE_BLUE: (opacity = 1) => `rgba(0, 92, 127, ${opacity})`, // Adjusted
+    LIGHT_GRAYISH_PINK: (opacity = 1) => `rgba(80, 78, 79, ${opacity})`, // Adjusted
+    VERY_PALE_PINK: (opacity = 1) => `rgba(105, 67, 85, ${opacity})`, // Adjusted
   };
 }
 

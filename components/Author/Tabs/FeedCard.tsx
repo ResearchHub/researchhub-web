@@ -710,7 +710,7 @@ const styles = StyleSheet.create({
     width: 70,
   },
   separator: {
-    background: "#C7C7C7",
+    background: colors.LIGHT_GRAY199(),
     height: 5,
     width: 5,
     marginLeft: 8,

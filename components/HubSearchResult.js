@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     },
   },
   highlight: {
-    backgroundColor: "#f6e653",
+    backgroundColor: colors.SOFT_YELLOW(),
     padding: "2px 1px 2px 1px",
   },
   paperCount: {

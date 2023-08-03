@@ -56,7 +56,7 @@ function DroppableZone({
 
 const styles = StyleSheet.create({
   dragged: {
-    backgroundColor: "#F7F7FB",
+    backgroundColor: colors.LIGHT_GRAYISH_BLUE7(),
     border: 0,
     outline: `dotted ${colors.BLUE()}`,
     zIndex: 999999,
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   subtext: {
-    color: "#757575",
+    color: colors.DARKER_GREY117(),
     fontSize: 14,
     marginTop: 15,
   },

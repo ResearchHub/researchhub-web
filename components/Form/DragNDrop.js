@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FBFBFB",
+    backgroundColor: colors.LIGHT_GRAY_BACKGROUND4(),
   },
   errorIcon: {
     color: colors.RED(1),

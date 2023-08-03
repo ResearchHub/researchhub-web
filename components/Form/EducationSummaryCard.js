@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   trashIcon: {
     position: "absolute",
     cursor: "pointer",
-    background: "#fafafd",
+    background: colors.LIGHT_GRAY_BACKGROUND3(),
     color: colors.BLACK(0.7),
     top: 15,
     right: 10,

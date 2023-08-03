@@ -1412,7 +1412,7 @@ export const mainFeedStyles = StyleSheet.create({
     outline: "none",
     boxSizing: "border-box",
     ":hover": {
-      background: "#3E43E8",
+      background: colors.BRIGHT_BLUE2(),
     },
     "@media only screen and (max-width: 1149px)": {
       fontSize: 13,

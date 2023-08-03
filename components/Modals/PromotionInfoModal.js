@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     color: colors.WHITE(),
     cursor: "pointer",
     ":hover": {
-      backgroundColor: "#3E43E8",
+      backgroundColor: colors.BRIGHT_BLUE2(),
     },
   },
   divider: {

@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
   buttonCount: {
     alignItems: "center",
-    backgroundColor: "#F2F2F2",
+    backgroundColor: colors.LIGHT_GRAY242(),
     borderRadius: 4,
     color: colors.TEXT_DARKER_GREY,
     display: "flex",

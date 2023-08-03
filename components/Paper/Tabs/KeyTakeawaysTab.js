@@ -578,7 +578,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     borderRadius: 5,
     ":hover": {
-      backgroundColor: "#3E43E8",
+      backgroundColor: colors.BRIGHT_BLUE2(),
     },
     "@media only screen and (max-width: 415px)": {
       padding: "6px 24px",

@@ -469,10 +469,10 @@ export const formGenericStyles = StyleSheet.create({
   type: {
     color: colors.BLUE(),
     cursor: "pointer",
-    backgroundColor: "#f7f7fb",
+    backgroundColor: colors.LIGHT_GRAYISH_BLUE7(),
     padding: "3px 10px",
     border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
-    borderBottomColor: "#f7f7fb",
+    borderBottomColor: colors.LIGHT_GRAYISH_BLUE7(),
     position: "absolute",
     right: -1,
     bottom: -2,

@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 500,
     backgroundColor: voteWidgetColors.BACKGROUND,
-    color: "#056d4e",
+    color: colors.DARK_LIME_GREEN3(),
     padding: "2px 10px",
   },
   headline: {
@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
     },
   },
   strong: {
-    color: "#111",
+    color: colors.MOSTLY_BLACK_GREY2(),
     fontWeight: 500,
   },
   text: {
@@ -604,7 +604,7 @@ const styles = StyleSheet.create({
   },
   twitterIcon: {
     marginLeft: 8,
-    color: "#00ACEE",
+    color: colors.PURE_BLUE(),
   },
   twitterUrl: {
     cursor: "pointer",

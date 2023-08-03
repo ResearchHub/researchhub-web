@@ -136,11 +136,11 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    backgroundColor: "#F7F7FB",
+    backgroundColor: colors.LIGHT_GRAYISH_BLUE7(),
     textAlign: "left",
     cursor: "pointer",
     marginBottom: 10,
-    border: "solid 1px #F7F7FB",
+    border: `solid 1px ${colors.LIGHT_GRAYISH_BLUE7()}`,
     ":hover": {
       border: `solid 1px ${colors.LIGHT_GRAYISH_BLUE6()}`,
     },

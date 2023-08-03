@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   },
   chevronWrap: {
     alignItems: "center",
-    color: "#787c7e",
+    color: colors.DARK_GREYISH_BLUE6(),
     display: "flex",
     height: 72,
     justifyContent: "center",

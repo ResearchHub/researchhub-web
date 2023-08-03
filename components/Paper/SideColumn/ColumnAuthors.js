@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     ":hover": {
-      backgroundColor: "#3E43E8",
+      backgroundColor: colors.BRIGHT_BLUE2(),
     },
   },
   claimCardTextGroup: {

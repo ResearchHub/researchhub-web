@@ -524,7 +524,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     height: "100%",
     width: "100%",
-    backgroundColor: "#F7F7FB",
+    backgroundColor: colors.LIGHT_GRAYISH_BLUE7(),
     cursor: "pointer",
     borderRadius: 3,
     border: `1px dashed ${colors.BLUE()}`,
@@ -573,7 +573,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   subtext: {
-    color: "#757575",
+    color: colors.DARKER_GREY117(),
     fontSize: 14,
     marginTop: 15,
   },

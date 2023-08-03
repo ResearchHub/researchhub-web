@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
     outline: "none",
     userSelect: "none",
     ":hover": {
-      backgroundColor: "#3E43E8",
+      backgroundColor: colors.BRIGHT_BLUE2(),
     },
   },
   unsubscribeButton: {

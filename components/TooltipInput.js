@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     width: 20,
     ":hover": {
-      background: "#3E43E8",
+      background: colors.BRIGHT_BLUE2(),
     },
   },
   close: {
