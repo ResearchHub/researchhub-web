@@ -62,6 +62,7 @@ const CommentReadOnly = ({
     commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION;
   const htmlToRender = isPreview && previewHtml ? previewHtml : fullHtml;
   const annotationText = comment?.thread?.anchor?.text || "";
+
   return (
     <div>
       {!isAnnotationContext &&

@@ -292,6 +292,7 @@
 
 .CommentEditor .quill .ql-editor[contenteditable="true"] {
   min-height: 5em;
+  cursor: text;
 }
 .CommentEditor button.ql-active {
   background-color: rgba(32, 33, 36, 0.122) !important;

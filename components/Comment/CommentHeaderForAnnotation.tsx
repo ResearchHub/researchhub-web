@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
   expiringText: {},
   commentHeader: {
     fontSize: 14,
+    maxWidth: "95%",
   },
   verb: {
     color: colors.secondary.text,
@@ -147,6 +148,7 @@ const styles = StyleSheet.create({
     display: "flex",
     whiteSpace: "pre",
     alignItems: "center",
+    fontSize: 14,
   },
   menuWrapper: {
     marginLeft: "auto",

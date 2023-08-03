@@ -1188,56 +1188,66 @@ const AnnotationLayer = ({
                           styles.focusedCommentThread,
                         renderingMode === "sidebar" && styles.sidebarComment,
                         renderingMode === "inline" && styles.inlineComment,
-                        renderingMode === "drawer" && styles.drawerComment
+                        renderingMode === "drawer" && styles.drawerComment,
+                        annotation.isNew && styles.newCommentThread
                       )}
                       onMouseEnter={() => setHoveredThreadId(threadId)}
                       onMouseLeave={() => setHoveredThreadId(null)}
                       key={key}
                     >
-                      {annotation.isNew ? (
-                        <div
-                          className={
-                            css(styles.commentEditorWrapper) +
-                            " CommentEditorForAnnotation"
-                          }
-                        >
-                          <CommentEditor
-                            handleCancel={(event) =>
-                              _handleCancelThread({ threadId, event })
-                            }
-                            onChange={({ content, isEmpty }) =>
-                              _onNewEditorChange({
-                                threadId: annotation.threadId,
-                                content,
-                                isEmpty,
-                              })
-                            }
-                            focusOnMount={true}
-                            editorStyleOverride={styles.commentEditor}
-                            editorId={`${key}-editor`}
-                            content={
-                              newCommentDataRef.current[threadId]?.content
-                            }
-                            handleSubmit={(commentProps) =>
-                              _handleCreateThread({ annotation, commentProps })
-                            }
-                          />
-                        </div>
-                      ) : (
-                        <AnnotationCommentThread
-                          key={`${key}-thread`}
-                          document={doc}
-                          renderingMode={renderingMode}
-                          threadId={threadId}
-                          onCancel={() => {
-                            _setSelectedThreadId(null);
-                            setHoveredThreadId(null);
-                          }}
-                          rootComment={
-                            commentThreads?.current[threadId]?.comments[0] || []
-                          }
-                          isFocused={isFocused}
-                        />
+                      {(renderingMode === "inline" ||
+                        renderingMode === "sidebar") && (
+                        <>
+                          {annotation.isNew ? (
+                            <div
+                              className={
+                                css(styles.commentEditorWrapper) +
+                                " CommentEditorForAnnotation"
+                              }
+                            >
+                              <CommentEditor
+                                handleCancel={(event) =>
+                                  _handleCancelThread({ threadId, event })
+                                }
+                                onChange={({ content, isEmpty }) =>
+                                  _onNewEditorChange({
+                                    threadId: annotation.threadId,
+                                    content,
+                                    isEmpty,
+                                  })
+                                }
+                                focusOnMount={true}
+                                editorStyleOverride={styles.commentEditor}
+                                editorId={`${key}-editor`}
+                                content={
+                                  newCommentDataRef.current[threadId]?.content
+                                }
+                                handleSubmit={(commentProps) =>
+                                  _handleCreateThread({
+                                    annotation,
+                                    commentProps,
+                                  })
+                                }
+                              />
+                            </div>
+                          ) : (
+                            <AnnotationCommentThread
+                              key={`${key}-thread`}
+                              document={doc}
+                              renderingMode={renderingMode}
+                              threadId={threadId}
+                              onCancel={() => {
+                                _setSelectedThreadId(null);
+                                setHoveredThreadId(null);
+                              }}
+                              rootComment={
+                                commentThreads?.current[threadId]
+                                  ?.comments[0] || []
+                              }
+                              isFocused={isFocused}
+                            />
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
@@ -1329,6 +1339,7 @@ const styles = StyleSheet.create({
   drawerComment: {},
   commentThreadWrapper: {},
   commentThread: {
+    minHeight: 150,
     border: `1px solid ${colors.border}`,
     borderRadius: 4,
     cursor: "pointer",
@@ -1337,6 +1348,11 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     ":hover": {
       background: "rgb(250 248 248)",
+    },
+  },
+  newCommentThread: {
+    ":hover": {
+      background: "white",
     },
   },
   commentEditor: {
