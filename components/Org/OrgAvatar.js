@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   initialsContainer: {
     height: "100%",
     borderRadius: "100px",
-    background: colors.LIGHT_GREY_BLUE2,
+    background: colors.ICY_GREY,
     border: "1px solid #E5E5F0",
     color: "#7C7989",
     display: "flex",

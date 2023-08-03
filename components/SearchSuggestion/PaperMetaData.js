@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
   },
   input: {
     border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
     fontWeight: "400",
     borderRadius: 2,
     color: colors.DARK_DESATURATED_BLUE(),

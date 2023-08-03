@@ -497,7 +497,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
     padding: "5px 7px",
     border: `2px solid ${colors.LIGHT_GRAYISH_BLUE3()}`,
-    background: colors.LIGHT_GREY_BLUE2,
+    background: colors.ICY_GREY,
     fontSize: 16,
     [`[type="number"]`]: {
       "-webkit-appearance": "none",

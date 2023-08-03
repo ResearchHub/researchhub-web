@@ -978,7 +978,7 @@ const styles = StyleSheet.create({
     padding: "5px 5px 5px 10px",
     boxSizing: "border-box",
     color: colors.BLACK(0.9),
-    background: colors.LIGHT_GREY_BLUE2,
+    background: colors.ICY_GREY,
     border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     borderRadius: 2,
   },

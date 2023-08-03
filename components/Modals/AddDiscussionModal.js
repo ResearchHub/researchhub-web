@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   discussionTextEditor: {
     width: 600,
     border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
     minHeight: 300,
     height: 300,
     overflow: "scroll",

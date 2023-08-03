@@ -49,7 +49,7 @@ const CheckBox = ({
         {isSquare ? (
           <span
             style={{
-              color: `${active ? colors.WHITE() : colors.LIGHT_GREY_BLUE2}`,
+              color: `${active ? colors.WHITE() : colors.ICY_GREY}`,
             }}
             className={css(checkStyleOverride)}
           >
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
     ":hover": {
       borderColor: "#D2D2E6",
     },
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
     ":hover": {
       borderColor: "#D2D2E6",
     },
@@ -109,13 +109,13 @@ const styles = StyleSheet.create({
     height: 12,
     width: 12,
     borderRadius: "50%",
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
   },
   dotSmall: {
     height: 6,
     width: 6,
     borderRadius: "50%",
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
   },
   centered: {
     transform: "translate(-53%, -44.5%)",

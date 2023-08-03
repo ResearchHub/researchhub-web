@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
   bulletpoint: {
     display: "flex",
     flexDirection: "column",
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
     alignItems: "flex-start",
     boxSizing: "border-box",
     borderRadius: 3,

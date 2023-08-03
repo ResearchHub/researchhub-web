@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // background: "#fff",
     backgroundColor: colors.WHITE(),
-    borderBottom: "1px solid #e8e8ef",
+    borderBottom: `1px solid ${colors.GREY_LINE()}`,
     boxSizing: "border-box",
     display: "flex",
     fontSize: 24,

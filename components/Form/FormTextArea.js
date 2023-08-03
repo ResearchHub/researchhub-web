@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
     padding: 15,
     fontWeight: "400",
     borderRadius: 2,

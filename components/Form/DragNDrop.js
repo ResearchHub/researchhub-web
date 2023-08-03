@@ -133,9 +133,7 @@ class DragNDrop extends Component {
       height: 163,
       width: "100%",
       padding: isDynamic && this.state.dragOver ? 15 : 0,
-      backgroundColor: this.state.dragOver
-        ? colors.WHITE()
-        : colors.LIGHT_GREY_BLUE2,
+      backgroundColor: this.state.dragOver ? colors.WHITE() : colors.ICY_GREY,
       border: `0.5px dashed ${
         error || !this.state.isPDF ? colors.RED(1) : colors.BLUE(1)
       }`,
@@ -314,7 +312,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 163,
     width: 525,
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
     border: `0.5 dashed ${colors.BLUE(1)}`,
   },
   label: {

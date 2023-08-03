@@ -655,8 +655,8 @@ function AwardBountyModal({
         />
       </div>
       <div className={css(styles.warningLabel)}>
-        <WarningIcon color={"#FF5353"} /> Once awarded, this action cannot be
-        undone.
+        <WarningIcon color={colors.ERROR_BACKGROUND()} /> Once awarded, this
+        action cannot be undone.
       </div>
     </BaseModal>
   );
@@ -780,7 +780,7 @@ const styles = StyleSheet.create({
   warningLabel: {
     padding: 12,
     background: colors.LIGHT_GRAY_BACKGROUND2(),
-    color: "#FF5353",
+    color: colors.ERROR_BACKGROUND(),
     width: "100%",
     boxSizing: "border-box",
     textAlign: "center",

@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
   },
   editorActive: {
     border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
     padding: 20,
     ":hover": {
       borderColor: colors.GRAY179(),

@@ -797,7 +797,7 @@ const styles = StyleSheet.create({
   },
   commentStyles: {
     paddingTop: 5,
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
     borderRadius: 4,
     border: `1px solid ${colors.VERY_LIGHT_GREY()}`,
     boxSizing: "border-box",

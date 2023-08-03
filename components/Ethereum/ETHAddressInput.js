@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     cursor: "pointer",
     color: colors.BLACK(0.4),
-    color: colors.LIGHT_GREY_BLUE2,
+    color: colors.ICY_GREY,
   },
 
   connectStatus: {

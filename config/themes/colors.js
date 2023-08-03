@@ -4,19 +4,19 @@ let colors = {
   BLUE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`, // #4E53FF
   DARK_GREEN: (opacity = 1) => `rgba(61, 143, 88, ${opacity})`, // #3D8F58
   DARK_YELLOW: (opacity = 1) => `rgb(239, 160, 0, ${opacity})`, // #EFA000
-  DARK_YELLOW: (opacity = 1) => `rgba(235, 175, 61, ${opacity})`,
-  DARKER_GREY: (opacity = 1) => `rgba(102, 102, 102, ${opacity})`,
+  DARK_YELLOW: (opacity = 1) => `rgba(235, 175, 61, ${opacity})`, // #EBAF3D
+  DARKER_GREY: (opacity = 1) => `rgba(102, 102, 102, ${opacity})`, // #666666
   EDITOR_TAG_BACKGROUND: "rgba(232, 181, 4, 0.1)",
   EDITOR_TAG_TEXT: "#E8B504", //rgba(232, 181, 4, 1)
-  ERROR_BACKGROUND: (opacity = 1) => `rgba(255, 83, 83, ${opacity})`,
-  GREEN: (opacity = 1) => `rgba(100, 196, 143, ${opacity})`,
-  GREEN: (opacity = 1) => `rgba(30, 207, 49, ${opacity})`,
+  ERROR_BACKGROUND: (opacity = 1) => `rgba(255, 83, 83, ${opacity})`, // #FF5353
+  GREEN: (opacity = 1) => `rgba(100, 196, 143, ${opacity})`, // #64C48F
+  GREEN: (opacity = 1) => `rgba(30, 207, 49, ${opacity})`, // #1ECF31
   GREY_BORDER: "#EBEBEB", //rgba(232, 232, 239, 1)
   GREY_ICY_BLUE_HUE: "rgba(249, 249, 252, 1)", // #F9F9FC
-  GREY_LINE: (opacity = 1) => `rgba(232, 232, 239, ${opacity})`,
-  GREY: (opacity = 1) => `rgba(193, 193, 207, ${opacity})`,
+  GREY_LINE: (opacity = 1) => `rgba(232, 232, 239, ${opacity})`, // #E8E8EF
+  GREY: (opacity = 1) => `rgba(193, 193, 207, ${opacity})`, // #C1C1CF
   ICY_BLUE: "#E9EFFF", // rgba(233, 239, 255, 1)
-  ICY_GREY: "rgb(251, 251, 253)",
+  ICY_GREY: "rgb(251, 251, 253)", // #FBFBFD
   INPUT_BACKGROUND_GREY: "rgba(250, 250, 250, 1)",
   LIGHT_GRAY_BACKGROUND: (opacity = 1) => `rgba(250, 250, 250, ${opacity})`,
   LIGHT_GRAY_BACKGROUND2: (opacity = 1) => `rgba(250, 250, 252, ${opacity})`, // #fafafc
@@ -64,7 +64,6 @@ let colors = {
   VERY_LIGHT_GREY2: (opacity = 1) => `rgba(227, 227, 227, ${opacity})`, // "#E3E3E3"
   VERY_LIGHT_GREY3: (opacity = 1) => `rgba(230, 230, 230, ${opacity})`, // "#E5E5E5"
   LIGHT_GREY_BLUE: "#D7D7E3", // rgba(215, 215, 227, 1)
-  LIGHT_GREY_BLUE2: "#FBFBFD", // rgba(251, 251, 253, 1)
   LIGHT_GREY_BLUE3: "rgba(205, 219, 253, 1)",
   PAPER_TAB_BACKGROUND: (opacity = 1) => `rgba(243, 243, 248, ${opacity})`,
   VOTE_WIDGET_BACKGROUND: (opacity = 1) => `rgba(233, 250, 234, ${opacity})`,
@@ -186,7 +185,6 @@ if (mode === "dark") {
     VERY_LIGHT_GREY2: (opacity = 1) => `rgba(28, 28, 28, ${opacity})`, // Adjusted
     VERY_LIGHT_GREY3: (opacity = 1) => `rgba(80, 80, 80, ${opacity})`, // Adjusted
     LIGHT_GREY_BLUE: "#28283A", // Adjusted
-    LIGHT_GREY_BLUE2: "#040405", // Adjusted
     LIGHT_GREY_BLUE3: "rgba(50, 60, 90, 1)", // Adjusted
     PAPER_TAB_BACKGROUND: (opacity = 1) => `rgba(12, 12, 15, ${opacity})`, // Adjusted
     VOTE_WIDGET_BACKGROUND: (opacity = 1) => `rgba(30, 45, 35, ${opacity})`, // Adjusted
@@ -255,7 +253,7 @@ export const formColors = {
   MESSAGE: colors.BLACK(0.65),
   BACKGROUND: colors.VERY_LIGHT_GREY(),
   BORDER: colors.LIGHT_GREY_BLUE,
-  INPUT: colors.LIGHT_GREY_BLUE2,
+  INPUT: colors.ICY_GREY,
 };
 
 export const paperTabColors = {

@@ -612,7 +612,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     padding: "0 0 15px 0",
-    color: "#C1C1CF",
+    color: colors.GREY(),
     fontSize: "12px",
   },
   hubStatsForRow: {

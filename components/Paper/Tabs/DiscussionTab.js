@@ -891,7 +891,7 @@ var styles = StyleSheet.create({
     borderRadius: 3,
     padding: "25px 0",
     border: `1px solid ${colors.VERY_LIGHT_GREY()}`,
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
     cursor: "pointer",
     ":hover": {
       borderColor: colors.BLUE(),
@@ -1309,7 +1309,7 @@ const stylesEditor = StyleSheet.create({
   },
   discussionTextEditor: {
     width: "100%",
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
   },
   label: {
     fontFamily: "Roboto",

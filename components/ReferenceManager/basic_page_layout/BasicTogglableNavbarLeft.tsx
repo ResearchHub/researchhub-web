@@ -144,7 +144,7 @@ export default function BasicTogglableNavbarLeft({
       flexDirection="column"
       width={navWidth}
       sx={{
-        borderLeft: "1px solid #e8e8ef",
+        borderLeft: `1px solid ${colors.GREY_LINE()}`,
         zIndex: 4,
         background: colors.LIGHT_GRAY_BACKGROUND2(),
         height: "100%",

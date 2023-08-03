@@ -1331,7 +1331,7 @@ const styles = StyleSheet.create({
     width: 600,
     height: 300,
     border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
     "@media only screen and (max-width: 665px)": {
       width: 380,
     },

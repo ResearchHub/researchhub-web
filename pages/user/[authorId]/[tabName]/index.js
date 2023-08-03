@@ -1415,7 +1415,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto, sans-serif",
     outline: "none",
     border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
     ":focus": {
       borderColor: "#D2D2E6",
     },
@@ -1489,7 +1489,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
 
     border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
     ":focus": {
       borderColor: "#D2D2E6",
     },
@@ -1543,7 +1543,7 @@ const styles = StyleSheet.create({
     height: 30,
     overflow: "hidden",
     border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
-    backgroundColor: colors.LIGHT_GREY_BLUE2,
+    backgroundColor: colors.ICY_GREY,
     ":focus": {
       borderColor: "#D2D2E6",
     },

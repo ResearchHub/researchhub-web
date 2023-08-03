@@ -456,7 +456,7 @@ const styles = StyleSheet.create({
     padding: 10,
     outline: "none",
     boxSizing: "border-box",
-    background: colors.LIGHT_GREY_BLUE2,
+    background: colors.ICY_GREY,
     border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     borderRadius: 3,
     fontSize: 16,
