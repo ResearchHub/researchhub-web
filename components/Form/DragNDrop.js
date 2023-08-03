@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 400,
     height: 50,
-    color: "#4f4d5f",
+    color: colors.VERY_DARK_GRAYISH_BLUE3(),
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -425,7 +425,7 @@ const styles = StyleSheet.create({
   regular: {
     fontWeight: 400,
     paddingTop: 10,
-    color: "#4f4d5f",
+    color: colors.VERY_DARK_GRAYISH_BLUE3(),
   },
   link: {
     color: colors.BLUE(),

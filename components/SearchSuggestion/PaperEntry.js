@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     border: "solid 1px #F7F7FB",
     ":hover": {
-      border: "solid 1px #D2D2E6",
+      border: `solid 1px ${colors.LIGHT_GRAYISH_BLUE6()}`,
     },
     "@media only screen and (max-width: 415px)": {
       minHeight: 48,

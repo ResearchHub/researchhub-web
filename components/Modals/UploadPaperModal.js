@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: 400,
     fontSize: 14,
-    color: "#4f4d5f",
+    color: colors.VERY_DARK_GRAYISH_BLUE3(),
     marginBottom: 25,
     textShadow: `1px 1px 2px ${colors.INPUT_BACKGROUND_GREY}`,
   },
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     height: 22,
     width: 484,
     fontWeight: "400",
-    color: "#4f4d5f",
+    color: colors.VERY_DARK_GRAYISH_BLUE3(),
     "@media only screen and (max-width: 665px)": {
       fontSize: 12,
       width: 380,
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
   loadingMessage: {
     fontWeight: 400,
     fontSize: 14,
-    color: "#4f4d5f",
+    color: colors.VERY_DARK_GRAYISH_BLUE3(),
     marginBottom: 15,
     textAlign: "center",
     whiteSpace: "pre-wrap",

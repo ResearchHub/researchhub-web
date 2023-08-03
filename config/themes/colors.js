@@ -17,46 +17,46 @@ let colors = {
   GREY: (opacity = 1) => `rgba(193, 193, 207, ${opacity})`, // #C1C1CF
   ICY_BLUE: "#E9EFFF", // rgba(233, 239, 255, 1)
   ICY_GREY: "rgb(251, 251, 253)", // #FBFBFD
-  INPUT_BACKGROUND_GREY: "rgba(250, 250, 250, 1)",
-  LIGHT_GRAY_BACKGROUND: (opacity = 1) => `rgba(250, 250, 250, ${opacity})`,
+  INPUT_BACKGROUND_GREY: "rgba(250, 250, 250, 1)", // #FAFAFA
+  LIGHT_GRAY_BACKGROUND: (opacity = 1) => `rgba(250, 250, 250, ${opacity})`, // #FAFAFA
   LIGHT_GRAY_BACKGROUND2: (opacity = 1) => `rgba(250, 250, 252, ${opacity})`, // #fafafc
-  LIGHT_BLUE: (opacity = 1) => `rgba(237, 238, 254, ${opacity})`,
-  LIGHT_GREEN: (opacity = 1) => `rgba(236, 249, 235, ${opacity})`,
+  LIGHT_BLUE: (opacity = 1) => `rgba(237, 238, 254, ${opacity})`, // #EDEFFE
+  LIGHT_GREEN: (opacity = 1) => `rgba(236, 249, 235, ${opacity})`, // #ECF9EB
   LIGHT_GREY_BACKGROUND: "#EDEDED", // rgba(237, 237, 237, 1)
   LIGHT_GREY_BORDER: "rgba(39, 39, 39, 0.07)",
+  LIGHT_GREY_SUBHEADER: (opacity = 1) => `rgba(39, 39, 39, ${opacity})`, // #272727
   LIGHT_GREY_TEXT: "rgba(36, 31, 58, 0.39)",
-  LIGHT_GREY: (opacity = 1) => `rgba(235, 235, 235, ${opacity})`,
+  LIGHT_GREY: (opacity = 1) => `rgba(235, 235, 235, ${opacity})`, // #EBEBEB
   LIGHT_GREY2: (opacity = 1) => `rgba(234, 234, 234, ${opacity})`, // #EAEAEA
-  LIGHT_YELLOW: (opacity = 1) => `rgba(253, 249, 237, ${opacity})`,
-  LIGHTER_BLUE: (opacity = 1) => `rgb(235,241,255, ${opacity})`,
+  LIGHT_YELLOW: (opacity = 1) => `rgba(253, 249, 237, ${opacity})`, // #FDF9ED
+  LIGHTER_BLUE: (opacity = 1) => `rgb(235,241,255, ${opacity})`, // #EBF1FF
   LIGHTER_GREY_BACKGROUND: "#F6F6F8", // rgba(246, 246, 248, 1)
-  LIGHTER_GREY: (opacity = 1) => `rgba(243, 243, 243, ${opacity})`,
-  MEDIUM_GREY: (opacity = 1) => `rgba(144, 144, 144, ${opacity})`,
-  MEDIUM_GREY2: (opacity = 1) => `rgb(124,121,137, ${opacity})`,
-  NAVY: (opacity = 1) => `rgba(31, 40, 125, ${opacity})`,
+  LIGHTER_GREY: (opacity = 1) => `rgba(243, 243, 243, ${opacity})`, // #F3F3F3
+  MEDIUM_GREY: (opacity = 1) => `rgba(144, 144, 144, ${opacity})`, // #909090
+  MEDIUM_GREY2: (opacity = 1) => `rgb(124,121,137, ${opacity})`, // #7C7989
+  NAVY: (opacity = 1) => `rgba(31, 40, 125, ${opacity})`, // #1F287D
   NEW_BLUE: (opacity = 1) => `rgba(57, 113, 255, ${opacity})`, // #3971ff
-  NEW_GREEN: (opacity = 1) => `rgba(72, 192, 85, ${opacity})`,
-  ORANGE_DARK: (opacity = 1) => `rgba(237, 157, 20, ${opacity})`,
-  ORANGE_DARK2: (opacity = 1) => `rgba(255, 122, 0, ${opacity})`,
-  ORANGE_LIGHT: (opacity = 1) => `rgb(255, 195, 61, ${opacity})`,
-  ORANGE_LIGHT2: (opacity = 1) => `rgb(255, 148, 22, ${opacity})`,
-  ORANGE: (opacity = 1) => `rgba(255, 176, 0, ${opacity})`,
-  ORANGE_LIGHTER: (opacity = 1) => `rgb(252, 242, 220, ${opacity})`,
+  NEW_GREEN: (opacity = 1) => `rgba(72, 192, 85, ${opacity})`, // #48c055
+  ORANGE_DARK: (opacity = 1) => `rgba(237, 157, 20, ${opacity})`, // #ED9D14
+  ORANGE_DARK2: (opacity = 1) => `rgba(255, 122, 0, ${opacity})`, // #FF7A00
+  ORANGE_LIGHT: (opacity = 1) => `rgb(255, 195, 61, ${opacity})`, // #FFC33D
+  ORANGE_LIGHT2: (opacity = 1) => `rgb(255, 148, 22, ${opacity})`, // #FF9416
+  ORANGE: (opacity = 1) => `rgba(255, 176, 0, ${opacity})`, // #FFB000
+  ORANGE_LIGHTER: (opacity = 1) => `rgb(252, 242, 220, ${opacity})`, // #FCF2DC
   PASTEL_GREEN_TEXT: "#88cb88", //rgba(136, 203, 136, 1)
   PLACEHOLDER_CARD_BACKGROUND: "#efefef", //rgba(239, 239, 239, 1)
-  PURPLE_LIGHT: (opacity = 1) => `rgb(112, 60, 255, ${opacity})`,
-  PURPLE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`,
-  RED: (opacity = 1) => `rgba(255, 45, 45, ${opacity})`,
-  STANDARD_BOX_SHADOW: "rgba(185, 185, 185, 0.25)",
+  PURPLE_LIGHT: (opacity = 1) => `rgb(112, 60, 255, ${opacity})`, // #703CFF
+  PURPLE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`, // #4E53FF
+  RED: (opacity = 1) => `rgba(255, 45, 45, ${opacity})`, // #FF2D2D
+  STANDARD_BOX_SHADOW: "rgba(185, 185, 185, 0.25)", // #B9B9B9
   TEXT_DARKER_GREY: "#241F3A", //rgba(36, 31, 58, 1)
-  TEXT_GREY: (opacity = 1) => `rgba(128, 126, 134, ${opacity})`,
+  TEXT_GREY: (opacity = 1) => `rgba(128, 126, 134, ${opacity})`, // #807E86
   TOOLTIP_BACKGROUND_BLACK: "#E69A8DFF", //rgba(230, 154, 141, 1)
   TOOLTIP_TEXT_COLOR_WHITE: "#5F4B8BFF", //rgba(95, 75, 139, 1)
-  YELLOW: (opacity = 1) => `rgba(240, 182, 65, ${opacity})`,
+  YELLOW: (opacity = 1) => `rgba(240, 182, 65, ${opacity})`, // #F0B641
   WHITE: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // #FFFFFF
   PURE_BLACK: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // #000000
   DARKER_BLUE: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`, // #0000FF
-  // HOVER_WHITE: "#FAFAFA", //rgba(250, 250, 250, 1)
   PAGE_WRAPPER: "#FCFCFC", //rgba(252, 252, 252, 1)
   SEARCH_ICON_COLOR: "#c5c4cc", //rgba(197, 196, 204, 1)
   PDF_OVERLAY: (opacity = 0) => `rgba(0, 0, 0, ${opacity})`,
@@ -64,9 +64,9 @@ let colors = {
   VERY_LIGHT_GREY2: (opacity = 1) => `rgba(227, 227, 227, ${opacity})`, // "#E3E3E3"
   VERY_LIGHT_GREY3: (opacity = 1) => `rgba(230, 230, 230, ${opacity})`, // "#E5E5E5"
   LIGHT_GREY_BLUE: "#D7D7E3", // rgba(215, 215, 227, 1)
-  LIGHT_GREY_BLUE3: "rgba(205, 219, 253, 1)",
-  PAPER_TAB_BACKGROUND: (opacity = 1) => `rgba(243, 243, 248, ${opacity})`,
-  VOTE_WIDGET_BACKGROUND: (opacity = 1) => `rgba(233, 250, 234, ${opacity})`,
+  LIGHT_GREY_BLUE3: "rgba(205, 219, 253, 1)", // #CDDBFD
+  PAPER_TAB_BACKGROUND: (opacity = 1) => `rgba(243, 243, 248, ${opacity})`, // #F3F3F8
+  VOTE_WIDGET_BACKGROUND: (opacity = 1) => `rgba(233, 250, 234, ${opacity})`, // #E9FAEA
   VOTE_ARRROW: "#AAA8B4", // rgba(170, 168, 180, 1)
   VERY_PALE_BLUE: "#E7EEFF", //rgba(231, 238, 255, 1)
   BANNER_PALE_BLUE: "#E9F2FF", // rgba(233, 242, 255, 1)
@@ -76,13 +76,17 @@ let colors = {
   LIGHT_GRAYISH_BLUE3: (opacity = 1) => `rgba(229, 229, 230, ${opacity})`, // #e5e5e6
   LIGHT_GRAYISH_BLUE4: (opacity = 1) => `rgba(234, 235, 254, ${opacity})`, // #eaebfe
   LIGHT_GREYISH_BLUE5: (opacity = 1) => `rgba(233, 234, 239, ${opacity})`, // #e9eaef
+  LIGHT_GRAYISH_BLUE6: (opacity = 1) => `rgba(210, 210, 230, ${opacity})`, // #d2d2e6
   GREYISH_BLUE: (opacity = 1) => `rgba(200, 200, 202, ${opacity})`, // #c8c8ca
-  DARK_GREYISH_BLUE: (opacity = 1) => `rgba(129, 148, 167, ${opacity})`,
+  GREYISH_BLUE2: (opacity = 1) => `rgba(170, 167, 185, ${opacity})`, // #aaa7b9
+  DARK_GREYISH_BLUE: (opacity = 1) => `rgba(129, 148, 167, ${opacity})`, // #8194a7
   DARK_GREYISH_BLUE2: (opacity = 1) => `rgba(145, 143, 155, ${opacity})`, // #918f9b
   DARK_GREYISH_BLUE3: (opacity = 1) => `rgba(101, 119, 134, ${opacity})`, // #657786
   DARK_GREYISH_BLUE4: (opacity = 1) => `rgba(122, 120, 135, ${opacity})`, // #7a7887
+  DARK_GREYISH_BLUE5: (opacity = 1) => `rgba(167, 166, 176, ${opacity})`, // #a7a6b0
   VERY_DARK_GREYISH_BLUE: (opacity = 1) => `rgba(78, 76, 95, ${opacity})`, // #4e4c5f
   VERY_DARK_GRAYISH_BLUE2: (opacity = 1) => `rgba(50, 54, 57, ${opacity})`, // #323639
+  VERY_DARK_GRAYISH_BLUE3: (opacity = 1) => `rgba(79, 77, 95, ${opacity})`, // #4f4d5f
   DARK_DESATURATED_BLUE: (opacity = 1) => `rgba(35, 32, 56, ${opacity})`, // #232038
   VERY_DARK_DESATURATED_BLUE: (opacity = 1) => `rgba(26, 31, 58, ${opacity})`, // #1a1f3a
   LIGHT_BLUE2: (opacity = 1) => `rgba(70, 123, 255, ${opacity})`, // #467bff
@@ -96,6 +100,7 @@ let colors = {
   SOFT_BLUE: (opacity = 1) => `rgba(93, 83, 254, ${opacity})`, // #5d53fe
   VERY_DARK_BLUE: (opacity = 1) => `rgba(17, 51, 83, ${opacity})`, // #113353
   VERY_DARK_GRAYISH_YELLOW: (opacity = 1) => `rgba(55, 53, 47, ${opacity})`, // #37352f
+  LIGHT_GRAYISH_YELLOW: (opacity = 1) => `rgba(253, 248, 230, ${opacity})`, // #fdf8e6
   DARK_LIME_GREEN: (opacity = 1) => `rgba(19, 145, 26, ${opacity})`, // #13911a
   DARK_LIME_GREEN2: (opacity = 1) => `rgba(25, 160, 40, ${opacity})`, // #19a028
   DARK_RED: (opacity = 1) => `rgba(173, 34, 21, ${opacity})`, // #ad2215
@@ -103,6 +108,7 @@ let colors = {
   GRAY179: (opacity = 1) => `rgba(179, 179, 179, ${opacity})`, // #b3b3b3
   LIGHT_GRAY204: (opacity = 1) => `rgba(204, 204, 204, ${opacity})`, // #cccccc
   LIGHT_GRAY222: (opacity = 1) => `rgba(222, 222, 222, ${opacity})`, // #dedede
+  LIGHT_GRAY238: (opacity = 1) => `rgba(238, 238, 238, ${opacity})`, // #eeeeee
   GRAY190: (opacity = 1) => `rgba(190, 190, 190, ${opacity})`, // #bebebe
   DARY_GRAYISH_ORANGE: (opacity = 1) => `rgba(115, 108, 100, ${opacity})`, // #736c64
   LIME_GREEN: (opacity = 1) => `rgba(204, 243, 221, ${opacity})`, // #ccf3dd
@@ -144,7 +150,8 @@ if (mode === "dark") {
     LIGHT_BLUE: (opacity = 1) => `rgba(18, 17, 1, ${opacity})`, // Darkened
     LIGHT_GREEN: (opacity = 1) => `rgba(19, 6, 20, ${opacity})`, // Adjusted
     LIGHT_GREY_BACKGROUND: "#121212", // Darkened
-    LIGHT_GREY_BORDER: "rgba(216, 216, 216, 0.07)", // Unchanged
+    LIGHT_GREY_BORDER: "rgba(216, 216, 216, 0.07)", // Adjusted
+    LIGHT_GREY_SUBHEADER: (opacity = 1) => `rgba(216, 216, 216, ${opacity})`, // Adjusted
     LIGHT_GREY_TEXT: "rgba(219, 224, 195, 0.39)", // Adjusted
     LIGHT_GREY: (opacity = 1) => `rgba(20, 20, 20, ${opacity})`, // Darkened
     LIGHT_GREY2: (opacity = 1) => `rgba(21, 21, 21, ${opacity})`, // Darkened
@@ -177,7 +184,6 @@ if (mode === "dark") {
     WHITE: (opacity = 1) => `rgba(40, 40, 40, ${opacity})`, // Adjusted
     PURE_BLACK: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // Inverted
     DARKER_BLUE: (opacity = 1) => `rgba(50, 50, 255, ${opacity})`, // Adjusted
-    // HOVER_WHITE: "#1A1A1A", // Adjusted
     PAGE_WRAPPER: "#030303", // Adjusted
     SEARCH_ICON_COLOR: "#3a393f", // Adjusted
     PDF_OVERLAY: (opacity = 0.4) => `rgba(102, 102, 102, ${opacity})`, // Adjusted
@@ -196,13 +202,18 @@ if (mode === "dark") {
     LIGHT_GRAYISH_BLUE2: (opacity = 1) => `rgba(40, 43, 45, ${opacity})`, // Adjusted
     LIGHT_GRAYISH_BLUE3: (opacity = 1) => `rgba(26, 26, 25, ${opacity})`, // Adjusted
     LIGHT_GRAYISH_BLUE4: (opacity = 1) => `rgba(60, 61, 80, ${opacity})`, // Adjusted
+    LIGHT_GREYISH_BLUE5: (opacity = 1) => `rgba(40, 41, 46, ${opacity})`, // Adjusted
+    LIGHT_GRAYISH_BLUE6: (opacity = 1) => `rgba(60, 60, 80, ${opacity})`, // Adjusted
     GREYISH_BLUE: (opacity = 1) => `rgba(80, 80, 82, ${opacity})`, // Adjusted
+    GREYISH_BLUE2: (opacity = 1) => `rgba(190, 187, 205, ${opacity})`, // Adjusted
     DARK_GREYISH_BLUE: (opacity = 1) => `rgba(79, 88, 97, ${opacity})`, // Adjusted
     DARK_GREYISH_BLUE2: (opacity = 1) => `rgba(175, 173, 185, ${opacity})`, // Adjusted
     DARK_GREYISH_BLUE3: (opacity = 1) => `rgba(141, 159, 174, ${opacity})`, // Adjusted
     DARK_GREYISH_BLUE4: (opacity = 1) => `rgba(72, 70, 85, ${opacity})`, // Adjusted
+    DARK_GREYISH_BLUE5: (opacity = 1) => `rgba(90, 90, 100, ${opacity})`, // Adjusted
     VERY_DARK_GREYISH_BLUE: (opacity = 1) => `rgba(98, 96, 115, ${opacity})`, // Adjusted
     VERY_DARK_GRAYISH_BLUE2: (opacity = 1) => `rgba(110, 114, 117, ${opacity})`, // Adjusted
+    VERY_DARK_GRAYISH_BLUE3: (opacity = 1) => `rgba(110, 108, 126, ${opacity})`, // Adjusted
     DARK_DESATURATED_BLUE: (opacity = 1) => `rgba(75, 72, 96, ${opacity})`, // Adjusted
     VERY_DARK_DESATURATED_BLUE: (opacity = 1) =>
       `rgba(76, 81, 108, ${opacity})`, // Adjusted
@@ -218,6 +229,7 @@ if (mode === "dark") {
     VERY_DARK_BLUE: (opacity = 1) => `rgba(37, 71, 103, ${opacity})`, // Adjusted
     VERY_DARK_GRAYISH_YELLOW: (opacity = 1) =>
       `rgba(200, 198, 192, ${opacity})`, // Adjusted
+    LIGHT_GRAYISH_YELLOW: (opacity = 1) => `rgba(133, 128, 110, ${opacity})`, // Adjusted
     DARK_LIME_GREEN: (opacity = 1) => `rgba(50, 175, 57, ${opacity})`, // Adjusted
     DARK_LIME_GREEN2: (opacity = 1) => `rgba(15, 100, 25, ${opacity})`, // Adjusted
     DARK_RED: (opacity = 1) => `rgba(193, 54, 41, ${opacity})`, // Adjusted
@@ -225,6 +237,7 @@ if (mode === "dark") {
     GRAY179: (opacity = 1) => `rgba(100, 100, 100, ${opacity})`, // Adjusted
     LIGHT_GRAY204: (opacity = 1) => `rgba(85, 85, 85, ${opacity})`, // Adjusted
     LIGHT_GRAY222: (opacity = 1) => `rgba(33, 33, 33, ${opacity})`, // Adjusted
+    LIGHT_GRAY238: (opacity = 1) => `rgba(34, 34, 34, ${opacity})`, // Adjusted
     GRAY190: (opacity = 1) => `rgba(65, 65, 65, ${opacity})`, // Adjusted
     DARY_GRAYISH_ORANGE: (opacity = 1) => `rgba(140, 133, 125, ${opacity})`, // Adjusted
     LIME_GREEN: (opacity = 1) => `rgba(102, 183, 161, ${opacity})`, // Adjusted
@@ -246,7 +259,7 @@ export const bountyColors = {
 
 export const genericCardColors = {
   BORDER: colors.LIGHT_GREY_BACKGROUND,
-  BACKGROUND: colors.HOVER_WHITE,
+  BACKGROUND: colors.LIGHT_GRAY_BACKGROUND(),
 };
 
 export const formColors = {

@@ -766,7 +766,7 @@ const styles = StyleSheet.create({
     boxShadow: `${colors.DARK_GREYISH_BLUE(0.39)} 0px 3px 10px 0px`,
     boxSizing: "border-box",
     background: colors.WHITE(),
-    border: "1px solid #eee",
+    border: `1px solid ${colors.LIGHT_GRAY238()}`,
     borderRadius: 4,
     zIndex: 2,
   },
@@ -792,11 +792,11 @@ const styles = StyleSheet.create({
     color: colors.BLACK(),
     cursor: "pointer",
     userSelect: "none",
-    borderBottom: "1px solid #F3F3F8",
+    borderBottom: `1px solid ${colors.PAPER_TAB_BACKGROUND()}`,
     width: "100%",
     fontSize: 14,
     ":hover": {
-      background: "#F3F3F8",
+      background: colors.PAPER_TAB_BACKGROUND(),
     },
   },
   dropdownItemIcon: {

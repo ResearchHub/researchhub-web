@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     height: 22,
     width: 484,
     fontWeight: "400",
-    color: "#4f4d5f",
+    color: colors.VERY_DARK_GRAYISH_BLUE3(),
     "@media only screen and (max-width: 557px)": {
       fontSize: 14,
       width: 300,

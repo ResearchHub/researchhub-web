@@ -81,7 +81,7 @@ const choiceStyles = StyleSheet.create({
   },
   title: { fontWeight: 500, fontSize: 18, textAlign: "center", marginTop: 10 },
   text: {
-    color: "#7C7989",
+    color: colors.MEDIUM_GREY2(),
     textAlign: "center",
     fontSize: 14,
     marginBottom: 0,
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
   numStepsContainer: {
     marginLeft: "auto",
     background: colors.GREY_LIME_GREEN(),
-    color: "#7C7989",
+    color: colors.MEDIUM_GREY2(),
     fontWeight: 500,
     fontSize: 14,
     padding: "4px 10px",

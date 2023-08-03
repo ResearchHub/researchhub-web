@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     letterSpacing: 1.2,
     textAlign: "left",
-    color: "#a7a6b0",
+    color: colors.DARK_GREYISH_BLUE5(),
     transition: "all ease-out 0.1s",
     width: "100%",
     boxSizing: "border-box",

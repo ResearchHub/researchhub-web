@@ -62,7 +62,7 @@ export const modalStyles = StyleSheet.create({
     height: 22,
     width: 484,
     fontWeight: "400",
-    color: "#4f4d5f",
+    color: colors.VERY_DARK_GRAYISH_BLUE3(),
   },
   text: {
     fontFamily: "Roboto",
@@ -211,7 +211,7 @@ export const defaultStyles = StyleSheet.create({
     letterSpacing: 1.2,
     marginBottom: 15,
     textAlign: "left",
-    color: "#a7a6b0",
+    color: colors.DARK_GREYISH_BLUE5(),
     transition: "all ease-out 0.1s",
     width: "90%",
     paddingLeft: 35,

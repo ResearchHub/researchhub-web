@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     },
   },
   userIcon: {
-    color: "#aaa",
+    color: colors.GRAY170(),
     width: 30,
     height: 30,
     minWidth: 30,

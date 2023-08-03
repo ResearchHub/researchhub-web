@@ -177,7 +177,11 @@ export default function BasicTogglableNavbarLeft({
           icon={
             <FontAwesomeIcon
               icon={faUser}
-              style={{ marginLeft: 2, marginRight: 10, color: "#7C7989" }}
+              style={{
+                marginLeft: 2,
+                marginRight: 10,
+                color: colors.MEDIUM_GREY2(),
+              }}
             />
           }
           isActive={
@@ -194,7 +198,7 @@ export default function BasicTogglableNavbarLeft({
           icon={
             <FontAwesomeIcon
               icon={faSitemap}
-              style={{ marginRight: 8, color: "#7C7989" }}
+              style={{ marginRight: 8, color: colors.MEDIUM_GREY2() }}
             />
           }
           key="public-references"

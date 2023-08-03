@@ -16,6 +16,7 @@ import { MessageActions } from "~/redux/message";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import colors from "~/config/themes/colors";
 
 class LockedHubPage extends Component {
   constructor(props) {
@@ -345,7 +346,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 300,
     marginTop: -20,
-    color: "#4f4d5f",
+    color: colors.VERY_DARK_GRAYISH_BLUE3(),
     transition: "all ease-in-out 0.3s",
     "@media only screen and (max-width: 550px)": {
       fontSize: 14,

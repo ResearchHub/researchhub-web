@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   },
   avatarDropdown: {
     background: colors.WHITE(),
-    border: "1px solid #eee",
+    border: `1px solid ${colors.LIGHT_GRAY238()}`,
     borderRadius: 4,
     boxShadow: `${colors.DARK_GREYISH_BLUE(0.2)} 0px 3px 10px 0px`,
     boxSizing: "border-box",
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 16,
     boxSizing: "border-box",
-    borderBottom: "1px solid #eee",
+    borderBottom: `1px solid ${colors.LIGHT_GRAY238()}`,
     display: "flex",
     alignItems: "center",
     cursor: "pointer",
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: 15,
     ":hover": {
-      background: "#eee",
+      background: colors.LIGHT_GRAY238(),
     },
   },
   profileIcon: {

@@ -9,6 +9,7 @@ import Organization from "~/components/ReferenceManager/onboarding/Organization"
 import Teammates from "~/components/ReferenceManager/onboarding/Teammates";
 import { useState } from "react";
 import ImportReferences from "~/components/ReferenceManager/onboarding/ImportReferences";
+import colors from "~/config/themes/colors";
 
 function Index(props) {
   const { isLoggedIn, authChecked, user } = props;
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     marginTop: 16,
     cursor: "pointer",
-    color: "#7C7989",
+    color: colors.MEDIUM_GREY2(),
     fontWeight: 500,
   },
 });

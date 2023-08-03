@@ -136,7 +136,7 @@ class FormSelect extends Component {
         textTransform: "capitalize",
         cursor: "pointer",
         ":focus": {
-          borderColor: "#D2D2E6",
+          borderColor: colors.LIGHT_GRAYISH_BLUE6(),
           ":hover": {
             cursor: "pointer",
           },
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     highlight: "none",
     outline: "none",
     ":focus": {
-      borderColor: "#D2D2E6",
+      borderColor: colors.LIGHT_GRAYISH_BLUE6(),
     },
   },
   placeholder: {

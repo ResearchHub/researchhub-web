@@ -113,12 +113,12 @@ const styles = StyleSheet.create({
   },
   badgeOverride: {
     padding: "8px 16px",
-    background: "#FDF8E6",
+    background: colors.LIGHT_GRAYISH_YELLOW(),
     borderRadius: 0,
-    borderBottom: "1px solid #eee",
+    borderBottom: `1px solid ${colors.LIGHT_GRAY238()}`,
   },
   text: {
-    color: "#7C7989",
+    color: colors.MEDIUM_GREY2(),
     textDecoration: "none",
   },
 });

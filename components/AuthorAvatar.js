@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     textDecoration: "unset",
   },
   userIcon: {
-    color: "#aaa",
+    color: colors.GRAY170(),
     position: "relative",
     display: "flex",
     left: 0.25,

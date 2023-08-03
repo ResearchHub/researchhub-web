@@ -545,9 +545,9 @@ const styles = StyleSheet.create({
     color: colors.BLACK(),
     cursor: "pointer",
     userSelect: "none",
-    borderBottom: "1px solid #F3F3F8",
+    borderBottom: `1px solid ${colors.PAPER_TAB_BACKGROUND()}`,
     ":hover": {
-      background: "#F3F3F8",
+      background: colors.PAPER_TAB_BACKGROUND(),
     },
   },
   expandIcon: {
@@ -592,7 +592,7 @@ const styles = StyleSheet.create({
     boxShadow: `${colors.DARK_GREYISH_BLUE(0.39)} 0px 3px 10px 0px`,
     boxSizing: "border-box",
     background: colors.WHITE(),
-    border: "1px solid #eee",
+    border: `1px solid ${colors.LIGHT_GRAY238()}`,
     borderRadius: 4,
     zIndex: 3,
     "@media only screen and (max-width: 415px)": {

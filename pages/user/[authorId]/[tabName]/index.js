@@ -1417,7 +1417,7 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     backgroundColor: colors.ICY_GREY,
     ":focus": {
-      borderColor: "#D2D2E6",
+      borderColor: colors.LIGHT_GRAYISH_BLUE6(),
     },
 
     padding: 15,
@@ -1491,7 +1491,7 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     backgroundColor: colors.ICY_GREY,
     ":focus": {
-      borderColor: "#D2D2E6",
+      borderColor: colors.LIGHT_GRAYISH_BLUE6(),
     },
     padding: 16,
     fontWeight: "500",
@@ -1545,7 +1545,7 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
     backgroundColor: colors.ICY_GREY,
     ":focus": {
-      borderColor: "#D2D2E6",
+      borderColor: colors.LIGHT_GRAYISH_BLUE6(),
     },
 
     fontWeight: "400",
@@ -1606,7 +1606,7 @@ const styles = StyleSheet.create({
     display: "block",
     alignItems: "center",
     width: "100%",
-    color: "#7C7989",
+    color: colors.MEDIUM_GREY2(),
     lineHeight: "26px",
     flexWrap: "wrap",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {

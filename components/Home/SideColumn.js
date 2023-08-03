@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
     display: "flex",
     justifyContent: "space-between",
-    color: "#a7a6b0",
+    color: colors.DARK_GREYISH_BLUE5(),
     transition: "all ease-out 0.1s",
     width: "100%",
     boxSizing: "border-box",
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   cogButton: {
-    color: "#a7a6b0",
+    color: colors.DARK_GREYISH_BLUE5(),
     opacity: 0.7,
     fontSize: 14,
     cursor: "pointer",

@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     height: 22,
     width: 484,
     fontWeight: "400",
-    color: "#4f4d5f",
+    color: colors.VERY_DARK_GRAYISH_BLUE3(),
   },
   text: {
     fontFamily: "Roboto",

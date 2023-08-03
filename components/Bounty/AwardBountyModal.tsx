@@ -158,7 +158,7 @@ const awardUserStyles = StyleSheet.create({
     position: "relative",
   },
   arrow: {
-    color: "#7c7989",
+    color: colors.MEDIUM_GREY2(),
     position: "absolute",
     right: 0,
     top: 0,
@@ -698,7 +698,7 @@ const styles = StyleSheet.create({
   },
   description: {
     marginTop: 20,
-    color: "#7C7989",
+    color: colors.MEDIUM_GREY2(),
     lineHeight: "26px",
     textAlign: "center",
 
@@ -813,7 +813,7 @@ const styles = StyleSheet.create({
   },
   info: {
     padding: 6,
-    color: "#7C7989",
+    color: colors.MEDIUM_GREY2(),
     whiteSpace: "pre-wrap",
   },
 });

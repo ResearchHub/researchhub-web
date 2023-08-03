@@ -7,6 +7,7 @@ import PaperPageAbstractSection from "../Paper/abstract/PaperPageAbstractSection
 import { MessageActions } from "~/redux/message";
 import { useDispatch } from "react-redux";
 import PaperMetadataForm from "./PaperMetadataForm";
+import colors from "~/config/themes/colors";
 const { setMessage, showMessage } = MessageActions;
 
 interface Props {
@@ -131,7 +132,7 @@ const modalStyles = StyleSheet.create({
     display: "block",
   },
   tabsWrapper: {
-    borderBottom: "2px solid #E5E5E5",
+    borderBottom: `2px solid ${colors.VERY_LIGHT_GREY3()}`,
   },
 });
 

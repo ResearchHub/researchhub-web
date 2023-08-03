@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   claimCardText: {
-    color: "#272727",
+    color: colors.LIGHT_GREY_SUBHEADER(),
     fontSize: 14,
     fontStyle: "normal",
     width: "100",

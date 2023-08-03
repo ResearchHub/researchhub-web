@@ -94,7 +94,7 @@ export default function ReferenceProjectsNavbarEl({
           }}
         >
           <div style={{ display: "flex", alignItems: "center" }}>
-            {/* <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} /> */}
+            {/* <FolderIcon fontSize="small" sx={{ color: colors.MEDIUM_GREY2() }} /> */}
             <FontAwesomeIcon
               icon={isOpen ? faAngleDown : faAngleRight}
               color={colors.VERY_DARK_GRAYISH_YELLOW(0.35)}

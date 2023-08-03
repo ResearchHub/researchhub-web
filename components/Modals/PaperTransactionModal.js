@@ -889,7 +889,7 @@ const styles = StyleSheet.create({
     minHeight: 22,
     width: "100%",
     fontWeight: "400",
-    color: "#4f4d5f",
+    color: colors.VERY_DARK_GRAYISH_BLUE3(),
     boxSizing: "border-box",
     whiteSpace: "pre-wrap",
     display: "flex",

@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     minWidth: 257,
     maxWidth: 400,
-    border: "1px solid #F3F3F8",
+    border: `1px solid ${colors.PAPER_TAB_BACKGROUND()}`,
     backgroundColor: colors.WHITE(),
     boxSizing: "border-box",
   },
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "center",
-    borderTop: "1px solid #EEEEEE",
+    borderTop: `1px solid ${colors.LIGHT_GRAY238()}`,
   },
   button: {
     display: "flex",
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     },
   },
   border: {
-    borderRight: "1px solid #EEEEEE",
+    borderRight: `1px solid ${colors.LIGHT_GRAY238()}`,
   },
   left: {
     color: "#606060",

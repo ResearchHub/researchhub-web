@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     },
   },
   ui: {
-    border: "1px solid #AAA7B9",
+    border: `1px solid ${colors.GREYISH_BLUE2()}`,
     borderRadius: 3,
   },
   loading: {

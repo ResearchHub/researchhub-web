@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     width: "75px",
     height: "75px",
     borderRadius: "8px",
-    backgroundColor: "#eee",
+    backgroundColor: colors.LIGHT_GRAY238(),
     marginLeft: "25px",
   },
   mediaImg: {},

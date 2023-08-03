@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     boxShadow: `${colors.DARK_GREYISH_BLUE(0.39)} 0px 3px 10px 0px`,
     boxSizing: "border-box",
     background: colors.WHITE(),
-    border: "1px solid #eee",
+    border: `1px solid ${colors.LIGHT_GRAY238()}`,
     borderRadius: 4,
     opacity: 0,
     zIndex: -100,

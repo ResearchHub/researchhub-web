@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
     marginBottom: 15,
     textAlign: "left",
-    color: "#a7a6b0",
+    color: colors.DARK_GREYISH_BLUE5(),
     transition: "all ease-out 0.1s",
     width: "90%",
     paddingLeft: 35,

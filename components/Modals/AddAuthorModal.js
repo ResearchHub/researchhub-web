@@ -15,6 +15,9 @@ import UniversityInput from "../SearchSuggestion/UniversityInput";
 
 import { authorPost } from "~/config/shims";
 
+// Config
+import colors from "~/config/themes/colors";
+
 class AddAuthorModal extends Component {
   constructor(props) {
     super(props);
@@ -291,7 +294,7 @@ const styles = StyleSheet.create({
     height: 22,
     width: 484,
     fontWeight: "400",
-    color: "#4f4d5f",
+    color: colors.VERY_DARK_GRAYISH_BLUE3(),
     "@media only screen and (max-width: 665px)": {
       width: 360,
       whiteSpace: "pre-wrap",

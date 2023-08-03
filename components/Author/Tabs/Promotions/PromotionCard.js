@@ -262,8 +262,8 @@ const styles = StyleSheet.create({
   },
   progress: {
     color: colors.WHITE(),
-    backgroundColor: "#48C055",
-    borderColor: "#48C055",
+    backgroundColor: colors.NEW_GREEN(),
+    borderColor: colors.NEW_GREEN(),
     textTransform: "unset",
     ":hover": {
       borderColor: "#2a6218",

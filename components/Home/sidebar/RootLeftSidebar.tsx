@@ -600,7 +600,7 @@ const styles = StyleSheet.create({
     marginTop: "auto",
   },
   arrowRight: {
-    color: "#aaa",
+    color: colors.GRAY170(),
     cursor: "pointer",
     margin: "auto",
     marginBottom: 0,

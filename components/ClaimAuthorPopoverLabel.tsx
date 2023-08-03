@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   bodySubheader: {
-    color: "#272727",
+    color: colors.LIGHT_GREY_SUBHEADER(),
     fontSize: 14,
     marginBottom: 16,
   },

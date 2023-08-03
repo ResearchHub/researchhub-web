@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     position: "relative",
     ":hover": {
-      borderColor: "#D2D2E6",
+      borderColor: colors.LIGHT_GRAYISH_BLUE6(),
     },
   },
   addAuthorCard: {

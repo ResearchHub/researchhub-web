@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
   },
   badgeFor_award: {
     color: colors.EDITOR_TAG_TEXT,
-    background: "#FDF8E6",
+    background: colors.LIGHT_GRAYISH_YELLOW(),
   },
   badgeFor_ANSWER: {
     background: colors.GREEN(0.1),

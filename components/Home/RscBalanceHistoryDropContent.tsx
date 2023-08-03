@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     // color: colors.ORANGE_DARK2(),
   },
   text: {
-    color: "#7C7989",
+    color: colors.MEDIUM_GREY2(),
     textDecoration: "none",
     fontSize: 14,
     letterSpacing: 0.5,

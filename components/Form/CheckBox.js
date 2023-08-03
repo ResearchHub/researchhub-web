@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.ICY_GREY,
     ":hover": {
-      borderColor: "#D2D2E6",
+      borderColor: colors.LIGHT_GRAYISH_BLUE6(),
     },
   },
   checkBoxSmall: {
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.ICY_GREY,
     ":hover": {
-      borderColor: "#D2D2E6",
+      borderColor: colors.LIGHT_GRAYISH_BLUE6(),
     },
   },
   dot: {

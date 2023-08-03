@@ -97,7 +97,7 @@ const UserPopover = ({ userId }: { userId: ID }): ReactElement | null => {
         </div>
       </div>
 
-      <div style={{ marginTop: "16px", color: "#7C7989" }}>
+      <div style={{ marginTop: "16px", color: colors.MEDIUM_GREY2() }}>
         {!!fetchedUser?.editorOf && !!fetchedUser?.editorOf?.length && (
           <div className={css(styles.row)}>
             <div className={css(styles.iconColumn)}>

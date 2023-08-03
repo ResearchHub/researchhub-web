@@ -738,7 +738,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   progressDescription: {
-    color: "#7C7989",
+    color: colors.MEDIUM_GREY2(),
     textAlign: "left",
     fontSize: 14,
     whiteSpace: "pre-wrap",
@@ -848,7 +848,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   platformFeeText: {
-    color: "#7C7989",
+    color: colors.MEDIUM_GREY2(),
   },
   offeringLine: {
     // marginBottom: 7,
@@ -861,7 +861,7 @@ const styles = StyleSheet.create({
   suggestedAmount: {
     fontWeight: 400,
     fontSize: 16,
-    color: "#7C7989",
+    color: colors.MEDIUM_GREY2(),
     marginTop: 8,
   },
   offeringValue: {
