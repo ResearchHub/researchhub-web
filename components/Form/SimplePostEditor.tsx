@@ -137,7 +137,7 @@ function SimplePostEditor({
       <FormInput
         containerStyle={[styles.titleInputContainer]}
         placeholder={
-          title ? title : "e.g. Are sugar subtitutes safe to consume?"
+          title ? title : "e.g. Are sugar substitutes safe to consume?"
         }
         error={
           shouldDisplayError && formErrors.title

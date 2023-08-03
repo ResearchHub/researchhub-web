@@ -25,7 +25,7 @@ const prepFilters = (filters) => {
  * Function to prep the URL for querystring / url
  * @param { String } url -- the URL we want to manipulate
  * @param { Object } params -- params for querystring
- * @param { String } arrayParamSeparator -- seperator for array values
+ * @param { String } arrayParamSeparator -- separator for array values
  */
 export const prepURL = (url, params, arrayParamSeparator = ",") => {
   let { querystring, rest, filters } = params;

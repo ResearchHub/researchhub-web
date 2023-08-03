@@ -46,7 +46,7 @@ export default function RootLeftSidebarSliderItem({
 const styles = StyleSheet.create({
   rootLeftSidebarSliderItem: {
     alignItems: "center",
-    backbround: colors.GREY_ICY_BLUE_HUE,
+    background: colors.GREY_ICY_BLUE_HUE,
     borderRadius: 4,
     boxSizing: "border-box",
     cursor: "pointer",

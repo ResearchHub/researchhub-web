@@ -233,7 +233,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 
   // Handle click event. 
   // Since click events happen in a canvas, we need to detect a user's click x,y coordinates and determine
-  // what elment was clicked.
+  // what element was clicked.
   useEffect(() => {
     const _handleClick = (event) => {
       const contentRefRect = contentRef!.current!.getBoundingClientRect();

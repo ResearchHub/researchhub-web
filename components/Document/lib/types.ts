@@ -143,7 +143,7 @@ export const parseGenericDocument = (raw: any): GenericDocument => {
     // @ts-ignore
     apiDocumentType: undefined, // Will be defined in concrete types
     id: raw.id,
-    authors: [], // Will be overriden by specific document type
+    authors: [], // Will be overridden by specific document type
     unifiedDocument: parseUnifiedDocument(raw.unified_document),
     hubs: (raw.hubs || []).map((h: any) => parseHub(h)),
     score: raw.score,

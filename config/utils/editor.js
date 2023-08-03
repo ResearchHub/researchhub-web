@@ -250,7 +250,7 @@ export function convertEditorValueToHtml(value) {
     parseHtml: null,
   });
 
-  return value && html.serialize(value); // hmtl
+  return value && html.serialize(value); // html
 }
 
 export function convertToEditorToHTML(text) {
@@ -284,8 +284,8 @@ export function convertToEditorValue(text) {
   }
 
   if (typeof text === "string") {
-    const waht = Plain.deserialize(text);
-    return waht;
+    const what = Plain.deserialize(text);
+    return what;
   }
 
   // if (text.hasOwnProperty("object")) {

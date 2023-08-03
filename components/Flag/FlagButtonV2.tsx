@@ -74,7 +74,7 @@ function FlagButtonV2({
     setMsgRedux(
       errorStatus === 409
         ? "You've already flagged this content"
-        : errorMsgText ?? "Failed. Flag likely removed alraedy."
+        : errorMsgText ?? "Failed. Flag likely removed already."
     );
     showMsgRedux({ show: true, error: true });
   };

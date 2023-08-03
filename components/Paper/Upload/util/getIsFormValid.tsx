@@ -22,7 +22,7 @@ export const getIsFormValid = ({
     result = false;
     newErrors.hubs = true;
   }
-  // NOTE: calvinhlee - previoulsy we had a check for published date as well. It's deprecated
+  // NOTE: calvinhlee - previously we had a check for published date as well. It's deprecated
   setFormErrors(newErrors);
   return result;
 };

@@ -477,7 +477,7 @@ class PaperTransactionModal extends Component {
    * Checks if the given string is an address
    *
    * @method isAddress
-   * @param {String} address the given HEX adress
+   * @param {String} address the given HEX address
    * @return {Boolean}
    */
   isAddress = (address) => {
@@ -501,7 +501,7 @@ class PaperTransactionModal extends Component {
    * Checks if the given string is a checksummed address
    *
    * @method isChecksumAddress
-   * @param {String} address the given HEX adress
+   * @param {String} address the given HEX address
    * @return {Boolean}
    */
   isChecksumAddress = (address) => {

@@ -25,7 +25,7 @@ export default function transformer(file, api, options) {
       );
     };
 
-    // Caveat, this doesn't work with annonymously exported class declarations.
+    // Caveat, this doesn't work with anonymously exported class declarations.
     const isUsedInDecorators = () => {
       // one could probably cache these, but I'm lazy.
       let used = false;

@@ -6,7 +6,7 @@ import { Helpers } from "@quantfive/js-web-config";
  **********************************/
 
 export const UniversityConstants = {
-  GET_UNIVERSITIES: "@@Unviersity/GET_UNIVERSITIES",
+  GET_UNIVERSITIES: "@@University/GET_UNIVERSITIES",
 };
 
 export const UniversityActions = {

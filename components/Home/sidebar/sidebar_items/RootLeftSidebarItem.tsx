@@ -107,7 +107,7 @@ export default function RootLeftSidebarItem({
 const styles = StyleSheet.create({
   rootLeftSidebarItem: {
     alignItems: "center",
-    backbround: colors.GREY_ICY_BLUE_HUE,
+    background: colors.GREY_ICY_BLUE_HUE,
     boxSizing: "border-box",
     cursor: "pointer",
     display: "flex",

@@ -26,7 +26,7 @@ export default function gateKeepCurrentUser({
 
   useEffect(() => {
     /*  Sending back inappropriate users to home page
-        Note redux propagates in the clientside; hense boolean checks need to be done like this */
+        Note redux propagates in the clientside; hence boolean checks need to be done like this */
     if (shouldRedirect && isReadyToCheck && (!isLoggedIn || !gkResult)) {
       router.push("/");
     }

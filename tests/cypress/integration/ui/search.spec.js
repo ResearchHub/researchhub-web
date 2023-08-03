@@ -12,7 +12,7 @@ describe('Search', () => {
         This technique is used in situations where we fetch data through
         getInitialProps. In these cases, we cannot intercept the data and replace
         it with a fixture. In order to bypass this restriction we basically
-        trigger a reload of the current page programatically which then runs the
+        trigger a reload of the current page programmatically which then runs the
         fetch on the client side and allow to intercept.
       */
       cy.intercept('GET', BEST_RESULTS_API_PATH, { fixture: 'search-best-results.json' });

@@ -17,7 +17,7 @@ type Params = {
   case_type: string;
   creator: ID;
   moderator?: ID;
-  requestor: ID;
+  requester: ID;
   provided_email: string;
   author?: Object;
   target_paper_id: ID;
@@ -38,7 +38,7 @@ export function createAuthorClaimCase({
       userID,
       "UserID must be present to create AuthorClaimCase"
     ),
-    requestor: nullthrows(
+    requester: nullthrows(
       userID,
       "UserID must be present to create AuthorClaimCase"
     ),

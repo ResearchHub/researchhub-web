@@ -29,14 +29,14 @@ export default function AuthorClaimCaseCard({
 
   const [openModalType, setOpenModalType] =
     useState<ValueOf<typeof AUTHOR_CLAIM_STATUS>>("");
-  const { caseData, requestor } = authorClaimCase || {};
+  const { caseData, requester } = authorClaimCase || {};
   const { createdDate, id: caseID, status: caseStatus } = caseData || {};
   const {
     name: requestorName,
     profileImg: requestorFaceImg,
     providedEmail,
     requestorAuthorID,
-  } = requestor || {};
+  } = requester || {};
   const formattedCreatedDate = dayjs(createdDate).format("YYYY-MM-DD");
   const actionLabels = useMemo(() => {
     return caseStatus === AUTHOR_CLAIM_STATUS.OPEN ? (
