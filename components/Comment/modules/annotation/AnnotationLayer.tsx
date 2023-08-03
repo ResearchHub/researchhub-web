@@ -60,7 +60,6 @@ import {
   urlSelectionToAnnotation,
 } from "./lib/selection";
 import getAnnotationFromPosition from "./lib/getAnnotationFromPosition";
-import { truncateText } from "~/config/utils/string";
 import AnnotationTextBubble from "./AnnotationTextBubble";
 
 const { setMessage, showMessage } = MessageActions;
@@ -115,13 +114,13 @@ const AnnotationLayer = ({
     [setNeedsRedraw]
   );
 
+  // Holds range selction data initiated by user
   const selection = useSelection({
     contentRef: contentRef,
   });
 
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
   const selectedThreadIdRef = useRef<string | null>(null);
-
   const [hoveredThreadId, setHoveredThreadId] = useState<string | null>(null);
 
   // Holds xpath about a particular text-range annotation that is shared via URL
@@ -136,6 +135,9 @@ const AnnotationLayer = ({
 
   const [threadRefs, setThreadRefs] = useState<any[]>([]);
   const commentThreads = useRef<{ [threadId: string]: CommentThreadGroup }>({});
+  const uncomittedCommentThreads = useRef<{
+    [threadId: string]: CommentThreadGroup;
+  }>({});
   const textSelectionMenuRef = useRef<HTMLDivElement>(null);
   const windowDimensions = useRef<{ width: number; height: number }>({
     width: 0,
@@ -147,6 +149,7 @@ const AnnotationLayer = ({
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
 
+  // Scroll to annotation only after it has been rendered
   useLayoutEffect(() => {
     const [key, value] = window.location.hash.split("=");
 
@@ -162,6 +165,7 @@ const AnnotationLayer = ({
     }
   }, [annotationsSortedByY, selectedThreadId, positionFromUrlAsAnnotation]);
 
+  // Observe changes to the URL hash (.e.g. link is clickd on)
   useEffect(() => {
     const handleHashChange = () => {
       const [key, value] = window.location.hash.split("=");
@@ -240,30 +244,6 @@ const AnnotationLayer = ({
     }
   }, [inlineComments, displayPreference]);
 
-  const _findAndReconcileOrphans = async () => {
-    let MAX_ATTEMPTS_REMAINING = 5;
-
-    if (orphanThreadIdsRef.current.length === 0) {
-      return;
-    }
-    const orphanThreads = {};
-    for (let i = 0; i < orphanThreadIdsRef.current.length; i++) {
-      const id = orphanThreadIdsRef.current[i];
-      orphanThreads[id] = commentThreads.current[id];
-    }
-
-    orphanSearchIntervalRef.current = setInterval(() => {
-      if (MAX_ATTEMPTS_REMAINING === 0) {
-        clearInterval(orphanSearchIntervalRef.current);
-        return;
-      }
-
-      throttledSetNeedsRedraw({ drawMode: "SKIP_EXISTING" });
-
-      MAX_ATTEMPTS_REMAINING--;
-    }, 500);
-  };
-
   // Draw annotation as pages are rendered
   useEffect(() => {
     throttledSetNeedsRedraw({ drawMode: "ALL" });
@@ -283,6 +263,7 @@ const AnnotationLayer = ({
         _drawAnnotations({
           annotationsSortedByY: annotationsSortedByYRef.current,
           threads: commentThreads.current,
+          uncomittedCommentThreads: uncomittedCommentThreads.current,
           drawingMode: needsRedraw?.drawMode,
         });
 
@@ -490,11 +471,7 @@ const AnnotationLayer = ({
           const newComment = newCommentDataRef.current[newCommentId];
 
           if (newComment.isEmpty) {
-            _setAnnotations(
-              annotationsSortedByYRef.current.filter(
-                (annotation) => annotation.threadId !== newCommentId
-              )
-            );
+            _purgeComment({ threadId: newCommentId });
           }
         });
       }
@@ -506,6 +483,40 @@ const AnnotationLayer = ({
       document.removeEventListener("click", _handleClick);
     };
   }, [selection?.xrange]);
+
+  const _purgeComment = ({ threadId }) => {
+    _setAnnotations(
+      annotationsSortedByYRef.current.filter(
+        (annotation) => annotation.threadId !== threadId
+      )
+    );
+    delete newCommentDataRef.current[threadId];
+    delete uncomittedCommentThreads.current[threadId];
+  };
+
+  const _findAndReconcileOrphans = async () => {
+    let MAX_ATTEMPTS_REMAINING = 5;
+
+    if (orphanThreadIdsRef.current.length === 0) {
+      return;
+    }
+    const orphanThreads = {};
+    for (let i = 0; i < orphanThreadIdsRef.current.length; i++) {
+      const id = orphanThreadIdsRef.current[i];
+      orphanThreads[id] = commentThreads.current[id];
+    }
+
+    orphanSearchIntervalRef.current = setInterval(() => {
+      if (MAX_ATTEMPTS_REMAINING === 0) {
+        clearInterval(orphanSearchIntervalRef.current);
+        return;
+      }
+
+      throttledSetNeedsRedraw({ drawMode: "SKIP_EXISTING" });
+
+      MAX_ATTEMPTS_REMAINING--;
+    }, 500);
+  };
 
   const _scrollToAnnotation = ({
     annotation,
@@ -617,9 +628,11 @@ const AnnotationLayer = ({
   const _drawAnnotations = ({
     threads,
     annotationsSortedByY,
+    uncomittedCommentThreads,
     drawingMode = "SKIP_EXISTING",
   }: {
     threads: { [key: string]: CommentThreadGroup };
+    uncomittedCommentThreads: { [key: string]: CommentThreadGroup };
     annotationsSortedByY: AnnotationType[];
     // If the page changes size, chances are xrange would need to be recalculated. In that case, we need ALL
     drawingMode?: "SKIP_EXISTING" | "ALL";
@@ -635,67 +648,76 @@ const AnnotationLayer = ({
     const orphanThreadIds: Array<string> = [];
     const foundAnnotations: Array<AnnotationType> = [];
 
-    Object.values(threads).forEach((threadGroup) => {
-      const existingAnnotation = annotationsSortedByY.find(
-        (annotation) => annotation.threadId === threadGroup.threadId
-      );
+    const tryToRenderThreads = (
+      threads: { [threadId: string]: CommentThreadGroup },
+      isNew = false
+    ) => {
+      Object.values(threads).forEach((threadGroup) => {
+        const existingAnnotation = annotationsSortedByY.find(
+          (annotation) => annotation.threadId === threadGroup.threadId
+        );
 
-      if (existingAnnotation && drawingMode === "SKIP_EXISTING") {
-        foundAnnotations.push(existingAnnotation);
-      } else {
-        let isOrphan = false;
+        if (existingAnnotation && drawingMode === "SKIP_EXISTING") {
+          foundAnnotations.push(existingAnnotation);
+        } else {
+          let isOrphan = false;
 
-        try {
-          const xrange = XRange.createFromSerialized({
-            serialized: threadGroup.thread.anchor,
-          });
+          try {
+            const xrange = XRange.createFromSerialized({
+              serialized: threadGroup.thread.anchor,
+            });
 
-          if (!xrange) {
-            throw "could not create xrange";
+            if (!xrange) {
+              throw "could not create xrange";
+            }
+
+            const annotation = createAnnotation({
+              xrange,
+              isNew,
+              threadId: threadGroup.threadId,
+              relativeEl: contentRef.current,
+              serializedAnchorPosition: threadGroup.thread!
+                .anchor as SerializedAnchorPosition,
+            });
+
+            foundAnnotations.push(annotation);
+          } catch (error) {
+            isOrphan = true;
           }
 
-          const annotation = createAnnotation({
-            xrange,
-            threadId: threadGroup.threadId,
-            relativeEl: contentRef.current,
-            serializedAnchorPosition: threadGroup.thread!
-              .anchor as SerializedAnchorPosition,
-          });
+          if (isOrphan) {
+            // There are many reasons why an anchor could not be found.
+            // The most common ones are: 1) Page has changed structure and the xpath is no longer valid
+            // and 2) The content within the page has changed from the original.
 
-          foundAnnotations.push(annotation);
-        } catch (error) {
-          isOrphan = true;
+            const contentElXpath =
+              XPathUtil.getXPathFromNode(contentRef.current) || "";
+            console.log(
+              "[Annotation] No xrange found for thread. Orphan thread is:",
+              threadGroup.thread,
+              "start:",
+              threadGroup.thread.anchor?.startContainerPath,
+              "end:",
+              threadGroup.thread.anchor?.endContainerPath,
+              // "xpathPrefix:",
+              // contentElXpath,
+              "contentElFromXpath",
+              XPathUtil.getNodeFromXPath(contentElXpath),
+              "startNodeFromXpath",
+              XPathUtil.getNodeFromXPath(
+                contentElXpath + threadGroup.thread.anchor?.startContainerPath
+              )
+            );
+            orphanThreadIds.push(threadGroup.threadId);
+          }
         }
+      });
+    };
 
-        if (isOrphan) {
-          // There are many reasons why an anchor could not be found.
-          // The most common ones are: 1) Page has changed structure and the xpath is no longer valid
-          // and 2) The content within the page has changed from the original.
-
-          const contentElXpath =
-            XPathUtil.getXPathFromNode(contentRef.current) || "";
-          console.log(
-            "[Annotation] No xrange found for thread. Orphan thread is:",
-            threadGroup.thread,
-            "start:",
-            threadGroup.thread.anchor?.startContainerPath,
-            "end:",
-            threadGroup.thread.anchor?.endContainerPath,
-            // "xpathPrefix:",
-            // contentElXpath,
-            "contentElFromXpath",
-            XPathUtil.getNodeFromXPath(contentElXpath),
-            "startNodeFromXpath",
-            XPathUtil.getNodeFromXPath(
-              contentElXpath + threadGroup.thread.anchor?.startContainerPath
-            )
-          );
-          orphanThreadIds.push(threadGroup.threadId);
-        }
-      }
-    });
-
+    tryToRenderThreads(threads, false);
+    tryToRenderThreads(uncomittedCommentThreads, true);
     const foundAndSorted = _sortAnnotationsByAppearanceInPage(foundAnnotations);
+
     return { orphanThreadIds, foundAnnotations: foundAndSorted };
   };
 
@@ -744,6 +766,17 @@ const AnnotationLayer = ({
       ...annotationsSortedByYRef.current,
       newAnnotation,
     ]);
+
+    uncomittedCommentThreads.current[newAnnotation.threadId] = {
+      thread: {
+        id: newAnnotation.threadId,
+        threadType: COMMENT_TYPES.ANNOTATION,
+        anchor: selectionToSerializedAnchorPosition({ selection }),
+      },
+      comments: [],
+      threadId: newAnnotation.threadId,
+    };
+
     selection.resetSelectedPos();
     _setAnnotations(_annotationsSortedByY);
     _setSelectedThreadId(newAnnotation.threadId);
@@ -791,6 +824,7 @@ const AnnotationLayer = ({
       });
 
       _onCreate({ comment });
+      _purgeComment({ threadId: annotation.threadId });
     } catch (error) {
       captureEvent({
         msg: "Failed to create inline comment",
@@ -948,7 +982,7 @@ const AnnotationLayer = ({
   const renderingMode = getRenderingMode({ contentRef });
   const contentRect = contentRef.current?.getBoundingClientRect();
   const contentElOffset = contentRect?.x;
-  // const WrapperEl = renderingMode === "drawer" ? CommentDrawer : React.Fragment;
+
   const {
     left: menuPosLeft,
     top: menuPosTop,
@@ -961,16 +995,19 @@ const AnnotationLayer = ({
 
   // Before rendering annotations, we want to make sure that each annotations has a comment thread associated with it.
   // Since annotationsSortedByY and commentThreads are two distinct data structures, it is important that we make sure
-  // That they are in sync prior to rendering. The two could be out-of-sync for a split second when a new annotation is
-  // created or removed.
+  // That they are in sync prior to rendering since both of these data points are needed for rendering.
+  // The two could be out-of-sync for a split second when a new annotation is created or removed.
+  // Maintaining two separate data structures allows us to optimize rendering.
   const _annotationsSortedByY = annotationsSortedByYRef.current.filter(
     (annotation) => {
       return (
         commentThreads.current[annotation.threadId] !== undefined ||
+        uncomittedCommentThreads.current[annotation.threadId] !== undefined ||
         annotation.isNew
       );
     }
   );
+
   const selectedThread = selectedThreadId
     ? commentThreads?.current[selectedThreadId]
     : null;
@@ -1135,7 +1172,7 @@ const AnnotationLayer = ({
                   (renderingMode === "inline" && isFocused) ||
                   (renderingMode === "drawer" && isFocused) ||
                   renderingMode === "sidebar";
-                const thread = commentThreads?.current[threadId];
+
                 return (
                   <div id={key} className={css(styles.commentThreadWrapper)}>
                     <div
@@ -1159,7 +1196,6 @@ const AnnotationLayer = ({
                     >
                       {annotation.isNew ? (
                         <div
-                          onClick={(e) => e.stopPropagation()}
                           className={
                             css(styles.commentEditorWrapper) +
                             " CommentEditorForAnnotation"
@@ -1179,6 +1215,9 @@ const AnnotationLayer = ({
                             focusOnMount={true}
                             editorStyleOverride={styles.commentEditor}
                             editorId={`${key}-editor`}
+                            content={
+                              newCommentDataRef.current[threadId]?.content
+                            }
                             handleSubmit={(commentProps) =>
                               _handleCreateThread({ annotation, commentProps })
                             }
