@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     background: colors.LIGHT_GREY(),
     color: colors.PURPLE(1),
-    border: "1px solid #ddd",
+    border: `1px solid ${colors.LIGHT_GRAY221()}`,
     borderRadius: "50%",
     display: "flex",
     fontSize: 16,

@@ -112,7 +112,7 @@ var styles = StyleSheet.create({
     background: colors.GREY_ICY_BLUE_HUE,
   },
   selectedEdit: {
-    background: "#F0F1F7",
+    background: colors.LIGHT_GRAYISH_BLUE13(),
   },
   editHistoryCard: {
     width: 250,

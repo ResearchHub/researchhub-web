@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
     left: 20,
     cursor: "pointer",
     fontFamily: "Roboto",
-    color: "#a5a4ae",
+    color: colors.DARK_GREYISH_BLUE11(),
     fontSize: 14,
     ":hover": {
       color: colors.DARK_DESATURATED_BLUE(),

@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     ":hover": {
       backgroundColor: colors.LIGHTER_BLUE(),
-      borderColor: "#d8d8de",
+      borderColor: colors.LIGHT_GRAYISH_BLUE9(),
     },
   },
   grayLabel: {

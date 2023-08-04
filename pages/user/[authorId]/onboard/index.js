@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     fontWeight: 400,
-    color: "#6f6c7d",
+    color: colors.DARK_GREYISH_BLUE13(),
     padding: 0,
     margin: 0,
     marginTop: 10,
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
   pageContainer: {
     position: "relative",
     backgroundColor: colors.WHITE(),
-    border: "1px solid #ddd",
+    border: `1px solid ${colors.LIGHT_GRAY221()}`,
     borderRadius: 4,
     padding: "30px 60px",
     "@media only screen and (max-width: 935px)": {
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     fontWeight: 400,
     marginBottom: 40,
-    borderBottom: "1px solid #DDD",
+    borderBottom: `1px solid ${colors.LIGHT_GRAY221()}`,
     fontSize: 22,
     whiteSpace: "pre-wrap",
     "@media only screen and (max-width: 665px)": {
@@ -464,9 +464,9 @@ const styles = StyleSheet.create({
       borderColor: colors.GRAY179(),
     },
     ":focus": {
-      borderColor: "#3f85f7",
+      borderColor: colors.BRIGHT_BLUE3(),
       ":hover": {
-        boxShadow: "0px 0px 1px 1px #3f85f7",
+        boxShadow: `0px 0px 1px 1px ${colors.BRIGHT_BLUE3()}`,
         cursor: "text",
       },
     },

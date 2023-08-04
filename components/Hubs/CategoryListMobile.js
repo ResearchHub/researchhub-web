@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     borderColor: colors.PURPLE(1),
   },
   trendingIcon: {
-    color: "#FF6D00",
+    color: colors.PURE_ORANGE2(),
     marginLeft: 5,
   },
 });

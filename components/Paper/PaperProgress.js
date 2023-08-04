@@ -506,7 +506,7 @@ const styles = StyleSheet.create({
     },
   },
   maintext: {
-    color: "#5a566a",
+    color: colors.VERY_DARK_GRAYISH_BLUE5(),
     minHeight: 36,
     "@media only screen and (max-width: 800px)": {
       fontSize: 14,
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 4,
     overflow: "hidden",
-    backgroundColor: "#e3e3e7",
+    backgroundColor: colors.LIGHT_GRAYISH_BLUE14(),
     position: "relative",
   },
   percentage: {
@@ -555,7 +555,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     cursor: "pointer",
-    color: "#848290",
+    color: colors.DARK_GREYISH_BLUE12(),
     ":hover": {
       color: colors.BLACK(),
     },
@@ -568,10 +568,10 @@ const styles = StyleSheet.create({
     },
   },
   sectionActive: {
-    color: "#5a566a",
+    color: colors.VERY_DARK_GRAYISH_BLUE5(),
   },
   sectionIcon: {
-    color: "#D0D0D0",
+    color: colors.LIGHT_GRAY208(),
     marginRight: 10,
     fontSize: 25,
     "@media only screen and (max-width: 800px)": {

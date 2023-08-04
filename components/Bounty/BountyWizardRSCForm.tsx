@@ -83,7 +83,7 @@ const progressStyles = StyleSheet.create({
     cursor: "pointer",
 
     ":hover": {
-      background: "#E5EDFF",
+      background: colors.VERY_PALE_BLUE2(),
       border: `1px solid ${colors.WHITE()}`,
     },
   },
@@ -109,7 +109,7 @@ const progressStyles = StyleSheet.create({
   label: {
     position: "absolute",
     top: -36,
-    background: "#F1F5FF",
+    background: colors.VERY_PALE_BLUE3(),
     color: colors.NEW_BLUE(1),
     padding: "5px 10px",
     borderRadius: 6,

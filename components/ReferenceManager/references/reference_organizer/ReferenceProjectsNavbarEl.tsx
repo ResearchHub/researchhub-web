@@ -123,7 +123,7 @@ export default function ReferenceProjectsNavbarEl({
             {/* {depth !== 0 && (
               <FontAwesomeIcon
                 icon={faFolders}
-                color="#7BD3F9"
+                color=colors.SOFT_BLUE2()
                 style={{ fontSize: 14 }}
               />
             )} */}
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
 
     ":hover": {
-      background: "#ddd",
+      background: colors.LIGHT_GRAY221(),
     },
   },
 });

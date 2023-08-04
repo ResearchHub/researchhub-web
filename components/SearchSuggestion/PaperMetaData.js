@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
     height: 17,
   },
   editIcon: {
-    color: "#C1C2CE",
+    color: colors.GREYISH_BLUE5(),
     ":hover": {
       color: colors.PURE_BLACK(),
     },
@@ -427,9 +427,9 @@ const styles = StyleSheet.create({
       borderColor: colors.GRAY179(),
     },
     ":focus": {
-      borderColor: "#3f85f7",
+      borderColor: colors.BRIGHT_BLUE3(),
       ":hover": {
-        boxShadow: "0px 0px 1px 1px #3f85f7",
+        boxShadow: `0px 0px 1px 1px ${colors.BRIGHT_BLUE3()}`,
         cursor: "text",
       },
     },

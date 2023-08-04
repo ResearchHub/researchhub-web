@@ -1,4 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
+import colors from "~/config/themes/colors";
 
 const StyleButton = (props) => {
   const { isStyleActive, label, onClick } = props;
@@ -14,14 +15,14 @@ const StyleButton = (props) => {
 
 const styles = StyleSheet.create({
   button: {
-    color: "#999",
+    color: colors.DARK_GRAY153(),
     cursor: "pointer",
     marginRight: 16,
     padding: "2px 0",
     display: "inline-block",
   },
   active: {
-    color: "#5890ff",
+    color: colors.LIGHT_BLUE3(),
   },
 });
 

@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   hubsListContainer: {
-    boxShadow: "inset 0px 11px 8px -10px #ddd, inset 0px -11px 8px -10px #ddd",
+    boxShadow: `inset 0px 11px 8px -10px ${colors.LIGHT_GRAY221()}, inset 0px -11px 8px -10px ${colors.LIGHT_GRAY221()}`,
     display: "flex",
     flexDirection: "column",
     width: "100%",

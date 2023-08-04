@@ -91,7 +91,7 @@ export const DEFAULT_ITEM_STYLE = StyleSheet.create({
   },
   emphasizedBlue: {
     // one-off gitcoin color
-    color: "#00a37c",
+    color: colors.DARK_CYAN(),
     fontWeight: 600,
   },
   clickableBody: {

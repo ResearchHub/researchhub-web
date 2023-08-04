@@ -57,7 +57,7 @@ export const formGenericStyles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: "#6f6c7d",
+    color: colors.DARK_GREYISH_BLUE13(),
     marginTop: 10,
     "@media only screen and (max-width: 665px)": {
       width: 300,
@@ -84,7 +84,7 @@ export const formGenericStyles = StyleSheet.create({
     position: "relative",
     backgroundColor: colors.WHITE(),
     boxShadow: `2px 2x 2px 2px ${colors.LIGHT_GREY_BACKGROUND}`,
-    // border: "1px solid #ddd",
+    // border: `1px solid ${colors.LIGHT_GRAY221()}`,
     borderRadius: 4,
     padding: "30px 60px",
     marginTop: 40,

@@ -104,7 +104,7 @@ const SummaryEditCard = (props) => {
 
 const styles = StyleSheet.create({
   selectedEdit: {
-    background: "#F0F1F7",
+    background: colors.LIGHT_GRAYISH_BLUE13(),
     borderColor: colors.LIGHT_GREY_BLUE,
   },
   editHistoryCard: {
@@ -116,10 +116,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     cursor: "pointer",
     background: colors.GREY_ICY_BLUE_HUE,
-    borderTop: "0.75px solid #F0F1F7",
-    borderBottom: "0.75px solid #F0F1F7",
+    borderTop: `0.75px solid ${colors.LIGHT_GRAYISH_BLUE13()}`,
+    borderBottom: `0.75px solid ${colors.LIGHT_GRAYISH_BLUE13()}`,
     ":hover": {
-      background: "#F0F1F7",
+      background: colors.LIGHT_GRAYISH_BLUE13(),
       borderColor: colors.LIGHT_GREY_BLUE,
     },
     "@media only screen and (max-width: 767px)": {

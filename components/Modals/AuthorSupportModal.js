@@ -505,13 +505,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 19,
-    color: "#2a2825",
+    color: colors.MOSTLY_BLACK_ORANGE(),
     fontWeight: 500,
     marginBottom: 15,
   },
   subtitle: {
     fontSize: 14,
-    color: "#82817d",
+    color: colors.DARK_GRAYISH_YELLOW(),
     display: "flex",
     alignItems: "center",
   },

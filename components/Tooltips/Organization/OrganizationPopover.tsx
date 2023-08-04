@@ -117,7 +117,9 @@ export default function OrganizationPopover({
             <ReactPlaceholder
               ready={!isEmpty(currentOrg)}
               showLoadingAnimation
-              customPlaceholder={<OrgEntryPlaceholder color="#d3d3d3" />}
+              customPlaceholder={
+                <OrgEntryPlaceholder color={colors.LIGHT_GRAY211()} />
+              }
             >
               <div className={css(styles.avatarWrapper)}>
                 <OrgAvatar org={currentOrg} />
@@ -153,7 +155,7 @@ const styles = StyleSheet.create({
   newOrgButton: {
     alignItems: "center",
     background: colors.LIGHT_GREY(),
-    border: "1px solid #ddd",
+    border: `1px solid ${colors.LIGHT_GRAY221()}`,
     borderRadius: "50%",
     boxSizing: "border-box",
     cursor: "pointer",

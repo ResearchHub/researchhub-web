@@ -477,7 +477,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 4,
     marginTop: 8,
-    boxShadow: "0 5px 10px 0 #ddd",
+    boxShadow: `0 5px 10px 0 ${colors.LIGHT_GRAY221()}`,
   },
   groupLanguage: {
     // color: colors.NEW_BLUE(),

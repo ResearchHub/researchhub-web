@@ -625,7 +625,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
 
     ":hover": {
-      background: "#F1F5FF",
+      background: colors.VERY_PALE_BLUE3(),
     },
   },
 });

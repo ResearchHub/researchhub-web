@@ -92,10 +92,10 @@ function InlineCommentThreadsDisplayBar({
 
 export const burgerMenuStyle = {
   bmBurgerBars: {
-    background: "#373a47",
+    background: colors.VERY_DARK_GRAYISH_BLUE4(),
   },
   bmBurgerBarsHover: {
-    background: "#a90000",
+    background: colors.DARK_RED2(),
   },
   bmCrossButton: {
     height: "26px",
@@ -105,7 +105,7 @@ export const burgerMenuStyle = {
     visibility: "hidden",
   },
   bmCross: {
-    background: "#bdc3c7",
+    background: colors.GREYISH_BLUE3(),
     display: "none",
     visibility: "hidden",
   },
@@ -123,10 +123,10 @@ export const burgerMenuStyle = {
     width: "100%",
   },
   bmMorphShape: {
-    fill: "#373a47",
+    fill: colors.VERY_DARK_GRAYISH_BLUE4(),
   },
   bmItemList: {
-    color: "#b8b7ad",
+    color: colors.GRAYISH_YELLOW(),
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",

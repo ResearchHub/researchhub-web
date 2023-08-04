@@ -41,7 +41,7 @@ const sharedOnboardingStyles = StyleSheet.create({
       outline: "none",
       boxShadow: "none",
       ":focus": {
-        borderColor: "#3f85f7",
+        borderColor: colors.BRIGHT_BLUE3(),
       },
     },
   },

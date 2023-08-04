@@ -1526,7 +1526,7 @@ const styles = StyleSheet.create({
     left: "50%",
     transform: "translateX(-50%)",
     background: colors.WHITE(),
-    boxShadow: "0 5px 10px 0 #ddd",
+    boxShadow: `0 5px 10px 0 ${colors.LIGHT_GRAY221()}`,
     padding: 10,
     borderRadius: 8,
     zIndex: 2,

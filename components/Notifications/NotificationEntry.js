@@ -162,11 +162,11 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     padding: 20,
-    borderBottom: "1px solid #dddfe2",
-    backgroundColor: "#EDf2FA",
+    borderBottom: `1px solid ${colors.LIGHT_GRAY221()}`,
+    backgroundColor: colors.LIGHT_GRAYISH_BLUE12(),
     position: "relative",
     ":hover": {
-      backgroundColor: "#EDf2FA",
+      backgroundColor: colors.LIGHT_GRAYISH_BLUE12(),
     },
   },
   read: {

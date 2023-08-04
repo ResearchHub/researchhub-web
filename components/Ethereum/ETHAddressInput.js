@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "flex-start",
-    color: "#82817D",
+    color: colors.DARK_GRAYISH_YELLOW(),
     height: 40,
     fontFamily: "Roboto",
     "@media only screen and (max-width: 415px)": {
@@ -201,12 +201,12 @@ const styles = StyleSheet.create({
     minWidth: 5,
     borderRadius: "50%",
     marginRight: 5,
-    backgroundColor: "#f9f4d3",
-    border: "2px solid #f8de5a",
+    backgroundColor: colors.LIGHT_GRAYISH_YELLOW2(),
+    border: `2px solid ${colors.SOFT_YELLOW_BORDER()}`,
   },
   connected: {
     backgroundColor: colors.LIGHT_GRAYISH_LIME_GREEN(),
-    border: "2px solid #7ae9b1",
+    border: `2px solid ${colors.SOFT_LIME_GREEN2()}`,
   },
   invalidAddress: {
     backgroundColor: colors.RED(0.7),
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
       borderColor: colors.LIGHT_GREYISH_BLUE,
     },
     ":focus": {
-      borderColor: "#3f85f7",
+      borderColor: colors.BRIGHT_BLUE3(),
       ":hover": {
         cursor: "text",
       },

@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
     },
   },
   trendingIcon: {
-    color: "#FF6D00",
+    color: colors.PURE_ORANGE2(),
     marginLeft: 5,
   },
 });

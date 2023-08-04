@@ -281,8 +281,8 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.BLACK(0.1)}`,
     ":hover": {
       color: colors.BLACK(0.8),
-      backgroundColor: "#EDEDF0",
-      borderColor: "#d8d8de",
+      backgroundColor: colors.LIGHT_GREY_BACKGROUND2(),
+      borderColor: colors.LIGHT_GRAYISH_BLUE9(),
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 13,

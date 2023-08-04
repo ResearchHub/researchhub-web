@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     borderRadius: "1px",
     cursor: "pointer",
     position: "relative",
-    color: "#e77600", //colors.DARKER_GREY(),
+    color: colors.PURE_ORANGE(), //colors.DARKER_GREY(),
   },
   starLabel: {
     fontWeight: 500,

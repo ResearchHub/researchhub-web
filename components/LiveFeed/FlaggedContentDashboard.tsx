@@ -632,7 +632,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     color: colors.RED(0.6),
     ":hover": {
-      backgroundColor: "#EDEDF0",
+      backgroundColor: colors.LIGHT_GREY_BACKGROUND2(),
       color: colors.BLACK(0.8),
     },
   },
@@ -742,8 +742,8 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
     ":hover": {
       color: colors.BLACK(0.8),
-      backgroundColor: "#EDEDF0",
-      borderColor: "#d8d8de",
+      backgroundColor: colors.LIGHT_GREY_BACKGROUND2(),
+      borderColor: colors.LIGHT_GRAYISH_BLUE9(),
     },
   },
   bulkActionIcon: {

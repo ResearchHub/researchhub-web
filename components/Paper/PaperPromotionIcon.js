@@ -46,7 +46,7 @@ function PaperPromotionIcon({
 
 const styles = StyleSheet.create({
   root: {
-    color: "#AFADB7",
+    color: colors.GREYISH_BLUE4(),
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

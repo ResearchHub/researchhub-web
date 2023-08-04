@@ -868,7 +868,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-    color: "#82817d",
+    color: colors.DARK_GRAYISH_YELLOW(),
     fontWeight: 500,
   },
   title: {
@@ -879,7 +879,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(),
   },
   subtitle: {
-    color: "#83817c",
+    color: colors.DARK_GRAYISH_ORANGE2(),
     fontSize: 14,
     marginBottom: 25,
     lineHeight: 1.5,
@@ -891,7 +891,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     paddingTop: 5,
-    color: "#83817c",
+    color: colors.DARK_GRAYISH_ORANGE2(),
     "@media only screen and (max-width: 415px)": {
       fontSize: 13,
     },
@@ -928,7 +928,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "flex-start",
-    color: "#82817D",
+    color: colors.DARK_GRAYISH_YELLOW(),
     height: 40,
     fontFamily: "Roboto",
     "@media only screen and (max-width: 415px)": {
@@ -993,7 +993,7 @@ const styles = StyleSheet.create({
   input: {
     height: 60,
     width: 90,
-    border: "1px solid #82817d",
+    border: `1px solid ${colors.DARK_GRAYISH_YELLOW()}`,
     borderRadius: ".5rem",
   },
   checkBoxContainer: {
@@ -1022,7 +1022,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.4),
   },
   eth: {
-    color: "#82817D",
+    color: colors.DARK_GRAYISH_YELLOW(),
   },
   userBalance: {
     height: "100%",
@@ -1063,7 +1063,7 @@ const styles = StyleSheet.create({
     },
   },
   successIcon: {
-    color: "#7ae9b1",
+    color: colors.SOFT_LIME_GREEN2(),
     fontSize: 25,
     height: "100%",
     display: "flex",
@@ -1091,12 +1091,12 @@ const styles = StyleSheet.create({
     minWidth: 5,
     borderRadius: "50%",
     marginRight: 5,
-    backgroundColor: "#f9f4d3",
-    border: "2px solid #f8de5a",
+    backgroundColor: colors.LIGHT_GRAYISH_YELLOW2(),
+    border: `2px solid ${colors.SOFT_YELLOW_BORDER()}`,
   },
   connected: {
     backgroundColor: colors.LIGHT_GRAYISH_LIME_GREEN(),
-    border: "2px solid #7ae9b1",
+    border: `2px solid ${colors.SOFT_LIME_GREEN2()}`,
   },
   invalidAddress: {
     backgroundColor: colors.RED(0.7),

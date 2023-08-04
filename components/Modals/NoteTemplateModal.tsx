@@ -317,11 +317,11 @@ const styles = StyleSheet.create({
     userSelect: "none",
     wordBreak: "break-word",
     ":hover": {
-      backgroundColor: "#eceffc",
+      backgroundColor: colors.LIGHT_GRAYISH_BLUE11(),
     },
   },
   active: {
-    backgroundColor: "#eceffc",
+    backgroundColor: colors.LIGHT_GRAYISH_BLUE11(),
   },
   showBottomBorder: {
     borderBottom: `1px solid ${colors.GREY(0.3)}`,

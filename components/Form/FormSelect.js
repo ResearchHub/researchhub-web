@@ -158,13 +158,13 @@ class FormSelect extends Component {
       }),
       placeholder: (styles) => ({
         ...styles,
-        color: "#8e8d9a",
+        color: colors.DARK_GREYISH_BLUE7(),
         fontWeight: 400,
       }),
       multiValue: (styles, { data }) => {
         return {
           ...styles,
-          backgroundColor: "#edeefe",
+          backgroundColor: colors.LIGHT_GRAYISH_BLUE10(),
           ...formatStyle(multiTagStyle),
         };
       },
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     },
   },
   placeholder: {
-    color: "#8e8d9a",
+    color: colors.DARK_GREYISH_BLUE7(),
     fontWeight: 400,
   },
   text: {

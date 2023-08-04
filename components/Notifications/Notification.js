@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   menuTitle: {
     width: "100%",
     textAlign: "left",
-    borderBottom: "1px solid #dddfe2",
+    borderBottom: `1px solid ${colors.LIGHT_GRAY221()}`,
     padding: "5px 10px",
     boxSizing: "border-box",
     fontSize: 13,
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     padding: 20,
-    borderBottom: "1px solid #dddfe2",
+    borderBottom: `1px solid ${colors.LIGHT_GRAY221()}`,
     backgroundColor: colors.INPUT_BACKGROUND_GREYVER_WHITE,
     fontSize: 14,
   },

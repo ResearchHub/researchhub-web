@@ -86,9 +86,9 @@ const styles = StyleSheet.create({
       borderColor: colors.GRAY179(),
     },
     ":focus": {
-      borderColor: "#3f85f7",
+      borderColor: colors.BRIGHT_BLUE3(),
       ":hover": {
-        boxShadow: "0px 0px 1px 1px #3f85f7",
+        boxShadow: `0px 0px 1px 1px ${colors.BRIGHT_BLUE3()}`,
         cursor: "text",
       },
     },
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     color: colors.BLUE(1),
   },
   placeholder: {
-    color: "#8e8d9a",
+    color: colors.DARK_GREYISH_BLUE7(),
     fontWeight: 400,
   },
   text: {

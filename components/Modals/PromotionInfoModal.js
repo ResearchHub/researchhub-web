@@ -141,8 +141,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   score: {
-    background: "#EEECEF",
-    color: "#93919E",
+    background: colors.LIGHT_GRAYISH_VIOLET(),
+    color: colors.DARK_GREYISH_BLUE10(),
     fontWeight: "bold",
     borderRadius: 24,
     padding: ".2em .5em",

@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
   },
   sublabel: {
     fontSize: 14,
-    color: "#706e7f",
+    color: colors.DARK_GREYISH_BLUE9(),
     textAlign: "center",
   },
 });

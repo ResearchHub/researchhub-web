@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     width: "100%",
     cursor: "pointer",
     ":hover": {
-      background: "#edeefe",
+      background: colors.LIGHT_GRAYISH_BLUE10(),
     },
   },
 });

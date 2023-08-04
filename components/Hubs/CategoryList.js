@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     padding: "0px 30px",
   },
   trendingIcon: {
-    color: "#FF6D00",
+    color: colors.PURE_ORANGE2(),
     marginLeft: 5,
   },
 });

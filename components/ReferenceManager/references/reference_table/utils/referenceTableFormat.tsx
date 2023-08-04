@@ -18,7 +18,9 @@ export const columnsFormat: GridColDef[] = [
               icon={idString.includes("parent") ? faArrowTurnUp : faFolder}
               style={{ marginRight: 8 }}
               color={
-                idString.includes("parent") ? colors.MEDIUM_GREY2() : "#7BD3F9"
+                idString.includes("parent")
+                  ? colors.MEDIUM_GREY2()
+                  : colors.SOFT_BLUE2()
               }
             />
             {cell.value}

@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     width: "50%",
     boxSizing: "border-box",
     textTransform: "uppercase",
-    color: "#065FD4",
+    color: colors.STRONG_BLUE(),
     cursor: "pointer",
     ":hover": {
       backgroundColor: colors.INPUT_BACKGROUND_GREY,
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     borderRight: `1px solid ${colors.LIGHT_GRAY238()}`,
   },
   left: {
-    color: "#606060",
+    color: colors.VERY_DARK_GREY2(),
   },
 });
 

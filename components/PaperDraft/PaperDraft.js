@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   toolbar: {
     background: colors.WHITE(),
-    border: "1px solid #ddd",
+    border: `1px solid ${colors.LIGHT_GRAY221()}`,
     fontFamily: `'Georgia', serif`,
     fontSize: 14,
     padding: 15,
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     zIndex: 2,
     background: colors.WHITE(),
-    border: "1px solid #ddd",
+    border: `1px solid ${colors.LIGHT_GRAY221()}`,
     padding: 15,
     boxSizing: "border-box",
     width: "100%",
@@ -279,9 +279,9 @@ const styles = StyleSheet.create({
       borderColor: colors.GRAY179(),
     },
     ":focus": {
-      borderColor: "#3f85f7",
+      borderColor: colors.BRIGHT_BLUE3(),
       ":hover": {
-        boxShadow: "0px 0px 1px 1px #3f85f7",
+        boxShadow: `0px 0px 1px 1px ${colors.BRIGHT_BLUE3()}`,
         cursor: "text",
       },
     },

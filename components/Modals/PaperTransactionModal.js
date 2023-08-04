@@ -987,19 +987,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 19,
-    color: "#2a2825",
+    color: colors.MOSTLY_BLACK_ORANGE(),
     fontWeight: 500,
     marginBottom: 15,
   },
   subtitle: {
     fontSize: 14,
-    color: "#82817d",
+    color: colors.DARK_GRAYISH_YELLOW(),
     display: "flex",
     alignItems: "center",
     // fontWeight: 500
   },
   instruction: {
-    color: "#83817c",
+    color: colors.DARK_GRAYISH_ORANGE2(),
     fontSize: 14,
     marginBottom: 25,
     fontFamily: "Roboto",
@@ -1030,7 +1030,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-    color: "#82817d",
+    color: colors.DARK_GRAYISH_YELLOW(),
     fontWeight: 500,
   },
   userBalance: {
@@ -1053,7 +1053,7 @@ const styles = StyleSheet.create({
     left: 20,
     top: 15,
     cursor: "pointer",
-    color: "#A5A5A5",
+    color: colors.GRAY165(),
     fontSize: 20,
     ":hover": {
       color: colors.PURE_BLACK(),
@@ -1075,12 +1075,12 @@ const styles = StyleSheet.create({
     minWidth: 10,
     borderRadius: "50%",
     marginRight: 5,
-    backgroundColor: "#f9f4d3",
-    border: "2px solid #f8de5a",
+    backgroundColor: colors.LIGHT_GRAYISH_YELLOW2(),
+    border: `2px solid ${colors.SOFT_YELLOW_BORDER()}`,
   },
   connected: {
     backgroundColor: colors.LIGHT_GRAYISH_LIME_GREEN(),
-    border: "2px solid #7ae9b1",
+    border: `2px solid ${colors.SOFT_LIME_GREEN2()}`,
   },
   formInput: {
     width: "100%",
@@ -1091,14 +1091,14 @@ const styles = StyleSheet.create({
   infoIcon: {
     marginLeft: 5,
     cursor: "pointer",
-    color: "#82817D",
-    color: "#DFDFDF",
+    color: colors.DARK_GRAYISH_YELLOW(),
+    color: colors.LIGHT_GRAY223(),
   },
   inputLabel: {
     paddingBottom: 10,
   },
   successIcon: {
-    color: "#7ae9b1",
+    color: colors.SOFT_LIME_GREEN2(),
     fontSize: 28,
     height: "100%",
     display: "flex",

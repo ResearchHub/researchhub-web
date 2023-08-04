@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   date: {
     fontWeight: 400,
     fontSize: 14,
-    color: "#8c8b9a",
+    color: colors.DARK_GREYISH_BLUE15(),
     paddingTop: 10,
     "@media only screen and (max-width: 378px)": {
       fontSize: 12,
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     fontSize: 14,
     fontWeight: 400,
-    color: "#8c8b9a",
+    color: colors.DARK_GREYISH_BLUE15(),
     paddingTop: 5,
     "@media only screen and (max-width: 665px)": {
       width: "80%",

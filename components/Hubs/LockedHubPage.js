@@ -402,7 +402,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.LIGHT_GREY_BACKGROUND,
   },
   footer: {
-    color: "#9B99A2",
+    color: colors.DARK_GREYISH_BLUE8(),
     textTransform: "uppercase",
     fontSize: 12,
     letterSpacing: 1.2,

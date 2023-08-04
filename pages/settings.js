@@ -984,7 +984,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingLeft: 8,
     ":hover": {
-      color: "#3f85f7",
+      color: colors.BRIGHT_BLUE3(),
     },
   },
   checkboxEntry: {

@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     },
   },
   default: {
-    backgroundColor: "#484B76",
+    backgroundColor: colors.DARK_MOSTLY_DESATURATED_BLUE(),
   },
   initials: {
     fontFamily: "Roboto",
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
   contact: {
     fontFamily: "Roboto",
     fontSize: 14,
-    color: "#8d8b9a",
+    color: colors.DARK_GREYISH_BLUE14(),
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
