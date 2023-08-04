@@ -5,7 +5,6 @@ import { breakpoints } from "~/config/themes/screen";
 import DocumentControls from "~/components/Document/DocumentControls";
 import DocumentExpandedNav from "~/components/Document/DocumentExpandedNav";
 import { zoomOptions } from "~/components/Document/lib/PDFViewer/config";
-import { DocumentContext } from "./lib/DocumentContext";
 import {
   ContentInstance,
   DocumentMetadata,
@@ -37,11 +36,13 @@ export type ZoomAction = {
 type Props = {
   postHtml?: string;
   pdfUrl?: string;
-  onZoom: Function;
+  onZoom?: Function;
   viewerWidth: number;
   citationInstance?: ContentInstance;
   documentInstance?: ContentInstance;
   document?: GenericDocument;
+  expanded?: boolean;
+  onClose?: Function;
 };
 
 const DocumentViewer = ({
@@ -52,9 +53,10 @@ const DocumentViewer = ({
   citationInstance,
   documentInstance,
   document: doc,
+  expanded = false,
+  onClose,
 }: Props) => {
-  const documentContext = useContext(DocumentContext);
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(expanded);
   const [annotationCount, setAnnotationCount] = useState<number>(0);
   const contentRef = useRef(null);
   const [hasLoadError, setHasLoadError] = useState<boolean>(false);
@@ -247,7 +249,8 @@ const DocumentViewer = ({
     setNumPagesToPreload(furthestPageToPreload);
   }
 
-  const commentDisplayPreference = documentContext.preferences?.comments;
+  // TODO: Update this. Will probably need to create a DocumentViewer Context
+  const commentDisplayPreference: "all" | "none" = "all";
   const actualContentWidth = isExpanded
     ? viewerWidth * fullScreenSelectedZoom
     : viewerWidth * selectedZoom;
@@ -265,7 +268,10 @@ const DocumentViewer = ({
       {isExpanded && (
         <DocumentExpandedNav
           document={doc}
-          handleClose={() => setIsExpanded(false)}
+          handleClose={() => {
+            onClose && onClose();
+            setIsExpanded(false);
+          }}
         />
       )}
       <div
@@ -289,7 +295,7 @@ const DocumentViewer = ({
           />
         )}
 
-        {documentContext.documentType === "paper" ? (
+        {pdfUrl ? (
           <>
             {hasLoadError ? (
               <div className={css(styles.error)}>

@@ -30,6 +30,7 @@ import { useReferenceTabContext } from "../reference_item/context/ReferenceItemD
 import colors from "~/config/themes/colors";
 import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 import DroppableZone from "~/components/DroppableZone";
+import DocumentViewer from "~/components/Document/DocumentViewer";
 
 type Props = {
   createdReferences: any[];
@@ -92,7 +93,7 @@ export default function ReferencesTable({
   const { referenceTableRowData, setReferenceTableRowData } =
     useReferencesTableContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [pdfIsOpen, setPDFIsOpen] = useState<boolean>(false);
+  const [pdfIsOpen, setPdfIsOpen] = useState<boolean>(false);
   const [pdfUrl, setPdfUrl] = useState<string>("");
   const [dragStarted, setDragStarted] = useState(false);
   const [rowDraggedOver, setRowDraggedOver] = useState<any>();
@@ -249,7 +250,7 @@ export default function ReferencesTable({
         <DataGrid
           apiRef={apiRef}
           autoHeight
-          disableRowSelectionOnClick
+          // disableRowSelectionOnClick
           checkboxSelection
           columns={columnsFormat}
           hideFooter
@@ -288,11 +289,18 @@ export default function ReferencesTable({
                 )
               ),
             });
-            setPDFIsOpen(true);
-            setPdfUrl(params.row.raw_data.attachment);
+            // setPdfIsOpen(true);
+            // alert("double click")
+            // setPdfUrl(params.row.raw_data.attachment);
           }}
           rowReordering
           onCellClick={(params, event, _details): void => {
+            setPdfIsOpen(true);
+            // alert("click")
+            setPdfUrl(params.row.raw_data.attachment);
+            console.log("params", params);
+            return;
+
             if (params.field !== "__check__") {
               setReferenceItemDatum({
                 ...nullthrows(
@@ -414,19 +422,22 @@ export default function ReferencesTable({
       >
         {"Infinite pagination!!!!!"}
       </div> */}
-        {/* {pdfIsOpen && (
-          <PDFViewer
-            pdfUrl={pdfUrl}
+        {pdfIsOpen && (
+          <DocumentViewer
+            viewerWidth={860}
+            pdfUrl={
+              "https://researchhub-paper-dev1.s3.amazonaws.com/uploads/citation_entry/attachment/2023/08/03/uploadscitation_pdfsuser_8_btjqnkkw_formation_tcm_self-assembly_nanostrategy-1pdf.pdf?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=1dtISXUYFc9Rc3X2Sa2UvdfpMRo%3D&Expires=1691757341"
+            }
             expanded={true}
-            pdfClose={() => {
-              setPDFIsOpen(false);
-              setPdfUrl("");
+            citationInstance={{
+              id: 1,
+              type: "citation",
             }}
-            onZoom={(zoom) => {
-              // setViewerWidth(zoom.newWidth);
+            onClose={() => {
+              setPdfIsOpen(false);
             }}
           />
-        )} */}
+        )}
       </div>
     </DroppableZone>
   );

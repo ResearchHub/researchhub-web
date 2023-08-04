@@ -14,7 +14,7 @@ import {
 import { AuthorProfile, ID, parseUser } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
 import CommentTypeSelector from "./CommentTypeSelector";
-import { COMMENT_TYPES } from "./lib/types";
+import { COMMENT_TYPES, CommentPrivacyFilter } from "./lib/types";
 import useQuillContent from "./hooks/useQuillContent";
 import colors from "./lib/colors";
 import { commentTypes } from "./lib/options";
@@ -38,8 +38,8 @@ import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import Bounty from "~/config/types/bounty";
 import { ModalActions } from "~/redux/modals";
 import globalColors from "~/config/themes/colors";
-import CommentEditorPlaceholder from "./CommentEditorPlaceholder";
 import { breakpoints } from "~/config/themes/screen";
+import CommentPrivacySelector from "./CommentPrivacySelector";
 const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {
@@ -54,6 +54,8 @@ type CommentEditorArgs = {
   author?: AuthorProfile | null;
   minimalMode?: boolean;
   allowCommentTypeSelection?: boolean;
+  allowPrivacySelection?: boolean;
+  defaultPrivacyFilter?: CommentPrivacyFilter;
   handleClose?: Function;
   focusOnMount?: boolean;
   editorStyleOverride?: any;
@@ -73,6 +75,8 @@ const CommentEditor = ({
   author,
   minimalMode = false,
   allowCommentTypeSelection = false,
+  allowPrivacySelection = true, // TODO: Change to false once privacy is implemented
+  defaultPrivacyFilter = "PUBLIC",
   focusOnMount = false,
   handleClose,
   editorStyleOverride,
@@ -89,6 +93,8 @@ const CommentEditor = ({
   const currentUser = useSelector((state: RootState) =>
     isInputEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
+  const [selectedPrivacyFilter, setSelectedPrivacyFilter] =
+    useState<CommentPrivacyFilter>(defaultPrivacyFilter);
   const auth = useSelector((state: RootState) => state.auth);
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
@@ -316,32 +322,47 @@ const CommentEditor = ({
             </>
           )}
 
-          {displayCurrentUser && author && !allowBounty && (
-            <div
-              className={css(styles.authorRow, isMinimalMode && styles.hidden)}
-            >
-              <div className={css(styles.nameRow)}>
-                {currentUser && (
-                  <CommentAvatars
-                    size={25}
-                    withTooltip={false}
-                    people={[currentUser]}
-                  />
+          <div className={css(styles.mainActionsWrapper)}>
+            {displayCurrentUser && author && !allowBounty && (
+              <div
+                className={css(
+                  styles.authorRow,
+                  isMinimalMode && styles.hidden
                 )}
-                <div>
-                  {author.firstName} {author.lastName}
+              >
+                <div className={css(styles.nameRow)}>
+                  {currentUser && (
+                    <CommentAvatars
+                      size={25}
+                      withTooltip={false}
+                      people={[currentUser]}
+                      wrapperStyle={styles.avatarsWrapper}
+                    />
+                  )}
+                  <div>
+                    {author.firstName} {author.lastName}
+                  </div>
                 </div>
+                {allowCommentTypeSelection && (
+                  <span style={{ marginTop: -5 }}>
+                    <CommentTypeSelector
+                      handleSelect={_setCommentType}
+                      selectedType={_commentType}
+                    />
+                  </span>
+                )}
               </div>
-              {allowCommentTypeSelection && (
-                <span style={{ marginTop: -5 }}>
-                  <CommentTypeSelector
-                    handleSelect={_setCommentType}
-                    selectedType={_commentType}
-                  />
-                </span>
-              )}
-            </div>
-          )}
+            )}
+            {allowPrivacySelection && (
+              <div className={css(styles.privacySelectorWrapper)}>
+                <CommentPrivacySelector
+                  onSelect={setSelectedPrivacyFilter}
+                  selected={selectedPrivacyFilter}
+                />
+              </div>
+            )}
+          </div>
+
           <div className={css(styles.editor)}>
             <div ref={quillRef} />
             {_commentType === COMMENT_TYPES.REVIEW && (
@@ -416,6 +437,16 @@ const CommentEditor = ({
 };
 
 const styles = StyleSheet.create({
+  privacySelectorWrapper: {},
+  avatarsWrapper: {
+    marginTop: 0,
+  },
+  mainActionsWrapper: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
   commentEditor: {
     display: "flex",
     padding: "15px",
@@ -442,7 +473,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     columnGap: "7px",
-    marginBottom: 10,
   },
   nameRow: {
     display: "flex",

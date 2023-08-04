@@ -76,7 +76,7 @@ import AnnotationTextBubble from "./AnnotationTextBubble";
 import useCacheControl from "~/config/hooks/useCacheControl";
 
 const { setMessage, showMessage } = MessageActions;
-const DEBUG = false;
+const DEBUG = true;
 
 interface Props {
   contentRef: any;
@@ -138,6 +138,8 @@ const AnnotationLayer = ({
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
   const selectedThreadIdRef = useRef<string | null>(null);
   const [hoveredThreadId, setHoveredThreadId] = useState<string | null>(null);
+  const [currentPrivacyFilter, setCurrentPrivacyFilter] =
+    useState<CommentPrivacyFilter>("PRIVATE");
 
   // Holds xpath about a particular text-range annotation that is shared via URL
   const [positionFromUrlAsAnnotation, setPositionFromUrlAsAnnotation] =
@@ -844,13 +846,19 @@ const AnnotationLayer = ({
       newAnnotation,
     ]);
 
+    const { id, type } = getContentInstanceByPrivacy({
+      privacy: currentPrivacyFilter,
+      documentInstance,
+      citationInstance,
+    });
+
     uncomittedCommentThreads.current[newAnnotation.threadId] = {
       thread: {
         id: newAnnotation.threadId,
         threadType: COMMENT_TYPES.ANNOTATION,
         relatedContent: {
-          id: documentInstance!.id,
-          type: documentInstance!.type,
+          id,
+          type,
         },
         anchor: selectionToSerializedAnchorPosition({ selection }),
       },
@@ -928,6 +936,15 @@ const AnnotationLayer = ({
       documentInstance,
       citationInstance,
     });
+
+    if (DEBUG) {
+      console.log(
+        "Attempting to create comment for instance type",
+        type,
+        "with id",
+        id
+      );
+    }
 
     try {
       const serialized = annotationToSerializedAnchorPosition({
@@ -1347,6 +1364,7 @@ const AnnotationLayer = ({
                                     isEmpty,
                                   })
                                 }
+                                author={currentUser?.authorProfile}
                                 focusOnMount={true}
                                 editorStyleOverride={styles.commentEditor}
                                 editorId={`${key}-editor`}
