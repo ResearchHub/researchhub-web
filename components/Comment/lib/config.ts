@@ -22,7 +22,7 @@ export const contextConfig = {
     previewMaxImages: 1,
   },
   annotation: {
-    previewMaxChars: 200,
+    previewMaxChars: 240,
   },
 };
 

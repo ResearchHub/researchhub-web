@@ -67,7 +67,12 @@ const CommentReadOnly = ({
     <div>
       {!isAnnotationContext &&
         annotationText.length > 0 &&
-        !comment?.parent && <AnnotationTextBubble text={annotationText} />}
+        !comment?.parent && (
+          <AnnotationTextBubble
+            text={annotationText}
+            threadId={comment?.thread?.id}
+          />
+        )}
       <div
         className={`CommentEditor ${
           isNarrowWidthContext ? "CommentEditorForNarrowWidth" : ""

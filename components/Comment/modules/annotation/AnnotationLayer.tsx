@@ -1300,6 +1300,7 @@ const AnnotationLayer = ({
                     <>
                       <div className={css(styles.annotationTextBubbleWrapper)}>
                         <AnnotationTextBubble
+                          threadId={selectedThread?.thread?.id}
                           text={selectedThread?.thread?.anchor?.text || ""}
                         />
                       </div>

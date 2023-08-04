@@ -93,8 +93,11 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
       });
       setCurrentChildOffset(currentChildOffset + response.children.length);
     } catch (error) {
-      console.log("error", error);
-      // FIXME: Implement error handling
+      captureEvent({
+        error,
+        msg: "Failed to fetch more replied",
+        data: { comment },
+      });
     } finally {
       setIsFetchingMore(false);
     }

@@ -12,6 +12,7 @@ import { sortOpts } from "./options";
 import { parseVote, Vote } from "~/config/types/vote";
 import uniqBy from "lodash/uniqBy";
 import { SerializedAnchorPosition } from "../modules/annotation/lib/types";
+import { captureEvent } from "~/config/utils/events";
 
 export const fetchCommentsAPI = async ({
   documentType,
@@ -48,10 +49,16 @@ export const fetchCommentsAPI = async ({
   );
 
   if (response?.detail) {
-    // FIXME: Log to sentry
+    captureEvent({
+      msg: "Failed to fetch comment",
+      data: { documentId, page },
+    });
     throw Error(response.detail);
   } else if (!response?.results) {
-    // FIXME: Log to sentry
+    captureEvent({
+      msg: "Failed to fetch comments",
+      data: { documentId, page },
+    });
     throw Error("Unexpected error fetching more comments");
   }
 
@@ -93,10 +100,12 @@ export const fetchSingleCommentAPI = async ({
   );
 
   if (response.detail) {
-    // FIXME: Log to sentry
+    captureEvent({
+      msg: "Failed to fetch single comment",
+      data: { documentId, detail: response.detail },
+    });
     throw Error(response.detail);
   } else if (!response) {
-    // FIXME: Log to sentry
     throw Error(`Unexpected error fetching comment ${commentId}`);
   }
 
@@ -189,7 +198,11 @@ export const markAsAcceptedAnswerAPI = async ({
       Helpers.parseJSON(res)
     );
   } catch (error) {
-    // FIXME: Log to sentry
+    captureEvent({
+      msg: "Failed to mark accepted answer",
+      data: { documentId, commentId },
+    });
+
     throw Error(`Unexpected error for ${commentId}`);
   }
 };
@@ -215,7 +228,11 @@ export const deleteCommentAPI = async ({
     if (isExpectedError) {
       throw error;
     } else {
-      // FIXME: Log to sentry
+      captureEvent({
+        msg: "Failed to delete comment",
+        data: { id },
+      });
+
       throw Error("Unexpected error while deleting comment");
     }
   }
@@ -247,7 +264,6 @@ export const voteForComment = async ({
     if (isExpectedError) {
       throw error;
     } else {
-      // FIXME: Log to sentry
       throw Error("Unexpected error while casting vote");
     }
   }
@@ -282,7 +298,6 @@ export const flagComment = async ({
     if (isAlreadyFlagged) {
       throw "This comment has already been flagged";
     } else {
-      // FIXME: Log to sentry
       throw "Unexpected error while Flagging";
     }
   }
