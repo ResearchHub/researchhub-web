@@ -6,7 +6,11 @@ import DocumentControls from "~/components/Document/DocumentControls";
 import DocumentExpandedNav from "~/components/Document/DocumentExpandedNav";
 import { zoomOptions } from "~/components/Document/lib/PDFViewer/config";
 import { DocumentContext } from "./lib/DocumentContext";
-import { DocumentMetadata, GenericDocument } from "./lib/types";
+import {
+  ContentInstance,
+  DocumentMetadata,
+  GenericDocument,
+} from "./lib/types";
 import throttle from "lodash/throttle";
 import { LEFT_SIDEBAR_MAX_WIDTH } from "../Home/sidebar/RootLeftSidebar";
 import DocumentPlaceholder from "./lib/Placeholders/DocumentPlaceholder";
@@ -31,19 +35,23 @@ export type ZoomAction = {
 };
 
 type Props = {
-  metadata: DocumentMetadata;
   postHtml?: string;
+  pdfUrl?: string;
   onZoom: Function;
-  document: GenericDocument;
   viewerWidth: number;
+  citationInstance?: ContentInstance;
+  documentInstance?: ContentInstance;
+  document?: GenericDocument;
 };
 
 const DocumentViewer = ({
-  document: doc,
   postHtml,
   onZoom,
   viewerWidth,
-  metadata,
+  pdfUrl,
+  citationInstance,
+  documentInstance,
+  document: doc,
 }: Props) => {
   const documentContext = useContext(DocumentContext);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -74,7 +82,6 @@ const DocumentViewer = ({
 
   const throttledSetDimensions = useCallback(
     throttle(() => {
-      console.log("throttledSetDimensions");
       setWindowDimensions({
         width: window.innerWidth,
         height: window.innerHeight,
@@ -241,7 +248,6 @@ const DocumentViewer = ({
   }
 
   const commentDisplayPreference = documentContext.preferences?.comments;
-  const pdfUrl = doc.formats.find((f) => f.type === "pdf")?.url;
   const actualContentWidth = isExpanded
     ? viewerWidth * fullScreenSelectedZoom
     : viewerWidth * selectedZoom;
@@ -274,7 +280,8 @@ const DocumentViewer = ({
       >
         {commentDisplayPreference !== "none" && (
           <AnnotationLayer
-            document={doc}
+            documentInstance={documentInstance}
+            citationInstance={citationInstance}
             contentRef={contentRef}
             pageRendered={pageRendered}
             displayPreference={commentDisplayPreference}

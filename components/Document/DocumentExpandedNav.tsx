@@ -15,7 +15,7 @@ import { GenericDocument } from "./lib/types";
 interface Props {
   pdfUrl?: string;
   handleClose: Function;
-  document: GenericDocument;
+  document?: GenericDocument;
 }
 
 function downloadPDF(pdfUrl) {
@@ -34,8 +34,6 @@ function downloadPDF(pdfUrl) {
 }
 
 const DocumentExpandedNav = ({ pdfUrl, document: doc, handleClose }: Props) => {
-  const documentContext = useContext(DocumentContext);
-
   return (
     <div className={css(styles.expandedNav)}>
       <div className={css(styles.actionsWrapper)}>
@@ -59,9 +57,11 @@ const DocumentExpandedNav = ({ pdfUrl, document: doc, handleClose }: Props) => {
               </IconButton>
             </div>
           )}
-          <div>
-            <DocumentOptions document={doc} />
-          </div>
+          {doc && (
+            <div>
+              <DocumentOptions document={doc} />
+            </div>
+          )}
         </div>
       </div>
     </div>

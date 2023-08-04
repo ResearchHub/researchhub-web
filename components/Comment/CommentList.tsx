@@ -13,7 +13,7 @@ import { useContext } from "react";
 type Args = {
   parentComment?: CommentType;
   comments?: Array<CommentType>;
-  document: GenericDocument;
+  document?: GenericDocument;
   isRootList?: boolean;
   isFetching?: boolean;
   totalCount: number;

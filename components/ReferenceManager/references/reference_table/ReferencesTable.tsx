@@ -98,7 +98,7 @@ export default function ReferencesTable({
   const [rowDraggedOver, setRowDraggedOver] = useState<any>();
   const [rowDragged, setRowDragged] = useState();
   const { currentOrg } = useOrgs();
-
+  console.log("referenceTableRowData", referenceTableRowData);
   const router = useRouter();
   const apiRef = useGridApiRef();
 

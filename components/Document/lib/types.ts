@@ -6,6 +6,7 @@ import {
   ID,
   Organization,
   RHUser,
+  RhDocumentType,
   UnifiedDocument,
   parseAuthorProfile,
   parseOrganization,
@@ -22,7 +23,17 @@ export type DocumentFormat = {
 };
 export type DocumentType = "hypothesis" | "paper" | "post" | "question";
 
-export type ApiDocumentType = "researchhub_post" | "paper" | "hypothesis";
+export type ContentInstance = {
+  id: ID;
+  type: RhDocumentType;
+  unifiedDocumentId?: ID;
+};
+
+export type ApiDocumentType =
+  | "researchhub_post"
+  | "paper"
+  | "hypothesis"
+  | "citation";
 
 export type DocumentImage = {
   url: string;

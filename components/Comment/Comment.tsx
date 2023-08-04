@@ -1,4 +1,4 @@
-import { GenericDocument } from "../Document/lib/types";
+import { ContentInstance, GenericDocument } from "../Document/lib/types";
 import CommentHeader from "./CommentHeader";
 import CommentHeaderForAnnotation from "./CommentHeaderForAnnotation";
 import CommentReadOnly from "./CommentReadOnly";
@@ -37,11 +37,12 @@ const { setMessage, showMessage } = MessageActions;
 
 type CommentArgs = {
   comment: CommentType;
-  document: GenericDocument;
   ignoreChildren?: boolean;
+  document?: GenericDocument;
 };
 
 const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
+  const { relatedContent } = comment.thread;
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -79,8 +80,8 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
 
     try {
       const response = await fetchSingleCommentAPI({
-        documentId: document.id,
-        documentType: document.apiDocumentType,
+        documentId: relatedContent.id,
+        documentType: relatedContent.type,
         commentId: comment.id,
         sort: commentTreeState.sort,
         childOffset: comment.children.length,
@@ -113,8 +114,8 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
     try {
       const _comment: CommentType = await createCommentAPI({
         content,
-        documentId: document.id,
-        documentType: document.apiDocumentType,
+        documentId: relatedContent.id,
+        documentType: relatedContent.type,
         parentComment: comment,
         mentions,
       });
@@ -137,15 +138,15 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
     content: any;
     mentions?: Array<string>;
   }) => {
-    const comment: CommentType = await updateCommentAPI({
+    const nextComment: CommentType = await updateCommentAPI({
       id,
       content,
-      documentId: document.id,
-      documentType: document.apiDocumentType,
+      documentId: relatedContent.id,
+      documentType: relatedContent.type,
       mentions,
     });
 
-    return comment;
+    return nextComment;
   };
 
   const handleReviewUpdate = async ({
@@ -165,7 +166,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
     try {
       const reviewResponse = await updatePeerReview({
         reviewId,
-        unifiedDocumentId: document.unifiedDocument.id,
+        unifiedDocumentId: relatedContent.unifiedDocumentId,
         score: reviewScore,
       });
 
@@ -185,7 +186,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
 
   const hasOpenBounties = openBounties.length > 0;
   const currentUserIsOpenBountyCreator = userOpenRootBounties.length > 0;
-  const isQuestion = document?.unifiedDocument?.documentType === "question";
+  const isQuestion = relatedContent.type === "question";
   const previewMaxChars = getConfigForContext(
     commentTreeState.context
   ).previewMaxChars;
@@ -206,14 +207,12 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
               <CommentHeaderForAnnotation
                 authorProfile={comment.createdBy.authorProfile}
                 comment={comment}
-                document={document}
                 handleEdit={handleEdit}
               />
             ) : (
               <CommentHeader
                 authorProfile={comment.createdBy.authorProfile}
                 comment={comment}
-                document={document}
                 handleEdit={handleEdit}
               />
             )}
@@ -356,7 +355,6 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
             <div className={css(styles.actionsWrapper)}>
               <CommentActions
                 toggleReply={() => _handleToggleReply()}
-                document={document}
                 comment={comment}
               />
             </div>
@@ -381,7 +379,6 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                 parentComment={comment}
                 totalCount={comment.childrenCount}
                 comments={comment.children}
-                document={document}
                 isFetching={isFetchingMore}
                 handleFetchMore={handleFetchMoreReplies}
               />

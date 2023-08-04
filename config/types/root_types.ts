@@ -63,7 +63,8 @@ export type RhDocumentType =
   | "post"
   | "question"
   | "bounty"
-  | "researchhub_post";
+  | "researchhub_post"
+  | "citation";
 export type VoteType = "downvote" | "neutralvote" | "upvote";
 export type VoteEnumType = 0 /* nuetral */ | 1 /* upvote */ | 2; /* downvote */
 

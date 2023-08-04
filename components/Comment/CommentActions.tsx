@@ -26,13 +26,14 @@ const { setMessage, showMessage } = MessageActions;
 type Args = {
   toggleReply: Function;
   comment: Comment;
-  document: GenericDocument;
+  document?: GenericDocument;
 };
 
 const CommentActions = ({ comment, document, toggleReply }: Args) => {
   const dispatch = useDispatch();
   const commentTreeState = useContext(CommentTreeContext);
-  const isQuestion = document.unifiedDocument.documentType === "question";
+  const { relatedContent } = comment.thread;
+  const isQuestion = relatedContent.type === "question";
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
@@ -103,8 +104,8 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
       try {
         await markAsAcceptedAnswerAPI({
           commentId,
-          documentType: document.apiDocumentType,
-          documentId: document.id,
+          documentType: relatedContent.type,
+          documentId: relatedContent.id,
         });
         const previouslyAccepted = findAllComments({
           comments: commentTreeState.comments,
@@ -148,7 +149,7 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
   const isAllowedToAward =
     Boolean(openUserOwnedRootBounty) && openBounties.length === 0;
 
-  if (isQuestion) {
+  if (document && isQuestion) {
     isAllowedToAcceptAnswer =
       document!.createdBy!.id == currentUser?.id &&
       !comment.isAcceptedAnswer &&
@@ -160,21 +161,23 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
   return (
     <div className={css(styles.wrapper)}>
       <div className={css(styles.actionsWrapper)}>
-        <div
-          className={`${css(
-            styles.action,
-            disableSocialActions && styles.disabled
-          )} vote-btn`}
-        >
-          <CommentVote
-            comment={comment}
-            score={comment.score}
-            userVote={comment.userVote}
-            isHorizontal={true}
-            documentType={document.apiDocumentType}
-            documentID={document.id}
-          />
-        </div>
+        {document && (
+          <div
+            className={`${css(
+              styles.action,
+              disableSocialActions && styles.disabled
+            )} vote-btn`}
+          >
+            <CommentVote
+              comment={comment}
+              score={comment.score}
+              userVote={comment.userVote}
+              isHorizontal={true}
+              documentType={document.apiDocumentType}
+              documentID={document.id}
+            />
+          </div>
+        )}
 
         {commentTreeState.context !== COMMENT_CONTEXTS.ANNOTATION && (
           <div

@@ -4,7 +4,13 @@ import {
   RhDocumentType,
   parseUser,
 } from "~/config/types/root_types";
-import { Comment, parseComment, COMMENT_TYPES, COMMENT_FILTERS } from "./types";
+import {
+  Comment,
+  parseComment,
+  COMMENT_TYPES,
+  COMMENT_FILTERS,
+  CommentPrivacyFilter,
+} from "./types";
 import API, { generateApiUrl, buildQueryString } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { apiConfig } from "./config";
@@ -120,6 +126,7 @@ export const createCommentAPI = async ({
   threadId,
   parentComment,
   bountyAmount,
+  privacy = "PUBLIC",
   mentions = [],
   anchor = null,
 }: {
@@ -130,6 +137,7 @@ export const createCommentAPI = async ({
   threadId?: ID;
   parentComment?: Comment;
   bountyAmount?: number;
+  privacy?: CommentPrivacyFilter;
   mentions?: Array<string>;
   anchor?: null | SerializedAnchorPosition;
 }): Promise<Comment> => {
@@ -142,6 +150,7 @@ export const createCommentAPI = async ({
     API.POST_CONFIG({
       comment_content_json: content,
       thread_type: commentType,
+      privacy_type: privacy,
       mentions: uniqBy(mentions),
       ...(parentComment && { parent_id: parentComment.id }),
       ...(bountyAmount && { amount: bountyAmount }),
