@@ -9,7 +9,6 @@ import ContributionAuthor from "./ContributionAuthor";
 import { ReactNode } from "react";
 import ALink from "~/components/ALink";
 import { getUrlToUniDoc } from "~/config/utils/routing";
-import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
 import colors from "~/config/themes/colors";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import { breakpoints } from "~/config/themes/screen";
@@ -21,6 +20,8 @@ import { UnifiedDocument } from "~/config/types/root_types";
 import ContentBadge from "~/components/ContentBadge";
 import { formatBountyAmount } from "~/config/types/bounty";
 import { truncateText } from "~/config/utils/string";
+import { COMMENT_TYPES } from "~/components/Comment/lib/types";
+
 
 type Args = {
   entry: Contribution;
@@ -126,11 +127,11 @@ const ContributionHeader = ({ entry }: Args) => {
 
     actionLabel = (
       <>
-        {item.postType === POST_TYPES.ANSWER ? (
+        {item.postType === COMMENT_TYPES.ANSWER ? (
           <>{` submitted answer `}</>
-        ) : item.postType === POST_TYPES.SUMMARY ? (
+        ) : item.postType === COMMENT_TYPES.SUMMARY ? (
           <>{` submitted summary `}</>
-        ) : item.postType === POST_TYPES.REVIEW ? (
+        ) : item.postType === COMMENT_TYPES.REVIEW ? (
           <>{` peer reviewed `}</>
         ) : (
           <>

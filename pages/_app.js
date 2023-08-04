@@ -6,7 +6,6 @@ import "~/components/Modals/Stylesheets/Dnd.css";
 import "~/components/Paper/progressbar.css";
 import "~/components/Paper/Tabs/stylesheets/custom-editor.css";
 import "~/components/SearchSuggestion/authorinput.css";
-import "~/components/TextEditor/stylesheets/QuillTextEditor.css";
 import "~/pages/user/stylesheets/toggle.css";
 import "isomorphic-unfetch";
 import "katex/dist/katex.min.css";

@@ -1,5 +1,4 @@
 import AuthorAvatar from "~/components/AuthorAvatar";
-import DiscussionEntry from "~/components/Threads/DiscussionEntry";
 import FeedCard from "~/components/Author/Tabs/FeedCard";
 import Link from "next/link";
 import colors, { genericCardColors } from "~/config/themes/colors";
