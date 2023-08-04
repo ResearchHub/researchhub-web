@@ -117,9 +117,11 @@ const CommentFeed = ({
       setComments(parsedComments);
       setRootLevelCommentCount(count);
     } catch (error) {
-      console.log("error", error);
-      // FIXME: Implement error handling
-      // FIXME: Log to sentry
+      captureEvent({
+        error,
+        msg: "Failed to fetch comments",
+        data: { document },
+      });
     } finally {
       setIsFetching(false);
       setIsInitialFetchDone(true);
@@ -324,8 +326,11 @@ const CommentFeed = ({
         fetchedComments: parsedComments,
       });
     } catch (error) {
-      console.log("error", error);
-      // FIXME: Implement error handling
+      captureEvent({
+        error,
+        msg: "Failed to fetch more comments",
+        data: { document },
+      });
     } finally {
       setIsFetching(false);
     }
