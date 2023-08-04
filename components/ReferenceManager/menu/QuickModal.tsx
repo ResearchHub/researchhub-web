@@ -48,6 +48,7 @@ export default function QuickModal({
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: modalWidth ?? 400,
+          // TODO: Test this. Is this MUI theme color? How does it look in dark mode?
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,

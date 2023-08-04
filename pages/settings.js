@@ -884,7 +884,7 @@ const styles = StyleSheet.create({
   },
   emailIcon: {
     marginRight: 10,
-    color: "#707378",
+    color: colors.DARK_GREYISH_BLUE16(),
   },
   saveIcon: {
     height: 32,
@@ -903,7 +903,7 @@ const styles = StyleSheet.create({
   editIcon: {
     cursor: "pointer",
     borderRadius: "50%",
-    color: "#afb5bc",
+    color: colors.GREYISH_BLUE6(),
     boxSizing: "border-box",
     display: "flex",
     justifyContent: "center",

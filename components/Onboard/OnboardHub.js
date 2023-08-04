@@ -60,12 +60,12 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     cursor: "pointer",
     ":hover": {
-      border: "1px solid #C4C4C4",
+      border: `1px solid ${colors.LIGHT_GRAY196()}`,
       filter: `drop-shadow(0px 4px 4px ${colors.PURE_BLACK(0.25)}))`,
     },
   },
   subscribed: {
-    border: "1px solid #C4C4C4",
+    border: `1px solid ${colors.LIGHT_GRAY196()}`,
     filter: `drop-shadow(0px 4px 4px ${colors.PURE_BLACK(0.25)}))`,
   },
   header: {

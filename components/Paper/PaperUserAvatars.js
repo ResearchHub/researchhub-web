@@ -3,6 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import AuthorAvatar from "~/components/AuthorAvatar";
 
 import { getUsersFromPaper } from "~/config/utils/parsers";
+import colors from "~/config/themes/colors";
 
 const PaperUserAvatars = ({ paper, users = [] }) => {
   // if users is not provided, we find users from paper object
@@ -27,7 +28,11 @@ const PaperUserAvatars = ({ paper, users = [] }) => {
       return (
         <div className={css(classNames)} key={index}>
           <div style={avatarStyle}>
-            <AuthorAvatar author={user} size={28} border="2px solid #F1F1F1" />
+            <AuthorAvatar
+              author={user}
+              size={28}
+              border={`2px solid ${colors.LIGHT_GRAY241()}`}
+            />
           </div>
         </div>
       );

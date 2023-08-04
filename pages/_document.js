@@ -63,7 +63,7 @@ export default class MyDocument extends Document {
             preload="true"
           />
           <link rel="manifest" href="/static/favicons/site.webmanifest" async />
-          <meta name="msapplication-TileColor" content="#da532c" />
+          <meta name="msapplication-TileColor" content={colors.BRIGHT_RED()} />
           <meta name="theme-color" content={colors.WHITE()} />
           <style
             data-aphrodite

@@ -20,7 +20,7 @@ const points = [
     title: "Accessible to everyone",
     text: "The scientific record is too important to be hidden behind paywalls and in ivory towers. \n ResearchHub is accessible to everybody, everywhere, with no content residing behind paywalls \n and no costs to participate. Summaries are written in plain English to improve accessibility.",
     icon: (
-      <span draggable={false} style={{ color: "#4b5bf6" }}>
+      <span draggable={false} style={{ color: colors.SOFT_BLUE3() }}>
         {<FontAwesomeIcon icon={faGlobe}></FontAwesomeIcon>}
       </span>
     ),

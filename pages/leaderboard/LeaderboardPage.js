@@ -887,7 +887,7 @@ export const styles = StyleSheet.create({
     },
   },
   createdAt: {
-    color: "#918F9C",
+    color: colors.DARK_GREYISH_BLUE17(),
     display: "flex",
     alignItems: "center",
   },

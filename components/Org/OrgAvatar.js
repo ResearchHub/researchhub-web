@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     height: "100%",
     borderRadius: "100px",
     background: colors.ICY_GREY,
-    border: "1px solid #E5E5F0",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE17()}`,
     color: colors.MEDIUM_GREY2(),
     display: "flex",
     justifyContent: "center",

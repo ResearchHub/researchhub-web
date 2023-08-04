@@ -123,17 +123,15 @@ const styles = StyleSheet.create({
     height: 55,
     width: 230,
     marginBottom: 15,
-    boxShadow: `0 1px 3px ${colors.PURE_BLACK(
-      0.12
-    )}, 0 1px 2px ${colors.PURE_BLACK(0.24)}`,
+    boxShadow: `0 1px 3px ${colors.PURE_BLACK(0.12)}, 
+    0 1px 2px ${colors.PURE_BLACK(0.24)}`,
   },
   orchidButton: {
     backgroundColor: colors.WHITE(),
     color: colors.BLUE(1),
     border: `1px solid ${colors.BLUE()}`,
-    boxShadow: `0 1px 3px ${colors.PURE_BLACK(
-      0.12
-    )}, 0 1px 2px ${colors.PURE_BLACK(0.24)}`,
+    boxShadow: `0 1px 3px ${colors.PURE_BLACK(0.12)}, 
+    0 1px 2px ${colors.PURE_BLACK(0.24)}`,
     ":hover": {
       backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
@@ -144,9 +142,8 @@ const styles = StyleSheet.create({
   iconStyle: {
     height: 33,
     width: 33,
-    boxShadow: `0 1px 3px ${colors.PURE_BLACK(
-      0.12
-    )}, 0 1px 2px ${colors.PURE_BLACK(0.24)}`,
+    boxShadow: `0 1px 3px ${colors.PURE_BLACK(0.12)}, 
+    0 1px 2px ${colors.PURE_BLACK(0.24)}`,
     borderRadius: "50%",
   },
   inputContainer: {

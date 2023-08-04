@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
   },
   login: {
     color: colors.NEW_BLUE(),
-    border: "1px solid #E7E7E7",
+    border: `1px solid ${colors.LIGHT_GRAY231()}`,
     background: colors.WHITE(),
     ":hover": {
       backgroundColor: colors.LIGHT_GRAY_BACKGROUND(1),

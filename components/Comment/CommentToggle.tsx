@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     minWidth: config.toggle.width,
     background: colors.white,
     cursor: "pointer",
-    boxShadow: `0px 0px 10px ${colors.PURE_BLACK(0.15)}`,
+    boxShadow: `0px 0px 10px ${colors.boxshadow}`,
     userSelect: "none",
     border: `1px solid ${colors.border}`,
     ":hover": {

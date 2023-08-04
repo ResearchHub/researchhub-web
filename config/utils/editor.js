@@ -54,7 +54,7 @@ export function convertEditorValueToHtml(value) {
       opacity: "0%",
       opacity: 1,
       ":hover": {
-        background: "linear-gradient(#000 1%, transparent 100%)",
+        background: `linear-gradient(${colors.PURE_BLACK()} 1%, transparent 100%)`,
         opacity: "100%",
       },
     },

@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
     background: colors.WHITE(),
     paddingLeft: 15,
     paddingBottom: 15,
-    border: "1px solid #aeaeae",
+    border: `1px solid ${colors.GRAY174()}`,
   },
   controlsSticky: {
     position: "fixed",
@@ -432,7 +432,7 @@ const styles = StyleSheet.create({
   },
   viewerNavBtn: {
     background: colors.WHITE(),
-    border: "1px solid #aeaeae",
+    border: `1px solid ${colors.GRAY174()}`,
     height: 33,
     width: 33,
     boxSizing: "border-box",

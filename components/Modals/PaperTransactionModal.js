@@ -983,7 +983,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   error: {
-    borderColor: "red",
+    borderColor: colors.PURE_RED(),
   },
   title: {
     fontSize: 19,

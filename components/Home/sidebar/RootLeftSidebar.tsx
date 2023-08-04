@@ -124,7 +124,7 @@ export const getLeftSidebarItemAttrs = ({
               style={{
                 fontVariant: "all-small-caps",
               }}
-              textColor={"grey"}
+              textColor={colors.PURE_GRAY()}
               backgroundColor={"transparent"}
               fontSize="10px"
               tagPosition={{ right: "-20px", bottom: "-10px", top: "unset" }}
@@ -143,7 +143,7 @@ export const getLeftSidebarItemAttrs = ({
               tagLabel="Beta"
               textTransform={"small-caps"}
               backgroundColor={"transparent"}
-              textColor={"grey"}
+              textColor={colors.PURE_GRAY()}
               style={{
                 fontVariant: "all-small-caps",
                 top: "unset",

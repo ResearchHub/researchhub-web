@@ -1362,13 +1362,13 @@ const styles = StyleSheet.create({
     boxShadow: `0px 2px 4px ${colors.STANDARD_BOX_SHADOW}`,
   },
   linkedin: {
-    background: "#0077B5",
+    background: colors.STRONG_BLUE2(),
   },
   twitter: {
-    background: "#38A1F3",
+    background: colors.BRIGHT_BLUE4(),
   },
   facebook: {
-    background: "#3B5998",
+    background: colors.DARK_MODERATE_BLUE(),
   },
   orcid: {
     background: "none",

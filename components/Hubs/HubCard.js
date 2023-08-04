@@ -605,7 +605,7 @@ const styles = StyleSheet.create({
     width: "100%",
     margin: 0,
     padding: "15px 0",
-    backgroundImage: "linear-gradient(to bottom, transparent, white)",
+    backgroundImage: `linear-gradient(to bottom, transparent, ${colors.WHITE()})`,
   },
   hubStats: {
     display: "flex",

@@ -288,9 +288,8 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     width: "100%",
     maxWidth: 600,
-    boxShadow: `0 1px 3px ${colors.PURE_BLACK(
-      0.12
-    )}, 0 1px 2px ${colors.PURE_BLACK(0.24)}`,
+    boxShadow: `0 1px 3px ${colors.PURE_BLACK(0.12)}, 
+    0 1px 2px ${colors.PURE_BLACK(0.24)}`,
   },
   searchResultContainer: {
     display: "flex",

@@ -132,7 +132,7 @@ var styles = StyleSheet.create({
     marginTop: 16,
   },
   homeBanner: {
-    background: "linear-gradient(#684ef5, #4d58f6)",
+    background: `linear-gradient(${colors.SOFT_BLUE4()}, ${colors.SOFT_BLUE5()})`,
     width: "100%",
     position: "relative",
     display: "flex",

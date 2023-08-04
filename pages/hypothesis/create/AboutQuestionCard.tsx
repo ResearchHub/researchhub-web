@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     background: colors.WHITE(),
-    border: "1px solid #DEDEE6",
+    border: `1px solid ${colors.LIGHT_GREYISH_BLUE16()}`,
     borderRadius: "3px",
     padding: "24px 21px",
   },

@@ -524,7 +524,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   border: {
-    border: "2px solid #F1F1F1",
+    border: `2px solid ${colors.LIGHT_GRAY241()}`,
   },
   profilePictureHover: {
     width: 120,

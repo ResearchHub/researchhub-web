@@ -63,7 +63,7 @@ const AuthorAvatar = (props) => {
               objectFit: "cover",
               borderRadius: "50%",
               border,
-              // border: border ? border : "3px solid #F1F1F1",
+              // border: border ? border : `3px solid ${colors.LIGHT_GRAY241()}`,
               boxShadow:
                 dropShadow && `0px 2px 4px ${colors.STANDARD_BOX_SHADOW}`,
             }}
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "relative",
     borderRadius: "50%",
-    // border: "3px solid #F1F1F1",
+    // border: `3px solid ${colors.LIGHT_GRAY241()}`,
   },
   moderatorBadge: {
     position: "absolute",

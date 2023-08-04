@@ -17,6 +17,7 @@ import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { useReferenceProjectUpsertContext } from "./context/ReferenceProjectsUpsertContext";
 import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
 import { useReferenceActiveProjectContext } from "./context/ReferenceActiveProjectContext";
+import colors from "~/config/themes/colors";
 
 type Props = {
   isCurrentUserAdmin: boolean;
@@ -74,7 +75,7 @@ export default function ReferenceProjectNavbarElOption({
               setIsDeleteModalOpen(true);
             }}
           >
-            <Typography color="red">{"Remove"}</Typography>
+            <Typography color={colors.PURE_RED()}>{"Remove"}</Typography>
           </MenuItem>
         )}
       </Menu>

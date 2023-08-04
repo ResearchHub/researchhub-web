@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   threadInfoEditView: {
     minHeight: 200,
     boxShadow: `0px 0px 0px 5px ${colors.LIGHT_YELLOW(1)}`,
-    border: "1px solid #E7E7E7",
+    border: `1px solid ${colors.LIGHT_GRAY231()}`,
     backgroundColor: colors.LIGHT_GRAY_BACKGROUND4(),
     margin: "15px 0",
     paddingBottom: 20,

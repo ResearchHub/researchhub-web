@@ -43,7 +43,7 @@ export default function ReferenceUploadAttachments({
           <div
             style={{
               alignItems: "center",
-              border: `1px solid gb(228,231,231)`,
+              border: `1px solid ${colors.LIGHT_GRAYISH_CYAN()}`,
               borderRadius: "4px",
               display: "flex",
               height: "40px",

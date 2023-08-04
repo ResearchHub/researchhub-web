@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
       bottom: 0,
       pointerEvents: "none",
       backgroundImage: `linear-gradient(to left, 
-          ${colors.WHITE(0)}, white 85%)`,
+          ${colors.WHITE(0)}, ${colors.WHITE()} 85%)`,
       width: "10%",
     },
 
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
       bottom: 0,
       pointerEvents: "none",
       backgroundImage: `linear-gradient(to right, 
-        ${colors.WHITE(0)}, white 85%)`,
+        ${colors.WHITE(0)}, ${colors.WHITE(0)} 85%)`,
       width: "10%",
     },
 

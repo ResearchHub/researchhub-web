@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     marginTop: 20,
     marginBottom: 20,
-    color: "red",
+    color: colors.PURE_RED(),
   },
 });
 

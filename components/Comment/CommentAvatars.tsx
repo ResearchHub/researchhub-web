@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   },
   person: {
     zIndex: 2,
-    border: `2px solid white`,
+    border: `2px solid ${colors.white}`,
     borderRadius: "50px",
   },
   remainderAvatar: {

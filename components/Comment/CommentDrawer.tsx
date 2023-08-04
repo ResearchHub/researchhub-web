@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   pullerBtn: {
     width: 30,
     height: 6,
-    backgroundColor: "gray",
+    backgroundColor: colors.PURE_GRAY(),
     borderRadius: 3,
     position: "absolute",
     top: 8,

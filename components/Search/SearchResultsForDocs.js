@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   highlight: {
-    backgroundColor: "yellow",
+    backgroundColor: colors.PURE_YELLOW(),
   },
   clearFiltersBtn: {
     backgroundColor: "none",

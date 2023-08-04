@@ -476,7 +476,7 @@ const styles = StyleSheet.create({
   },
   overrideDiscussionCardContainerStyle: {
     margin: 0,
-    backgroundColor: "lightyellow",
+    backgroundColor: colors.PURE_LIGHT_YELLOW(),
   },
   commentEditor: {
     minHeight: "100%",

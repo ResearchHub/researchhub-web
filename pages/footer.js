@@ -10,6 +10,9 @@ import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 
+// Config
+import colors from "~/config/themes/colors";
+
 class Footer extends Component {
   tabData = [
     { label: "Hubs", route: "/hubs", icon: "hub" },
@@ -161,7 +164,7 @@ class Footer extends Component {
 
 const styles = StyleSheet.create({
   footer: {
-    background: "#1F2532",
+    background: colors.VERY_DARK_BLUE2(),
     display: "flex",
     padding: 16,
     alignItems: "center",
@@ -220,7 +223,7 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   logo: {
-    color: "#282936",
+    color: colors.VERY_DARK_GRAYISH_BLUE6(),
     fontSize: "1.1em",
     // marginTop: 3,
   },

@@ -853,7 +853,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   closeBounty: {
-    color: "grey",
+    color: colors.PURE_GRAY(),
   },
   bountyText: {
     marginRight: 8,
@@ -936,7 +936,7 @@ const styles = StyleSheet.create({
     opacity: "0%",
     opacity: 1,
     ":hover": {
-      background: "linear-gradient(#000 1%, transparent 100%)",
+      background: `linear-gradient(${colors.PURE_BLACK()} 1%, transparent 100%)`,
       opacity: "100%",
     },
   },

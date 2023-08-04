@@ -62,7 +62,7 @@ export const getModalOptionItems = ({
         height={40}
         onClick={silentEmptyFnc}
         width={40}
-        color={`#aeaeae`}
+        color={colors.GRAY174()}
         withAnimation={false}
       />
     ),
@@ -85,7 +85,7 @@ export const getModalOptionItems = ({
     },
     icon: (
       <QuestionIcon
-        color={`#aeaeae`}
+        color={colors.GRAY174()}
         onClick={silentEmptyFnc}
         withAnimation={false}
         size={40}
@@ -112,7 +112,7 @@ export const getModalOptionItems = ({
         height={40}
         onClick={silentEmptyFnc}
         width={40}
-        color={`#aeaeae`}
+        color={colors.GRAY174()}
         withAnimation={false}
       />
     ),

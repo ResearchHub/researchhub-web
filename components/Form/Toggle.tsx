@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   "optionSelected": {
     background: colors.NEW_BLUE(),
-    color: "white",
+    color: colors.WHITE(),
     transition: "0.1s",
   }
 });

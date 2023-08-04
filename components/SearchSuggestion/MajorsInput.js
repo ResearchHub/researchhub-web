@@ -233,9 +233,8 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     background: colors.WHITE(),
     border: `1px solid ${colors.LIGHT_GREYISH_BLUE}`,
-    boxShadow: `0 1px 3px ${colors.PURE_BLACK(
-      0.12
-    )}, 0 1px 2px ${colors.PURE_BLACK(0.24)}`,
+    boxShadow: `0 1px 3px ${colors.PURE_BLACK(0.12)}, 
+    0 1px 2px ${colors.PURE_BLACK(0.24)}`,
     top: 55,
     width: "100%",
     display: "flex",

@@ -811,7 +811,7 @@ const styles = StyleSheet.create({
     },
   },
   commentContainer: {
-    border: "1px solid #E7E7E7",
+    border: `1px solid ${colors.LIGHT_GRAY231()}`,
     width: "100%",
     boxSizing: "border-box",
     marginTop: 20,

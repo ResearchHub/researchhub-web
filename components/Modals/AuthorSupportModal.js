@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
     borderColor: colors.BLACK(0.4),
   },
   error: {
-    borderColor: "red",
+    borderColor: colors.PURE_RED(),
   },
   title: {
     fontSize: 19,

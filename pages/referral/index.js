@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     },
   },
   earnedRSC: {
-    color: "#59BD5C",
+    color: colors.MODERATE_LIME_GREEN(),
   },
   emptyState: {
     marginBottom: 16,

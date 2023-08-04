@@ -89,10 +89,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.WHITE(),
     borderRadius: 10,
-    border: "1px solid #E7E7E7",
-    boxShadow: `0 1px 3px ${colors.PURE_BLACK(
-      0.12
-    )}, 0 1px 2px ${colors.PURE_BLACK(0.24)}`,
+    border: `1px solid ${colors.LIGHT_GRAY231()}`,
+    boxShadow: `0 1px 3px ${colors.PURE_BLACK(0.12)}, 
+    0 1px 2px ${colors.PURE_BLACK(0.24)}`,
   },
   headerContainer: {
     maringTop: 10,

@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   permissionsDashboardNavbarButton: {
     alignItems: "center",
     boxSizing: "border-box",
-    color: "colors.TEXT_DARKER_GREY",
+    color: colors.TEXT_DARKER_GREY,
     cursor: "pointer",
     display: "flex",
     fontSize: 18,

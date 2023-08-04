@@ -1014,7 +1014,7 @@ const styles = StyleSheet.create({
     padding: "0 5px",
   },
   error: {
-    borderColor: "red",
+    borderColor: colors.PURE_RED(),
   },
   infoIcon: {
     marginLeft: 5,

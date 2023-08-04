@@ -19,9 +19,8 @@ export const modalStyles = StyleSheet.create({
     left: "50%",
     top: "50%",
     transform: "translate(-50%, -50%)",
-    boxShadow: `0 1px 3px ${colors.PURE_BLACK(
-      0.12
-    )}, 0 1px 2px ${colors.PURE_BLACK(0.24)}`,
+    boxShadow: `0 1px 3px ${colors.PURE_BLACK(0.12)}, 
+    0 1px 2px ${colors.PURE_BLACK(0.24)}`,
   },
   modalContent: {
     display: "flex",
