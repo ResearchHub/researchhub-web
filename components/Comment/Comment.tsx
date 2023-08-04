@@ -4,7 +4,11 @@ import CommentHeaderForAnnotation from "./CommentHeaderForAnnotation";
 import CommentReadOnly from "./CommentReadOnly";
 import { css, StyleSheet } from "aphrodite";
 import CommentActions from "./CommentActions";
-import { COMMENT_CONTEXTS, Comment as CommentType } from "./lib/types";
+import {
+  COMMENT_CONTEXTS,
+  CommentPrivacyFilter,
+  Comment as CommentType,
+} from "./lib/types";
 import { useContext, useState } from "react";
 import CommentEditor from "./CommentEditor";
 import { ID, parseReview, parseUser, Review } from "~/config/types/root_types";
@@ -31,8 +35,8 @@ import { timeTo } from "~/config/utils/dates";
 import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import getReviewCategoryScore from "./lib/quill/getReviewCategoryScore";
-import CommentBadges from "./CommentBadges";
 import { captureEvent } from "~/config/utils/events";
+import CommentPrivacyBadge from "./CommentPrivacyBadge";
 const { setMessage, showMessage } = MessageActions;
 
 type CommentArgs = {
@@ -40,7 +44,7 @@ type CommentArgs = {
   ignoreChildren?: boolean;
   document?: GenericDocument;
 };
-
+// TODO: Integrate with DocumentViewer Context so that we can determine whether or not to render visiblity modifiers and how
 const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
   const { relatedContent } = comment.thread;
   const [isReplyOpen, setIsReplyOpen] = useState(false);
@@ -352,11 +356,21 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                 )}
               </div>
             )}
-            <div className={css(styles.actionsWrapper)}>
-              <CommentActions
-                toggleReply={() => _handleToggleReply()}
-                comment={comment}
-              />
+            <div className={css(styles.bottomActions)}>
+              {false /* TODO: Replace with condition */ && (
+                <div>
+                  <CommentActions
+                    toggleReply={() => _handleToggleReply()}
+                    comment={comment}
+                  />
+                </div>
+              )}
+
+              <div className={css(styles.privacyBadgeWrapper)}>
+                {comment.thread.privacy === "PRIVATE" && (
+                  <CommentPrivacyBadge privacy={"PRIVATE"} />
+                )}
+              </div>
             </div>
 
             {isReplyOpen && (
@@ -403,8 +417,13 @@ const styles = StyleSheet.create({
   editorWrapper: {
     marginTop: 15,
   },
-  actionsWrapper: {
+  bottomActions: {
     marginBottom: 5,
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  privacyBadgeWrapper: {
+    marginLeft: "auto",
   },
   mainWrapper: {},
   contentWrapper: {

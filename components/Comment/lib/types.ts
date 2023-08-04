@@ -49,6 +49,7 @@ export type CommentThread = {
   threadType: COMMENT_TYPES;
   anchor?: SerializedAnchorPosition | null;
   relatedContent: ContentInstance;
+  privacy: CommentPrivacyFilter;
 };
 
 export type CommentPrivacyFilter = "PUBLIC" | "PRIVATE" | "WORKSPACE";
@@ -83,6 +84,7 @@ export const parseThread = (raw: any): CommentThread => {
       id: raw.related_content.id,
       type: raw.related_content.content_type,
     },
+    privacy: raw.privacy_type,
     threadType: raw.thread_type,
     anchor: raw.anchor ? parseAnchor(raw.anchor) : null,
   };

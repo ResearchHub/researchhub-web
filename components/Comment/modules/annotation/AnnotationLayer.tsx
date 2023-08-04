@@ -1364,6 +1364,7 @@ const AnnotationLayer = ({
                                     isEmpty,
                                   })
                                 }
+                                allowPrivacySelection={true}
                                 author={currentUser?.authorProfile}
                                 focusOnMount={true}
                                 editorStyleOverride={styles.commentEditor}
@@ -1467,6 +1468,7 @@ const styles = StyleSheet.create({
     right: -15,
   },
   focusedCommentThread: {
+    zIndex: 2,
     boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.2)",
     ":hover": {
       background: "white",

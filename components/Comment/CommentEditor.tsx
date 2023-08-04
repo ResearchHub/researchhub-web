@@ -75,7 +75,7 @@ const CommentEditor = ({
   author,
   minimalMode = false,
   allowCommentTypeSelection = false,
-  allowPrivacySelection = true, // TODO: Change to false once privacy is implemented
+  allowPrivacySelection = false,
   defaultPrivacyFilter = "PUBLIC",
   focusOnMount = false,
   handleClose,
@@ -196,6 +196,7 @@ const CommentEditor = ({
 
       await handleSubmit({
         content: _content,
+        privacy: selectedPrivacyFilter,
         mentions,
         ...(commentId && { id: commentId }),
         ...(!commentId && { commentType: _commentType }),
@@ -437,7 +438,9 @@ const CommentEditor = ({
 };
 
 const styles = StyleSheet.create({
-  privacySelectorWrapper: {},
+  privacySelectorWrapper: {
+    marginBottom: 10,
+  },
   avatarsWrapper: {
     marginTop: 0,
   },
@@ -445,7 +448,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
   },
   commentEditor: {
     display: "flex",
@@ -473,6 +475,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     columnGap: "7px",
+    marginBottom: 10,
   },
   nameRow: {
     display: "flex",

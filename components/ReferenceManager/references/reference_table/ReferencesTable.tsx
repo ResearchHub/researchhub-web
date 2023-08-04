@@ -433,6 +433,10 @@ export default function ReferencesTable({
               id: 1,
               type: "citation",
             }}
+            documentInstance={{
+              id: 20949,
+              type: "paper",
+            }}
             onClose={() => {
               setPdfIsOpen(false);
             }}
