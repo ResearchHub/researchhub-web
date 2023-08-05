@@ -3,14 +3,14 @@ let colors = {
   BLACK_TEXT: (opacity = 1) => `rgba(64, 64, 64, ${opacity})`, // #404040
   BLUE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`, // #4E53FF
   DARK_GREEN: (opacity = 1) => `rgba(61, 143, 88, ${opacity})`, // #3D8F58
-  DARK_YELLOW: (opacity = 1) => `rgb(239, 160, 0, ${opacity})`, // #EFA000
+  // DARK_YELLOW: (opacity = 1) => `rgba(239, 160, 0, ${opacity})`, // #EFA000 This is defined again below. Seems like an oversight.
   DARK_YELLOW: (opacity = 1) => `rgba(235, 175, 61, ${opacity})`, // #EBAF3D
   DARKER_GREY: (opacity = 1) => `rgba(102, 102, 102, ${opacity})`, // #666666
   DARKER_GREY117: (opacity = 1) => `rgba(117, 117, 117, ${opacity})`, // #757575
   EDITOR_TAG_BACKGROUND: "rgba(232, 181, 4, 0.1)",
   EDITOR_TAG_TEXT: "#E8B504", //rgba(232, 181, 4, 1)
   ERROR_BACKGROUND: (opacity = 1) => `rgba(255, 83, 83, ${opacity})`, // #FF5353
-  GREEN: (opacity = 1) => `rgba(100, 196, 143, ${opacity})`, // #64C48F
+  // GREEN: (opacity = 1) => `rgba(100, 196, 143, ${opacity})`, // #64C48F Defined twice. Seems like an oversight.
   GREEN: (opacity = 1) => `rgba(30, 207, 49, ${opacity})`, // #1ECF31
   GREY_BORDER: "#EBEBEB", //rgba(232, 232, 239, 1)
   GREY_ICY_BLUE_HUE: "rgba(249, 249, 252, 1)", // #F9F9FC
@@ -34,29 +34,29 @@ let colors = {
   LIGHT_GREY_TEXT: "rgba(36, 31, 58, 0.39)",
   LIGHT_GREY: (opacity = 1) => `rgba(235, 235, 235, ${opacity})`, // #EBEBEB
   LIGHT_GREY2: (opacity = 1) => `rgba(234, 234, 234, ${opacity})`, // #EAEAEA
-  LIGHT_YELLOW: (opacity = 1) => `rgba(253, 249, 237, ${opacity})`, // #FDF9E
-  LIGHTER_BLUE: (opacity = 1) => `rgb(235,241,255, ${opacity})`, // #EBF1FF
+  LIGHT_YELLOW: (opacity = 1) => `rgba(253, 249, 237, ${opacity})`, // #FDF9ED
+  LIGHTER_BLUE: (opacity = 1) => `rgba(235,241,255, ${opacity})`, // #EBF1FF
   LIGHTER_GREY_BACKGROUND: "#F6F6F8", // rgba(246, 246, 248, 1)
   LIGHTER_GREY: (opacity = 1) => `rgba(243, 243, 243, ${opacity})`, // #F3F3F3
   MEDIUM_GREY: (opacity = 1) => `rgba(144, 144, 144, ${opacity})`, // #909090
-  MEDIUM_GREY2: (opacity = 1) => `rgb(124,121,137, ${opacity})`, // #7C7989
+  MEDIUM_GREY2: (opacity = 1) => `rgba(124,121,137, ${opacity})`, // #7C7989
   NAVY: (opacity = 1) => `rgba(31, 40, 125, ${opacity})`, // #1F287D
   NEW_BLUE: (opacity = 1) => `rgba(57, 113, 255, ${opacity})`, // #3971ff
   NEW_GREEN: (opacity = 1) => `rgba(72, 192, 85, ${opacity})`, // #48c055
   ORANGE_DARK: (opacity = 1) => `rgba(237, 157, 20, ${opacity})`, // #ED9D14
   ORANGE_DARK2: (opacity = 1) => `rgba(255, 122, 0, ${opacity})`, // #FF7A00
-  ORANGE_LIGHT: (opacity = 1) => `rgb(255, 195, 61, ${opacity})`, // #FFC33D
-  ORANGE_LIGHT2: (opacity = 1) => `rgb(255, 148, 22, ${opacity})`, // #FF9416
+  ORANGE_LIGHT: (opacity = 1) => `rgba(255, 195, 61, ${opacity})`, // #FFC33D
+  ORANGE_LIGHT2: (opacity = 1) => `rgba(255, 148, 22, ${opacity})`, // #FF9416
   ORANGE: (opacity = 1) => `rgba(255, 176, 0, ${opacity})`, // #FFB000
   PURE_ORANGE: (opacity = 1) => `rgba(231, 118, 0, ${opacity})`, // #E77600
   PURE_ORANGE2: (opacity = 1) => `rgba(255, 109, 0, ${opacity})`, // #FF6D00
-  ORANGE_LIGHTER: (opacity = 1) => `rgb(252, 242, 220, ${opacity})`, // #FCF2DC
+  ORANGE_LIGHTER: (opacity = 1) => `rgba(252, 242, 220, ${opacity})`, // #FCF2DC
   LIGHT_GRAYISH_ORANGE: (opacity = 1) => `rgba(253, 242, 222, ${opacity})`, // #FDF2DE
   LIGHT_GRAYISH_ORANGE2: (opacity = 1) => `rgba(231, 230, 228, ${opacity})`, // #E7E6E4
   LIGHT_GRAYISH_ORANGE3: (opacity = 1) => `rgba(231, 229, 228, ${opacity})`, // #E7E5E4
   PASTEL_GREEN_TEXT: "#88cb88", //rgba(136, 203, 136, 1)
   PLACEHOLDER_CARD_BACKGROUND: "#efefef", //rgba(239, 239, 239, 1)
-  PURPLE_LIGHT: (opacity = 1) => `rgb(112, 60, 255, ${opacity})`, // #703CFF
+  PURPLE_LIGHT: (opacity = 1) => `rgba(112, 60, 255, ${opacity})`, // #703CFF
   PURPLE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`, // #4E53FF
   RED: (opacity = 1) => `rgba(255, 45, 45, ${opacity})`, // #FF2D2D
   PURE_RED: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`, // #FF0000 css color red
@@ -254,28 +254,28 @@ if (mode === "dark") {
     LIGHT_GREY: (opacity = 1) => `rgba(20, 20, 20, ${opacity})`, // Darkened
     LIGHT_GREY2: (opacity = 1) => `rgba(21, 21, 21, ${opacity})`, // Darkened
     LIGHT_YELLOW: (opacity = 1) => `rgba(2, 6, 18, ${opacity})`, // Darkened
-    LIGHTER_BLUE: (opacity = 1) => `rgb(20, 14, 0, ${opacity})`, // Darkened
+    LIGHTER_BLUE: (opacity = 1) => `rgba(20, 14, 0, ${opacity})`, // Darkened
     LIGHTER_GREY_BACKGROUND: "#090909", // Darkened
     LIGHTER_GREY: (opacity = 1) => `rgba(12, 12, 12, ${opacity})`, // Darkened
     MEDIUM_GREY: (opacity = 1) => `rgba(111, 111, 111, ${opacity})`, // Lightened
-    MEDIUM_GREY2: (opacity = 1) => `rgb(131,134,118, ${opacity})`, // Adjusted
+    MEDIUM_GREY2: (opacity = 1) => `rgba(131,134,118, ${opacity})`, // Adjusted
     NAVY: (opacity = 1) => `rgba(224, 215, 130, ${opacity})`, // Adjusted
     NEW_BLUE: (opacity = 1) => `rgba(198, 142, 0, ${opacity})`, // Adjusted
     NEW_GREEN: (opacity = 1) => `rgba(183, 63, 170, ${opacity})`, // Adjusted
     ORANGE_DARK: (opacity = 1) => `rgba(18, 98, 235, ${opacity})`, // Adjusted
     ORANGE_DARK2: (opacity = 1) => `rgba(0, 133, 255, ${opacity})`, // Adjusted
-    ORANGE_LIGHT: (opacity = 1) => `rgb(0, 60, 194, ${opacity})`, // Adjusted
-    ORANGE_LIGHT2: (opacity = 1) => `rgb(0, 107, 233, ${opacity})`, // Adjusted
+    ORANGE_LIGHT: (opacity = 1) => `rgba(0, 60, 194, ${opacity})`, // Adjusted
+    ORANGE_LIGHT2: (opacity = 1) => `rgba(0, 107, 233, ${opacity})`, // Adjusted
     ORANGE: (opacity = 1) => `rgba(15, 79, 255, ${opacity})`, // Adjusted
     PURE_ORANGE: (opacity = 1) => `rgba(180, 92, 0, ${opacity})`, // Adjusted
     PURE_ORANGE2: (opacity = 1) => `rgba(200, 85, 0, ${opacity})`, // Adjusted
-    ORANGE_LIGHTER: (opacity = 1) => `rgb(3, 13, 35, ${opacity})`, // Darkened
+    ORANGE_LIGHTER: (opacity = 1) => `rgba(3, 13, 35, ${opacity})`, // Darkened
     LIGHT_GRAYISH_ORANGE: (opacity = 1) => `rgba(63, 52, 42, ${opacity})`, // Darkened
     LIGHT_GRAYISH_ORANGE2: (opacity = 1) => `rgba(139, 134, 124, ${opacity})`, // Lightened
     LIGHT_GRAYISH_ORANGE3: (opacity = 1) => `rgba(24, 27, 39, ${opacity})`, // Darkened
     PASTEL_GREEN_TEXT: "#773877", // Adjusted
     PLACEHOLDER_CARD_BACKGROUND: "#101010", // Darkened
-    PURPLE_LIGHT: (opacity = 1) => `rgb(143, 195, 0, ${opacity})`, // Adjusted
+    PURPLE_LIGHT: (opacity = 1) => `rgba(143, 195, 0, ${opacity})`, // Adjusted
     PURPLE: (opacity = 1) => `rgba(177, 172, 0, ${opacity})`, // Adjusted
     RED: (opacity = 1) => `rgba(255, 210, 210, ${opacity})`, // Lightened
     PURE_RED: (opacity = 1) => `rgba(220, 50, 50, ${opacity})`, // Adjusted
