@@ -87,35 +87,34 @@ function SubmissionDetails({
           </div>
         }
       />
-
-      <div className={css(styles.hubsContainer)}>
-        <div className={css(styles.textSecondary, styles.postedText)}>
-          {` `}
-          {actionLabel}
-        </div>
-        {visibleHubs.map((h, index) => (
-          <div key={index}>
-            <ALink
-              key={`/hubs/${h.slug ?? ""}-index`}
-              theme="blankAndBlue"
-              href={`/hubs/${h.slug}`}
-              overrideStyle={styles.hubLink}
-            >
-              {toTitleCase(h.name)}
-            </ALink>
-            {index < visibleHubs?.length - 1 ? "," : ""}
-          </div>
-        ))}
-        {hiddenHubs.length > 0 && (
-          <HubDropDown
-            hubs={hiddenHubs}
-            labelStyle={styles.hubLink}
-            containerStyle={styles.hubDropdownContainer}
-            isOpen={isHubsDropdownOpen}
-            setIsOpen={(isOpen) => setIsHubsDropdownOpen(isOpen)}
-          />
-        )}
+      <div className={css(styles.textSecondary, styles.postedText)}>
+        {` `}
+        {actionLabel}
       </div>
+      {visibleHubs.map((h, index) => (
+        <div key={index}>
+          <ALink
+            key={`/hubs/${h.slug ?? ""}-index`}
+            theme="blankAndBlue"
+            href={`/hubs/${h.slug}`}
+            overrideStyle={styles.hubLink}
+          >
+            {toTitleCase(h.name)}
+          </ALink>
+          {index < visibleHubs?.length - 1 ? "," : ""}
+        </div>
+      ))}
+      {hiddenHubs.length > 0 && (
+        <HubDropDown
+          hubs={hiddenHubs}
+          labelStyle={styles.hubLink}
+          containerStyle={styles.hubDropdownContainer}
+          isOpen={isHubsDropdownOpen}
+          setIsOpen={(isOpen) => setIsHubsDropdownOpen(isOpen)}
+        />
+      )}
+
+      {/* <div className={css(styles.hubsContainer)}></div> */}
       <div className={css(styles.submittedByDetails)}>
         <span className={css(styles.dot, styles.dotWithMargin)}> • </span>
         <span className={css(styles.textSecondary, styles.timestamp)}>
@@ -174,6 +173,7 @@ const styles = StyleSheet.create({
   },
   hubsContainer: {
     display: "flex",
+    flexWrap: "wrap",
     // display: "inline",
     // alignItems: "center",
   },

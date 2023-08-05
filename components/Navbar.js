@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     position: "sticky",
     top: 0,
     width: "100%",
-    zIndex: 5,
+    zIndex: 4,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 10,
       justifyContent: "space-between",
@@ -396,6 +396,7 @@ const styles = StyleSheet.create({
     width: 0,
     padding: 0,
     zIndex: 30,
+    overflow: "auto",
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       background: colors.GREY_ICY_BLUE_HUE,
       display: "block",

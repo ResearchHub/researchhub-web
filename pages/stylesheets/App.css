@@ -101,6 +101,12 @@ img {
   border-right-color: rgba(78, 83, 255, 1) !important;
 }
 
+.slide-pane__content {
+  padding: 24px !important;
+  height: 100%;
+  box-sizing: border-box;
+}
+
 /* REACT-TOGGLE */
 .react-toggle {
   touch-action: pan-x;

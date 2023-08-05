@@ -204,7 +204,6 @@ const styles = StyleSheet.create({
   leftSidebarSliderFooterItemsBottomRow: {
     alignItems: "center",
     display: "flex",
-    height: 20,
     justifyContent: "space-around",
     marginBottom: 20,
     width: 180,
@@ -216,7 +215,7 @@ const styles = StyleSheet.create({
   },
   leftSidebarSliderFooterBottom: {
     marginTop: "auto",
-    position: "fixed",
+    // position: "fixed",
     bottom: 0,
     width: "100%",
     left: 0,
@@ -230,7 +229,6 @@ const styles = StyleSheet.create({
   },
   mediumIconOverride: { fontSize: 18, marginTop: "-4px" },
   newPostButtonCustom: {
-    marginBottom: 25,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       height: 40,
       width: "100%",
