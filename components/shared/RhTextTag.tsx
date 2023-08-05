@@ -1,3 +1,4 @@
+import { css, StyleSheet } from "aphrodite";
 import { ReactElement, ReactNode } from "react";
 
 type Props = {
@@ -34,6 +35,7 @@ export default function RhTextTag({
   return (
     <div id="RhTextTag-Wrap" style={{ position: "relative" }}>
       <div
+        className={css(styles.label)}
         style={{
           alignItems: "center",
           background: backgroundColor ?? "black",
@@ -59,3 +61,12 @@ export default function RhTextTag({
     </div>
   );
 }
+
+const styles = StyleSheet.create({
+  label: {
+    "@media only screen and (max-width: 767px)": {
+      right: -8,
+      bottom: -16,
+    },
+  },
+});

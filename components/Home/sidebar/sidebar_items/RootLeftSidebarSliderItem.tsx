@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     display: "flex",
     height: 48,
     justifyContent: "flex-start",
-    marginBottom: 16,
+    marginTop: 16,
     minHeight: 48,
     overflow: "hidden",
     width: "100%",
