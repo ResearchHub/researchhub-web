@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     width: "100%",
     transition: "all ease-out 0.1s",
     color: colors.BLACK(0.6),
-    borderLeft: "3px solid #fff",
+    borderLeft: `3px solid ${colors.WHITE()}`,
     ":last-child": {
       borderBottom: "none",
       borderRadius: "0px 0px 4px 4px",

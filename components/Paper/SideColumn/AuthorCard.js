@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     padding: "10px 17px",
-    borderLeft: `3px solid #FFF`,
+    borderLeft: `3px solid ${colors.WHITE()}`,
     transition: "all ease-out 0.1s",
   },
   authorCardWrap: {

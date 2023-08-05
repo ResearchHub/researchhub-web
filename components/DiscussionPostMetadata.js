@@ -604,7 +604,7 @@ const styles = StyleSheet.create({
   },
   twitterIcon: {
     marginLeft: 8,
-    color: colors.PURE_BLUE(),
+    color: colors.ALMOST_PURE_BLUE(),
   },
   twitterUrl: {
     cursor: "pointer",

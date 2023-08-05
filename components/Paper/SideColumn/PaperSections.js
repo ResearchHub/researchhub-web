@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     padding: 10,
-    borderLeft: `3px solid #FFF`,
+    borderLeft: `3px solid ${colors.WHITE()}`,
     color: colors.BLACK(),
     cursor: "pointer",
     textDecoration: "unset",

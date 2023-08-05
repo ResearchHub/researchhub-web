@@ -483,7 +483,7 @@ const styles = StyleSheet.create({
     minHeight: 60,
   },
   borderBottom: {
-    borderBottom: ".1rem dotted #e7e6e4",
+    borderBottom: `.1rem dotted ${colors.LIGHT_GRAYISH_ORANGE2()}`,
     marginTop: 0,
     paddingTop: 0,
   },

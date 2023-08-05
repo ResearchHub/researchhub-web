@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     "@media only screen and (min-width: 1024px)": {
       padding: "28px 60px",
     },
-    // color: '#fff',
+    // color: colors.WHITE(),
     // letterSpacing: .7,
     // marginTop: 16,
   },

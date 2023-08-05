@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "100%",
     cursor: "pointer",
-    borderLeft: `3px solid #FFF`,
+    borderLeft: `3px solid ${colors.WHITE()}`,
     transition: "all ease-out 0.1s",
     ":hover": {
       background: colors.INPUT_BACKGROUND_GREY,

@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     transition: "all ease-out 0.1s",
     borderRadius: 3,
     borderBottom: `1px solid ${colors.VERY_LIGHT_GREY()}`,
-    borderLeft: "3px solid #FFF",
+    borderLeft: `3px solid ${colors.WHITE()}`,
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
       backgroundColor: colors.INPUT_BACKGROUND_GREY,

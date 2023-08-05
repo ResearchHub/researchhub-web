@@ -800,7 +800,7 @@ export const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "100%",
     borderRadius: 3,
-    borderLeft: "3px solid #fff",
+    borderLeft: `3px solid ${colors.WHITE()}`,
     borderBottom: `1px solid ${colors.VERY_LIGHT_GREY()}`,
     color: colors.BLACK(0.6),
     ":hover": {

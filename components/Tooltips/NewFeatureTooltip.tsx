@@ -13,7 +13,7 @@ function NewFeatureTooltip({
   featureName,
   auth = null,
   position = ["right", "bottom"],
-  color = "blue",
+  color = colors.PURE_BLUE(),
 }): ReactElement | null {
   // Kobe: Turning this feature off temporarily because something broke with it.
   // It glitches out on page load

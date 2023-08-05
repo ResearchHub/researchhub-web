@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "100%",
     transition: "all ease-out 0.1s",
-    borderLeft: "3px solid #FFF",
+    borderLeft: `3px solid ${colors.WHITE()}`,
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
       backgroundColor: colors.INPUT_BACKGROUND_GREY,

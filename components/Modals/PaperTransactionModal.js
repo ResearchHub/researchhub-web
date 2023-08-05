@@ -915,12 +915,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   borderBottom: {
-    borderBottom: ".1rem dotted #e7e6e4",
+    borderBottom: `.1rem dotted ${colors.LIGHT_GRAYISH_ORANGE2()}`,
     marginTop: 0,
     paddingTop: 0,
   },
   border: {
-    borderBottom: ".1rem dotted #e7e6e4",
+    borderBottom: `.1rem dotted ${colors.LIGHT_GRAYISH_ORANGE2()}`,
   },
   column: {
     display: "flex",

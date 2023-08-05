@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     padding: "10px 15px 10px 17px",
-    borderLeft: `3px solid #FFF`,
+    borderLeft: `3px solid ${colors.WHITE()}`,
     textDecoration: "unset",
     color: "unset",
     transition: "all ease-in-out 0.1s",

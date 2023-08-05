@@ -52,6 +52,8 @@ let colors = {
   PURE_ORANGE2: (opacity = 1) => `rgba(255, 109, 0, ${opacity})`, // #FF6D00
   ORANGE_LIGHTER: (opacity = 1) => `rgb(252, 242, 220, ${opacity})`, // #FCF2DC
   LIGHT_GRAYISH_ORANGE: (opacity = 1) => `rgba(253, 242, 222, ${opacity})`, // #FDF2DE
+  LIGHT_GRAYISH_ORANGE2: (opacity = 1) => `rgba(231, 230, 228, ${opacity})`, // #E7E6E4
+  LIGHT_GRAYISH_ORANGE3: (opacity = 1) => `rgba(231, 229, 228, ${opacity})`, // #E7E5E4
   PASTEL_GREEN_TEXT: "#88cb88", //rgba(136, 203, 136, 1)
   PLACEHOLDER_CARD_BACKGROUND: "#efefef", //rgba(239, 239, 239, 1)
   PURPLE_LIGHT: (opacity = 1) => `rgb(112, 60, 255, ${opacity})`, // #703CFF
@@ -66,9 +68,9 @@ let colors = {
   YELLOW: (opacity = 1) => `rgba(240, 182, 65, ${opacity})`, // #F0B641
   SOFT_YELLOW: (opacity = 1) => `rgba(246, 230, 83, ${opacity})`, // #F6E653
   SOFT_YELLOW_BORDER: (opacity = 1) => `rgba(248, 222, 90, ${opacity})`, // #F8DE5A
-  WHITE: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // #FFFFFF
-  PURE_BLACK: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // #000000
-  DARKER_BLUE: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`, // #0000FF
+  WHITE: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // #FFFFFF css color white
+  PURE_BLACK: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // #000000 css color black
+  PURE_BLUE: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`, // #0000FF css color blue
   PAGE_WRAPPER: "#FCFCFC", //rgba(252, 252, 252, 1)
   SEARCH_ICON_COLOR: "#c5c4cc", //rgba(197, 196, 204, 1)
   PDF_OVERLAY: (opacity = 0) => `rgba(0, 0, 0, ${opacity})`,
@@ -185,7 +187,7 @@ let colors = {
   LIGHT_GRAY241: (opacity = 1) => `rgba(241, 241, 241, ${opacity})`, // #f1f1f1
   LIGHT_GRAY242: (opacity = 1) => `rgba(242, 242, 242, ${opacity})`, // #f2f2f2
   DARK_GRAY153: (opacity = 1) => `rgba(153, 153, 153, ${opacity})`, // #999999
-  PURE_GRAY: (opacity = 1) => `rgba(128, 128, 128, ${opacity})`, // #808080 . css color gray
+  PURE_GRAY: (opacity = 1) => `rgba(128, 128, 128, ${opacity})`, // #808080 . css color gray or grey
   DARY_GRAYISH_ORANGE: (opacity = 1) => `rgba(115, 108, 100, ${opacity})`, // #736c64
   DARK_GRAYISH_ORANGE2: (opacity = 1) => `rgba(131, 129, 124, ${opacity})`, // #83817c
   LIME_GREEN: (opacity = 1) => `rgba(204, 243, 221, ${opacity})`, // #ccf3dd
@@ -203,7 +205,7 @@ let colors = {
   BRIGHT_BLUE2: (opacity = 1) => `rgba(62, 67, 232, ${opacity})`, // #3e43e8
   BRIGHT_BLUE3: (opacity = 1) => `rgba(63, 133, 247, ${opacity})`, // #3f85f7
   BRIGHT_BLUE4: (opacity = 1) => `rgba(56, 161, 243, ${opacity})`, // #38a1f3 Twitter background
-  PURE_BLUE: (opacity = 1) => `rgba(0, 172, 238, ${opacity})`, // #00acee
+  ALMOST_PURE_BLUE: (opacity = 1) => `rgba(0, 172, 238, ${opacity})`, // #00acee
   STRONG_BLUE: (opacity = 1) => `rgba(6, 95, 212, ${opacity})`, // #065fd4
   STRONG_BLUE2: (opacity = 1) => `rgba(0, 119, 181, ${opacity})`, // #0077b5 LinkedIn background
   DARK_MODERATE_BLUE: (opacity = 1) => `rgba(59, 89, 152, ${opacity})`, // #3b5998 Facebook background
@@ -269,6 +271,8 @@ if (mode === "dark") {
     PURE_ORANGE2: (opacity = 1) => `rgba(200, 85, 0, ${opacity})`, // Adjusted
     ORANGE_LIGHTER: (opacity = 1) => `rgb(3, 13, 35, ${opacity})`, // Darkened
     LIGHT_GRAYISH_ORANGE: (opacity = 1) => `rgba(63, 52, 42, ${opacity})`, // Darkened
+    LIGHT_GRAYISH_ORANGE2: (opacity = 1) => `rgba(139, 134, 124, ${opacity})`, // Lightened
+    LIGHT_GRAYISH_ORANGE3: (opacity = 1) => `rgba(24, 27, 39, ${opacity})`, // Darkened
     PASTEL_GREEN_TEXT: "#773877", // Adjusted
     PLACEHOLDER_CARD_BACKGROUND: "#101010", // Darkened
     PURPLE_LIGHT: (opacity = 1) => `rgb(143, 195, 0, ${opacity})`, // Adjusted
@@ -285,7 +289,7 @@ if (mode === "dark") {
     SOFT_YELLOW_BORDER: (opacity = 1) => `rgba(128, 112, 45, ${opacity})`, // Adjusted
     WHITE: (opacity = 1) => `rgba(40, 40, 40, ${opacity})`, // Adjusted
     PURE_BLACK: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // Inverted
-    DARKER_BLUE: (opacity = 1) => `rgba(50, 50, 255, ${opacity})`, // Adjusted
+    PURE_BLUE: (opacity = 1) => `rgba(50, 50, 255, ${opacity})`, // Adjusted
     PAGE_WRAPPER: "#030303", // Adjusted
     SEARCH_ICON_COLOR: "#3a393f", // Adjusted
     PDF_OVERLAY: (opacity = 0.4) => `rgba(102, 102, 102, ${opacity})`, // Adjusted
@@ -422,7 +426,7 @@ if (mode === "dark") {
     BRIGHT_BLUE2: (opacity = 1) => `rgba(40, 45, 150, ${opacity})`, // Adjusted
     BRIGHT_BLUE3: (opacity = 1) => `rgba(32, 67, 125, ${opacity})`, // Adjusted
     BRIGHT_BLUE4: (opacity = 1) => `rgba(56, 161, 243, ${opacity})`, // #Unchanged. Twitter background. if adjusted, it could be rgb(36, 141, 223)
-    PURE_BLUE: (opacity = 1) => `rgba(0, 92, 127, ${opacity})`, // Adjusted
+    ALMOST_PURE_BLUE: (opacity = 1) => `rgba(0, 92, 127, ${opacity})`, // Adjusted
     STRONG_BLUE: (opacity = 1) => `rgba(4, 60, 135, ${opacity})`, // Adjusted
     STRONG_BLUE2: (opacity = 1) => `rgba(0, 119, 181, ${opacity})`, // Unchanged. LinkedIn background. if adjusted, it could be rgb(0, 99, 161)
     DARK_MODERATE_BLUE: (opacity = 1) => `rgba(59, 89, 152, ${opacity})`, // Unchanged. Facebook background. If adjusted, it could be rgb(49, 79, 142)

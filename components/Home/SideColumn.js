@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     width: "100%",
     transition: "all ease-out 0.1s",
     borderRadius: 3,
-    borderLeft: "3px solid #fff",
+    borderLeft: `3px solid ${colors.WHITE()}`,
     borderBottom: `1px solid ${colors.VERY_LIGHT_GREY()}`,
     padding: "10px 15px",
     color: colors.BLACK(0.6),

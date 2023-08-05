@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: 500,
     padding: "10px 20px",
-    borderLeft: "3px solid #FFF",
+    borderLeft: `3px solid ${colors.WHITE()}`,
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
       backgroundColor: colors.INPUT_BACKGROUND_GREY,

@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     padding: "7px 20px",
-    borderLeft: "3px solid #FFF",
+    borderLeft: `3px solid ${colors.WHITE()}`,
     transition: "all ease-out 0.1s",
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,

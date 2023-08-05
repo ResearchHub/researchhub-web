@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 
 import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
+import colors from "~/config/themes/colors";
 
 const LeaderboardPlaceholder = ({ color, rows = 1 }) => {
   return new Array(rows).fill(0).map((el, i) => {
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     padding: "10px 20px",
-    borderLeft: "3px solid #FFF",
+    borderLeft: `3px solid ${colors.WHITE()}`,
   },
   round: {
     height: 38,

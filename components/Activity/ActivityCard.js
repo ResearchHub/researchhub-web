@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     padding: "10px 20px 0px 17px", // 3px removed from left to offset border hover
     boxSizing: "border-box",
     width: "100%",
-    borderLeft: `3px solid #FFF`,
+    borderLeft: `3px solid ${colors.WHITE()}}`,
     ":hover": {
       cursor: "pointer",
       background: colors.INPUT_BACKGROUND_GREY,

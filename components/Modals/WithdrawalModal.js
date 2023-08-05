@@ -912,7 +912,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    borderBottom: "1px dashed #E7E5E4",
+    borderBottom: `1px dashed ${colors.LIGHT_GRAYISH_ORANGE3()}`,
     width: "100%",
     padding: "20px 0 20px",
   },
@@ -1182,7 +1182,7 @@ const styles = StyleSheet.create({
   amountInputStyles: {
     width: "100%",
     paddingBottom: 30,
-    borderBottom: "1px dashed #E7E5E4",
+    borderBottom: `1px dashed ${colors.LIGHT_GRAYISH_ORANGE3()}`,
   },
   fullWidth: {
     width: "100%",

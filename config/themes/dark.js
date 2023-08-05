@@ -150,7 +150,7 @@ export const darkBannerColor = {
 // };
 
 export const darkBadgeColors = {
-  HOVER: colors.DARKER_BLUE(),
+  HOVER: colors.PURE_BLUE(),
   COLOR: colors.WHITE(0.7),
   HOVER_COLOR: colors.BLUE(),
 };
@@ -171,7 +171,7 @@ export const darkBadgeColors = {
 export const darkPillNavColors = {
   primary: {
     filledTextColor: colors.LIGHT_BLUE(),
-    filledBackgroundColor: colors.DARKER_BLUE(),
+    filledBackgroundColor: colors.PURE_BLUE(),
     unfilledTextColor: colors.WHITE(0.7),
     unfilledHoverBackgroundColor: colors.DARKER_GREY(),
   },

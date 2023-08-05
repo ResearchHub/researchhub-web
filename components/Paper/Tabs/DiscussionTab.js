@@ -1106,7 +1106,7 @@ var styles = StyleSheet.create({
     height: 50,
   },
   twitterIcon: {
-    color: colors.PURE_BLUE(),
+    color: colors.ALMOST_PURE_BLUE(),
   },
   asterick: {
     color: colors.NEW_BLUE(),

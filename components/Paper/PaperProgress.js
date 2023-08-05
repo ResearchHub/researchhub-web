@@ -547,7 +547,7 @@ const styles = StyleSheet.create({
     right: "50%",
     transform: "translate(50%,-50%)",
     // fontWeight: 'bold',
-    textShadow: "1px 1px 4px #000",
+    textShadow: `1px 1px 4px ${colors.PURE_BLACK()}`,
     fontSize: 16,
   },
   section: {
