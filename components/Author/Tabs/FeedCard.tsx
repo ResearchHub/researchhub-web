@@ -308,6 +308,7 @@ function FeedCard({
                   createdBy={createdBy}
                   avatarSize={20}
                   bounties={bounties}
+                  showAllHubsProp={true}
                 />
               </div>
               <div className={css(styles.rowContainer)}>

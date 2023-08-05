@@ -20,6 +20,7 @@ type Args = {
   bounties?: Bounty[];
   actionLabel?: string | ReactElement;
   overrideSubmittedBy?: any;
+  showAllHubsProp: boolean;
 };
 
 function SubmissionDetails({
@@ -29,14 +30,11 @@ function SubmissionDetails({
   avatarSize = 30,
   overrideSubmittedBy,
   bounties = [],
+  showAllHubsProp,
   actionLabel = "posted in",
 }: Args): ReactElement<"div"> {
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
-  const [showAllHubs, setShowAlHubs] = useState(false);
-
-  useEffect(() => {
-    setShowAlHubs(window.innerWidth > breakpoints.medium.int);
-  }, []);
+  const [showAllHubs, setShowAlHubs] = useState(showAllHubsProp);
 
   let sliceIndex = 1;
   if (showAllHubs) {
@@ -99,7 +97,7 @@ function SubmissionDetails({
             href={`/hubs/${h.slug}`}
             overrideStyle={styles.hubLink}
           >
-            {toTitleCase(h.name)}
+            {" " + toTitleCase(h.name)}
           </ALink>
           {index < visibleHubs?.length - 1 ? "," : ""}
         </div>
@@ -143,11 +141,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: "21px",
     flexWrap: "wrap",
+    whiteSpace: "pre-wrap",
+    rowGap: 2,
   },
   submittedByDetails: {
     display: "block",
   },
-  postedText: {},
+  postedText: {
+    marginLeft: -7,
+  },
   createdByContainer: {
     marginRight: 7,
   },
@@ -162,7 +164,7 @@ const styles = StyleSheet.create({
   },
   hubLink: {
     textTransform: "capitalize",
-    marginLeft: 5,
+    // marginLeft: 5,
     fontWeight: 400,
   },
   timestamp: {
