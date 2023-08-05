@@ -12,8 +12,11 @@ import { ContentType, parseContentType } from "./contentType";
 import Router from "next/router";
 import { Comment } from "~/components/Comment/lib/types";
 
-
-export function formatBountyAmount({ amount, shortValue = false, withPrecision = true }) {
+export function formatBountyAmount({
+  amount,
+  shortValue = false,
+  withPrecision = true,
+}) {
   if (withPrecision) {
     return numeral(amount).format("0,0.[0000000000]");
   } else {
@@ -26,9 +29,9 @@ export function formatBountyAmount({ amount, shortValue = false, withPrecision =
   }
 }
 
-export const tallyAmounts = ({ bounties }:  { bounties: Bounty[] }) => {
-  return bounties.reduce((total, b:Bounty) => total + b.amount, 0);
-}
+export const tallyAmounts = ({ bounties }: { bounties: Bounty[] }) => {
+  return bounties.reduce((total, b: Bounty) => total + b.amount, 0);
+};
 
 export enum BOUNTY_STATUS {
   OPEN = "OPEN",
@@ -49,13 +52,15 @@ export const fetchBounty = ({ unifiedDocId }) => {
     });
 };
 
-export const parseBountyList = (rawBounties: any[], relatedItem?: RelatedItem): Bounty[] => {
-
+export const parseBountyList = (
+  rawBounties: any[],
+  relatedItem?: RelatedItem
+): Bounty[] => {
   const parentBounties = {};
-  const allBounties:Bounty[] = [];
+  const allBounties: Bounty[] = [];
   for (let i = 0; i < rawBounties.length; i++) {
     const current = new Bounty(rawBounties[i], relatedItem);
-    
+
     if (!current.parentId) {
       parentBounties[String(current.id)] = current;
     }
@@ -73,31 +78,31 @@ export const parseBountyList = (rawBounties: any[], relatedItem?: RelatedItem): 
   }
 
   return allBounties;
-}
+};
 
 export type RelatedItem = {
-  type: "comment",
-  object: Comment
-}
+  type: "comment";
+  object: Comment;
+};
 
 export default class Bounty {
   _id: ID;
   _createdDate: string;
   _timeRemaining: string;
   _timeRemainingInMinutes: number;
-  _createdBy: RHUser|null;
+  _createdBy: RHUser | null;
   _amount: number;
   _formattedAmount: string;
   _status: BOUNTY_STATUS;
   _expiration_date: string;
   _contentType: ContentType | undefined;
   _effortLevel: string;
-  _parent: Bounty|undefined; // Bounty contributions are linked by parentId
-  _parentId: ID|undefined; 
+  _parent: Bounty | undefined; // Bounty contributions are linked by parentId
+  _parentId: ID | undefined;
   _children: Bounty[];
-  _relatedItem: RelatedItem|undefined;
+  _relatedItem: RelatedItem | undefined;
 
-  constructor(raw: any, relatedItem?: RelatedItem|undefined) {
+  constructor(raw: any, relatedItem?: RelatedItem | undefined) {
     this._id = raw.id;
     this._createdDate = formatDateStandard(raw.created_date);
     this._timeRemaining = timeToRoundUp(raw.expiration_date);
@@ -122,7 +127,13 @@ export default class Bounty {
     this._relatedItem = relatedItem;
   }
 
-  static awardAPI({ bountyId, recipientUserId, objectId, amount, contentType = "rhcommentmodel" }):Promise<Bounty> {
+  static awardAPI({
+    bountyId,
+    recipientUserId,
+    objectId,
+    amount,
+    contentType = "rhcommentmodel",
+  }): Promise<Bounty> {
     const data = {
       recipient: recipientUserId,
       content_type: contentType,
@@ -217,17 +228,17 @@ export default class Bounty {
     return this._id;
   }
 
-  get parentId(): ID|undefined {
+  get parentId(): ID | undefined {
     return this._parentId;
   }
 
-  get parent(): Bounty|undefined {
+  get parent(): Bounty | undefined {
     return this._parent;
   }
 
   get children(): Bounty[] {
     return this._children;
-  }  
+  }
 
   get createdDate(): string {
     return this._createdDate;
@@ -241,14 +252,14 @@ export default class Bounty {
 
   get isOpen(): boolean {
     return !this.isExpiredOrClosed;
-  }  
+  }
 
   get timeRemaining(): string {
     return this._timeRemaining;
   }
 
   getUniqueContributors({ openOnly = true }): RHUser[] {
-    const uniqueContributors:Array<RHUser> = [];
+    const uniqueContributors: Array<RHUser> = [];
 
     if (this.createdBy) {
       uniqueContributors.push(this.createdBy);
@@ -256,8 +267,14 @@ export default class Bounty {
 
     for (let i = 0; i < this.children.length; i++) {
       const child = this.children[i];
-      const isAlreadyInList = Boolean(uniqueContributors.find(c => c.id === child!.createdBy!.id));
-      if (!isAlreadyInList && child.createdBy && (openOnly ? child.isOpen : true)) {
+      const isAlreadyInList = Boolean(
+        uniqueContributors.find((c) => c.id === child!.createdBy!.id)
+      );
+      if (
+        !isAlreadyInList &&
+        child.createdBy &&
+        (openOnly ? child.isOpen : true)
+      ) {
         uniqueContributors.push(child.createdBy);
       }
     }
@@ -269,7 +286,7 @@ export default class Bounty {
     return this._timeRemainingInMinutes;
   }
 
-  get createdBy(): RHUser|null {
+  get createdBy(): RHUser | null {
     return this._createdBy;
   }
 
@@ -288,7 +305,7 @@ export default class Bounty {
     return this._contentType;
   }
 
-  get relatedItem(): RelatedItem|undefined {
+  get relatedItem(): RelatedItem | undefined {
     return this._relatedItem;
   }
 
@@ -300,27 +317,27 @@ export default class Bounty {
     return this._effortLevel;
   }
 
-  appendChild(bounty:Bounty): void {
+  appendChild(bounty: Bounty): void {
     this._children.push(bounty);
   }
 
-  set parent(bounty:Bounty|undefined) {
+  set parent(bounty: Bounty | undefined) {
     this._parent = bounty;
-  }  
+  }
 
-  set createdBy(user:RHUser|null) {
+  set createdBy(user: RHUser | null) {
     this._createdBy = user;
-  }    
+  }
 
-  set children(children:Array<Bounty>) {
+  set children(children: Array<Bounty>) {
     this._children = children;
-  }      
+  }
 
-  set status(status:BOUNTY_STATUS) {
+  set status(status: BOUNTY_STATUS) {
     this._status = status;
-  }        
+  }
 
-  set relatedItem(relatedItem:RelatedItem|undefined) {
+  set relatedItem(relatedItem: RelatedItem | undefined) {
     this._relatedItem = relatedItem;
-  }          
+  }
 }

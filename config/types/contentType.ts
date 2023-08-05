@@ -1,7 +1,15 @@
 import { ID } from "./root_types";
 
 export type ContentType = {
-  name: "paper" | "post" | "hypothesis" | "comment" | "document" | "question" | "bounty" | "rsc_support";
+  name:
+    | "paper"
+    | "post"
+    | "hypothesis"
+    | "comment"
+    | "document"
+    | "question"
+    | "bounty"
+    | "rsc_support";
   id: ID;
 };
 
@@ -19,9 +27,9 @@ export const parseContentType = (raw: any): ContentType => {
   } else if (inputName === "researchhubunifieddocument") {
     contentTypeName = "document";
   } else if (inputName === "purchase") {
-      contentTypeName = "rsc_support";    
+    contentTypeName = "rsc_support";
   } else if (inputName === "bounty") {
-      contentTypeName = "bounty";          
+    contentTypeName = "bounty";
   } else {
     contentTypeName = inputName;
     console.error("Could not parse object with content_type=" + inputName);
