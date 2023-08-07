@@ -41,7 +41,6 @@ import UserApiTokenInputField from "~/components/shared/UserApiTokenInputField";
 import API from "~/config/api";
 import Button from "~/components/Form/Button";
 import { Helpers } from "@quantfive/js-web-config";
-import DarkModeToggle from "./DarkModeToggle";
 
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
   return {
@@ -741,7 +740,6 @@ class UserSettings extends Component {
           <UserApiTokenInputField />
           {this.renderFrequencySelect()}
           {this.renderSubscribedHubs()}
-          <DarkModeToggle />
           <div className={css(styles.container)}>
             <div className={css(styles.listLabel)} id={"hubListTitle"}>
               {"Notifications"}

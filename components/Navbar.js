@@ -27,6 +27,7 @@ import RHLogo from "./Home/RHLogo";
 import LoginModal from "./Login/LoginModal";
 import Login from "./Login/Login";
 import Button from "./Form/Button";
+import DarkModeToggle from "~/pages/DarkModeToggle";
 
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
@@ -198,6 +199,7 @@ const Navbar = (props) => {
             />
           )}
         </div>
+        <DarkModeToggle />
       </div>
       <UserStateBanner />
     </Fragment>

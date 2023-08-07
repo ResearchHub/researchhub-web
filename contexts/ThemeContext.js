@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import lightTheme from "../config/themes/light";
 import darkTheme from "../config/themes/dark";
+import { getColors, setColorTheme } from "../config/themes/colors";
 
 const ThemeContext = createContext();
 
@@ -16,17 +17,31 @@ export const ThemeProvider = ({ children }) => {
     setTheme(defaultTheme);
   }, []);
 
+  useEffect(() => {
+    updateManifestLink();
+  }, [theme]);
+
+  const updateManifestLink = () => {
+    const manifestLink = document.querySelector('link[rel="manifest"]');
+    if (manifestLink) {
+      manifestLink.href =
+        theme?.id === darkTheme.id
+          ? "/static/favicons/site-dark.webmanifest"
+          : "/static/favicons/site.webmanifest";
+    }
+  };
   const toggleTheme = () => {
-    console.log("toggle theme. Theme: ", theme);
     if (theme.id === lightTheme.id) {
       localStorage.setItem("theme", "dark");
       setTheme(darkTheme);
-      console.log("set dark theme");
     } else {
       localStorage.setItem("theme", "light");
       setTheme(lightTheme);
-      console.log("set light theme");
     }
+    const newTheme = getColors().id === "light" ? "dark" : "light";
+    setColorTheme(newTheme);
+
+    updateManifestLink();
   };
 
   const savedMode = () => {
@@ -40,7 +55,7 @@ export const ThemeProvider = ({ children }) => {
   };
 
   if (theme === undefined) {
-    return null; // or a loading spinner if you prefer
+    return null;
   }
 
   return (
