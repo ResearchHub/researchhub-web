@@ -9,7 +9,7 @@
 }
 
 .DateRangePickerInput__withBorder {
-  border-color: rgb(232, 232, 242) !important;
+  border-color: var(--LIGHT_GREYISH_BLUE) !important;
 }
 
 .DateInput_input {

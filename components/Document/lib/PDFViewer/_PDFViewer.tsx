@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: colors.PDF_OVERLAY(), //"rgba(102, 102, 102, 0.4)", // semi-transparent black
+    backgroundColor: colors.PDF_OVERLAY(), // semi-transparent black
     mixBlendMode: "multiply",
     pointerEvents: "none", // to ensure it doesn't interfere with user interactions
   },

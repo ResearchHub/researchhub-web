@@ -31,6 +31,7 @@ import Router, { useRouter } from "next/router";
 import withRedux from "next-redux-wrapper";
 import Script from "next/script";
 import { ThemeProvider } from "../contexts/ThemeContext";
+import GlobalStyles from "../components/GlobalStyles";
 
 if (process.env.ELASTIC_APM_URL) {
   initApm({
@@ -159,6 +160,7 @@ const MyApp = ({
 
   return (
     <Provider store={store}>
+      <GlobalStyles />
       <ThemeProvider>
         <Base
           Component={Component}

@@ -22,7 +22,7 @@ img {
   align-items: center !important;
   padding: 10px !important;
   box-sizing: border-box;
-  border-bottom: 1px solid rgba(224, 224, 224, 1);
+  border-bottom: 1px solid var(--LIGHT_GRAY224);
   height: 100%;
 }
 
@@ -93,7 +93,7 @@ img {
 
 /* REACT-TOOLTIP */
 .__react_component_tooltip.type-dark.place-right:after {
-  border-right-color: rgba(78, 83, 255, 1) !important;
+  border-right-color: var(--BLUE) !important;
 }
 
 /* REACT-TOGGLE */
@@ -114,7 +114,7 @@ img {
   -ms-user-select: none;
   user-select: none;
 
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: var(--PURE_BLACK);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -141,22 +141,22 @@ img {
   height: 22px;
   padding: 0;
   border-radius: 30px;
-  background-color: #4d4d4d;
+  background-color: var(--VERY_DARK_GREY77);
   -webkit-transition: all 0.2s ease;
   -moz-transition: all 0.2s ease;
   transition: all 0.2s ease;
 }
 
 .react-toggle:hover:not(.react-toggle--disabled) .react-toggle-track {
-  background-color: #000000;
+  background-color: var(--PURE_BLACK);
 }
 
 .react-toggle--checked .react-toggle-track {
-  background-color: #19ab27;
+  background-color: var(--DARK_LIME_GREEN4);
 }
 
 .react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
-  background-color: #128d15;
+  background-color: var(--DARK_LIME_GREEN5);
 }
 
 .react-toggle-track-check {
@@ -209,9 +209,9 @@ img {
   left: 1px;
   width: 22px;
   height: 20px;
-  border: 1px solid #4d4d4d;
+  border: 1px solid var(--VERY_DARK_GREY77);
   border-radius: 50%;
-  background-color: #fafafa;
+  background-color: var(--LIGHT_GRAY_BACKGROUND);
 
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -224,27 +224,27 @@ img {
 
 .react-toggle--checked .react-toggle-thumb {
   left: 27px;
-  border-color: #19ab27;
+  border-color: var(--DARK_LIME_GREEN4);
 }
 
 .react-toggle--focus .react-toggle-thumb {
-  -webkit-box-shadow: 0px 0px 3px 2px #0099e0;
-  -moz-box-shadow: 0px 0px 3px 2px #0099e0;
-  box-shadow: 0px 0px 2px 3px #0099e0;
+  -webkit-box-shadow: 0px 0px 3px 2px var(--ALMOST_PURE_BLUE2);
+  -moz-box-shadow: 0px 0px 3px 2px var(--ALMOST_PURE_BLUE2);
+  box-shadow: 0px 0px 2px 3px var(--ALMOST_PURE_BLUE2);
 }
 
 .react-toggle:active:not(.react-toggle--disabled) .react-toggle-thumb {
-  -webkit-box-shadow: 0px 0px 5px 5px #0099e0;
-  -moz-box-shadow: 0px 0px 5px 5px #0099e0;
-  box-shadow: 0px 0px 5px 5px #0099e0;
+  -webkit-box-shadow: 0px 0px 5px 5px var(--ALMOST_PURE_BLUE2);
+  -moz-box-shadow: 0px 0px 5px 5px var(--ALMOST_PURE_BLUE2);
+  box-shadow: 0px 0px 5px 5px var(--ALMOST_PURE_BLUE2);
 }
 
 /* RSC FORM */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   opacity: 1;
-  color: rgba(78, 83, 255) !important;
-  background-color: #edeefe !important;
+  color: var(--BLUE) !important;
+  background-color: var(--LIGHT_GRAYISH_BLUE10) !important;
 }
 
 /* CLAMP */

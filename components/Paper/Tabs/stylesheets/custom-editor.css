@@ -28,7 +28,7 @@
 
 .RichEditor-p {
   box-sizing: border-box;
-  color: #241f3a;
+  color: var(--BLACK);
   display: inline;
   font-family: CharterBT;
   font-size: 16px;
@@ -95,11 +95,11 @@ h3 {
 }
 
 /* .editing .ck.ck-editor__editable_inline {
-  border: 1px solid #cccccc;
+  border: 1px solid var(--LIGHT_GRAY204);
 } */
 
 .post-body .editing .ck-content.ck-editor__editable {
-  border: 1px solid #cccccc !important;
+  border: 1px solid var(--LIGHT_GRAY204) !important;
   padding: 20px !important;
 }
 
@@ -145,5 +145,5 @@ h3 {
 }
 
 #askQuestionForm *[data-placeholder]::before {
-  color: rgb(117, 117, 117) !important;
+  color: var(--DARKER_GREY117) !important;
 }

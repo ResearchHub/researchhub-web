@@ -8,7 +8,7 @@
 /* Placeholder */
 .CommentEditor .ql-editor.ql-blank::before {
   left: 0 !important;
-  color: rgb(168, 167, 169, 1);
+  color: var(--DARK_GRAYISH_VIOLET);
   font-size: 15px;
   font-style: normal;
 }
@@ -43,7 +43,7 @@
 }
 
 .CommentEditor .toolbar {
-  background: #ffffff;
+  background: var(--WHITE);
 }
 
 .CommentEditor .ql-formats .ql-video {
@@ -76,9 +76,9 @@
 }
 
 .CommentEditor .ql-syntax {
-  background-color: #f7f7f7 !important;
-  border: 1px solid #d5d5d5;
-  color: rgb(0, 0, 0) !important;
+  background-color: var(--LIGHT_GRAY247) !important;
+  border: 1px solid var(--LIGHT_GRAY213);
+  color: var(--PURE_BLACK) !important;
 }
 
 .CommentEditor .ql-clipboard {
@@ -116,7 +116,7 @@
   max-height: 600px;
   margin-top: 1em;
   margin-bottom: 1em;
-  /* box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); */
+  /* box-shadow: 0 1px 3px var(--PURE_BLACK_0_12), 0 1px 2px rgba(0,0,0,0.24); */
 }
 
 .CommentEditor .ql-editor > p > video {
@@ -128,7 +128,7 @@
 }
 
 .CommentEditor .ql-editor > blockquote {
-  color: #656565;
+  color: var(--DARKER_GREY101);
   font-style: italic;
 }
 
@@ -193,18 +193,19 @@
   display: none;
   bottom: 45px;
   position: absolute;
-  box-shadow: 0px 4px 5px 0px rgb(0 0 0 / 14%),
-    0px 1px 10px 0px rgb(0 0 0 / 12%), 0px 2px 4px -1px rgb(0 0 0 / 20%);
+  box-shadow: 0px 4px 5px 0px var(--PURE_BLACK_0_14),
+    0px 1px 10px 0px var(--PURE_BLACK_0_12),
+    0px 2px 4px -1px var(--PURE_BLACK_0_20);
   padding: 4px;
   z-index: 2;
-  background: white;
+  background: var(--WHITE);
 }
 .CommentEditor .ql-full-editor-visible {
   display: block;
 }
 
 .CommentEditor .ql-formats > button {
-  color: rgb(124, 121, 137);
+  color: var(--DARK_GREYISH_BLUE18);
   /*update these for dark mode */
   height: 24px !important;
   padding: 3px 3px !important;
@@ -228,11 +229,11 @@
   margin-left: 3px;
   display: inline-flex !important;
   align-items: center;
-  color: black;
+  color: var(--PURE_BLACK);
 }
 
 .CommentEditor .ql-toolbar {
-  background: white;
+  background: var(--WHITE);
 }
 .CommentEditor .ql-toolbar.ql-snow {
   border: 0 !important;
@@ -266,19 +267,19 @@
 }
 
 .CommentEditor .ql-review-category-placeholder {
-  color: rgb(124, 121, 137);
+  color: var(--DARK_GREYISH_BLUE18);
 }
 
 .CommentEditor .ql-snow .ql-stroke {
-  stroke: rgb(124, 121, 137) !important;
+  stroke: var(--DARK_GREYISH_BLUE18) !important;
 }
 .CommentEditor .ql-snow .ql-fill,
 .CommentEditor .ql-snow .ql-stroke.ql-fill {
-  fill: rgb(124, 121, 137) !important;
+  fill: var(--DARK_GREYISH_BLUE18) !important;
 }
 
 .CommentEditor .ql-snow .ql-editor a {
-  color: rgb(57, 113, 255) !important;
+  color: var(--NEW_BLUE) !important;
 }
 
 .CommentEditor .ql-up {
@@ -295,36 +296,36 @@
   min-height: 5em;
 }
 .CommentEditor button.ql-active {
-  background-color: rgba(32, 33, 36, 0.122) !important;
+  background-color: var(--VERY_DARK_GRAYISH_BLUE7_0_122) !important;
   border: none !important;
   box-shadow: none !important;
   opacity: 1 !important;
   transform: scale(1) !important;
   border-radius: 3px !important;
-  color: black !important;
+  color: var(--PURE_BLACK) !important;
 }
 
 .CommentEditor .ql-active .ql-stroke {
-  stroke: black !important;
+  stroke: var(--PURE_BLACK) !important;
 }
 
 .CommentEditor .ql-active .ql-fill {
-  fill: black !important;
+  fill: var(--PURE_BLACK) !important;
 }
 
 .CommentEditor .ql-toolbar button:hover {
-  color: black !important;
+  color: var(--PURE_BLACK) !important;
 }
 .CommentEditor .ql-toolbar button:hover .ql-stroke {
-  stroke: black !important;
+  stroke: var(--PURE_BLACK) !important;
 }
 
 .CommentEditor .ql-toolbar button:hover .ql-fill {
-  fill: black !important;
+  fill: var(--PURE_BLACK) !important;
 }
 
 .CommentEditor .ql-editor pre {
-  background: #f0f0f0 !important;
+  background: var(--VERY_LIGHT_GREY) !important;
   max-width: 800px;
 }
 
@@ -339,11 +340,11 @@
 }
 
 .CommentEditor .ql-editor a.ql-user {
-  background: rgb(57, 113, 255, 0.1);
+  background: var(--NEW_BLUE_0_1);
   padding: 2px 4px;
   border-radius: 4px;
   text-decoration: none;
 }
 .CommentEditor .ql-editor a.ql-user:hover {
-  background: rgb(57, 113, 255, 0.2);
+  background: var(--NEW_BLUE_0_2);
 }

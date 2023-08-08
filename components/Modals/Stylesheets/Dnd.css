@@ -1,16 +1,16 @@
 .DndDefault {
   border-width: 1px !important;
-  border-color: rgb(78, 83, 255) !important;
+  border-color: var(--BLUE) !important;
   height: 200px !important;
   width: 100% !important;
-  background-color: #f7f7fb !important;
-  color: rgb(36, 31, 58) !important;
+  background-color: var(--LIGHT_GRAYISH_BLUE7) !important;
+  color: var(--BLACK) !important;
   font-size: 14px !important;
 }
 
 .DndDefault:hover {
   border-width: 1px !important;
-  border-color: rgb(78, 83, 255) !important;
+  border-color: var(--BLUE) !important;
   border-style: solid !important;
 }
 
@@ -23,17 +23,17 @@
 
 .DndHero {
   border-width: 1px !important;
-  border-color: rgb(78, 83, 255) !important;
+  border-color: var(--BLUE) !important;
   width: 100px !important;
   height: 120px !important;
-  background-color: #f7f7fb !important;
-  color: rgb(36, 31, 58) !important;
+  background-color: var(--LIGHT_GRAYISH_BLUE7) !important;
+  color: var(--BLACK) !important;
   font-size: 14px !important;
 }
 
 .DndHero:hover {
   border-width: 1px !important;
-  border-color: rgb(78, 83, 255) !important;
+  border-color: var(--BLUE) !important;
   border-style: solid !important;
 }
 
@@ -91,11 +91,11 @@
   }
   .DndHero {
     border-width: 1px !important;
-    border-color: rgb(78, 83, 255) !important;
+    border-color: var(--BLUE) !important;
     width: 100px !important;
     height: 90px !important;
-    background-color: #f7f7fb !important;
-    color: rgb(36, 31, 58) !important;
+    background-color: var(--LIGHT_GRAYISH_BLUE7) !important;
+    color: var(--BLACK) !important;
     font-size: 14px !important;
   }
 }

@@ -5,19 +5,19 @@
  */
 
 :root {
-  --ck-color-engine-placeholder-text: #a7a5b0 !important;
-  --ck-color-image-caption-background: hsl(0, 0%, 97%);
-  --ck-color-image-caption-text: hsl(0, 0%, 20%);
-  --ck-color-mention-background: hsla(341, 100%, 30%, 0.1);
-  --ck-color-mention-text: hsl(341, 100%, 30%);
-  --ck-color-table-caption-background: hsl(0, 0%, 97%);
-  --ck-color-table-caption-text: hsl(0, 0%, 20%);
-  --ck-highlight-marker-blue: hsl(201, 97%, 72%);
-  --ck-highlight-marker-green: hsl(120, 93%, 68%);
-  --ck-highlight-marker-pink: hsl(345, 96%, 73%);
-  --ck-highlight-marker-yellow: hsl(60, 97%, 73%);
-  --ck-highlight-pen-green: hsl(112, 100%, 27%);
-  --ck-highlight-pen-red: hsl(0, 85%, 49%);
+  --ck-color-engine-placeholder-text: var(--DARK_GREYISH_BLUE19) !important;
+  --ck-color-image-caption-background: var(--LIGHT_GRAY247);
+  --ck-color-image-caption-text: var(--VERY_DARK_GREY51);
+  --ck-color-mention-background: var(--DARK_PINK_0_1);
+  --ck-color-mention-text: var(--DARK_PINK);
+  --ck-color-table-caption-background: var(--LIGHT_GRAY247);
+  --ck-color-table-caption-text: var(--VERY_DARK_GREY51);
+  --ck-highlight-marker-blue: var(--SOFT_BLUE6);
+  --ck-highlight-marker-green: var(--SOFT_LIME_GREEN3);
+  --ck-highlight-marker-pink: var(--SOFT_RED);
+  --ck-highlight-marker-yellow: var(--SOFT_YELLOW2);
+  --ck-highlight-pen-green: var(--DARK_LIME_GREEN6);
+  --ck-highlight-pen-red: var(--VIVID_RED2);
   --ck-image-style-spacing: 1.5em;
   --ck-inline-image-style-spacing: calc(var(--ck-image-style-spacing) / 2);
   --ck-todo-list-checkmark-size: 16px;
@@ -193,12 +193,12 @@
 .ck-content hr {
   margin: 15px 0;
   height: 4px;
-  background: hsl(0, 0%, 87%);
+  background: var(--LIGHT_GRAY222);
   border: 0;
 }
 /* ckeditor5-basic-styles/theme/code.css */
 .ck-content code {
-  background-color: hsla(0, 0%, 78%, 0.3);
+  background-color: var(--LIGHT_GRAY199_0_3);
   padding: 0.15em;
   border-radius: 2px;
 }
@@ -210,12 +210,12 @@
   margin-left: 0;
   margin-right: 0;
   font-style: italic;
-  border-left: solid 5px hsl(0, 0%, 80%);
+  border-left: solid 5px var(--LIGHT_GRAY204);
 }
 /* ckeditor5-block-quote/theme/blockquote.css */
 .ck-content[dir="rtl"] blockquote {
   border-left: 0;
-  border-right: solid 5px hsl(0, 0%, 80%);
+  border-right: solid 5px var(--LIGHT_GRAY204);
 }
 /* ckeditor5-table/theme/table.css */
 .ck-content .table {
@@ -228,19 +228,19 @@
   border-spacing: 0;
   width: 100%;
   height: 100%;
-  border: 1px double hsl(0, 0%, 70%);
+  border: 1px double var(--GRAY179);
 }
 /* ckeditor5-table/theme/table.css */
 .ck-content .table table td,
 .ck-content .table table th {
   min-width: 2em;
   padding: 0.4em;
-  border: 1px solid hsl(0, 0%, 75%);
+  border: 1px solid var(--GRAY191);
 }
 /* ckeditor5-table/theme/table.css */
 .ck-content .table table th {
   font-weight: bold;
-  background: hsla(0, 0%, 0%, 5%);
+  background: var(--PURE_BLACK_0_05);
 }
 /* ckeditor5-table/theme/table.css */
 .ck-content[dir="rtl"] .table th {
@@ -275,7 +275,7 @@
 .ck-content .page-break::after {
   content: "";
   position: absolute;
-  border-bottom: 2px dashed hsl(0, 0%, 77%);
+  border-bottom: 2px dashed var(--LIGHT_GRAY196);
   width: 100%;
 }
 /* ckeditor5-page-break/theme/pagebreak.css */
@@ -285,14 +285,14 @@
   padding: 0.3em 0.6em;
   display: block;
   text-transform: uppercase;
-  border: 1px solid hsl(0, 0%, 77%);
+  border: 1px solid var(--LIGHT_GRAY196);
   border-radius: 2px;
   font-family: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
   font-size: 0.75em;
   font-weight: bold;
-  color: hsl(0, 0%, 20%);
-  background: hsl(0, 0%, 100%);
-  box-shadow: 2px 2px 1px hsla(0, 0%, 0%, 0.15);
+  color: var(--VERY_DARK_GREY51);
+  background: var(--WHITE);
+  box-shadow: 2px 2px 1px var(--PURE_BLACK_0_05);
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -339,7 +339,7 @@
   content: "";
   width: 100%;
   height: 100%;
-  border: 1px solid hsl(0, 0%, 20%);
+  border: 1px solid var(--VERY_DARK_GREY51);
   border-radius: 2px;
   transition: 250ms ease-in-out box-shadow, 250ms ease-in-out background,
     250ms ease-in-out border;
@@ -363,12 +363,12 @@
 }
 /* ckeditor5-list/theme/todolist.css */
 .ck-content .todo-list .todo-list__label > input[checked]::before {
-  background: hsl(126, 64%, 41%);
-  border-color: hsl(126, 64%, 41%);
+  background: var(--DARK_LIME_GREEN7);
+  border-color: var(--DARK_LIME_GREEN7);
 }
 /* ckeditor5-list/theme/todolist.css */
 .ck-content .todo-list .todo-list__label > input[checked]::after {
-  border-color: hsl(0, 0%, 100%);
+  border-color: var(--WHITE);
 }
 /* ckeditor5-list/theme/todolist.css */
 .ck-content .todo-list .todo-list__label .todo-list__label__description {
@@ -381,9 +381,9 @@
 /* ckeditor5-code-block/theme/codeblock.css */
 .ck-content pre {
   padding: 1em;
-  color: hsl(0, 0%, 20.8%);
-  background: hsla(0, 0%, 78%, 0.3);
-  border: 1px solid hsl(0, 0%, 77%);
+  color: var(--VERY_DARK_GREY53);
+  background: var(--LIGHT_GRAY199_0_3);
+  border: 1px solid var(--LIGHT_GRAY196);
   border-radius: 2px;
   text-align: left;
   direction: ltr;
@@ -420,7 +420,7 @@
 }
 
 .editing .ck.ck-editor__editable_inline {
-  border: 1px solid #cccccc;
+  border: 1px solid var(--LIGHT_GRAY204);
 }
 
 .eln .ck.ck-sticky-panel .ck-sticky-panel__content_sticky {
@@ -444,7 +444,7 @@
 }
 
 .eln .ck-content *::selection {
-  background: #e1f7ff;
+  background: var(--VERY_PALE_BLUE4);
 }
 
 .eln .ck-content h1,
