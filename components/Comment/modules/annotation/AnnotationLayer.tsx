@@ -63,6 +63,8 @@ import {
 } from "./lib/selection";
 import getAnnotationFromPosition from "./lib/getAnnotationFromPosition";
 import AnnotationTextBubble from "./AnnotationTextBubble";
+import useCacheControl from "~/config/hooks/useCacheControl";
+
 const { setMessage, showMessage } = MessageActions;
 const DEBUG = false;
 
@@ -151,6 +153,7 @@ const AnnotationLayer = ({
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
+  const { revalidateDocument } = useCacheControl();
 
   // Scroll to annotation only after it has been rendered
   useLayoutEffect(() => {
@@ -891,6 +894,8 @@ const AnnotationLayer = ({
     } else {
       setInlineComments([...inlineComments, comment]);
     }
+
+    revalidateDocument();
   };
 
   const _onRemove = ({ comment }: { comment: CommentModel }) => {
@@ -910,6 +915,8 @@ const AnnotationLayer = ({
         `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
       );
     }
+
+    revalidateDocument();
   };
 
   const _onUpdate = ({ comment }: { comment: CommentModel }) => {
