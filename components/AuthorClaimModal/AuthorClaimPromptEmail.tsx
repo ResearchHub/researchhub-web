@@ -309,7 +309,7 @@ export const verifStyles = StyleSheet.create({
   },
   subText: {
     alignItems: "center",
-    color: colors.TEXT_DARKER_GREYXT_DARKER_GREY,
+    color: colors.TEXT_DARKER_GREY,
     display: "flex",
     fontSize: "16px",
     fontWeight: "normal",
