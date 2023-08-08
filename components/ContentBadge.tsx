@@ -16,9 +16,9 @@ import {
 } from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
-import { POST_TYPES } from "./TextEditor/config/postTypes";
 import { ReactElement, useRef, useState } from "react";
 import { useExchangeRate } from "./contexts/ExchangeRateContext";
+import { COMMENT_TYPES } from "./Comment/lib/types";
 
 type Args = {
   contentType: string;
@@ -87,7 +87,7 @@ const ContentBadgeBase = ({
             </span>
             <span>Question</span>
           </>
-        ) : contentType === POST_TYPES.DISCUSSION ||
+        ) : contentType === COMMENT_TYPES.DISCUSSION ||
           contentType === "comment" ? (
           <>
             <span className={css(styles.icon)}>
@@ -95,7 +95,7 @@ const ContentBadgeBase = ({
             </span>
             <span>Comment</span>
           </>
-        ) : contentType === POST_TYPES.ANSWER ? (
+        ) : contentType === COMMENT_TYPES.ANSWER ? (
           <>
             <span className={css(styles.icon)}>
               {
@@ -107,14 +107,14 @@ const ContentBadgeBase = ({
             </span>
             <span>Answer</span>
           </>
-        ) : contentType === POST_TYPES.SUMMARY ? (
+        ) : contentType === COMMENT_TYPES.SUMMARY ? (
           <>
             <span className={css(styles.icon)}>
               {<FontAwesomeIcon icon={faLayerGroup}></FontAwesomeIcon>}
             </span>
             <span>Summary</span>
           </>
-        ) : contentType === POST_TYPES.REVIEW ? (
+        ) : contentType === COMMENT_TYPES.REVIEW ? (
           <>
             <span className={css(styles.icon)}>
               {<FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
