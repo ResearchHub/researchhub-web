@@ -64,6 +64,8 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
   const dispatch = useDispatch();
   const annotationContext =
     commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION;
+  const refManagerContext =
+    commentTreeState.context === COMMENT_CONTEXTS.REF_MANAGER;
 
   const _handleToggleReply = () => {
     if (isReplyOpen && confirm("Discard changes?")) {
@@ -224,7 +226,10 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
           <div
             className={css(
               styles.contentWrapper,
-              commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION &&
+              [
+                COMMENT_CONTEXTS.ANNOTATION,
+                COMMENT_CONTEXTS.REF_MANAGER,
+              ].includes(commentTreeState.context) &&
                 styles.contentWrapperForAnnotation
             )}
           >
@@ -357,18 +362,19 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
               </div>
             )}
             <div className={css(styles.bottomActions)}>
-              {false /* TODO: Replace with condition */ && (
-                <div>
-                  <CommentActions
-                    toggleReply={() => _handleToggleReply()}
-                    comment={comment}
-                  />
-                </div>
-              )}
+              <div>
+                <CommentActions
+                  toggleReply={() => _handleToggleReply()}
+                  comment={comment}
+                />
+              </div>
 
               <div className={css(styles.privacyBadgeWrapper)}>
-                {comment.thread.privacy === "PRIVATE" && (
-                  <CommentPrivacyBadge privacy={"PRIVATE"} />
+                {refManagerContext && (
+                  <CommentPrivacyBadge
+                    iconOnly={true}
+                    privacy={comment.thread.privacy}
+                  />
                 )}
               </div>
             </div>

@@ -36,6 +36,7 @@ export enum COMMENT_CONTEXTS {
   DRAWER = "DRAWER",
   ANNOTATION = "ANNOTATION",
   FEED = "FEED",
+  REF_MANAGER = "REF_MANAGER",
 }
 
 export type CommentThreadGroup = {

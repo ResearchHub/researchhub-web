@@ -60,12 +60,16 @@ const CommentReadOnly = ({
     commentTreeState.context === COMMENT_CONTEXTS.DRAWER;
   const isAnnotationContext =
     commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION;
+  const isRefManagerContext =
+    commentTreeState.context === COMMENT_CONTEXTS.REF_MANAGER;
+
   const htmlToRender = isPreview && previewHtml ? previewHtml : fullHtml;
   const annotationText = comment?.thread?.anchor?.text || "";
 
   return (
     <div>
       {!isAnnotationContext &&
+        !isRefManagerContext &&
         annotationText.length > 0 &&
         !comment?.parent && (
           <AnnotationTextBubble
@@ -75,7 +79,11 @@ const CommentReadOnly = ({
         )}
       <div
         className={`CommentEditor ${
-          isNarrowWidthContext ? "CommentEditorForNarrowWidth" : ""
+          isNarrowWidthContext
+            ? "CommentEditorForNarrowWidth"
+            : isRefManagerContext
+            ? "CommentEditorForRefManager"
+            : ""
         } ${isAnnotationContext ? "CommentEditorForAnnotation" : ""}`}
       >
         <div

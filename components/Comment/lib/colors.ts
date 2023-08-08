@@ -40,6 +40,9 @@ const colors = {
     background: globalColors.NEW_BLUE(0.1),
     color: globalColors.NEW_BLUE(1.0),
   },
+  actionBtn: {
+    hover: globalColors.NEW_BLUE(0.1),
+  },
   dot: "rgb(200 200 202)",
   gray: globalColors.BLACK(0.6),
   placeholder: globalColors.PLACEHOLDER_CARD_BACKGROUND,

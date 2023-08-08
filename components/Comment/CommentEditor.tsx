@@ -324,6 +324,7 @@ const CommentEditor = ({
           )}
 
           <div className={css(styles.mainActionsWrapper)}>
+            {/* TODO: Kobe - Remove author line for inline comments when editing comment */}
             {displayCurrentUser && author && !allowBounty && (
               <div
                 className={css(

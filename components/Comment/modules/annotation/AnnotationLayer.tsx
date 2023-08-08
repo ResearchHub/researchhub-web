@@ -1194,7 +1194,9 @@ const AnnotationLayer = ({
             sort: sortOpts[0].value,
             filter: COMMENT_FILTERS.ANNOTATION,
             comments: inlineComments,
-            context: COMMENT_CONTEXTS.ANNOTATION,
+            context: citationInstance
+              ? COMMENT_CONTEXTS.REF_MANAGER
+              : COMMENT_CONTEXTS.ANNOTATION,
             onCreate: _onCreate,
             onUpdate: _onUpdate,
             onRemove: _onRemove,

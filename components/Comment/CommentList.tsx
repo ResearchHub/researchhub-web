@@ -52,7 +52,10 @@ const CommentList = ({
           styles.commentListWrapper,
           !isRootList &&
             comments.length > 0 &&
-            commentTreeState.context !== COMMENT_CONTEXTS.ANNOTATION &&
+            ![
+              COMMENT_CONTEXTS.ANNOTATION,
+              COMMENT_CONTEXTS.REF_MANAGER,
+            ].includes(commentTreeState.context) &&
             styles.childrenList
         )}
       >

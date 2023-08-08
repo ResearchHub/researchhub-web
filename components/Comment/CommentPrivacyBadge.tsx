@@ -8,8 +8,10 @@ import ReactTooltip from "react-tooltip";
 
 const CommentPrivacyBadge = ({
   privacy,
+  iconOnly,
 }: {
   privacy: CommentPrivacyFilter;
+  iconOnly?: boolean;
 }) => {
   let icon;
   let label;
@@ -45,7 +47,7 @@ const CommentPrivacyBadge = ({
         data-for="badge-tooltip"
       >
         <div className={css(styles.icon)}>{icon}</div>
-        <div className={css(styles.label)}>{label}</div>
+        {!iconOnly && <div className={css(styles.label)}>{label}</div>}
       </div>
     </>
   );

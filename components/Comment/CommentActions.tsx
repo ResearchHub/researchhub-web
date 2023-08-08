@@ -21,6 +21,7 @@ import { MessageActions } from "~/redux/message";
 import { markAsAcceptedAnswerAPI } from "./lib/api";
 import { findAllComments } from "./lib/findComment";
 import createSharableLinkToComment from "./lib/createSharableLinkToComment";
+import ReactTooltip from "react-tooltip";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
@@ -37,6 +38,19 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
+  const refManagerContext =
+    commentTreeState.context === COMMENT_CONTEXTS.REF_MANAGER;
+
+  const getTooltipText = () => {
+    if (
+      commentTreeState.context === COMMENT_CONTEXTS.REF_MANAGER &&
+      comment.thread.privacy === "PRIVATE"
+    ) {
+      return "This comment is private. Edit comment privacy to share with others.";
+    }
+
+    return undefined;
+  };
 
   const handleAwardBounty = async ({ bounty }: { bounty: Bounty }) => {
     const totalAmount = tallyAmounts({
@@ -157,9 +171,15 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
   }
 
   const disableSocialActions = currentUser?.id === comment.createdBy.id;
+  const tooltipText = getTooltipText();
 
   return (
     <div className={css(styles.wrapper)}>
+      <ReactTooltip
+        effect="solid"
+        className={css(styles.tooltip)}
+        id="link-tooltip"
+      />
       <div className={css(styles.actionsWrapper)}>
         {document && (
           <div
@@ -179,7 +199,9 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
           </div>
         )}
 
-        {commentTreeState.context !== COMMENT_CONTEXTS.ANNOTATION && (
+        {![COMMENT_CONTEXTS.ANNOTATION, COMMENT_CONTEXTS.REF_MANAGER].includes(
+          commentTreeState.context
+        ) && (
           <div
             className={`${css(styles.action, styles.actionReply)} reply-btn`}
           >
@@ -245,8 +267,13 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
           </div>
         )}
 
-        <div className={`${css(styles.action)} award-btn`}>
+        <div
+          className={`${css(styles.action)} link-btn`}
+          data-tip={tooltipText}
+          data-for="link-tooltip"
+        >
           <IconButton
+            overrideStyle={styles.button}
             onClick={(e) => {
               e.stopPropagation();
               createSharableLinkToComment(comment);
@@ -262,7 +289,7 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
               icon={faLinkSimple}
               style={{ transform: "rotate(-45deg)" }}
             />
-            <span className={css(styles.actionText)}>Share</span>
+            <span className={css(styles.actionText)}>Copy link</span>
           </IconButton>
         </div>
       </div>
@@ -271,6 +298,14 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
 };
 
 const styles = StyleSheet.create({
+  button: {
+    ":hover": {
+      background: colors.actionBtn.hover,
+    },
+  },
+  tooltip: {
+    width: 300,
+  },
   wrapper: {
     display: "flex",
     flexDirection: "column",
