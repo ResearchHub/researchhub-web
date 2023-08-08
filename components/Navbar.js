@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     position: "sticky",
     top: 0,
     width: "100%",
-    zIndex: 4,
+    zIndex: 5,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 10,
       justifyContent: "space-between",
