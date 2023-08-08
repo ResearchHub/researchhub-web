@@ -94,7 +94,7 @@ const PDFViewer = ({
         scale: scaleRef.current,
         defaultViewport: viewport,
         eventBus,
-        textLayerMode: 2,
+        textLayerMode: 1,
       });
 
       pdfPageView.setPdfPage(page);
