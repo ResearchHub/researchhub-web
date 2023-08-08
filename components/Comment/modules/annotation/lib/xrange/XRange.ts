@@ -339,7 +339,6 @@ XRange.prototype.getCoordinates = function ({ relativeEl }) {
       positions[i].width === 0 ||
       positions[i].height === 0
     ) {
-      i++;
       continue;
     }
 
