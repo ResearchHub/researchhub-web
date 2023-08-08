@@ -34,7 +34,9 @@ function RscBalanceHistoryDropContentCard({
 
   const getTitle = () => {
     let title =
-      withdrawal.source?.purchase_type === "DOI"
+      withdrawal.source?.distribution_type === "RhCOMMENT_UPVOTED"
+        ? "Comment Upvoted"
+        : withdrawal.source?.purchase_type === "DOI"
         ? `DOI`
         : withdrawal.source?.purchase_type === "BOOST"
         ? "Supported Content"
