@@ -422,6 +422,7 @@ export default function ReferencesTable({
       >
         {"Infinite pagination!!!!!"}
       </div> */}
+
         {pdfIsOpen && (
           <DocumentViewer
             viewerWidth={860}

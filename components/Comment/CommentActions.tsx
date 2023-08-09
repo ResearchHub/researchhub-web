@@ -34,12 +34,11 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
   const dispatch = useDispatch();
   const commentTreeState = useContext(CommentTreeContext);
   const { relatedContent } = comment.thread;
+
   const isQuestion = relatedContent.type === "question";
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
-  const refManagerContext =
-    commentTreeState.context === COMMENT_CONTEXTS.REF_MANAGER;
 
   const getTooltipText = () => {
     if (
@@ -146,6 +145,27 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
         dispatch(showMessage({ show: true, error: true }));
       }
     }
+  };
+
+  const handleCopyLinkToComment = (e) => {
+    e.stopPropagation();
+    createSharableLinkToComment({
+      comment,
+      context: commentTreeState.context,
+      ...(commentTreeState.citation && {
+        citationId: commentTreeState.citation.id,
+      }),
+      ...(relatedContent.type !== "citation" && {
+        documentId: relatedContent.id,
+      }),
+      ...(relatedContent.type !== "citation" && {
+        documentType: relatedContent.type,
+      }),
+    });
+
+    dispatch(setMessage(`Link copied`));
+    // @ts-ignore
+    dispatch(showMessage({ show: true, error: false }));
   };
 
   // FIXME: Refactor into function
@@ -274,18 +294,9 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
         >
           <IconButton
             overrideStyle={styles.button}
-            onClick={(e) => {
-              e.stopPropagation();
-              createSharableLinkToComment(comment);
-
-              dispatch(setMessage(`Link copied`));
-              // @ts-ignore
-              dispatch(showMessage({ show: true, error: false }));
-            }}
+            onClick={handleCopyLinkToComment}
           >
             <FontAwesomeIcon
-              // fontSize={}
-              // fontWeight={600}
               icon={faLinkSimple}
               style={{ transform: "rotate(-45deg)" }}
             />

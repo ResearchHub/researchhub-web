@@ -77,8 +77,8 @@ const ViewerPage: NextPage<Props> = ({}) => {
 
   const pdfUrl = doc && doc.formats.find((f) => f.type === "pdf")?.url;
   const isReady =
-    (docType === "post" && fetchedPostHtml) ||
-    (docType == "paper" && fetchedDocument);
+    (docType === "post" && doc && fetchedPostHtml) ||
+    (docType == "paper" && doc && fetchedDocument);
 
   return (
     <div className={css(styles.wrapper)}>

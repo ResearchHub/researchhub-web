@@ -43,7 +43,7 @@ import Annotation from "./Annotation";
 import repositionAnnotations, {
   resetPositions,
 } from "./lib/repositionAnnotations";
-import createShareableLink from "./lib/createShareableLink";
+import createLinkToSelection from "./lib/createLinkToSelection";
 import XPathUtil from "./lib/xrange/XPathUtil";
 import CommentDrawer from "../../CommentDrawer";
 import { breakpoints } from "~/config/themes/screen";
@@ -163,6 +163,9 @@ const AnnotationLayer = ({
     height: 0,
   });
 
+  const currentContext = citationInstance
+    ? COMMENT_CONTEXTS.REF_MANAGER
+    : COMMENT_CONTEXTS.ANNOTATION;
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
@@ -1119,7 +1122,15 @@ const AnnotationLayer = ({
   };
 
   const _handleCreateSharableLink = () => {
-    createShareableLink({ selection });
+    createLinkToSelection({
+      selection,
+      context: currentContext,
+      ...(documentInstance && {
+        documentId: documentInstance?.id,
+        documentType: documentInstance?.type,
+      }),
+      ...(citationInstance && { citationId: citationInstance.id }),
+    });
     dispatch(setMessage(`Link copied`));
     // @ts-ignore
     dispatch(showMessage({ show: true, error: false }));
@@ -1194,9 +1205,8 @@ const AnnotationLayer = ({
             sort: sortOpts[0].value,
             filter: COMMENT_FILTERS.ANNOTATION,
             comments: inlineComments,
-            context: citationInstance
-              ? COMMENT_CONTEXTS.REF_MANAGER
-              : COMMENT_CONTEXTS.ANNOTATION,
+            citation: citationInstance,
+            context: currentContext,
             onCreate: _onCreate,
             onUpdate: _onUpdate,
             onRemove: _onRemove,

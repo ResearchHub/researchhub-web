@@ -1,23 +1,34 @@
-import { Comment as CommentType } from "./types";
+import { COMMENT_CONTEXTS, Comment as CommentType } from "./types";
 import copyTextToClipboard from "~/config/utils/copyTextToClipboard";
+import buildViewerUrl from "~/components/Document/lib/buildViewerUrl";
+import { ID, RhDocumentType } from "~/config/types/root_types";
 
-const createSharableLinkToComment = (comment: CommentType) => {
+interface Props {
+  comment: CommentType;
+  context?: COMMENT_CONTEXTS;
+  documentType?: RhDocumentType;
+  documentId?: ID;
+  citationId?: ID;
+}
 
-  let _root: CommentType | undefined = comment;
-  let threadId: string | undefined = undefined;
-  while (_root) {
-    if (_root?.thread?.id) {
-      threadId = String(_root.thread.id);
-      break;
-    }
-
-    _root = _root?.parent;
-    console.log('iteration')
+const createSharableLinkToComment = ({
+  comment,
+  documentId,
+  citationId,
+  documentType,
+  context = COMMENT_CONTEXTS.GENERIC,
+}: Props) => {
+  let url: URL;
+  if (context === COMMENT_CONTEXTS.REF_MANAGER) {
+    url = buildViewerUrl({
+      documentType,
+      documentId,
+      citationId,
+    });
+  } else {
+    url = new URL(window.location.href);
+    url.hash = `#threadId=${comment.thread.id}`;
   }
-
-
-  const url = new URL(window.location.href);
-  url.hash = `#threadId=${threadId}`;
 
   copyTextToClipboard(url.href);
   return url;
