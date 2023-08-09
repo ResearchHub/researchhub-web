@@ -292,7 +292,7 @@
   font-weight: bold;
   color: var(--VERY_DARK_GREY51);
   background: var(--WHITE);
-  box-shadow: 2px 2px 1px var(--PURE_BLACK_0_05);
+  box-shadow: 2px 2px 1px var(--PURE_BLACK_0_15);
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;

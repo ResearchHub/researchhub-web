@@ -5,6 +5,7 @@ import { StyleSheet } from "aphrodite";
 import HubCard from "./HubCard";
 import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
+import colors from "~/config/themes/colors";
 
 const ColumnHubs = (props) => {
   const { paper, hubs } = props;

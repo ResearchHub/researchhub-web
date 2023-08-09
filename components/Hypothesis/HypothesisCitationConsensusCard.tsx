@@ -41,7 +41,7 @@ export default function HypothesisCitationConsensusCard({
   const totalVoteCount = downCount + neutralCount + upCount;
 
   return (
-    <div className={css(styles.hypothesisCitationConsensusCard)}>
+    (<div className={css(styles.hypothesisCitationConsensusCard)}>
       <div className={css(styles.title)}>{"Current conclusion"}</div>
       <div className={css(styles.body)}>
         <div className={css(styles.consensusTextGroup)}>
@@ -107,7 +107,7 @@ export default function HypothesisCitationConsensusCard({
           )}
         </div>
       </div>
-    </div>
+    </div>)
   );
 }
 

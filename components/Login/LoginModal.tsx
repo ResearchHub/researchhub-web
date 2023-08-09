@@ -772,7 +772,7 @@ const styles = StyleSheet.create({
     minHeight: 40,
   },
   googleButton: {
-    background: colors.WHITE(), // colors.GREY_ICY_BLUE_HUE,
+    background: colors.WHITE(),
     border: `1px solid ${colors.BLACK()}`,
     borderRadius: "4px",
     color: colors.BLACK(),
@@ -785,7 +785,7 @@ const styles = StyleSheet.create({
   modalContentStyle: {
     padding: 0,
     width: 460,
-    backgroundColor: colors.WHITE(), // colors.GREY_ICY_BLUE_HUE,
+    backgroundColor: colors.WHITE(),
     display: "block",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",

@@ -63,8 +63,8 @@ const styles = StyleSheet.create({
     borderBottom: `3px solid ${colors.NEW_BLUE()}`,
     background: colors.WHITE(),
     color: colors.BLUE(),
-    background: `linear-gradient(90deg, ${NEW_BLUE(0.1)} 0%, 
-        ${NEW_BLUE(0)} 100%)`,
+    background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+        ${colors.NEW_BLUE(0)} 100%)`,
     boxSizing: "border-box",
   },
   rhIcon: {

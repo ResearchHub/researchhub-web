@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     ":hover": {
       cursor: "pointer",
-      background: colors.INPUT_BACKGROUND_GREYROUND_GREY,
+      background: colors.INPUT_BACKGROUND_GREY,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
     ":hover .url": {

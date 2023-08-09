@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     background: colors.WHITE(),
   },
   topArea: {
-    background: colors.WHITE(), // colors.GREY_ICY_BLUE_HUE,
+    background: colors.WHITE(),
     paddingTop: 25,
   },
   bodyArea: {

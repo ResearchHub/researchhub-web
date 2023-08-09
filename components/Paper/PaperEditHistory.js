@@ -9,6 +9,8 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
+
+// Config
 import colors from "~/config/themes/colors";
 
 class PaperEditHistory extends Component {

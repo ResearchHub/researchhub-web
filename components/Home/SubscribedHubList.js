@@ -259,18 +259,18 @@ const styles = StyleSheet.create({
     borderLeft: `3px solid ${colors.WHITE()}`,
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-      backgroundColor: colors.INPUT_BACKGROUND_GREYROUND_GREY,
+      backgroundColor: colors.INPUT_BACKGROUND_GREY,
     },
     ":active": {
       color: colors.NEW_BLUE(),
-      background: `linear-gradient(90deg, ${NEW_BLUE(0.1)} 0%, 
-        ${NEW_BLUE(0)} 100%)`,
+      background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+        ${colors.NEW_BLUE(0)} 100%)`,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
     ":focus": {
       color: colors.NEW_BLUE(),
-      background: `linear-gradient(90deg, ${NEW_BLUE(0.1)} 0%, 
-        ${NEW_BLUE(0)} 100%)`,
+      background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+        ${colors.NEW_BLUE(0)} 100%)`,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
   },
@@ -300,8 +300,8 @@ const styles = StyleSheet.create({
   },
   current: {
     color: colors.NEW_BLUE(),
-    background: `linear-gradient(90deg, ${NEW_BLUE(0.1)} 0%, 
-        ${NEW_BLUE(0)} 100%)`,
+    background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+        ${colors.NEW_BLUE(0)} 100%)`,
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
   hubsList: {

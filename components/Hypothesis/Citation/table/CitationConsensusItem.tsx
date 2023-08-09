@@ -97,7 +97,7 @@ function getDetailedText({
   const isPlural = !isNaN(totalCount) && totalCount > 1;
   const answer = doesMajoritySupport ? "yes" : "no";
   return (
-    <div
+    (<div
       className={css(
         styles.resultWrap,
         Boolean(disableText ?? false) && styles.hideText
@@ -150,7 +150,7 @@ function getDetailedText({
             : `${Math.floor(majorityPercent)}% of researchers think ${answer}`}
         </ReactTooltip>
       </div>
-    </div>
+    </div>)
   );
 }
 
@@ -391,7 +391,7 @@ function CitationConsensusItem({
     ) : null;
 
   return (
-    <div className={css(styles.citationConsensusItem)}>
+    (<div className={css(styles.citationConsensusItem)}>
       <div className={css(styles.wrapper)}>
         {consensusBar}
         {hasCurrUserVoted || !shouldAllowVote ? null : (
@@ -434,7 +434,7 @@ function CitationConsensusItem({
           </div>
         )}
       </div>
-    </div>
+    </div>)
   );
 }
 

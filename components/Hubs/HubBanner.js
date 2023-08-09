@@ -1,5 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import colors from "~/config/themes/colors";
 
 const HubBanner = (props) => {
   const { hub } = props;

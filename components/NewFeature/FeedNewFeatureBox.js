@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 import Button from "../Form/Button";
 import RHLogo from "~/components/Home/RHLogo";
+import colors from "~/config/themes/colors";
 
 function FeedNewFeatureBox({
   feature,

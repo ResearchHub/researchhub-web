@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 
 import PreviewPlaceholder from "./PreviewPlaceholder";
+
 import colors from "~/config/themes/colors";
 
 const CitationPreviewPlaceholder = () => (

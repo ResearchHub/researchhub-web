@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { StyleSheet } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
+import colors from "~/config/themes/colors";
 
 // Component
 import { SideColumnTitle } from "~/components/Typography";

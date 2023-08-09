@@ -453,7 +453,7 @@ var styles = StyleSheet.create({
     width: "inherit",
     height: "inherit",
     maxWidth: 2000,
-    backgroundColor: colors.WHITE(), // colors.GREY_ICY_BLUE_HUE,
+    backgroundColor: colors.WHITE(),
   },
   column: {
     display: "flex",

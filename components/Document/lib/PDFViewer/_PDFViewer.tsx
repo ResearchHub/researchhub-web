@@ -108,7 +108,7 @@ const PDFViewer = ({
               renderAnnotationLayer={false}
               renderTextLayer={false}
             />
-            {!renderedPages.includes(index + 2) && (
+            {colors.id === "dark" && !renderedPages.includes(index + 2) && (
               <div className={css(styles.darkModeOverlay)}></div>
             )}
           </div>

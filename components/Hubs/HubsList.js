@@ -256,21 +256,21 @@ const styles = StyleSheet.create({
     },
     ":active": {
       color: colors.NEW_BLUE(),
-      background: `linear-gradient(90deg, ${NEW_BLUE(0.1)} 0%, 
-        ${NEW_BLUE(0)} 100%)`,
+      background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+        ${colors.NEW_BLUE(0)} 100%)`,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
     ":focus": {
       color: colors.NEW_BLUE(),
-      background: `linear-gradient(90deg, ${NEW_BLUE(0.1)} 0%, 
-        ${NEW_BLUE(0)} 100%)`,
+      background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+        ${colors.NEW_BLUE(0)} 100%)`,
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
   },
   current: {
     color: colors.NEW_BLUE(),
-    background: `linear-gradient(90deg, ${NEW_BLUE(0.1)} 0%, 
-        ${NEW_BLUE(0)} 100%)`,
+    background: `linear-gradient(90deg, ${colors.NEW_BLUE(0.1)} 0%, 
+        ${colors.NEW_BLUE(0)} 100%)`,
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
   hubsList: {

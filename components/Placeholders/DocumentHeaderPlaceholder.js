@@ -6,6 +6,7 @@ import {
 } from "react-placeholder/lib/placeholders";
 import { voteWidgetIcons } from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
+import colors from "~/config/themes/colors";
 
 const DocumentHeaderPlaceholder = ({
   color = colors.PLACEHOLDER_CARD_BACKGROUND,

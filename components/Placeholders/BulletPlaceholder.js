@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 
 import { TextBlock, TextRow } from "react-placeholder/lib/placeholders";
+
 import colors from "../../config/themes/colors";
 
 const BulletPlaceholder = ({ color }) => (

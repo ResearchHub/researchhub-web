@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     padding: 20,
     borderBottom: `1px solid ${colors.LIGHT_GRAY221()}`,
-    backgroundColor: colors.INPUT_BACKGROUND_GREYVER_WHITE,
+    backgroundColor: colors.INPUT_BACKGROUND_GREY,
     fontSize: 14,
   },
 });

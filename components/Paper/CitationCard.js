@@ -8,6 +8,7 @@ import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
 import Link from "next/link";
 import ReactPlaceholder from "react-placeholder/lib";
+import colors from "~/config/themes/colors";
 
 // Components
 import HubTag from "~/components/Hubs/HubTag";

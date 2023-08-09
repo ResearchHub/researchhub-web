@@ -9,7 +9,7 @@ import "rangy/lib/rangy-textrange.js";
 import XPathUtil from "./XPathUtil";
 
 const IS_LOGGING_ON = true;
-// TODO: test this in dark mode
+
 function log(msg: string, level?: string) {
   if (IS_LOGGING_ON) {
     if (level === "warning" && typeof msg === "string") {

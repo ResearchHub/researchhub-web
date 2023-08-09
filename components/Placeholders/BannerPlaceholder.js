@@ -2,6 +2,8 @@ import { StyleSheet, css } from "aphrodite";
 
 import { RectShape } from "react-placeholder/lib/placeholders";
 
+import colors from "~/config/themes/colors";
+
 const BannerPlaceholder = (props) => {
   return (
     <div className={css(styles.card) + " show-loading-animation"}>

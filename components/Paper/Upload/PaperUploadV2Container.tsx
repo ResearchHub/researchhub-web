@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import PaperUploadV2Create from "./PaperUploadV2Create";
 import PaperUploadV2Update from "./PaperUploadV2Update";
 import { ReactElement } from "react";
+import colors from "../../../config/themes/colors";
 
 export default function PaperUploadV2Container(): ReactElement<"div"> {
   const router = useRouter();
