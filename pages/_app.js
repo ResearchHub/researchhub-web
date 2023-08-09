@@ -82,6 +82,7 @@ const MyApp = ({
 
       router.events.on("routeChangeStart", (url) => {
         console.log("route change queued");
+        clearTimeout(showLoader.current);
         showLoader.current = setTimeout(() => {
           store.dispatch(MessageActions.setMessage(""));
           store.dispatch(
