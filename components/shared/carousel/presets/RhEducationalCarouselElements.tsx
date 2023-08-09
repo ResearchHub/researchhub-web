@@ -21,7 +21,7 @@ export const getEducationalCarouselElements = () => [
     body: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
         {
-          "A tool for the open publication and discussion of scientific research. ResearchHub’s users are rewarded with ResearchCoin (RSC) for publishing, reviewing, criticizing, and collaborating in the open."
+          "A modern day pre-print server and platform for open science where users can review, publish, and collaborate on scientific research. Our mission is to accelerate science."
         }
 
         <div className={css(DEFAULT_ITEM_STYLE.learnMore)}>
@@ -49,7 +49,7 @@ export const getEducationalCarouselElements = () => [
     body: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
         {
-          "RSC is a reward token users earn for posting great content. Holding RSC gives users the ability to create bounties, tip authors, and vote in community governance."
+          "RSC is a reward token users earn for contributing content. Every upvote earns RSC. Holding RSC gives users the ability to create bounties, tip authors, and vote in community governance."
         }
 
         <div className={css(DEFAULT_ITEM_STYLE.learnMore)}>
@@ -78,10 +78,7 @@ export const getEducationalCarouselElements = () => [
     ),
     body: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
-        Introducing ResearchHub's all-new reference manager: your ultimate
-        partner in scholarly research. Streamline your academic workflow with
-        its multiplayer features, effortlessly organizing and citing references
-        across various formats.
+        Introducing ResearchHub's all-new reference manager: your partner in scholarly research. Streamline your academic workflow with its multiplayer features, effortlessly organizing and citing references across various formats.
         <div className={css(DEFAULT_ITEM_STYLE.learnMore)}>
           <ALink
             theme="solidPrimary"
