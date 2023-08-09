@@ -91,6 +91,7 @@ export type FeedCardProps = {
   user: any;
   voteCallback: any;
   withSidePadding?: boolean;
+  type: string;
 };
 
 const documentIcons = {
@@ -110,6 +111,7 @@ function FeedCard({
   featured,
   first_figure,
   first_preview,
+  type,
   formattedDocLabel,
   formattedDocType,
   handleClick,
@@ -278,7 +280,8 @@ function FeedCard({
           className={css(
             styles.feedCard,
             featured && styles.featuredContainer,
-            withSidePadding && styles.padding16
+            withSidePadding && styles.padding16,
+            type === "upload-paper" && styles.paperUploadCard
           )}
         >
           {!hideVotes && (
@@ -515,6 +518,11 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
+  },
+  paperUploadCard: {
+    paddingLeft: 16,
+    paddingRight: 16,
+    borderTop: `1px solid ${genericCardColors.BORDER}`,
   },
   noBorder: {
     borderBottom: `1px solid ${genericCardColors.BORDER}`,
