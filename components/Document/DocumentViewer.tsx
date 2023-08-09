@@ -20,6 +20,7 @@ import {
   CommentThreadGroup,
 } from "../Comment/lib/types";
 import config from "./lib/config";
+
 const AnnotationLayer = dynamic(
   () => import("~/components/Comment/modules/annotation/AnnotationLayer")
 );
@@ -44,6 +45,7 @@ type Props = {
   expanded?: boolean;
   hasError?: boolean;
   onClose?: Function;
+  showExpandBtn?: boolean;
 };
 
 const DocumentViewer = ({
@@ -56,6 +58,7 @@ const DocumentViewer = ({
   document: doc,
   expanded = false,
   hasError = false,
+  showExpandBtn = true,
   onClose,
 }: Props) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(expanded);
@@ -270,6 +273,7 @@ const DocumentViewer = ({
       {isExpanded && (
         <DocumentExpandedNav
           document={doc}
+          documentInstance={documentInstance}
           handleClose={() => {
             onClose && onClose();
             setIsExpanded(false);
@@ -346,7 +350,7 @@ const DocumentViewer = ({
               handleZoomOut={handleZoomOut}
               handleZoomSelection={handleZoomSelection}
               currentZoom={isExpanded ? fullScreenSelectedZoom : selectedZoom}
-              showExpand={true}
+              showExpand={showExpandBtn}
               isExpanded={isExpanded}
               annotationCount={annotationCount}
             />

@@ -5,17 +5,20 @@ import {
   faXmark,
   faFileArrowDown,
   faLongArrowLeft,
+  faGlobe,
 } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
 import { useContext } from "react";
 import { DocumentContext } from "./lib/DocumentContext";
 import DocumentOptions from "./DocumentOptions";
-import { GenericDocument } from "./lib/types";
+import { ContentInstance, GenericDocument } from "./lib/types";
+import Link from "next/link";
 
 interface Props {
   pdfUrl?: string;
   handleClose: Function;
-  document?: GenericDocument;
+  document?: GenericDocument | null;
+  documentInstance?: ContentInstance;
 }
 
 function downloadPDF(pdfUrl) {
@@ -33,7 +36,12 @@ function downloadPDF(pdfUrl) {
   document.body.removeChild(link);
 }
 
-const DocumentExpandedNav = ({ pdfUrl, document: doc, handleClose }: Props) => {
+const DocumentExpandedNav = ({
+  pdfUrl,
+  document: doc,
+  documentInstance,
+  handleClose,
+}: Props) => {
   return (
     <div className={css(styles.expandedNav)}>
       <div className={css(styles.actionsWrapper)}>
@@ -57,6 +65,17 @@ const DocumentExpandedNav = ({ pdfUrl, document: doc, handleClose }: Props) => {
               </IconButton>
             </div>
           )}
+          <Link href={`${documentInstance?.type}/${documentInstance?.id}`}>
+            <div className={css(styles.publicPageBtnWrapper)}>
+              <IconButton variant="round" overrideStyle={styles.viewerNavBtn}>
+                <FontAwesomeIcon
+                  icon={faGlobe}
+                  style={{ fontSize: 16, marginRight: 4 }}
+                />
+                View public page
+              </IconButton>
+            </div>
+          </Link>
           {doc && (
             <div>
               <DocumentOptions document={doc} />
@@ -79,6 +98,16 @@ const styles = StyleSheet.create({
     padding: "0 15px",
     boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
   },
+  publicPageBtnWrapper: {
+    fontSize: 14,
+    position: "absolute",
+    left: "50%",
+    top: 2,
+    fontWeight: 400,
+    display: "flex",
+    alignItems: "center",
+    transform: "translateX(-50%)",
+  },
   rightActions: {
     marginLeft: "auto",
   },
@@ -86,12 +115,13 @@ const styles = StyleSheet.create({
     display: "flex",
     marginTop: 3,
   },
-  closeBtn: {},
+  closeBtn: {
+    height: 33,
+    width: 33,
+  },
   downloadBtn: {},
   viewerNavBtn: {
     color: "black",
-    height: 33,
-    width: 33,
     border: "none",
     boxSizing: "border-box",
     ":hover": {

@@ -482,6 +482,7 @@ function FeedCard({
           <DocumentViewer
             pdfUrl={paper.file || paper.pdf_url}
             expanded={true}
+            showExpandBtn={false}
             onClose={() => setIsPreviewing(false)}
             documentInstance={{
               id: paper.id,
