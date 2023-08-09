@@ -93,6 +93,7 @@ class UploadPaperModal extends Component {
             <FeedCard
               {...paper}
               formattedDocType={"paper"}
+              type="upload-paper"
               handleClick={(event) => {
                 event?.preventDefault();
                 this.props.modalActions.openUploadPaperModal(false);
@@ -208,8 +209,8 @@ const styles = StyleSheet.create({
   searchCount: {
     width: "100%",
     textAlign: "center",
-    fontWeight: 400,
-    fontSize: 14,
+    fontWeight: 500,
+    fontSize: 20,
     color: "#4f4d5f",
     marginBottom: 25,
     textShadow: "1px 1px 2px #FAFAFA",
@@ -330,10 +331,8 @@ const styles = StyleSheet.create({
     overflowY: "auto",
     width: 600,
     maxHeight: 400,
-    padding: "10px 15px",
     boxSizing: "border-box",
     position: "relative",
-    backgroundColor: "#F7F7FB",
     "@media only screen and (max-width: 665px)": {
       width: 380,
     },

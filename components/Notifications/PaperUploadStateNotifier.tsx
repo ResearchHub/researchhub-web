@@ -165,7 +165,14 @@ function PaperUploadStateNotifier({
           uploaderContextValues,
         });
 
-        if (Boolean(bodyResult[0]) && toastType !== bodyResult[0]) {
+        // TODO: Fix the rendering of this in duplicate state, for now don't render these states
+        if (
+          Boolean(bodyResult[0]) &&
+          toastType !== bodyResult[0] &&
+          paperUploadStatus !== "FAILED_DUPLICATE" &&
+          paperUploadStatus !== "PROCESSING" &&
+          paperUploadStatus !== "PROCESSING_MANUBOT"
+        ) {
           toast(bodyResult[1], {
             onClose: markAsRead,
             containerId: "paper-upload-toast",
