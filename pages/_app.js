@@ -82,15 +82,15 @@ const MyApp = ({
       showLoader.current = setTimeout(() => {
         store.dispatch(MessageActions.setMessage(""));
         store.dispatch(MessageActions.showMessage({ show: true, load: true }));
-        debugger;
+        console.log("route change starting");
       }, 200);
     });
 
     router.events.on("routeChangeComplete", (url) => {
-      debugger;
       connectSift();
       clearTimeout(showLoader.current);
       store.dispatch(MessageActions.showMessage({ show: false }));
+      console.log("route change complete");
     });
 
     Router.events.on("routeChangeError", () => {
