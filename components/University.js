@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGraduationCap } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
+import colors from "~/config/themes/colors";
 
 const University = (props) => {
   const { university } = props || {};

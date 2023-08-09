@@ -6,6 +6,7 @@ import HypothesisSubmitForm from "~/components/Hypothesis/HypothesisSubmitForm";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import ALink from "~/components/ALink";
+import colors from "~/config/themes/colors";
 
 export default function Index() {
   const router = useRouter();

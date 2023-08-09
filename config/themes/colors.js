@@ -4,7 +4,6 @@ const lightColors = {
   BLACK_TEXT: (opacity = 1) => `rgba(64, 64, 64, ${opacity})`, // #404040
   BLUE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`, // #4E53FF
   DARK_GREEN: (opacity = 1) => `rgba(61, 143, 88, ${opacity})`, // #3D8F58
-  // DARK_YELLOW: (opacity = 1) => `rgba(239, 160, 0, ${opacity})`, // #EFA000 This is defined again below. Seems like an oversight.
   DARK_YELLOW: (opacity = 1) => `rgba(235, 175, 61, ${opacity})`, // #EBAF3D
   DARKER_GREY: (opacity = 1) => `rgba(102, 102, 102, ${opacity})`, // #666666
   DARKER_GREY101: (opacity = 1) => `rgba(101, 101, 101, ${opacity})`, // #656565
@@ -13,7 +12,6 @@ const lightColors = {
   EDITOR_TAG_BACKGROUND: "rgba(232, 181, 4, 0.1)",
   EDITOR_TAG_TEXT: "#E8B504", //rgba(232, 181, 4, 1)
   ERROR_BACKGROUND: (opacity = 1) => `rgba(255, 83, 83, ${opacity})`, // #FF5353
-  // GREEN: (opacity = 1) => `rgba(100, 196, 143, ${opacity})`, // #64C48F Defined twice. Seems like an oversight.
   GREEN: (opacity = 1) => `rgba(30, 207, 49, ${opacity})`, // #1ECF31
   GREY_BORDER: "#EBEBEB", //rgba(232, 232, 239, 1)
   GREY_ICY_BLUE_HUE: "rgba(249, 249, 252, 1)", // #F9F9FC

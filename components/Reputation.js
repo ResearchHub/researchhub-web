@@ -3,6 +3,7 @@ import { useDispatch, connect } from "react-redux";
 import { ModalActions } from "~/redux/modals";
 import { useState, useEffect } from "react";
 import ReputationTooltip from "./ReputationTooltip";
+import colors from "~/config/themes/colors";
 
 const Reputation = (props) => {
   const { reputation, balance, showBalance } = props;

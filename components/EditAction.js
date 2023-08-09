@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import ActionButton from "~/components/ActionButton";
+import colors from "~/config/themes/colors";
 
 const EditAction = (props) => {
   const { onClick, readOnly, iconView } = props;

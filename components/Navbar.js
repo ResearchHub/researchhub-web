@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
     fontSize: 18,
     width: 40,
-    color: colors.WHITE(), // colors.NEW_BLUE(),
+    color: colors.WHITE(),
     textAlign: "center",
   },
   burgerIcon: {

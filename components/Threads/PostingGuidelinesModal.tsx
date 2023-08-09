@@ -2,6 +2,7 @@ import { ReactElement } from "react";
 import BaseModal from "~/components/Modals/BaseModal";
 import { css, StyleSheet } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
+import colors from "~/config/themes/colors";
 
 type Props = {
   isOpen: Boolean;

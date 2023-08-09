@@ -3,6 +3,7 @@ import { faFlag } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import { useStore, useDispatch } from "react-redux";
 import { useAlert } from "react-alert";
+import colors from "~/config/themes/colors";
 
 // Components
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
