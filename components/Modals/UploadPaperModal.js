@@ -8,7 +8,6 @@ import Ripple from "react-ripples";
 // Redux
 import { ModalActions } from "../../redux/modals";
 import { PaperActions } from "../../redux/paper";
-import { MessageActions } from "../../redux/message";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -16,8 +15,6 @@ const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
 // Component
 import FeedCard from "~/components/Author/Tabs/FeedCard";
-
-const TRANSITION_TIME = 300;
 
 class UploadPaperModal extends Component {
   constructor(props) {
@@ -437,7 +434,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
   paperActions: bindActionCreators(PaperActions, dispatch),
-  messageActions: bindActionCreators(MessageActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UploadPaperModal);
