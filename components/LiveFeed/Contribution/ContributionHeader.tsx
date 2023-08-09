@@ -22,7 +22,6 @@ import { formatBountyAmount } from "~/config/types/bounty";
 import { truncateText } from "~/config/utils/string";
 import { COMMENT_TYPES } from "~/components/Comment/lib/types";
 
-
 type Args = {
   entry: Contribution;
 };
@@ -109,14 +108,14 @@ const ContributionHeader = ({ entry }: Args) => {
                 {item.recipient.firstName} {item.recipient.lastName}
               </ALink>
             }
-          />
+          />{" "}
           {badge}
           {" for their "}
           <ALink
             overrideStyle={styles.link}
             href={getUrlToUniDoc(item.source.unifiedDocument)}
           >
-            {item.source?.contentType.name}
+            {item.source?.contentType.name + " "}
           </ALink>
         </>
       );
@@ -194,15 +193,12 @@ const ContributionHeader = ({ entry }: Args) => {
             {/* @ts-ignore */}
             {unifiedDocument && (
               <span className={css(styles.unifiedDocument)}>
-              <ALink
-                overrideStyle={styles.link}
-                href={getUrlToUniDoc(unifiedDocument)}
-              >
-                {truncateText(unifiedDocument?.document?.title, 100)}
-              </ALink>
-
-
-                
+                <ALink
+                  overrideStyle={styles.link}
+                  href={getUrlToUniDoc(unifiedDocument)}
+                >
+                  {truncateText(unifiedDocument?.document?.title, 100)}
+                </ALink>
               </span>
             )}
           </div>
@@ -265,6 +261,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     flex: 1,
     lineHeight: "1.5em",
+    whiteSpace: "pre-wrap",
   },
   contentBadge: {
     marginTop: 10,
