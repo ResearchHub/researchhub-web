@@ -79,6 +79,7 @@ const MyApp = ({
     connectSift();
 
     router.events.on("routeChangeStart", (url) => {
+      console.log("route change queued");
       showLoader.current = setTimeout(() => {
         store.dispatch(MessageActions.setMessage(""));
         store.dispatch(MessageActions.showMessage({ show: true, load: true }));
