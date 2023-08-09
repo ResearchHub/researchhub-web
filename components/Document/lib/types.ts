@@ -82,6 +82,7 @@ export type ReviewSummary = {
 };
 
 export interface GenericDocument {
+  srcUrl: string;
   id: ID;
   unifiedDocument: UnifiedDocument;
   authors: AuthorProfile[];

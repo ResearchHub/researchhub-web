@@ -1,7 +1,7 @@
 import fetchPaper from "../api/fetchPaper";
 import fetchPost from "../api/fetchPost";
 
-export const getDocumentByType = async ({ documentType, documentId }) => {
+export const fetchDocumentByType = async ({ documentType, documentId }) => {
   switch (documentType) {
     case "paper":
       return fetchPaper({ paperId: documentId });
