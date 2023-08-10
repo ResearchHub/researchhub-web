@@ -153,14 +153,18 @@ const styles = StyleSheet.create({
   displayIcon: {
     marginRight: 8,
     fontSize: 16,
+    color: colors.PURE_BLACK(),
   },
   displayLabel: {
+    color: colors.PURE_BLACK(),
     marginRight: 8,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
   },
-  displayDown: {},
+  displayDown: {
+    color: colors.PURE_BLACK(),
+  },
   dropdownBody: {
     position: "absolute",
     top: 35,

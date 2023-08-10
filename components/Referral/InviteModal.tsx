@@ -236,7 +236,11 @@ const InviteModal = ({
                 />
               </div>
             ) : (
-              <div>Login first to view your personalized link</div>
+              <div>
+                <span style={{ color: colors.PURE_BLACK() }}>
+                  Login first to view your personalized link
+                </span>
+              </div>
             )}
           </div>
         )}
@@ -312,7 +316,12 @@ const InviteModal = ({
                 </form>
               </div>
             ) : (
-              <div>Login first in order to invite others</div>
+              <div>
+                {" "}
+                <span style={{ color: colors.PURE_BLACK() }}>
+                  Login first in order to invite others
+                </span>
+              </div>
             )}
           </div>
         )}
@@ -330,8 +339,12 @@ const InviteModal = ({
         </h4>
         <div className={css(styles.highlightedSection)}>
           <ol className={css(styles.highlightedSectionList)}>
-            <li>Share your referral link</li>
-            <li>
+            <li style={{ color: colors.PURE_BLACK() }}>
+              <span style={{ color: colors.PURE_BLACK() }}>
+                Share your referral link
+              </span>
+            </li>
+            <li style={{ color: colors.PURE_BLACK() }}>
               Earn{" "}
               <span
                 style={{
@@ -341,10 +354,14 @@ const InviteModal = ({
               >
                 7%
               </span>{" "}
-              of user's RSC earnings on ResearchHub for the first six month
-              period
+              <span style={{ color: colors.PURE_BLACK() }}>
+                of user's RSC earnings on ResearchHub for the first six month
+                period
+              </span>
               <div className={css(styles.example)}>
-                Example: If they earn 100 RSC, you will earn 7 RSC
+                <span style={{ color: colors.PURE_BLACK() }}>
+                  Example: If they earn 100 RSC, you will earn 7 RSC
+                </span>
               </div>
             </li>
           </ol>
@@ -459,6 +476,7 @@ const styles = StyleSheet.create({
     color: colors.MEDIUM_GREY2(),
   },
   details: {
+    color: colors.PURE_BLACK(),
     textAlign: "left",
     fontWeight: 400,
     width: "100%",
@@ -478,6 +496,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     display: "flex",
     justifyContent: "space-between",
+    color: colors.PURE_BLACK(),
   },
   link: {
     fontSize: 14,
