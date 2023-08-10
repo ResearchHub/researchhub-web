@@ -873,6 +873,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   primaryEmail: {
+    color: colors.PURE_BLACK(),
     width: "100%",
     fontSize: 16,
     fontWeight: 300,
@@ -997,6 +998,7 @@ const styles = StyleSheet.create({
     },
   },
   checkboxLabel: {
+    color: colors.PURE_BLACK(),
     fontSize: 16,
   },
   optOut: {

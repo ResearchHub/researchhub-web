@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     userSelect: "none",
   },
   shareLink: {
+    color: colors.PURE_BLACK(),
     cursor: "pointer",
     fontSize: 16,
     margin: "0px 20px",

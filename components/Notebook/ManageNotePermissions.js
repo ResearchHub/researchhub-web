@@ -561,6 +561,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   nameWrapper: {
+    color: colors.BLACK_TEXT(),
     display: "flex",
     flexDirection: "column",
     marginLeft: 10,

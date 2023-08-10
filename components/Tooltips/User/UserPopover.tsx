@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   name: {
+    color: colors.PURE_BLACK(),
     marginBottom: 5,
     fontSize: 18,
     fontWeight: 500,
@@ -218,6 +219,7 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     fontSize: 14,
     opacity: 0.5,
+    color: colors.PURE_BLACK(),
   },
 });
 

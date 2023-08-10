@@ -220,6 +220,7 @@ export default function EditorsDashboard(): ReactElement<"div"> {
 
 export const styles = StyleSheet.create({
   dashboard: {
+    color: colors.PURE_BLACK(),
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",

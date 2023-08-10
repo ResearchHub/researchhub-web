@@ -148,6 +148,7 @@ class FormSelect extends Component {
         ...formatStyle(indicatorSeparator),
       }),
       singleValue: (styles) => ({
+        backgroundColor: colors.DARKER_GREY(),
         ...styles,
         ...formatStyle(singleValue),
       }),
@@ -164,7 +165,7 @@ class FormSelect extends Component {
       multiValue: (styles, { data }) => {
         return {
           ...styles,
-          backgroundColor: colors.LIGHT_GRAYISH_BLUE10(),
+          backgroundColor: colors.PURE_BLACK(),
           ...formatStyle(multiTagStyle),
         };
       },

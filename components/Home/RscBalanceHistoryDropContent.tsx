@@ -248,6 +248,7 @@ const styles = StyleSheet.create({
   },
   rscToDisplay: {},
   balanceText: {
+    color: colors.PURE_BLACK(),
     fontSize: 16,
     fontWeight: 500,
     whiteSpace: "pre-wrap",

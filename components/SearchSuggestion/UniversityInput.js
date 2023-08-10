@@ -296,6 +296,7 @@ const styles = StyleSheet.create({
     },
   },
   emptyMessage: {
+    color: colors.PURE_BLACK(),
     height: "100%",
     display: "flex",
     alignItems: "center",

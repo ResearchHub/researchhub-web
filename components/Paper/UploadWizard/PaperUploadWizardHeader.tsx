@@ -83,7 +83,7 @@ export default function PaperUploadWizardHeader({
             {"Upload PDF"}
           </div>
         ) : (
-          "Upload Paper"
+          <span style={{ color: colors.PURE_BLACK() }}>"Upload Paper"</span>
         )}
         <a
           className={css(formGenericStyles.authorGuidelines)}

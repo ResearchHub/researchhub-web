@@ -299,6 +299,7 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
 
 const styles = StyleSheet.create({
   subheader: {
+    color: colors.BLACK_TEXT(),
     fontWeight: 500,
     marginTop: 10,
     marginBottom: 10,
@@ -310,6 +311,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.BLUE(1),
   },
   userList: {
+    color: colors.BLACK_TEXT(),
     paddingTop: 8,
     paddingBottom: 20,
     borderRadius: "2px",

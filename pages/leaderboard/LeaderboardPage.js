@@ -901,6 +901,7 @@ export const styles = StyleSheet.create({
     fontSize: 20,
   },
   emptyStateContainer: {
+    color: colors.PURE_BLACK(),
     display: "flex",
     justifyContent: "center",
     width: "100%",

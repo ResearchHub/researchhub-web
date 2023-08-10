@@ -1254,6 +1254,7 @@ const styles = StyleSheet.create({
     },
   },
   authorName: {
+    color: colors.PURE_BLACK(),
     fontWeight: 500,
     fontSize: 30,
     textTransform: "capitalize",

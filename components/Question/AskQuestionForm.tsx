@@ -231,6 +231,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
+    color: colors.PURE_BLACK(),
     borderBottom: `1px solid ${colors.GREY_BORDER}`,
     display: "flex",
     fontSize: 26,

@@ -458,6 +458,7 @@ const styles = StyleSheet.create({
     maxWidth: 851,
   },
   label: {
+    color: colors.PURE_BLACK(),
     fontSize: 16,
     fontWeight: 500,
   },

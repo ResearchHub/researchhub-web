@@ -244,6 +244,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     fontSize: 13,
     fontWeight: 500,
+    color: colors.PURE_BLACK(),
   },
   emptyState: {
     display: "flex",
@@ -255,6 +256,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottom: `1px solid ${colors.LIGHT_GRAY221()}`,
     backgroundColor: colors.INPUT_BACKGROUND_GREY,
+    color: colors.PURE_BLACK(),
     fontSize: 14,
   },
 });
