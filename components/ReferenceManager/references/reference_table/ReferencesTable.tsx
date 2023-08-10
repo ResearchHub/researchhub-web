@@ -377,41 +377,47 @@ export default function ReferencesTable({
                   <div style={{ marginRight: 10 }}>
                     {/* Replace with your actual action buttons */}
                     <Stack direction="row" spacing={0}>
-                      <Tooltip title="Open" placement="top">
-                        <IconButton
-                          aria-label="Open"
-                          onClick={() => {
-                            setPdfIsOpen(true);
-                            setPdfUrl(row.row.raw_data.attachment);
-                          }}
-                          sx={{
-                            padding: 1,
-                            fontSize: "22px",
-                            "&:hover": {
-                              background: "rgba(25, 118, 210, 0.04) !important",
-                            },
-                          }}
-                        >
-                          <OpenWithOutlinedIcon fontSize="inherit" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Edit Metadata" placement="top">
-                        <IconButton
-                          aria-label="Edit Metadata"
-                          sx={{
-                            padding: 1,
-                            fontSize: "22px",
-                            "&:hover": {
-                              background: "rgba(25, 118, 210, 0.04) !important",
-                            },
-                          }}
-                          onClick={() => {
-                            setIsDrawerOpen(true);
-                          }}
-                        >
-                          <InfoOutlinedIcon fontSize="inherit" />
-                        </IconButton>
-                      </Tooltip>
+                      {!folderRow && (
+                        <>
+                          <Tooltip title="Open" placement="top">
+                            <IconButton
+                              aria-label="Open"
+                              onClick={() => {
+                                setPdfIsOpen(true);
+                                setPdfUrl(row.row.raw_data.attachment);
+                              }}
+                              sx={{
+                                padding: 1,
+                                fontSize: "22px",
+                                "&:hover": {
+                                  background:
+                                    "rgba(25, 118, 210, 0.04) !important",
+                                },
+                              }}
+                            >
+                              <OpenWithOutlinedIcon fontSize="inherit" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Edit Metadata" placement="top">
+                            <IconButton
+                              aria-label="Edit Metadata"
+                              sx={{
+                                padding: 1,
+                                fontSize: "22px",
+                                "&:hover": {
+                                  background:
+                                    "rgba(25, 118, 210, 0.04) !important",
+                                },
+                              }}
+                              onClick={() => {
+                                setIsDrawerOpen(true);
+                              }}
+                            >
+                              <InfoOutlinedIcon fontSize="inherit" />
+                            </IconButton>
+                          </Tooltip>
+                        </>
+                      )}
 
                       <ReferenceItemOptsDropdown refId={typedRefDataRow.id} />
                     </Stack>
