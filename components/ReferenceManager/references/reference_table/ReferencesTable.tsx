@@ -1,3 +1,4 @@
+import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState } from "react";
 import {
   DataGrid,
@@ -10,7 +11,10 @@ import {
 import { useRouter } from "next/router";
 import { columnsFormat } from "./utils/referenceTableFormat";
 import { fetchCurrentUserReferenceCitations } from "../api/fetchCurrentUserReferenceCitations";
-import { formatReferenceRowData } from "./utils/formatReferenceRowData";
+import {
+  ReferenceTableRowDataType,
+  formatReferenceRowData,
+} from "./utils/formatReferenceRowData";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import {
   isNullOrUndefined,
@@ -31,6 +35,15 @@ import colors from "~/config/themes/colors";
 import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 import DroppableZone from "~/components/DroppableZone";
 import DocumentViewer from "~/components/Document/DocumentViewer";
+import { ID } from "~/config/types/root_types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle, faBookOpen } from "@fortawesome/pro-regular-svg-icons";
+import { faMaximize } from "@fortawesome/pro-light-svg-icons";
+import { IconButton, Tooltip } from "@mui/material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import Stack from "@mui/material/Stack";
+import OpenWithOutlinedIcon from "@mui/icons-material/OpenWithOutlined";
+import ReferenceItemOptsDropdown from "../reference_item/ReferenceItemOptsDropdown";
 
 type Props = {
   createdReferences: any[];
@@ -98,6 +111,7 @@ export default function ReferencesTable({
   const [dragStarted, setDragStarted] = useState(false);
   const [rowDraggedOver, setRowDraggedOver] = useState<any>();
   const [rowDragged, setRowDragged] = useState();
+  const [rowHovered, setRowHovered] = useState<null | ID>(null);
   const { currentOrg } = useOrgs();
 
   const router = useRouter();
@@ -253,6 +267,8 @@ export default function ReferencesTable({
           // disableRowSelectionOnClick
           checkboxSelection
           columns={columnsFormat}
+          sx={DATA_GRID_STYLE_OVERRIDE}
+          rows={formattedReferenceRows}
           hideFooter
           className={
             formattedReferenceRows.length === 0 ? "empty-data-grid" : ""
@@ -295,12 +311,6 @@ export default function ReferencesTable({
           }}
           rowReordering
           onCellClick={(params, event, _details): void => {
-            setPdfIsOpen(true);
-            // alert("click")
-            setPdfUrl(params.row.raw_data.attachment);
-            console.log("params", params);
-            return;
-
             if (params.field !== "__check__") {
               setReferenceItemDatum({
                 ...nullthrows(
@@ -313,6 +323,7 @@ export default function ReferencesTable({
               const projectIdString = params.id.toString();
 
               if (projectIdString.includes("folder")) {
+                console.log("folder yo");
                 const projectId = projectIdString.split("-folder")[0];
 
                 let url = `/reference-manager/${
@@ -332,8 +343,6 @@ export default function ReferencesTable({
                 } else {
                   router.push(url);
                 }
-              } else {
-                setIsDrawerOpen(true);
               }
             }
           }}
@@ -353,10 +362,61 @@ export default function ReferencesTable({
           }}
           slots={{
             row: (row) => {
+              const { row: refDataRow } = row;
+              const typedRefDataRow = refDataRow as ReferenceTableRowDataType;
+
               let folderRow = false;
-              const stringId = row.row.id.toString();
-              if (stringId.includes("folder")) {
+              const idAsString = typedRefDataRow!.id!.toString();
+
+              if (idAsString.includes("folder")) {
                 folderRow = true;
+              }
+              if (row.row.id === rowHovered) {
+                // if (true) {
+                typedRefDataRow.actions = (
+                  <div style={{ marginRight: 10 }}>
+                    {/* Replace with your actual action buttons */}
+                    <Stack direction="row" spacing={0}>
+                      <Tooltip title="Open" placement="top">
+                        <IconButton
+                          aria-label="Open"
+                          onClick={() => {
+                            setPdfIsOpen(true);
+                            setPdfUrl(row.row.raw_data.attachment);
+                          }}
+                          sx={{
+                            padding: 1,
+                            fontSize: "22px",
+                            "&:hover": {
+                              background: "rgba(25, 118, 210, 0.04) !important",
+                            },
+                          }}
+                        >
+                          <OpenWithOutlinedIcon fontSize="inherit" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Edit Metadata" placement="top">
+                        <IconButton
+                          aria-label="Edit Metadata"
+                          sx={{
+                            padding: 1,
+                            fontSize: "22px",
+                            "&:hover": {
+                              background: "rgba(25, 118, 210, 0.04) !important",
+                            },
+                          }}
+                          onClick={() => {
+                            setIsDrawerOpen(true);
+                          }}
+                        >
+                          <InfoOutlinedIcon fontSize="inherit" />
+                        </IconButton>
+                      </Tooltip>
+
+                      <ReferenceItemOptsDropdown refId={typedRefDataRow.id} />
+                    </Stack>
+                  </div>
+                );
               }
               return (
                 <GridRow
@@ -374,6 +434,8 @@ export default function ReferencesTable({
                     setRowDragged(row.row.id);
                   }}
                   onDrop={() => folderRow && rowDropped(row.row)}
+                  onMouseEnter={() => setRowHovered(row.row.id)}
+                  onMouseLeave={() => setRowHovered(null)}
                 />
               );
             },
@@ -409,8 +471,6 @@ export default function ReferencesTable({
               }
             },
           }}
-          sx={DATA_GRID_STYLE_OVERRIDE}
-          rows={formattedReferenceRows}
         />
         {/* <div
         style={{
@@ -426,9 +486,7 @@ export default function ReferencesTable({
         {pdfIsOpen && (
           <DocumentViewer
             viewerWidth={860}
-            pdfUrl={
-              "https://researchhub-paper-dev1.s3.amazonaws.com/uploads/citation_entry/attachment/2023/08/03/uploadscitation_pdfsuser_8_btjqnkkw_formation_tcm_self-assembly_nanostrategy-1pdf.pdf?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=1dtISXUYFc9Rc3X2Sa2UvdfpMRo%3D&Expires=1691757341"
-            }
+            pdfUrl={pdfUrl}
             expanded={true}
             citationInstance={{
               id: 1,

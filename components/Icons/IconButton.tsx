@@ -19,7 +19,7 @@ const IconButton = ({
 }: Args) => {
   return (
     <>
-      <ReactTooltip />
+      <ReactTooltip effect="solid" />
       <div
         data-tip={tooltip}
         className={css(

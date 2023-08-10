@@ -7,7 +7,7 @@ export const columnsFormat: GridColDef[] = [
   {
     field: "title",
     headerName: "Title",
-    width: 320,
+    width: 300,
     renderCell: (cell) => {
       const idString = cell.row.id.toString();
       if (idString.includes("folder") && cell.value) {
@@ -24,7 +24,7 @@ export const columnsFormat: GridColDef[] = [
       }
     },
   },
-  { field: "authors", headerName: "Authors", sortable: false, width: 320 },
+  { field: "authors", headerName: "Authors", sortable: false, width: 250 },
   { field: "last_author", headerName: "Last Author", width: 200 },
   // {
   //   field: "hubs",
@@ -47,5 +47,18 @@ export const columnsFormat: GridColDef[] = [
     headerName: "Added Date",
     type: "string",
     width: 140,
+  },
+  {
+    field: "actions",
+    headerName: "",
+    sortable: false,
+    disableColumnMenu: true,
+    flex: 1,
+    headerAlign: "right",
+    width: 150,
+    align: "right",
+    renderCell: (cell) => {
+      return cell.row.actions;
+    },
   },
 ];
