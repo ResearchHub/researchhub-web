@@ -8,6 +8,7 @@ import { Document, Outline, Page, pdfjs } from "react-pdf";
 import { useCallback, useRef, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
+import darkTheme from "~/config/themes/dark";
 
 // FIXME: Replace with local worker.
 // Needs to set up a custom webpack config to do this.
@@ -108,9 +109,10 @@ const PDFViewer = ({
               renderAnnotationLayer={false}
               renderTextLayer={false}
             />
-            {colors.id === "dark" && !renderedPages.includes(index + 2) && (
-              <div className={css(styles.darkModeOverlay)}></div>
-            )}
+            {colors.id === darkTheme.id &&
+              !renderedPages.includes(index + 2) && (
+                <div className={css(styles.darkModeOverlay)}></div>
+              )}
           </div>
         ))}
       </Document>

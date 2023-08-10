@@ -1,5 +1,9 @@
+import lightTheme from "./light";
+import darkTheme from "./dark";
+import { getCurrentTheme } from "../utils/themeUtils";
+
 const lightColors = {
-  id: "light",
+  id: lightTheme.id,
   BLACK: (opacity = 1) => `rgba(36, 31, 58, ${opacity})`, // #241F3A
   BLACK_TEXT: (opacity = 1) => `rgba(64, 64, 64, ${opacity})`, // #404040
   BLUE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`, // #4E53FF
@@ -240,7 +244,7 @@ const lightColors = {
 };
 
 const darkColors = {
-  id: "dark",
+  id: darkTheme.id,
   BLACK: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // Inverted
   BLACK_TEXT: (opacity = 1) => `rgba(191, 191, 191, ${opacity})`, // Lightened
   BLUE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`, // Unchanged
@@ -480,23 +484,17 @@ const darkColors = {
   DARK_PINK: (opacity = 1) => `rgba(173, 50, 78, ${opacity})`, // Adjusted
 };
 
-let mode = "light";
-if (typeof window !== "undefined") {
-  mode = localStorage.getItem("theme") || "light";
-}
+let mode = getCurrentTheme().id;
 
-let colors = mode === "dark" ? darkColors : lightColors;
+let colors = mode === darkTheme.id ? darkColors : lightColors;
 
-const setColorTheme = (newMode) => {
+export const setColorTheme = (newMode) => {
   mode = newMode;
   console.log("setColorTheme: newMode", mode);
-  colors = mode === "dark" ? darkColors : lightColors;
-  if (typeof window !== "undefined") {
-    localStorage.setItem("theme", mode);
-  }
+  colors = mode === darkTheme.id ? darkColors : lightColors;
 };
 
-const getColors = () => colors;
+export const getColors = () => colors;
 
 export const bountyColors = {
   BADGE_TEXT: colors.ORANGE_DARK2(1),
@@ -566,4 +564,3 @@ export const iconColors = {
 };
 
 export default colors;
-export { setColorTheme, getColors };

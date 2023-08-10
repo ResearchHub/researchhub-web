@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTheme } from "../contexts/ThemeContext";
 import { css, StyleSheet } from "aphrodite";
 import colors from "../config/themes/colors";
+import darkTheme from "../config/themes/dark";
 import { useRouter } from "next/router";
 import { IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
 
@@ -11,7 +12,7 @@ const DarkModeToggle = () => {
   const [enabled, setEnabled] = useState(true);
   const { theme, toggleTheme } = useTheme();
   useEffect(() => {
-    setInDarkMode(theme.id === "dark");
+    setInDarkMode(theme.id === darkTheme.id);
   }, [theme]);
 
   return (

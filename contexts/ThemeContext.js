@@ -1,19 +1,28 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import lightTheme from "../config/themes/light";
 import darkTheme from "../config/themes/dark";
+import { getCurrentTheme } from "../config/utils/themeUtils";
 import { getColors, setColorTheme } from "../config/themes/colors";
 
-const ThemeContext = createContext();
+const ThemeContext = createContext({
+  theme: lightTheme,
+  setTheme: (theme) => {
+    console.warn(
+      "setTheme is not implemented. Please make sure that you are using ThemeProvider."
+    );
+  },
+  toggleTheme: () => {
+    console.warn(
+      "toggleTheme is not implemented. Please make sure that you are using ThemeProvider."
+    );
+  },
+});
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(undefined);
 
   useEffect(() => {
-    const prefersDarkMode =
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const defaultTheme =
-      savedMode || (prefersDarkMode ? darkTheme : lightTheme);
+    const defaultTheme = getCurrentTheme();
     setTheme(defaultTheme);
   }, []);
 
@@ -31,27 +40,22 @@ export const ThemeProvider = ({ children }) => {
     }
   };
   const toggleTheme = () => {
-    if (theme.id === lightTheme.id) {
-      localStorage.setItem("theme", "dark");
-      setTheme(darkTheme);
-    } else {
-      localStorage.setItem("theme", "light");
-      setTheme(lightTheme);
+    try {
+      if (theme.id === lightTheme.id) {
+        localStorage.setItem("theme", darkTheme.id);
+        setTheme(darkTheme);
+      } else {
+        localStorage.setItem("theme", lightTheme.id);
+        setTheme(lightTheme);
+      }
+    } catch (error) {
+      console.error("Failed to set theme in localStorage:", error);
     }
-    const newTheme = getColors().id === "light" ? "dark" : "light";
+    const newTheme =
+      getColors().id === lightTheme.id ? darkTheme.id : lightTheme.id;
     setColorTheme(newTheme);
 
     updateManifestLink();
-  };
-
-  const savedMode = () => {
-    const mode = localStorage.getItem("theme");
-    if (mode === "dark") {
-      return darkTheme;
-    } else if (mode === "light") {
-      return lightTheme;
-    }
-    return 0;
   };
 
   if (theme === undefined) {

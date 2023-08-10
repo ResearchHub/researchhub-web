@@ -1,6 +1,8 @@
 // themes/light.js
+const LIGHT_MODE = "light";
+
 const light = {
-  id: "light",
+  id: LIGHT_MODE,
 };
 
 export default light;

@@ -1,7 +1,8 @@
 // themes/dark.js
+const DARK_MODE = "dark";
 
 const dark = {
-  id: "dark",
+  id: DARK_MODE,
 };
 
 export default dark;
