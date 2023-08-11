@@ -74,6 +74,7 @@ import {
 import getAnnotationFromPosition from "./lib/getAnnotationFromPosition";
 import AnnotationTextBubble from "./AnnotationTextBubble";
 import useCacheControl from "~/config/hooks/useCacheControl";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
 
 const { setMessage, showMessage } = MessageActions;
 const DEBUG = true;
@@ -171,6 +172,7 @@ const AnnotationLayer = ({
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
   const { revalidateDocument } = useCacheControl();
+  const { currentOrg } = useOrgs();
 
   // Scroll to annotation only after it has been rendered
   useLayoutEffect(() => {
@@ -221,7 +223,13 @@ const AnnotationLayer = ({
 
   // Fetch comments from API and group them
   useEffect(() => {
-    const _fetchComments = async (contentInstance: ContentInstance) => {
+    const _fetchComments = async ({
+      contentInstance,
+      privacyType,
+    }: {
+      contentInstance: ContentInstance;
+      privacyType: CommentPrivacyFilter;
+    }) => {
       return fetchCommentsAPI({
         documentId: contentInstance.id,
         filter: COMMENT_FILTERS.ANNOTATION,
@@ -231,16 +239,33 @@ const AnnotationLayer = ({
         // For annotations, we want a very large page size because there is no "load more" UI button
         childPageSize: 10000,
         pageSize: 10000,
+        privacyType,
       });
     };
 
     (async () => {
       const promises: Promise<{ comments: any[]; count: number }>[] = [];
       if (citationInstance) {
-        promises.push(_fetchComments(citationInstance));
+        promises.push(
+          _fetchComments({
+            contentInstance: citationInstance,
+            privacyType: "PRIVATE",
+          })
+        );
+        promises.push(
+          _fetchComments({
+            contentInstance: citationInstance,
+            privacyType: "WORKSPACE",
+          })
+        );
       }
       if (documentInstance) {
-        promises.push(_fetchComments(documentInstance));
+        promises.push(
+          _fetchComments({
+            contentInstance: documentInstance,
+            privacyType: "PUBLIC",
+          })
+        );
       }
 
       Promise.all(promises)
@@ -959,6 +984,7 @@ const AnnotationLayer = ({
         documentId: id,
         documentType: type,
         privacy,
+        organizationId: currentOrg?.id,
         commentType: COMMENT_TYPES.ANNOTATION,
         anchor: {
           type: "text",

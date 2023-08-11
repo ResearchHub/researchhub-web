@@ -101,13 +101,16 @@ export default function ReferencesTable({
   setSelectedReferenceIDs,
   setSelectedFolderIds,
 }: Props) {
-  const { setIsDrawerOpen, setReferenceItemDatum, referencesFetchTime } =
-    useReferenceTabContext();
+  const {
+    setIsDrawerOpen,
+    referenceItemDatum,
+    setReferenceItemDatum,
+    referencesFetchTime,
+  } = useReferenceTabContext();
   const { referenceTableRowData, setReferenceTableRowData } =
     useReferencesTableContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [pdfIsOpen, setPdfIsOpen] = useState<boolean>(false);
-  const [pdfUrl, setPdfUrl] = useState<string>("");
+  const [isViewerOpen, setIsViewerOpen] = useState<boolean>(false);
   const [dragStarted, setDragStarted] = useState(false);
   const [rowDraggedOver, setRowDraggedOver] = useState<any>();
   const [rowDragged, setRowDragged] = useState();
@@ -305,9 +308,6 @@ export default function ReferencesTable({
                 )
               ),
             });
-            // setPdfIsOpen(true);
-            // alert("double click")
-            // setPdfUrl(params.row.raw_data.attachment);
           }}
           rowReordering
           onCellClick={(params, event, _details): void => {
@@ -383,8 +383,7 @@ export default function ReferencesTable({
                             <IconButton
                               aria-label="Open"
                               onClick={() => {
-                                setPdfIsOpen(true);
-                                setPdfUrl(row.row.raw_data.attachment);
+                                setIsViewerOpen(true);
                               }}
                               sx={{
                                 padding: 1,
@@ -489,21 +488,21 @@ export default function ReferencesTable({
         {"Infinite pagination!!!!!"}
       </div> */}
 
-        {pdfIsOpen && (
+        {isViewerOpen && (
           <DocumentViewer
-            viewerWidth={860}
-            pdfUrl={pdfUrl}
+            hasError={!referenceItemDatum?.attachment}
+            pdfUrl={referenceItemDatum?.attachment}
             expanded={true}
             citationInstance={{
-              id: 1,
-              type: "citation",
+              id: referenceItemDatum.id,
+              type: "citationentry",
             }}
-            documentInstance={{
-              id: 20949,
-              type: "paper",
-            }}
+            // documentInstance={{
+            //   id: 20949,
+            //   type: "paper",
+            // }}
             onClose={() => {
-              setPdfIsOpen(false);
+              setIsViewerOpen(false);
             }}
           />
         )}

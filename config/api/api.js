@@ -85,13 +85,20 @@ export const API = (TOKEN) => {
         headers: headers,
       };
     },
-    POST_CONFIG: (data, overrideToken) => {
+    POST_CONFIG: (data, overrideToken, additionalHeaders = {}) => {
       // authorization token
       var headers = setupRequestHeaders(false, TOKEN, overrideToken);
+      console.log("headers", headers);
+      console.log("additionalHeaders", additionalHeaders);
+      headers = { ...headers, ...additionalHeaders };
+      console.log("newHeaders", headers);
+      // headers.headers = {...headers.headers, ...additionalHeaders}
+
+      // console.log(headers)
       return {
         method: POST,
         body: JSON.stringify(data),
-        headers: headers,
+        headers,
       };
     },
     PUT_FILE_CONFIG: (data, overrideToken) => {

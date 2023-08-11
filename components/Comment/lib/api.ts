@@ -29,6 +29,7 @@ export const fetchCommentsAPI = async ({
   pageSize = apiConfig.feed.pageSize,
   childPageSize = apiConfig.feed.childPageSize,
   ascending = false,
+  privacyType = "PUBLIC",
 }: {
   documentType: RhDocumentType;
   documentId: ID;
@@ -38,6 +39,7 @@ export const fetchCommentsAPI = async ({
   pageSize?: number;
   childPageSize?: number;
   ascending?: boolean;
+  privacyType?: CommentPrivacyFilter;
 }): Promise<{ comments: any[]; count: number }> => {
   const query = {
     ...(filter && { filtering: filter }),
@@ -46,6 +48,7 @@ export const fetchCommentsAPI = async ({
     child_count: childPageSize,
     page_size: pageSize,
     ascending: ascending ? "TRUE" : "FALSE",
+    privacy_type: privacyType,
   };
 
   const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);
@@ -129,6 +132,7 @@ export const createCommentAPI = async ({
   privacy = "PUBLIC",
   mentions = [],
   anchor = null,
+  organizationId,
 }: {
   content: any;
   commentType?: COMMENT_TYPES;
@@ -140,6 +144,7 @@ export const createCommentAPI = async ({
   privacy?: CommentPrivacyFilter;
   mentions?: Array<string>;
   anchor?: null | SerializedAnchorPosition;
+  organizationId?: ID;
 }): Promise<Comment> => {
   const _url = generateApiUrl(
     `${documentType}/${documentId}/comments/` +
@@ -147,16 +152,20 @@ export const createCommentAPI = async ({
   );
   const response = await fetch(
     _url,
-    API.POST_CONFIG({
-      comment_content_json: content,
-      thread_type: commentType,
-      privacy_type: privacy,
-      mentions: uniqBy(mentions),
-      ...(parentComment && { parent_id: parentComment.id }),
-      ...(bountyAmount && { amount: bountyAmount }),
-      ...(anchor && { anchor }),
-      ...(threadId && { thread_id: threadId }),
-    })
+    API.POST_CONFIG(
+      {
+        comment_content_json: content,
+        thread_type: commentType,
+        privacy_type: privacy,
+        mentions: uniqBy(mentions),
+        ...(parentComment && { parent_id: parentComment.id }),
+        ...(bountyAmount && { amount: bountyAmount }),
+        ...(anchor && { anchor }),
+        ...(threadId && { thread_id: threadId }),
+      },
+      undefined,
+      { "x-organization-id": organizationId }
+    )
   ).then((res): any => Helpers.parseJSON(res));
 
   const comment = parseComment({ raw: response, parent: parentComment });
