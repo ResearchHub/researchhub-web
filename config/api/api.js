@@ -59,26 +59,29 @@ function setupRequestHeaders(noContentType, authTokenName, overrideToken) {
 export const API = (TOKEN) => {
   return {
     // HTTP Configurations
-    GET_CONFIG: (overrideToken) => {
+    GET_CONFIG: (overrideToken, additionalHeaders = {}) => {
       let headers;
       headers = setupRequestHeaders(false, TOKEN, overrideToken);
+      headers = { ...headers, ...additionalHeaders };
       return {
         method: GET,
         headers: headers,
       };
     },
-    GET_CONFIG_WITH_BODY: (data, overrideToken) => {
+    GET_CONFIG_WITH_BODY: (data, overrideToken, additionalHeaders = {}) => {
       let headers;
       headers = setupRequestHeaders(false, TOKEN, overrideToken);
+      headers = { ...headers, ...additionalHeaders };
       return {
         method: GET,
         body: JSON.stringify(data),
         headers: headers,
       };
     },
-    POST_FILE_CONFIG: (data, overrideToken) => {
+    POST_FILE_CONFIG: (data, overrideToken, additionalHeaders = {}) => {
       // authorization token
       var headers = setupRequestHeaders(true, TOKEN, overrideToken);
+      headers = { ...headers, ...additionalHeaders };
       return {
         method: POST,
         body: data,
@@ -88,31 +91,29 @@ export const API = (TOKEN) => {
     POST_CONFIG: (data, overrideToken, additionalHeaders = {}) => {
       // authorization token
       var headers = setupRequestHeaders(false, TOKEN, overrideToken);
-      console.log("headers", headers);
-      console.log("additionalHeaders", additionalHeaders);
       headers = { ...headers, ...additionalHeaders };
-      console.log("newHeaders", headers);
-      // headers.headers = {...headers.headers, ...additionalHeaders}
 
-      // console.log(headers)
       return {
         method: POST,
         body: JSON.stringify(data),
         headers,
       };
     },
-    PUT_FILE_CONFIG: (data, overrideToken) => {
+    PUT_FILE_CONFIG: (data, overrideToken, additionalHeaders = {}) => {
       // authorization token
       var headers = setupRequestHeaders(true, TOKEN, overrideToken);
+      headers = { ...headers, ...additionalHeaders };
+
       return {
         method: PUT,
         body: data,
         headers: headers,
       };
     },
-    PUT_CONFIG: (data, overrideToken) => {
+    PUT_CONFIG: (data, overrideToken, additionalHeaders = {}) => {
       // authorization token
       var headers = setupRequestHeaders(false, TOKEN, overrideToken);
+      headers = { ...headers, ...additionalHeaders };
       return {
         method: PUT,
         body: JSON.stringify(data),
@@ -128,18 +129,21 @@ export const API = (TOKEN) => {
         headers: headers,
       };
     },
-    PATCH_CONFIG: (data, overrideToken) => {
+    PATCH_CONFIG: (data, overrideToken, additionalHeaders = {}) => {
       // authorization token
       var headers = setupRequestHeaders(false, TOKEN, overrideToken);
+      headers = { ...headers, ...additionalHeaders };
+
       return {
         method: PATCH,
         body: JSON.stringify(data),
         headers: headers,
       };
     },
-    DELETE_CONFIG: (overrideToken) => {
+    DELETE_CONFIG: (overrideToken, additionalHeaders = {}) => {
       // authorization token
       var headers = setupRequestHeaders(null, TOKEN, overrideToken);
+      headers = { ...headers, ...additionalHeaders };
       return {
         method: DELETE,
         headers: headers,

@@ -30,6 +30,7 @@ export const fetchCommentsAPI = async ({
   childPageSize = apiConfig.feed.childPageSize,
   ascending = false,
   privacyType = "PUBLIC",
+  organizationId,
 }: {
   documentType: RhDocumentType;
   documentId: ID;
@@ -40,6 +41,7 @@ export const fetchCommentsAPI = async ({
   childPageSize?: number;
   ascending?: boolean;
   privacyType?: CommentPrivacyFilter;
+  organizationId?: ID;
 }): Promise<{ comments: any[]; count: number }> => {
   const query = {
     ...(filter && { filtering: filter }),
@@ -53,9 +55,13 @@ export const fetchCommentsAPI = async ({
 
   const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);
   const url = baseFetchUrl + buildQueryString(query);
-  const response = await fetch(url, API.GET_CONFIG()).then((res): any =>
-    Helpers.parseJSON(res)
-  );
+  const response = await fetch(
+    url,
+    API.GET_CONFIG(
+      undefined,
+      organizationId ? { "x-organization-id": organizationId } : undefined
+    )
+  ).then((res): any => Helpers.parseJSON(res));
 
   if (response?.detail) {
     captureEvent({
@@ -164,7 +170,7 @@ export const createCommentAPI = async ({
         ...(threadId && { thread_id: threadId }),
       },
       undefined,
-      { "x-organization-id": organizationId }
+      organizationId ? { "x-organization-id": organizationId } : undefined
     )
   ).then((res): any => Helpers.parseJSON(res));
 

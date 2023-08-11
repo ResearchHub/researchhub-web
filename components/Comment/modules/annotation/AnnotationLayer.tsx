@@ -238,6 +238,7 @@ const AnnotationLayer = ({
         documentType: contentInstance.type,
         // For annotations, we want a very large page size because there is no "load more" UI button
         childPageSize: 10000,
+        organizationId: currentOrg?.id,
         pageSize: 10000,
         privacyType,
       });
