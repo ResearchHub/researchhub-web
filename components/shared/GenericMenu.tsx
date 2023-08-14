@@ -3,6 +3,8 @@ import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import colors from "~/config/themes/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/pro-regular-svg-icons";
 
 export interface MenuOption {
   label?: string;
@@ -26,6 +28,7 @@ interface MenuProps {
   options: MenuOption[];
   triggerHeight?: number;
   softHide?: boolean;
+  selected?: any;
   direction?:
     | "bottom-right"
     | "bottom-left"
@@ -43,6 +46,7 @@ const Menu = ({
   onSelect,
   direction = "bottom-left",
   softHide = false,
+  selected,
 }: MenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
@@ -124,8 +128,8 @@ const Menu = ({
                 <div
                   key={`${id}-${index}`}
                   className={css(
-                    !disableStyle && styles.menuItem,
-                    !disableHover && styles.menuItemHover
+                    disableStyle !== false && styles.menuItem,
+                    disableHover !== false && styles.menuItemHover
                   )}
                   onClick={
                     preventDefault ? undefined : () => handleSelect(option)
@@ -134,7 +138,20 @@ const Menu = ({
                   {icon && !html && (
                     <div className={css(styles.menuItemIcon)}>{icon}</div>
                   )}
-                  {html ? html : label}
+                  {html ? (
+                    html
+                  ) : (
+                    <>
+                      {selected === value ? (
+                        <div className={css(styles.selected)}>
+                          {label}
+                          <FontAwesomeIcon icon={faCheck} />
+                        </div>
+                      ) : (
+                        <>{label}</>
+                      )}
+                    </>
+                  )}
                 </div>
               </>
             );
@@ -185,6 +202,12 @@ const styles = StyleSheet.create({
     ":last-child": {
       marginBottom: 0,
     },
+  },
+  selected: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   groupHeader: {
     marginTop: 10,

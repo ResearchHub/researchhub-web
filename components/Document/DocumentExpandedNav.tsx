@@ -13,6 +13,8 @@ import { DocumentContext } from "./lib/DocumentContext";
 import DocumentOptions from "./DocumentOptions";
 import { ContentInstance, GenericDocument } from "./lib/types";
 import Link from "next/link";
+import DocumentViewerContext from "./lib/DocumentViewerContext";
+import DocumentCommentMenu from "./DocumentCommentMenu";
 
 interface Props {
   pdfUrl?: string;
@@ -42,6 +44,12 @@ const DocumentExpandedNav = ({
   documentInstance,
   handleClose,
 }: Props) => {
+  const {
+    visibilityPreferenceForViewingComments,
+    setVisibilityPreferenceForViewingComments,
+    numAnnotations,
+  } = useContext(DocumentViewerContext);
+
   return (
     <div className={css(styles.expandedNav)}>
       <div className={css(styles.actionsWrapper)}>
@@ -76,6 +84,11 @@ const DocumentExpandedNav = ({
               </IconButton>
             </div>
           </Link>
+          <DocumentCommentMenu
+            onSelect={setVisibilityPreferenceForViewingComments}
+            selected={visibilityPreferenceForViewingComments}
+            annotationCount={numAnnotations}
+          />
           {doc && (
             <div>
               <DocumentOptions document={doc} />
@@ -90,13 +103,14 @@ const DocumentExpandedNav = ({
 const styles = StyleSheet.create({
   expandedNav: {
     position: "fixed",
-    height: 40,
+    height: 44,
     width: "100%",
     zIndex: 4,
-    background: colors.LIGHTER_GREY(),
+    background: "white",
     boxSizing: "border-box",
     padding: "0 15px",
-    boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+    borderBottom: `1px solid rgba(233, 234, 239, 1)`,
+    // boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
   },
   publicPageBtnWrapper: {
     fontSize: 14,
@@ -121,7 +135,7 @@ const styles = StyleSheet.create({
   },
   downloadBtn: {},
   viewerNavBtn: {
-    color: "black",
+    color: colors.MEDIUM_GREY(),
     border: "none",
     boxSizing: "border-box",
     ":hover": {

@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserGroup, faUserLock } from "@fortawesome/pro-solid-svg-icons";
+import { faLockKeyhole, faSitemap } from "@fortawesome/pro-solid-svg-icons";
 import { faGlobe } from "@fortawesome/pro-regular-svg-icons";
 import { CommentPrivacyFilter } from "./lib/types";
 import { css, StyleSheet } from "aphrodite";
@@ -21,11 +21,11 @@ const CommentPrivacyBadge = ({
     label = "Public";
     tip = "Visible to everyone";
   } else if (privacy === "WORKSPACE") {
-    icon = <FontAwesomeIcon icon={faUserGroup} />;
+    icon = <FontAwesomeIcon icon={faSitemap} />;
     label = "Organization";
     tip = "Visible to members only";
   } else if (privacy === "PRIVATE") {
-    icon = <FontAwesomeIcon icon={faUserLock} />;
+    icon = <FontAwesomeIcon icon={faLockKeyhole} />;
     label = "Private";
     tip = "Visible only to you";
   } else {

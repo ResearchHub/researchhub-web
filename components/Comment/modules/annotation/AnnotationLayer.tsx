@@ -6,6 +6,7 @@ import React, {
   useLayoutEffect,
   useRef,
   useState,
+  useContext,
 } from "react";
 import {
   Comment as CommentModel,
@@ -75,6 +76,7 @@ import getAnnotationFromPosition from "./lib/getAnnotationFromPosition";
 import AnnotationTextBubble from "./AnnotationTextBubble";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
+import DocumentViewerContext from "~/components/Document/lib/DocumentViewerContext";
 
 const { setMessage, showMessage } = MessageActions;
 const DEBUG = true;
@@ -83,8 +85,6 @@ interface Props {
   contentRef: any;
   citationInstance?: ContentInstance;
   documentInstance?: ContentInstance;
-  pageRendered: { pageNum: number }; // The last page rendered
-  displayPreference: "all" | "mine" | "none";
   onFetch?: (commentThreads) => void;
 }
 
@@ -92,10 +92,17 @@ const AnnotationLayer = ({
   contentRef,
   citationInstance,
   documentInstance,
-  displayPreference,
-  pageRendered = { pageNum: 0 },
   onFetch,
 }: Props) => {
+  const {
+    lastPageRendered,
+    setVisibilityPreferenceForViewingComments,
+    visibilityPreferenceForViewingComments,
+    setVisibilityPreferenceForNewComment,
+    visibilityPreferenceForNewComment,
+    setNumAnnotations,
+  } = useContext(DocumentViewerContext);
+
   const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
 
   // Sorted List of annotations sorted by order of appearance on the page
@@ -247,20 +254,30 @@ const AnnotationLayer = ({
     (async () => {
       const promises: Promise<{ comments: any[]; count: number }>[] = [];
       if (citationInstance) {
-        promises.push(
-          _fetchComments({
-            contentInstance: citationInstance,
-            privacyType: "PRIVATE",
-          })
-        );
-        promises.push(
-          _fetchComments({
-            contentInstance: citationInstance,
-            privacyType: "WORKSPACE",
-          })
-        );
+        if (
+          ["PRIVATE", "WORKSPACE"].includes(
+            visibilityPreferenceForViewingComments
+          )
+        ) {
+          promises.push(
+            _fetchComments({
+              contentInstance: citationInstance,
+              privacyType: "PRIVATE",
+            })
+          );
+        }
+        if (["WORKSPACE"].includes(visibilityPreferenceForViewingComments))
+          promises.push(
+            _fetchComments({
+              contentInstance: citationInstance,
+              privacyType: "WORKSPACE",
+            })
+          );
       }
-      if (documentInstance) {
+      if (
+        documentInstance &&
+        visibilityPreferenceForViewingComments === "PUBLIC"
+      ) {
         promises.push(
           _fetchComments({
             contentInstance: documentInstance,
@@ -286,6 +303,7 @@ const AnnotationLayer = ({
           );
 
           setInlineComments(comments);
+          setNumAnnotations(comments.length);
         })
         .finally(() => {
           didFetchComplete.current = true;
@@ -293,19 +311,11 @@ const AnnotationLayer = ({
     })();
 
     _setWindowDimensions();
-  }, []);
+  }, [visibilityPreferenceForViewingComments]);
 
   // Once we have comments, we want to group them by threads and draw them on the page
   useEffect(() => {
-    const _comments = inlineComments.filter((comment) => {
-      if (displayPreference === "all" || !displayPreference) return true;
-      if (displayPreference === "mine") {
-        return comment.createdBy.id === currentUser?.id;
-      }
-      return false;
-    });
-
-    const _commentThreads = groupByThread(_comments);
+    const _commentThreads = groupByThread(inlineComments);
     commentThreads.current = _commentThreads;
 
     throttledSetNeedsRedraw({ drawMode: "SKIP_EXISTING" });
@@ -319,7 +329,7 @@ const AnnotationLayer = ({
         });
       onFetchAlreadyInvoked.current = true;
     }
-  }, [inlineComments, displayPreference]);
+  }, [inlineComments]);
 
   // Draw annotation as pages are rendered
   useEffect(() => {
@@ -332,7 +342,7 @@ const AnnotationLayer = ({
         orphanSearchIntervalRef.current = null;
       }
     };
-  }, [pageRendered]);
+  }, [lastPageRendered]);
 
   useEffect(() => {
     if (needsRedraw) {
@@ -1404,6 +1414,9 @@ const AnnotationLayer = ({
                                   })
                                 }
                                 allowPrivacySelection={true}
+                                defaultPrivacyFilter={
+                                  visibilityPreferenceForNewComment
+                                }
                                 author={currentUser?.authorProfile}
                                 focusOnMount={true}
                                 editorStyleOverride={styles.commentEditor}
