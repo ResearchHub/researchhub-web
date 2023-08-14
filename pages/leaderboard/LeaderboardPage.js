@@ -14,7 +14,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 
 // Config
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { timeAgo } from "~/config/utils/dates";
 
 import colors from "~/config/themes/colors";

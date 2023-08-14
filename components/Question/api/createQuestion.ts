@@ -1,7 +1,7 @@
 import API from "~/config/api";
 import { sendAmpEvent } from "~/config/fetch";
 import { buildApiUri } from "~/config/utils/buildApiUri";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 
 type Args = {
   onError: (error: Error) => void;

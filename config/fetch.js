@@ -1,6 +1,6 @@
 import { emailPreference } from "./shims";
 import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { captureException } from "@sentry/browser";
 import API from "~/config/api";
 import store from "~/redux/configureStore";

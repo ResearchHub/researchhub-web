@@ -22,7 +22,7 @@ import { PaperActions } from "~/redux/paper";
 
 // Config
 import API from "../../../config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import colors from "~/config/themes/colors";
 
 class FigureTab extends Component {

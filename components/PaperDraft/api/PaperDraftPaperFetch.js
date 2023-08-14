@@ -1,4 +1,4 @@
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { fetchPaperDraft } from "~/config/fetch";
 import {
   formatBase64ToEditorState,

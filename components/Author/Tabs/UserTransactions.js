@@ -19,7 +19,7 @@ import { TransactionActions } from "~/redux/transaction";
 
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 
 class UserTransaction extends Component {
   constructor(props) {

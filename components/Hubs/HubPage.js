@@ -9,7 +9,7 @@ import { faLessThanEqual } from "@fortawesome/free-solid-svg-icons";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { getEducationalCarouselElements } from "~/components/shared/carousel/presets/RhEducationalCarouselElements";
 import { getFragmentParameterByName } from "~/config/utils/parsers";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { HubActions } from "~/redux/hub";
 import { INFO_TAB_EXIT_KEY } from "~/components/Banner/constants/exitable_banner_keys";
 import { MessageActions } from "~/redux/message";

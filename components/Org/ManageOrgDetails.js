@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 import OrgCoverImgModal from "~/components/Org/OrgCoverImgModal";
 import { captureEvent } from "~/config/utils/events";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 
 const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
   const [orgName, setOrgName] = useState(org.name);

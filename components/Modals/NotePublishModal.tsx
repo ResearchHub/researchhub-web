@@ -6,7 +6,7 @@ import FormSelect from "../Form/FormSelect";
 import Modal from "react-modal";
 import colors from "~/config/themes/colors";
 import { AuthActions } from "~/redux/auth";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { MessageActions } from "~/redux/message";
 import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";

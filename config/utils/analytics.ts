@@ -1,5 +1,5 @@
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { AuthStore, ID, User } from "../types/root_types";
 import { emptyFncWithMsg } from "./nullchecks";
 

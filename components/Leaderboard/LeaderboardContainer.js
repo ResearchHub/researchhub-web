@@ -8,7 +8,7 @@ import Link from "next/link";
 import Ripples from "react-ripples";
 
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import colors from "~/config/themes/colors";
 import { isDevEnv } from "~/config/utils/env";
 

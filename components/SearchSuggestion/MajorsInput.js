@@ -8,7 +8,7 @@ import Loader from "../Loader/Loader";
 
 // Config
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { capitalize } from "~/config/utils/string";
 
 class MajorsInput extends Component {

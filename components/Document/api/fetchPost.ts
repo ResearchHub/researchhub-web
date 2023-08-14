@@ -1,4 +1,4 @@
-import Helpers from "~/config/api/helpers";
+import { Helpers } from "~/config/api/index";
 import { captureEvent } from "~/config/utils/events";
 import API from "~/config/api";
 

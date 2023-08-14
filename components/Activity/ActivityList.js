@@ -16,7 +16,7 @@ import Link from "next/link";
 import { fetchLatestActivity } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 
 const DEFAULT_DATA = {
   count: 0,

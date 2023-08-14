@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { connect } from "react-redux";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { MessageActions } from "~/redux/message";
 import { StyleSheet, css } from "aphrodite";
 import { withRouter } from "next/router";

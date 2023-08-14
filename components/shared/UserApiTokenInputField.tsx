@@ -7,7 +7,7 @@ import { captureEvent } from "@sentry/nextjs";
 import { connect } from "react-redux";
 import { copyInputValToClipboard } from "~/config/utils/copyInputValToClipboard";
 import { css, StyleSheet } from "aphrodite";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { ID } from "~/config/types/root_types";
 import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { ReactElement, SyntheticEvent, useEffect, useState } from "react";

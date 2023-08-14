@@ -5,7 +5,7 @@ import {
 } from "../utils/dates";
 import { parseUser, RHUser, ID } from "./root_types";
 import api, { generateApiUrl } from "../api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import numeral from "numeral";
 import { captureEvent } from "../utils/events";
 import { ContentType, parseContentType } from "./contentType";

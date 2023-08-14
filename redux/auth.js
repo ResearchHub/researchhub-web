@@ -7,7 +7,7 @@
  **********************************/
 
 import API from "../config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { AUTH_TOKEN } from "../config/constants";
 import { ModalActions } from "./modals";
 import { HubActions } from "./hub";

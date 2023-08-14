@@ -7,7 +7,7 @@ import { faExclamationCircle } from "@fortawesome/pro-solid-svg-icons";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { isValidEmail } from "~/config/utils/validation";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";

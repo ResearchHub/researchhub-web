@@ -20,7 +20,7 @@ import { AmountInput } from "../Form/RSCForm";
 import Loader from "../Loader/Loader";
 
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { captureEvent } from "~/config/utils/events";
 
 const isProduction = process.env.REACT_APP_ENV === "production";

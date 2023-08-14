@@ -1,5 +1,5 @@
 import API from "../../../config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { emptyFncWithMsg, isEmpty } from "../../../config/utils/nullchecks";
 import { ID, NullableString, ValueOf } from "../../../config/types/root_types";
 import { AUTHOR_CLAIM_STATUS } from "../constants/AuthorClaimStatus";

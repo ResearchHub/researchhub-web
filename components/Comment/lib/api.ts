@@ -12,7 +12,7 @@ import {
   CommentPrivacyFilter,
 } from "./types";
 import API, { generateApiUrl, buildQueryString } from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { apiConfig } from "./config";
 import { sortOpts } from "./options";
 import { parseVote, Vote } from "~/config/types/vote";

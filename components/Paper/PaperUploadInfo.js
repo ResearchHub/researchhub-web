@@ -31,7 +31,7 @@ import { MessageActions } from "~/redux/message";
 // Config
 import colors from "../../config/themes/colors";
 import API from "../../config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import * as Options from "~/config/utils/options";
 import FormTextArea from "../Form/FormTextArea";
 import { buildSlug } from "~/config/utils/buildSlug";

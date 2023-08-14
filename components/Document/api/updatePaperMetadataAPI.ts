@@ -1,5 +1,5 @@
 import API, { generateApiUrl } from "~/config/api";
-import Helpers from "~/config/api/helpers";
+import { Helpers } from "~/config/api/index";
 import dayjs from "dayjs";
 import { ID } from "~/config/types/root_types";
 

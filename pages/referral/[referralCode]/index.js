@@ -6,7 +6,7 @@ import { css, StyleSheet } from "aphrodite";
 
 // Helpers
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
