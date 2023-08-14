@@ -14,6 +14,7 @@ import {
   parseAnchor,
   SerializedAnchorPosition,
 } from "../modules/annotation/lib/types";
+import { ContentInstance } from "~/components/Document/lib/types";
 
 export enum COMMENT_TYPES {
   DISCUSSION = "GENERIC_COMMENT",
@@ -35,6 +36,7 @@ export enum COMMENT_CONTEXTS {
   DRAWER = "DRAWER",
   ANNOTATION = "ANNOTATION",
   FEED = "FEED",
+  REF_MANAGER = "REF_MANAGER",
 }
 
 export type CommentThreadGroup = {
@@ -47,7 +49,11 @@ export type CommentThread = {
   id: ID;
   threadType: COMMENT_TYPES;
   anchor?: SerializedAnchorPosition | null;
+  relatedContent: ContentInstance;
+  privacy: CommentPrivacyFilter;
 };
+
+export type CommentPrivacyFilter = "PUBLIC" | "PRIVATE" | "WORKSPACE";
 
 export type Comment = {
   id: ID;
@@ -75,6 +81,11 @@ export type Comment = {
 export const parseThread = (raw: any): CommentThread => {
   return {
     id: String(raw.id),
+    relatedContent: {
+      id: raw.related_content.id,
+      type: raw.related_content.content_type,
+    },
+    privacy: raw.privacy_type,
     threadType: raw.thread_type,
     anchor: raw.anchor ? parseAnchor(raw.anchor) : null,
   };

@@ -2,7 +2,7 @@ import Error from "next/error";
 import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 import dynamic from "next/dynamic";
 import withWebSocket from "~/components/withWebSocket";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 import { captureEvent } from "~/config/utils/events";
 import { connect } from "react-redux";

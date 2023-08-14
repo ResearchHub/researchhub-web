@@ -1,7 +1,7 @@
 import LoadMoreButton from "~/components/LoadMoreButton";
 import { useRouter } from "next/router";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { useEffect, useState } from "react";
 import FeedItemPlaceholder from "~/components/Placeholders/FeedItemPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";

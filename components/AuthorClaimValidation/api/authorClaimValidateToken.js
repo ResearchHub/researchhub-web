@@ -1,5 +1,5 @@
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { VALIDATION_STATE } from "../constants";
 import API from "~/config/api";
 

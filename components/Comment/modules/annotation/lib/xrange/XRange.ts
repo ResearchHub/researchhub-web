@@ -307,7 +307,7 @@ XRange.prototype.indexOf = function (pattern, ignoreChars) {
     characterOptions: {
       ignoreCharacters: ignoreChars ? ignoreChars.join("") : "",
     },
-    direction: "backwards", // TODO: Direction cannot be static like this
+    direction: "backwards",
   });
 
   return isFound ? new XRange({ rangyObj: range }) : null;

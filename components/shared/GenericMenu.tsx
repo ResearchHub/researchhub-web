@@ -20,7 +20,7 @@ export interface MenuOption {
 
 interface MenuProps {
   id: string;
-  width?: number;
+  width?: number | string;
   onSelect?: Function;
   children: React.ReactElement;
   options: MenuOption[];
@@ -65,7 +65,16 @@ const Menu = ({
   });
 
   const directionStyles = {
-    ...(direction === "bottom-left" && { top: triggerHeight, right: 0 }),
+    ...(direction === "bottom-left" && {
+      top: triggerHeight,
+      right: 0,
+      left: 0,
+    }),
+    ...(direction === "bottom-right" && {
+      top: triggerHeight,
+      right: 0,
+      left: "unset",
+    }),
     ...(direction === "top-center" && {
       transform: "translateX(-25%)",
       bottom: triggerHeight,
@@ -122,7 +131,7 @@ const Menu = ({
                     preventDefault ? undefined : () => handleSelect(option)
                   }
                 >
-                  {icon && (
+                  {icon && !html && (
                     <div className={css(styles.menuItemIcon)}>{icon}</div>
                   )}
                   {html ? html : label}
@@ -150,6 +159,7 @@ const Menu = ({
 const styles = StyleSheet.create({
   genericMenuWrapper: {
     position: "relative",
+    userSelect: "none",
   },
   menu: {
     position: "absolute",

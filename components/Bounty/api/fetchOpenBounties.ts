@@ -1,6 +1,6 @@
 import API, { buildQuerystringListParam } from "~/config/api";
 import { buildApiUri } from "~/config/utils/buildApiUri";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import {
   ID,
   UnifiedDocument,

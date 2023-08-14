@@ -40,7 +40,7 @@ import colors from "~/config/themes/colors";
 import UserApiTokenInputField from "~/components/shared/UserApiTokenInputField";
 import API from "~/config/api";
 import Button from "~/components/Form/Button";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
   return {

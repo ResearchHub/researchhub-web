@@ -14,7 +14,7 @@ import Loader from "../Loader/Loader";
 
 import colors from "../../config/themes/colors";
 import api from "../../config/api";
-import helpers from "@quantfive/js-web-config/helpers";
+import { Helpers } from "~/config/api/index";
 
 const VerificationForm = forwardRef((props, ref) => {
   const { showMessage } = props;
@@ -44,8 +44,8 @@ const VerificationForm = forwardRef((props, ref) => {
         api.USER_VERIFICATION({ route: "bulk_upload" }),
         api.POST_FILE_CONFIG(params)
       )
-        .then(helpers.checkStatus)
-        .then(helpers.parseJSON)
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
         .then((res) => {
           showMessage({ show: false });
           return res;

@@ -12,7 +12,7 @@ import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
 import ManageOrgUsers from "./ManageOrgUsers";
 import OrgCoverImgModal from "./OrgCoverImgModal";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import colors, { formColors } from "~/config/themes/colors";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 

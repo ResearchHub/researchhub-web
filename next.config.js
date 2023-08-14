@@ -1,7 +1,7 @@
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const ANALYZE = process.env.ANALYZE;
 const path = require("path");
-const withTM = require("next-transpile-modules")(["@quantfive/js-web-config"]);
+// const withTM = require("next-transpile-modules")(["~/config/api/index"]);
 const { withSentryConfig } = require("@sentry/nextjs");
 
 /** @type {import('next').NextConfig} */
@@ -119,7 +119,4 @@ const SentryWebpackPluginOptions = {
   disableClientWebpackPlugin: false,
 };
 
-module.exports = withSentryConfig(
-  withTM({ ...nextConfig }),
-  SentryWebpackPluginOptions
-);
+module.exports = withSentryConfig(nextConfig, SentryWebpackPluginOptions);

@@ -1,5 +1,5 @@
 import { FormState } from "../types/UploadComponentTypes";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { ID } from "../../../../config/types/root_types";
 import {
   isNullOrUndefined,

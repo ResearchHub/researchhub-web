@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Loader from "~/components/Loader/Loader";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import colors from "~/config/themes/colors";
 
 import Login from "~/components/Login/Login";

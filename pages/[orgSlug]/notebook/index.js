@@ -4,7 +4,7 @@ import HeadComponent from "~/components/Head";
 import Notebook from "~/components/Notebook/Notebook";
 import nookies from "nookies";
 import { AUTH_TOKEN } from "~/config/constants";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { captureEvent } from "~/config/utils/events";
 import {

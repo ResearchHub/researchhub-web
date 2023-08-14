@@ -7,7 +7,7 @@ import { fetchNote } from "~/config/fetch";
 import nookies from "nookies";
 import { AUTH_TOKEN } from "~/config/constants";
 import NextError from "next/error";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import ensureAuthenticated from "~/config/auth/ensureAuthenticated";
 
 interface Props {

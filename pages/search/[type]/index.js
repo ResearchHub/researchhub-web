@@ -1,6 +1,6 @@
 import { AUTH_TOKEN } from "~/config/constants";
 import { Fragment } from "react";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { pickFiltersForApi, QUERY_PARAM } from "~/config/utils/search";
 import { useRouter } from "next/router";
 import API from "~/config/api";

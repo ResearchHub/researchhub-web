@@ -162,12 +162,17 @@ const MyApp = ({
     );
   };
 
+  const withSidebar = router.pathname !== "/viewer";
+  const withNavbar = router.pathname !== "/viewer";
+
   return (
     <Provider store={store}>
       <Base
         Component={Component}
         pageProps={pageProps}
         appProps={appProps}
+        withSidebar={withSidebar}
+        withNavbar={withNavbar}
         rootLeftSidebarForceMin={rootLeftSidebarForceMin}
       />
       <Analytics />

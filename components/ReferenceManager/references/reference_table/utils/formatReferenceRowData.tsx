@@ -14,6 +14,7 @@ export type ReferenceTableRowDataType = {
   last_author: NullableString;
   published_date: NullableString;
   raw_data?: any;
+  actions?: any;
 };
 
 function formatAuthors(
@@ -73,6 +74,7 @@ function formatManuscript(datum: any): ReferenceTableRowDataType {
     id,
   } = datum ?? { fields: {}, creators: {} };
   const lastAuthor = creators[creators.length - 1];
+
   return {
     added_date: created_date.split("T")[0],
     id,
@@ -85,6 +87,7 @@ function formatManuscript(datum: any): ReferenceTableRowDataType {
     hubs: "",
     published_date: date ?? access_date,
     raw_data: datum,
+    actions: null,
   };
 }
 

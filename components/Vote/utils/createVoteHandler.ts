@@ -15,7 +15,7 @@ import {
 } from "~/config/utils/nullchecks";
 import { buildGrmVoteApiUri } from "~/config/utils/buildGrmVoteApiUri";
 import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocType";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { handleCatch } from "~/redux/utils";
 
 type Args = {

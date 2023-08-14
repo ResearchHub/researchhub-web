@@ -9,7 +9,7 @@ import Loader from "~/components/Loader/Loader";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors from "~/config/themes/colors";
 
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "./config/notebookConstants";
 import { captureEvent } from "~/config/utils/events";

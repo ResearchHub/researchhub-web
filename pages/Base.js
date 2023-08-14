@@ -68,6 +68,8 @@ function Base({
   pageProps,
   appProps,
   rootLeftSidebarForceMin,
+  withSidebar = true,
+  withNavbar = true,
 }) {
   const [numNavInteractions, setNumNavInteractions] = useState(0);
   const [newPostButtonValues, setNewPostButtonValues] = useState({
@@ -147,11 +149,13 @@ function Base({
                 <div className={css(styles.pageWrapper)}>
                   <DynamicPermissionNotification />
                   <DynamicMessage />
-                  <RootLeftSidebar
-                    rootLeftSidebarForceMin={rootLeftSidebarForceMin}
-                  />
+                  {withSidebar && (
+                    <RootLeftSidebar
+                      rootLeftSidebarForceMin={rootLeftSidebarForceMin}
+                    />
+                  )}
                   <div className={css(styles.main)}>
-                    <DynamicNavbar />
+                    {withNavbar && <DynamicNavbar />}
                     <Component {...pageProps} {...appProps} />
                   </div>
                 </div>

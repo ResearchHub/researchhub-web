@@ -1,5 +1,5 @@
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./InlineCommentAPIConstants";
 import API from "~/config/api";
 

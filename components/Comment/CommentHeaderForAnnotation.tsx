@@ -16,14 +16,12 @@ type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
   comment: Comment;
   handleEdit: Function;
-  document: GenericDocument;
 };
 
 const CommentHeader = ({
   authorProfile,
   comment,
   handleEdit,
-  document,
 }: CommentHeaderArgs) => {
   const openBounties = getOpenBounties({ comment });
   const closedBounties = getClosedBounties({ comment });
@@ -39,8 +37,6 @@ const CommentHeader = ({
   )
     .map((b) => b!.createdBy)
     .filter((person) => person!.id !== comment.createdBy.id);
-
-  const commentTreeState = useContext(CommentTreeContext);
 
   return (
     <div className={css(styles.commentHeader)}>
@@ -74,11 +70,7 @@ const CommentHeader = ({
               <div className={css(styles.time)}>{comment.timeAgo}</div>
             </div>
             <div className={css(styles.menuWrapper)}>
-              <CommentMenu
-                handleEdit={handleEdit}
-                comment={comment}
-                document={document}
-              />
+              <CommentMenu handleEdit={handleEdit} comment={comment} />
             </div>
           </div>
         </div>

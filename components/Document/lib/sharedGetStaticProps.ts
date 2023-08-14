@@ -1,5 +1,5 @@
 import { fetchCommentsAPI } from "~/components/Comment/lib/api";
-import { getDocumentByType } from "./getDocumentByType";
+import { fetchDocumentByType } from "./fetchDocumentByType";
 import isEmpty from "lodash/isEmpty";
 import fetchPostFromS3 from "../api/fetchPostFromS3";
 import getCommentFilterByTab from "./getCommentFilterByTab";
@@ -30,7 +30,7 @@ export default async function sharedGetStaticProps({
   let metadata: any | null = null;
 
   try {
-    documentData = await getDocumentByType({ documentType, documentId });
+    documentData = await fetchDocumentByType({ documentType, documentId });
     metadata = await fetchDocumentMetadata({
       unifiedDocId: documentData.unified_document.id,
     });

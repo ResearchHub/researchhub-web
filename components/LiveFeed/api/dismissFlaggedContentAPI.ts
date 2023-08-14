@@ -1,6 +1,6 @@
 import { captureEvent } from "~/config/utils/events";
 import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { ID, KeyOf } from "~/config/types/root_types";
 import API from "~/config/api";
 

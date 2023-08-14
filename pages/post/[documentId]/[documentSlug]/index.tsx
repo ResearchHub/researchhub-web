@@ -19,7 +19,7 @@ import {
 } from "~/components/Document/lib/DocumentContext";
 import removeMd from "remove-markdown";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import Button from "~/components/Form/Button";
 import {
   LEFT_SIDEBAR_MAX_WIDTH,
@@ -175,6 +175,10 @@ const DocumentIndexPage: NextPage<Args> = ({
                 <DocumentViewer
                   // @ts-ignore
                   postHtml={_postHtml}
+                  documentInstance={{
+                    id: document.id,
+                    type: "researchhub_post",
+                  }}
                   document={document}
                   metadata={documentMetadata}
                   viewerWidth={config.width}

@@ -1,5 +1,6 @@
 import { ID } from "./root_types";
 
+/**  @deprecated */
 export type ContentType = {
   name:
     | "paper"
@@ -20,7 +21,10 @@ export const parseContentType = (raw: any): ContentType => {
     contentTypeName = "comment";
   } else if (inputName === "paper") {
     contentTypeName = "paper";
+  } else if (inputName === "researchhub_post") {
+    contentTypeName = "researchhub_post";
   } else if (inputName === "researchhubpost") {
+    // Deprecated
     contentTypeName = "post";
   } else if (inputName === "hypothesis") {
     contentTypeName = "hypothesis";

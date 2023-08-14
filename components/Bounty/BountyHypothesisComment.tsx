@@ -8,7 +8,7 @@ import BaseModal from "../Modals/BaseModal";
 import TextEditor from "../TextEditor";
 import { POST_TYPES } from "../TextEditor/config/postTypes";
 import api from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { sendAmpEvent } from "~/config/fetch";
 import { connect } from "react-redux";
 import { ModalActions } from "~/redux/modals";

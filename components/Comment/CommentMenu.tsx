@@ -21,10 +21,9 @@ const { setMessage, showMessage } = MessageActions;
 type Args = {
   comment: Comment;
   handleEdit: Function;
-  document: GenericDocument;
 };
 
-const CommentMenu = ({ comment, handleEdit, document }: Args) => {
+const CommentMenu = ({ comment, handleEdit }: Args) => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef(null);
@@ -32,6 +31,7 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
   const commentTreeState = useContext(CommentTreeContext);
+  const { relatedContent } = comment.thread;
 
   useEffectHandleClick({
     ref: dropdownRef,
@@ -45,8 +45,8 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
       await flagComment({
         commentId: comment.id,
         flagReason,
-        documentId: document.id,
-        documentType: document.apiDocumentType,
+        documentId: relatedContent.id,
+        documentType: relatedContent.type,
       });
       dispatch(setMessage("Flagged"));
       // @ts-ignore
@@ -63,8 +63,8 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
     if (confirm("Delete comment?")) {
       await deleteCommentAPI({
         id: comment.id,
-        documentType: document.apiDocumentType,
-        documentId: document.id,
+        documentType: relatedContent.type,
+        documentId: relatedContent.id,
       });
 
       commentTreeState.onRemove({ comment });

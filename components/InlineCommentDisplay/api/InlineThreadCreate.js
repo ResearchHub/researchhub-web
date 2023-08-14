@@ -1,7 +1,7 @@
 /* - calvinhlee: this file utilizes functionalities that are legacy, I'm suppressing some warnings in this file */
 import API from "~/config/api";
 import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./InlineCommentAPIConstants";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { sendAmpEvent } from "~/config/fetch";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 

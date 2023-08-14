@@ -348,6 +348,7 @@
   background: rgb(57, 113, 255, 0.2);
 }
 
-.CommentEditorForAnnotation .ql-editor p {
+.CommentEditorForAnnotation .ql-editor p,
+.CommentEditorForRefManager .ql-editor p {
   font-size: 14px;
 }

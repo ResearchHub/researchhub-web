@@ -1,5 +1,5 @@
 import { captureEvent } from "~/config/utils/events";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import API from "~/config/api";
 
 export default function fetchHubFromSlug({ slug }: { slug: string }): any {

@@ -25,7 +25,7 @@ const _getDefaults = ({ typeFilter }) => {
     type: Object.values(feedTypeOpts)[0].value,
     sort: Object.values(availSorts)[0].value,
     time: Object.values(scopeOptions)[0].value,
-    tags: <string[]>[],
+    tags: [] as string[],
   };
 
   return defaults;

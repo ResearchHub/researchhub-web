@@ -1,6 +1,6 @@
 import nookies from "nookies";
 import { AUTH_TOKEN } from "~/config/constants";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import API from "~/config/api";
 
 interface Props {

@@ -6,7 +6,7 @@ import {
 } from "../../../config/utils/nullchecks";
 import * as Sentry from "@sentry/browser";
 import API from "~/config/api";
-import helpers from "@quantfive/js-web-config/helpers";
+import { Helpers } from "~/config/api/index";
 import {
   getBEUnifiedDocType,
   RESEARCHHUB_POST_DOCUMENT_TYPES,
@@ -38,8 +38,8 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
     API.CHECK_USER_VOTE_DOCUMENTS({ hypothesisIds, postIds, paperIds }),
     !isNullOrUndefined(authToken) ? API.GET_CONFIG(authToken) : API.GET_CONFIG()
   )
-    .then(helpers.checkStatus)
-    .then(helpers.parseJSON)
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
     .then((res) => {
       return filterNull(
         unifiedDocs.map((currUniDoc) => {

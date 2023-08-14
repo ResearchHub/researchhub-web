@@ -1,5 +1,4 @@
 import { AuthorProfile, RHUser } from "~/config/types/root_types";
-import { GenericDocument } from "../Document/lib/types";
 import { css, StyleSheet } from "aphrodite";
 import CommentAvatars from "./CommentAvatars";
 import colors from "./lib/colors";
@@ -14,20 +13,18 @@ import { CommentTreeContext } from "./lib/contexts";
 import { breakpoints } from "~/config/themes/screen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/pro-regular-svg-icons";
-import { timeSince, timeTo } from "~/config/utils/dates";
+import { timeSince } from "~/config/utils/dates";
 
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
   comment: Comment;
   handleEdit: Function;
-  document: GenericDocument;
 };
 
 const CommentHeader = ({
   authorProfile,
   comment,
   handleEdit,
-  document,
 }: CommentHeaderArgs) => {
   const openBounties = getOpenBounties({ comment });
   const closedBounties = getClosedBounties({ comment });
@@ -104,11 +101,7 @@ const CommentHeader = ({
               )}
             </div>
             <div className={css(styles.menuWrapper)}>
-              <CommentMenu
-                handleEdit={handleEdit}
-                comment={comment}
-                document={document}
-              />
+              <CommentMenu handleEdit={handleEdit} comment={comment} />
             </div>
           </div>
           <div className={css(styles.time)}>

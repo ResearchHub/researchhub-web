@@ -21,21 +21,35 @@ import { MessageActions } from "~/redux/message";
 import { markAsAcceptedAnswerAPI } from "./lib/api";
 import { findAllComments } from "./lib/findComment";
 import createSharableLinkToComment from "./lib/createSharableLinkToComment";
+import ReactTooltip from "react-tooltip";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   toggleReply: Function;
   comment: Comment;
-  document: GenericDocument;
+  document?: GenericDocument;
 };
 
 const CommentActions = ({ comment, document, toggleReply }: Args) => {
   const dispatch = useDispatch();
   const commentTreeState = useContext(CommentTreeContext);
-  const isQuestion = document.unifiedDocument.documentType === "question";
+  const { relatedContent } = comment.thread;
+
+  const isQuestion = relatedContent.type === "question";
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
+
+  const getTooltipText = () => {
+    if (
+      commentTreeState.context === COMMENT_CONTEXTS.REF_MANAGER &&
+      comment.thread.privacy === "PRIVATE"
+    ) {
+      return "This comment is private. Edit comment privacy to share with others.";
+    }
+
+    return undefined;
+  };
 
   const handleAwardBounty = async ({ bounty }: { bounty: Bounty }) => {
     const totalAmount = tallyAmounts({
@@ -103,8 +117,8 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
       try {
         await markAsAcceptedAnswerAPI({
           commentId,
-          documentType: document.apiDocumentType,
-          documentId: document.id,
+          documentType: relatedContent.type,
+          documentId: relatedContent.id,
         });
         const previouslyAccepted = findAllComments({
           comments: commentTreeState.comments,
@@ -133,6 +147,27 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
     }
   };
 
+  const handleCopyLinkToComment = (e) => {
+    e.stopPropagation();
+    createSharableLinkToComment({
+      comment,
+      context: commentTreeState.context,
+      ...(commentTreeState.citation && {
+        citationId: commentTreeState.citation.id,
+      }),
+      ...(relatedContent.type !== "citation" && {
+        documentId: relatedContent.id,
+      }),
+      ...(relatedContent.type !== "citation" && {
+        documentType: relatedContent.type,
+      }),
+    });
+
+    dispatch(setMessage(`Link copied`));
+    // @ts-ignore
+    dispatch(showMessage({ show: true, error: false }));
+  };
+
   // FIXME: Refactor into function
   const openBounties = getOpenBounties({ comment });
   const isAllowedToTip =
@@ -148,7 +183,7 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
   const isAllowedToAward =
     Boolean(openUserOwnedRootBounty) && openBounties.length === 0;
 
-  if (isQuestion) {
+  if (document && isQuestion) {
     isAllowedToAcceptAnswer =
       document!.createdBy!.id == currentUser?.id &&
       !comment.isAcceptedAnswer &&
@@ -156,27 +191,37 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
   }
 
   const disableSocialActions = currentUser?.id === comment.createdBy.id;
+  const tooltipText = getTooltipText();
 
   return (
     <div className={css(styles.wrapper)}>
+      <ReactTooltip
+        effect="solid"
+        className={css(styles.tooltip)}
+        id="link-tooltip"
+      />
       <div className={css(styles.actionsWrapper)}>
-        <div
-          className={`${css(
-            styles.action,
-            disableSocialActions && styles.disabled
-          )} vote-btn`}
-        >
-          <CommentVote
-            comment={comment}
-            score={comment.score}
-            userVote={comment.userVote}
-            isHorizontal={true}
-            documentType={document.apiDocumentType}
-            documentID={document.id}
-          />
-        </div>
+        {document && (
+          <div
+            className={`${css(
+              styles.action,
+              disableSocialActions && styles.disabled
+            )} vote-btn`}
+          >
+            <CommentVote
+              comment={comment}
+              score={comment.score}
+              userVote={comment.userVote}
+              isHorizontal={true}
+              documentType={document.apiDocumentType}
+              documentID={document.id}
+            />
+          </div>
+        )}
 
-        {commentTreeState.context !== COMMENT_CONTEXTS.ANNOTATION && (
+        {![COMMENT_CONTEXTS.ANNOTATION, COMMENT_CONTEXTS.REF_MANAGER].includes(
+          commentTreeState.context
+        ) && (
           <div
             className={`${css(styles.action, styles.actionReply)} reply-btn`}
           >
@@ -242,24 +287,20 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
           </div>
         )}
 
-        <div className={`${css(styles.action)} award-btn`}>
+        <div
+          className={`${css(styles.action)} link-btn`}
+          data-tip={tooltipText}
+          data-for="link-tooltip"
+        >
           <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              createSharableLinkToComment(comment);
-
-              dispatch(setMessage(`Link copied`));
-              // @ts-ignore
-              dispatch(showMessage({ show: true, error: false }));
-            }}
+            overrideStyle={styles.button}
+            onClick={handleCopyLinkToComment}
           >
             <FontAwesomeIcon
-              // fontSize={}
-              // fontWeight={600}
               icon={faLinkSimple}
               style={{ transform: "rotate(-45deg)" }}
             />
-            <span className={css(styles.actionText)}>Share</span>
+            <span className={css(styles.actionText)}>Copy link</span>
           </IconButton>
         </div>
       </div>
@@ -268,6 +309,14 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
 };
 
 const styles = StyleSheet.create({
+  button: {
+    ":hover": {
+      background: colors.actionBtn.hover,
+    },
+  },
+  tooltip: {
+    width: 300,
+  },
   wrapper: {
     display: "flex",
     flexDirection: "column",

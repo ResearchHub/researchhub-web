@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { createRef, Component } from "react";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/api/index";
 import { ModalActions } from "~/redux/modals";
 import { RECAPTCHA_CLIENT_KEY } from "~/config/constants";
 import { StyleSheet, css } from "aphrodite";

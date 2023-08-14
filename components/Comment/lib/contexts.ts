@@ -1,6 +1,7 @@
 import { createContext } from "react";
 import { filterOpts, sortOpts } from "./options";
 import { COMMENT_CONTEXTS, Comment } from "./types";
+import { ContentInstance } from "~/components/Document/lib/types";
 
 type CommentTreeContext = {
   sort: string | null;
@@ -11,6 +12,7 @@ type CommentTreeContext = {
   onRemove: Function;
   onFetchMore: Function;
   comments: Comment[];
+  citation?: ContentInstance;
 };
 
 export const CommentTreeContext = createContext<CommentTreeContext>({
@@ -18,7 +20,8 @@ export const CommentTreeContext = createContext<CommentTreeContext>({
   filter: filterOpts[0].value,
   comments: [],
   context: COMMENT_CONTEXTS.GENERIC,
-  
+  citation: undefined,
+
   // These functions are defined in the component the context is used.
   // they will receive their value in there since their definition depends on state.
   onCreate: () => null,
