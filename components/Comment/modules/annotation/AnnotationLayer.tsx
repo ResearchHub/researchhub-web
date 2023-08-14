@@ -255,7 +255,7 @@ const AnnotationLayer = ({
       const promises: Promise<{ comments: any[]; count: number }>[] = [];
       if (citationInstance) {
         if (
-          ["PRIVATE", "WORKSPACE"].includes(
+          ["PUBLIC", "PRIVATE", "WORKSPACE"].includes(
             visibilityPreferenceForViewingComments
           )
         ) {
@@ -266,7 +266,7 @@ const AnnotationLayer = ({
             })
           );
         }
-        if (["WORKSPACE"].includes(visibilityPreferenceForViewingComments))
+        if (["PUBLIC", "WORKSPACE"].includes(visibilityPreferenceForViewingComments))
           promises.push(
             _fetchComments({
               contentInstance: citationInstance,
