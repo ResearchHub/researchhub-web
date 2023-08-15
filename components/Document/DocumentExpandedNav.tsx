@@ -15,9 +15,15 @@ import { ContentInstance, GenericDocument } from "./lib/types";
 import Link from "next/link";
 import DocumentViewerContext from "./lib/DocumentViewerContext";
 import DocumentCommentMenu from "./DocumentCommentMenu";
+import {
+  faArrowDownToBracket,
+  faPrint,
+  faArrowUpRight,
+} from "@fortawesome/pro-regular-svg-icons";
+import Image from "next/image";
 
 interface Props {
-  pdfUrl?: string;
+  pdfUrl?: string | null;
   handleClose: Function;
   document?: GenericDocument | null;
   documentInstance?: ContentInstance;
@@ -52,48 +58,65 @@ const DocumentExpandedNav = ({
 
   return (
     <div className={css(styles.expandedNav)}>
-      <div className={css(styles.actionsWrapper)}>
-        <div onClick={() => handleClose()}>
-          <IconButton overrideStyle={styles.viewerNavBtn} variant="round">
-            <FontAwesomeIcon icon={faLongArrowLeft} style={{ fontSize: 20 }} />
-          </IconButton>
-        </div>
+      <div className={css(styles.verticallyCenterContent)}>
+        <div className={css(styles.actionsWrapper)}>
+          <div onClick={() => handleClose()}>
+            <IconButton overrideStyle={styles.backBtn}>
+              <FontAwesomeIcon
+                icon={faLongArrowLeft}
+                style={{ fontSize: 20 }}
+              />
+            </IconButton>
+          </div>
 
-        <div className={css(styles.rightActions)}>
-          {pdfUrl && (
-            <div
-              onClick={() => downloadPDF(pdfUrl)}
-              className={css(styles.viewerNavBtn, styles.downloadBtn)}
-            >
-              <IconButton overrideStyle={styles.viewerNavBtn}>
-                <FontAwesomeIcon
-                  icon={faFileArrowDown}
-                  style={{ fontSize: 20 }}
-                />
-              </IconButton>
+          <div className={css(styles.rightActions)}>
+            {pdfUrl && (
+              <div
+                onClick={() => downloadPDF(pdfUrl)}
+                className={css(styles.downloadBtn)}
+              >
+                <IconButton overrideStyle={styles.viewerNavBtn}>
+                  <FontAwesomeIcon
+                    icon={faArrowDownToBracket}
+                    style={{ fontSize: 18 }}
+                  />
+                </IconButton>
+              </div>
+            )}
+            <div className={css(styles.dividerWrapper)}>
+              <div className={css(styles.divider)} />
             </div>
-          )}
-          <Link href={`${documentInstance?.type}/${documentInstance?.id}`}>
-            <div className={css(styles.publicPageBtnWrapper)}>
-              <IconButton variant="round" overrideStyle={styles.viewerNavBtn}>
-                <FontAwesomeIcon
-                  icon={faGlobe}
-                  style={{ fontSize: 16, marginRight: 4 }}
-                />
-                View public page
-              </IconButton>
-            </div>
-          </Link>
-          <DocumentCommentMenu
-            onSelect={setVisibilityPreferenceForViewingComments}
-            selected={visibilityPreferenceForViewingComments}
-            annotationCount={numAnnotations}
-          />
-          {doc && (
-            <div>
-              <DocumentOptions document={doc} />
-            </div>
-          )}
+
+            <DocumentCommentMenu
+              onSelect={setVisibilityPreferenceForViewingComments}
+              selected={visibilityPreferenceForViewingComments}
+              annotationCount={numAnnotations}
+            />
+            {documentInstance && (
+              <>
+                <div className={css(styles.dividerWrapper)}>
+                  <div className={css(styles.divider)} />
+                </div>
+                <Link
+                  href={`${documentInstance?.type}/${documentInstance?.id}`}
+                >
+                  <IconButton overrideStyle={styles.publicBtn}>
+                    <Image
+                      src="/static/ResearchHubText.png"
+                      width={104}
+                      height={12}
+                      alt="ResearchHub"
+                    />
+                    <FontAwesomeIcon
+                      icon={faArrowUpRight}
+                      style={{ fontSize: 16, marginRight: 4 }}
+                    />
+                  </IconButton>
+                </Link>
+              </>
+            )}
+            {doc && <DocumentOptions document={doc} />}
+          </div>
         </div>
       </div>
     </div>
@@ -112,36 +135,47 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid rgba(233, 234, 239, 1)`,
     // boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
   },
-  publicPageBtnWrapper: {
-    fontSize: 14,
-    position: "absolute",
-    left: "50%",
-    top: 2,
-    fontWeight: 400,
+  verticallyCenterContent: {
     display: "flex",
     alignItems: "center",
-    transform: "translateX(-50%)",
+    justifyContent: "center",
+    height: "100%",
+    flexDirection: "column",
   },
   rightActions: {
     marginLeft: "auto",
+    display: "flex",
   },
   actionsWrapper: {
     display: "flex",
-    marginTop: 3,
-  },
-  closeBtn: {
-    height: 33,
-    width: 33,
+    width: "100%",
   },
   downloadBtn: {},
+  dividerWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    margin: "0 10px",
+  },
+  divider: {
+    height: "60%",
+    boxSizing: "border-box",
+    borderRight: `2px solid ${colors.MEDIUM_GREY()}`,
+  },
   viewerNavBtn: {
     color: colors.MEDIUM_GREY(),
     border: "none",
     boxSizing: "border-box",
-    ":hover": {
-      background: colors.DARKER_GREY(0.2),
-      transition: "0.2s",
-    },
+    padding: "6px 12px",
+  },
+  backBtn: {
+    color: colors.MEDIUM_GREY2(),
+  },
+  publicBtn: {
+    color: colors.MEDIUM_GREY(),
+    border: "none",
+    boxSizing: "border-box",
+    padding: "6px 12px",
   },
 });
 

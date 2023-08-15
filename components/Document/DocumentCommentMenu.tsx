@@ -13,7 +13,11 @@ import {
   faMessageLines,
   faMessageSlash,
 } from "@fortawesome/pro-regular-svg-icons";
-import { faLockKeyhole, faSitemap } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faLockKeyhole,
+  faSitemap,
+  faChevronDown,
+} from "@fortawesome/pro-solid-svg-icons";
 
 const DocumentCommentMenu = ({
   annotationCount = 0,
@@ -80,6 +84,7 @@ const DocumentCommentMenu = ({
           {selected !== "OFF" && (
             <div className={css(styles.pillContent)}>{annotationCount}</div>
           )}
+          <FontAwesomeIcon style={{ fontSize: 13 }} icon={faChevronDown} />
         </IconButton>
       </GenericMenu>
     </div>
@@ -90,7 +95,7 @@ const styles = StyleSheet.create({
   btn: {
     display: "flex",
     alignItems: "center",
-    fontSize: 20,
+    fontSize: 18,
     color: colors.MEDIUM_GREY2(),
     padding: "6px 12px",
   },
@@ -112,9 +117,9 @@ const styles = StyleSheet.create({
   pillContent: {
     background: "#F5F5F9",
     borderRadius: "5px",
-    padding: "2px 10px",
+    padding: "2px 8px",
     color: colors.BLACK(0.5),
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: 500,
   },
 });

@@ -303,6 +303,7 @@ const DocumentViewer = ({
         {isExpanded && (
           <DocumentExpandedNav
             document={doc}
+            pdfUrl={pdfUrl}
             documentInstance={documentInstance}
             handleClose={() => {
               onClose && onClose();
