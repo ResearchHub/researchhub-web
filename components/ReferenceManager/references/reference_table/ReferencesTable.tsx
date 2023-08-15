@@ -36,6 +36,7 @@ type Props = {
   handleFileDrop: (files: any[]) => void;
   setSelectedReferenceIDs: (refs: any[]) => void;
   setSelectedFolderIds: (refs: any[]) => void;
+  loading?: boolean | undefined;
 };
 
 export type PreloadRow = {
@@ -86,6 +87,7 @@ export default function ReferencesTable({
   handleFileDrop,
   setSelectedReferenceIDs,
   setSelectedFolderIds,
+  loading,
 }: Props) {
   const { setIsDrawerOpen, setReferenceItemDatum, referencesFetchTime } =
     useReferenceTabContext();
@@ -101,6 +103,12 @@ export default function ReferencesTable({
 
   const router = useRouter();
   const apiRef = useGridApiRef();
+
+  useEffect(() => {
+    if (loading !== undefined) {
+      setIsLoading(loading);
+    }
+  }, [loading]);
 
   const moveCitationToFolder = ({ moveToFolderId }) => {
     const newReferenceData = referenceTableRowData.filter((data) => {
