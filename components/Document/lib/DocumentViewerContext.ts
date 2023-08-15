@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { ContentInstance } from "./types";
+import { ContentInstance, GenericDocument } from "./types";
 import { CommentPrivacyFilter } from "~/components/Comment/lib/types";
 
 export type VisibilityPreferenceForViewingComments =
@@ -12,6 +12,7 @@ export type Page = {
 type DocumentViewerContextType = {
   citationInstance?: ContentInstance;
   documentInstance?: ContentInstance;
+  document?: GenericDocument | null | undefined;
   setVisibilityPreferenceForViewingComments: (
     filter: VisibilityPreferenceForViewingComments
   ) => void;

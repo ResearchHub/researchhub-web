@@ -1,9 +1,13 @@
+import { useContext } from "react";
+
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 import GenericMenu from "../shared/GenericMenu";
 import IconButton from "../Icons/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { VisibilityPreferenceForViewingComments } from "./lib/DocumentViewerContext";
+import DocumentViewerContext, {
+  VisibilityPreferenceForViewingComments,
+} from "./lib/DocumentViewerContext";
 import {
   faGlobe,
   faMessageLines,
@@ -20,7 +24,9 @@ const DocumentCommentMenu = ({
   selected: VisibilityPreferenceForViewingComments;
   onSelect: Function;
 }) => {
-  const options = [
+  const { documentInstance } = useContext(DocumentViewerContext);
+
+  let options = [
     {
       value: "PUBLIC",
       disableHover: true,
@@ -44,7 +50,6 @@ const DocumentCommentMenu = ({
     },
     {
       value: "OFF",
-      preventDefault: true,
       disableHover: true,
       disableStyle: true,
       icon: <FontAwesomeIcon icon={faMessageSlash} />,
@@ -52,14 +57,19 @@ const DocumentCommentMenu = ({
     },
   ];
 
+  if (!documentInstance) {
+    options = options.filter((opt) => opt.value !== "PUBLIC");
+  }
+
   return (
     <div>
       <GenericMenu
         softHide={true}
         options={options}
-        selected={selected || "PUBLIC"}
-        width={250}
+        selected={selected || options[0].value}
+        width={260}
         onSelect={(selected) => {
+          console.log("selected", selected);
           onSelect(selected.value);
         }}
         direction="bottom-right"
@@ -67,7 +77,9 @@ const DocumentCommentMenu = ({
       >
         <IconButton overrideStyle={styles.btn}>
           <FontAwesomeIcon icon={faMessageLines} />
-          <div className={css(styles.pillContent)}>{annotationCount}</div>
+          {selected !== "OFF" && (
+            <div className={css(styles.pillContent)}>{annotationCount}</div>
+          )}
         </IconButton>
       </GenericMenu>
     </div>

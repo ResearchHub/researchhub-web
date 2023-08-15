@@ -80,14 +80,16 @@ const DocumentViewer = ({
   const [lastPageRendered, setLastPageRendered] = useState<Page>({
     pageNumber: 0,
   });
+  const defaultPrivacyFilter = documentInstance ? "PUBLIC" : "WORKSPACE";
+
   const [
     visibilityPreferenceForNewComment,
     setVisibilityPreferenceForNewComment,
-  ] = useState<CommentPrivacyFilter>("PUBLIC");
+  ] = useState<CommentPrivacyFilter>(defaultPrivacyFilter);
   const [
     visibilityPreferenceForViewingComments,
     setVisibilityPreferenceForViewingComments,
-  ] = useState<VisibilityPreferenceForViewingComments>("PUBLIC");
+  ] = useState<VisibilityPreferenceForViewingComments>(defaultPrivacyFilter);
 
   const [windowDimensions, setWindowDimensions] = useState<{
     width: number;
@@ -273,7 +275,10 @@ const DocumentViewer = ({
   const actualZoom = isExpanded ? fullScreenSelectedZoom : selectedZoom;
   const shouldScroll =
     actualContentWidth > windowDimensions.width - LEFT_SIDEBAR_MAX_WIDTH;
-
+  console.log(
+    "visibilityPreferenceForViewingComments",
+    visibilityPreferenceForViewingComments
+  );
   return (
     <DocumentViewerContext.Provider
       value={{
@@ -285,6 +290,8 @@ const DocumentViewer = ({
         visibilityPreferenceForNewComment,
         setNumAnnotations,
         numAnnotations,
+        documentInstance,
+        document: doc,
       }}
     >
       <div
