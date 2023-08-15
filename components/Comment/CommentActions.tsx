@@ -149,6 +149,9 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
 
   const handleCopyLinkToComment = (e) => {
     e.stopPropagation();
+
+    console.log("relatedContent", relatedContent);
+
     createSharableLinkToComment({
       comment,
       context: commentTreeState.context,

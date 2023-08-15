@@ -121,12 +121,11 @@ const Menu = ({
             } = option;
 
             const content = (
-              <>
+              <div key={`${id}-${index}`}>
                 {option.group !== currentOptionGroup && (
                   <div className={css(styles.groupHeader)}>{option.group}</div>
                 )}
                 <div
-                  key={`${id}-${index}`}
                   className={css(
                     disableStyle !== false && styles.menuItem,
                     disableHover !== false && styles.menuItemHover
@@ -153,7 +152,7 @@ const Menu = ({
                     </>
                   )}
                 </div>
-              </>
+              </div>
             );
 
             currentOptionGroup = option.group;

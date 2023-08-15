@@ -266,7 +266,11 @@ const AnnotationLayer = ({
             })
           );
         }
-        if (["PUBLIC", "WORKSPACE"].includes(visibilityPreferenceForViewingComments))
+        if (
+          ["PUBLIC", "WORKSPACE"].includes(
+            visibilityPreferenceForViewingComments
+          )
+        )
           promises.push(
             _fetchComments({
               contentInstance: citationInstance,
@@ -311,7 +315,7 @@ const AnnotationLayer = ({
     })();
 
     _setWindowDimensions();
-  }, [visibilityPreferenceForViewingComments]);
+  }, [visibilityPreferenceForViewingComments, currentOrg]);
 
   // Once we have comments, we want to group them by threads and draw them on the page
   useEffect(() => {
@@ -1042,7 +1046,9 @@ const AnnotationLayer = ({
       setInlineComments([...inlineComments, comment]);
     }
 
-    revalidateDocument();
+    if (documentInstance) {
+      revalidateDocument();
+    }
   };
 
   const _onRemove = ({ comment }: { comment: CommentModel }) => {
@@ -1063,7 +1069,9 @@ const AnnotationLayer = ({
       );
     }
 
-    revalidateDocument();
+    if (documentInstance) {
+      revalidateDocument();
+    }
   };
 
   const _onUpdate = ({ comment }: { comment: CommentModel }) => {
