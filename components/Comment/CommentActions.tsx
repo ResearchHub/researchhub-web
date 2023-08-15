@@ -150,20 +150,9 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
   const handleCopyLinkToComment = (e) => {
     e.stopPropagation();
 
-    console.log("relatedContent", relatedContent);
-
     createSharableLinkToComment({
       comment,
       context: commentTreeState.context,
-      ...(commentTreeState.citation && {
-        citationId: commentTreeState.citation.id,
-      }),
-      ...(relatedContent.type !== "citation" && {
-        documentId: relatedContent.id,
-      }),
-      ...(relatedContent.type !== "citation" && {
-        documentType: relatedContent.type,
-      }),
     });
 
     dispatch(setMessage(`Link copied`));

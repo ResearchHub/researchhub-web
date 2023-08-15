@@ -1,18 +1,16 @@
 import { ID, RhDocumentType } from "~/config/types/root_types";
 
 interface Props {
-  documentType?: RhDocumentType;
-  documentId?: ID;
+  contentType: RhDocumentType;
+  contentId: ID;
   threadId?: ID;
   serializedSelection?: any;
-  citationId?: ID;
 }
 
 const buildViewerUrl = ({
-  documentId,
-  documentType,
+  contentId,
+  contentType,
   threadId,
-  citationId,
   serializedSelection,
 }: Props): URL => {
   const url =
@@ -20,15 +18,9 @@ const buildViewerUrl = ({
       ? new URL(window.location.host + "/viewer")
       : new URL((process.env.HOST || "") + "/viewer");
 
-  if (documentId) {
-    url.searchParams.set("docId", String(documentId));
-  }
-  if (documentType) {
-    url.searchParams.set("docType", documentType);
-  }
-  if (citationId) {
-    url.searchParams.set("citationId", String(citationId));
-  }
+  url.searchParams.set("contentId", String(contentId));
+  url.searchParams.set("contentType", contentType);
+
   if (threadId) {
     url.hash = `#threadId=${threadId}`;
   }
