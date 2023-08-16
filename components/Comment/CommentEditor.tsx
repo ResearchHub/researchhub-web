@@ -61,6 +61,7 @@ type CommentEditorArgs = {
   editorStyleOverride?: any;
   onChange?: Function;
   displayCurrentUser?: boolean;
+  showAuthorLine?: boolean;
 };
 
 const CommentEditor = ({
@@ -81,6 +82,7 @@ const CommentEditor = ({
   handleClose,
   editorStyleOverride,
   onChange,
+  showAuthorLine = true,
   displayCurrentUser = true,
 }: CommentEditorArgs) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -324,8 +326,7 @@ const CommentEditor = ({
           )}
 
           <div className={css(styles.mainActionsWrapper)}>
-            {/* TODO: Kobe - Remove author line for inline comments when editing comment */}
-            {displayCurrentUser && author && !allowBounty && (
+            {displayCurrentUser && author && showAuthorLine && (
               <div
                 className={css(
                   styles.authorRow,

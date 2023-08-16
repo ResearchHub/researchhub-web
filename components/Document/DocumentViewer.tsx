@@ -26,6 +26,7 @@ import DocumentViewerContext, {
   VisibilityPreferenceForViewingComments,
   ViewerContext,
 } from "./lib/DocumentViewerContext";
+import { useRouter } from "next/router";
 
 const AnnotationLayer = dynamic(
   () => import("~/components/Comment/modules/annotation/AnnotationLayer")
@@ -52,6 +53,7 @@ type Props = {
   hasError?: boolean;
   onClose?: Function;
   showExpandBtn?: boolean;
+  expandedOnlyMode?: boolean;
 };
 
 const DocumentViewer = ({
@@ -66,8 +68,12 @@ const DocumentViewer = ({
   hasError = false,
   showExpandBtn = true,
   onClose,
+  expandedOnlyMode = false,
 }: Props) => {
-  const [isExpanded, setIsExpanded] = useState<boolean>(expanded);
+  const router = useRouter();
+  const [isExpanded, setIsExpanded] = useState<boolean>(
+    expandedOnlyMode || expanded
+  );
   const [numAnnotations, setNumAnnotations] = useState<number>(0);
   const contentRef = useRef(null);
   const [hasLoadError, setHasLoadError] = useState<boolean>(hasError);
@@ -75,12 +81,16 @@ const DocumentViewer = ({
     useState<number>(1.25);
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
   const [isPdfReady, setIsPdfReady] = useState<boolean>(false);
+  const [viewerContext, setViewerContext] = useState<ViewerContext>(
+    ViewerContext.GENERIC
+  );
   const [numPagesToPreload, setNumPagesToPreload] = useState<number>(
     config.numPdfPagesToPreload
   );
   const [lastPageRendered, setLastPageRendered] = useState<Page>({
     pageNumber: 0,
   });
+
   const defaultPrivacyFilter = documentInstance ? "PUBLIC" : "WORKSPACE";
 
   const [
@@ -129,6 +139,18 @@ const DocumentViewer = ({
       window.removeEventListener("resize", throttledSetDimensions);
     };
   }, []);
+
+  useEffect(() => {
+    let viewerContext = ViewerContext.GENERIC;
+    const isPost = ["post"].includes(router.pathname.split("/")[1]);
+    const isPaper = ["paper"].includes(router.pathname.split("/")[1]);
+    if (isPost || isPaper) {
+      viewerContext = ViewerContext.DOCUMENT_PAGE;
+    } else if (citationInstance) {
+      viewerContext = ViewerContext.REF_MANAGER;
+    }
+    setViewerContext(viewerContext);
+  }, [router.isReady]);
 
   useEffect(() => {
     if (isExpanded) {
@@ -277,15 +299,6 @@ const DocumentViewer = ({
   const shouldScroll =
     actualContentWidth > windowDimensions.width - LEFT_SIDEBAR_MAX_WIDTH;
 
-  const optionalAttributes = onClose
-    ? {
-        handleClose: () => {
-          onClose && onClose();
-          setIsExpanded(false);
-        },
-      }
-    : {};
-
   return (
     <DocumentViewerContext.Provider
       value={{
@@ -299,9 +312,7 @@ const DocumentViewer = ({
         numAnnotations,
         documentInstance,
         document: doc,
-        viewerContext: citationInstance
-          ? ViewerContext.REF_MANAGER
-          : ViewerContext.GENERIC,
+        viewerContext,
       }}
     >
       <div
@@ -314,7 +325,11 @@ const DocumentViewer = ({
           <DocumentExpandedNav
             pdfUrl={pdfUrl}
             documentInstance={documentInstance}
-            {...optionalAttributes}
+            expandedOnlyMode={expandedOnlyMode}
+            handleClose={() => {
+              onClose && onClose();
+              setIsExpanded(false);
+            }}
           />
         )}
         <div
@@ -380,7 +395,14 @@ const DocumentViewer = ({
               )}
 
               <DocumentControls
-                handleFullScreen={() => setIsExpanded(!isExpanded)}
+                handleFullScreen={() => {
+                  if (isExpanded) {
+                    onClose && onClose();
+                    setIsExpanded(false);
+                  } else {
+                    setIsExpanded(true);
+                  }
+                }}
                 handleZoomIn={handleZoomIn}
                 handleZoomOut={handleZoomOut}
                 handleZoomSelection={handleZoomSelection}

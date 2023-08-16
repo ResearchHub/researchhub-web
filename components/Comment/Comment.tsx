@@ -239,6 +239,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                 editorStyleOverride={
                   annotationContext ? styles.annotationEditor : undefined
                 }
+                showAuthorLine={!(annotationContext || refManagerContext)}
                 handleSubmit={async (props) => {
                   try {
                     let comment = (await handleCommentUpdate(

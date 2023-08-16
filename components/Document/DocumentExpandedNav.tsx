@@ -15,12 +15,14 @@ import {
   faArrowUpRight,
 } from "@fortawesome/pro-regular-svg-icons";
 import Image from "next/image";
+import ReactTooltip from "react-tooltip";
 
 interface Props {
   pdfUrl?: string | null;
   handleClose?: Function;
   document?: GenericDocument | null;
   documentInstance?: ContentInstance;
+  expandedOnlyMode?: boolean;
 }
 
 function downloadPDF(pdfUrl) {
@@ -42,6 +44,7 @@ const DocumentExpandedNav = ({
   pdfUrl,
   documentInstance,
   handleClose,
+  expandedOnlyMode,
 }: Props) => {
   const {
     visibilityPreferenceForViewingComments,
@@ -49,12 +52,19 @@ const DocumentExpandedNav = ({
     numAnnotations,
     viewerContext,
   } = useContext(DocumentViewerContext);
-  console.log("handleClose", handleClose);
   return (
     <div className={css(styles.expandedNav)}>
+      <ReactTooltip
+        effect="solid"
+        id="download-tooltip"
+        className={css(styles.tooltip)}
+        place={
+          viewerContext === ViewerContext.DOCUMENT_PAGE ? "left" : "bottom"
+        }
+      />
       <div className={css(styles.verticallyCenterContent)}>
         <div className={css(styles.actionsWrapper)}>
-          {handleClose && (
+          {!expandedOnlyMode && handleClose && (
             <div onClick={() => handleClose()}>
               <IconButton overrideStyle={styles.backBtn}>
                 <FontAwesomeIcon
@@ -68,6 +78,8 @@ const DocumentExpandedNav = ({
           <div className={css(styles.rightActions)}>
             {pdfUrl && (
               <div
+                data-tip={"Download PDF"}
+                data-for="download-tooltip"
                 onClick={() => downloadPDF(pdfUrl)}
                 className={css(styles.downloadBtn)}
               >
@@ -92,29 +104,32 @@ const DocumentExpandedNav = ({
                 />
               </>
             )}
-            {documentInstance && (
-              <>
-                <div className={css(styles.dividerWrapper)}>
-                  <div className={css(styles.divider)} />
-                </div>
-                <Link
-                  href={`${documentInstance?.type}/${documentInstance?.id}`}
-                >
-                  <IconButton overrideStyle={styles.publicBtn}>
-                    <Image
-                      src="/static/ResearchHubText.png"
-                      width={104}
-                      height={12}
-                      alt="ResearchHub"
-                    />
-                    <FontAwesomeIcon
-                      icon={faArrowUpRight}
-                      style={{ fontSize: 16, marginRight: 4 }}
-                    />
-                  </IconButton>
-                </Link>
-              </>
-            )}
+            {viewerContext !== ViewerContext.DOCUMENT_PAGE &&
+              documentInstance && (
+                <>
+                  <div className={css(styles.dividerWrapper)}>
+                    <div className={css(styles.divider)} />
+                  </div>
+                  <Link
+                    href={`${documentInstance?.type}/${documentInstance?.id}`}
+                    data-tip={"View public page"}
+                    data-for="download-tooltip"
+                  >
+                    <IconButton overrideStyle={styles.publicBtn}>
+                      <Image
+                        src="/static/ResearchHubText.png"
+                        width={104}
+                        height={12}
+                        alt="ResearchHub"
+                      />
+                      <FontAwesomeIcon
+                        icon={faArrowUpRight}
+                        style={{ fontSize: 16, marginRight: 4 }}
+                      />
+                    </IconButton>
+                  </Link>
+                </>
+              )}
           </div>
         </div>
       </div>
@@ -123,6 +138,9 @@ const DocumentExpandedNav = ({
 };
 
 const styles = StyleSheet.create({
+  tooltip: {
+    whiteSpace: "pre",
+  },
   expandedNav: {
     position: "fixed",
     height: 44,

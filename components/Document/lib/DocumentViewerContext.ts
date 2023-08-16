@@ -11,6 +11,7 @@ export type Page = {
 export enum ViewerContext {
   REF_MANAGER = "REF_MANAGER",
   GENERIC = "GENERIC",
+  DOCUMENT_PAGE = "DOCUMENT_PAGE",
 }
 
 type DocumentViewerContextType = {

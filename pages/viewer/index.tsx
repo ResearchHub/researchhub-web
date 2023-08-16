@@ -129,7 +129,7 @@ const ViewerPage: NextPage<Props> = ({}) => {
           citationInstance={citationInstance}
           documentInstance={documentInstance}
           document={doc}
-          expanded={true}
+          expandedOnlyMode={true}
         />
       ) : (
         <div className={css(styles.loadingWrapper)}>
