@@ -487,11 +487,14 @@ export default function ReferencesTable({
               id: referenceItemDatum.id,
               type: "citationentry",
             }}
-            // TODO: Once citation includes unified doc, fix this
-            // documentInstance={{
-            //   id: 20949,
-            //   type: "paper",
-            // }}
+            documentInstance={
+              referenceItemDatum.related_unified_doc
+                ? {
+                    id: referenceItemDatum.related_unified_doc?.documents?.id,
+                    type: "paper",
+                  }
+                : undefined
+            }
             onClose={() => {
               setIsViewerOpen(false);
             }}

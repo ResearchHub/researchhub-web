@@ -111,8 +111,13 @@ const DocumentExpandedNav = ({
                     <div className={css(styles.divider)} />
                   </div>
                   <Link
-                    href={`${documentInstance?.type}/${documentInstance?.id}`}
+                    href={`/${documentInstance?.type}/${documentInstance?.id}`}
                     data-tip={"View public page"}
+                    target={
+                      viewerContext === ViewerContext.REF_MANAGER
+                        ? "_blank"
+                        : "_self"
+                    }
                     data-for="download-tooltip"
                   >
                     <IconButton overrideStyle={styles.publicBtn}>
