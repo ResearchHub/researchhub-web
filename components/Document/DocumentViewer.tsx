@@ -24,6 +24,7 @@ import config from "./lib/config";
 import DocumentViewerContext, {
   Page,
   VisibilityPreferenceForViewingComments,
+  ViewerContext,
 } from "./lib/DocumentViewerContext";
 
 const AnnotationLayer = dynamic(
@@ -275,10 +276,6 @@ const DocumentViewer = ({
   const actualZoom = isExpanded ? fullScreenSelectedZoom : selectedZoom;
   const shouldScroll =
     actualContentWidth > windowDimensions.width - LEFT_SIDEBAR_MAX_WIDTH;
-  console.log(
-    "visibilityPreferenceForViewingComments",
-    visibilityPreferenceForViewingComments
-  );
 
   const optionalAttributes = onClose
     ? {
@@ -302,6 +299,9 @@ const DocumentViewer = ({
         numAnnotations,
         documentInstance,
         document: doc,
+        viewerContext: citationInstance
+          ? ViewerContext.REF_MANAGER
+          : ViewerContext.GENERIC,
       }}
     >
       <div

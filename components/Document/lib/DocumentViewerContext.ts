@@ -8,6 +8,10 @@ export type VisibilityPreferenceForViewingComments =
 export type Page = {
   pageNumber: number;
 };
+export enum ViewerContext {
+  REF_MANAGER = "REF_MANAGER",
+  GENERIC = "GENERIC",
+}
 
 type DocumentViewerContextType = {
   citationInstance?: ContentInstance;
@@ -23,6 +27,7 @@ type DocumentViewerContextType = {
   lastPageRendered: Page;
   setNumAnnotations: (num: number) => void;
   numAnnotations: number;
+  viewerContext: ViewerContext;
 };
 
 const DocumentViewerContext = createContext<DocumentViewerContextType>({
@@ -35,6 +40,7 @@ const DocumentViewerContext = createContext<DocumentViewerContextType>({
   visibilityPreferenceForNewComment: "PUBLIC",
   lastPageRendered: { pageNumber: 0 },
   numAnnotations: 0,
+  viewerContext: ViewerContext.GENERIC,
   setNumAnnotations: () => console.error("setNumAnnotations not implemented"),
 });
 

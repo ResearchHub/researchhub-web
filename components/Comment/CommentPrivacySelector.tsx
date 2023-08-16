@@ -2,12 +2,12 @@ import {
   faChevronDown,
   faGlobe,
   faCheck,
-  faSitemap,
 } from "@fortawesome/pro-regular-svg-icons";
 import {
   faLockKeyhole,
   faUserGroup,
   faUserLock,
+  faSitemap,
 } from "@fortawesome/pro-solid-svg-icons";
 import Menu, { MenuOption } from "../shared/GenericMenu";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

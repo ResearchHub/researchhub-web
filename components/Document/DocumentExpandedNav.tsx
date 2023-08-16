@@ -6,7 +6,9 @@ import IconButton from "../Icons/IconButton";
 import { useContext } from "react";
 import { ContentInstance, GenericDocument } from "./lib/types";
 import Link from "next/link";
-import DocumentViewerContext from "./lib/DocumentViewerContext";
+import DocumentViewerContext, {
+  ViewerContext,
+} from "./lib/DocumentViewerContext";
 import DocumentCommentMenu from "./DocumentCommentMenu";
 import {
   faArrowDownToBracket,
@@ -45,8 +47,9 @@ const DocumentExpandedNav = ({
     visibilityPreferenceForViewingComments,
     setVisibilityPreferenceForViewingComments,
     numAnnotations,
+    viewerContext,
   } = useContext(DocumentViewerContext);
-
+  console.log("handleClose", handleClose);
   return (
     <div className={css(styles.expandedNav)}>
       <div className={css(styles.verticallyCenterContent)}>
@@ -76,15 +79,19 @@ const DocumentExpandedNav = ({
                 </IconButton>
               </div>
             )}
-            <div className={css(styles.dividerWrapper)}>
-              <div className={css(styles.divider)} />
-            </div>
 
-            <DocumentCommentMenu
-              onSelect={setVisibilityPreferenceForViewingComments}
-              selected={visibilityPreferenceForViewingComments}
-              annotationCount={numAnnotations}
-            />
+            {viewerContext === ViewerContext.REF_MANAGER && (
+              <>
+                <div className={css(styles.dividerWrapper)}>
+                  <div className={css(styles.divider)} />
+                </div>
+                <DocumentCommentMenu
+                  onSelect={setVisibilityPreferenceForViewingComments}
+                  selected={visibilityPreferenceForViewingComments}
+                  annotationCount={numAnnotations}
+                />
+              </>
+            )}
             {documentInstance && (
               <>
                 <div className={css(styles.dividerWrapper)}>

@@ -220,7 +220,10 @@ const CommentActions = ({ comment, toggleReply }: Args) => {
           <div
             className={`${css(styles.action, styles.actionReply)} reply-btn`}
           >
-            <IconButton onClick={() => toggleReply()}>
+            <IconButton
+              overrideStyle={styles.button}
+              onClick={() => toggleReply()}
+            >
               <FontAwesomeIcon
                 icon={faReply}
                 style={{ fontSize: 16, color: colors.secondary.text }}
@@ -261,6 +264,7 @@ const CommentActions = ({ comment, toggleReply }: Args) => {
         {isAllowedToAcceptAnswer && (
           <div className={`${css(styles.action)} accept-btn`}>
             <IconButton
+              overrideStyle={styles.button}
               onClick={() => handleAcceptAnswer({ commentId: comment.id })}
             >
               <FontAwesomeIcon icon={faCommentCheck} style={{ fontSize: 18 }} />
@@ -272,6 +276,7 @@ const CommentActions = ({ comment, toggleReply }: Args) => {
         {isAllowedToAward && (
           <div className={`${css(styles.action)} award-btn`}>
             <IconButton
+              overrideStyle={styles.button}
               onClick={() =>
                 handleAwardBounty({ bounty: openUserOwnedRootBounty })
               }

@@ -25,7 +25,7 @@ import {
 import { isDevEnv } from "~/config/utils/env";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
-import { RhDocumentType, parseUser } from "~/config/types/root_types";
+import { ID, RhDocumentType, parseUser } from "~/config/types/root_types";
 import { useState, useEffect, SyntheticEvent } from "react";
 import colors, {
   genericCardColors,
@@ -46,6 +46,7 @@ import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import ContentBadge from "~/components/ContentBadge";
 import { useRouter } from "next/router";
 import Link from "next/link";
+
 const DocumentViewer = dynamic(
   () => import("~/components/Document/DocumentViewer")
 );
@@ -720,10 +721,11 @@ const styles = StyleSheet.create({
   paperPreview: {
     height: 80,
     width: 70,
-    border: `1px solid transparent`,
+    position: "relative",
+    border: `1px solid ${colors.LIGHT_GREY()}`,
     borderRadius: "4px",
     ":hover": {
-      border: `1px solid ${colors.LIGHT_GREY()}`,
+      border: `1px solid ${colors.MEDIUM_GREY()}`,
     },
   },
   textLabel: {

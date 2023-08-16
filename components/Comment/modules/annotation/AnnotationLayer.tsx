@@ -1397,6 +1397,13 @@ const AnnotationLayer = ({
                       )}
                       onMouseEnter={() => setHoveredThreadId(threadId)}
                       onMouseLeave={() => setHoveredThreadId(null)}
+                      onClick={(e) => {
+                        // We want to stop propegation of click for new comments. If we do not do this, they will be
+                        // "dismissed" when clicked onto. This is because there is logic in place to dismiss empty comments when background is clicked.
+                        if (newCommentDataRef.current[threadId]?.isEmpty) {
+                          e.stopPropagation();
+                        }
+                      }}
                       key={key}
                     >
                       {(renderingMode === "inline" ||
