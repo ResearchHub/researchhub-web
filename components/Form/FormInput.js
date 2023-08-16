@@ -54,6 +54,7 @@ class FormInput extends Component {
       placeholder,
       required,
       search,
+      onSearchClick,
       size,
       subtitle,
       onSearch,
@@ -99,10 +100,10 @@ class FormInput extends Component {
           autoComplete={autoComplete}
           className={css(
             styles.input,
+            icon && styles.search,
             inputStyle && inputStyle,
             styles.text,
             search && styles.search,
-            icon && styles.search,
             error && styles.errorInput,
             onClick && styles.inputClick
           )}
@@ -143,7 +144,10 @@ class FormInput extends Component {
           />
         ) : (
           icon && (
-            <div className={css(styles.searchIcon, iconStyles && iconStyles)}>
+            <div
+              className={css(styles.searchIcon, iconStyles && iconStyles)}
+              onClick={onSearchClick}
+            >
               {icon}
             </div>
           )
@@ -241,7 +245,8 @@ const styles = StyleSheet.create({
     width: 18,
     position: "absolute",
     left: 15,
-    bottom: 10,
+    top: "50%",
+    transform: "translateY(-50%)",
     color: "#c5c4cc",
     pointerEvents: "none",
   },

@@ -6,6 +6,7 @@ import {
 import {
   faArrowUpFromBracket,
   faFolderPlus,
+  faMagnifyingGlass,
   faPlus,
   faTrashXmark,
 } from "@fortawesome/pro-light-svg-icons";
@@ -17,6 +18,7 @@ import {
   useRef,
   MutableRefObject,
   LegacyRef,
+  SyntheticEvent,
 } from "react";
 import { connect } from "react-redux";
 import {
@@ -58,6 +60,11 @@ import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUpl
 import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 import ReferencesTable, { PreloadRow } from "./reference_table/ReferencesTable";
 import withWebSocket from "~/components/withWebSocket";
+import FormInput from "~/components/Form/FormInput";
+import FontawesomeCodeMod from "~/fontawesomeCodeMod";
+import api, { generateApiUrl } from "~/config/api";
+import { fetchCurrentUserReferenceCitations } from "./api/fetchCurrentUserReferenceCitations";
+import { useReferencesTableContext } from "./reference_table/context/ReferencesTableContext";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -101,9 +108,12 @@ function ReferencesContainer({
   const [selectedFolderIds, setSelectedFolderIds] = useState<any[]>([]);
   const [selectedReferenceIDs, setSelectedReferenceIDs] = useState<any[]>([]);
   const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [isRemoveRefModalOpen, setIsRemoveRefModalOpen] =
     useState<boolean>(false);
   const [_loading, setLoading] = useState<boolean>(false);
+  const [referencesSearchLoading, setReferencesSearchLoading] =
+    useState<boolean>(false);
 
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
   const isOnOrgTab = !isEmpty(router.query?.org_refs);
@@ -151,6 +161,53 @@ function ReferencesContainer({
   useEffect(() => {
     ReactTooltip.rebuild();
   }, [selectedReferenceIDs]);
+
+  const { setReferenceTableRowData } = useReferencesTableContext();
+
+  const fetchCitationsWithQuery = async (url) => {
+    const config = api.GET_CONFIG();
+    config.headers["X-organization-id"] = currentOrg?.id.toString();
+    const resp = await fetch(url, config);
+    const json = await resp.json();
+    setReferencesSearchLoading(false);
+    const citations = json.results;
+    setReferenceTableRowData(citations);
+    // setCitations(citations);
+    // resetCitations(citations);
+  };
+
+  const searchForCitation = async (e: SyntheticEvent) => {
+    setReferencesSearchLoading(true);
+    if (searchQuery) {
+      const url = generateApiUrl(`search/citation`, `?search=${searchQuery}`);
+      fetchCitationsWithQuery(url);
+    } else {
+      await fetchCurrentUserReferenceCitations({
+        getCurrentUserCitation: true,
+        organizationID: currentOrg.id,
+        projectID: activeProject?.projectID,
+        onError: (error) => {
+          console.log(error);
+        },
+        onSuccess: (result) => {
+          const citations = result;
+          setReferenceTableRowData(citations);
+
+          setReferencesSearchLoading(false);
+        },
+      });
+    }
+  };
+
+  const onSearchClick = (e) => {
+    searchForCitation(e);
+  };
+
+  const onEnterClicked = (e) => {
+    if (e.key === "Enter") {
+      searchForCitation(e);
+    }
+  };
 
   // NOTE: calvinhlee - Using useffect with a socket like this looks glaringly bad. Can we explore
   // if there are better solution? @lightninglu10. There's already an error that loops in log.
@@ -547,12 +604,23 @@ function ReferencesContainer({
                     </div>
                   </>
                 )}
+                <FormInput
+                  placeholder={"Search for a reference"}
+                  containerStyle={styles.formInputContainer}
+                  inputStyle={styles.inputStyle}
+                  icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+                  iconStyles={styles.searchIcon}
+                  onSearchClick={onSearchClick}
+                  onKeyDown={onEnterClicked}
+                  onChange={(id, value) => setSearchQuery(value)}
+                />
               </Box>
               <ReferencesTable
                 createdReferences={createdReferences}
                 handleFileDrop={onFileDrop}
                 setSelectedReferenceIDs={setSelectedReferenceIDs}
                 setSelectedFolderIds={setSelectedFolderIds}
+                loading={referencesSearchLoading}
               />
             </Box>
           </Box>
@@ -627,6 +695,42 @@ const styles = StyleSheet.create({
     ":hover": {
       background: "#F1F5FF",
     },
+  },
+  formInputContainer: {
+    minHeight: "unset",
+    borderRadius: 4,
+    height: 40,
+    margin: 0,
+    marginLeft: "auto",
+    // width: "unset",
+    maxWidth: 400,
+  },
+  inputStyle: {
+    fontSize: 14,
+    borderRadius: 4,
+    paddingLeft: 16,
+    paddingRight: 45,
+    height: "100%",
+    boxSizing: "border-box",
+    cursor: "text",
+
+    ":hover": {
+      borderColor: "#E8E8F2",
+    },
+    ":focus": {
+      borderColor: "#E8E8F2",
+    },
+  },
+  searchIcon: {
+    left: "unset",
+    right: 0,
+    padding: "0px 16px",
+    cursor: "pointer",
+    pointerEvents: "unset",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100%",
   },
 });
 
