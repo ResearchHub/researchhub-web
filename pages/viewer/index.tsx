@@ -130,7 +130,6 @@ const ViewerPage: NextPage<Props> = ({}) => {
           documentInstance={documentInstance}
           document={doc}
           expanded={true}
-          onClose={() => null}
         />
       ) : (
         <div className={css(styles.loadingWrapper)}>

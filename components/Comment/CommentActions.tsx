@@ -4,7 +4,6 @@ import { faReply, faLinkSimple } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import CommentVote from "./CommentVote";
 import { parseUser } from "~/config/types/root_types";
-import { GenericDocument } from "../Document/lib/types";
 import { COMMENT_CONTEXTS, Comment } from "./lib/types";
 import Image from "next/image";
 import IconButton from "../Icons/IconButton";
@@ -27,12 +26,16 @@ const { setMessage, showMessage } = MessageActions;
 type Args = {
   toggleReply: Function;
   comment: Comment;
-  document?: GenericDocument;
 };
 
-const CommentActions = ({ comment, document, toggleReply }: Args) => {
+const CommentActions = ({ comment, toggleReply }: Args) => {
   const dispatch = useDispatch();
-  const commentTreeState = useContext(CommentTreeContext);
+  const {
+    context,
+    onUpdate,
+    document: doc,
+    comments,
+  } = useContext(CommentTreeContext);
   const { relatedContent } = comment.thread;
 
   const isQuestion = relatedContent.type === "question";
@@ -42,7 +45,7 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
 
   const getTooltipText = () => {
     if (
-      commentTreeState.context === COMMENT_CONTEXTS.REF_MANAGER &&
+      context === COMMENT_CONTEXTS.REF_MANAGER &&
       comment.thread.privacy === "PRIVATE"
     ) {
       return "This comment is private. Edit comment privacy to share with others.";
@@ -89,8 +92,8 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
               updatedCommentBounty.bounties[bIdx] = updatedBounty;
             }
 
-            commentTreeState.onUpdate({ comment: updatedCommentBounty });
-            commentTreeState.onUpdate({ comment: awardedComent });
+            onUpdate({ comment: updatedCommentBounty });
+            onUpdate({ comment: awardedComent });
           })
           .catch((error: any) => {
             // FIXME: Log to sentry
@@ -121,19 +124,19 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
           documentId: relatedContent.id,
         });
         const previouslyAccepted = findAllComments({
-          comments: commentTreeState.comments,
+          comments: comments,
           conditions: [{ key: "isAcceptedAnswer", value: true }],
         }).map((f) => f.comment);
 
         previouslyAccepted.map((c) => {
           const updated = Object.assign({}, c, { isAcceptedAnswer: false });
-          commentTreeState.onUpdate({ comment: updated });
+          onUpdate({ comment: updated });
         });
 
         const newlyAccepted = Object.assign({}, comment, {
           isAcceptedAnswer: true,
         });
-        commentTreeState.onUpdate({ comment: newlyAccepted });
+        onUpdate({ comment: newlyAccepted });
       } catch (error: any) {
         // FIXME: Log to sentry
         dispatch(
@@ -152,7 +155,7 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
 
     createSharableLinkToComment({
       comment,
-      context: commentTreeState.context,
+      context,
     });
 
     dispatch(setMessage(`Link copied`));
@@ -169,15 +172,15 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
   // Root bounties are bounties that are not contributions.
   // A user can award a bounty if they currently have an open root bounty.
   const openUserOwnedRootBounty: Bounty = findOpenRootBounties({
-    comments: commentTreeState.comments,
+    comments,
     user: currentUser,
   })[0];
   const isAllowedToAward =
     Boolean(openUserOwnedRootBounty) && openBounties.length === 0;
 
-  if (document && isQuestion) {
+  if (doc && isQuestion) {
     isAllowedToAcceptAnswer =
-      document!.createdBy!.id == currentUser?.id &&
+      doc!.createdBy!.id == currentUser?.id &&
       !comment.isAcceptedAnswer &&
       comment.bounties.length === 0;
   }
@@ -193,7 +196,7 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
         id="link-tooltip"
       />
       <div className={css(styles.actionsWrapper)}>
-        {document && (
+        {doc && (
           <div
             className={`${css(
               styles.action,
@@ -205,14 +208,14 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
               score={comment.score}
               userVote={comment.userVote}
               isHorizontal={true}
-              documentType={document.apiDocumentType}
-              documentID={document.id}
+              documentType={doc.apiDocumentType}
+              documentID={doc.id}
             />
           </div>
         )}
 
         {![COMMENT_CONTEXTS.ANNOTATION, COMMENT_CONTEXTS.REF_MANAGER].includes(
-          commentTreeState.context
+          context
         ) && (
           <div
             className={`${css(styles.action, styles.actionReply)} reply-btn`}

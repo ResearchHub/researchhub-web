@@ -68,6 +68,8 @@ const CommentFeed = ({
   allowBounty = false,
   editorType = COMMENT_TYPES.DISCUSSION,
 }: Args) => {
+  console.log("doc1", document);
+
   const router = useRouter();
   const hasInitialComments = initialComments !== undefined;
   const [comments, setComments] = useState<CommentType[]>(

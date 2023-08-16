@@ -33,7 +33,7 @@ export type ApiDocumentType =
   | "researchhub_post"
   | "paper"
   | "hypothesis"
-  | "citation";
+  | "citationentry";
 
 export type DocumentImage = {
   url: string;

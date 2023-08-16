@@ -279,6 +279,16 @@ const DocumentViewer = ({
     "visibilityPreferenceForViewingComments",
     visibilityPreferenceForViewingComments
   );
+
+  const optionalAttributes = onClose
+    ? {
+        handleClose: () => {
+          onClose && onClose();
+          setIsExpanded(false);
+        },
+      }
+    : {};
+
   return (
     <DocumentViewerContext.Provider
       value={{
@@ -302,13 +312,9 @@ const DocumentViewer = ({
       >
         {isExpanded && (
           <DocumentExpandedNav
-            document={doc}
             pdfUrl={pdfUrl}
             documentInstance={documentInstance}
-            handleClose={() => {
-              onClose && onClose();
-              setIsExpanded(false);
-            }}
+            {...optionalAttributes}
           />
         )}
         <div

@@ -1,30 +1,22 @@
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faXmark,
-  faFileArrowDown,
-  faLongArrowLeft,
-  faGlobe,
-} from "@fortawesome/pro-light-svg-icons";
+import { faLongArrowLeft } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
 import { useContext } from "react";
-import { DocumentContext } from "./lib/DocumentContext";
-import DocumentOptions from "./DocumentOptions";
 import { ContentInstance, GenericDocument } from "./lib/types";
 import Link from "next/link";
 import DocumentViewerContext from "./lib/DocumentViewerContext";
 import DocumentCommentMenu from "./DocumentCommentMenu";
 import {
   faArrowDownToBracket,
-  faPrint,
   faArrowUpRight,
 } from "@fortawesome/pro-regular-svg-icons";
 import Image from "next/image";
 
 interface Props {
   pdfUrl?: string | null;
-  handleClose: Function;
+  handleClose?: Function;
   document?: GenericDocument | null;
   documentInstance?: ContentInstance;
 }
@@ -46,7 +38,6 @@ function downloadPDF(pdfUrl) {
 
 const DocumentExpandedNav = ({
   pdfUrl,
-  document: doc,
   documentInstance,
   handleClose,
 }: Props) => {
@@ -60,14 +51,16 @@ const DocumentExpandedNav = ({
     <div className={css(styles.expandedNav)}>
       <div className={css(styles.verticallyCenterContent)}>
         <div className={css(styles.actionsWrapper)}>
-          <div onClick={() => handleClose()}>
-            <IconButton overrideStyle={styles.backBtn}>
-              <FontAwesomeIcon
-                icon={faLongArrowLeft}
-                style={{ fontSize: 20 }}
-              />
-            </IconButton>
-          </div>
+          {handleClose && (
+            <div onClick={() => handleClose()}>
+              <IconButton overrideStyle={styles.backBtn}>
+                <FontAwesomeIcon
+                  icon={faLongArrowLeft}
+                  style={{ fontSize: 20 }}
+                />
+              </IconButton>
+            </div>
+          )}
 
           <div className={css(styles.rightActions)}>
             {pdfUrl && (
@@ -115,7 +108,6 @@ const DocumentExpandedNav = ({
                 </Link>
               </>
             )}
-            {doc && <DocumentOptions document={doc} />}
           </div>
         </div>
       </div>

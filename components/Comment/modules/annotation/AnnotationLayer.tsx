@@ -101,6 +101,7 @@ const AnnotationLayer = ({
     setVisibilityPreferenceForNewComment,
     visibilityPreferenceForNewComment,
     setNumAnnotations,
+    document: doc,
   } = useContext(DocumentViewerContext);
 
   const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
@@ -1251,6 +1252,7 @@ const AnnotationLayer = ({
             filter: COMMENT_FILTERS.ANNOTATION,
             comments: inlineComments,
             citation: citationInstance,
+            document: doc,
             context: currentContext,
             onCreate: _onCreate,
             onUpdate: _onUpdate,

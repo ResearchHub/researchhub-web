@@ -477,16 +477,6 @@ export default function ReferencesTable({
             },
           }}
         />
-        {/* <div
-        style={{
-          width: "100%",
-          background: "pink",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        {"Infinite pagination!!!!!"}
-      </div> */}
 
         {isViewerOpen && (
           <DocumentViewer
@@ -497,6 +487,7 @@ export default function ReferencesTable({
               id: referenceItemDatum.id,
               type: "citationentry",
             }}
+            // TODO: Once citation includes unified doc, fix this
             // documentInstance={{
             //   id: 20949,
             //   type: "paper",
