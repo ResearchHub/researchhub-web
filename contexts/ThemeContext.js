@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import lightTheme from "../config/themes/light";
-import darkTheme from "../config/themes/dark";
 import { getCurrentTheme } from "../config/utils/themeUtils";
 import { getColors, setColorTheme } from "../config/themes/colors";
+import lightTheme from "../config/themes/light";
+import darkTheme from "../config/themes/dark";
 
 const ThemeContext = createContext({
   theme: lightTheme,

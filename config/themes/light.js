@@ -1,4 +1,4 @@
-// themes/light.js
+// file: themes/light.js
 const LIGHT_MODE = "light";
 
 const light = {

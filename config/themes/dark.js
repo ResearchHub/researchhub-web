@@ -1,4 +1,4 @@
-// themes/dark.js
+// file: themes/dark.js
 const DARK_MODE = "dark";
 
 const dark = {
