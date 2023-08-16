@@ -859,11 +859,11 @@ const routes = (BASE_URL) => {
     },
     RH_POST_UPVOTE: (postId) => {
       // New post types, such as Question
-      return `${BASE_URL}researchhub_post/${postId}/upvote/`;
+      return `${BASE_URL}researchhubpost/${postId}/upvote/`;
     },
     RH_POST_DOWNVOTE: (postId) => {
       // New post types, such as Question
-      return `${BASE_URL}researchhub_post/${postId}/downvote/`;
+      return `${BASE_URL}researchhubpost/${postId}/downvote/`;
     },
     UPVOTE: (
       documentType,
