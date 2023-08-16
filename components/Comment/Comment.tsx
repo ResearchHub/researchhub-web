@@ -245,7 +245,6 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                     let comment = (await handleCommentUpdate(
                       props
                     )) as CommentType;
-                    console.log(comment);
                     if (comment.review) {
                       const review = await handleReviewUpdate({
                         commentId: comment.id,
@@ -255,7 +254,11 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                       comment = { ...comment, review: review as Review };
                     }
                     commentTreeState.onUpdate({ comment });
+                    setIsEditMode(false);
                   } catch (error: any) {
+                    dispatch(setMessage("Failed to update comment."));
+                    // @ts-ignore
+                    dispatch(showMessage({ show: true, error: true }));
                     captureEvent({
                       error,
                       msg: `Failed to create ${props.commentType}`,
@@ -263,8 +266,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                         props,
                       },
                     });
-                  } finally {
-                    setIsEditMode(false);
+                    throw new Error("Could not update comment");
                   }
                 }}
                 handleCancel={() => _handleCloseEdit()}
