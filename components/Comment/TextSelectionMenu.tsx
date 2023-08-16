@@ -1,6 +1,7 @@
 import {
   faCommentDots,
   faLinkSimple,
+  faMessageLines,
 } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { StyleSheet, css } from "aphrodite";
@@ -23,7 +24,7 @@ const TextSelectionMenu = ({
         <FontAwesomeIcon
           fontWeight={600}
           fontSize={isHorizontal ? 20 : 22}
-          icon={faCommentDots}
+          icon={faMessageLines}
         />
         {isHorizontal ? ` Comment` : ``}
       </div>

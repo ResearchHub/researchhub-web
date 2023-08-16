@@ -23,11 +23,7 @@ import {
   SerializedAnchorPosition,
 } from "./lib/types";
 import { createCommentAPI, fetchCommentsAPI } from "../../lib/api";
-import {
-  GenericDocument,
-  ApiDocumentType,
-  ContentInstance,
-} from "../../../Document/lib/types";
+import { ContentInstance } from "../../../Document/lib/types";
 import XRange from "./lib/xrange/XRange";
 import colors from "../../lib/colors";
 import TextSelectionMenu from "../../TextSelectionMenu";
@@ -147,8 +143,6 @@ const AnnotationLayer = ({
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
   const selectedThreadIdRef = useRef<string | null>(null);
   const [hoveredThreadId, setHoveredThreadId] = useState<string | null>(null);
-  const [currentPrivacyFilter, setCurrentPrivacyFilter] =
-    useState<CommentPrivacyFilter>("PRIVATE");
 
   // Holds xpath about a particular text-range annotation that is shared via URL
   const [positionFromUrlAsAnnotation, setPositionFromUrlAsAnnotation] =
@@ -891,7 +885,7 @@ const AnnotationLayer = ({
     ]);
 
     const { id, type } = getContentInstanceByPrivacy({
-      privacy: currentPrivacyFilter,
+      privacy: visibilityPreferenceForNewComment,
       documentInstance,
       citationInstance,
     });
@@ -904,6 +898,7 @@ const AnnotationLayer = ({
           id,
           type,
         },
+        privacy: visibilityPreferenceForNewComment,
         anchor: selectionToSerializedAnchorPosition({ selection }),
       },
       comments: [],
@@ -944,7 +939,9 @@ const AnnotationLayer = ({
   }): ContentInstance => {
     let contentTypeId: ID;
     let contentType: RhDocumentType;
-
+    console.log("citationInstance", citationInstance);
+    console.log("documentInstance", documentInstance);
+    console.log("privacy", privacy);
     if (privacy === "PUBLIC") {
       if (documentInstance) {
         contentTypeId = documentInstance!.id;
@@ -1423,7 +1420,12 @@ const AnnotationLayer = ({
                                     isEmpty,
                                   })
                                 }
-                                allowPrivacySelection={true}
+                                allowPrivacySelection={
+                                  currentContext ===
+                                  COMMENT_CONTEXTS.REF_MANAGER
+                                    ? true
+                                    : false
+                                }
                                 defaultPrivacyFilter={
                                   visibilityPreferenceForNewComment
                                 }

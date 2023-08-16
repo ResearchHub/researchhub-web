@@ -37,8 +37,8 @@ const colors = {
     background: globalColors.LIGHT_GREY(1.0),
   },
   privacyBadge: {
-    background: globalColors.NEW_BLUE(0.1),
-    color: globalColors.NEW_BLUE(1.0),
+    background: globalColors.LIGHTER_GREY(),
+    color: globalColors.MEDIUM_GREY2(1.0),
   },
   actionBtn: {
     hover: globalColors.NEW_BLUE(0.1),

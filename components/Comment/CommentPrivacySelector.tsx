@@ -2,15 +2,22 @@ import {
   faChevronDown,
   faGlobe,
   faCheck,
+  faSitemap,
 } from "@fortawesome/pro-regular-svg-icons";
+import {
+  faLockKeyhole,
+  faUserGroup,
+  faUserLock,
+} from "@fortawesome/pro-solid-svg-icons";
 import Menu, { MenuOption } from "../shared/GenericMenu";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserGroup, faUserLock } from "@fortawesome/pro-solid-svg-icons";
 import { CommentPrivacyFilter } from "./lib/types";
 import { genClientId } from "~/config/utils/id";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors from "./lib/colors";
+import DocumentViewerContext from "../Document/lib/DocumentViewerContext";
+import globalColors from "~/config/themes/colors";
 
 interface Props {
   onSelect: Function;
@@ -21,8 +28,9 @@ const CommentPrivacySelector = ({ onSelect, selected }: Props) => {
   // TODO: Integrate with CommentContext so that we can get the current privacy selection
 
   const [menuId, setMenuId] = useState<string>(genClientId());
+  const { documentInstance } = useContext(DocumentViewerContext);
 
-  const menuOptions = [
+  let menuOptions = [
     {
       label: "Public",
       value: "PUBLIC",
@@ -33,16 +41,20 @@ const CommentPrivacySelector = ({ onSelect, selected }: Props) => {
       label: "Organization",
       shortLabel: "Org",
       value: "WORKSPACE",
-      icon: <FontAwesomeIcon icon={faUserGroup} />,
+      icon: <FontAwesomeIcon icon={faSitemap} />,
       subtitle: "Visible to members only",
     },
     {
       label: "Private",
       value: "PRIVATE",
-      icon: <FontAwesomeIcon icon={faUserLock} />,
+      icon: <FontAwesomeIcon icon={faLockKeyhole} />,
       subtitle: "Visible only to you",
     },
   ];
+
+  if (!documentInstance) {
+    menuOptions = menuOptions.filter((opt) => opt.value !== "PUBLIC");
+  }
 
   const _handleSelect = (option: MenuOption) => {
     onSelect(option.value);
@@ -83,15 +95,12 @@ const CommentPrivacySelector = ({ onSelect, selected }: Props) => {
         options={_menuOptions}
         onSelect={_handleSelect}
         id={menuId}
-        width={210}
+        width={230}
         direction="bottom-right"
         triggerHeight={35}
       >
         <div className={css(styles.trigger)}>
           <div className={css(styles.triggerIcon)}>{_selected.icon}</div>
-          <div className={css(styles.triggerLabel)}>
-            {_selected.shortLabel || _selected.label}
-          </div>
           <div className={css(styles.down)}>
             <FontAwesomeIcon icon={faChevronDown} />
           </div>
@@ -105,18 +114,19 @@ const styles = StyleSheet.create({
   trigger: {
     display: "flex",
     columnGap: "7px",
-    borderRadius: "4px",
-    border: `1px solid ${colors.primary.btn}`,
-    color: colors.primary.btn,
+    borderRadius: "50px",
+    color: globalColors.NEW_BLUE(1.0),
+    background: globalColors.NEW_BLUE(0.1),
     padding: "5px 10px",
+    alignItems: "center",
   },
   triggerIcon: {
-    fontSize: 15,
+    fontSize: 14,
   },
   down: {
     color: colors.primary.btn,
     marginLeft: "auto",
-    fontSize: 15,
+    fontSize: 14,
   },
   triggerLabel: {
     fontSize: 14,
@@ -130,7 +140,7 @@ const styles = StyleSheet.create({
   },
   optIcon: {
     marginRight: 15,
-    fontSize: 22,
+    fontSize: 18,
   },
   optText: {
     display: "flex",

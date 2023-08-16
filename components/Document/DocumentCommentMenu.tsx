@@ -73,14 +73,17 @@ const DocumentCommentMenu = ({
         selected={selected || options[0].value}
         width={260}
         onSelect={(selected) => {
-          console.log("selected", selected);
           onSelect(selected.value);
         }}
         direction="bottom-right"
         id="document-comment-menu"
       >
         <IconButton overrideStyle={styles.btn}>
-          <FontAwesomeIcon icon={faMessageLines} />
+          {selected === "OFF" ? (
+            <FontAwesomeIcon icon={faMessageSlash} />
+          ) : (
+            <FontAwesomeIcon icon={faMessageLines} />
+          )}
           {selected !== "OFF" && (
             <div className={css(styles.pillContent)}>{annotationCount}</div>
           )}

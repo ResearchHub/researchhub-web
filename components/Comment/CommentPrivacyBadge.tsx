@@ -61,13 +61,14 @@ const styles = StyleSheet.create({
   badge: {
     display: "flex",
     columnGap: "7px",
-    borderRadius: "4px",
-    background: colors.privacyBadge.background,
+    borderRadius: "50px",
     color: colors.privacyBadge.color,
-    padding: "5px 10px",
+    background: colors.privacyBadge.background,
+    padding: "5px 15px",
+    alignItems: "center",
   },
   icon: {
-    fontSize: 15,
+    fontSize: 14,
   },
   label: {
     fontSize: 14,
