@@ -30,7 +30,7 @@ export type ContentInstance = {
 };
 
 export type ApiDocumentType =
-  | "researchhub_post"
+  | "researchhubpost"
   | "paper"
   | "hypothesis"
   | "citationentry";
@@ -210,7 +210,7 @@ export const parsePost = (raw: any): Post => {
     ...commonAttributes,
     authors: (raw.authors || []).map((a: any) => parseAuthorProfile(a)),
     type: "post",
-    apiDocumentType: "researchhub_post",
+    apiDocumentType: "researchhubpost",
     srcUrl: raw.post_src,
     postHtml: raw.postHtml || "",
     postType:

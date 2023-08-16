@@ -1,12 +1,15 @@
-const getCommentFilterByTab = (tabName) => {
+const getCommentFilterByTab = (
+  tabName: string
+): "BOUNTY" | "REVIEW" | "DISCUSSION" | null | undefined => {
   switch (tabName) {
     case "bounties":
       return "BOUNTY";
     case "reviews":
       return "REVIEW";
     case "conversation":
-    default:
       return "DISCUSSION";
+    default:
+      return null;
   }
 };
 

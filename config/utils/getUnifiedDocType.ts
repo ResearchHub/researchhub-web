@@ -21,7 +21,7 @@ export type BEReturnType =
   | "bounties"
   | "all";
 type BEDocumentModelName =
-  | "researchhub_post"
+  | "researchhubpost"
   | "hypothesis"
   | "paper"
   | "bounty"
@@ -45,7 +45,7 @@ export function getBeDocumentModelName(
     case "discussion":
     case "post":
     case "posts":
-      return "researchhub_post";
+      return "researchhubpost";
     case "hypothesis":
       return "hypothesis";
     case "paper":

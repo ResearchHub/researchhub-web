@@ -177,7 +177,7 @@ const DocumentIndexPage: NextPage<Args> = ({
                   postHtml={_postHtml}
                   documentInstance={{
                     id: document.id,
-                    type: "researchhub_post",
+                    type: "researchhubpost",
                   }}
                   document={document}
                   metadata={documentMetadata}

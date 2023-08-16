@@ -89,7 +89,8 @@ export default async function sharedGetStaticProps({
         commentData = await fetchCommentsAPI({
           documentId,
           documentType:
-            documentType === "post" ? "researchhub_post" : documentType,
+            documentType === "post" ? "researchhubpost" : documentType,
+          // @ts-ignore
           filter,
         });
       }
