@@ -427,6 +427,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     display: "flex",
     justifyContent: "space-between",
+    borderTop: `1px solid rgba(233, 234, 239, 1)`,
+    paddingTop: `10px`,
   },
   privacyBadgeWrapper: {
     marginLeft: "auto",
