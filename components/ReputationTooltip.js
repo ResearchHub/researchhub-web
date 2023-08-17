@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     // background: colors.BLUE(1),
     background: colors.PURE_BLACK(1),
+    color: colors.WHITE(),
     opacity: 1,
     boxSizing: "border-box",
   },

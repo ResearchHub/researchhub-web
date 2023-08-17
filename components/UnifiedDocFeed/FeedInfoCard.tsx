@@ -104,6 +104,7 @@ export default function FeedInfoCard({
 const styles = StyleSheet.create({
   feedInfoCard: {
     backgroundColor: colors.WHITE(),
+    color: colors.PURE_BLACK(),
     border: `1px solid ${genericCardColors.BORDER}`,
     borderRadius: 4,
     display: "flex",

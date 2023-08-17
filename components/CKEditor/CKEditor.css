@@ -441,6 +441,7 @@
   border: none !important;
   line-height: 24px;
   word-break: break-word;
+  color: var(--PURE_BLACK);
 }
 
 .eln .ck-content *::selection {

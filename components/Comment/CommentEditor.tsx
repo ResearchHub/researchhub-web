@@ -423,6 +423,7 @@ const styles = StyleSheet.create({
     columnGap: "7px",
     fontSize: 15,
     alignItems: "center",
+    color: globalColors.PURE_BLACK(),
   },
   closeBtn: {
     position: "absolute",

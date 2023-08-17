@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     },
   },
   author: {
+    color: colors.PURE_BLACK(),
     marginLeft: 5,
     ":first-child": {
       marginLeft: 0,

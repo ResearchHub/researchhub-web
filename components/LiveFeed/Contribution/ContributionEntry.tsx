@@ -198,6 +198,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: "20px",
     width: "100%",
+    color: colors.PURE_BLACK(),
   },
   hubLink: {
     color: colors.DARKER_GREY(),
