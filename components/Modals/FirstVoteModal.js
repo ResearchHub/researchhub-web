@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
   },
   text: {
     margin: "16px 0px",
+    color: colors.PURE_BLACK(),
   },
   button: {
     width: "100%",

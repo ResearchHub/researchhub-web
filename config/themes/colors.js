@@ -245,7 +245,7 @@ const lightColors = {
 
 const darkColors = {
   id: darkTheme.id,
-  BLACK: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // Inverted
+  BLACK: (opacity = 1) => `rgba(202, 197, 224, ${opacity})`, // From Figma: #CAC5E0 (Inverted:255, 255, 255)
   BLACK_TEXT: (opacity = 1) => `rgba(191, 191, 191, ${opacity})`, // Lightened
   BLUE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`, // Unchanged
   DARK_GREEN: (opacity = 1) => `rgba(94, 102, 67, ${opacity})`, // Darkened
@@ -287,7 +287,7 @@ const darkColors = {
   MEDIUM_GREY: (opacity = 1) => `rgba(111, 111, 111, ${opacity})`, // Lightened
   MEDIUM_GREY2: (opacity = 1) => `rgba(131,134,118, ${opacity})`, // Adjusted
   NAVY: (opacity = 1) => `rgba(224, 215, 130, ${opacity})`, // Adjusted
-  NEW_BLUE: (opacity = 1) => `rgba(198, 142, 0, ${opacity})`, // Adjusted
+  NEW_BLUE: (opacity = 1) => `rgba(83, 132, 255, ${opacity})`, // From Figma:#5384FF (Adjusted:98, 142, 0)
   NEW_GREEN: (opacity = 1) => `rgba(183, 63, 170, ${opacity})`, // Adjusted
   ORANGE_DARK: (opacity = 1) => `rgba(18, 98, 235, ${opacity})`, // Adjusted
   ORANGE_DARK2: (opacity = 1) => `rgba(0, 133, 255, ${opacity})`, // Adjusted
@@ -315,10 +315,10 @@ const darkColors = {
   SOFT_YELLOW: (opacity = 1) => `rgba(180, 165, 40, ${opacity})`, // Adjusted
   SOFT_YELLOW_BORDER: (opacity = 1) => `rgba(128, 112, 45, ${opacity})`, // Adjusted
   SOFT_YELLOW2: (opacity = 1) => `rgba(193, 193, 89, ${opacity})`, // Adjusted
-  WHITE: (opacity = 1) => `rgba(40, 40, 40, ${opacity})`, // Adjusted
+  WHITE: (opacity = 1) => `rgba(13, 13, 13, ${opacity})`, // From Figma (Adjusted: 40, 40, 40)
   PURE_BLACK: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // Inverted
   PURE_BLUE: (opacity = 1) => `rgba(50, 50, 255, ${opacity})`, // Adjusted
-  PAGE_WRAPPER: "#030303", // Adjusted
+  PAGE_WRAPPER: "#030303", // From Figma (Adjusted:030303)
   SEARCH_ICON_COLOR: "#3a393f", // Adjusted
   PDF_OVERLAY: (opacity = 0.4) => `rgba(102, 102, 102, ${opacity})`, // Adjusted
   VERY_LIGHT_GREY: (opacity = 1) => `rgba(40, 40, 40, ${opacity})`, // Adjusted
@@ -331,7 +331,7 @@ const darkColors = {
   VOTE_ARRROW: "#D5D3DF", // Adjusted
   VERY_PALE_BLUE: "#172A3A", // Adjusted
   VERY_PALE_BLUE2: (opacity = 1) => `rgba(51, 59, 77, ${opacity})`, // Adjusted
-  VERY_PALE_BLUE3: (opacity = 1) => `rgba(45, 49, 63, ${opacity})`, // Adjusted
+  VERY_PALE_BLUE3: (opacity = 1) => `rgba(20, 20, 20, ${opacity})`, // From Figma: #141414 (Adjusted:45, 49, 63)
   VERY_PALE_BLUE4: (opacity = 1) => `rgba(45, 67, 85, ${opacity})`, // Adjusted
   BANNER_PALE_BLUE: "#1A2138", // Adjusted
   BANNER_GREY_BLUE: "#2A2A35", // Adjusted
