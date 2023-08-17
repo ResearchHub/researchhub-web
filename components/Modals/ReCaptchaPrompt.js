@@ -28,6 +28,7 @@ class ReCaptchaPrompt extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    console.log(this.props.modals.openRecaptchaPrompt);
     if (
       prevProps.modals.openRecaptchaPrompt !==
       this.props.modals.openRecaptchaPrompt

@@ -84,6 +84,7 @@ const DocumentVote = ({
           });
           handleVoteSuccess({ newUserVote: userVote });
         } catch (error) {
+          console.log(error);
           // @ts-ignore
           dispatch(setMessage(error));
           // @ts-ignore

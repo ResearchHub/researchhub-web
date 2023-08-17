@@ -26,6 +26,7 @@ import {
   w3mProvider,
 } from "@web3modal/ethereum";
 import { Web3Modal } from "@web3modal/react";
+import { ModalActions } from "~/redux/modals";
 
 const config = createConfig({
   autoConnect: true,
@@ -70,12 +71,30 @@ function Base({
   rootLeftSidebarForceMin,
   withSidebar = true,
   withNavbar = true,
+  openRecaptchaPrompt,
 }) {
   const [numNavInteractions, setNumNavInteractions] = useState(0);
   const [newPostButtonValues, setNewPostButtonValues] = useState({
     isOpen: false,
     paperID: null,
   });
+
+  useEffect(() => {
+    const originalFetch = window.fetch;
+
+    window.fetch = async (url, options = {}) => {
+      const response = await originalFetch(url, options);
+
+      if (parseInt(response.status, 10) === 429) {
+        // Handle the rate limit error here. You can throw an error, show a
+        // notification, retry the request, etc.
+
+        openRecaptchaPrompt(true);
+      }
+
+      return response;
+    };
+  }, []);
 
   useEffect(() => {
     getUniversities();
@@ -196,6 +215,7 @@ const mapDispatchToProps = {
   fetchPermissions: PermissionActions.fetchPermissions,
   getWithdrawals: TransactionActions.getWithdrawals,
   getNotifications: NotificationActions.getNotifications,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Base);

@@ -11,7 +11,6 @@ import {
   isNullOrUndefined,
   nullthrows,
 } from "~/config/utils/nullchecks";
-import { Helpers } from "@quantfive/js-web-config";
 import {
   Fragment,
   ReactElement,
@@ -23,6 +22,7 @@ import API from "~/config/api";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
 import { faDown, faUp } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import helpers from "~/config/api/helpers";
 
 export type VoteMeta = {
   downCount: number;
@@ -98,8 +98,8 @@ const handleDownvote = ({
 
   setLocalVoteMeta(updatedMeta); /* optimistic update */
   fetch(voteAPI, API.POST_CONFIG())
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
+    .then(helpers.checkStatus)
+    .then(helpers.parseJSON)
     .then((userVote: Object): void => {
       setLocalVoteMeta({
         ...updatedMeta,
