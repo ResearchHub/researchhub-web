@@ -1,4 +1,8 @@
 export const DATA_GRID_STYLE_OVERRIDE = {
+  "& .MuiDataGrid-row": {
+    cursor: "pointer",
+  },
+
   border: "1px solid #E9EAEF",
   // minHeight: "300px",
   "&	.MuiDataGrid-overlayWrapper": {

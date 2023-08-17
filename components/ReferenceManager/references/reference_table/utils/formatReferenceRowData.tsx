@@ -15,6 +15,7 @@ export type ReferenceTableRowDataType = {
   published_date: NullableString;
   raw_data?: any;
   actions?: any;
+  attachment?: string;
 };
 
 function formatAuthors(

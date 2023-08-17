@@ -308,6 +308,11 @@ export default function ReferencesTable({
           }}
           loading={isLoading || isFetchingProjects}
           onCellDoubleClick={(params, event, _details): void => {
+            const projectIdAsString = params.id.toString();
+            if (projectIdAsString.includes("folder")) {
+              return;
+            }
+
             event.stopPropagation();
             setReferenceItemDatum({
               ...nullthrows(
@@ -316,41 +321,32 @@ export default function ReferencesTable({
                 )
               ),
             });
+
+            setIsViewerOpen(true);
           }}
           rowReordering
           onCellClick={(params, event, _details): void => {
-            if (params.field !== "__check__") {
-              setReferenceItemDatum({
-                ...nullthrows(
-                  referenceTableRowData.find(
-                    (item) => item.id === params?.row?.id
-                  )
-                ),
-              });
+            const projectIdAsString = params.id.toString();
 
-              const projectIdString = params.id.toString();
+            if (projectIdAsString.includes("folder")) {
+              const projectId = projectIdAsString.split("-folder")[0];
 
-              if (projectIdString.includes("folder")) {
-                console.log("folder yo");
-                const projectId = projectIdString.split("-folder")[0];
+              let url = `/reference-manager/${
+                router.query.organization
+              }/${router.query.slug.join("/")}/${params.row.title}`;
 
-                let url = `/reference-manager/${
+              if (projectIdAsString.includes("parent")) {
+                url = `/reference-manager/${
                   router.query.organization
-                }/${router.query.slug.join("/")}/${params.row.title}`;
+                }/${router.query.slug
+                  ?.slice(0, router.query.slug.length - 2)
+                  .join("/")}/${params.row.title}`;
+              }
 
-                if (projectIdString.includes("parent")) {
-                  url = `/reference-manager/${
-                    router.query.organization
-                  }/${router.query.slug
-                    ?.slice(0, router.query.slug.length - 2)
-                    .join("/")}/${params.row.title}`;
-                }
-
-                if (event.metaKey) {
-                  window.open(url, "_blank");
-                } else {
-                  router.push(url);
-                }
+              if (event.metaKey) {
+                window.open(url, "_blank");
+              } else {
+                router.push(url);
               }
             }
           }}
@@ -380,31 +376,41 @@ export default function ReferencesTable({
                 folderRow = true;
               }
               if (row.row.id === rowHovered) {
-                // if (true) {
+                const hoveredRow = referenceTableRowData.find(
+                  (item) => item.id === row?.row?.id
+                );
+
+                if (!hoveredRow) {
+                  return false;
+                }
+
                 typedRefDataRow.actions = (
                   <div style={{ marginRight: 10 }}>
                     {/* Replace with your actual action buttons */}
                     <Stack direction="row" spacing={0}>
                       {!folderRow && (
                         <>
-                          <Tooltip title="Open" placement="top">
-                            <IconButton
-                              aria-label="Open"
-                              onClick={() => {
-                                setIsViewerOpen(true);
-                              }}
-                              sx={{
-                                padding: 1,
-                                fontSize: "22px",
-                                "&:hover": {
-                                  background:
-                                    "rgba(25, 118, 210, 0.04) !important",
-                                },
-                              }}
-                            >
-                              <OpenWithOutlinedIcon fontSize="inherit" />
-                            </IconButton>
-                          </Tooltip>
+                          {hoveredRow.attachment && (
+                            <Tooltip title="Open" placement="top">
+                              <IconButton
+                                aria-label="Open"
+                                onClick={() => {
+                                  setReferenceItemDatum(hoveredRow);
+                                  setIsViewerOpen(true);
+                                }}
+                                sx={{
+                                  padding: 1,
+                                  fontSize: "22px",
+                                  "&:hover": {
+                                    background:
+                                      "rgba(25, 118, 210, 0.04) !important",
+                                  },
+                                }}
+                              >
+                                <OpenWithOutlinedIcon fontSize="inherit" />
+                              </IconButton>
+                            </Tooltip>
+                          )}
                           <Tooltip title="Edit Metadata" placement="top">
                             <IconButton
                               aria-label="Edit Metadata"
@@ -417,6 +423,7 @@ export default function ReferencesTable({
                                 },
                               }}
                               onClick={() => {
+                                setReferenceItemDatum(hoveredRow);
                                 setIsDrawerOpen(true);
                               }}
                             >

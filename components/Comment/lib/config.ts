@@ -24,6 +24,9 @@ export const contextConfig = {
   annotation: {
     previewMaxChars: 240,
   },
+  ref_manager: {
+    previewMaxChars: 240,
+  },
 };
 
 export const apiConfig = {
