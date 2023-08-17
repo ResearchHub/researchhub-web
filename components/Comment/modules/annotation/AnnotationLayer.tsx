@@ -1007,6 +1007,7 @@ const AnnotationLayer = ({
 
       _onCreate({ comment });
       _purgeComment({ threadId: annotation.threadId });
+      setVisibilityPreferenceForNewComment(privacy);
     } catch (error) {
       dispatch(setMessage(`Failed to create comment. Please try again.`));
       // @ts-ignore

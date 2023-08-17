@@ -382,6 +382,7 @@ const CommentFeed = ({
         filter: selectedFilterValue,
         comments,
         context,
+        document,
         onCreate,
         onUpdate,
         onRemove,

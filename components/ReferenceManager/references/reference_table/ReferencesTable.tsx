@@ -145,7 +145,7 @@ export default function ReferencesTable({
       onError: () => {},
     });
   };
-  console.log("referenceItemDatum", referenceItemDatum);
+
   const moveFolderToFolder = ({ moveToFolderId }) => {
     const intId = parseInt(rowDragged?.split("-folder")[0], 10);
     const newChildren = activeProject?.children.filter((data) => {
