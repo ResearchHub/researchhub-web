@@ -99,6 +99,7 @@ export const handleSubmit = ({
       creators: formattedCreators,
     },
     citation_type: selectedReferenceType,
+    doi: referenceSchemaValueSet.schema.DOI,
     organization: organizationID,
   };
 
