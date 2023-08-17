@@ -6,6 +6,7 @@ import {
   ID,
   Organization,
   RHUser,
+  RhDocumentType,
   UnifiedDocument,
   parseAuthorProfile,
   parseOrganization,
@@ -22,7 +23,17 @@ export type DocumentFormat = {
 };
 export type DocumentType = "hypothesis" | "paper" | "post" | "question";
 
-export type ApiDocumentType = "researchhub_post" | "paper" | "hypothesis";
+export type ContentInstance = {
+  id: ID;
+  type: RhDocumentType;
+  unifiedDocumentId?: ID;
+};
+
+export type ApiDocumentType =
+  | "researchhubpost"
+  | "paper"
+  | "hypothesis"
+  | "citationentry";
 
 export type DocumentImage = {
   url: string;
@@ -71,6 +82,7 @@ export type ReviewSummary = {
 };
 
 export interface GenericDocument {
+  srcUrl: string;
   id: ID;
   unifiedDocument: UnifiedDocument;
   authors: AuthorProfile[];
@@ -198,7 +210,7 @@ export const parsePost = (raw: any): Post => {
     ...commonAttributes,
     authors: (raw.authors || []).map((a: any) => parseAuthorProfile(a)),
     type: "post",
-    apiDocumentType: "researchhub_post",
+    apiDocumentType: "researchhubpost",
     srcUrl: raw.post_src,
     postHtml: raw.postHtml || "",
     postType:

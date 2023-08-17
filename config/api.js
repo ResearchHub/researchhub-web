@@ -293,7 +293,7 @@ const routes = (BASE_URL) => {
       });
     },
     RESEARCHHUB_POST: ({ created_by, post_id }) => {
-      let url = BASE_URL + "researchhub_post/";
+      let url = BASE_URL + "researchhubpost/";
       let params = {
         querystring: {
           created_by,
@@ -565,7 +565,7 @@ const routes = (BASE_URL) => {
     }) => {
       // question is a post behind the scenes and hence needs to be handled as such.
       const docType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(documentType)
-        ? "researchhub_post"
+        ? "researchhubpost"
         : documentType;
       let url = `${BASE_URL}${docType}/${documentId}/discussion/${
         targetId != null ? targetId + "/" : ""
@@ -621,7 +621,7 @@ const routes = (BASE_URL) => {
 
     THREAD: (documentType, paperId, documentId, threadId) => {
       const docType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(documentType)
-        ? "researchhub_post"
+        ? "researchhubpost"
         : documentType;
       let url =
         `${BASE_URL}${docType}/` +
@@ -652,7 +652,7 @@ const routes = (BASE_URL) => {
     THREAD_COMMENT: (documentType, paperId, documentId, threadId, page) => {
       // question is a post behind the scenes and hence needs to be handled as such.
       const docType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(documentType)
-        ? "researchhub_post"
+        ? "researchhubpost"
         : documentType;
       let url =
         `${BASE_URL}${docType}/` +
@@ -676,7 +676,7 @@ const routes = (BASE_URL) => {
     ) => {
       // question is a post behind the scenes and hence needs to be handled as such.
       const docType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(documentType)
-        ? "researchhub_post"
+        ? "researchhubpost"
         : documentType;
       let url =
         `${BASE_URL}${docType}/` +
@@ -859,11 +859,11 @@ const routes = (BASE_URL) => {
     },
     RH_POST_UPVOTE: (postId) => {
       // New post types, such as Question
-      return `${BASE_URL}researchhub_post/${postId}/upvote/`;
+      return `${BASE_URL}researchhubpost/${postId}/upvote/`;
     },
     RH_POST_DOWNVOTE: (postId) => {
       // New post types, such as Question
-      return `${BASE_URL}researchhub_post/${postId}/downvote/`;
+      return `${BASE_URL}researchhubpost/${postId}/downvote/`;
     },
     UPVOTE: (
       documentType,
@@ -1315,7 +1315,7 @@ const routes = (BASE_URL) => {
     replyId
   ) {
     const docType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(documentType)
-      ? "researchhub_post"
+      ? "researchhubpost"
       : documentType;
     let url =
       `${BASE_URL}${docType}/` +

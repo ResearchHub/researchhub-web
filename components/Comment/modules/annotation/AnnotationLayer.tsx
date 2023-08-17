@@ -6,6 +6,7 @@ import React, {
   useLayoutEffect,
   useRef,
   useState,
+  useContext,
 } from "react";
 import {
   Comment as CommentModel,
@@ -15,13 +16,14 @@ import {
   COMMENT_TYPES,
   COMMENT_CONTEXTS,
   groupByThread,
+  CommentPrivacyFilter,
 } from "../../lib/types";
 import {
   Annotation as AnnotationType,
   SerializedAnchorPosition,
 } from "./lib/types";
 import { createCommentAPI, fetchCommentsAPI } from "../../lib/api";
-import { GenericDocument } from "../../../Document/lib/types";
+import { ContentInstance } from "../../../Document/lib/types";
 import XRange from "./lib/xrange/XRange";
 import colors from "../../lib/colors";
 import TextSelectionMenu from "../../TextSelectionMenu";
@@ -38,7 +40,7 @@ import Annotation from "./Annotation";
 import repositionAnnotations, {
   resetPositions,
 } from "./lib/repositionAnnotations";
-import createShareableLink from "./lib/createShareableLink";
+import createLinkToSelection from "./lib/createLinkToSelection";
 import XPathUtil from "./lib/xrange/XPathUtil";
 import CommentDrawer from "../../CommentDrawer";
 import { breakpoints } from "~/config/themes/screen";
@@ -51,7 +53,12 @@ import removeComment from "../../lib/removeComment";
 import replaceComment from "../../lib/replaceComment";
 import findComment from "../../lib/findComment";
 import { isEmpty, localWarn } from "~/config/utils/nullchecks";
-import { RHUser, parseUser } from "~/config/types/root_types";
+import {
+  ID,
+  RHUser,
+  RhDocumentType,
+  parseUser,
+} from "~/config/types/root_types";
 import { RootState } from "~/redux";
 import ContentSupportModal from "~/components/Modals/ContentSupportModal";
 import { Purchase } from "~/config/types/purchase";
@@ -64,25 +71,35 @@ import {
 import getAnnotationFromPosition from "./lib/getAnnotationFromPosition";
 import AnnotationTextBubble from "./AnnotationTextBubble";
 import useCacheControl from "~/config/hooks/useCacheControl";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
+import DocumentViewerContext from "~/components/Document/lib/DocumentViewerContext";
 
 const { setMessage, showMessage } = MessageActions;
-const DEBUG = false;
+const DEBUG = true;
 
 interface Props {
   contentRef: any;
-  document: GenericDocument;
-  pageRendered: { pageNum: number }; // The last page rendered
-  displayPreference: "all" | "mine" | "none";
+  citationInstance?: ContentInstance;
+  documentInstance?: ContentInstance;
   onFetch?: (commentThreads) => void;
 }
 
 const AnnotationLayer = ({
   contentRef,
-  document: doc,
-  displayPreference,
-  pageRendered = { pageNum: 0 },
+  citationInstance,
+  documentInstance,
   onFetch,
 }: Props) => {
+  const {
+    lastPageRendered,
+    setVisibilityPreferenceForViewingComments,
+    visibilityPreferenceForViewingComments,
+    setVisibilityPreferenceForNewComment,
+    visibilityPreferenceForNewComment,
+    setNumAnnotations,
+    document: doc,
+  } = useContext(DocumentViewerContext);
+
   const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
 
   // Sorted List of annotations sorted by order of appearance on the page
@@ -149,11 +166,15 @@ const AnnotationLayer = ({
     height: 0,
   });
 
+  const currentContext = citationInstance
+    ? COMMENT_CONTEXTS.REF_MANAGER
+    : COMMENT_CONTEXTS.ANNOTATION;
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
   const { revalidateDocument } = useCacheControl();
+  const { currentOrg } = useOrgs();
 
   // Scroll to annotation only after it has been rendered
   useLayoutEffect(() => {
@@ -204,37 +225,96 @@ const AnnotationLayer = ({
 
   // Fetch comments from API and group them
   useEffect(() => {
-    const _fetch = async () => {
-      const { comments: rawComments } = await fetchCommentsAPI({
-        documentId: doc.id,
+    const _fetchComments = async ({
+      contentInstance,
+      privacyType,
+    }: {
+      contentInstance: ContentInstance;
+      privacyType: CommentPrivacyFilter;
+    }) => {
+      return fetchCommentsAPI({
+        documentId: contentInstance.id,
         filter: COMMENT_FILTERS.ANNOTATION,
         sort: "CREATED_DATE",
         ascending: true,
-        documentType: doc.apiDocumentType,
+        documentType: contentInstance.type,
         // For annotations, we want a very large page size because there is no "load more" UI button
         childPageSize: 10000,
+        organizationId: currentOrg?.id,
         pageSize: 10000,
+        privacyType,
       });
-      didFetchComplete.current = true;
-      const comments = rawComments.map((raw) => parseComment({ raw }));
-      setInlineComments(comments);
     };
 
+    (async () => {
+      const promises: Promise<{ comments: any[]; count: number }>[] = [];
+      if (citationInstance) {
+        if (
+          ["PUBLIC", "PRIVATE", "WORKSPACE"].includes(
+            visibilityPreferenceForViewingComments
+          )
+        ) {
+          promises.push(
+            _fetchComments({
+              contentInstance: citationInstance,
+              privacyType: "PRIVATE",
+            })
+          );
+        }
+        if (
+          ["PUBLIC", "WORKSPACE"].includes(
+            visibilityPreferenceForViewingComments
+          )
+        )
+          promises.push(
+            _fetchComments({
+              contentInstance: citationInstance,
+              privacyType: "WORKSPACE",
+            })
+          );
+      }
+      if (
+        documentInstance &&
+        visibilityPreferenceForViewingComments === "PUBLIC"
+      ) {
+        promises.push(
+          _fetchComments({
+            contentInstance: documentInstance,
+            privacyType: "PUBLIC",
+          })
+        );
+      }
+
+      Promise.all(promises)
+        .then((results) => {
+          const { comments, count } = results.reduce(
+            (acc, result) => {
+              const _comments = result.comments.map((raw) =>
+                parseComment({ raw })
+              );
+
+              return {
+                comments: [...acc.comments, ..._comments],
+                count: acc.count + result.count,
+              };
+            },
+            { comments: [], count: 0 }
+          );
+
+          setInlineComments(comments);
+          setNumAnnotations(comments.length);
+        })
+        .finally(() => {
+          didFetchComplete.current = true;
+        });
+    })();
+
     _setWindowDimensions();
-    _fetch();
-  }, []);
+  }, [visibilityPreferenceForViewingComments, currentOrg]);
 
   // Once we have comments, we want to group them by threads and draw them on the page
   useEffect(() => {
-    const _comments = inlineComments.filter((comment) => {
-      if (displayPreference === "all" || !displayPreference) return true;
-      if (displayPreference === "mine") {
-        return comment.createdBy.id === currentUser?.id;
-      }
-      return false;
-    });
-
-    const _commentThreads = groupByThread(_comments);
+    const _commentThreads = groupByThread(inlineComments);
     commentThreads.current = _commentThreads;
 
     throttledSetNeedsRedraw({ drawMode: "SKIP_EXISTING" });
@@ -248,7 +328,7 @@ const AnnotationLayer = ({
         });
       onFetchAlreadyInvoked.current = true;
     }
-  }, [inlineComments, displayPreference]);
+  }, [inlineComments]);
 
   // Draw annotation as pages are rendered
   useEffect(() => {
@@ -261,7 +341,7 @@ const AnnotationLayer = ({
         orphanSearchIntervalRef.current = null;
       }
     };
-  }, [pageRendered]);
+  }, [lastPageRendered]);
 
   useEffect(() => {
     if (needsRedraw) {
@@ -804,10 +884,21 @@ const AnnotationLayer = ({
       newAnnotation,
     ]);
 
+    const { id, type } = getContentInstanceByPrivacy({
+      privacy: visibilityPreferenceForNewComment,
+      documentInstance,
+      citationInstance,
+    });
+
     uncomittedCommentThreads.current[newAnnotation.threadId] = {
       thread: {
         id: newAnnotation.threadId,
         threadType: COMMENT_TYPES.ANNOTATION,
+        relatedContent: {
+          id,
+          type,
+        },
+        privacy: visibilityPreferenceForNewComment,
         anchor: selectionToSerializedAnchorPosition({ selection }),
       },
       comments: [],
@@ -837,13 +928,65 @@ const AnnotationLayer = ({
     _setAnnotations(updated);
   };
 
+  const getContentInstanceByPrivacy = ({
+    privacy,
+    documentInstance,
+    citationInstance,
+  }: {
+    privacy: CommentPrivacyFilter;
+    documentInstance?: ContentInstance;
+    citationInstance?: ContentInstance;
+  }): ContentInstance => {
+    let contentTypeId: ID;
+    let contentType: RhDocumentType;
+    console.log("citationInstance", citationInstance);
+    console.log("documentInstance", documentInstance);
+    console.log("privacy", privacy);
+    if (privacy === "PUBLIC") {
+      if (documentInstance) {
+        contentTypeId = documentInstance!.id;
+        contentType = documentInstance!.type;
+      } else {
+        throw new Error("Cannot create public annotation without document");
+      }
+    } else if (privacy === "PRIVATE" || privacy === "WORKSPACE") {
+      if (citationInstance) {
+        contentTypeId = citationInstance!.id;
+        contentType = citationInstance!.type;
+      } else {
+        throw new Error(
+          "Cannot create private/workspace annotation without citation"
+        );
+      }
+    }
+
+    return { id: contentTypeId!, type: contentType! };
+  };
+
   const _handleCreateThread = async ({
     annotation,
     commentProps,
+    privacy,
   }: {
     annotation: AnnotationType;
     commentProps: any;
+    privacy: CommentPrivacyFilter;
   }) => {
+    const { id, type } = getContentInstanceByPrivacy({
+      privacy,
+      documentInstance,
+      citationInstance,
+    });
+
+    if (DEBUG) {
+      console.log(
+        "Attempting to create comment for instance type",
+        type,
+        "with id",
+        id
+      );
+    }
+
     try {
       const serialized = annotationToSerializedAnchorPosition({
         annotation,
@@ -851,8 +994,10 @@ const AnnotationLayer = ({
 
       const comment = await createCommentAPI({
         ...commentProps,
-        documentId: doc.id,
-        documentType: doc.apiDocumentType,
+        documentId: id,
+        documentType: type,
+        privacy,
+        organizationId: currentOrg?.id,
         commentType: COMMENT_TYPES.ANNOTATION,
         anchor: {
           type: "text",
@@ -863,11 +1008,15 @@ const AnnotationLayer = ({
       _onCreate({ comment });
       _purgeComment({ threadId: annotation.threadId });
     } catch (error) {
+      dispatch(setMessage(`Failed to create comment. Please try again.`));
+      // @ts-ignore
+      dispatch(showMessage({ show: true, error: true }));
+
       captureEvent({
+        error,
         msg: "Failed to create inline comment",
         data: {
           document,
-          error,
           annotation,
         },
       });
@@ -895,7 +1044,9 @@ const AnnotationLayer = ({
       setInlineComments([...inlineComments, comment]);
     }
 
-    revalidateDocument();
+    if (documentInstance) {
+      revalidateDocument();
+    }
   };
 
   const _onRemove = ({ comment }: { comment: CommentModel }) => {
@@ -916,7 +1067,9 @@ const AnnotationLayer = ({
       );
     }
 
-    revalidateDocument();
+    if (documentInstance) {
+      revalidateDocument();
+    }
   };
 
   const _onUpdate = ({ comment }: { comment: CommentModel }) => {
@@ -1012,7 +1165,15 @@ const AnnotationLayer = ({
   };
 
   const _handleCreateSharableLink = () => {
-    createShareableLink({ selection });
+    createLinkToSelection({
+      selection,
+      context: currentContext,
+      ...(documentInstance && {
+        documentId: documentInstance?.id,
+        documentType: documentInstance?.type,
+      }),
+      ...(citationInstance && { citationId: citationInstance.id }),
+    });
     dispatch(setMessage(`Link copied`));
     // @ts-ignore
     dispatch(showMessage({ show: true, error: false }));
@@ -1087,7 +1248,9 @@ const AnnotationLayer = ({
             sort: sortOpts[0].value,
             filter: COMMENT_FILTERS.ANNOTATION,
             comments: inlineComments,
-            context: COMMENT_CONTEXTS.ANNOTATION,
+            citation: citationInstance,
+            document: doc,
+            context: currentContext,
             onCreate: _onCreate,
             onUpdate: _onUpdate,
             onRemove: _onRemove,
@@ -1234,6 +1397,13 @@ const AnnotationLayer = ({
                       )}
                       onMouseEnter={() => setHoveredThreadId(threadId)}
                       onMouseLeave={() => setHoveredThreadId(null)}
+                      onClick={(e) => {
+                        // We want to stop propegation of click for new comments. If we do not do this, they will be
+                        // "dismissed" when clicked onto. This is because there is logic in place to dismiss empty comments when background is clicked.
+                        if (newCommentDataRef.current[threadId]?.isEmpty) {
+                          e.stopPropagation();
+                        }
+                      }}
                       key={key}
                     >
                       {(renderingMode === "inline" ||
@@ -1257,6 +1427,16 @@ const AnnotationLayer = ({
                                     isEmpty,
                                   })
                                 }
+                                allowPrivacySelection={
+                                  currentContext ===
+                                  COMMENT_CONTEXTS.REF_MANAGER
+                                    ? true
+                                    : false
+                                }
+                                defaultPrivacyFilter={
+                                  visibilityPreferenceForNewComment
+                                }
+                                author={currentUser?.authorProfile}
                                 focusOnMount={true}
                                 editorStyleOverride={styles.commentEditor}
                                 editorId={`${key}-editor`}
@@ -1267,6 +1447,7 @@ const AnnotationLayer = ({
                                   _handleCreateThread({
                                     annotation,
                                     commentProps,
+                                    privacy: commentProps.privacy,
                                   })
                                 }
                               />
@@ -1274,7 +1455,6 @@ const AnnotationLayer = ({
                           ) : (
                             <AnnotationCommentThread
                               key={`${key}-thread`}
-                              document={doc}
                               renderingMode={renderingMode}
                               threadId={threadId}
                               onCancel={() => {
@@ -1312,7 +1492,6 @@ const AnnotationLayer = ({
                         />
                       </div>
                       <AnnotationCommentThread
-                        document={doc}
                         renderingMode={"drawer"}
                         threadId={selectedThread.threadId}
                         onCancel={() => {
@@ -1360,6 +1539,7 @@ const styles = StyleSheet.create({
     right: -15,
   },
   focusedCommentThread: {
+    zIndex: 2,
     boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.2)",
     ":hover": {
       background: "white",

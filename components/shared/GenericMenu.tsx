@@ -3,6 +3,8 @@ import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import colors from "~/config/themes/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/pro-regular-svg-icons";
 
 export interface MenuOption {
   label?: string;
@@ -20,12 +22,13 @@ export interface MenuOption {
 
 interface MenuProps {
   id: string;
-  width?: number;
+  width?: number | string;
   onSelect?: Function;
   children: React.ReactElement;
   options: MenuOption[];
   triggerHeight?: number;
   softHide?: boolean;
+  selected?: any;
   direction?:
     | "bottom-right"
     | "bottom-left"
@@ -43,6 +46,7 @@ const Menu = ({
   onSelect,
   direction = "bottom-left",
   softHide = false,
+  selected,
 }: MenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
@@ -65,7 +69,16 @@ const Menu = ({
   });
 
   const directionStyles = {
-    ...(direction === "bottom-left" && { top: triggerHeight, right: 0 }),
+    ...(direction === "bottom-left" && {
+      top: triggerHeight,
+      right: 0,
+      left: 0,
+    }),
+    ...(direction === "bottom-right" && {
+      top: triggerHeight,
+      right: 0,
+      left: "unset",
+    }),
     ...(direction === "top-center" && {
       transform: "translateX(-25%)",
       bottom: triggerHeight,
@@ -108,26 +121,38 @@ const Menu = ({
             } = option;
 
             const content = (
-              <>
+              <div key={`${id}-${index}`}>
                 {option.group !== currentOptionGroup && (
                   <div className={css(styles.groupHeader)}>{option.group}</div>
                 )}
                 <div
-                  key={`${id}-${index}`}
                   className={css(
-                    !disableStyle && styles.menuItem,
-                    !disableHover && styles.menuItemHover
+                    disableStyle !== false && styles.menuItem,
+                    disableHover !== false && styles.menuItemHover
                   )}
                   onClick={
                     preventDefault ? undefined : () => handleSelect(option)
                   }
                 >
-                  {icon && (
+                  {icon && !html && (
                     <div className={css(styles.menuItemIcon)}>{icon}</div>
                   )}
-                  {html ? html : label}
+                  {html ? (
+                    html
+                  ) : (
+                    <>
+                      {selected === value ? (
+                        <div className={css(styles.selected)}>
+                          {label}
+                          <FontAwesomeIcon icon={faCheck} />
+                        </div>
+                      ) : (
+                        <>{label}</>
+                      )}
+                    </>
+                  )}
                 </div>
-              </>
+              </div>
             );
 
             currentOptionGroup = option.group;
@@ -150,6 +175,7 @@ const Menu = ({
 const styles = StyleSheet.create({
   genericMenuWrapper: {
     position: "relative",
+    userSelect: "none",
   },
   menu: {
     position: "absolute",
@@ -175,6 +201,12 @@ const styles = StyleSheet.create({
     ":last-child": {
       marginBottom: 0,
     },
+  },
+  selected: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   groupHeader: {
     marginTop: 10,

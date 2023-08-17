@@ -41,7 +41,7 @@ interface Props {
   scale: number;
   onReady?: ({ numPages }) => void;
   onLoadError: (error) => void;
-  onPageRender: ({ pageNum }: { pageNum: number }) => void;
+  onPageRender: ({ pageNumber }: { pageNumber: number }) => void;
 }
 
 const PDFViewer = ({
@@ -64,33 +64,35 @@ const PDFViewer = ({
   const [nextPage, setNextPage] = useState<number>(1);
   const [pagesLoading, setPagesLoading] = useState<number[]>([]);
   const pagesLoadingRef = useRef<number[]>([]);
-  const [pageBuffer, setPageBuffer] = useState<{ [pageNum: number]: Page }>({});
+  const [pageBuffer, setPageBuffer] = useState<{ [pageNumber: number]: Page }>(
+    {}
+  );
   const [renderedPages, setRenderedPages] = useState<{
-    [pageNum: number]: Page;
+    [pageNumber: number]: Page;
   }>({});
   const observer = useRef<HTMLDivElement>(null);
   const eventBus = new EventBus();
 
   const loadPage = useCallback(
-    async (pageNum) => {
+    async (pageNumber) => {
       setPagesLoading((prevPagesLoading) => {
-        if (prevPagesLoading.includes(pageNum)) {
+        if (prevPagesLoading.includes(pageNumber)) {
           pagesLoadingRef.current = prevPagesLoading;
           return prevPagesLoading;
         }
 
-        pagesLoadingRef.current = [...prevPagesLoading, pageNum];
-        return [...prevPagesLoading, pageNum];
+        pagesLoadingRef.current = [...prevPagesLoading, pageNumber];
+        return [...prevPagesLoading, pageNumber];
       });
 
-      const page = await pdfDocument.getPage(pageNum);
+      const page = await pdfDocument.getPage(pageNumber);
       const viewport = page.getViewport({ scale: scaleRef.current });
       const pageContainer = document.createElement("div") as HTMLDivElement;
       pageContainer.style.position = "relative";
 
       const pdfPageView = new PDFPageView({
         container: pageContainer,
-        id: pageNum,
+        id: pageNumber,
         scale: scaleRef.current,
         defaultViewport: viewport,
         eventBus,
@@ -112,19 +114,19 @@ const PDFViewer = ({
         ".textLayer"
       ) as HTMLDivElement;
       if (textLayerDiv) {
-        textLayerDiv.id = `textLayer-page-${pageNum}`;
+        textLayerDiv.id = `textLayer-page-${pageNumber}`;
         textLayerDiv.style.margin = "0 auto";
       }
 
       setPageBuffer((prevPageBuffer) => {
         return {
           ...prevPageBuffer,
-          [pageNum]: { pdfPageView, pageNumber: pageNum, pageContainer },
+          [pageNumber]: { pdfPageView, pageNumber, pageContainer },
         };
       });
 
       setPagesLoading((prevPagesLoading) =>
-        prevPagesLoading.filter((page) => page !== pageNum)
+        prevPagesLoading.filter((page) => page !== pageNumber)
       );
     },
 
@@ -182,7 +184,7 @@ const PDFViewer = ({
           const page = renderedPages[pageNumber];
           page.pdfPageView.update({ scale: scaleRef.current });
           await page.pdfPageView.draw();
-          onPageRender({ pageNum: parseInt(pageNumber) });
+          onPageRender({ pageNumber: parseInt(pageNumber) });
         }
       );
 
@@ -213,7 +215,7 @@ const PDFViewer = ({
       }
 
       setTimeout(() => {
-        onPageRender({ pageNum: nextPage }); // call the callback here
+        onPageRender({ pageNumber: nextPage }); // call the callback here
       }, 0);
 
       // @ts-ignore

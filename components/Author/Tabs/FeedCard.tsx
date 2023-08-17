@@ -25,7 +25,7 @@ import {
 import { isDevEnv } from "~/config/utils/env";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
-import { RhDocumentType, parseUser } from "~/config/types/root_types";
+import { ID, RhDocumentType, parseUser } from "~/config/types/root_types";
 import { useState, useEffect, SyntheticEvent } from "react";
 import colors, {
   genericCardColors,
@@ -47,8 +47,8 @@ import ContentBadge from "~/components/ContentBadge";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-const PaperPDFModal = dynamic(
-  () => import("~/components/Modals/PaperPDFModal")
+const DocumentViewer = dynamic(
+  () => import("~/components/Document/DocumentViewer")
 );
 
 export type FeedCardProps = {
@@ -70,7 +70,6 @@ export type FeedCardProps = {
   id: number;
   index: number;
   onBadgeClick: any;
-  openPaperPDFModal: any;
   paper: any;
   postDownvote: any;
   postUpvote: any;
@@ -119,7 +118,6 @@ function FeedCard({
   hideVotes,
   hubs,
   id,
-  openPaperPDFModal,
   paper,
   preview_img: previewImg,
   renderable_text: renderableText,
@@ -136,11 +134,6 @@ function FeedCard({
   withSidePadding,
 }: FeedCardProps) {
   const router = useRouter();
-  /**
-   * Whether or not THIS PaperPDFModal is open.
-   * There may be many PaperPDFModal components on the page, but
-   * modals.openPaperPDFModal is only a single boolean. So all cards
-   * must only render their PaperPDFModal component if requested */
   const [isPreviewing, setIsPreviewing] = useState(false);
   const [voteState, setVoteState] = useState<VoteType | null>(
     userVoteToConstant(userVote)
@@ -332,12 +325,6 @@ function FeedCard({
                           e.stopPropagation();
                         }}
                       >
-                        {isPreviewing && (
-                          <PaperPDFModal
-                            paper={paper}
-                            onClose={() => setIsPreviewing(false)}
-                          />
-                        )}
                         <div
                           className={css(styles.preview, styles.paperPreview)}
                         >
@@ -350,7 +337,6 @@ function FeedCard({
                               e && e.preventDefault();
                               e && e.stopPropagation();
                               setIsPreviewing(true);
-                              openPaperPDFModal(true);
                             }}
                           />
                         </div>
@@ -495,6 +481,20 @@ function FeedCard({
           </div>
         </div>
       </Link>
+      {isPreviewing && (
+        <div onClick={(e) => e.stopPropagation()}>
+          <DocumentViewer
+            pdfUrl={paper.file || paper.pdf_url}
+            expanded={true}
+            showExpandBtn={false}
+            onClose={() => setIsPreviewing(false)}
+            documentInstance={{
+              id: paper.id,
+              type: "paper",
+            }}
+          />
+        </div>
+      )}
     </Ripples>
   );
 }
@@ -729,6 +729,12 @@ const styles = StyleSheet.create({
   paperPreview: {
     height: 80,
     width: 70,
+    position: "relative",
+    border: `1px solid ${colors.LIGHT_GREY()}`,
+    borderRadius: "4px",
+    ":hover": {
+      border: `1px solid ${colors.MEDIUM_GREY()}`,
+    },
   },
   textLabel: {
     color: colors.TEXT_GREY(),
@@ -781,7 +787,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  openPaperPDFModal: ModalActions.openPaperPDFModal,
   postDownvote: PaperActions.postDownvote,
   postUpvote: PaperActions.postUpvote,
 };

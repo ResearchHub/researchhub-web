@@ -175,6 +175,10 @@ const DocumentIndexPage: NextPage<Args> = ({
                 <DocumentViewer
                   // @ts-ignore
                   postHtml={_postHtml}
+                  documentInstance={{
+                    id: document.id,
+                    type: "researchhubpost",
+                  }}
                   document={document}
                   metadata={documentMetadata}
                   viewerWidth={config.width}

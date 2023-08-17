@@ -1,10 +1,14 @@
-import { GenericDocument } from "../Document/lib/types";
+import { ContentInstance, GenericDocument } from "../Document/lib/types";
 import CommentHeader from "./CommentHeader";
 import CommentHeaderForAnnotation from "./CommentHeaderForAnnotation";
 import CommentReadOnly from "./CommentReadOnly";
 import { css, StyleSheet } from "aphrodite";
 import CommentActions from "./CommentActions";
-import { COMMENT_CONTEXTS, Comment as CommentType } from "./lib/types";
+import {
+  COMMENT_CONTEXTS,
+  CommentPrivacyFilter,
+  Comment as CommentType,
+} from "./lib/types";
 import { useContext, useState } from "react";
 import CommentEditor from "./CommentEditor";
 import { ID, parseReview, parseUser, Review } from "~/config/types/root_types";
@@ -31,17 +35,18 @@ import { timeTo } from "~/config/utils/dates";
 import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import getReviewCategoryScore from "./lib/quill/getReviewCategoryScore";
-import CommentBadges from "./CommentBadges";
 import { captureEvent } from "~/config/utils/events";
+import CommentPrivacyBadge from "./CommentPrivacyBadge";
 const { setMessage, showMessage } = MessageActions;
 
 type CommentArgs = {
   comment: CommentType;
-  document: GenericDocument;
   ignoreChildren?: boolean;
+  document?: GenericDocument;
 };
-
+// TODO: Integrate with DocumentViewer Context so that we can determine whether or not to render visiblity modifiers and how
 const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
+  const { relatedContent } = comment.thread;
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -59,6 +64,8 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
   const dispatch = useDispatch();
   const annotationContext =
     commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION;
+  const refManagerContext =
+    commentTreeState.context === COMMENT_CONTEXTS.REF_MANAGER;
 
   const _handleToggleReply = () => {
     if (isReplyOpen && confirm("Discard changes?")) {
@@ -79,8 +86,8 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
 
     try {
       const response = await fetchSingleCommentAPI({
-        documentId: document.id,
-        documentType: document.apiDocumentType,
+        documentId: relatedContent.id,
+        documentType: relatedContent.type,
         commentId: comment.id,
         sort: commentTreeState.sort,
         childOffset: comment.children.length,
@@ -113,8 +120,8 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
     try {
       const _comment: CommentType = await createCommentAPI({
         content,
-        documentId: document.id,
-        documentType: document.apiDocumentType,
+        documentId: relatedContent.id,
+        documentType: relatedContent.type,
         parentComment: comment,
         mentions,
       });
@@ -137,15 +144,15 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
     content: any;
     mentions?: Array<string>;
   }) => {
-    const comment: CommentType = await updateCommentAPI({
+    const nextComment: CommentType = await updateCommentAPI({
       id,
       content,
-      documentId: document.id,
-      documentType: document.apiDocumentType,
+      documentId: relatedContent.id,
+      documentType: relatedContent.type,
       mentions,
     });
 
-    return comment;
+    return nextComment;
   };
 
   const handleReviewUpdate = async ({
@@ -165,7 +172,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
     try {
       const reviewResponse = await updatePeerReview({
         reviewId,
-        unifiedDocumentId: document.unifiedDocument.id,
+        unifiedDocumentId: relatedContent.unifiedDocumentId,
         score: reviewScore,
       });
 
@@ -185,7 +192,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
 
   const hasOpenBounties = openBounties.length > 0;
   const currentUserIsOpenBountyCreator = userOpenRootBounties.length > 0;
-  const isQuestion = document?.unifiedDocument?.documentType === "question";
+  const isQuestion = relatedContent.type === "question";
   const previewMaxChars = getConfigForContext(
     commentTreeState.context
   ).previewMaxChars;
@@ -206,14 +213,12 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
               <CommentHeaderForAnnotation
                 authorProfile={comment.createdBy.authorProfile}
                 comment={comment}
-                document={document}
                 handleEdit={handleEdit}
               />
             ) : (
               <CommentHeader
                 authorProfile={comment.createdBy.authorProfile}
                 comment={comment}
-                document={document}
                 handleEdit={handleEdit}
               />
             )}
@@ -221,7 +226,10 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
           <div
             className={css(
               styles.contentWrapper,
-              commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION &&
+              [
+                COMMENT_CONTEXTS.ANNOTATION,
+                COMMENT_CONTEXTS.REF_MANAGER,
+              ].includes(commentTreeState.context) &&
                 styles.contentWrapperForAnnotation
             )}
           >
@@ -231,12 +239,12 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                 editorStyleOverride={
                   annotationContext ? styles.annotationEditor : undefined
                 }
+                showAuthorLine={!(annotationContext || refManagerContext)}
                 handleSubmit={async (props) => {
                   try {
                     let comment = (await handleCommentUpdate(
                       props
                     )) as CommentType;
-                    console.log(comment);
                     if (comment.review) {
                       const review = await handleReviewUpdate({
                         commentId: comment.id,
@@ -246,7 +254,11 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                       comment = { ...comment, review: review as Review };
                     }
                     commentTreeState.onUpdate({ comment });
+                    setIsEditMode(false);
                   } catch (error: any) {
+                    dispatch(setMessage("Failed to update comment."));
+                    // @ts-ignore
+                    dispatch(showMessage({ show: true, error: true }));
                     captureEvent({
                       error,
                       msg: `Failed to create ${props.commentType}`,
@@ -254,8 +266,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                         props,
                       },
                     });
-                  } finally {
-                    setIsEditMode(false);
+                    throw new Error("Could not update comment");
                   }
                 }}
                 handleCancel={() => _handleCloseEdit()}
@@ -353,12 +364,22 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                 )}
               </div>
             )}
-            <div className={css(styles.actionsWrapper)}>
-              <CommentActions
-                toggleReply={() => _handleToggleReply()}
-                document={document}
-                comment={comment}
-              />
+            <div className={css(styles.bottomActions)}>
+              <div>
+                <CommentActions
+                  toggleReply={() => _handleToggleReply()}
+                  comment={comment}
+                />
+              </div>
+
+              <div className={css(styles.privacyBadgeWrapper)}>
+                {refManagerContext && (
+                  <CommentPrivacyBadge
+                    iconOnly={true}
+                    privacy={comment.thread.privacy}
+                  />
+                )}
+              </div>
             </div>
 
             {isReplyOpen && (
@@ -381,7 +402,6 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                 parentComment={comment}
                 totalCount={comment.childrenCount}
                 comments={comment.children}
-                document={document}
                 isFetching={isFetchingMore}
                 handleFetchMore={handleFetchMoreReplies}
               />
@@ -406,8 +426,15 @@ const styles = StyleSheet.create({
   editorWrapper: {
     marginTop: 15,
   },
-  actionsWrapper: {
+  bottomActions: {
     marginBottom: 5,
+    display: "flex",
+    justifyContent: "space-between",
+    borderTop: `1px solid rgba(233, 234, 239, 1)`,
+    paddingTop: `10px`,
+  },
+  privacyBadgeWrapper: {
+    marginLeft: "auto",
   },
   mainWrapper: {},
   contentWrapper: {

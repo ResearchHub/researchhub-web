@@ -14,6 +14,7 @@ interface Props {
   handleZoomSelection: Function;
   currentZoom: number;
   showExpand: boolean;
+  showCommentMenu?: boolean;
   isExpanded?: boolean;
   annotationCount?: number;
 }
@@ -26,6 +27,7 @@ const DocumentControls = ({
   currentZoom,
   showExpand = true,
   isExpanded = false,
+  showCommentMenu = false,
   annotationCount = 0,
 }: Props) => {
   const stopPropagation = (e) => {
@@ -48,8 +50,12 @@ const DocumentControls = ({
         handleZoomSelection={handleZoomSelection}
       />
 
-      <div className={css(styles.divider)} />
-      <DocumentCommentMenu annotationCount={annotationCount} />
+      {showCommentMenu && (
+        <>
+          <div className={css(styles.divider)} />
+          <DocumentCommentMenu annotationCount={annotationCount} />
+        </>
+      )}
 
       {showExpand && (
         <>

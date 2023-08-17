@@ -1,4 +1,4 @@
-import { GenericDocument } from "../../../Document/lib/types";
+import { ContentInstance, GenericDocument } from "../../../Document/lib/types";
 import CommentEditor from "../../CommentEditor";
 import Comment from "../../Comment";
 import { StyleSheet, css } from "aphrodite";
@@ -19,7 +19,6 @@ const { setMessage, showMessage } = MessageActions;
 
 interface Props {
   threadId: string;
-  document: GenericDocument;
   isFocused?: boolean;
   rootComment: CommentType;
   onCancel: Function;
@@ -28,7 +27,6 @@ interface Props {
 
 const AnnotationCommentThread = ({
   threadId,
-  document,
   isFocused = false,
   rootComment,
   onCancel,
@@ -52,8 +50,8 @@ const AnnotationCommentThread = ({
     try {
       const _comment: CommentType = await createCommentAPI({
         content,
-        documentId: document.id,
-        documentType: document.apiDocumentType,
+        documentId: rootComment.thread.relatedContent.id,
+        documentType: rootComment.thread.relatedContent.type,
         threadId,
         mentions,
         parentComment: rootComment,
@@ -81,7 +79,6 @@ const AnnotationCommentThread = ({
             key={`${comment.id}-${comment.updatedTimestamp}`}
             comment={comment}
             ignoreChildren={true}
-            document={document}
           />
         </div>
       ))}
@@ -152,7 +149,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   commentWrapper: {
-    borderBottom: `1px solid ${colors.border}`,
     paddingBottom: 15,
     paddingTop: 15,
     ":first-child": {

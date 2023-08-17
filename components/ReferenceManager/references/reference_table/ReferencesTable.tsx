@@ -1,3 +1,4 @@
+import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState } from "react";
 import {
   DataGrid,
@@ -10,7 +11,10 @@ import {
 import { useRouter } from "next/router";
 import { columnsFormat } from "./utils/referenceTableFormat";
 import { fetchCurrentUserReferenceCitations } from "../api/fetchCurrentUserReferenceCitations";
-import { formatReferenceRowData } from "./utils/formatReferenceRowData";
+import {
+  ReferenceTableRowDataType,
+  formatReferenceRowData,
+} from "./utils/formatReferenceRowData";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import {
   isNullOrUndefined,
@@ -30,6 +34,16 @@ import { useReferenceTabContext } from "../reference_item/context/ReferenceItemD
 import colors from "~/config/themes/colors";
 import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 import DroppableZone from "~/components/DroppableZone";
+import DocumentViewer from "~/components/Document/DocumentViewer";
+import { ID } from "~/config/types/root_types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle, faBookOpen } from "@fortawesome/pro-regular-svg-icons";
+import { faMaximize } from "@fortawesome/pro-light-svg-icons";
+import { IconButton, Tooltip } from "@mui/material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import Stack from "@mui/material/Stack";
+import OpenWithOutlinedIcon from "@mui/icons-material/OpenWithOutlined";
+import ReferenceItemOptsDropdown from "../reference_item/ReferenceItemOptsDropdown";
 
 type Props = {
   createdReferences: any[];
@@ -89,16 +103,20 @@ export default function ReferencesTable({
   setSelectedFolderIds,
   loading,
 }: Props) {
-  const { setIsDrawerOpen, setReferenceItemDatum, referencesFetchTime } =
-    useReferenceTabContext();
+  const {
+    setIsDrawerOpen,
+    referenceItemDatum,
+    setReferenceItemDatum,
+    referencesFetchTime,
+  } = useReferenceTabContext();
   const { referenceTableRowData, setReferenceTableRowData } =
     useReferencesTableContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [pdfIsOpen, setPDFIsOpen] = useState<boolean>(false);
-  const [pdfUrl, setPdfUrl] = useState<string>("");
+  const [isViewerOpen, setIsViewerOpen] = useState<boolean>(false);
   const [dragStarted, setDragStarted] = useState(false);
   const [rowDraggedOver, setRowDraggedOver] = useState<any>();
   const [rowDragged, setRowDragged] = useState();
+  const [rowHovered, setRowHovered] = useState<null | ID>(null);
   const { currentOrg } = useOrgs();
 
   const router = useRouter();
@@ -257,9 +275,11 @@ export default function ReferencesTable({
         <DataGrid
           apiRef={apiRef}
           autoHeight
-          disableRowSelectionOnClick
+          // disableRowSelectionOnClick
           checkboxSelection
           columns={columnsFormat}
+          sx={DATA_GRID_STYLE_OVERRIDE}
+          rows={formattedReferenceRows}
           hideFooter
           className={
             formattedReferenceRows.length === 0 ? "empty-data-grid" : ""
@@ -296,8 +316,6 @@ export default function ReferencesTable({
                 )
               ),
             });
-            setPDFIsOpen(true);
-            setPdfUrl(params.row.raw_data.attachment);
           }}
           rowReordering
           onCellClick={(params, event, _details): void => {
@@ -313,6 +331,7 @@ export default function ReferencesTable({
               const projectIdString = params.id.toString();
 
               if (projectIdString.includes("folder")) {
+                console.log("folder yo");
                 const projectId = projectIdString.split("-folder")[0];
 
                 let url = `/reference-manager/${
@@ -332,8 +351,6 @@ export default function ReferencesTable({
                 } else {
                   router.push(url);
                 }
-              } else {
-                setIsDrawerOpen(true);
               }
             }
           }}
@@ -353,10 +370,66 @@ export default function ReferencesTable({
           }}
           slots={{
             row: (row) => {
+              const { row: refDataRow } = row;
+              const typedRefDataRow = refDataRow as ReferenceTableRowDataType;
+
               let folderRow = false;
-              const stringId = row.row.id.toString();
-              if (stringId.includes("folder")) {
+              const idAsString = typedRefDataRow!.id!.toString();
+
+              if (idAsString.includes("folder")) {
                 folderRow = true;
+              }
+              if (row.row.id === rowHovered) {
+                // if (true) {
+                typedRefDataRow.actions = (
+                  <div style={{ marginRight: 10 }}>
+                    {/* Replace with your actual action buttons */}
+                    <Stack direction="row" spacing={0}>
+                      {!folderRow && (
+                        <>
+                          <Tooltip title="Open" placement="top">
+                            <IconButton
+                              aria-label="Open"
+                              onClick={() => {
+                                setIsViewerOpen(true);
+                              }}
+                              sx={{
+                                padding: 1,
+                                fontSize: "22px",
+                                "&:hover": {
+                                  background:
+                                    "rgba(25, 118, 210, 0.04) !important",
+                                },
+                              }}
+                            >
+                              <OpenWithOutlinedIcon fontSize="inherit" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Edit Metadata" placement="top">
+                            <IconButton
+                              aria-label="Edit Metadata"
+                              sx={{
+                                padding: 1,
+                                fontSize: "22px",
+                                "&:hover": {
+                                  background:
+                                    "rgba(25, 118, 210, 0.04) !important",
+                                },
+                              }}
+                              onClick={() => {
+                                setIsDrawerOpen(true);
+                              }}
+                            >
+                              <InfoOutlinedIcon fontSize="inherit" />
+                            </IconButton>
+                          </Tooltip>
+                        </>
+                      )}
+
+                      {/* <ReferenceItemOptsDropdown refId={typedRefDataRow.id} /> */}
+                    </Stack>
+                  </div>
+                );
               }
               return (
                 <GridRow
@@ -374,6 +447,8 @@ export default function ReferencesTable({
                     setRowDragged(row.row.id);
                   }}
                   onDrop={() => folderRow && rowDropped(row.row)}
+                  onMouseEnter={() => setRowHovered(row.row.id)}
+                  onMouseLeave={() => setRowHovered(null)}
                 />
               );
             },
@@ -409,32 +484,30 @@ export default function ReferencesTable({
               }
             },
           }}
-          sx={DATA_GRID_STYLE_OVERRIDE}
-          rows={formattedReferenceRows}
         />
-        {/* <div
-        style={{
-          width: "100%",
-          background: "pink",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        {"Infinite pagination!!!!!"}
-      </div> */}
-        {/* {pdfIsOpen && (
-          <PDFViewer
-            pdfUrl={pdfUrl}
+
+        {isViewerOpen && (
+          <DocumentViewer
+            hasError={!referenceItemDatum?.attachment}
+            pdfUrl={referenceItemDatum?.attachment}
             expanded={true}
-            pdfClose={() => {
-              setPDFIsOpen(false);
-              setPdfUrl("");
+            citationInstance={{
+              id: referenceItemDatum.id,
+              type: "citationentry",
             }}
-            onZoom={(zoom) => {
-              // setViewerWidth(zoom.newWidth);
+            documentInstance={
+              referenceItemDatum.related_unified_doc
+                ? {
+                    id: referenceItemDatum.related_unified_doc?.documents?.id,
+                    type: "paper",
+                  }
+                : undefined
+            }
+            onClose={() => {
+              setIsViewerOpen(false);
             }}
           />
-        )} */}
+        )}
       </div>
     </DroppableZone>
   );

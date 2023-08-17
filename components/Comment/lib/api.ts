@@ -4,7 +4,13 @@ import {
   RhDocumentType,
   parseUser,
 } from "~/config/types/root_types";
-import { Comment, parseComment, COMMENT_TYPES, COMMENT_FILTERS } from "./types";
+import {
+  Comment,
+  parseComment,
+  COMMENT_TYPES,
+  COMMENT_FILTERS,
+  CommentPrivacyFilter,
+} from "./types";
 import API, { generateApiUrl, buildQueryString } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { apiConfig } from "./config";
@@ -23,6 +29,8 @@ export const fetchCommentsAPI = async ({
   pageSize = apiConfig.feed.pageSize,
   childPageSize = apiConfig.feed.childPageSize,
   ascending = false,
+  privacyType = "PUBLIC",
+  organizationId,
 }: {
   documentType: RhDocumentType;
   documentId: ID;
@@ -32,6 +40,8 @@ export const fetchCommentsAPI = async ({
   pageSize?: number;
   childPageSize?: number;
   ascending?: boolean;
+  privacyType?: CommentPrivacyFilter;
+  organizationId?: ID;
 }): Promise<{ comments: any[]; count: number }> => {
   const query = {
     ...(filter && { filtering: filter }),
@@ -40,13 +50,18 @@ export const fetchCommentsAPI = async ({
     child_count: childPageSize,
     page_size: pageSize,
     ascending: ascending ? "TRUE" : "FALSE",
+    privacy_type: privacyType,
   };
 
   const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);
   const url = baseFetchUrl + buildQueryString(query);
-  const response = await fetch(url, API.GET_CONFIG()).then((res): any =>
-    Helpers.parseJSON(res)
-  );
+  const response = await fetch(
+    url,
+    API.GET_CONFIG(
+      undefined,
+      organizationId ? { "x-organization-id": organizationId } : undefined
+    )
+  ).then((res): any => Helpers.parseJSON(res));
 
   if (response?.detail) {
     captureEvent({
@@ -120,8 +135,10 @@ export const createCommentAPI = async ({
   threadId,
   parentComment,
   bountyAmount,
+  privacy = "PUBLIC",
   mentions = [],
   anchor = null,
+  organizationId,
 }: {
   content: any;
   commentType?: COMMENT_TYPES;
@@ -130,8 +147,10 @@ export const createCommentAPI = async ({
   threadId?: ID;
   parentComment?: Comment;
   bountyAmount?: number;
+  privacy?: CommentPrivacyFilter;
   mentions?: Array<string>;
   anchor?: null | SerializedAnchorPosition;
+  organizationId?: ID;
 }): Promise<Comment> => {
   const _url = generateApiUrl(
     `${documentType}/${documentId}/comments/` +
@@ -139,15 +158,20 @@ export const createCommentAPI = async ({
   );
   const response = await fetch(
     _url,
-    API.POST_CONFIG({
-      comment_content_json: content,
-      thread_type: commentType,
-      mentions: uniqBy(mentions),
-      ...(parentComment && { parent_id: parentComment.id }),
-      ...(bountyAmount && { amount: bountyAmount }),
-      ...(anchor && { anchor }),
-      ...(threadId && { thread_id: threadId }),
-    })
+    API.POST_CONFIG(
+      {
+        comment_content_json: content,
+        thread_type: commentType,
+        privacy_type: privacy,
+        mentions: uniqBy(mentions),
+        ...(parentComment && { parent_id: parentComment.id }),
+        ...(bountyAmount && { amount: bountyAmount }),
+        ...(anchor && { anchor }),
+        ...(threadId && { thread_id: threadId }),
+      },
+      undefined,
+      organizationId ? { "x-organization-id": organizationId } : undefined
+    )
   ).then((res): any => Helpers.parseJSON(res));
 
   const comment = parseComment({ raw: response, parent: parentComment });

@@ -5,8 +5,11 @@ import { breakpoints } from "~/config/themes/screen";
 import DocumentControls from "~/components/Document/DocumentControls";
 import DocumentExpandedNav from "~/components/Document/DocumentExpandedNav";
 import { zoomOptions } from "~/components/Document/lib/PDFViewer/config";
-import { DocumentContext } from "./lib/DocumentContext";
-import { DocumentMetadata, GenericDocument } from "./lib/types";
+import {
+  ContentInstance,
+  DocumentMetadata,
+  GenericDocument,
+} from "./lib/types";
 import throttle from "lodash/throttle";
 import { LEFT_SIDEBAR_MAX_WIDTH } from "../Home/sidebar/RootLeftSidebar";
 import DocumentPlaceholder from "./lib/Placeholders/DocumentPlaceholder";
@@ -15,8 +18,16 @@ import { faCircleExclamation } from "@fortawesome/pro-light-svg-icons";
 import {
   Comment as CommentType,
   CommentThreadGroup,
+  CommentPrivacyFilter,
 } from "../Comment/lib/types";
 import config from "./lib/config";
+import DocumentViewerContext, {
+  Page,
+  VisibilityPreferenceForViewingComments,
+  ViewerContext,
+} from "./lib/DocumentViewerContext";
+import { useRouter } from "next/router";
+
 const AnnotationLayer = dynamic(
   () => import("~/components/Comment/modules/annotation/AnnotationLayer")
 );
@@ -31,35 +42,66 @@ export type ZoomAction = {
 };
 
 type Props = {
-  metadata: DocumentMetadata;
   postHtml?: string;
-  onZoom: Function;
-  document: GenericDocument;
-  viewerWidth: number;
+  pdfUrl?: string | null;
+  onZoom?: Function;
+  viewerWidth?: number;
+  citationInstance?: ContentInstance;
+  documentInstance?: ContentInstance;
+  document?: GenericDocument | null;
+  expanded?: boolean;
+  hasError?: boolean;
+  onClose?: Function;
+  showExpandBtn?: boolean;
+  expandedOnlyMode?: boolean;
 };
 
 const DocumentViewer = ({
-  document: doc,
   postHtml,
   onZoom,
-  viewerWidth,
-  metadata,
+  viewerWidth = config.width,
+  pdfUrl,
+  citationInstance,
+  documentInstance,
+  document: doc,
+  expanded = false,
+  hasError = false,
+  showExpandBtn = true,
+  onClose,
+  expandedOnlyMode = false,
 }: Props) => {
-  const documentContext = useContext(DocumentContext);
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [annotationCount, setAnnotationCount] = useState<number>(0);
+  const router = useRouter();
+  const [isExpanded, setIsExpanded] = useState<boolean>(
+    expandedOnlyMode || expanded
+  );
+  const [numAnnotations, setNumAnnotations] = useState<number>(0);
   const contentRef = useRef(null);
-  const [hasLoadError, setHasLoadError] = useState<boolean>(false);
+  const [hasLoadError, setHasLoadError] = useState<boolean>(hasError);
   const [fullScreenSelectedZoom, setFullScreenSelectedZoom] =
     useState<number>(1.25);
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
   const [isPdfReady, setIsPdfReady] = useState<boolean>(false);
+  const [viewerContext, setViewerContext] = useState<ViewerContext>(
+    ViewerContext.GENERIC
+  );
   const [numPagesToPreload, setNumPagesToPreload] = useState<number>(
     config.numPdfPagesToPreload
   );
-  const [pageRendered, setPageRendered] = useState<{ pageNum: number }>({
-    pageNum: 0,
+  const [lastPageRendered, setLastPageRendered] = useState<Page>({
+    pageNumber: 0,
   });
+
+  const defaultPrivacyFilter = documentInstance ? "PUBLIC" : "WORKSPACE";
+
+  const [
+    visibilityPreferenceForNewComment,
+    setVisibilityPreferenceForNewComment,
+  ] = useState<CommentPrivacyFilter>(defaultPrivacyFilter);
+  const [
+    visibilityPreferenceForViewingComments,
+    setVisibilityPreferenceForViewingComments,
+  ] = useState<VisibilityPreferenceForViewingComments>(defaultPrivacyFilter);
+
   const [windowDimensions, setWindowDimensions] = useState<{
     width: number;
     height: number;
@@ -74,7 +116,6 @@ const DocumentViewer = ({
 
   const throttledSetDimensions = useCallback(
     throttle(() => {
-      console.log("throttledSetDimensions");
       setWindowDimensions({
         width: window.innerWidth,
         height: window.innerHeight,
@@ -98,6 +139,18 @@ const DocumentViewer = ({
       window.removeEventListener("resize", throttledSetDimensions);
     };
   }, []);
+
+  useEffect(() => {
+    let viewerContext = ViewerContext.GENERIC;
+    const isPost = ["post"].includes(router.pathname.split("/")[1]);
+    const isPaper = ["paper"].includes(router.pathname.split("/")[1]);
+    if (isPost || isPaper) {
+      viewerContext = ViewerContext.DOCUMENT_PAGE;
+    } else if (citationInstance) {
+      viewerContext = ViewerContext.REF_MANAGER;
+    }
+    setViewerContext(viewerContext);
+  }, [router.isReady]);
 
   useEffect(() => {
     if (isExpanded) {
@@ -218,8 +271,6 @@ const DocumentViewer = ({
     comments: CommentType[];
     urlPosition: any;
   }) {
-    setAnnotationCount(Object.values(threads).length);
-
     let furthestPageToPreload = config.numPdfPagesToPreload;
 
     if (
@@ -240,8 +291,7 @@ const DocumentViewer = ({
     setNumPagesToPreload(furthestPageToPreload);
   }
 
-  const commentDisplayPreference = documentContext.preferences?.comments;
-  const pdfUrl = doc.formats.find((f) => f.type === "pdf")?.url;
+  // TODO: Update this. Will probably need to create a DocumentViewer Context
   const actualContentWidth = isExpanded
     ? viewerWidth * fullScreenSelectedZoom
     : viewerWidth * selectedZoom;
@@ -250,98 +300,129 @@ const DocumentViewer = ({
     actualContentWidth > windowDimensions.width - LEFT_SIDEBAR_MAX_WIDTH;
 
   return (
-    <div
-      className={css(
-        styles.documentViewer,
-        isExpanded && styles.expandedWrapper
-      )}
+    <DocumentViewerContext.Provider
+      value={{
+        onPageRender: setLastPageRendered,
+        lastPageRendered,
+        setVisibilityPreferenceForViewingComments,
+        visibilityPreferenceForViewingComments,
+        setVisibilityPreferenceForNewComment,
+        visibilityPreferenceForNewComment,
+        setNumAnnotations,
+        numAnnotations,
+        documentInstance,
+        document: doc,
+        viewerContext,
+      }}
     >
-      {isExpanded && (
-        <DocumentExpandedNav
-          document={doc}
-          handleClose={() => setIsExpanded(false)}
-        />
-      )}
       <div
         className={css(
-          styles.main,
-          isExpanded && styles.expandedContent,
-          shouldScroll && styles.scroll
+          styles.documentViewer,
+          isExpanded && styles.expandedWrapper
         )}
-        style={{
-          maxWidth: actualContentWidth,
-        }}
       >
-        {commentDisplayPreference !== "none" && (
-          <AnnotationLayer
-            document={doc}
-            contentRef={contentRef}
-            pageRendered={pageRendered}
-            displayPreference={commentDisplayPreference}
-            onFetch={onCommentsFetched}
+        {isExpanded && (
+          <DocumentExpandedNav
+            pdfUrl={pdfUrl}
+            documentInstance={documentInstance}
+            expandedOnlyMode={expandedOnlyMode}
+            handleClose={() => {
+              onClose && onClose();
+              setIsExpanded(false);
+            }}
           />
         )}
-
-        {documentContext.documentType === "paper" ? (
-          <>
-            {hasLoadError ? (
-              <div className={css(styles.error)}>
-                <FontAwesomeIcon
-                  icon={faCircleExclamation}
-                  style={{ fontSize: 44 }}
-                />
-                <span style={{ fontSize: 22 }}>
-                  There was an error loading the PDF.
-                </span>
-              </div>
-            ) : (
-              <>
-                {!isPdfReady && <DocumentPlaceholder />}
-                <PDFViewer
-                  pdfUrl={pdfUrl}
-                  scale={actualZoom}
-                  onReady={onPdfReady}
+        <div
+          className={css(
+            styles.main,
+            isExpanded && styles.expandedContent,
+            shouldScroll && styles.scroll
+          )}
+          style={{
+            maxWidth: actualContentWidth,
+          }}
+        >
+          {hasLoadError ? (
+            <div className={css(styles.error)}>
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                style={{ fontSize: 44 }}
+              />
+              <span style={{ fontSize: 22 }}>
+                There was an error loading this page.
+              </span>
+            </div>
+          ) : (
+            <>
+              {visibilityPreferenceForViewingComments !== "OFF" && (
+                <AnnotationLayer
+                  documentInstance={documentInstance}
+                  citationInstance={citationInstance}
                   contentRef={contentRef}
-                  viewerWidth={actualContentWidth}
-                  onLoadError={setHasLoadError}
-                  numPagesToPreload={numPagesToPreload}
-                  onPageRender={setPageRendered}
-                  showWhenLoading={
-                    <div style={{ padding: 20 }}>
-                      <DocumentPlaceholder />
-                    </div>
-                  }
+                  onFetch={onCommentsFetched}
                 />
-              </>
-            )}
-          </>
-        ) : (
-          <div
-            ref={contentRef}
-            id="postBody"
-            className={css(styles.postBody) + " rh-post"}
-            dangerouslySetInnerHTML={{ __html: postHtml! }}
-          />
-        )}
-      </div>
+              )}
 
-      <DocumentControls
-        handleFullScreen={() => setIsExpanded(!isExpanded)}
-        handleZoomIn={handleZoomIn}
-        handleZoomOut={handleZoomOut}
-        handleZoomSelection={handleZoomSelection}
-        currentZoom={isExpanded ? fullScreenSelectedZoom : selectedZoom}
-        showExpand={true}
-        isExpanded={isExpanded}
-        annotationCount={annotationCount}
-      />
-    </div>
+              {pdfUrl ? (
+                <>
+                  {!isPdfReady && <DocumentPlaceholder />}
+                  <PDFViewer
+                    pdfUrl={pdfUrl}
+                    scale={actualZoom}
+                    onReady={onPdfReady}
+                    contentRef={contentRef}
+                    viewerWidth={actualContentWidth}
+                    onLoadError={setHasLoadError}
+                    onPageRender={setLastPageRendered}
+                    numPagesToPreload={numPagesToPreload}
+                    showWhenLoading={
+                      <div style={{ padding: 20 }}>
+                        <DocumentPlaceholder />
+                      </div>
+                    }
+                  />
+                </>
+              ) : (
+                <>
+                  {!postHtml && <DocumentPlaceholder />}
+                  <div
+                    ref={contentRef}
+                    id="postBody"
+                    className={css(styles.postBody) + " rh-post"}
+                    dangerouslySetInnerHTML={{ __html: postHtml! }}
+                  />
+                </>
+              )}
+
+              <DocumentControls
+                handleFullScreen={() => {
+                  if (isExpanded) {
+                    onClose && onClose();
+                    setIsExpanded(false);
+                  } else {
+                    setIsExpanded(true);
+                  }
+                }}
+                handleZoomIn={handleZoomIn}
+                handleZoomOut={handleZoomOut}
+                handleZoomSelection={handleZoomSelection}
+                currentZoom={isExpanded ? fullScreenSelectedZoom : selectedZoom}
+                showExpand={showExpandBtn}
+                isExpanded={isExpanded}
+              />
+            </>
+          )}
+        </div>
+      </div>
+    </DocumentViewerContext.Provider>
   );
 };
 
 const styles = StyleSheet.create({
   main: {
     position: "relative",
+    justifyContent: "center",
+    minHeight: "100vh",
   },
   scroll: {
     overflowX: "scroll",
@@ -380,7 +461,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     rowGap: "15px",
     justifyContent: "center",
-    marginTop: "20%",
+    paddingTop: "35%",
   },
 });
 

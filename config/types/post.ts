@@ -36,7 +36,7 @@ export class Post implements TopLevelDocument {
   _bountyType: string;
   _slug: string;
   _documentType: RhDocumentType;
-  _apiDocumentType: ApiDocumentType
+  _apiDocumentType: ApiDocumentType;
 
   constructor(raw: any) {
     this._authors = (raw.authors || []).map((a) => parseAuthorProfile(a));
@@ -57,7 +57,7 @@ export class Post implements TopLevelDocument {
     this._bounties = (raw.bounties ?? []).map((b) => new Bounty(b));
     this._slug = raw.slug;
     this._documentType = "post";
-    this._apiDocumentType = "researchhub_post";
+    this._apiDocumentType = "researchhubpost";
 
     if (raw.user_vote) {
       this._userVote = userVoteToConstant(raw.user_vote);
@@ -149,7 +149,7 @@ export class Post implements TopLevelDocument {
 
   get apiDocumentType(): ApiDocumentType {
     return this._apiDocumentType;
-  }  
+  }
 
   set discussionCount(count) {
     this._discussionCount = count;

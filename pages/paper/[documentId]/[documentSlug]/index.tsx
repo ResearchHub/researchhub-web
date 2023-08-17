@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import { Paper } from "~/components/Document/lib/types";
 import { captureEvent } from "~/config/utils/events";
 import Error from "next/error";
-import PDFViewer from "~/components/Document/lib/PDFViewer/PDFViewer";
 import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 import PaperPageAbstractSection from "~/components/Paper/abstract/PaperPageAbstractSection";
@@ -104,8 +103,9 @@ const DocumentIndexPage: NextPage<Args> = ({
             {pdfUrl ? (
               <div className={css(styles.viewerWrapper)}>
                 <DocumentViewer
+                  documentInstance={{ id: document.id, type: "paper" }}
                   document={document}
-                  metadata={documentMetadata}
+                  pdfUrl={pdfUrl}
                   viewerWidth={config.width}
                   onZoom={(zoom: ZoomAction) => {
                     if (!zoom.isExpanded) {

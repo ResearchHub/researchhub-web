@@ -13,7 +13,7 @@ import { useContext } from "react";
 type Args = {
   parentComment?: CommentType;
   comments?: Array<CommentType>;
-  document: GenericDocument;
+  document?: GenericDocument;
   isRootList?: boolean;
   isFetching?: boolean;
   totalCount: number;
@@ -52,7 +52,10 @@ const CommentList = ({
           styles.commentListWrapper,
           !isRootList &&
             comments.length > 0 &&
-            commentTreeState.context !== COMMENT_CONTEXTS.ANNOTATION &&
+            ![
+              COMMENT_CONTEXTS.ANNOTATION,
+              COMMENT_CONTEXTS.REF_MANAGER,
+            ].includes(commentTreeState.context) &&
             styles.childrenList
         )}
       >

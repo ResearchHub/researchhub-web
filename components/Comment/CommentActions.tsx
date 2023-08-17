@@ -4,7 +4,6 @@ import { faReply, faLinkSimple } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import CommentVote from "./CommentVote";
 import { parseUser } from "~/config/types/root_types";
-import { GenericDocument } from "../Document/lib/types";
 import { COMMENT_CONTEXTS, Comment } from "./lib/types";
 import Image from "next/image";
 import IconButton from "../Icons/IconButton";
@@ -21,21 +20,39 @@ import { MessageActions } from "~/redux/message";
 import { markAsAcceptedAnswerAPI } from "./lib/api";
 import { findAllComments } from "./lib/findComment";
 import createSharableLinkToComment from "./lib/createSharableLinkToComment";
+import ReactTooltip from "react-tooltip";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   toggleReply: Function;
   comment: Comment;
-  document: GenericDocument;
 };
 
-const CommentActions = ({ comment, document, toggleReply }: Args) => {
+const CommentActions = ({ comment, toggleReply }: Args) => {
   const dispatch = useDispatch();
-  const commentTreeState = useContext(CommentTreeContext);
-  const isQuestion = document.unifiedDocument.documentType === "question";
+  const {
+    context,
+    onUpdate,
+    document: doc,
+    comments,
+  } = useContext(CommentTreeContext);
+  const { relatedContent } = comment.thread;
+
+  const isQuestion = relatedContent.type === "question";
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
+
+  const getTooltipText = () => {
+    if (
+      context === COMMENT_CONTEXTS.REF_MANAGER &&
+      comment.thread.privacy === "PRIVATE"
+    ) {
+      return "This comment is private. Edit comment privacy to share with others.";
+    }
+
+    return undefined;
+  };
 
   const handleAwardBounty = async ({ bounty }: { bounty: Bounty }) => {
     const totalAmount = tallyAmounts({
@@ -75,8 +92,8 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
               updatedCommentBounty.bounties[bIdx] = updatedBounty;
             }
 
-            commentTreeState.onUpdate({ comment: updatedCommentBounty });
-            commentTreeState.onUpdate({ comment: awardedComent });
+            onUpdate({ comment: updatedCommentBounty });
+            onUpdate({ comment: awardedComent });
           })
           .catch((error: any) => {
             // FIXME: Log to sentry
@@ -103,23 +120,23 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
       try {
         await markAsAcceptedAnswerAPI({
           commentId,
-          documentType: document.apiDocumentType,
-          documentId: document.id,
+          documentType: relatedContent.type,
+          documentId: relatedContent.id,
         });
         const previouslyAccepted = findAllComments({
-          comments: commentTreeState.comments,
+          comments: comments,
           conditions: [{ key: "isAcceptedAnswer", value: true }],
         }).map((f) => f.comment);
 
         previouslyAccepted.map((c) => {
           const updated = Object.assign({}, c, { isAcceptedAnswer: false });
-          commentTreeState.onUpdate({ comment: updated });
+          onUpdate({ comment: updated });
         });
 
         const newlyAccepted = Object.assign({}, comment, {
           isAcceptedAnswer: true,
         });
-        commentTreeState.onUpdate({ comment: newlyAccepted });
+        onUpdate({ comment: newlyAccepted });
       } catch (error: any) {
         // FIXME: Log to sentry
         dispatch(
@@ -133,6 +150,19 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
     }
   };
 
+  const handleCopyLinkToComment = (e) => {
+    e.stopPropagation();
+
+    createSharableLinkToComment({
+      comment,
+      context,
+    });
+
+    dispatch(setMessage(`Link copied`));
+    // @ts-ignore
+    dispatch(showMessage({ show: true, error: false }));
+  };
+
   // FIXME: Refactor into function
   const openBounties = getOpenBounties({ comment });
   const isAllowedToTip =
@@ -142,45 +172,58 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
   // Root bounties are bounties that are not contributions.
   // A user can award a bounty if they currently have an open root bounty.
   const openUserOwnedRootBounty: Bounty = findOpenRootBounties({
-    comments: commentTreeState.comments,
+    comments,
     user: currentUser,
   })[0];
   const isAllowedToAward =
     Boolean(openUserOwnedRootBounty) && openBounties.length === 0;
 
-  if (isQuestion) {
+  if (doc && isQuestion) {
     isAllowedToAcceptAnswer =
-      document!.createdBy!.id == currentUser?.id &&
+      doc!.createdBy!.id == currentUser?.id &&
       !comment.isAcceptedAnswer &&
       comment.bounties.length === 0;
   }
 
   const disableSocialActions = currentUser?.id === comment.createdBy.id;
+  const tooltipText = getTooltipText();
 
   return (
     <div className={css(styles.wrapper)}>
+      <ReactTooltip
+        effect="solid"
+        className={css(styles.tooltip)}
+        id="link-tooltip"
+      />
       <div className={css(styles.actionsWrapper)}>
-        <div
-          className={`${css(
-            styles.action,
-            disableSocialActions && styles.disabled
-          )} vote-btn`}
-        >
-          <CommentVote
-            comment={comment}
-            score={comment.score}
-            userVote={comment.userVote}
-            isHorizontal={true}
-            documentType={document.apiDocumentType}
-            documentID={document.id}
-          />
-        </div>
+        {doc && (
+          <div
+            className={`${css(
+              styles.action,
+              disableSocialActions && styles.disabled
+            )} vote-btn`}
+          >
+            <CommentVote
+              comment={comment}
+              score={comment.score}
+              userVote={comment.userVote}
+              isHorizontal={true}
+              documentType={doc.apiDocumentType}
+              documentID={doc.id}
+            />
+          </div>
+        )}
 
-        {commentTreeState.context !== COMMENT_CONTEXTS.ANNOTATION && (
+        {![COMMENT_CONTEXTS.ANNOTATION, COMMENT_CONTEXTS.REF_MANAGER].includes(
+          context
+        ) && (
           <div
             className={`${css(styles.action, styles.actionReply)} reply-btn`}
           >
-            <IconButton onClick={() => toggleReply()}>
+            <IconButton
+              overrideStyle={styles.button}
+              onClick={() => toggleReply()}
+            >
               <FontAwesomeIcon
                 icon={faReply}
                 style={{ fontSize: 16, color: colors.secondary.text }}
@@ -221,6 +264,7 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
         {isAllowedToAcceptAnswer && (
           <div className={`${css(styles.action)} accept-btn`}>
             <IconButton
+              overrideStyle={styles.button}
               onClick={() => handleAcceptAnswer({ commentId: comment.id })}
             >
               <FontAwesomeIcon icon={faCommentCheck} style={{ fontSize: 18 }} />
@@ -232,6 +276,7 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
         {isAllowedToAward && (
           <div className={`${css(styles.action)} award-btn`}>
             <IconButton
+              overrideStyle={styles.button}
               onClick={() =>
                 handleAwardBounty({ bounty: openUserOwnedRootBounty })
               }
@@ -242,24 +287,20 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
           </div>
         )}
 
-        <div className={`${css(styles.action)} award-btn`}>
+        <div
+          className={`${css(styles.action)} link-btn`}
+          data-tip={tooltipText}
+          data-for="link-tooltip"
+        >
           <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              createSharableLinkToComment(comment);
-
-              dispatch(setMessage(`Link copied`));
-              // @ts-ignore
-              dispatch(showMessage({ show: true, error: false }));
-            }}
+            overrideStyle={styles.button}
+            onClick={handleCopyLinkToComment}
           >
             <FontAwesomeIcon
-              // fontSize={}
-              // fontWeight={600}
               icon={faLinkSimple}
               style={{ transform: "rotate(-45deg)" }}
             />
-            <span className={css(styles.actionText)}>Share</span>
+            <span className={css(styles.actionText)}>Copy link</span>
           </IconButton>
         </div>
       </div>
@@ -268,6 +309,14 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
 };
 
 const styles = StyleSheet.create({
+  button: {
+    ":hover": {
+      background: colors.actionBtn.hover,
+    },
+  },
+  tooltip: {
+    width: 300,
+  },
   wrapper: {
     display: "flex",
     flexDirection: "column",
