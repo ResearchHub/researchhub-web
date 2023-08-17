@@ -255,7 +255,7 @@ const darkColors = {
   DARKER_GREY117: (opacity = 1) => `rgba(180, 180, 180, ${opacity})`, // Lightened
   DARKER_GREY119: (opacity = 1) => `rgba(170, 170, 170, ${opacity})`, // Lightened
   EDITOR_TAG_BACKGROUND: "rgba(23, 74, 251, 0.1)", // Adjusted
-  EDITOR_TAG_TEXT: "#1722FB", // Adjusted
+  EDITOR_TAG_TEXT: "#FBC70B", // From Figma (Adjusted: #1722FB)
   ERROR_BACKGROUND: (opacity = 1) => `rgba(255, 83, 83, ${opacity})`, // Unchanged
   GREEN: (opacity = 1) => `rgba(155, 59, 207, ${opacity})`, // Adjusted
   GREY_BORDER: "#141414", // Darkened
@@ -287,12 +287,12 @@ const darkColors = {
   MEDIUM_GREY: (opacity = 1) => `rgba(111, 111, 111, ${opacity})`, // Lightened
   MEDIUM_GREY2: (opacity = 1) => `rgba(124, 121, 137, ${opacity})`, // From Figma:#7C7989 (Adjusted: 131,134,118)
   NAVY: (opacity = 1) => `rgba(224, 215, 130, ${opacity})`, // Adjusted
-  NEW_BLUE: (opacity = 1) => `rgba(83, 132, 255, ${opacity})`, // From Figma:#5384FF (Adjusted:98, 142, 0)
-  NEW_GREEN: (opacity = 1) => `rgba(183, 63, 170, ${opacity})`, // Adjusted
+  NEW_BLUE: (opacity = 1) => `rgba(83, 132, 255, ${opacity})`, // From Figma: #5384FF (Adjusted:98, 142, 0)
+  NEW_GREEN: (opacity = 1) => `rgba(91, 199, 104, ${opacity})`, // From Figma: #5BC768 (Adjusted: 183, 63, 170)
   ORANGE_DARK: (opacity = 1) => `rgba(18, 98, 235, ${opacity})`, // Adjusted
   ORANGE_DARK2: (opacity = 1) => `rgba(0, 133, 255, ${opacity})`, // Adjusted
   ORANGE_LIGHT: (opacity = 1) => `rgba(0, 60, 194, ${opacity})`, // Adjusted
-  ORANGE_LIGHT2: (opacity = 1) => `rgba(0, 107, 233, ${opacity})`, // Adjusted
+  ORANGE_LIGHT2: (opacity = 1) => `rgba(255, 158, 48, ${opacity})`, // From Figma: FF9E30 (Adjusted: 0, 107, 233)
   ORANGE: (opacity = 1) => `rgba(15, 79, 255, ${opacity})`, // Adjusted
   PURE_ORANGE: (opacity = 1) => `rgba(180, 92, 0, ${opacity})`, // Adjusted
   PURE_ORANGE2: (opacity = 1) => `rgba(200, 85, 0, ${opacity})`, // Adjusted
@@ -391,7 +391,7 @@ const darkColors = {
   VIVID_RED: (opacity = 1) => `rgba(215, 31, 15, ${opacity})`, // Adjusted
   VIVID_RED2: (opacity = 1) => `rgba(241, 59, 599, ${opacity})`, // Adjusted
   BRIGHT_RED: (opacity = 1) => `rgba(168, 43, 14, ${opacity})`, // Adjusted
-  GREY_LIME_GREEN: (opacity = 1) => `rgba(62, 71, 63, ${opacity})`, // Adjusted
+  GREY_LIME_GREEN: (opacity = 1) => `rgba(21, 21, 21, ${opacity})`, // From Figma: #151515 (Adjusted: 62, 71, 63)
   LIGHT_GRAYISH_LIME_GREEN: (opacity = 1) => `rgba(85, 115, 87, ${opacity})`, // Adjusted
   LIGHT_GRAYISH_CYAN: (opacity = 1) => `rgba(28, 25, 25, ${opacity})`, // Adjusted
   MOSTLY_BLACK_GREY: (opacity = 1) => `rgba(62, 71, 63, ${opacity})`, // Adjusted
@@ -416,7 +416,7 @@ const darkColors = {
   GRAYISH_YELLOW: (opacity = 1) => `rgba(92, 91, 87, ${opacity})`, // Adjusted
   VERY_DARK_GRAYISH_YELLOW: (opacity = 1) => `rgba(200, 198, 192, ${opacity})`, // Adjusted
   DARK_GRAYISH_YELLOW: (opacity = 1) => `rgba(180, 179, 175, ${opacity})`, // Adjusted
-  LIGHT_GRAYISH_YELLOW: (opacity = 1) => `rgba(133, 128, 110, ${opacity})`, // Adjusted
+  LIGHT_GRAYISH_YELLOW: (opacity = 1) => `rgba(26, 26, 26, ${opacity})`, // From Figma: 1A1A1A Adjusted: 133, 128, 110
   LIGHT_GRAYISH_YELLOW2: (opacity = 1) => `rgba(109, 104, 71, ${opacity})`, // Adjusted
   DARK_LIME_GREEN: (opacity = 1) => `rgba(50, 175, 57, ${opacity})`, // Adjusted
   DARK_LIME_GREEN2: (opacity = 1) => `rgba(15, 100, 25, ${opacity})`, // Adjusted
