@@ -33,6 +33,7 @@ import {
 } from "react";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
+import darkTheme from "~/config/themes/dark";
 
 import RHLogo from "~/components/Home/RHLogo";
 import RootLeftSidebarItem, {
@@ -347,7 +348,11 @@ function RootLeftSidebar({
                       alt="ResearchHub Text Logo"
                       className={css(styles.researchHubLogoText)}
                       exit={"minimized"}
-                      src={"/static/ResearchHubText.png"}
+                      src={
+                        colors.id === darkTheme.id
+                          ? "/static/ResearchHubTextDark.svg"
+                          : "/static/ResearchHubText.png"
+                      }
                       transition={{
                         duration: didMount
                           ? ITEM_FADE_DURATION
