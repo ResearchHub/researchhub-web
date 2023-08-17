@@ -266,7 +266,7 @@ const darkColors = {
   ICY_GREY: "rgb(4, 4, 2)", // Darkened
   INPUT_BACKGROUND_GREY: "rgba(5, 5, 5, 1)", // Darkened
   LIGHT_GRAY_BACKGROUND: (opacity = 1) => `rgba(5, 5, 5, ${opacity})`, // Darkened
-  LIGHT_GRAY_BACKGROUND2: (opacity = 1) => `rgba(5, 5, 3, ${opacity})`, // Darkened
+  LIGHT_GRAY_BACKGROUND2: (opacity = 1) => `rgba(17, 17, 17, ${opacity})`, // From Figma: #111111 Darkened: 5, 5, 3
   LIGHT_GRAY_BACKGROUND3: (opacity = 1) => `rgba(30, 30, 33, ${opacity})`, // Darkened
   LIGHT_GRAY_BACKGROUND4: (opacity = 1) => `rgba(28, 28, 28, ${opacity})`, // Darkened
   LIGHT_BLUE: (opacity = 1) => `rgba(18, 17, 1, ${opacity})`, // Darkened
@@ -285,7 +285,7 @@ const darkColors = {
   LIGHTER_GREY_BACKGROUND: "#090909", // Darkened
   LIGHTER_GREY: (opacity = 1) => `rgba(12, 12, 12, ${opacity})`, // Darkened
   MEDIUM_GREY: (opacity = 1) => `rgba(111, 111, 111, ${opacity})`, // Lightened
-  MEDIUM_GREY2: (opacity = 1) => `rgba(131,134,118, ${opacity})`, // Adjusted
+  MEDIUM_GREY2: (opacity = 1) => `rgba(124, 121, 137, ${opacity})`, // From Figma:#7C7989 (Adjusted: 131,134,118)
   NAVY: (opacity = 1) => `rgba(224, 215, 130, ${opacity})`, // Adjusted
   NEW_BLUE: (opacity = 1) => `rgba(83, 132, 255, ${opacity})`, // From Figma:#5384FF (Adjusted:98, 142, 0)
   NEW_GREEN: (opacity = 1) => `rgba(183, 63, 170, ${opacity})`, // Adjusted
@@ -328,7 +328,7 @@ const darkColors = {
   LIGHT_GREY_BLUE3: "rgba(50, 60, 90, 1)", // Adjusted
   PAPER_TAB_BACKGROUND: (opacity = 1) => `rgba(12, 12, 15, ${opacity})`, // Adjusted
   VOTE_WIDGET_BACKGROUND: (opacity = 1) => `rgba(30, 45, 35, ${opacity})`, // Adjusted
-  VOTE_ARRROW: "#D5D3DF", // Adjusted
+  VOTE_ARRROW: "#AAA8B4", // From Figma (Adjusted: #D5D3DF)
   VERY_PALE_BLUE: "#172A3A", // Adjusted
   VERY_PALE_BLUE2: (opacity = 1) => `rgba(51, 59, 77, ${opacity})`, // Adjusted
   VERY_PALE_BLUE3: (opacity = 1) => `rgba(20, 20, 20, ${opacity})`, // From Figma: #141414 (Adjusted:45, 49, 63)
@@ -339,10 +339,10 @@ const darkColors = {
   LIGHT_GRAYISH_BLUE2: (opacity = 1) => `rgba(40, 43, 45, ${opacity})`, // Adjusted
   LIGHT_GRAYISH_BLUE3: (opacity = 1) => `rgba(26, 26, 25, ${opacity})`, // Adjusted
   LIGHT_GRAYISH_BLUE4: (opacity = 1) => `rgba(60, 61, 80, ${opacity})`, // Adjusted
-  LIGHT_GREYISH_BLUE5: (opacity = 1) => `rgba(40, 41, 46, ${opacity})`, // Adjusted
+  LIGHT_GREYISH_BLUE5: (opacity = 1) => `rgba(27, 28, 37, ${opacity})`, // From Figma: #1B1C25 (Adjusted: 40, 41, 46)
   LIGHT_GRAYISH_BLUE6: (opacity = 1) => `rgba(60, 60, 80, ${opacity})`, // Adjusted
   LIGHT_GRAYISH_BLUE7: (opacity = 1) => `rgba(40, 40, 45, ${opacity})`, // Adjusted
-  LIGHT_GRAYISH_BLUE8: (opacity = 1) => `rgba(40, 40, 45, ${opacity})`, // Adjusted
+  LIGHT_GRAYISH_BLUE8: (opacity = 1) => `rgba(21, 21, 21, ${opacity})`, // From Figma: #151515 (Adjusted: 40, 40, 45)
   LIGHT_GRAYISH_BLUE9: (opacity = 1) => `rgba(64, 64, 70, ${opacity})`, // Adjusted
   LIGHT_GRAYISH_BLUE10: (opacity = 1) => `rgba(60, 61, 77, ${opacity})`, // Adjusted
   LIGHT_GRAYISH_BLUE11: (opacity = 1) => `rgba(60, 63, 76, ${opacity})`, // Adjusted
@@ -350,7 +350,7 @@ const darkColors = {
   LIGHT_GRAYISH_BLUE13: (opacity = 1) => `rgba(40, 41, 47, ${opacity})`, // Adjusted
   LIGHT_GRAYISH_BLUE14: (opacity = 1) => `rgba(83, 83, 87, ${opacity})`, // Adjusted
   LIGHT_GREYISH_BLUE15: (opacity = 1) => `rgba(48, 48, 57, ${opacity})`, // Adjusted
-  LIGHT_GREYISH_BLUE16: (opacity = 1) => `rgba(58, 58, 66, ${opacity})`, // Adjusted
+  LIGHT_GREYISH_BLUE16: (opacity = 1) => `rgba(36, 36, 48, ${opacity})`, // From Figma:#242430 (Adjusted: 58, 58, 66)
   LIGHT_GREYISH_BLUE17: (opacity = 1) => `rgba(27, 27, 38, ${opacity})`, // Adjusted
   GREYISH_BLUE: (opacity = 1) => `rgba(80, 80, 82, ${opacity})`, // Adjusted
   GREYISH_BLUE2: (opacity = 1) => `rgba(190, 187, 205, ${opacity})`, // Adjusted
