@@ -418,7 +418,7 @@ export default function ReferencesTable({
                         </>
                       )}
 
-                      <ReferenceItemOptsDropdown refId={typedRefDataRow.id} />
+                      {/* <ReferenceItemOptsDropdown refId={typedRefDataRow.id} /> */}
                     </Stack>
                   </div>
                 );

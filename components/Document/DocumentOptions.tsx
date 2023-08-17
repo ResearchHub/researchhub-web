@@ -10,7 +10,10 @@ import { parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
 import { isEmpty } from "~/config/utils/nullchecks";
 import IconButton from "../Icons/IconButton";
-import { faEllipsis } from "@fortawesome/pro-regular-svg-icons";
+import {
+  faEllipsis,
+  faArrowDownToBracket,
+} from "@fortawesome/pro-regular-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { useContext } from "react";
@@ -19,6 +22,21 @@ import useCacheControl from "~/config/hooks/useCacheControl";
 
 interface Props {
   document: GenericDocument;
+}
+
+function downloadPDF(pdfUrl) {
+  // Create a link for our script to click
+  const link = document.createElement("a");
+  link.href = pdfUrl;
+  link.target = "_blank";
+  link.download = "download.pdf";
+
+  // Trigger the click
+  document.body.appendChild(link);
+  link.click();
+
+  // Cleanup
+  document.body.removeChild(link);
 }
 
 const DocumentOptions = ({ document: doc }: Props) => {
@@ -70,6 +88,21 @@ const DocumentOptions = ({ document: doc }: Props) => {
           },
         ]
       : []),
+
+    ...(isPaper(doc)
+      ? [
+          {
+            label: "Download",
+            group: "Document",
+            icon: <FontAwesomeIcon icon={faArrowDownToBracket} />,
+            value: "download",
+            onClick: () => {
+              const pdfUrl = doc.formats.find((f) => f.type === "pdf")?.url;
+              downloadPDF(pdfUrl);
+            },
+          },
+        ]
+      : []),
     {
       value: "flag",
       group: "Document",
@@ -105,6 +138,7 @@ const DocumentOptions = ({ document: doc }: Props) => {
         options={options}
         width={200}
         id="header-more-options"
+        direction="bottom-right"
       >
         <IconButton overrideStyle={styles.btnDots}>
           <FontAwesomeIcon icon={faEllipsis} />
