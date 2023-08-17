@@ -22,6 +22,10 @@ export const voteForDocument = async ({
 
     return parseVote(response);
   } catch (error: any) {
+    if (error.response.status === 429) {
+      throw null;
+    }
+
     if (error.response.status === 401 || error.response.status === 403) {
       throw "Cannot vote on own's post";
     } else {

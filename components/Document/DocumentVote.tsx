@@ -84,11 +84,12 @@ const DocumentVote = ({
           });
           handleVoteSuccess({ newUserVote: userVote });
         } catch (error) {
-          console.log(error);
           // @ts-ignore
-          dispatch(setMessage(error));
-          // @ts-ignore
-          dispatch(showMessage({ show: true, error: true }));
+          if (error) {
+            dispatch(setMessage(error));
+            // @ts-ignore
+            dispatch(showMessage({ show: true, error: true }));
+          }
         }
       }}
       // @ts-ignore
@@ -102,9 +103,11 @@ const DocumentVote = ({
           handleVoteSuccess({ newUserVote: userVote });
         } catch (error) {
           // @ts-ignore
-          dispatch(setMessage(error));
-          // @ts-ignore
-          dispatch(showMessage({ show: true, error: true }));
+          if (error) {
+            dispatch(setMessage(error));
+            // @ts-ignore
+            dispatch(showMessage({ show: true, error: true }));
+          }
         }
       }}
       onDownvote={async () => {
@@ -117,9 +120,11 @@ const DocumentVote = ({
           handleVoteSuccess({ newUserVote: userVote });
         } catch (error) {
           // @ts-ignore
-          dispatch(setMessage(error));
-          // @ts-ignore
-          dispatch(showMessage({ show: true, error: true }));
+          if (error) {
+            dispatch(setMessage(error));
+            // @ts-ignore
+            dispatch(showMessage({ show: true, error: true }));
+          }
         }
       }}
       selected={userVote ? userVote.voteType : null}

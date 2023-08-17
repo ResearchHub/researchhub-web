@@ -81,10 +81,12 @@ const CommentVote = ({
           });
           handleVoteSuccess({ userVote });
         } catch (error) {
-          // @ts-ignore
-          dispatch(setMessage(error));
-          // @ts-ignore
-          dispatch(showMessage({ show: true, error: true }));
+          if (error) {
+            // @ts-ignore
+            dispatch(setMessage(error));
+            // @ts-ignore
+            dispatch(showMessage({ show: true, error: true }));
+          }
         }
       }}
       // @ts-ignore
@@ -99,10 +101,12 @@ const CommentVote = ({
           });
           handleVoteSuccess({ userVote });
         } catch (error) {
-          // @ts-ignore
-          dispatch(setMessage(error));
-          // @ts-ignore
-          dispatch(showMessage({ show: true, error: true }));
+          if (error) {
+            // @ts-ignore
+            dispatch(setMessage(error));
+            // @ts-ignore
+            dispatch(showMessage({ show: true, error: true }));
+          }
         }
       }}
       onDownvote={async (e) => {
@@ -116,10 +120,12 @@ const CommentVote = ({
           });
           handleVoteSuccess({ userVote });
         } catch (error) {
-          // @ts-ignore
-          dispatch(setMessage(error));
-          // @ts-ignore
-          dispatch(showMessage({ show: true, error: true }));
+          if (error) {
+            // @ts-ignore
+            dispatch(setMessage(error));
+            // @ts-ignore
+            dispatch(showMessage({ show: true, error: true }));
+          }
         }
       }}
       selected={_userVote ? _userVote.voteType : null}

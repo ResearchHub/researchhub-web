@@ -285,6 +285,9 @@ export const voteForComment = async ({
     return parseVote(response);
   } catch (error: any) {
     const isExpectedError = error.response.status < 500;
+    if (error.response.status === 429) {
+      throw null;
+    }
     if (isExpectedError) {
       throw error;
     } else {
