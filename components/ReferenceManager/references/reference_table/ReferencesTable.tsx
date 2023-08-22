@@ -308,7 +308,9 @@ export default function ReferencesTable({
           autoHeight
           checkboxSelection
           rowReordering
-          // disableRowSelectionOnClick
+          isRowSelectable={(params) =>
+            String(params.id).includes("parent") ? false : true
+          }
           columns={columnsFormat}
           sx={DATA_GRID_STYLE_OVERRIDE}
           rows={formattedReferenceRows}
@@ -368,12 +370,16 @@ export default function ReferencesTable({
               const { row: refDataRow } = row;
               const typedRefDataRow = refDataRow as ReferenceTableRowDataType;
 
-              let folderRow = false;
+              let rowType: "FOLDER" | "BACK-TO-PARENT" | "REFERENCE" =
+                "REFERENCE";
               const idAsString = typedRefDataRow!.id!.toString();
 
-              if (idAsString.includes("folder")) {
-                folderRow = true;
+              if (idAsString.includes("parent")) {
+                rowType = "BACK-TO-PARENT";
+              } else if (idAsString.includes("folder")) {
+                rowType = "FOLDER";
               }
+
               if (row.row.id === rowHovered) {
                 const hoveredRow = referenceTableRowData.find(
                   (item) => item.id === row?.row?.id
@@ -383,9 +389,8 @@ export default function ReferencesTable({
                   <div style={{ marginRight: 10 }}>
                     {/* Replace with your actual action buttons */}
                     <Stack direction="row" spacing={0}>
-                      {folderRow ? (
-                        <></>
-                      ) : (
+                      {rowType === "FOLDER" && <></>}
+                      {rowType === "REFERENCE" && hoveredRow && (
                         <>
                           {hoveredRow.attachment && (
                             <Tooltip title="Open" placement="top">
@@ -438,21 +443,25 @@ export default function ReferencesTable({
               return (
                 <GridRow
                   {...row}
+                  selectable={false}
                   draggable={true}
                   style={{
                     background:
                       rowDraggedOver === row.row.id && colors.NEW_BLUE(1),
                     color: rowDraggedOver === row.row.id && "#fff",
                   }}
-                  onDragEnter={() => folderRow && setRowDraggedOver(row.row.id)}
-                  onDragLeave={() => folderRow && setRowDraggedOver(null)}
+                  onDragEnter={() =>
+                    rowType === "FOLDER" && setRowDraggedOver(row.row.id)
+                  }
+                  onDragLeave={() =>
+                    rowType === "FOLDER" && setRowDraggedOver(null)
+                  }
                   onDrag={() => {
                     setDragStarted(true);
                     setRowDragged(row.row.id);
                   }}
-                  onDrop={() => folderRow && rowDropped(row.row)}
+                  onDrop={() => rowType === "FOLDER" && rowDropped(row.row)}
                   onMouseEnter={() => {
-                    console.log("row hovered", row.row.id);
                     setRowHovered(row.row.id);
                   }}
                   onMouseLeave={() => setRowHovered(null)}
