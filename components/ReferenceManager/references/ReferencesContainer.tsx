@@ -272,15 +272,9 @@ function ReferencesContainer({
 
   const handleRowSelection = (ids: (string | number)[]) => {
     setSelectedRows(ids);
-    // const _folderIds = refIds.filter((refId) => refId.includes("folder"));
-    // const _referenceIds = refIds.filter((refId) => !refId.includes("folder"));
-
-    // setSelectedFolderIds(_folderIds);
-    // setSelectedReferenceIDs(_referenceIds);
   };
 
   const handleClearSelection = () => {
-    console.log("handleClearSelection");
     setSelectedRows([]);
   };
 

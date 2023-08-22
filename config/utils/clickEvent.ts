@@ -55,10 +55,6 @@ export function useEffectHandleClick({
       const _el = (ref && ref.current) || el;
       if (!_el) return;
 
-      console.log("_el", _el);
-      console.log("e.target", e.target);
-      console.log("e.target", e.target.isConnected);
-
       const _isInsideClick = _el?.contains(e.target) && e.target.isConnected;
       if (_isOutsideClick) {
         onOutsideClick && onOutsideClick();

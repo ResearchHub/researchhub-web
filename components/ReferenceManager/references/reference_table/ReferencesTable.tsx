@@ -45,6 +45,7 @@ import Stack from "@mui/material/Stack";
 import OpenWithOutlinedIcon from "@mui/icons-material/OpenWithOutlined";
 import ReferenceItemOptsDropdown from "../reference_item/ReferenceItemOptsDropdown";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
+import { faFolderOpen } from "@fortawesome/pro-solid-svg-icons";
 
 type Props = {
   createdReferences: any[];
@@ -202,6 +203,24 @@ export default function ReferencesTable({
     }
   };
 
+  const openFolder = ({ row, event }) => {
+    let url = `/reference-manager/${
+      router.query.organization
+    }/${router.query!.slug!.join("/")}/${row.title}`;
+
+    if (row.id.includes("parent")) {
+      url = `/reference-manager/${router.query.organization}/${router.query.slug
+        ?.slice(0, router.query.slug.length - 2)
+        .join("/")}/${row.title}`;
+    }
+
+    if (event && event.metaKey) {
+      window.open(url, "_blank");
+    } else {
+      router.push(url);
+    }
+  };
+
   const {
     activeProject,
     setActiveProject,
@@ -289,6 +308,7 @@ export default function ReferencesTable({
           autoHeight
           checkboxSelection
           rowReordering
+          // disableRowSelectionOnClick
           columns={columnsFormat}
           sx={DATA_GRID_STYLE_OVERRIDE}
           rows={formattedReferenceRows}
@@ -321,57 +341,28 @@ export default function ReferencesTable({
             },
           }}
           onCellDoubleClick={(params, event, _details): void => {
-            const projectIdAsString = params.id.toString();
-            if (projectIdAsString.includes("folder")) {
-              return;
+            const rowId = params.id.toString();
+            if (rowId.includes("folder")) {
+              openFolder({ row: params.row, event });
+            } else {
+              event.stopPropagation();
+              setReferenceItemDatum({
+                ...nullthrows(
+                  referenceTableRowData.find(
+                    (item) => item.id === params?.row?.id
+                  )
+                ),
+              });
+
+              setIsViewerOpen(true);
             }
-
-            event.stopPropagation();
-            setReferenceItemDatum({
-              ...nullthrows(
-                referenceTableRowData.find(
-                  (item) => item.id === params?.row?.id
-                )
-              ),
-            });
-
-            setIsViewerOpen(true);
           }}
           rowSelectionModel={rowSelectionModel}
           onRowSelectionModelChange={(ids) => {
-            console.log("yoooo", ids);
-            //   console.log('row selected', ids)
-            handleRowSelection(ids);
+            setTimeout(() => {
+              handleRowSelection(ids);
+            }, 150);
           }}
-          onRowClick={(params, event, _details): void => {
-            console.log("row clicked", params.id);
-            // handleRowSelection([params.id]);
-          }}
-          // onCellClick={(params, event, _details): void => {
-          //   const projectIdAsString = params.id.toString();
-
-          //   if (projectIdAsString.includes("folder")) {
-          //     const projectId = projectIdAsString.split("-folder")[0];
-
-          //     let url = `/reference-manager/${
-          //       router.query.organization
-          //     }/${router.query.slug.join("/")}/${params.row.title}`;
-
-          //     if (projectIdAsString.includes("parent")) {
-          //       url = `/reference-manager/${
-          //         router.query.organization
-          //       }/${router.query.slug
-          //         ?.slice(0, router.query.slug.length - 2)
-          //         .join("/")}/${params.row.title}`;
-          //     }
-
-          //     if (event.metaKey) {
-          //       window.open(url, "_blank");
-          //     } else {
-          //       router.push(url);
-          //     }
-          //   }
-          // }}
           slots={{
             row: (row) => {
               const { row: refDataRow } = row;
@@ -388,15 +379,13 @@ export default function ReferencesTable({
                   (item) => item.id === row?.row?.id
                 );
 
-                if (!hoveredRow) {
-                  return false;
-                }
-
                 typedRefDataRow.actions = (
                   <div style={{ marginRight: 10 }}>
                     {/* Replace with your actual action buttons */}
                     <Stack direction="row" spacing={0}>
-                      {!folderRow && (
+                      {folderRow ? (
+                        <></>
+                      ) : (
                         <>
                           {hoveredRow.attachment && (
                             <Tooltip title="Open" placement="top">
@@ -462,7 +451,10 @@ export default function ReferencesTable({
                     setRowDragged(row.row.id);
                   }}
                   onDrop={() => folderRow && rowDropped(row.row)}
-                  onMouseEnter={() => setRowHovered(row.row.id)}
+                  onMouseEnter={() => {
+                    console.log("row hovered", row.row.id);
+                    setRowHovered(row.row.id);
+                  }}
                   onMouseLeave={() => setRowHovered(null)}
                 />
               );
