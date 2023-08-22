@@ -343,6 +343,8 @@ export default function ReferencesTable({
             },
           }}
           onCellDoubleClick={(params, event, _details): void => {
+            if (params.row.is_loading) return;
+
             const rowId = params.id.toString();
             if (rowId.includes("folder")) {
               openFolder({ row: params.row, event });
@@ -361,6 +363,7 @@ export default function ReferencesTable({
           }}
           rowSelectionModel={rowSelectionModel}
           onRowSelectionModelChange={(ids) => {
+            // Without timeout, double click will not be reached since the state update will interrupt it.
             setTimeout(() => {
               handleRowSelection(ids);
             }, 150);
@@ -380,7 +383,7 @@ export default function ReferencesTable({
                 rowType = "FOLDER";
               }
 
-              if (row.row.id === rowHovered) {
+              if (row.row.id === rowHovered && !row.row.is_loading) {
                 const hoveredRow = referenceTableRowData.find(
                   (item) => item.id === row?.row?.id
                 );
@@ -443,7 +446,6 @@ export default function ReferencesTable({
               return (
                 <GridRow
                   {...row}
-                  selectable={false}
                   draggable={true}
                   style={{
                     background:
