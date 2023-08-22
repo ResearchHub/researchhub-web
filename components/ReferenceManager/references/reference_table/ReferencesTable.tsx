@@ -1,5 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   DataGrid,
   GridCell,
@@ -44,12 +44,14 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Stack from "@mui/material/Stack";
 import OpenWithOutlinedIcon from "@mui/icons-material/OpenWithOutlined";
 import ReferenceItemOptsDropdown from "../reference_item/ReferenceItemOptsDropdown";
+import { useEffectHandleClick } from "~/config/utils/clickEvent";
 
 type Props = {
   createdReferences: any[];
+  rowSelectionModel: (string | number)[];
   handleFileDrop: (files: any[]) => void;
-  setSelectedReferenceIDs: (refs: any[]) => void;
-  setSelectedFolderIds: (refs: any[]) => void;
+  handleRowSelection: (ref: any) => void;
+  handleClearSelection: () => void;
   loading?: boolean | undefined;
 };
 
@@ -99,8 +101,9 @@ function useEffectFetchReferenceCitations({
 export default function ReferencesTable({
   createdReferences,
   handleFileDrop,
-  setSelectedReferenceIDs,
-  setSelectedFolderIds,
+  rowSelectionModel,
+  handleRowSelection,
+  handleClearSelection,
   loading,
 }: Props) {
   const {
@@ -118,9 +121,18 @@ export default function ReferencesTable({
   const [rowDragged, setRowDragged] = useState();
   const [rowHovered, setRowHovered] = useState<null | ID>(null);
   const { currentOrg } = useOrgs();
+  const tableRef = useRef(null);
 
   const router = useRouter();
   const apiRef = useGridApiRef();
+
+  useEffectHandleClick({
+    ref: tableRef,
+    onOutsideClick: () => {
+      console.log("here");
+      handleClearSelection();
+    },
+  });
 
   useEffect(() => {
     if (loading !== undefined) {
@@ -275,12 +287,14 @@ export default function ReferencesTable({
         <DataGrid
           apiRef={apiRef}
           autoHeight
-          // disableRowSelectionOnClick
           checkboxSelection
+          rowReordering
           columns={columnsFormat}
           sx={DATA_GRID_STYLE_OVERRIDE}
           rows={formattedReferenceRows}
+          loading={isLoading || isFetchingProjects}
           hideFooter
+          ref={tableRef}
           className={
             formattedReferenceRows.length === 0 ? "empty-data-grid" : ""
           }
@@ -306,7 +320,6 @@ export default function ReferencesTable({
               },
             },
           }}
-          loading={isLoading || isFetchingProjects}
           onCellDoubleClick={(params, event, _details): void => {
             const projectIdAsString = params.id.toString();
             if (projectIdAsString.includes("folder")) {
@@ -324,46 +337,41 @@ export default function ReferencesTable({
 
             setIsViewerOpen(true);
           }}
-          rowReordering
-          onCellClick={(params, event, _details): void => {
-            const projectIdAsString = params.id.toString();
-
-            if (projectIdAsString.includes("folder")) {
-              const projectId = projectIdAsString.split("-folder")[0];
-
-              let url = `/reference-manager/${
-                router.query.organization
-              }/${router.query.slug.join("/")}/${params.row.title}`;
-
-              if (projectIdAsString.includes("parent")) {
-                url = `/reference-manager/${
-                  router.query.organization
-                }/${router.query.slug
-                  ?.slice(0, router.query.slug.length - 2)
-                  .join("/")}/${params.row.title}`;
-              }
-
-              if (event.metaKey) {
-                window.open(url, "_blank");
-              } else {
-                router.push(url);
-              }
-            }
+          rowSelectionModel={rowSelectionModel}
+          onRowSelectionModelChange={(ids) => {
+            console.log("yoooo", ids);
+            //   console.log('row selected', ids)
+            handleRowSelection(ids);
           }}
-          onRowSelectionModelChange={(selectedReferenceIDs) => {
-            const folderIds: GridRowId[] = [];
-            const referenceIds: GridRowId[] = [];
-            selectedReferenceIDs.forEach((referenceId) => {
-              const projectIdString = referenceId.toString();
-              if (projectIdString.includes("folder")) {
-                folderIds.push(referenceId);
-              } else {
-                referenceIds.push(referenceId);
-              }
-            });
-            setSelectedFolderIds(folderIds);
-            setSelectedReferenceIDs(referenceIds);
+          onRowClick={(params, event, _details): void => {
+            console.log("row clicked", params.id);
+            // handleRowSelection([params.id]);
           }}
+          // onCellClick={(params, event, _details): void => {
+          //   const projectIdAsString = params.id.toString();
+
+          //   if (projectIdAsString.includes("folder")) {
+          //     const projectId = projectIdAsString.split("-folder")[0];
+
+          //     let url = `/reference-manager/${
+          //       router.query.organization
+          //     }/${router.query.slug.join("/")}/${params.row.title}`;
+
+          //     if (projectIdAsString.includes("parent")) {
+          //       url = `/reference-manager/${
+          //         router.query.organization
+          //       }/${router.query.slug
+          //         ?.slice(0, router.query.slug.length - 2)
+          //         .join("/")}/${params.row.title}`;
+          //     }
+
+          //     if (event.metaKey) {
+          //       window.open(url, "_blank");
+          //     } else {
+          //       router.push(url);
+          //     }
+          //   }
+          // }}
           slots={{
             row: (row) => {
               const { row: refDataRow } = row;
@@ -485,7 +493,7 @@ export default function ReferencesTable({
                       whiteSpace: "nowrap",
                     }}
                   >
-                    <GridCell {...cell} onClick={(e) => e.stopPropagation()} />
+                    <GridCell {...cell} />
                   </div>
                 );
               }

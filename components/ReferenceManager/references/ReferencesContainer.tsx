@@ -105,8 +105,13 @@ function ReferencesContainer({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [isOrgModalOpen, setIsOrgModalOpen] = useState<boolean>(false);
+  // TODO: Deprecate
   const [selectedFolderIds, setSelectedFolderIds] = useState<any[]>([]);
-  const [selectedReferenceIDs, setSelectedReferenceIDs] = useState<any[]>([]);
+  // TODO: Deprecate
+  const [selectedReferenceIDs, setSelectedReferenceIDs] = useState<
+    (string | number)[]
+  >([]);
+  const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isRemoveRefModalOpen, setIsRemoveRefModalOpen] =
@@ -263,6 +268,20 @@ function ReferencesContainer({
     }
 
     return `Are you sure you want to remove the selected items?`;
+  };
+
+  const handleRowSelection = (ids: (string | number)[]) => {
+    setSelectedRows(ids);
+    // const _folderIds = refIds.filter((refId) => refId.includes("folder"));
+    // const _referenceIds = refIds.filter((refId) => !refId.includes("folder"));
+
+    // setSelectedFolderIds(_folderIds);
+    // setSelectedReferenceIDs(_referenceIds);
+  };
+
+  const handleClearSelection = () => {
+    console.log("handleClearSelection");
+    setSelectedRows([]);
   };
 
   if (!userAllowed) {
@@ -617,9 +636,10 @@ function ReferencesContainer({
               </Box>
               <ReferencesTable
                 createdReferences={createdReferences}
+                rowSelectionModel={selectedRows}
                 handleFileDrop={onFileDrop}
-                setSelectedReferenceIDs={setSelectedReferenceIDs}
-                setSelectedFolderIds={setSelectedFolderIds}
+                handleClearSelection={handleClearSelection}
+                handleRowSelection={handleRowSelection}
                 loading={referencesSearchLoading}
               />
             </Box>

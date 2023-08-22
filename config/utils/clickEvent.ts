@@ -33,7 +33,7 @@ export function isOutsideClick({
     false
   );
 
-  return !(isWithin || clickOnExcluded);
+  return clickedEl.isConnected && !(isWithin || clickOnExcluded);
 }
 
 export function useEffectHandleClick({
@@ -55,7 +55,11 @@ export function useEffectHandleClick({
       const _el = (ref && ref.current) || el;
       if (!_el) return;
 
-      const _isInsideClick = _el?.contains(e.target);
+      console.log("_el", _el);
+      console.log("e.target", e.target);
+      console.log("e.target", e.target.isConnected);
+
+      const _isInsideClick = _el?.contains(e.target) && e.target.isConnected;
       if (_isOutsideClick) {
         onOutsideClick && onOutsideClick();
       } else if (_isInsideClick) {
