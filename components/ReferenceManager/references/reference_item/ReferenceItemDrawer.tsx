@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { ClipLoader } from "react-spinners";
 import { convertHttpToHttps } from "~/config/utils/routing";
 import {
@@ -18,7 +18,6 @@ import {
   sortSchemaFieldKeys,
 } from "../utils/resolveFieldKeyLabels";
 import { snakeCaseToNormalCase, toTitleCase } from "~/config/utils/string";
-import { Typography } from "@mui/material";
 import { updateReferenceCitation } from "../api/updateReferenceCitation";
 import { useReferenceTabContext } from "./context/ReferenceItemDrawerContext";
 import Box from "@mui/material/Box";
@@ -99,10 +98,11 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
   const tabInputItems = filterNull(
     sortSchemaFieldKeys(Object.keys(localReferenceFields)).map(
       (field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
-        let label = resolveFieldKeyLabels(field_key),
+        const label = resolveFieldKeyLabels(field_key),
           value = localReferenceFields[field_key],
           isRequired = false;
         // isRequired = requiredFieldsSet.has(field_key);
+
         if (field_key === "raw_oa_json") {
           return null;
         }

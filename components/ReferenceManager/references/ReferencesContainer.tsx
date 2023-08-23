@@ -1,14 +1,15 @@
-import { Box, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import {
   DEFAULT_PROJECT_VALUES,
   useReferenceProjectUpsertContext,
 } from "./reference_organizer/context/ReferenceProjectsUpsertContext";
 import {
-  faArrowUpFromBracket,
   faFolderPlus,
   faMagnifyingGlass,
   faPlus,
-  faTrashXmark,
+  faFileExport,
+  faXmark,
+  faTrash,
 } from "@fortawesome/pro-light-svg-icons";
 import {
   Fragment,
@@ -16,8 +17,6 @@ import {
   ReactNode,
   useEffect,
   useRef,
-  MutableRefObject,
-  LegacyRef,
   SyntheticEvent,
 } from "react";
 import { connect } from "react-redux";
@@ -46,7 +45,6 @@ import { useReferenceActiveProjectContext } from "./reference_organizer/context/
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
-import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import DropdownMenu from "../menu/DropdownMenu";
 import DroppableZone from "~/components/DroppableZone";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
@@ -61,10 +59,10 @@ import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibl
 import ReferencesTable, { PreloadRow } from "./reference_table/ReferencesTable";
 import withWebSocket from "~/components/withWebSocket";
 import FormInput from "~/components/Form/FormInput";
-import FontawesomeCodeMod from "~/fontawesomeCodeMod";
 import api, { generateApiUrl } from "~/config/api";
 import { fetchCurrentUserReferenceCitations } from "./api/fetchCurrentUserReferenceCitations";
 import { useReferencesTableContext } from "./reference_table/context/ReferencesTableContext";
+import { GridRowId } from "@mui/x-data-grid";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -105,13 +103,7 @@ function ReferencesContainer({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [isOrgModalOpen, setIsOrgModalOpen] = useState<boolean>(false);
-  // TODO: Deprecate
-  const [selectedFolderIds, setSelectedFolderIds] = useState<any[]>([]);
-  // TODO: Deprecate
-  const [selectedReferenceIDs, setSelectedReferenceIDs] = useState<
-    (string | number)[]
-  >([]);
-  const [selectedRows, setSelectedRows] = useState<any[]>([]);
+  const [selectedRows, setSelectedRows] = useState<GridRowId[]>([]);
   const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isRemoveRefModalOpen, setIsRemoveRefModalOpen] =
@@ -165,7 +157,7 @@ function ReferencesContainer({
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     ReactTooltip.rebuild();
-  }, [selectedReferenceIDs]);
+  }, [selectedRows]);
 
   const { setReferenceTableRowData } = useReferencesTableContext();
 
@@ -197,7 +189,6 @@ function ReferencesContainer({
         onSuccess: (result) => {
           const citations = result;
           setReferenceTableRowData(citations);
-
           setReferencesSearchLoading(false);
         },
       });
@@ -254,28 +245,44 @@ function ReferencesContainer({
     }
   }, [wsResponse]);
 
-  const refRemoveModalText = () => {
-    if (!selectedFolderIds.length) {
-      return `Are you sure you want to remove the selected reference${
-        selectedReferenceIDs.length > 1 ? "s" : ""
-      }?`;
-    }
-
-    if (!selectedReferenceIDs.length) {
-      return `Are you sure you want to remove the selected folders${
-        selectedFolderIds.length > 1 ? "s" : ""
-      }?`;
-    }
-
-    return `Are you sure you want to remove the selected items?`;
-  };
-
   const handleRowSelection = (ids: (string | number)[]) => {
     setSelectedRows(ids);
   };
 
   const handleClearSelection = () => {
     setSelectedRows([]);
+  };
+
+  const handleRemove = () => {
+    const folderIds = selectedRows.filter((id) =>
+      String(id).includes("folder")
+    );
+    const referenceIds = selectedRows.filter(
+      (id) => !String(id).includes("folder")
+    );
+
+    removeReferenceCitations({
+      onError: emptyFncWithMsg,
+      onSuccess: (): void => {
+        setReferencesFetchTime(Date.now());
+        setIsRemoveRefModalOpen(false);
+      },
+      payload: {
+        citation_entry_ids: referenceIds,
+      },
+    });
+
+    folderIds.forEach((projectId) => {
+      const intId = parseInt(projectId.split("-folder")[0], 10);
+      removeReferenceProject({
+        projectID: intId,
+        onSuccess: () => {
+          resetProjectsFetchTime();
+          setIsRemoveRefModalOpen(false);
+        },
+        onError: emptyFncWithMsg,
+      });
+    });
   };
 
   if (!userAllowed) {
@@ -346,36 +353,15 @@ function ReferencesContainer({
                 }}
               >
                 <Typography id="modal-modal-title" variant="h6">
-                  {refRemoveModalText()}
+                  {`Remove ${selectedRows.length} selected item${
+                    selectedRows.length > 1 ? "s" : ""
+                  }`}
                 </Typography>
               </Box>
             </Box>
           }
           modalWidth="300px"
-          onPrimaryButtonClick={(): void => {
-            removeReferenceCitations({
-              onError: emptyFncWithMsg,
-              onSuccess: (): void => {
-                setReferencesFetchTime(Date.now());
-                setIsRemoveRefModalOpen(false);
-              },
-              payload: {
-                citation_entry_ids: selectedReferenceIDs,
-              },
-            });
-
-            selectedFolderIds.forEach((projectId) => {
-              const intId = parseInt(projectId.split("-folder")[0], 10);
-              removeReferenceProject({
-                projectID: intId,
-                onSuccess: () => {
-                  resetProjectsFetchTime();
-                  setIsRemoveRefModalOpen(false);
-                },
-                onError: emptyFncWithMsg,
-              });
-            });
-          }}
+          onPrimaryButtonClick={handleRemove}
           onSecondaryButtonClick={(): void => setIsRemoveRefModalOpen(false)}
           onClose={(): void => setIsRemoveRefModalOpen(false)}
           primaryButtonConfig={{ label: "Remove" }}
@@ -383,7 +369,7 @@ function ReferencesContainer({
         <ReferencesBibliographyModal
           isOpen={isBibModalOpen}
           onClose={(): void => setIsBibModalOpen(false)}
-          selectedReferenceIDs={selectedReferenceIDs}
+          selectedReferenceIDs={selectedRows}
         />
         <ReferenceManualUploadDrawer key="root-nav" />
         <ReferenceItemDrawer />
@@ -447,17 +433,6 @@ function ReferencesContainer({
                         </div>
                       );
                     })}
-                    <DeleteForeverOutlinedIcon
-                      sx={{
-                        marginLeft: "8px",
-                        cursor: "pointer",
-                        color: colors.GREY(),
-                      }}
-                      onClick={(): void => {
-                        setIsDeleteModalOpen(true);
-                      }}
-                      fontSize="small"
-                    />
                   </Box>
                 ) : isOnOrgTab ? (
                   "Organization References"
@@ -515,120 +490,122 @@ function ReferencesContainer({
                 )}
               </div>
             </div>
-            <Box className="ReferencesContainerMain">
-              <Box
-                className="ReferencesContainerTitleSection"
-                sx={{
-                  alignItems: "center",
-                  display: "flex",
-                  flexDirection: "row",
-                  height: 44,
-                  marginBottom: "20px",
-                  width: "100%",
-                }}
-              >
-                <DropdownMenu
-                  menuItemProps={[
-                    {
-                      itemLabel: "DOI or URL",
-                      onClick: (): void => {
-                        setProjectIDForUploadDrawer(
-                          activeProject?.projectID ?? null
-                        );
-                        setIsRefUploadDrawerOpen(true);
-                      },
-                    },
-                    {
-                      itemLabel: "Upload PDF(s)",
-                      onClick: (): void =>
-                        // @ts-ignore unnecessary never handling
-                        nullthrows(inputRef?.current).click(),
-                    },
-                  ]}
-                  menuLabel={
-                    <div className={css(styles.button)}>
-                      <FontAwesomeIcon
-                        icon={faPlus}
-                        color="#fff"
-                        fontSize="20px"
-                        style={{ marginRight: 8 }}
-                      />
-                      {"Add a reference"}
-                    </div>
-                  }
-                  size={"small"}
-                />
 
-                <div
-                  className={css(styles.button, styles.secondary)}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setProjectUpsertPurpose("create_sub_project");
-                    setProjectUpsertValue({
-                      ...DEFAULT_PROJECT_VALUES,
-                      projectID: activeProject?.projectID,
-                    });
-                    setIsProjectUpsertModalOpen(true);
+            <Box className="ReferencesContainerMain">
+              <Box className="ReferencesContainerTitleSection">
+                <Box
+                  sx={{
+                    alignItems: "center",
+                    display: "flex",
+                    flexDirection: "row",
+                    height: 44,
+                    marginBottom: "20px",
+                    width: "100%",
                   }}
                 >
-                  <FontAwesomeIcon
-                    icon={faFolderPlus}
-                    color={colors.NEW_BLUE(1)}
-                    fontSize="20px"
-                    style={{ marginRight: 8 }}
+                  <DropdownMenu
+                    menuItemProps={[
+                      {
+                        itemLabel: "DOI or URL",
+                        onClick: (): void => {
+                          setProjectIDForUploadDrawer(
+                            activeProject?.projectID ?? null
+                          );
+                          setIsRefUploadDrawerOpen(true);
+                        },
+                      },
+                      {
+                        itemLabel: "Upload PDF(s)",
+                        onClick: (): void =>
+                          // @ts-ignore unnecessary never handling
+                          nullthrows(inputRef?.current).click(),
+                      },
+                    ]}
+                    menuLabel={
+                      <div className={css(styles.button)}>
+                        <FontAwesomeIcon
+                          icon={faPlus}
+                          color="#fff"
+                          fontSize="20px"
+                          style={{ marginRight: 8 }}
+                        />
+                        {"Add a reference"}
+                      </div>
+                    }
+                    size={"small"}
                   />
-                  {isOnOrgTab || isOnMyRefs
-                    ? "Create a folder"
-                    : "Create a sub-folder"}
-                </div>
-                {(!isEmpty(selectedReferenceIDs) ||
-                  !isEmpty(selectedFolderIds)) && (
-                  <>
-                    <div
-                      className={css(styles.trashContainer)}
-                      data-for="button-tooltips"
-                      data-tip={`Remove ${
-                        selectedFolderIds.length
-                          ? "Items"
-                          : pluralize({
-                              text: "Reference",
-                              length: selectedReferenceIDs.length,
-                            })
-                      }`}
-                      onClick={() => setIsRemoveRefModalOpen(true)}
-                    >
-                      <FontAwesomeIcon
-                        icon={faTrashXmark}
-                        style={{ fontSize: 18 }}
-                      />
-                    </div>
-                    <div
-                      className={css(styles.trashContainer)}
-                      onClick={() => setIsBibModalOpen(true)}
-                      data-tip={`Export Reference${
-                        selectedReferenceIDs.length > 1 ? "s" : ""
-                      }`}
-                      data-for="button-tooltips"
-                    >
-                      <FontAwesomeIcon
-                        icon={faArrowUpFromBracket}
-                        style={{ fontSize: 18 }}
-                      />
-                    </div>
-                  </>
-                )}
-                <FormInput
-                  placeholder={"Search for a reference"}
-                  containerStyle={styles.formInputContainer}
-                  inputStyle={styles.inputStyle}
-                  icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
-                  iconStyles={styles.searchIcon}
-                  onSearchClick={onSearchClick}
-                  onKeyDown={onEnterClicked}
-                  onChange={(id, value) => setSearchQuery(value)}
-                />
+
+                  <div
+                    className={css(styles.button, styles.secondary)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setProjectUpsertPurpose("create_sub_project");
+                      setProjectUpsertValue({
+                        ...DEFAULT_PROJECT_VALUES,
+                        projectID: activeProject?.projectID,
+                      });
+                      setIsProjectUpsertModalOpen(true);
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faFolderPlus}
+                      color={colors.NEW_BLUE(1)}
+                      fontSize="20px"
+                      style={{ marginRight: 8 }}
+                    />
+                    {isOnOrgTab || isOnMyRefs
+                      ? "Create a folder"
+                      : "Create a sub-folder"}
+                  </div>
+                  {selectedRows.length > 0 && (
+                    <Box sx={{ display: "flex", alignItems: "center", ml: 1 }}>
+                      <Tooltip title="Export" placement="top">
+                        <IconButton
+                          aria-label="Export references"
+                          onClick={() => setIsBibModalOpen(true)}
+                          sx={{
+                            padding: 1,
+                            fontSize: "22px",
+                            "&:hover": {
+                              background: "rgba(25, 118, 210, 0.04) !important",
+                            },
+                          }}
+                        >
+                          <FontAwesomeIcon icon={faFileExport} />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete" placement="top">
+                        <IconButton
+                          aria-label="Delete references"
+                          onClick={(event) => setIsRemoveRefModalOpen(true)}
+                          sx={{
+                            padding: 1,
+                            fontSize: "22px",
+                            "&:hover": {
+                              background: "rgba(25, 118, 210, 0.04) !important",
+                            },
+                          }}
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  )}
+
+                  <FormInput
+                    placeholder={"Search for a reference"}
+                    containerStyle={styles.formInputContainer}
+                    inputStyle={styles.inputStyle}
+                    icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+                    iconStyles={styles.searchIcon}
+                    onSearchClick={onSearchClick}
+                    onKeyDown={onEnterClicked}
+                    onChange={(id, value) => setSearchQuery(value)}
+                  />
+                </Box>
               </Box>
               <ReferencesTable
+                selectedRows={selectedRows}
                 createdReferences={createdReferences}
                 rowSelectionModel={selectedRows}
                 handleFileDrop={onFileDrop}

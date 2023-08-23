@@ -44,7 +44,6 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Stack from "@mui/material/Stack";
 import OpenWithOutlinedIcon from "@mui/icons-material/OpenWithOutlined";
 import ReferenceItemOptsDropdown from "../reference_item/ReferenceItemOptsDropdown";
-import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import { faFolderOpen } from "@fortawesome/pro-solid-svg-icons";
 import { useHasTouchCapability } from "~/config/utils/device";
 
@@ -55,6 +54,7 @@ type Props = {
   handleRowSelection: (ref: any) => void;
   handleClearSelection: () => void;
   loading?: boolean | undefined;
+  selectedRows: GridRowId[];
 };
 
 export type PreloadRow = {
@@ -104,6 +104,7 @@ export default function ReferencesTable({
   createdReferences,
   handleFileDrop,
   rowSelectionModel,
+  selectedRows,
   handleRowSelection,
   handleClearSelection,
   loading,
@@ -128,13 +129,6 @@ export default function ReferencesTable({
 
   const router = useRouter();
   const apiRef = useGridApiRef();
-
-  useEffectHandleClick({
-    ref: tableRef,
-    onOutsideClick: () => {
-      handleClearSelection();
-    },
-  });
 
   useEffect(() => {
     if (loading !== undefined) {
@@ -285,6 +279,21 @@ export default function ReferencesTable({
       return;
     }
 
+    if (event.metaKey) {
+      // If meta key is pressed, add or remove from the selection
+      if (selectedRows.includes(params.id)) {
+        handleRowSelection(selectedRows.filter((id) => id !== params.id));
+      } else {
+        handleRowSelection([...selectedRows, params.id]);
+      }
+    } else {
+      // If meta key is not pressed, replace the selection
+      // Without timeout, double click will not be reached since the state update will interrupt it.
+      setTimeout(() => {
+        handleRowSelection([params.id]);
+      }, 150);
+    }
+
     if (hasTouchCapability) {
       handleOpenAction({ row: params.row, id: params.id });
       event.stopPropagation();
@@ -342,6 +351,7 @@ export default function ReferencesTable({
           apiRef={apiRef}
           autoHeight
           checkboxSelection
+          disableRowSelectionOnClick
           rowReordering
           isRowSelectable={(params) =>
             String(params.id).includes("parent") ? false : true
@@ -381,10 +391,7 @@ export default function ReferencesTable({
           onCellDoubleClick={handleDoubleClick}
           rowSelectionModel={rowSelectionModel}
           onRowSelectionModelChange={(ids) => {
-            // Without timeout, double click will not be reached since the state update will interrupt it.
-            setTimeout(() => {
-              handleRowSelection(ids);
-            }, 150);
+            handleRowSelection(ids);
           }}
           slots={{
             row: (row) => {
