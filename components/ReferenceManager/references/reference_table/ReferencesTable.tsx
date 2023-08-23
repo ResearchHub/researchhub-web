@@ -46,6 +46,7 @@ import OpenWithOutlinedIcon from "@mui/icons-material/OpenWithOutlined";
 import ReferenceItemOptsDropdown from "../reference_item/ReferenceItemOptsDropdown";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import { faFolderOpen } from "@fortawesome/pro-solid-svg-icons";
+import { useHasTouchCapability } from "~/config/utils/device";
 
 type Props = {
   createdReferences: any[];
@@ -122,6 +123,7 @@ export default function ReferencesTable({
   const [rowDragged, setRowDragged] = useState();
   const [rowHovered, setRowHovered] = useState<null | ID>(null);
   const { currentOrg } = useOrgs();
+  const hasTouchCapability = useHasTouchCapability();
   const tableRef = useRef(null);
 
   const router = useRouter();
@@ -130,7 +132,6 @@ export default function ReferencesTable({
   useEffectHandleClick({
     ref: tableRef,
     onOutsideClick: () => {
-      console.log("here");
       handleClearSelection();
     },
   });
@@ -277,6 +278,40 @@ export default function ReferencesTable({
       }
     : null;
 
+  const handleSingleClick = (params, event, _details): void => {
+    // Ignore checkbox click
+    if (event.target.matches('input[type="checkbox"], .action-button-class')) {
+      event.stopPropagation();
+      return;
+    }
+
+    if (hasTouchCapability) {
+      handleOpenAction({ row: params.row, id: params.id });
+      event.stopPropagation();
+    }
+  };
+
+  const handleDoubleClick = (params, event, _details): void => {
+    handleOpenAction({ row: params.row, id: params.id });
+  };
+
+  const handleOpenAction = ({ id, row }): void => {
+    if (row.is_loading) return;
+
+    const rowId = id.toString();
+    if (rowId.includes("folder")) {
+      openFolder({ row: row, event });
+    } else {
+      setReferenceItemDatum({
+        ...nullthrows(
+          referenceTableRowData.find((item) => item.id === row?.id)
+        ),
+      });
+
+      setIsViewerOpen(true);
+    }
+  };
+
   const formattedReferenceRows = !isLoading
     ? nullthrows(
         formatReferenceRowData(
@@ -342,25 +377,8 @@ export default function ReferencesTable({
               },
             },
           }}
-          onCellDoubleClick={(params, event, _details): void => {
-            if (params.row.is_loading) return;
-
-            const rowId = params.id.toString();
-            if (rowId.includes("folder")) {
-              openFolder({ row: params.row, event });
-            } else {
-              event.stopPropagation();
-              setReferenceItemDatum({
-                ...nullthrows(
-                  referenceTableRowData.find(
-                    (item) => item.id === params?.row?.id
-                  )
-                ),
-              });
-
-              setIsViewerOpen(true);
-            }
-          }}
+          onCellClick={handleSingleClick}
+          onCellDoubleClick={handleDoubleClick}
           rowSelectionModel={rowSelectionModel}
           onRowSelectionModelChange={(ids) => {
             // Without timeout, double click will not be reached since the state update will interrupt it.
@@ -399,7 +417,8 @@ export default function ReferencesTable({
                             <Tooltip title="Open" placement="top">
                               <IconButton
                                 aria-label="Open"
-                                onClick={() => {
+                                onClick={(event) => {
+                                  event.stopPropagation();
                                   setReferenceItemDatum(hoveredRow);
                                   setIsViewerOpen(true);
                                 }}
@@ -427,7 +446,8 @@ export default function ReferencesTable({
                                     "rgba(25, 118, 210, 0.04) !important",
                                 },
                               }}
-                              onClick={() => {
+                              onClick={(event) => {
+                                event.stopPropagation();
                                 setReferenceItemDatum(hoveredRow);
                                 setIsDrawerOpen(true);
                               }}
