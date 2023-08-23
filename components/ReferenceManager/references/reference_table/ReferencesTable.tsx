@@ -400,7 +400,6 @@ export default function ReferencesTable({
               } else if (idAsString.includes("folder")) {
                 rowType = "FOLDER";
               }
-
               if (row.row.id === rowHovered && !row.row.is_loading) {
                 const hoveredRow = referenceTableRowData.find(
                   (item) => item.id === row?.row?.id
@@ -458,7 +457,7 @@ export default function ReferencesTable({
                         </>
                       )}
 
-                      {/* <ReferenceItemOptsDropdown refId={typedRefDataRow.id} /> */}
+                      <ReferenceItemOptsDropdown refId={typedRefDataRow.id} />
                     </Stack>
                   </div>
                 );

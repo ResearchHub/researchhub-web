@@ -54,11 +54,12 @@ export const columnsFormat: GridColDef[] = [
     sortable: false,
     disableColumnMenu: true,
     flex: 1,
+    minWidth: 150,
     headerAlign: "right",
     width: 150,
     align: "right",
     renderCell: (cell) => {
-      return cell.row.actions;
+      return <div style={{ textAlign: "right" }}>{cell.row.actions}</div>;
     },
   },
 ];
