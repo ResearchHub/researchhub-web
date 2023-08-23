@@ -3,7 +3,7 @@ import { snakeCaseToNormalCase } from "~/config/utils/string";
 
 const labelMap = {
   creators: "Authors",
-  date: "Date (MM-DD-YYYY)",
+  date: "Publication Date (MM-DD-YYYY)",
   doi: "DOI",
   DOI: "DOI",
   url: "URL",

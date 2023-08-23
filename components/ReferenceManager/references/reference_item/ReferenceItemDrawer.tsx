@@ -153,7 +153,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
       open={isDrawerOpen}
       sx={{
         width: "0",
-        zIndex: 4 /* AppTopBar zIndex is 3 */,
+        zIndex: 6 /* AppTopBar zIndex is 3 */,
         height: "100%",
       }}
     >
@@ -233,6 +233,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
           bottom: 0,
           boxSizing: "border-box",
           left: 0,
+          zIndex: 7,
           minHeight: 60,
           padding: "0 24px",
           position: "sticky",
