@@ -38,7 +38,6 @@ import DocumentViewer from "~/components/Document/DocumentViewer";
 import { ID } from "~/config/types/root_types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faBookOpen } from "@fortawesome/pro-regular-svg-icons";
-import { faMaximize } from "@fortawesome/pro-light-svg-icons";
 import { IconButton, Tooltip } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Stack from "@mui/material/Stack";
@@ -323,6 +322,12 @@ export default function ReferencesTable({
     }
   };
 
+  const handleMetadataAction = ({ event, row }): void => {
+    event.stopPropagation();
+    setReferenceItemDatum(row);
+    setIsDrawerOpen(true);
+  };
+
   const formattedReferenceRows = !isLoading
     ? nullthrows(
         formatReferenceRowData(
@@ -356,7 +361,9 @@ export default function ReferencesTable({
           disableRowSelectionOnClick
           rowReordering
           isRowSelectable={(params) =>
-            String(params.id).includes("parent") ? false : true
+            String(params.id).includes("parent") || params.row.is_loading
+              ? false
+              : true
           }
           columns={columnsFormat}
           sx={DATA_GRID_STYLE_OVERRIDE}
@@ -409,7 +416,10 @@ export default function ReferencesTable({
               } else if (idAsString.includes("folder")) {
                 rowType = "FOLDER";
               }
-              if (row.row.id === rowHovered && !row.row.is_loading) {
+              if (
+                (row.row.id === rowHovered && !row.row.is_loading) ||
+                hasTouchCapability
+              ) {
                 const hoveredRow = referenceTableRowData.find(
                   (item) => item.id === row?.row?.id
                 );
@@ -418,10 +428,9 @@ export default function ReferencesTable({
                   <div style={{ marginRight: 10 }}>
                     {/* Replace with your actual action buttons */}
                     <Stack direction="row" spacing={0}>
-                      {rowType === "FOLDER" && <></>}
                       {rowType === "REFERENCE" && hoveredRow && (
                         <>
-                          {hoveredRow.attachment && (
+                          {hoveredRow.attachment && !hasTouchCapability && (
                             <Tooltip title="Open" placement="top">
                               <IconButton
                                 aria-label="Open"
@@ -443,32 +452,41 @@ export default function ReferencesTable({
                               </IconButton>
                             </Tooltip>
                           )}
-                          <Tooltip title="Edit Metadata" placement="top">
-                            <IconButton
-                              aria-label="Edit Metadata"
-                              sx={{
-                                padding: 1,
-                                fontSize: "22px",
-                                "&:hover": {
-                                  background:
-                                    "rgba(25, 118, 210, 0.04) !important",
-                                },
-                              }}
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                setReferenceItemDatum(hoveredRow);
-                                setIsDrawerOpen(true);
-                              }}
-                            >
-                              <InfoOutlinedIcon fontSize="inherit" />
-                            </IconButton>
-                          </Tooltip>
+                          {!hasTouchCapability && (
+                            <Tooltip title="Edit Metadata" placement="top">
+                              <IconButton
+                                aria-label="Edit Metadata"
+                                sx={{
+                                  padding: 1,
+                                  fontSize: "22px",
+                                  "&:hover": {
+                                    background:
+                                      "rgba(25, 118, 210, 0.04) !important",
+                                  },
+                                }}
+                                onClick={(event) => {
+                                  handleMetadataAction({
+                                    event,
+                                    row: hoveredRow,
+                                  });
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faInfoCircle}
+                                  fontSize={20}
+                                />
+                              </IconButton>
+                            </Tooltip>
+                          )}
                         </>
                       )}
 
                       <ReferenceItemOptsDropdown
                         refId={typedRefDataRow.id}
                         handleDelete={handleDelete}
+                        handleMetadataAction={(event) =>
+                          handleMetadataAction({ event, row: hoveredRow })
+                        }
                       />
                     </Stack>
                   </div>

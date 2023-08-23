@@ -526,7 +526,7 @@ function ReferencesContainer({
                           fontSize="20px"
                           style={{ marginRight: 8 }}
                         />
-                        {"Add a reference"}
+                        {"Add reference"}
                       </div>
                     }
                     size={"small"}
@@ -551,8 +551,8 @@ function ReferencesContainer({
                       style={{ marginRight: 8 }}
                     />
                     {isOnOrgTab || isOnMyRefs
-                      ? "Create a folder"
-                      : "Create a sub-folder"}
+                      ? "Create folder"
+                      : "Create folder"}
                   </div>
                   {selectedRows.length > 0 && (
                     <Box sx={{ display: "flex", alignItems: "center", ml: 1 }}>

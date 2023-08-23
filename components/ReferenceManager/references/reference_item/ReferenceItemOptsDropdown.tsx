@@ -7,13 +7,19 @@ import { IconButton, ListItemIcon, ListItemText } from "@mui/material";
 import MenuList from "@mui/material/MenuList";
 import { faTrashCan } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/pro-regular-svg-icons";
 
 interface Props {
   refId: ID;
   handleDelete: Function;
+  handleMetadataAction: (event) => void;
 }
 
-const ReferenceItemOptsDropdown = ({ refId, handleDelete }: Props) => {
+const ReferenceItemOptsDropdown = ({
+  refId,
+  handleDelete,
+  handleMetadataAction,
+}: Props) => {
   const _handleDelete = (e) => {
     handleDelete(refId);
   };
@@ -52,11 +58,21 @@ const ReferenceItemOptsDropdown = ({ refId, handleDelete }: Props) => {
                 vertical: "top",
                 horizontal: "right",
               }}
+              onClick={(e) => {
+                // For touch devices, we need to stop propagation so that the "row click action" event does not get triggered
+                e.stopPropagation();
+              }}
             >
               <MenuList sx={{ p: 0 }}>
+                <MenuItem onClick={handleMetadataAction} sx={{ columnGap: 0 }}>
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={faInfoCircle} fontSize={20} />
+                  </ListItemIcon>
+                  <ListItemText>Edit Metadata</ListItemText>
+                </MenuItem>
                 <MenuItem onClick={_handleDelete} sx={{ columnGap: 0 }}>
                   <ListItemIcon>
-                    <FontAwesomeIcon icon={faTrashCan} fontSize={18} />
+                    <FontAwesomeIcon icon={faTrashCan} fontSize={20} />
                   </ListItemIcon>
                   <ListItemText>Delete</ListItemText>
                 </MenuItem>
