@@ -8,8 +8,7 @@ import {
   faMagnifyingGlass,
   faPlus,
   faFileExport,
-  faXmark,
-  faTrash,
+  faTrashCan,
 } from "@fortawesome/pro-light-svg-icons";
 import {
   Fragment,
@@ -253,13 +252,11 @@ function ReferencesContainer({
     setSelectedRows([]);
   };
 
-  const handleRemove = () => {
-    const folderIds = selectedRows.filter((id) =>
-      String(id).includes("folder")
-    );
-    const referenceIds = selectedRows.filter(
-      (id) => !String(id).includes("folder")
-    );
+  const handleDelete = (rowIds: GridRowId | GridRowId[]) => {
+    const _rowIds = Array.isArray(rowIds) ? rowIds : [rowIds];
+
+    const folderIds = _rowIds.filter((id) => String(id).includes("folder"));
+    const referenceIds = _rowIds.filter((id) => !String(id).includes("folder"));
 
     removeReferenceCitations({
       onError: emptyFncWithMsg,
@@ -361,7 +358,7 @@ function ReferencesContainer({
             </Box>
           }
           modalWidth="300px"
-          onPrimaryButtonClick={handleRemove}
+          onPrimaryButtonClick={() => handleDelete(selectedRows)}
           onSecondaryButtonClick={(): void => setIsRemoveRefModalOpen(false)}
           onClose={(): void => setIsRemoveRefModalOpen(false)}
           primaryButtonConfig={{ label: "Remove" }}
@@ -586,7 +583,7 @@ function ReferencesContainer({
                             },
                           }}
                         >
-                          <FontAwesomeIcon icon={faTrash} />
+                          <FontAwesomeIcon icon={faTrashCan} />
                         </IconButton>
                       </Tooltip>
                     </Box>
@@ -611,6 +608,10 @@ function ReferencesContainer({
                 handleFileDrop={onFileDrop}
                 handleClearSelection={handleClearSelection}
                 handleRowSelection={handleRowSelection}
+                handleDelete={(refId: GridRowId) => {
+                  setSelectedRows([refId]);
+                  setIsRemoveRefModalOpen(true);
+                }}
                 loading={referencesSearchLoading}
               />
             </Box>

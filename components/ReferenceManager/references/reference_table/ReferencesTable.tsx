@@ -52,6 +52,7 @@ type Props = {
   rowSelectionModel: (string | number)[];
   handleFileDrop: (files: any[]) => void;
   handleRowSelection: (ref: any) => void;
+  handleDelete: (refId: GridRowId) => void;
   handleClearSelection: () => void;
   loading?: boolean | undefined;
   selectedRows: GridRowId[];
@@ -107,6 +108,7 @@ export default function ReferencesTable({
   selectedRows,
   handleRowSelection,
   handleClearSelection,
+  handleDelete,
   loading,
 }: Props) {
   const {
@@ -464,7 +466,10 @@ export default function ReferencesTable({
                         </>
                       )}
 
-                      <ReferenceItemOptsDropdown refId={typedRefDataRow.id} />
+                      <ReferenceItemOptsDropdown
+                        refId={typedRefDataRow.id}
+                        handleDelete={handleDelete}
+                      />
                     </Stack>
                   </div>
                 );

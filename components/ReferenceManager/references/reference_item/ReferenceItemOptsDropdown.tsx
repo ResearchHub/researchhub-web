@@ -4,22 +4,18 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { ID } from "~/config/types/root_types";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import { IconButton, ListItemIcon, ListItemText } from "@mui/material";
-import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
-import IosShareIcon from "@mui/icons-material/IosShare";
 import MenuList from "@mui/material/MenuList";
+import { faTrashCan } from "@fortawesome/pro-light-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface Props {
   refId: ID;
-  onDelete: Function;
-  onExport: Function;
+  handleDelete: Function;
 }
 
-const ReferenceItemOptsDropdown = ({ refId, onDelete, onExport }: Props) => {
-  const handleDelete = (e) => {
-    onDelete();
-  };
-  const handleExport = (e) => {
-    onExport();
+const ReferenceItemOptsDropdown = ({ refId, handleDelete }: Props) => {
+  const _handleDelete = (e) => {
+    handleDelete(refId);
   };
 
   const handleIconButtonClick = (originalOnClick) => (e) => {
@@ -57,16 +53,10 @@ const ReferenceItemOptsDropdown = ({ refId, onDelete, onExport }: Props) => {
                 horizontal: "right",
               }}
             >
-              <MenuList>
-                <MenuItem onClick={handleExport}>
+              <MenuList sx={{ p: 0 }}>
+                <MenuItem onClick={_handleDelete} sx={{ columnGap: 0 }}>
                   <ListItemIcon>
-                    <IosShareIcon sx={{ fontSize: "18px" }} />
-                  </ListItemIcon>
-                  <ListItemText>Export</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={handleDelete} sx={{ columnGap: 0 }}>
-                  <ListItemIcon>
-                    <DeleteForeverOutlinedIcon sx={{ fontSize: "18px" }} />
+                    <FontAwesomeIcon icon={faTrashCan} fontSize={18} />
                   </ListItemIcon>
                   <ListItemText>Delete</ListItemText>
                 </MenuItem>
