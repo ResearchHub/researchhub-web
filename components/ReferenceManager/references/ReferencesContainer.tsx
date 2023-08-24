@@ -65,6 +65,7 @@ import { GridRowId } from "@mui/x-data-grid";
 import { navContext } from "~/components/contexts/NavigationContext";
 import Button from "~/components/Form/Button";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons";
+import { grey } from "@mui/material/colors";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -114,9 +115,6 @@ function ReferencesContainer({
     useState<boolean>(false);
 
   const { isRefManagerSidebarOpen, setIsRefManagerSidebarOpen } = navContext();
-  const leftNavWidth = isRefManagerSidebarOpen
-    ? LEFT_MAX_NAV_WIDTH
-    : LEFT_MIN_NAV_WIDTH;
   const isOnOrgTab = !isEmpty(router.query?.org_refs);
   const isOnMyRefs = !isEmpty(router.query?.my_refs);
 
@@ -378,8 +376,9 @@ function ReferencesContainer({
         <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
           <BasicTogglableNavbarLeft
             currentOrgProjects={currentOrgProjects}
-            isOpen={isRefManagerSidebarOpen}
-            navWidth={leftNavWidth}
+            isOpen={true}
+            navWidth={LEFT_MAX_NAV_WIDTH}
+            openOrgSettingsModal={() => setIsOrgModalOpen(true)}
             setIsOpen={setIsRefManagerSidebarOpen}
           />
           <Box
@@ -473,23 +472,22 @@ function ReferencesContainer({
                     )}
                   />
                 )}
-                {(isOnOrgTab || !isEmpty(router.query.slug)) && (
+                {/* TODO: Temporarily commenting until we time to implement folder permissions */}
+                {/* {!isOnOrgTab && (
                   <Button
                     variant="outlined"
                     fontSize="small"
                     size="small"
                     customButtonStyle={styles.shareButton}
                     onClick={
-                      isOnOrgTab
-                        ? () => setIsOrgModalOpen(true)
-                        : onUpdateFolderClick
+                      onUpdateFolderClick
                     }
                   >
                     <Typography variant="h6" fontSize={"16px"}>
-                      {isOnOrgTab ? "Update organization" : "Update folder"}
+                      {"Update folder"}
                     </Typography>
                   </Button>
-                )}
+                )} */}
               </div>
             </div>
 
@@ -758,14 +756,13 @@ const styles = StyleSheet.create({
     padding: "8px 16px",
     height: 36,
     boxSizing: "border-box",
-    // marginRight: 12,
   },
   secondary: {
-    border: `1px solid ${colors.BLACK()}`,
+    border: `1px solid ${grey[700]}`,
     background: "#fff",
     color: colors.BLACK(),
     ":hover": {
-      background: colors.BLACK(0.1),
+      background: grey[100],
     },
   },
   trashContainer: {

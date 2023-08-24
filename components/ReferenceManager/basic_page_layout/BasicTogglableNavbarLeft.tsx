@@ -29,7 +29,8 @@ import { useReferenceActiveProjectContext } from "../references/reference_organi
 import Drawer from "@mui/material/Drawer";
 import useWindow from "~/config/hooks/useWindow";
 import { breakpoints } from "~/config/themes/screen";
-
+import { StyleSheet, css } from "aphrodite";
+import { faCog } from "@fortawesome/pro-solid-svg-icons";
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
 
@@ -37,6 +38,7 @@ type Props = {
   isOpen: boolean;
   navWidth: number;
   setIsOpen: (flag: boolean) => void;
+  openOrgSettingsModal: Function;
   theme?: Theme;
   currentOrgProjects: any[];
 };
@@ -68,9 +70,9 @@ const ContentWrapper = ({ children, width, isOpen, setIsOpen }) => {
         flexDirection="column"
         width={width}
         sx={{
-          borderLeft: "1px solid #e8e8ef",
+          borderRight: "1px solid #e8e8ef",
           zIndex: 4,
-          background: "#FAFAFC",
+          background: colors.GREY_ICY_BLUE_HUE,
           height: "100%",
           minHeight: "calc(100vh - 68px)",
           display: isOpen ? "block" : "none",
@@ -87,6 +89,7 @@ export default function BasicTogglableNavbarLeft({
   setIsOpen,
   navWidth,
   theme,
+  openOrgSettingsModal,
   currentOrgProjects,
 }: Props) {
   const { setIsModalOpen: setIsProjectsUpsertModalOpen } =
@@ -193,15 +196,24 @@ export default function BasicTogglableNavbarLeft({
             alignItems: "center",
             color: "rgba(170, 168, 180, 1)",
             cursor: "pointer",
-            display: "flex",
-            borderBottom: "1px solid #E9EAEF",
-            flexDirection: "row",
-            justifyContent: "space-between",
+            width: "100%",
           }}
         >
           <OrganizationPopover isReferenceManager={true} />
+          <div className={css(styles.sidebarButtonsContainer)}>
+            <div
+              className={css(styles.sidebarButton)}
+              onClick={openOrgSettingsModal}
+            >
+              {<FontAwesomeIcon icon={faCog}></FontAwesomeIcon>}
+              <span className={css(styles.sidebarButtonText)}>
+                Settings & Members
+              </span>
+            </div>
+          </div>
         </Box>
       </Box>
+      <Divider />
       <List sx={{ background: "#FAFAFC", color: "rgba(36, 31, 58, 1)" }}>
         <BasicTogglableNavbarButton
           icon={
@@ -300,3 +312,24 @@ export default function BasicTogglableNavbarLeft({
     </ContentWrapper>
   );
 }
+
+const styles = StyleSheet.create({
+  sidebarButtonsContainer: {
+    margin: "0px 10px 10px 10px",
+  },
+  sidebarButton: {
+    border: "none",
+    color: colors.BLACK(0.6),
+    cursor: "pointer",
+    fontSize: 14,
+    fontWeight: 500,
+    maxWidth: "fit-content",
+    padding: 10,
+    ":hover": {
+      color: colors.NEW_BLUE(),
+    },
+  },
+  sidebarButtonText: {
+    marginLeft: 10,
+  },
+});
