@@ -79,14 +79,18 @@ function useEffectFetchReferenceCitations({
   useEffect(() => {
     if (!isNullOrUndefined(user?.id) && currentOrg?.id && !isFetchingProjects) {
       setIsLoading(true);
-      fetchCurrentUserReferenceCitations({
-        onSuccess,
-        onError,
-        organizationID: currentOrg?.id,
-        // @ts-ignore
-        projectID: activeProject.projectID,
-        getCurrentUserCitation: !isEmpty(router.query?.my_refs),
-      });
+
+      if (!activeProject?.projectID && router.query.slug) {
+      } else {
+        fetchCurrentUserReferenceCitations({
+          onSuccess,
+          onError,
+          organizationID: currentOrg?.id,
+          // @ts-ignore
+          projectID: activeProject.projectID,
+          getCurrentUserCitation: !isEmpty(router.query?.my_refs),
+        });
+      }
     }
   }, [
     fetchCurrentUserReferenceCitations,
@@ -96,6 +100,7 @@ function useEffectFetchReferenceCitations({
     activeProject?.projectID,
     isFetchingProjects,
     router.query.org_refs,
+    router.query.slug,
   ]);
 }
 
