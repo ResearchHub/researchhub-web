@@ -26,6 +26,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import { faSitemap, faUser } from "@fortawesome/pro-regular-svg-icons";
 import { useReferenceActiveProjectContext } from "../references/reference_organizer/context/ReferenceActiveProjectContext";
+import Drawer from "@mui/material/Drawer";
+import useWindow from "~/config/hooks/useWindow";
+import { breakpoints } from "~/config/themes/screen";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -38,8 +41,50 @@ type Props = {
   currentOrgProjects: any[];
 };
 
+const ContentWrapper = ({ children, width, isOpen, setIsOpen }) => {
+  const { width: winWidth, height: winHeight } = useWindow();
+  const displayAsDrawer = winWidth && winWidth < breakpoints.desktop.int;
+
+  if (displayAsDrawer) {
+    return (
+      <Drawer
+        anchor={"left"}
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        ModalProps={{
+          hideBackdrop: false,
+          disableScrollLock: true,
+        }}
+        PaperProps={{
+          sx: { width },
+        }}
+      >
+        {children}
+      </Drawer>
+    );
+  } else {
+    return (
+      <Box
+        flexDirection="column"
+        width={width}
+        sx={{
+          borderLeft: "1px solid #e8e8ef",
+          zIndex: 4,
+          background: "#FAFAFC",
+          height: "100%",
+          minHeight: "calc(100vh - 68px)",
+          display: isOpen ? "block" : "none",
+        }}
+      >
+        {children}
+      </Box>
+    );
+  }
+};
+
 export default function BasicTogglableNavbarLeft({
   isOpen,
+  setIsOpen,
   navWidth,
   theme,
   currentOrgProjects,
@@ -140,17 +185,7 @@ export default function BasicTogglableNavbarLeft({
   });
 
   return (
-    <Box
-      flexDirection="column"
-      width={navWidth}
-      sx={{
-        borderLeft: "1px solid #e8e8ef",
-        zIndex: 4,
-        background: "#FAFAFC",
-        height: "100%",
-        minHeight: "calc(100vh - 68px)",
-      }}
-    >
+    <ContentWrapper width={navWidth} isOpen={isOpen} setIsOpen={setIsOpen}>
       <ReferenceProjectsUpsertModal onUpsertSuccess={addFolderToChildren} />
       <Box className="LeftNavbarUserSection">
         <Box
@@ -262,6 +297,6 @@ export default function BasicTogglableNavbarLeft({
         </ListItemButton>
         {refProjectsNavbarEls}
       </List>
-    </Box>
+    </ContentWrapper>
   );
 }

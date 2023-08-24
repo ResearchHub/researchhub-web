@@ -62,6 +62,7 @@ import api, { generateApiUrl } from "~/config/api";
 import { fetchCurrentUserReferenceCitations } from "./api/fetchCurrentUserReferenceCitations";
 import { useReferencesTableContext } from "./reference_table/context/ReferencesTableContext";
 import { GridRowId } from "@mui/x-data-grid";
+import { navContext } from "~/components/contexts/NavigationContext";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -100,7 +101,6 @@ function ReferencesContainer({
   } = useReferenceUploadDrawerContext();
   const [createdReferences, setCreatedReferences] = useState<any[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-  const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [isOrgModalOpen, setIsOrgModalOpen] = useState<boolean>(false);
   const [selectedRows, setSelectedRows] = useState<GridRowId[]>([]);
   const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
@@ -111,7 +111,10 @@ function ReferencesContainer({
   const [referencesSearchLoading, setReferencesSearchLoading] =
     useState<boolean>(false);
 
-  const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
+  const { isRefManagerSidebarOpen, setIsRefManagerSidebarOpen } = navContext();
+  const leftNavWidth = isRefManagerSidebarOpen
+    ? LEFT_MAX_NAV_WIDTH
+    : LEFT_MIN_NAV_WIDTH;
   const isOnOrgTab = !isEmpty(router.query?.org_refs);
   const isOnMyRefs = !isEmpty(router.query?.my_refs);
 
@@ -373,9 +376,9 @@ function ReferencesContainer({
         <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
           <BasicTogglableNavbarLeft
             currentOrgProjects={currentOrgProjects}
-            isOpen={isLeftNavOpen}
+            isOpen={isRefManagerSidebarOpen}
             navWidth={leftNavWidth}
-            setIsOpen={setIsLeftNavOpen}
+            setIsOpen={setIsRefManagerSidebarOpen}
           />
           <Box
             sx={{

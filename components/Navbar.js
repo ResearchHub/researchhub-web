@@ -28,6 +28,7 @@ import { faArrowLeftLong } from "@fortawesome/pro-regular-svg-icons";
 import IconButton from "./Icons/IconButton";
 import Link from "next/link";
 import BackBtn from "./shared/BackBtn";
+import { navContext } from "./contexts/NavigationContext";
 
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
@@ -65,14 +66,32 @@ const Navbar = (props) => {
   const isPaper = ["paper"].includes(router.pathname.split("/")[1]);
 
   const unstickyNavbar = router.pathname.includes("/hubs") || isPost || isPaper;
-
+  const { setIsRefManagerSidebarOpen, isRefManagerSidebarOpen } = navContext();
   const pathname = router?.pathname ?? "";
   const headerLabel = pathname.includes("notebook") ? (
     "Lab Notebook"
   ) : pathname.includes("leaderboard") ? (
     "Leaderboard"
   ) : pathname.includes("reference-manager") ? (
-    "Reference Manager"
+    <div style={{ display: "flex", alignItems: "center", marginLeft: -11 }}>
+      <div
+        onClick={() => {
+          setIsRefManagerSidebarOpen(!isRefManagerSidebarOpen);
+        }}
+        style={{
+          border: "1px solid #d0d7de",
+          padding: "6px 7px",
+          color: "#636060",
+          fontSize: 19,
+          lineHeight: "16px",
+          borderRadius: "7px",
+          marginRight: 15,
+        }}
+      >
+        <FontAwesomeIcon icon={faBars} />
+      </div>
+      {` Reference Manager`}
+    </div>
   ) : pathname.includes("live") ? (
     "Live Activity"
   ) : isPost || isPaper ? (
@@ -95,7 +114,10 @@ const Navbar = (props) => {
       <div className={css(styles.xsmallDownTitle)}>
         <div
           className={css(styles.burgerIcon)}
-          onClick={() => setShouldShowSlider(!shouldShowSlider)}
+          onClick={() => {
+            // setShouldShowSlider(!shouldShowSlider)
+            setIsRefManagerSidebarOpen(!isRefManagerSidebarOpen);
+          }}
         >
           {<FontAwesomeIcon icon={faBars}></FontAwesomeIcon>}
         </div>
