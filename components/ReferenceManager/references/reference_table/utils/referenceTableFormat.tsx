@@ -12,7 +12,14 @@ export const columnsFormat: GridColDef[] = [
       const idString = cell.row.id.toString();
       if (idString.includes("folder") && cell.value) {
         return (
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              whiteSpace: "pre",
+              overflow: "auto",
+            }}
+          >
             <FontAwesomeIcon
               icon={idString.includes("parent") ? faArrowTurnUp : faFolder}
               style={{ marginRight: 8 }}
