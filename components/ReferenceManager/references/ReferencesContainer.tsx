@@ -6,10 +6,11 @@ import {
 import {
   faFolderPlus,
   faMagnifyingGlass,
-  faPlus,
   faFileExport,
   faTrashCan,
+  faEllipsis,
 } from "@fortawesome/pro-light-svg-icons";
+
 import {
   Fragment,
   useState,
@@ -42,7 +43,6 @@ import { pluralize } from "~/config/utils/misc";
 import { removeReferenceProject } from "./reference_organizer/api/removeReferenceProject";
 import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
-import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import DropdownMenu from "../menu/DropdownMenu";
 import DroppableZone from "~/components/DroppableZone";
@@ -63,6 +63,8 @@ import { fetchCurrentUserReferenceCitations } from "./api/fetchCurrentUserRefere
 import { useReferencesTableContext } from "./reference_table/context/ReferencesTableContext";
 import { GridRowId } from "@mui/x-data-grid";
 import { navContext } from "~/components/contexts/NavigationContext";
+import Button from "~/components/Form/Button";
+import { faPlus } from "@fortawesome/pro-regular-svg-icons";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -498,8 +500,9 @@ function ReferencesContainer({
                     alignItems: "center",
                     display: "flex",
                     flexDirection: "row",
-                    height: 44,
                     marginBottom: "20px",
+                    height: 36,
+                    columnGap: "15px",
                     width: "100%",
                   }}
                 >
@@ -522,21 +525,29 @@ function ReferencesContainer({
                       },
                     ]}
                     menuLabel={
-                      <div className={css(styles.button)}>
-                        <FontAwesomeIcon
-                          icon={faPlus}
-                          color="#fff"
-                          fontSize="20px"
-                          style={{ marginRight: 8 }}
-                        />
-                        {"Add reference"}
-                      </div>
+                      <Button
+                        variant="contained"
+                        size="med"
+                        customButtonStyle={styles.button}
+                      >
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <FontAwesomeIcon
+                            icon={faPlus}
+                            color="#fff"
+                            fontSize="18px"
+                            style={{ marginRight: 8 }}
+                          />
+                          {"Add reference"}
+                        </div>
+                      </Button>
                     }
                     size={"small"}
                   />
 
-                  <div
-                    className={css(styles.button, styles.secondary)}
+                  <Button
+                    variant="outlined"
+                    size="med"
+                    customButtonStyle={[styles.button, styles.secondary]}
                     onClick={(e) => {
                       e.preventDefault();
                       setProjectUpsertPurpose("create_sub_project");
@@ -547,52 +558,130 @@ function ReferencesContainer({
                       setIsProjectUpsertModalOpen(true);
                     }}
                   >
-                    <FontAwesomeIcon
-                      icon={faFolderPlus}
-                      color={colors.NEW_BLUE(1)}
-                      fontSize="20px"
-                      style={{ marginRight: 8 }}
-                    />
-                    {isOnOrgTab || isOnMyRefs
-                      ? "Create folder"
-                      : "Create folder"}
-                  </div>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <FontAwesomeIcon
+                        icon={faFolderPlus}
+                        fontSize="18px"
+                        style={{ marginRight: 8 }}
+                      />
+                      Create folder
+                    </div>
+                  </Button>
                   {selectedRows.length > 0 && (
-                    <Box sx={{ display: "flex", alignItems: "center", ml: 1 }}>
-                      <Tooltip title="Export" placement="top">
-                        <IconButton
-                          aria-label="Export references"
+                    <>
+                      <div className={css(styles.divider)}> </div>
+                      <Box sx={{ display: { xs: "none", md: "block" } }}>
+                        <Button
+                          variant="outlined"
+                          size="med"
+                          customButtonStyle={[styles.button, styles.secondary]}
                           onClick={() => setIsBibModalOpen(true)}
-                          sx={{
-                            padding: 1,
-                            fontSize: "22px",
-                            "&:hover": {
-                              background: "rgba(25, 118, 210, 0.04) !important",
-                            },
-                          }}
                         >
-                          <FontAwesomeIcon icon={faFileExport} />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete" placement="top">
-                        <IconButton
-                          aria-label="Delete references"
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <FontAwesomeIcon
+                              icon={faFileExport}
+                              fontSize="18px"
+                              style={{ marginRight: 8 }}
+                            />
+                            Export
+                          </div>
+                        </Button>
+                      </Box>
+                      <Box sx={{ display: { xs: "none", md: "block" } }}>
+                        <Button
+                          variant="outlined"
+                          size="med"
+                          customButtonStyle={[styles.button, styles.secondary]}
                           onClick={(event) => setIsRemoveRefModalOpen(true)}
-                          sx={{
-                            padding: 1,
-                            fontSize: "22px",
-                            "&:hover": {
-                              background: "rgba(25, 118, 210, 0.04) !important",
-                            },
-                          }}
                         >
-                          <FontAwesomeIcon icon={faTrashCan} />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              fontSize="18px"
+                              style={{ marginRight: 8 }}
+                            />
+                            Delete
+                          </div>
+                        </Button>
+                      </Box>
+
+                      <Box sx={{ display: { xs: "block", md: "none" } }}>
+                        <DropdownMenu
+                          menuItemProps={[
+                            {
+                              itemLabel: (
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faFileExport}
+                                    fontSize="18px"
+                                    style={{ marginRight: 8 }}
+                                  />
+                                  Export
+                                </div>
+                              ),
+                              onClick: (): void => {
+                                setIsBibModalOpen(true);
+                              },
+                            },
+                            {
+                              itemLabel: (
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faTrashCan}
+                                    fontSize="18px"
+                                    style={{ marginRight: 8 }}
+                                  />
+                                  Delete
+                                </div>
+                              ),
+                              onClick: (): void => {
+                                setIsRemoveRefModalOpen(true);
+                              },
+                            },
+                          ]}
+                          menuLabel={
+                            <Button
+                              variant="outlined"
+                              size="med"
+                              customButtonStyle={[
+                                styles.button,
+                                styles.secondary,
+                              ]}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faEllipsis}
+                                  fontSize="28px"
+                                />
+                              </div>
+                            </Button>
+                          }
+                          size={"small"}
+                        />
+                      </Box>
+                    </>
                   )}
 
-                  <FormInput
+                  {/* <FormInput
                     placeholder={"Search for a reference"}
                     containerStyle={styles.formInputContainer}
                     inputStyle={styles.inputStyle}
@@ -601,7 +690,7 @@ function ReferencesContainer({
                     onSearchClick={onSearchClick}
                     onKeyDown={onEnterClicked}
                     onChange={(id, value) => setSearchQuery(value)}
-                  />
+                  /> */}
                 </Box>
               </Box>
               <ReferencesTable
@@ -653,30 +742,31 @@ const styles = StyleSheet.create({
       textDecoration: "underline",
     },
   },
+  divider: {
+    borderLeft: `1px solid ${colors.MEDIUM_GREY2(0.5)}`,
+    height: "100%",
+  },
   activeProjectLink: {
     color: colors.BLACK(),
     fontWeight: 500,
   },
   button: {
-    alignItems: "center",
-    padding: 16,
-    background: colors.NEW_BLUE(),
-    borderRadius: 4,
-    boxSizing: "border-box",
-    color: "#fff",
-    cursor: "pointer",
-    display: "flex",
     fontSize: 14,
-    fontWeight: 500,
-    height: 40,
-    justifyContent: "center",
+    alignItems: "center",
+    display: "flex",
+    lineHeight: 1.0,
+    padding: "8px 16px",
+    height: 36,
+    boxSizing: "border-box",
+    // marginRight: 12,
   },
   secondary: {
-    border: `1px solid ${colors.NEW_BLUE()}`,
+    border: `1px solid ${colors.BLACK()}`,
     background: "#fff",
-    color: colors.NEW_BLUE(),
-    marginRight: 8,
-    marginLeft: 16,
+    color: colors.BLACK(),
+    ":hover": {
+      background: colors.BLACK(0.1),
+    },
   },
   trashContainer: {
     height: 40,
