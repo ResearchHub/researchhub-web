@@ -6,7 +6,13 @@ import {
 } from "~/config/utils/nullchecks";
 import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
 import { ID } from "~/config/types/root_types";
-import { ReactElement, SyntheticEvent } from "react";
+import {
+  ReactElement,
+  SyntheticEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Typography } from "@mui/material";
 import { upsertReferenceProject } from "./api/upsertReferenceProject";
 import { useReferenceActiveProjectContext } from "./context/ReferenceActiveProjectContext";
@@ -16,6 +22,9 @@ import DropdownMenu from "../../menu/DropdownMenu";
 import dynamic from "next/dynamic";
 import ReferenceCollaboratorsSection from "./ReferenceCollaboratorsSection";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
+import { useRouter } from "next/router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinnerThird } from "@fortawesome/pro-light-svg-icons";
 
 const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
@@ -37,6 +46,15 @@ export default function ReferenceProjectsUpsertModal({
     upsertPurpose,
   } = useReferenceProjectUpsertContext();
   const { resetProjectsFetchTime } = useReferenceActiveProjectContext();
+  const router = useRouter();
+  const nameChanged = useRef(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!isModalOpen) {
+      nameChanged.current = false;
+    }
+  }, [isModalOpen]);
 
   const handleCloseModal = (event?: SyntheticEvent) => {
     onCloseModal && onCloseModal(event);
@@ -45,6 +63,7 @@ export default function ReferenceProjectsUpsertModal({
 
   const handleSubmit = () => {
     const { collaborators, isPublic, projectID, projectName } = projectValue;
+    setIsLoading(true);
     const formattedPayload = {
       project: upsertPurpose === "update" ? projectID : undefined,
       parent: upsertPurpose === "create_sub_project" ? projectID : undefined,
@@ -66,7 +85,10 @@ export default function ReferenceProjectsUpsertModal({
       },
       is_public: isPublic,
       organization: currentOrg?.id,
-      project_name: nullthrows(projectName, "Folder name may not be null"),
+      project_name: nullthrows(
+        projectName?.trim(),
+        "Folder name may not be null"
+      ),
     };
 
     upsertReferenceProject({
@@ -74,6 +96,18 @@ export default function ReferenceProjectsUpsertModal({
         resetProjectsFetchTime();
         onUpsertSuccess && onUpsertSuccess(result);
         handleCloseModal();
+
+        if (nameChanged) {
+          const slugsTilNow = router.query.slug
+            .slice(0, router.query.slug.length - 1)
+            .join("/");
+
+          router.replace(
+            `/reference-manager/${
+              router.query.organization
+            }/${slugsTilNow}/${encodeURIComponent(projectName?.trim())}`
+          );
+        }
       },
       onError: emptyFncWithMsg,
       payload: formattedPayload,
@@ -217,9 +251,13 @@ export default function ReferenceProjectsUpsertModal({
                 borderRadius: "4px",
               }}
             >
-              <Typography fontSize="14px" fontWeight="400" color="#fff">
-                {upsertPurpose === "update" ? "Update" : "Create"}
-              </Typography>
+              {isLoading ? (
+                <FontAwesomeIcon icon={faSpinnerThird} spin color="#fff" />
+              ) : (
+                <Typography fontSize="14px" fontWeight="400" color="#fff">
+                  {upsertPurpose === "update" ? "Update" : "Create"}
+                </Typography>
+              )}
             </div>
           </div>
         </div>

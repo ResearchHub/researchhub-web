@@ -35,6 +35,7 @@ import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import Stack from "@mui/material/Stack";
 import ReferenceItemFieldCreatorTagInput from "../../form/ReferenceItemFieldCreatorTagInput";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
+import dayjs from "dayjs";
 
 type Props = {};
 
@@ -99,7 +100,10 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
     sortSchemaFieldKeys(Object.keys(localReferenceFields)).map(
       (field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
         const label = resolveFieldKeyLabels(field_key),
-          value = localReferenceFields[field_key],
+          value =
+            field_key === "date"
+              ? dayjs(localReferenceFields[field_key]).format("MM-DD-YYYY")
+              : localReferenceFields[field_key],
           isRequired = false;
         // isRequired = requiredFieldsSet.has(field_key);
 
@@ -153,7 +157,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
       open={isDrawerOpen}
       sx={{
         width: "0",
-        zIndex: 4 /* AppTopBar zIndex is 3 */,
+        zIndex: 6 /* AppTopBar zIndex is 3 */,
         height: "100%",
       }}
     >
@@ -233,6 +237,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
           bottom: 0,
           boxSizing: "border-box",
           left: 0,
+          zIndex: 7,
           minHeight: 60,
           padding: "0 24px",
           position: "sticky",
