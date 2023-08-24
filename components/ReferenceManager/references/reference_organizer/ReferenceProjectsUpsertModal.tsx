@@ -6,7 +6,7 @@ import {
 } from "~/config/utils/nullchecks";
 import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
 import { ID } from "~/config/types/root_types";
-import { ReactElement, SyntheticEvent } from "react";
+import { ReactElement, SyntheticEvent, useEffect, useRef } from "react";
 import { Typography } from "@mui/material";
 import { upsertReferenceProject } from "./api/upsertReferenceProject";
 import { useReferenceActiveProjectContext } from "./context/ReferenceActiveProjectContext";
@@ -16,6 +16,7 @@ import DropdownMenu from "../../menu/DropdownMenu";
 import dynamic from "next/dynamic";
 import ReferenceCollaboratorsSection from "./ReferenceCollaboratorsSection";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
+import { useRouter } from "next/router";
 
 const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
@@ -37,6 +38,14 @@ export default function ReferenceProjectsUpsertModal({
     upsertPurpose,
   } = useReferenceProjectUpsertContext();
   const { resetProjectsFetchTime } = useReferenceActiveProjectContext();
+  const router = useRouter();
+  const nameChanged = useRef(false);
+
+  useEffect(() => {
+    if (!isModalOpen) {
+      nameChanged.current = false;
+    }
+  }, [isModalOpen]);
 
   const handleCloseModal = (event?: SyntheticEvent) => {
     onCloseModal && onCloseModal(event);
@@ -74,6 +83,18 @@ export default function ReferenceProjectsUpsertModal({
         resetProjectsFetchTime();
         onUpsertSuccess && onUpsertSuccess(result);
         handleCloseModal();
+
+        if (nameChanged) {
+          const slugsTilNow = router.query.slug
+            .slice(0, router.query.slug.length - 1)
+            .join("/");
+
+          router.replace(
+            `/reference-manager/${
+              router.query.organization
+            }/${slugsTilNow}/${encodeURIComponent(projectName)}`
+          );
+        }
       },
       onError: emptyFncWithMsg,
       payload: formattedPayload,
