@@ -1,6 +1,7 @@
 import { filterNull } from "~/config/utils/nullchecks";
 import { ID, NullableString } from "~/config/types/root_types";
 import { ProjectValue } from "../../reference_organizer/context/ReferenceProjectsUpsertContext";
+import dayjs from "dayjs";
 
 export type ReferenceTableRowDataType = {
   // NOTE: Logical ordering for display reason
@@ -63,7 +64,7 @@ function formatArtwork(datum: any): ReferenceTableRowDataType {
       lastAuthor?.last_name ?? ""
     }`,
     hubs: "",
-    published_date: date ?? access_date,
+    published_date: dayjs(date).format("MM-DD-YYYY"),
     raw_data: datum,
   };
 }
@@ -87,7 +88,7 @@ function formatManuscript(datum: any): ReferenceTableRowDataType {
       lastAuthor?.last_name ?? ""
     }`,
     hubs: "",
-    published_date: date ?? access_date,
+    published_date: dayjs(date).format("MM-DD-YYYY"),
     raw_data: datum,
     actions: null,
   };
