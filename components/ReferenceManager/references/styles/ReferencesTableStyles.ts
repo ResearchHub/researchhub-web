@@ -3,6 +3,11 @@ export const DATA_GRID_STYLE_OVERRIDE = {
     cursor: "pointer",
   },
 
+  // Hide checkbox for disabled rows
+  ".Mui-disabled.MuiDataGrid-checkboxInput": {
+    display: "none",
+  },
+
   border: "1px solid #E9EAEF",
   // minHeight: "300px",
   "&	.MuiDataGrid-overlayWrapper": {

@@ -1,32 +1,32 @@
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { ID } from '~/config/types/root_types';
-import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
-import { IconButton, ListItemIcon, ListItemText } from '@mui/material';
-import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import IosShareIcon from '@mui/icons-material/IosShare';
-import MenuList from '@mui/material/MenuList';
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { ID } from "~/config/types/root_types";
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import { IconButton, ListItemIcon, ListItemText } from "@mui/material";
+import MenuList from "@mui/material/MenuList";
+import { faTrashCan } from "@fortawesome/pro-light-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/pro-regular-svg-icons";
 
 interface Props {
   refId: ID;
-  onDelete: Function;
-  onExport: Function;
+  handleDelete: Function;
+  handleMetadataAction: (event) => void;
 }
 
-const ReferenceItemOptsDropdown = ({ refId, onDelete, onExport }: Props) => {
-  
-
-  const handleDelete = (e) => {
-    onDelete();
-  }
-  const handleExport = (e) => {
-    onExport();
-  }  
+const ReferenceItemOptsDropdown = ({
+  refId,
+  handleDelete,
+  handleMetadataAction,
+}: Props) => {
+  const _handleDelete = (e) => {
+    handleDelete(refId);
+  };
 
   const handleIconButtonClick = (originalOnClick) => (e) => {
     e.stopPropagation();
-    originalOnClick(e); 
+    originalOnClick(e);
   };
 
   return (
@@ -35,48 +35,54 @@ const ReferenceItemOptsDropdown = ({ refId, onDelete, onExport }: Props) => {
         const originalOnClick = bindTrigger(popupState).onClick;
         return (
           <>
-            <IconButton onClick={handleIconButtonClick(originalOnClick)} sx={{
-              padding: 1,
-              fontSize: "24px",
-              '&:hover': {
-                background: "rgba(25, 118, 210, 0.04) !important",
-              }
-            }}>
+            <IconButton
+              onClick={handleIconButtonClick(originalOnClick)}
+              sx={{
+                padding: 1,
+                fontSize: "24px",
+                "&:hover": {
+                  background: "rgba(25, 118, 210, 0.04) !important",
+                },
+              }}
+            >
               <MoreVertIcon />
             </IconButton>
 
             <Menu
               {...bindMenu(popupState)}
               anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
+                vertical: "bottom",
+                horizontal: "right",
               }}
               transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+                vertical: "top",
+                horizontal: "right",
+              }}
+              onClick={(e) => {
+                // For touch devices, we need to stop propagation so that the "row click action" event does not get triggered
+                e.stopPropagation();
               }}
             >
-              <MenuList>
-              <MenuItem onClick={handleExport}>
-                <ListItemIcon >
-                  <IosShareIcon sx={{ fontSize: "18px" }} />
-                </ListItemIcon>
-                <ListItemText>Export</ListItemText>
-              </MenuItem>            
-              <MenuItem onClick={handleDelete} sx={{ columnGap: 0 }}>
-                <ListItemIcon>
-                    <DeleteForeverOutlinedIcon sx={{ fontSize: "18px" }} />
-                </ListItemIcon>
-                <ListItemText>Delete</ListItemText>
-              </MenuItem>
+              <MenuList sx={{ p: 0 }}>
+                <MenuItem onClick={handleMetadataAction} sx={{ columnGap: 0 }}>
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={faInfoCircle} fontSize={20} />
+                  </ListItemIcon>
+                  <ListItemText>Edit Metadata</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={_handleDelete} sx={{ columnGap: 0 }}>
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={faTrashCan} fontSize={20} />
+                  </ListItemIcon>
+                  <ListItemText>Delete</ListItemText>
+                </MenuItem>
               </MenuList>
             </Menu>
           </>
-
-        )
+        );
       }}
     </PopupState>
-  )
-}
+  );
+};
 
 export default ReferenceItemOptsDropdown;

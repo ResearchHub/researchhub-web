@@ -1,5 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   DataGrid,
   GridCell,
@@ -38,19 +38,23 @@ import DocumentViewer from "~/components/Document/DocumentViewer";
 import { ID } from "~/config/types/root_types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faBookOpen } from "@fortawesome/pro-regular-svg-icons";
-import { faMaximize } from "@fortawesome/pro-light-svg-icons";
 import { IconButton, Tooltip } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Stack from "@mui/material/Stack";
 import OpenWithOutlinedIcon from "@mui/icons-material/OpenWithOutlined";
 import ReferenceItemOptsDropdown from "../reference_item/ReferenceItemOptsDropdown";
+import { faFolderOpen } from "@fortawesome/pro-solid-svg-icons";
+import { useHasTouchCapability } from "~/config/utils/device";
 
 type Props = {
   createdReferences: any[];
+  rowSelectionModel: (string | number)[];
   handleFileDrop: (files: any[]) => void;
-  setSelectedReferenceIDs: (refs: any[]) => void;
-  setSelectedFolderIds: (refs: any[]) => void;
+  handleRowSelection: (ref: any) => void;
+  handleDelete: (refId: GridRowId) => void;
+  handleClearSelection: () => void;
   loading?: boolean | undefined;
+  selectedRows: GridRowId[];
 };
 
 export type PreloadRow = {
@@ -99,8 +103,11 @@ function useEffectFetchReferenceCitations({
 export default function ReferencesTable({
   createdReferences,
   handleFileDrop,
-  setSelectedReferenceIDs,
-  setSelectedFolderIds,
+  rowSelectionModel,
+  selectedRows,
+  handleRowSelection,
+  handleClearSelection,
+  handleDelete,
   loading,
 }: Props) {
   const {
@@ -118,6 +125,8 @@ export default function ReferencesTable({
   const [rowDragged, setRowDragged] = useState();
   const [rowHovered, setRowHovered] = useState<null | ID>(null);
   const { currentOrg } = useOrgs();
+  const hasTouchCapability = useHasTouchCapability();
+  const tableRef = useRef(null);
 
   const router = useRouter();
   const apiRef = useGridApiRef();
@@ -190,6 +199,24 @@ export default function ReferencesTable({
     }
   };
 
+  const openFolder = ({ row, event }) => {
+    let url = `/reference-manager/${
+      router.query.organization
+    }/${router.query!.slug!.join("/")}/${row.title}`;
+
+    if (row.id.includes("parent")) {
+      url = `/reference-manager/${router.query.organization}/${router.query.slug
+        ?.slice(0, router.query.slug.length - 2)
+        .join("/")}/${row.title}`;
+    }
+
+    if (event && event.metaKey) {
+      window.open(url, "_blank");
+    } else {
+      router.push(url);
+    }
+  };
+
   const {
     activeProject,
     setActiveProject,
@@ -246,6 +273,61 @@ export default function ReferencesTable({
       }
     : null;
 
+  const handleSingleClick = (params, event, _details): void => {
+    // Ignore checkbox click
+    if (event.target.matches('input[type="checkbox"], .action-button-class')) {
+      event.stopPropagation();
+      return;
+    }
+
+    if (event.metaKey) {
+      // If meta key is pressed, add or remove from the selection
+      if (selectedRows.includes(params.id)) {
+        handleRowSelection(selectedRows.filter((id) => id !== params.id));
+      } else {
+        handleRowSelection([...selectedRows, params.id]);
+      }
+    } else {
+      // If meta key is not pressed, replace the selection
+      // Without timeout, double click will not be reached since the state update will interrupt it.
+      setTimeout(() => {
+        handleRowSelection([params.id]);
+      }, 150);
+    }
+
+    if (hasTouchCapability) {
+      handleOpenAction({ row: params.row, id: params.id });
+      event.stopPropagation();
+    }
+  };
+
+  const handleDoubleClick = (params, event, _details): void => {
+    handleOpenAction({ row: params.row, id: params.id });
+  };
+
+  const handleOpenAction = ({ id, row }): void => {
+    if (row.is_loading) return;
+
+    const rowId = id.toString();
+    if (rowId.includes("folder")) {
+      openFolder({ row: row, event });
+    } else {
+      setReferenceItemDatum({
+        ...nullthrows(
+          referenceTableRowData.find((item) => item.id === row?.id)
+        ),
+      });
+
+      setIsViewerOpen(true);
+    }
+  };
+
+  const handleMetadataAction = ({ event, row }): void => {
+    event.stopPropagation();
+    setReferenceItemDatum(row);
+    setIsDrawerOpen(true);
+  };
+
   const formattedReferenceRows = !isLoading
     ? nullthrows(
         formatReferenceRowData(
@@ -275,12 +357,20 @@ export default function ReferencesTable({
         <DataGrid
           apiRef={apiRef}
           autoHeight
-          // disableRowSelectionOnClick
           checkboxSelection
+          disableRowSelectionOnClick
+          rowReordering
+          isRowSelectable={(params) =>
+            String(params.id).includes("parent") || params.row.is_loading
+              ? false
+              : true
+          }
           columns={columnsFormat}
           sx={DATA_GRID_STYLE_OVERRIDE}
           rows={formattedReferenceRows}
+          loading={isLoading || isFetchingProjects}
           hideFooter
+          ref={tableRef}
           className={
             formattedReferenceRows.length === 0 ? "empty-data-grid" : ""
           }
@@ -306,95 +396,46 @@ export default function ReferencesTable({
               },
             },
           }}
-          loading={isLoading || isFetchingProjects}
-          onCellDoubleClick={(params, event, _details): void => {
-            const projectIdAsString = params.id.toString();
-            if (projectIdAsString.includes("folder")) {
-              return;
-            }
-
-            event.stopPropagation();
-            setReferenceItemDatum({
-              ...nullthrows(
-                referenceTableRowData.find(
-                  (item) => item.id === params?.row?.id
-                )
-              ),
-            });
-
-            setIsViewerOpen(true);
-          }}
-          rowReordering
-          onCellClick={(params, event, _details): void => {
-            const projectIdAsString = params.id.toString();
-
-            if (projectIdAsString.includes("folder")) {
-              const projectId = projectIdAsString.split("-folder")[0];
-
-              let url = `/reference-manager/${
-                router.query.organization
-              }/${router.query.slug.join("/")}/${params.row.title}`;
-
-              if (projectIdAsString.includes("parent")) {
-                url = `/reference-manager/${
-                  router.query.organization
-                }/${router.query.slug
-                  ?.slice(0, router.query.slug.length - 2)
-                  .join("/")}/${params.row.title}`;
-              }
-
-              if (event.metaKey) {
-                window.open(url, "_blank");
-              } else {
-                router.push(url);
-              }
-            }
-          }}
-          onRowSelectionModelChange={(selectedReferenceIDs) => {
-            const folderIds: GridRowId[] = [];
-            const referenceIds: GridRowId[] = [];
-            selectedReferenceIDs.forEach((referenceId) => {
-              const projectIdString = referenceId.toString();
-              if (projectIdString.includes("folder")) {
-                folderIds.push(referenceId);
-              } else {
-                referenceIds.push(referenceId);
-              }
-            });
-            setSelectedFolderIds(folderIds);
-            setSelectedReferenceIDs(referenceIds);
+          onCellClick={handleSingleClick}
+          onCellDoubleClick={handleDoubleClick}
+          rowSelectionModel={rowSelectionModel}
+          onRowSelectionModelChange={(ids) => {
+            handleRowSelection(ids);
           }}
           slots={{
             row: (row) => {
               const { row: refDataRow } = row;
               const typedRefDataRow = refDataRow as ReferenceTableRowDataType;
 
-              let folderRow = false;
+              let rowType: "FOLDER" | "BACK-TO-PARENT" | "REFERENCE" =
+                "REFERENCE";
               const idAsString = typedRefDataRow!.id!.toString();
 
-              if (idAsString.includes("folder")) {
-                folderRow = true;
+              if (idAsString.includes("parent")) {
+                rowType = "BACK-TO-PARENT";
+              } else if (idAsString.includes("folder")) {
+                rowType = "FOLDER";
               }
-              if (row.row.id === rowHovered) {
+              if (
+                (row.row.id === rowHovered && !row.row.is_loading) ||
+                hasTouchCapability
+              ) {
                 const hoveredRow = referenceTableRowData.find(
                   (item) => item.id === row?.row?.id
                 );
-
-                if (!hoveredRow) {
-                  return false;
-                }
 
                 typedRefDataRow.actions = (
                   <div style={{ marginRight: 10 }}>
                     {/* Replace with your actual action buttons */}
                     <Stack direction="row" spacing={0}>
-                      {!folderRow && (
+                      {rowType === "REFERENCE" && hoveredRow && (
                         <>
-                          {hoveredRow.attachment && (
+                          {hoveredRow.attachment && !hasTouchCapability && (
                             <Tooltip title="Open" placement="top">
                               <IconButton
                                 aria-label="Open"
-                                onClick={() => {
+                                onClick={(event) => {
+                                  event.stopPropagation();
                                   setReferenceItemDatum(hoveredRow);
                                   setIsViewerOpen(true);
                                 }}
@@ -411,29 +452,42 @@ export default function ReferencesTable({
                               </IconButton>
                             </Tooltip>
                           )}
-                          <Tooltip title="Edit Metadata" placement="top">
-                            <IconButton
-                              aria-label="Edit Metadata"
-                              sx={{
-                                padding: 1,
-                                fontSize: "22px",
-                                "&:hover": {
-                                  background:
-                                    "rgba(25, 118, 210, 0.04) !important",
-                                },
-                              }}
-                              onClick={() => {
-                                setReferenceItemDatum(hoveredRow);
-                                setIsDrawerOpen(true);
-                              }}
-                            >
-                              <InfoOutlinedIcon fontSize="inherit" />
-                            </IconButton>
-                          </Tooltip>
+                          {!hasTouchCapability && (
+                            <Tooltip title="Edit Metadata" placement="top">
+                              <IconButton
+                                aria-label="Edit Metadata"
+                                sx={{
+                                  padding: 1,
+                                  fontSize: "22px",
+                                  "&:hover": {
+                                    background:
+                                      "rgba(25, 118, 210, 0.04) !important",
+                                  },
+                                }}
+                                onClick={(event) => {
+                                  handleMetadataAction({
+                                    event,
+                                    row: hoveredRow,
+                                  });
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faInfoCircle}
+                                  fontSize={20}
+                                />
+                              </IconButton>
+                            </Tooltip>
+                          )}
                         </>
                       )}
 
-                      {/* <ReferenceItemOptsDropdown refId={typedRefDataRow.id} /> */}
+                      <ReferenceItemOptsDropdown
+                        refId={typedRefDataRow.id}
+                        handleDelete={handleDelete}
+                        handleMetadataAction={(event) =>
+                          handleMetadataAction({ event, row: hoveredRow })
+                        }
+                      />
                     </Stack>
                   </div>
                 );
@@ -447,14 +501,20 @@ export default function ReferencesTable({
                       rowDraggedOver === row.row.id && colors.NEW_BLUE(1),
                     color: rowDraggedOver === row.row.id && "#fff",
                   }}
-                  onDragEnter={() => folderRow && setRowDraggedOver(row.row.id)}
-                  onDragLeave={() => folderRow && setRowDraggedOver(null)}
+                  onDragEnter={() =>
+                    rowType === "FOLDER" && setRowDraggedOver(row.row.id)
+                  }
+                  onDragLeave={() =>
+                    rowType === "FOLDER" && setRowDraggedOver(null)
+                  }
                   onDrag={() => {
                     setDragStarted(true);
                     setRowDragged(row.row.id);
                   }}
-                  onDrop={() => folderRow && rowDropped(row.row)}
-                  onMouseEnter={() => setRowHovered(row.row.id)}
+                  onDrop={() => rowType === "FOLDER" && rowDropped(row.row)}
+                  onMouseEnter={() => {
+                    setRowHovered(row.row.id);
+                  }}
                   onMouseLeave={() => setRowHovered(null)}
                 />
               );
@@ -485,7 +545,7 @@ export default function ReferencesTable({
                       whiteSpace: "nowrap",
                     }}
                   >
-                    <GridCell {...cell} onClick={(e) => e.stopPropagation()} />
+                    <GridCell {...cell} />
                   </div>
                 );
               }

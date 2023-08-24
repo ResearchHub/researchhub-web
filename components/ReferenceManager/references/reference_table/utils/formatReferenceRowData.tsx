@@ -16,6 +16,7 @@ export type ReferenceTableRowDataType = {
   raw_data?: any;
   actions?: any;
   attachment?: string;
+  is_loading?: boolean;
 };
 
 function formatAuthors(
@@ -102,6 +103,7 @@ function formatLoading(datum): ReferenceTableRowDataType {
     last_author: "load",
     hubs: "load",
     published_date: "load",
+    is_loading: true,
   };
 }
 
