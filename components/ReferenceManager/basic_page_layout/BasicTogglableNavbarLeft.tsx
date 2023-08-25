@@ -45,7 +45,7 @@ type Props = {
 
 const ContentWrapper = ({ children, width, isOpen, setIsOpen }) => {
   const { width: winWidth, height: winHeight } = useWindow();
-  const displayAsDrawer = winWidth && winWidth < breakpoints.desktop.int;
+  const displayAsDrawer = winWidth && winWidth < breakpoints.medium.int;
 
   if (displayAsDrawer) {
     return (

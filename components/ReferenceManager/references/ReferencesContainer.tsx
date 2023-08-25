@@ -17,6 +17,7 @@ import {
   ReactNode,
   useEffect,
   useRef,
+  createRef,
   SyntheticEvent,
 } from "react";
 import { connect } from "react-redux";
@@ -113,11 +114,12 @@ function ReferencesContainer({
   const [_loading, setLoading] = useState<boolean>(false);
   const [referencesSearchLoading, setReferencesSearchLoading] =
     useState<boolean>(false);
-
   const { isRefManagerSidebarOpen, setIsRefManagerSidebarOpen } = navContext();
   const isOnOrgTab = !isEmpty(router.query?.org_refs);
   const isOnMyRefs = !isEmpty(router.query?.my_refs);
-
+  const [isSearchInputFullWidth, setIsSearchInputFullWidth] =
+    useState<boolean>(false);
+  const mainContentRef = createRef<HTMLDivElement>();
   const onOrgUpdate = (): void => {
     refetchOrgs();
     setIsOrgModalOpen(false);
@@ -157,6 +159,7 @@ function ReferencesContainer({
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     ReactTooltip.rebuild();
   }, [selectedRows]);
@@ -246,6 +249,38 @@ function ReferencesContainer({
       setCreatedReferences(newReferences);
     }
   }, [wsResponse]);
+
+  useEffect(() => {
+    console.log("111", mainContentRef.current);
+    if (mainContentRef.current) {
+      console.log("222");
+
+      // 2. Create an instance of ResizeObserver.
+      const resizeObserver = new ResizeObserver((entries) => {
+        // 3. Define a callback function that will handle the observed changes.
+        for (const entry of entries) {
+          if (entry.target === mainContentRef.current) {
+            const { width } = entry.contentRect;
+            console.log(`Element width: ${width}px`);
+            if (width < 700 && !isSearchInputFullWidth) {
+              console.log("set full width");
+              setIsSearchInputFullWidth(true);
+            } else if (width >= 700 && isSearchInputFullWidth) {
+              console.log("set NOT full width");
+              setIsSearchInputFullWidth(false);
+            }
+          }
+        }
+      });
+
+      // 4. Use the observe() method to start observing the element.
+      resizeObserver.observe(mainContentRef.current);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
+    }
+  }, [mainContentRef]);
 
   const handleRowSelection = (ids: (string | number)[]) => {
     setSelectedRows(ids);
@@ -373,10 +408,19 @@ function ReferencesContainer({
         />
         <ReferenceManualUploadDrawer key="root-nav" />
         <ReferenceItemDrawer />
-        <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
+        <Box
+          flexDirection="row"
+          display="flex"
+          sx={{
+            maxWidth: {
+              xs: "100vw",
+              sm: "calc(100vw - 79px)",
+            },
+          }}
+        >
           <BasicTogglableNavbarLeft
             currentOrgProjects={currentOrgProjects}
-            isOpen={true}
+            isOpen={isRefManagerSidebarOpen}
             navWidth={LEFT_MAX_NAV_WIDTH}
             openOrgSettingsModal={() => setIsOrgModalOpen(true)}
             setIsOpen={setIsRefManagerSidebarOpen}
@@ -385,13 +429,17 @@ function ReferencesContainer({
             sx={{
               display: "flex",
               flexDirection: "column",
-              padding: "32px 32px",
+              padding: {
+                xs: "15px",
+                sm: "28px",
+              },
               width: "100%",
               overflow: "auto",
               boxSizing: "border-box",
               flex: 1,
             }}
             className={"references-section"}
+            ref={mainContentRef}
           >
             <div
               style={{
@@ -499,9 +547,10 @@ function ReferencesContainer({
                     display: "flex",
                     flexDirection: "row",
                     marginBottom: "20px",
-                    height: 36,
+                    // height: 36,
                     columnGap: "15px",
                     width: "100%",
+                    ...(isSearchInputFullWidth && { flexWrap: "wrap" }),
                   }}
                 >
                   <DropdownMenu
@@ -679,16 +728,20 @@ function ReferencesContainer({
                     </>
                   )}
 
-                  {/* <FormInput
-                    placeholder={"Search for a reference"}
-                    containerStyle={styles.formInputContainer}
+                  <FormInput
+                    placeholder={"Search references"}
+                    containerStyle={[
+                      styles.formInputContainer,
+                      isSearchInputFullWidth &&
+                        styles.formInputContainerFullWidth,
+                    ]}
                     inputStyle={styles.inputStyle}
                     icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
                     iconStyles={styles.searchIcon}
                     onSearchClick={onSearchClick}
                     onKeyDown={onEnterClicked}
                     onChange={(id, value) => setSearchQuery(value)}
-                  /> */}
+                  />
                 </Box>
               </Box>
               <ReferencesTable
@@ -756,6 +809,7 @@ const styles = StyleSheet.create({
     padding: "8px 16px",
     height: 36,
     boxSizing: "border-box",
+    textWrap: "nowrap",
   },
   secondary: {
     border: `1px solid ${grey[700]}`,
@@ -786,6 +840,14 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     // width: "unset",
     maxWidth: 400,
+    // flex: "1 1 40% !important",
+  },
+  formInputContainerFullWidth: {
+    width: "100%",
+    maxWidth: "unset",
+    marginLeft: "unset",
+    marginTop: 15,
+    // flex: "1 1 100% !important",
   },
   inputStyle: {
     fontSize: 14,

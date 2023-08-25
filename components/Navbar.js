@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/pro-light-svg-icons";
+import { faBars } from "@fortawesome/pro-regular-svg-icons";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { useWeb3Modal } from "@web3modal/react";
 import { useAccount } from "wagmi";
@@ -24,9 +24,6 @@ import RHLogo from "./Home/RHLogo";
 import LoginModal from "./Login/LoginModal";
 import Login from "./Login/Login";
 import Button from "./Form/Button";
-import { faArrowLeftLong } from "@fortawesome/pro-regular-svg-icons";
-import IconButton from "./Icons/IconButton";
-import Link from "next/link";
 import BackBtn from "./shared/BackBtn";
 import { navContext } from "./contexts/NavigationContext";
 
@@ -73,15 +70,13 @@ const Navbar = (props) => {
   ) : pathname.includes("leaderboard") ? (
     "Leaderboard"
   ) : pathname.includes("reference-manager") ? (
-    <div style={{ display: "flex", alignItems: "center", marginLeft: -11 }}>
+    <div style={{ display: "flex", alignItems: "center" }}>
       <div
         onClick={() => {
           setIsRefManagerSidebarOpen(!isRefManagerSidebarOpen);
         }}
         style={{
-          border: "1px solid #d0d7de",
-          padding: "6px 7px",
-          color: "#636060",
+          color: `${colors.BLACK(1)}`,
           fontSize: 19,
           lineHeight: "16px",
           borderRadius: "7px",
@@ -256,8 +251,11 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: 5,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: 10,
+      padding: "10px 15px 10px 30px",
       justifyContent: "space-between",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      padding: "10px 15px 10px 15px",
     },
   },
   unstickyNavbar: {
