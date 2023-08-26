@@ -546,8 +546,6 @@ function ReferencesContainer({
                     alignItems: "center",
                     display: "flex",
                     flexDirection: "row",
-                    marginBottom: "20px",
-                    // height: 36,
                     columnGap: "15px",
                     width: "100%",
                     ...(isSearchInputFullWidth && { flexWrap: "wrap" }),

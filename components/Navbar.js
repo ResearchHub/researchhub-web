@@ -75,13 +75,7 @@ const Navbar = (props) => {
         onClick={() => {
           setIsRefManagerSidebarOpen(!isRefManagerSidebarOpen);
         }}
-        style={{
-          color: `${colors.BLACK(1)}`,
-          fontSize: 19,
-          lineHeight: "16px",
-          borderRadius: "7px",
-          marginRight: 15,
-        }}
+        className={css(styles.burgerIcon)}
       >
         <FontAwesomeIcon icon={faBars} />
       </div>
@@ -386,7 +380,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     height: "100%",
     marginRight: 16,
-    marginTop: 4, // arbitrary to match nav visual
+    lineHeight: "16px",
     textAlign: "center",
   },
   oauthContainer: {

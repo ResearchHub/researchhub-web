@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { breakpoints } from "~/config/themes/screen";
 
 type NavContextType = {
   isRefManagerSidebarOpen: boolean;
@@ -17,7 +18,11 @@ export const navContext = () => useContext(NavigationContext);
 export const NavigationContextProvider = ({ children }) => {
   const [isRefManagerSidebarOpen, setIsRefManagerSidebarOpen] = useState(false);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (window.innerWidth >= breakpoints.large.int) {
+      setIsRefManagerSidebarOpen(true);
+    }
+  }, []);
 
   return (
     <NavigationContext.Provider

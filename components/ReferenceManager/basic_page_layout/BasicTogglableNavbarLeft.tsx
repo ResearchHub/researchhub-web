@@ -56,6 +56,9 @@ const ContentWrapper = ({ children, width, isOpen, setIsOpen }) => {
         ModalProps={{
           hideBackdrop: false,
           disableScrollLock: true,
+          style: {
+            backgroundColor: "rgba(0,0,0,0)",
+          },
         }}
         PaperProps={{
           sx: { width },

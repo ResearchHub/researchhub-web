@@ -60,7 +60,11 @@ export default function OrganizationPopover({
         onOrgChange={onOrgChange}
       />
       <ResearchHubPopover
-        containerStyle={{ marginLeft: "10px", marginTop: "-10px", zIndex: 11 }}
+        containerStyle={{
+          marginLeft: "10px",
+          marginTop: "-10px",
+          zIndex: 9999,
+        }}
         isOpen={isPopoverOpen}
         popoverContent={
           <div className={css(styles.popoverBodyContent)}>

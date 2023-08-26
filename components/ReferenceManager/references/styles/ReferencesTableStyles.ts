@@ -1,27 +1,4 @@
 export const DATA_GRID_STYLE_OVERRIDE = {
-  // "@media (max-width: 768px)": {
-  // ".MuiDataGrid-root": {
-  // ".MuiDataGrid-windowContainer": {
-  //   display: "block"
-  // },
-  // ".MuiDataGrid-row": {
-  //   display: "block",
-  //   marginBottom: "1rem",
-  //   boxShadow: "0 0 10px rgba(0,0,0,0.1)"
-  // },
-  // ".MuiDataGrid-cell": {
-  //   display: "block",
-  //   width: "100%",
-  //   boxSizing: "border-box",
-  //   padding: "0.5rem 1rem",
-  //   borderBottom: "1px solid #e0e0e0",
-  //   "&:last-child": {
-  //     borderBottom: "none"
-  //   }
-  // },
-  // },
-  // },
-
   "& .MuiDataGrid-row": {
     cursor: "pointer",
   },
