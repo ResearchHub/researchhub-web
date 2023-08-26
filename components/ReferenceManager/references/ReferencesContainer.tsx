@@ -1,6 +1,7 @@
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import {
   DEFAULT_PROJECT_VALUES,
+  ProjectValue,
   useReferenceProjectUpsertContext,
 } from "./reference_organizer/context/ReferenceProjectsUpsertContext";
 import {
@@ -67,6 +68,7 @@ import { navContext } from "~/components/contexts/NavigationContext";
 import Button from "~/components/Form/Button";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons";
 import { grey } from "@mui/material/colors";
+import ReferenceProjectsUpsertModal from "../references/reference_organizer/ReferenceProjectsUpsertModal";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -91,8 +93,13 @@ function ReferencesContainer({
   const { currentOrg, refetchOrgs } = useOrgs();
   const router = useRouter();
 
-  const { activeProject, currentOrgProjects, resetProjectsFetchTime } =
-    useReferenceActiveProjectContext();
+  const {
+    activeProject,
+    currentOrgProjects,
+    resetProjectsFetchTime,
+    setCurrentOrgProjects,
+    setActiveProject,
+  } = useReferenceActiveProjectContext();
   const { setReferencesFetchTime } = useReferenceTabContext();
   const {
     setIsModalOpen: setIsProjectUpsertModalOpen,
@@ -198,6 +205,39 @@ function ReferencesContainer({
         },
       });
     }
+  };
+
+  const addFolderToChildren = (result) => {
+    let newOrgProjects: ProjectValue[] = [...currentOrgProjects];
+    if (!result.parent) {
+      newOrgProjects.push(result);
+    } else {
+      const newActiveProject = { ...activeProject };
+      newActiveProject.children = [...newActiveProject.children, result];
+      setActiveProject(newActiveProject);
+
+      newOrgProjects = setNestedProjects({
+        activeProject: newActiveProject,
+        allProjects: currentOrgProjects,
+      });
+    }
+
+    setCurrentOrgProjects(newOrgProjects);
+  };
+
+  const setNestedProjects = ({ activeProject, allProjects }) => {
+    const newOrgProjects = allProjects.map((proj) => {
+      if (proj.id === activeProject.id) {
+        return activeProject;
+      }
+      proj.children = setNestedProjects({
+        activeProject,
+        allProjects: proj.children,
+      });
+      return proj;
+    });
+
+    return newOrgProjects;
   };
 
   const onSearchClick = (e) => {
@@ -406,6 +446,7 @@ function ReferencesContainer({
           onClose={(): void => setIsBibModalOpen(false)}
           selectedReferenceIDs={selectedRows}
         />
+        <ReferenceProjectsUpsertModal onUpsertSuccess={addFolderToChildren} />
         <ReferenceManualUploadDrawer key="root-nav" />
         <ReferenceItemDrawer />
         <Box

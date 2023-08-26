@@ -19,7 +19,6 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import OrganizationPopover from "~/components/Tooltips/Organization/OrganizationPopover";
-import ReferenceProjectsUpsertModal from "../references/reference_organizer/ReferenceProjectsUpsertModal";
 import Typography from "@mui/material/Typography";
 import colors from "~/config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -38,7 +37,7 @@ type Props = {
   isOpen: boolean;
   navWidth: number;
   setIsOpen: (flag: boolean) => void;
-  openOrgSettingsModal: Function;
+  openOrgSettingsModal: () => void;
   theme?: Theme;
   currentOrgProjects: any[];
 };
@@ -98,8 +97,6 @@ export default function BasicTogglableNavbarLeft({
   const { setIsModalOpen: setIsProjectsUpsertModalOpen } =
     useReferenceProjectUpsertContext();
   const currentOrg = getCurrentUserCurrentOrg();
-  const { setCurrentOrgProjects, setActiveProject, activeProject } =
-    useReferenceActiveProjectContext();
   const router = useRouter();
   const [childrenOpenMap, setChildrenOpenMap] = useState({});
 
@@ -146,39 +143,6 @@ export default function BasicTogglableNavbarLeft({
   //   }
   // };
 
-  const setNestedProjects = ({ activeProject, allProjects }) => {
-    const newOrgProjects = allProjects.map((proj) => {
-      if (proj.id === activeProject.id) {
-        return activeProject;
-      }
-      proj.children = setNestedProjects({
-        activeProject,
-        allProjects: proj.children,
-      });
-      return proj;
-    });
-
-    return newOrgProjects;
-  };
-
-  const addFolderToChildren = (result) => {
-    let newOrgProjects: ProjectValue[] = [...currentOrgProjects];
-    if (!result.parent) {
-      newOrgProjects.push(result);
-    } else {
-      const newActiveProject = { ...activeProject };
-      newActiveProject.children = [...newActiveProject.children, result];
-      setActiveProject(newActiveProject);
-
-      newOrgProjects = setNestedProjects({
-        activeProject: newActiveProject,
-        allProjects: currentOrgProjects,
-      });
-    }
-
-    setCurrentOrgProjects(newOrgProjects);
-  };
-
   const currentOrgSlug = currentOrg?.slug ?? null;
   const refProjectsNavbarEls = currentOrgProjects?.map((referenceProject) => {
     return renderNestedReferenceProjectsNavbarEl({
@@ -192,7 +156,6 @@ export default function BasicTogglableNavbarLeft({
 
   return (
     <ContentWrapper width={navWidth} isOpen={isOpen} setIsOpen={setIsOpen}>
-      <ReferenceProjectsUpsertModal onUpsertSuccess={addFolderToChildren} />
       <Box className="LeftNavbarUserSection">
         <Box
           sx={{

@@ -93,6 +93,7 @@ export default function ReferenceProjectsUpsertModal({
 
     upsertReferenceProject({
       onSuccess: (result) => {
+        console.log("success");
         resetProjectsFetchTime();
         onUpsertSuccess && onUpsertSuccess(result);
         handleCloseModal();
