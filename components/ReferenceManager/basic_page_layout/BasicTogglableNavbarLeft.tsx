@@ -6,7 +6,7 @@ import {
 } from "~/config/utils/nullchecks";
 import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
 import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_organizer/renderNestedReferenceProjectsNavbarEl";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { Theme } from "@mui/material/styles";
 import {
   ProjectValue,
@@ -30,6 +30,8 @@ import useWindow from "~/config/hooks/useWindow";
 import { breakpoints } from "~/config/themes/screen";
 import { StyleSheet, css } from "aphrodite";
 import { faCog } from "@fortawesome/pro-solid-svg-icons";
+import { navContext } from "~/components/contexts/NavigationContext";
+
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
 
@@ -43,10 +45,9 @@ type Props = {
 };
 
 const ContentWrapper = ({ children, width, isOpen, setIsOpen }) => {
-  const { width: winWidth, height: winHeight } = useWindow();
-  const displayAsDrawer = winWidth && winWidth < breakpoints.medium.int;
+  const { isRefManagerDisplayedAsDrawer } = navContext();
 
-  if (displayAsDrawer) {
+  if (isRefManagerDisplayedAsDrawer) {
     return (
       <Drawer
         anchor={"left"}
