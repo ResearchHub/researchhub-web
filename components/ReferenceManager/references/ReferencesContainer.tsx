@@ -834,7 +834,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     borderLeft: `1px solid ${colors.MEDIUM_GREY2(0.5)}`,
-    height: "100%",
+    height: "33px",
   },
   activeProjectLink: {
     color: colors.BLACK(),

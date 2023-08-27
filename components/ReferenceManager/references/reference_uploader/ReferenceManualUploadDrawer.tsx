@@ -7,7 +7,13 @@ import {
 } from "./reference_upload_utils";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { NAVBAR_HEIGHT as ROOT_NAVBAR_HEIGHT } from "~/components/Navbar";
-import { ReactElement, SyntheticEvent, useState, useCallback } from "react";
+import {
+  ReactElement,
+  SyntheticEvent,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
 import {
   resolveFieldKeyLabels,
   sortSchemaFieldKeys,
@@ -28,11 +34,6 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useReferenceActiveProjectContext } from "../reference_organizer/context/ReferenceActiveProjectContext";
 
-const CALCULATED_LEFT_MARGIN =
-  240 /* LOCAL_LEFT_NAV_WIDTH */ +
-  80 /* LEFT_SIDEBAR_MIN_WIDTH */ +
-  2; /* arbitrary border "breather" */
-
 export default function ReferenceManualUploadDrawer(): ReactElement {
   const { setReferencesFetchTime } = useReferenceTabContext();
   const {
@@ -49,6 +50,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
     useReferenceActiveProjectContext()?.activeProject ?? {};
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [calculatedLeftMargin, setCalculatedLeftMargin] = useState<number>(0);
   const { currentOrg } = useOrgs();
 
   const resetComponentState = useCallback((): void => {
@@ -79,6 +81,14 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
     setIsLoading,
     setReferenceSchemaValueSet,
   });
+
+  useEffect(() => {
+    const rootLeftSidebarWidth =
+      document.querySelector(".root-left-sidebar")?.clientWidth || 0;
+    const refManagerNavbarWidth =
+      document.querySelector(".ToggleableNavbarLeft")?.clientWidth || 0;
+    setCalculatedLeftMargin(rootLeftSidebarWidth + refManagerNavbarWidth + 2);
+  }, [isDrawerOpen]);
 
   const formattedSchemaInputs = [
     <ReferenceTypeSelect
@@ -157,9 +167,8 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
       <Box
         sx={{
           background: "rgba(250, 250, 252, 1)",
-          borderLeft: "1px solid #E9EAEF",
           boxSizing: "border-box",
-          marginLeft: `${CALCULATED_LEFT_MARGIN}px`,
+          marginLeft: `${calculatedLeftMargin}px`,
           marginTop: `${ROOT_NAVBAR_HEIGHT}px`,
           paddingBottom: "0px",
           position: "relative",

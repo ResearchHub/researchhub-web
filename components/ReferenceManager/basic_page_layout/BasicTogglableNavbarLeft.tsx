@@ -71,6 +71,9 @@ const ContentWrapper = ({ children, width, isOpen, setIsOpen }) => {
       <Box
         flexDirection="column"
         width={width}
+        className={
+          "ToggleableNavbarLeft" /* This classname is used in upload drawer */
+        }
         sx={{
           borderRight: "1px solid #e8e8ef",
           zIndex: 4,
