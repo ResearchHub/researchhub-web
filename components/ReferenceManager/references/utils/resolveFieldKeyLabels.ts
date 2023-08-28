@@ -12,6 +12,7 @@ const labelMap = {
   doi: "DOI",
   DOI: "DOI",
   journalAbbreviation: "Journal abbreviation",
+  note: "Extra data",
   "number-of-pages": "Number of pages",
   "number-of-volumes": "Number of volumes",
   "publisher-place": "Place",
