@@ -299,7 +299,6 @@ function ReferencesContainer({
         for (const entry of entries) {
           if (entry.target === mainContentRef.current) {
             const { width } = entry.contentRect;
-            console.log(`Element width: ${width}px`);
             if (width < WRAP_SEARCHBAR_AT_WIDTH && !isSearchInputFullWidth) {
               setIsSearchInputFullWidth(true);
             } else if (width >= WRAP_SEARCHBAR_AT_WIDTH && isSearchInputFullWidth) {
