@@ -77,6 +77,8 @@ interface Props {
   setMessage?: any;
 }
 
+const WRAP_SEARCHBAR_AT_WIDTH = 700
+
 // TODO: @lightninglu10 - fix TS.
 function ReferencesContainer({
   showMessage,
@@ -291,22 +293,16 @@ function ReferencesContainer({
   }, [wsResponse]);
 
   useEffect(() => {
-    console.log("111", mainContentRef.current);
     if (mainContentRef.current) {
-      console.log("222");
-
-      // 2. Create an instance of ResizeObserver.
       const resizeObserver = new ResizeObserver((entries) => {
-        // 3. Define a callback function that will handle the observed changes.
+        // Observe changes
         for (const entry of entries) {
           if (entry.target === mainContentRef.current) {
             const { width } = entry.contentRect;
             console.log(`Element width: ${width}px`);
-            if (width < 700 && !isSearchInputFullWidth) {
-              console.log("set full width");
+            if (width < WRAP_SEARCHBAR_AT_WIDTH && !isSearchInputFullWidth) {
               setIsSearchInputFullWidth(true);
-            } else if (width >= 700 && isSearchInputFullWidth) {
-              console.log("set NOT full width");
+            } else if (width >= WRAP_SEARCHBAR_AT_WIDTH && isSearchInputFullWidth) {
               setIsSearchInputFullWidth(false);
             }
           }
