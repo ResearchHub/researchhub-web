@@ -3,9 +3,19 @@ import { snakeCaseToNormalCase } from "~/config/utils/string";
 
 const labelMap = {
   author: "Authors",
+  "call-number": "Call number",
+  "chapter-number": "Chapter Number",
+  "collection-number": "Series number",
+  "collection-title": "Series title",
+  "container-title": "Publication title",
   date: "Publication Date (MM-DD-YYYY)",
   doi: "DOI",
   DOI: "DOI",
+  journalAbbreviation: "Journal abbreviation",
+  "number-of-pages": "Number of pages",
+  "number-of-volumes": "Number of volumes",
+  "publisher-place": "Place",
+  "title-short": "Short title",
   url: "URL",
 };
 
