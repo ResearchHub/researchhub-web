@@ -72,11 +72,6 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
   );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const hasAttachment = !isEmpty(referenceItemDatum?.attachment);
-  const _requiredFieldsSet = useMemo(
-    // NOTE: calvinhlee - this needs to be improved from BE
-    () => new Set(referenceItemDatum?.required_fields ?? []),
-    [referenceItemDatum?.id]
-  );
 
   const { currentOrg } = useOrgs();
   useEffect((): void => {
