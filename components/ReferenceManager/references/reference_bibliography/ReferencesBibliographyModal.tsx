@@ -44,8 +44,8 @@ export default function ReferencesBibliographyModal({
           const result = {
             ...fields,
             year: fields?.date?.split("-")[2],
-            author: fields.creators.map((creator): { name: string } => {
-              return { name: creator.first_name + " " + creator.last_name };
+            author: fields.author.map((creator): { name: string } => {
+              return { name: creator.given + " " + creator.family };
             }),
             identifier: [{ type: "doi", id: fields.DOI ?? fields.doi }],
             journal: { name: fields.journal_abbreviation },

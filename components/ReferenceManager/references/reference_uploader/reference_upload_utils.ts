@@ -44,7 +44,7 @@ export function parseDoiSearchResultOntoValueSet({
     schema: {
       ...referenceSchemaValueSet.schema,
       access_date: moment().format("MM-DD-YYYY"),
-      creators: (authorships ?? []).map(
+      author: (authorships ?? []).map(
         (authorship) => authorship.author?.display_name ?? ""
       ),
       date: !isEmpty(publication_date)
@@ -83,8 +83,8 @@ export const handleSubmit = ({
     referenceSchemaValueSet?.schema?.creators?.map((creatorName) => {
       const splittedName = creatorName.split(" ");
       return {
-        first_name: splittedName[0],
-        last_name: splittedName.slice(1).join(" "),
+        given: splittedName[0],
+        family: splittedName.slice(1).join(" "),
       };
     }) ?? [];
 
@@ -96,7 +96,7 @@ export const handleSubmit = ({
   } = {
     fields: {
       ...referenceSchemaValueSet.schema,
-      creators: formattedCreators,
+      author: formattedCreators,
     },
     citation_type: selectedReferenceType,
     doi: referenceSchemaValueSet.schema.DOI,

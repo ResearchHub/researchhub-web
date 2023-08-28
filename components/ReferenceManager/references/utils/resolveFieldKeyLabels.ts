@@ -2,7 +2,7 @@ import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
 import { snakeCaseToNormalCase } from "~/config/utils/string";
 
 const labelMap = {
-  creators: "Authors",
+  author: "Authors",
   date: "Publication Date (MM-DD-YYYY)",
   doi: "DOI",
   DOI: "DOI",
@@ -22,9 +22,9 @@ export const sortSchemaFieldKeys = (fieldKeys: string[]): string[] => {
   // logical ordering
   keySet.has("title") && subResult.push("title");
   keySet.has("DOI") && subResult.push("DOI");
-  keySet.has("creators") && subResult.push("creators");
+  keySet.has("author") && subResult.push("author");
   keySet.has("publication_title") && subResult.push("publication_title");
-  keySet.delete("creators");
+  keySet.delete("author");
   keySet.delete("title");
   keySet.delete("publication_title");
   keySet.delete("DOI");

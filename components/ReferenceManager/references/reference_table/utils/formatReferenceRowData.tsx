@@ -21,11 +21,11 @@ export type ReferenceTableRowDataType = {
 };
 
 function formatAuthors(
-  authors: { first_name: string; last_name: string }[]
+  authors: { given: string; family: string }[]
 ): string {
   return authors
     .map(
-      (artistEl) => `${artistEl.first_name ?? ""} ${artistEl.last_name ?? ""}`
+      (artistEl) => `${artistEl.given ?? ""} ${artistEl.family ?? ""}`
     )
     .join(", ");
 }
@@ -50,18 +50,18 @@ function formatArtwork(datum: any): ReferenceTableRowDataType {
   const {
     created_date,
     citation_type,
-    fields: { access_date, creators, date, title },
+    fields: { access_date, author, date, title },
     id,
-  } = datum ?? { fields: {}, creators: {} };
-  const lastAuthor = creators[creators.length - 1];
+  } = datum ?? { fields: {}, author: {} };
+  const lastAuthor = author[author.length - 1];
   return {
     added_date: created_date.split("T")[0],
     id,
     citation_type,
     title,
-    authors: formatAuthors(creators),
-    last_author: `${lastAuthor?.first_name ?? ""} ${
-      lastAuthor?.last_name ?? ""
+    authors: formatAuthors(author),
+    last_author: `${lastAuthor?.given ?? ""} ${
+      lastAuthor?.family ?? ""
     }`,
     hubs: "",
     published_date: dayjs(date).format("MM-DD-YYYY"),
@@ -73,19 +73,19 @@ function formatManuscript(datum: any): ReferenceTableRowDataType {
   const {
     created_date,
     citation_type,
-    fields: { access_date, creators, date, title },
+    fields: { access_date, author, date, title },
     id,
-  } = datum ?? { fields: {}, creators: {} };
-  const lastAuthor = creators[creators.length - 1];
+  } = datum ?? { fields: {}, author: {} };
+  const lastAuthor = author[author.length - 1];
 
   return {
     added_date: created_date.split("T")[0],
     id,
     citation_type,
     title,
-    authors: formatAuthors(creators),
-    last_author: `${lastAuthor?.first_name ?? ""} ${
-      lastAuthor?.last_name ?? ""
+    authors: formatAuthors(author),
+    last_author: `${lastAuthor?.given ?? ""} ${
+      lastAuthor?.family ?? ""
     }`,
     hubs: "",
     published_date: dayjs(date).format("MM-DD-YYYY"),

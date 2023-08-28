@@ -86,9 +86,9 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
       setLocalReferenceFields(
         {
           ...referenceItemDatum?.fields,
-          creators: referenceItemDatum?.fields?.creators
+          author: referenceItemDatum?.fields?.author
             .map((creator): string => {
-              return `${creator.first_name} ${creator.last_name}`;
+              return `${creator.given} ${creator.family}`;
             })
             .join(", "),
         } ?? {}
@@ -110,7 +110,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
         if (field_key === "raw_oa_json") {
           return null;
         }
-        if (field_key === "creators") {
+        if (field_key === "author") {
           return (
             <ReferenceItemFieldCreatorTagInput
               formID={field_key}
@@ -255,14 +255,14 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
                   // TODO: calvinhlee - create utily functions to format these
                   fields: {
                     ...localReferenceFields,
-                    creators:
-                      localReferenceFields.creators
+                    author:
+                      localReferenceFields.author
                         ?.split(", ")
                         ?.map((creatorName) => {
                           const splittedName = creatorName.split(" ");
                           return {
-                            first_name: splittedName[0],
-                            last_name: splittedName.slice(1).join(" "),
+                            given: splittedName[0],
+                            family: splittedName.slice(1).join(" "),
                           };
                         }) ?? [],
                   },
