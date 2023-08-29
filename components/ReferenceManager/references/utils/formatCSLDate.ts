@@ -1,11 +1,14 @@
 import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
-import { snakeCaseToNormalCase } from "~/config/utils/string";
 
 export type CSLDateParts = {
   "date-parts": array;
 };
 
 export const datePartsToDateString = (dateParts: CSLDateParts): array => {
+  if (isEmpty(dateParts)) {
+    return [];
+  }
+
   const date = dateParts["date-parts"];
 
   if (date) {
