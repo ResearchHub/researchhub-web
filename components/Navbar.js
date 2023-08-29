@@ -61,6 +61,7 @@ const Navbar = (props) => {
 
   const isPost = ["post"].includes(router.pathname.split("/")[1]);
   const isPaper = ["paper"].includes(router.pathname.split("/")[1]);
+  const isRefManager = router.pathname.includes("reference-manager");
 
   const unstickyNavbar = router.pathname.includes("/hubs") || isPost || isPaper;
   const { setIsRefManagerSidebarOpen, isRefManagerSidebarOpen } = navContext();
@@ -69,7 +70,7 @@ const Navbar = (props) => {
     "Lab Notebook"
   ) : pathname.includes("leaderboard") ? (
     "Leaderboard"
-  ) : pathname.includes("reference-manager") ? (
+  ) : isRefManager ? (
     <div style={{ display: "flex", alignItems: "center" }}>
       <div
         onClick={() => {
@@ -104,8 +105,11 @@ const Navbar = (props) => {
         <div
           className={css(styles.burgerIcon)}
           onClick={() => {
-            // setShouldShowSlider(!shouldShowSlider)
-            setIsRefManagerSidebarOpen(!isRefManagerSidebarOpen);
+            if (isRefManager) {
+              setIsRefManagerSidebarOpen(!isRefManagerSidebarOpen);
+            } else {
+              setShouldShowSlider(!shouldShowSlider);
+            }
           }}
         >
           {<FontAwesomeIcon icon={faBars}></FontAwesomeIcon>}
