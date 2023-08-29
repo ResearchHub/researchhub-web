@@ -61,9 +61,7 @@ export function renderNestedReferenceProjectsNavbarEl({
               depth: depth + 1,
               addChildrenOpen,
               childrenOpenMap,
-              slug: `${slug}/${encodeURIComponent(
-                childReferenceProject.project_name
-              )}`,
+              slug: `${slug}/${encodeURIComponent(childReferenceProject.slug)}`,
             });
           })}
         </div>

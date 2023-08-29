@@ -155,7 +155,7 @@ export default function BasicTogglableNavbarLeft({
       referenceProject,
       addChildrenOpen,
       childrenOpenMap,
-      slug: `${encodeURIComponent(referenceProject.project_name)}`,
+      slug: `${encodeURIComponent(referenceProject.slug)}`,
     });
   });
 

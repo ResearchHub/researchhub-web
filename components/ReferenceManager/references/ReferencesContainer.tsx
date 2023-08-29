@@ -484,16 +484,24 @@ function ReferencesContainer({
                 alignItems: "center",
               }}
             >
-              <Typography variant="h5">
+              <Typography variant="h5" sx={{ flex: 1 }}>
                 {router.query.slug ? (
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    {router.query.slug.map((name, index) => {
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                      rowGap: "4px",
+                    }}
+                  >
+                    {activeProject?.parent_names?.names?.map((name, index) => {
                       const slugsTilNow = router.query.slug
                         .slice(0, index + 1)
                         .join("/");
 
                       const isActiveProject =
-                        index + 1 === router.query.slug?.length;
+                        index + 1 === activeProject.parent_names?.names?.length;
+
                       return (
                         <div>
                           <Link
@@ -505,7 +513,8 @@ function ReferencesContainer({
                           >
                             {name}
                           </Link>
-                          {index !== router.query.slug?.length - 1 && (
+                          {index !==
+                            activeProject.parent_names?.names?.length - 1 && (
                             <span
                               style={{
                                 margin: 8,

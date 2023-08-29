@@ -45,7 +45,7 @@ const findNestedTargetProject = (
   targetProjectName: NullableString
 ) => {
   for (const project of allProjects) {
-    if (project.project_name === targetProjectName) {
+    if (project.slug === targetProjectName) {
       return project;
     }
     const projectChildren = project.children;
