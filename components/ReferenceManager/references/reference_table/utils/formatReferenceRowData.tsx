@@ -1,5 +1,8 @@
 import { filterNull } from "~/config/utils/nullchecks";
 import { ID, NullableString } from "~/config/types/root_types";
+import {
+  datePartsToDateString
+} from "../../utils/formatCSLDate";
 import { ProjectValue } from "../../reference_organizer/context/ReferenceProjectsUpsertContext";
 import dayjs from "dayjs";
 
@@ -50,10 +53,12 @@ function formatArtwork(datum: any): ReferenceTableRowDataType {
   const {
     created_date,
     citation_type,
-    fields: { access_date, author, date, title },
+    fields: { access_date, author, issued, title },
     id,
   } = datum ?? { fields: {}, author: {} };
   const lastAuthor = author[author.length - 1];
+  const publishedDate = dayjs(datePartsToDateString(issued)).format("YYYY-DD-MM");
+
   return {
     added_date: created_date.split("T")[0],
     id,
@@ -64,7 +69,7 @@ function formatArtwork(datum: any): ReferenceTableRowDataType {
       lastAuthor?.family ?? ""
     }`,
     hubs: "",
-    published_date: dayjs(date).format("MM-DD-YYYY"),
+    published_date: publishedDate === "Invalid Date" ? null : publishedDate,
     raw_data: datum,
   };
 }
@@ -73,10 +78,11 @@ function formatManuscript(datum: any): ReferenceTableRowDataType {
   const {
     created_date,
     citation_type,
-    fields: { access_date, author, date, title },
+    fields: { access_date, author, issued, title },
     id,
   } = datum ?? { fields: {}, author: {} };
   const lastAuthor = author[author.length - 1];
+  const publishedDate = dayjs(datePartsToDateString(issued)).format("YYYY-DD-MM");
 
   return {
     added_date: created_date.split("T")[0],
@@ -88,7 +94,7 @@ function formatManuscript(datum: any): ReferenceTableRowDataType {
       lastAuthor?.family ?? ""
     }`,
     hubs: "",
-    published_date: dayjs(date).format("MM-DD-YYYY"),
+    published_date: publishedDate === "Invalid Date" ? null : publishedDate,
     raw_data: datum,
     actions: null,
   };

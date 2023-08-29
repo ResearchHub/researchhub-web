@@ -1,9 +1,13 @@
 import { createReferenceCitation } from "../api/createReferenceCitation";
 import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import { fetchReferenceCitationSchema } from "../api/fetchReferenceCitationSchema";
+import {
+  stringToDateParts
+} from "../utils/formatCSLDate";
 import { ID, NullableString } from "~/config/types/root_types";
 import { SyntheticEvent, useEffect } from "react";
 import { toFormData } from "~/config/utils/toFormData";
+
 import moment from "moment";
 
 export function useEffectOnReferenceTypeChange({
@@ -88,6 +92,8 @@ export const handleSubmit = ({
       };
     }) ?? [];
 
+  const formattedCSLDate = stringToDateParts(referenceSchemaValueSet?.schema?.issued);
+
   const fields: {
     fields: any;
     organization: ID;
@@ -97,6 +103,7 @@ export const handleSubmit = ({
     fields: {
       ...referenceSchemaValueSet.schema,
       author: formattedCreators,
+      issued: formattedCSLDate,
     },
     citation_type: selectedReferenceType,
     doi: referenceSchemaValueSet.schema.DOI,

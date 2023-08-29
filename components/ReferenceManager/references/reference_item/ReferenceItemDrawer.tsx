@@ -17,6 +17,9 @@ import {
   resolveFieldKeyLabels,
   sortSchemaFieldKeys,
 } from "../utils/resolveFieldKeyLabels";
+import {
+  datePartsToDateString
+} from "../utils/formatCSLDate";
 import { snakeCaseToNormalCase, toTitleCase } from "~/config/utils/string";
 import { updateReferenceCitation } from "../api/updateReferenceCitation";
 import { useReferenceTabContext } from "./context/ReferenceItemDrawerContext";
@@ -94,17 +97,15 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
   const tabInputItems = filterNull(
     sortSchemaFieldKeys(Object.keys(localReferenceFields)).map(
       (field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
+        let issued;
         const label = resolveFieldKeyLabels(field_key),
           value =
-            field_key === "date"
-              ? dayjs(localReferenceFields[field_key]).format("MM-DD-YYYY")
+            field_key === "issued"
+              ? (issued = dayjs(datePartsToDateString(localReferenceFields[field_key])).format("YYYY-DD-MM")) === "Invalid Date" ? null : issued
               : localReferenceFields[field_key],
           isRequired = false;
         // isRequired = requiredFieldsSet.has(field_key);
 
-        if (field_key === "raw_oa_json") {
-          return null;
-        }
         if (field_key === "author") {
           return (
             <ReferenceItemFieldCreatorTagInput

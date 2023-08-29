@@ -8,7 +8,6 @@ const labelMap = {
   "collection-number": "Series number",
   "collection-title": "Series title",
   "container-title": "Publication title",
-  date: "Publication Date (MM-DD-YYYY)",
   doi: "DOI",
   DOI: "DOI",
   journalAbbreviation: "Journal abbreviation",
