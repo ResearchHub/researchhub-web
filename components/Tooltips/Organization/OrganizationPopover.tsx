@@ -8,7 +8,7 @@ import ResearchHubPopover from "~/components/ResearchHubPopover";
 import Link from "next/link";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/pro-solid-svg-icons";
+import { faPlus, faCog } from "@fortawesome/pro-solid-svg-icons";
 import ReactPlaceholder from "react-placeholder/lib";
 import { isEmpty } from "~/config/utils/nullchecks";
 import OrgEntryPlaceholder from "~/components/Placeholders/OrgEntryPlaceholder";
@@ -19,6 +19,7 @@ import NewOrgModal from "~/components/Org/NewOrgModal";
 import { breakpoints } from "~/config/themes/screen";
 import { useRouter } from "next/router";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
+import { isOrgMember } from "~/components/Org/utils/orgHelper";
 
 type Props = {
   isReferenceManager: boolean;
@@ -31,7 +32,6 @@ export default function OrganizationPopover({
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
   const [showManageOrgModal, setShowManageOrgModal] = useState(false);
   const router = useRouter();
-
   const { organization } = router.query;
 
   const { orgs, setCurrentOrg, currentOrg } = useOrgs();
@@ -44,9 +44,10 @@ export default function OrganizationPopover({
   }, [organization, orgs]);
 
   const onOrgChange = () => {};
+  // const _isOrgMember = isOrgMember({ user, org: currentOrg });
 
   return (
-    <>
+    <div style={{ width: "100%" }}>
       <ManageOrgModal
         org={currentOrg}
         isOpen={showManageOrgModal}
@@ -59,7 +60,11 @@ export default function OrganizationPopover({
         onOrgChange={onOrgChange}
       />
       <ResearchHubPopover
-        containerStyle={{ marginLeft: "10px", marginTop: "-10px", zIndex: 11 }}
+        containerStyle={{
+          marginLeft: "10px",
+          marginTop: "-10px",
+          zIndex: 9999,
+        }}
         isOpen={isPopoverOpen}
         popoverContent={
           <div className={css(styles.popoverBodyContent)}>
@@ -124,11 +129,13 @@ export default function OrganizationPopover({
               </div>
               {currentOrg?.name}
             </ReactPlaceholder>
-            <DownIcon withAnimation={false} />
+            <div style={{ marginLeft: "auto" }}>
+              <DownIcon withAnimation={false} />
+            </div>
           </div>
         }
       />
-    </>
+    </div>
   );
 }
 
@@ -144,7 +151,7 @@ const styles = StyleSheet.create({
     overflowY: "auto",
   },
   newOrgContainer: {
-    color: colors.PURPLE(),
+    color: colors.NEW_BLUE(),
     fontWeight: 500,
     ":last-child": {
       borderRadius: "0px 0px 4px 4px",
@@ -194,6 +201,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     userSelect: "none",
     wordBreak: "break-word",
+    boxSizing: "border-box",
     ":hover": {
       backgroundColor: colors.GREY(0.3),
     },
@@ -249,7 +257,7 @@ const styles = StyleSheet.create({
     maxWidth: "fit-content",
     padding: 10,
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
   },
   sidebarButtonText: {

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { HubActions } from "../redux/hub";
 import { isDevEnv } from "~/config/utils/env";
 import { NewPostButtonContext } from "~/components/contexts/NewPostButtonContext.ts";
+import { NavigationContextProvider } from "~/components/contexts/NavigationContext";
 import { NotificationActions } from "~/redux/notification";
 import { StyleSheet, css } from "aphrodite";
 import { TransactionActions } from "../redux/transaction";
@@ -153,36 +154,38 @@ function Base({
         </>
       )}
       <OrganizationContextProvider user={auth.user}>
-        <ExchangeRateContextProvider>
-          <WagmiConfig config={config}>
-            <NavbarContext.Provider
-              value={{ numNavInteractions, setNumNavInteractions }}
-            >
-              <NewPostButtonContext.Provider
-                value={{
-                  values: newPostButtonValues,
-                  setValues: setNewPostButtonValues,
-                }}
+        <NavigationContextProvider>
+          <ExchangeRateContextProvider>
+            <WagmiConfig config={config}>
+              <NavbarContext.Provider
+                value={{ numNavInteractions, setNumNavInteractions }}
               >
-                {isDevEnv() && SPEC__reloadClientSideData()}
-                <div className={css(styles.pageWrapper)}>
-                  <DynamicPermissionNotification />
-                  <DynamicMessage />
-                  {withSidebar && (
-                    <RootLeftSidebar
-                      rootLeftSidebarForceMin={rootLeftSidebarForceMin}
-                    />
-                  )}
-                  <div className={css(styles.main)}>
-                    {withNavbar && <DynamicNavbar />}
-                    <Component {...pageProps} {...appProps} />
+                <NewPostButtonContext.Provider
+                  value={{
+                    values: newPostButtonValues,
+                    setValues: setNewPostButtonValues,
+                  }}
+                >
+                  {isDevEnv() && SPEC__reloadClientSideData()}
+                  <div className={css(styles.pageWrapper)}>
+                    <DynamicPermissionNotification />
+                    <DynamicMessage />
+                    {withSidebar && (
+                      <RootLeftSidebar
+                        rootLeftSidebarForceMin={rootLeftSidebarForceMin}
+                      />
+                    )}
+                    <div className={css(styles.main)}>
+                      {withNavbar && <DynamicNavbar />}
+                      <Component {...pageProps} {...appProps} />
+                    </div>
                   </div>
-                </div>
-              </NewPostButtonContext.Provider>
-            </NavbarContext.Provider>
-          </WagmiConfig>
-          <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
-        </ExchangeRateContextProvider>
+                </NewPostButtonContext.Provider>
+              </NavbarContext.Provider>
+            </WagmiConfig>
+            <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+          </ExchangeRateContextProvider>
+        </NavigationContextProvider>
       </OrganizationContextProvider>
     </AlertProvider>
   );

@@ -14,6 +14,7 @@ import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
 import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
 import { faFolders } from "@fortawesome/pro-solid-svg-icons";
+import { navContext } from "~/components/contexts/NavigationContext";
 
 type Props = {
   active: boolean;
@@ -54,6 +55,8 @@ export default function ReferenceProjectsNavbarEl({
     setUpsertPurpose: setProjectUpsertPurpose,
   } = useReferenceProjectUpsertContext();
   const [shouldShowOptions, setShouldShowOptions] = useState<boolean>(false);
+  const { isRefManagerDisplayedAsDrawer, setIsRefManagerSidebarOpen } =
+    navContext();
 
   return (
     <Box
@@ -91,6 +94,9 @@ export default function ReferenceProjectsNavbarEl({
             event.preventDefault();
             setIsUploadDrawerOpen(false);
             setProjectIDRefUploader(null);
+            if (isRefManagerDisplayedAsDrawer) {
+              setIsRefManagerSidebarOpen(false);
+            }
           }}
         >
           <div style={{ display: "flex", alignItems: "center" }}>

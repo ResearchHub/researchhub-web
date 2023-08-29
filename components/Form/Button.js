@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     textDecoration: "none",
     fontWeight: 500,
     lineHeight: 1.75,
+    fontFamily: "Roboto, sans-serif",
     ":hover": {
       opacity: 0.9,
     },

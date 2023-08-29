@@ -6,7 +6,7 @@ import {
 } from "~/config/utils/nullchecks";
 import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
 import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_organizer/renderNestedReferenceProjectsNavbarEl";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { Theme } from "@mui/material/styles";
 import {
   ProjectValue,
@@ -19,13 +19,18 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import OrganizationPopover from "~/components/Tooltips/Organization/OrganizationPopover";
-import ReferenceProjectsUpsertModal from "../references/reference_organizer/ReferenceProjectsUpsertModal";
 import Typography from "@mui/material/Typography";
 import colors from "~/config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import { faSitemap, faUser } from "@fortawesome/pro-regular-svg-icons";
 import { useReferenceActiveProjectContext } from "../references/reference_organizer/context/ReferenceActiveProjectContext";
+import Drawer from "@mui/material/Drawer";
+import useWindow from "~/config/hooks/useWindow";
+import { breakpoints } from "~/config/themes/screen";
+import { StyleSheet, css } from "aphrodite";
+import { faCog } from "@fortawesome/pro-solid-svg-icons";
+import { navContext } from "~/components/contexts/NavigationContext";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -34,21 +39,68 @@ type Props = {
   isOpen: boolean;
   navWidth: number;
   setIsOpen: (flag: boolean) => void;
+  openOrgSettingsModal: () => void;
   theme?: Theme;
   currentOrgProjects: any[];
 };
 
+const ContentWrapper = ({ children, width, isOpen, setIsOpen }) => {
+  const { isRefManagerDisplayedAsDrawer } = navContext();
+
+  if (isRefManagerDisplayedAsDrawer) {
+    return (
+      <Drawer
+        anchor={"left"}
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        ModalProps={{
+          hideBackdrop: false,
+          disableScrollLock: true,
+          style: {
+            backgroundColor: "rgba(0,0,0,0)",
+          },
+        }}
+        PaperProps={{
+          sx: { width },
+        }}
+      >
+        {children}
+      </Drawer>
+    );
+  } else {
+    return (
+      <Box
+        flexDirection="column"
+        width={width}
+        className={
+          "ToggleableNavbarLeft" /* This classname is used in upload drawer */
+        }
+        sx={{
+          borderRight: "1px solid #e8e8ef",
+          zIndex: 4,
+          background: colors.GREY_ICY_BLUE_HUE,
+          height: "100%",
+          minHeight: "calc(100vh - 68px)",
+          display: isOpen ? "block" : "none",
+        }}
+      >
+        {children}
+      </Box>
+    );
+  }
+};
+
 export default function BasicTogglableNavbarLeft({
   isOpen,
+  setIsOpen,
   navWidth,
   theme,
+  openOrgSettingsModal,
   currentOrgProjects,
 }: Props) {
   const { setIsModalOpen: setIsProjectsUpsertModalOpen } =
     useReferenceProjectUpsertContext();
   const currentOrg = getCurrentUserCurrentOrg();
-  const { setCurrentOrgProjects, setActiveProject, activeProject } =
-    useReferenceActiveProjectContext();
   const router = useRouter();
   const [childrenOpenMap, setChildrenOpenMap] = useState({});
 
@@ -95,39 +147,6 @@ export default function BasicTogglableNavbarLeft({
   //   }
   // };
 
-  const setNestedProjects = ({ activeProject, allProjects }) => {
-    const newOrgProjects = allProjects.map((proj) => {
-      if (proj.id === activeProject.id) {
-        return activeProject;
-      }
-      proj.children = setNestedProjects({
-        activeProject,
-        allProjects: proj.children,
-      });
-      return proj;
-    });
-
-    return newOrgProjects;
-  };
-
-  const addFolderToChildren = (result) => {
-    let newOrgProjects: ProjectValue[] = [...currentOrgProjects];
-    if (!result.parent) {
-      newOrgProjects.push(result);
-    } else {
-      const newActiveProject = { ...activeProject };
-      newActiveProject.children = [...newActiveProject.children, result];
-      setActiveProject(newActiveProject);
-
-      newOrgProjects = setNestedProjects({
-        activeProject: newActiveProject,
-        allProjects: currentOrgProjects,
-      });
-    }
-
-    setCurrentOrgProjects(newOrgProjects);
-  };
-
   const currentOrgSlug = currentOrg?.slug ?? null;
   const refProjectsNavbarEls = currentOrgProjects?.map((referenceProject) => {
     return renderNestedReferenceProjectsNavbarEl({
@@ -140,33 +159,31 @@ export default function BasicTogglableNavbarLeft({
   });
 
   return (
-    <Box
-      flexDirection="column"
-      width={navWidth}
-      sx={{
-        borderLeft: "1px solid #e8e8ef",
-        zIndex: 4,
-        background: "#FAFAFC",
-        height: "100%",
-        minHeight: "calc(100vh - 68px)",
-      }}
-    >
-      <ReferenceProjectsUpsertModal onUpsertSuccess={addFolderToChildren} />
+    <ContentWrapper width={navWidth} isOpen={isOpen} setIsOpen={setIsOpen}>
       <Box className="LeftNavbarUserSection">
         <Box
           sx={{
             alignItems: "center",
             color: "rgba(170, 168, 180, 1)",
             cursor: "pointer",
-            display: "flex",
-            borderBottom: "1px solid #E9EAEF",
-            flexDirection: "row",
-            justifyContent: "space-between",
+            width: "100%",
           }}
         >
           <OrganizationPopover isReferenceManager={true} />
+          <div className={css(styles.sidebarButtonsContainer)}>
+            <div
+              className={css(styles.sidebarButton)}
+              onClick={openOrgSettingsModal}
+            >
+              {<FontAwesomeIcon icon={faCog}></FontAwesomeIcon>}
+              <span className={css(styles.sidebarButtonText)}>
+                Settings & Members
+              </span>
+            </div>
+          </div>
         </Box>
       </Box>
+      <Divider />
       <List sx={{ background: "#FAFAFC", color: "rgba(36, 31, 58, 1)" }}>
         <BasicTogglableNavbarButton
           icon={
@@ -262,6 +279,27 @@ export default function BasicTogglableNavbarLeft({
         </ListItemButton>
         {refProjectsNavbarEls}
       </List>
-    </Box>
+    </ContentWrapper>
   );
 }
+
+const styles = StyleSheet.create({
+  sidebarButtonsContainer: {
+    margin: "0px 10px 10px 10px",
+  },
+  sidebarButton: {
+    border: "none",
+    color: colors.BLACK(0.6),
+    cursor: "pointer",
+    fontSize: 14,
+    fontWeight: 500,
+    maxWidth: "fit-content",
+    padding: 10,
+    ":hover": {
+      color: colors.NEW_BLUE(),
+    },
+  },
+  sidebarButtonText: {
+    marginLeft: 10,
+  },
+});

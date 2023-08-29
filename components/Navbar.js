@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/pro-light-svg-icons";
+import { faBars } from "@fortawesome/pro-regular-svg-icons";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { useWeb3Modal } from "@web3modal/react";
 import { useAccount } from "wagmi";
@@ -24,10 +24,8 @@ import RHLogo from "./Home/RHLogo";
 import LoginModal from "./Login/LoginModal";
 import Login from "./Login/Login";
 import Button from "./Form/Button";
-import { faArrowLeftLong } from "@fortawesome/pro-regular-svg-icons";
-import IconButton from "./Icons/IconButton";
-import Link from "next/link";
 import BackBtn from "./shared/BackBtn";
+import { navContext } from "./contexts/NavigationContext";
 
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
@@ -65,14 +63,24 @@ const Navbar = (props) => {
   const isPaper = ["paper"].includes(router.pathname.split("/")[1]);
 
   const unstickyNavbar = router.pathname.includes("/hubs") || isPost || isPaper;
-
+  const { setIsRefManagerSidebarOpen, isRefManagerSidebarOpen } = navContext();
   const pathname = router?.pathname ?? "";
   const headerLabel = pathname.includes("notebook") ? (
     "Lab Notebook"
   ) : pathname.includes("leaderboard") ? (
     "Leaderboard"
   ) : pathname.includes("reference-manager") ? (
-    "Reference Manager"
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <div
+        onClick={() => {
+          setIsRefManagerSidebarOpen(!isRefManagerSidebarOpen);
+        }}
+        className={css(styles.burgerIcon)}
+      >
+        <FontAwesomeIcon icon={faBars} />
+      </div>
+      {` Reference Manager`}
+    </div>
   ) : pathname.includes("live") ? (
     "Live Activity"
   ) : isPost || isPaper ? (
@@ -95,7 +103,10 @@ const Navbar = (props) => {
       <div className={css(styles.xsmallDownTitle)}>
         <div
           className={css(styles.burgerIcon)}
-          onClick={() => setShouldShowSlider(!shouldShowSlider)}
+          onClick={() => {
+            // setShouldShowSlider(!shouldShowSlider)
+            setIsRefManagerSidebarOpen(!isRefManagerSidebarOpen);
+          }}
         >
           {<FontAwesomeIcon icon={faBars}></FontAwesomeIcon>}
         </div>
@@ -234,8 +245,11 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: 5,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: 10,
+      padding: "10px 15px 10px 30px",
       justifyContent: "space-between",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      padding: "10px 15px 10px 15px",
     },
   },
   unstickyNavbar: {
@@ -366,7 +380,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     height: "100%",
     marginRight: 16,
-    marginTop: 4, // arbitrary to match nav visual
+    lineHeight: "16px",
     textAlign: "center",
   },
   oauthContainer: {
