@@ -71,12 +71,10 @@ const styles = StyleSheet.create({
   dropzone: {
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
     alignItems: "center",
     width: "100%",
     height: "100%",
     boxSizing: "border-box",
-    padding: "20px 0px",
     transition: "all ease-out 0.1s",
   },
   dropzoneContainer: {
@@ -84,6 +82,7 @@ const styles = StyleSheet.create({
     width: "calc(100% - 240px)",
     cursor: "default",
     borderRadius: 3,
+    height: "calc(100% - 80px)",
     outline: "none",
     marginRight: 4,
     marginBottom: 4,

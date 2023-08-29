@@ -575,7 +575,7 @@ function ReferencesContainer({
               </div>
             </div>
 
-            <Box className="ReferencesContainerMain">
+            <Box className="ReferencesContainerMain" sx={{ height: "100%" }}>
               <Box className="ReferencesContainerTitleSection">
                 <Box
                   sx={{
