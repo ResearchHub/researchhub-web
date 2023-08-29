@@ -205,7 +205,6 @@ export default function ReferencesTable({
   };
 
   const openFolder = ({ row, event }) => {
-    console.log(row);
     let url = `/reference-manager/${
       router.query.organization
     }/${router.query!.slug!.join("/")}/${row.slug}`;
