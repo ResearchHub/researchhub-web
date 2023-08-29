@@ -205,14 +205,15 @@ export default function ReferencesTable({
   };
 
   const openFolder = ({ row, event }) => {
+    console.log(row);
     let url = `/reference-manager/${
       router.query.organization
-    }/${router.query!.slug!.join("/")}/${row.title}`;
+    }/${router.query!.slug!.join("/")}/${row.slug}`;
 
     if (row.id.includes("parent")) {
       url = `/reference-manager/${router.query.organization}/${router.query.slug
         ?.slice(0, router.query.slug.length - 2)
-        .join("/")}/${row.title}`;
+        .join("/")}/${row.slug}`;
     }
 
     if (event && event.metaKey) {

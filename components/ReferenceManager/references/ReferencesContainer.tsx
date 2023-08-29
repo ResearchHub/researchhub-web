@@ -77,7 +77,7 @@ interface Props {
   setMessage?: any;
 }
 
-const WRAP_SEARCHBAR_AT_WIDTH = 700
+const WRAP_SEARCHBAR_AT_WIDTH = 700;
 
 // TODO: @lightninglu10 - fix TS.
 function ReferencesContainer({
@@ -301,7 +301,10 @@ function ReferencesContainer({
             const { width } = entry.contentRect;
             if (width < WRAP_SEARCHBAR_AT_WIDTH && !isSearchInputFullWidth) {
               setIsSearchInputFullWidth(true);
-            } else if (width >= WRAP_SEARCHBAR_AT_WIDTH && isSearchInputFullWidth) {
+            } else if (
+              width >= WRAP_SEARCHBAR_AT_WIDTH &&
+              isSearchInputFullWidth
+            ) {
               setIsSearchInputFullWidth(false);
             }
           }
@@ -479,7 +482,7 @@ function ReferencesContainer({
           >
             <div
               style={{
-                marginBottom: 32,
+                marginBottom: 16,
                 display: "flex",
                 alignItems: "center",
               }}
@@ -585,7 +588,10 @@ function ReferencesContainer({
             </div>
 
             <Box className="ReferencesContainerMain" sx={{ height: "100%" }}>
-              <Box className="ReferencesContainerTitleSection">
+              <Box
+                className="ReferencesContainerTitleSection"
+                sx={{ marginBottom: "32px" }}
+              >
                 <Box
                   sx={{
                     alignItems: "center",
