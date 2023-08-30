@@ -5,16 +5,37 @@ import { generateApiUrl } from "~/config/api";
 import nookies from "nookies";
 import ReferencesRoot from "~/components/ReferenceManager/references/ReferencesRoot";
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 
 function Index(props) {
-  const { isLoggedIn, authChecked } = props;
+  const { isLoggedIn, authChecked, calloutOpen } = props;
+  const [calloutIsOpen, setCalloutIsOpen] = useState(calloutOpen);
 
-  return <ReferencesRoot authChecked={authChecked} isLoggedIn={isLoggedIn} />;
+  useEffect(() => {
+    const calloutOpenStorage = window.localStorage.getItem("callout_open");
+
+    console.log(calloutOpenStorage);
+
+    debugger;
+
+    if (calloutOpenStorage && calloutOpenStorage === "false") {
+      setCalloutIsOpen(false);
+    }
+  }, []);
+
+  return (
+    <ReferencesRoot
+      authChecked={authChecked}
+      isLoggedIn={isLoggedIn}
+      calloutOpen={calloutIsOpen}
+    />
+  );
 }
 
 export async function getServerSideProps(ctx) {
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
+  const calloutOpen = cookies["callout_open"];
   // const userURL = generateApiUrl("user");
   // const userResponse = await fetch(userURL, api.GET_CONFIG(authToken));
   // const userJson = await userResponse.json();
@@ -32,6 +53,9 @@ export async function getServerSideProps(ctx) {
   const org = orgResponse[0];
 
   return {
+    props: {
+      calloutOpen,
+    },
     redirect: {
       destination: `/reference-manager/${org.slug}/?org_refs=true`,
       permanent: false,

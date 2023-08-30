@@ -69,12 +69,15 @@ import Button from "~/components/Form/Button";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons";
 import { grey } from "@mui/material/colors";
 import ReferenceProjectsUpsertModal from "../references/reference_organizer/ReferenceProjectsUpsertModal";
+import RefManagerCallouts from "../onboarding/RefManagerCallouts";
+import { storeToCookie } from "~/config/utils/storeToCookie";
 
 interface Props {
   showMessage: ({ show, load }) => void;
   wsResponse: string;
   wsConnected: boolean;
   setMessage?: any;
+  calloutOpen: boolean;
 }
 
 const WRAP_SEARCHBAR_AT_WIDTH = 700;
@@ -85,6 +88,7 @@ function ReferencesContainer({
   setMessage,
   wsResponse,
   wsConnected,
+  calloutOpen,
 }: Props): ReactNode {
   const currentUser = getCurrentUser();
 
@@ -118,6 +122,9 @@ function ReferencesContainer({
   const [selectedRows, setSelectedRows] = useState<GridRowId[]>([]);
   const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [calloutIsOpen, setCalloutIsOpen] = useState<boolean>(
+    calloutOpen === undefined || calloutOpen === null ? true : calloutOpen
+  );
   const [isRemoveRefModalOpen, setIsRemoveRefModalOpen] =
     useState<boolean>(false);
   const [_loading, setLoading] = useState<boolean>(false);
@@ -141,6 +148,12 @@ function ReferencesContainer({
     });
     setIsProjectUpsertModalOpen(true);
   };
+
+  useEffect(() => {
+    setCalloutIsOpen(
+      calloutOpen === undefined || calloutOpen === null ? true : calloutOpen
+    );
+  }, [calloutOpen]);
 
   const onFileDrop = (acceptedFiles: File[] | any[]): void => {
     const preload: Array<PreloadRow> = [];
@@ -811,6 +824,17 @@ function ReferencesContainer({
           {/* </DroppableZone> */}
           <ReactTooltip effect="solid" id="button-tooltips" />
         </Box>
+        <div>
+          {calloutIsOpen && (
+            <RefManagerCallouts
+              handleClose={() => {
+                setCalloutIsOpen(false);
+                storeToCookie({ key: "callout_open", value: "false" });
+                window.localStorage.setItem("callout_open", "false");
+              }}
+            />
+          )}
+        </div>
         {/* <ToastContainer
           autoClose={true}
           closeOnClick
