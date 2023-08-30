@@ -77,7 +77,7 @@ interface Props {
   setMessage?: any;
 }
 
-const WRAP_SEARCHBAR_AT_WIDTH = 700
+const WRAP_SEARCHBAR_AT_WIDTH = 700;
 
 // TODO: @lightninglu10 - fix TS.
 function ReferencesContainer({
@@ -301,7 +301,10 @@ function ReferencesContainer({
             const { width } = entry.contentRect;
             if (width < WRAP_SEARCHBAR_AT_WIDTH && !isSearchInputFullWidth) {
               setIsSearchInputFullWidth(true);
-            } else if (width >= WRAP_SEARCHBAR_AT_WIDTH && isSearchInputFullWidth) {
+            } else if (
+              width >= WRAP_SEARCHBAR_AT_WIDTH &&
+              isSearchInputFullWidth
+            ) {
               setIsSearchInputFullWidth(false);
             }
           }
@@ -479,21 +482,29 @@ function ReferencesContainer({
           >
             <div
               style={{
-                marginBottom: 32,
+                marginBottom: 16,
                 display: "flex",
                 alignItems: "center",
               }}
             >
-              <Typography variant="h5">
+              <Typography variant="h5" sx={{ flex: 1 }}>
                 {router.query.slug ? (
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    {router.query.slug.map((name, index) => {
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                      rowGap: "4px",
+                    }}
+                  >
+                    {activeProject?.parent_names?.names?.map((name, index) => {
                       const slugsTilNow = router.query.slug
                         .slice(0, index + 1)
                         .join("/");
 
                       const isActiveProject =
-                        index + 1 === router.query.slug?.length;
+                        index + 1 === activeProject.parent_names?.names?.length;
+
                       return (
                         <div>
                           <Link
@@ -505,7 +516,8 @@ function ReferencesContainer({
                           >
                             {name}
                           </Link>
-                          {index !== router.query.slug?.length - 1 && (
+                          {index !==
+                            activeProject.parent_names?.names?.length - 1 && (
                             <span
                               style={{
                                 margin: 8,
@@ -575,8 +587,11 @@ function ReferencesContainer({
               </div>
             </div>
 
-            <Box className="ReferencesContainerMain">
-              <Box className="ReferencesContainerTitleSection">
+            <Box className="ReferencesContainerMain" sx={{ height: "100%" }}>
+              <Box
+                className="ReferencesContainerTitleSection"
+                sx={{ marginBottom: "32px" }}
+              >
                 <Box
                   sx={{
                     alignItems: "center",

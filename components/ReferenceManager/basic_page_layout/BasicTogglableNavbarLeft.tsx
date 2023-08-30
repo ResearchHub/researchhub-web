@@ -80,7 +80,8 @@ const ContentWrapper = ({ children, width, isOpen, setIsOpen }) => {
           zIndex: 4,
           background: colors.GREY_ICY_BLUE_HUE,
           height: "100%",
-          minHeight: "calc(100vh - 68px)",
+          height: "calc(100vh - 68px)",
+          overflow: "auto",
           display: isOpen ? "block" : "none",
         }}
       >
@@ -154,7 +155,7 @@ export default function BasicTogglableNavbarLeft({
       referenceProject,
       addChildrenOpen,
       childrenOpenMap,
-      slug: `${encodeURIComponent(referenceProject.project_name)}`,
+      slug: `${encodeURIComponent(referenceProject.slug)}`,
     });
   });
 

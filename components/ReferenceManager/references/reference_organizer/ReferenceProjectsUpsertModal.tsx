@@ -96,6 +96,9 @@ export default function ReferenceProjectsUpsertModal({
         resetProjectsFetchTime();
         onUpsertSuccess && onUpsertSuccess(result);
         handleCloseModal();
+        setIsLoading(false);
+
+        console.log(result);
 
         if (nameChanged) {
           const slugsTilNow = router.query.slug
@@ -105,7 +108,7 @@ export default function ReferenceProjectsUpsertModal({
           router.replace(
             `/reference-manager/${
               router.query.organization
-            }/${slugsTilNow}/${encodeURIComponent(projectName?.trim())}`
+            }/${slugsTilNow}/${encodeURIComponent(result.slug)}`
           );
         }
       },
@@ -115,8 +118,7 @@ export default function ReferenceProjectsUpsertModal({
     });
   };
 
-  const modalTitle =
-    upsertPurpose === "update" ? "Update folder" : "Create folder";
+  const modalTitle = upsertPurpose === "update" ? "Update folder" : "";
 
   return (
     <BaseModal
