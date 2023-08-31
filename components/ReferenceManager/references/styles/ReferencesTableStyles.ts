@@ -1,11 +1,27 @@
 export const DATA_GRID_STYLE_OVERRIDE = {
   "& .MuiDataGrid-row": {
     cursor: "pointer",
+    "&:hover .MuiCheckbox-root": {
+      color: "#7C7989",
+    },
+  },
+
+  "& .MuiDataGrid-columnHeaderTitleContainerContent .MuiDataGrid-checkboxInput":
+    {
+      color: "#7C7989",
+    },
+
+  ".MuiDataGrid-checkboxInput.Mui-checked": {
+    color: "#7C7989",
   },
 
   // Hide checkbox for disabled rows
   ".Mui-disabled.MuiDataGrid-checkboxInput": {
     display: "none",
+  },
+
+  "& .MuiCheckbox-root": {
+    color: "#E9EAEF",
   },
 
   border: "1px solid #E9EAEF",

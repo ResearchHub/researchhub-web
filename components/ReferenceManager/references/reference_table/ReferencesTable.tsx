@@ -304,10 +304,6 @@ export default function ReferencesTable({
     // }
   };
 
-  const handleDoubleClick = (params, event, _details): void => {
-    handleOpenAction({ row: params.row, id: params.id });
-  };
-
   const handleOpenAction = ({ id, row }): void => {
     if (row.is_loading) return;
 
@@ -402,7 +398,7 @@ export default function ReferencesTable({
               },
             },
           }}
-          onCellClick={handleSingleClick}
+          onRowClick={handleSingleClick}
           // onCellDoubleClick={handleDoubleClick}
           rowSelectionModel={rowSelectionModel}
           onRowSelectionModelChange={(ids) => {
