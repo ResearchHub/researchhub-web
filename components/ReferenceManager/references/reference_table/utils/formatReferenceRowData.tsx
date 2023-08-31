@@ -2,6 +2,7 @@ import { filterNull } from "~/config/utils/nullchecks";
 import { ID, NullableString } from "~/config/types/root_types";
 import { ProjectValue } from "../../reference_organizer/context/ReferenceProjectsUpsertContext";
 import dayjs from "dayjs";
+import { genClientId } from "~/config/utils/id";
 
 export type ReferenceTableRowDataType = {
   // NOTE: Logical ordering for display reason
@@ -94,16 +95,17 @@ function formatManuscript(datum: any): ReferenceTableRowDataType {
   };
 }
 
-function formatLoading(datum): ReferenceTableRowDataType {
+export function formatLoading(datum): ReferenceTableRowDataType {
   return {
     added_date: "load",
-    id: datum.id,
+    id: datum.id || genClientId(),
     citation_type: "load",
     title: "load",
     authors: "load",
     last_author: "load",
     hubs: "load",
     published_date: "load",
+    actions: "load",
     is_loading: true,
   };
 }

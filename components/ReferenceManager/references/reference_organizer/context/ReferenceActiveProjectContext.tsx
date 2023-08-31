@@ -25,7 +25,7 @@ export type ReferenceActiveProjectContextValueType = {
 export const DEFAULT_VALUE = {
   activeProject: null,
   currentOrgProjects: [],
-  isFetchingProjects: false,
+  isFetchingProjects: true,
   resetProjectsFetchTime: silentEmptyFnc,
   setActiveProject: silentEmptyFnc,
   setCurrentOrgProjects: silentEmptyFnc,

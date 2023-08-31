@@ -14,6 +14,7 @@ import { fetchCurrentUserReferenceCitations } from "../api/fetchCurrentUserRefer
 import {
   ReferenceTableRowDataType,
   formatReferenceRowData,
+  formatLoading,
 } from "./utils/formatReferenceRowData";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import {
@@ -63,34 +64,29 @@ export type PreloadRow = {
   created: boolean;
 };
 
-function useEffectFetchReferenceCitations({
-  onError,
-  onSuccess,
-  referencesFetchTime,
-  setIsLoading,
-}) {
+function useEffectFetchReferences({ onError, onSuccess, referencesFetchTime }) {
   // NOTE: current we are assuming that citations only belong to users. In the future it may belong to orgs
   const user = getCurrentUser();
   const { activeProject, isFetchingProjects } =
     useReferenceActiveProjectContext();
+  const pathRef = useRef<any>(null);
 
   const { currentOrg } = useOrgs();
   const router = useRouter();
-  useEffect(() => {
-    if (!isNullOrUndefined(user?.id) && currentOrg?.id && !isFetchingProjects) {
-      setIsLoading(true);
 
-      if (!activeProject?.projectID && router.query.slug) {
-      } else {
-        fetchCurrentUserReferenceCitations({
-          onSuccess,
-          onError,
-          organizationID: currentOrg?.id,
-          // @ts-ignore
-          projectID: activeProject.projectID,
-          getCurrentUserCitation: !isEmpty(router.query?.my_refs),
-        });
-      }
+  useEffect(() => {
+    const shouldFetch = currentOrg?.id && router.asPath !== pathRef.current;
+    if (shouldFetch) {
+      fetchCurrentUserReferenceCitations({
+        onSuccess,
+        onError,
+        organizationID: currentOrg?.id,
+        // @ts-ignore
+        projectID: activeProject?.projectID,
+        getCurrentUserCitation: !isEmpty(router.query?.my_refs),
+      });
+
+      pathRef.current = router.asPath;
     }
   }, [
     fetchCurrentUserReferenceCitations,
@@ -101,6 +97,7 @@ function useEffectFetchReferenceCitations({
     isFetchingProjects,
     router.query.org_refs,
     router.query.slug,
+    router.asPath,
   ]);
 }
 
@@ -123,7 +120,9 @@ export default function ReferencesTable({
   } = useReferenceTabContext();
   const { referenceTableRowData, setReferenceTableRowData } =
     useReferencesTableContext();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isFetchingReferences, setIsFetchingReferences] =
+    useState<boolean>(true);
+
   const [isViewerOpen, setIsViewerOpen] = useState<boolean>(false);
   const [dragStarted, setDragStarted] = useState(false);
   const [rowDraggedOver, setRowDraggedOver] = useState<any>();
@@ -135,12 +134,6 @@ export default function ReferencesTable({
 
   const router = useRouter();
   const apiRef = useGridApiRef();
-
-  useEffect(() => {
-    if (loading !== undefined) {
-      setIsLoading(loading);
-    }
-  }, [loading]);
 
   const moveCitationToFolder = ({ moveToFolderId }) => {
     const newReferenceData = referenceTableRowData.filter((data) => {
@@ -227,15 +220,18 @@ export default function ReferencesTable({
     setActiveProject,
     setCurrentOrgProjects,
     isFetchingProjects,
+    setIsFetchingProjects,
   } = useReferenceActiveProjectContext();
 
-  useEffectFetchReferenceCitations({
-    setIsLoading,
+  useEffectFetchReferences({
     onSuccess: (payload: any) => {
       setReferenceTableRowData(payload);
-      setIsLoading(false);
+      setIsFetchingReferences(false);
     },
-    onError: emptyFncWithMsg,
+    onError: () => {
+      emptyFncWithMsg("Failed to fetch references");
+      setIsFetchingReferences(false);
+    },
     referencesFetchTime,
   });
 
@@ -279,31 +275,33 @@ export default function ReferencesTable({
     : null;
 
   const handleSingleClick = (params, event, _details): void => {
-    // Ignore checkbox click
-    if (event.target.matches('input[type="checkbox"], .action-button-class')) {
-      event.stopPropagation();
-      return;
-    }
+    handleOpenAction({ row: params.row, id: params.id });
 
-    if (event.metaKey) {
-      // If meta key is pressed, add or remove from the selection
-      if (selectedRows.includes(params.id)) {
-        handleRowSelection(selectedRows.filter((id) => id !== params.id));
-      } else {
-        handleRowSelection([...selectedRows, params.id]);
-      }
-    } else {
-      // If meta key is not pressed, replace the selection
-      // Without timeout, double click will not be reached since the state update will interrupt it.
-      setTimeout(() => {
-        handleRowSelection([params.id]);
-      }, 150);
-    }
+    // // Ignore checkbox click
+    // if (event.target.matches('input[type="checkbox"], .action-button-class')) {
+    //   event.stopPropagation();
+    //   return;
+    // }
 
-    if (hasTouchCapability) {
-      handleOpenAction({ row: params.row, id: params.id });
-      event.stopPropagation();
-    }
+    // if (event.metaKey) {
+    //   // If meta key is pressed, add or remove from the selection
+    //   if (selectedRows.includes(params.id)) {
+    //     handleRowSelection(selectedRows.filter((id) => id !== params.id));
+    //   } else {
+    //     handleRowSelection([...selectedRows, params.id]);
+    //   }
+    // } else {
+    //   // If meta key is not pressed, replace the selection
+    //   // Without timeout, double click will not be reached since the state update will interrupt it.
+    //   setTimeout(() => {
+    //     handleRowSelection([params.id]);
+    //   }, 150);
+    // }
+
+    // if (hasTouchCapability) {
+    //   handleOpenAction({ row: params.row, id: params.id });
+    //   event.stopPropagation();
+    // }
   };
 
   const handleDoubleClick = (params, event, _details): void => {
@@ -333,6 +331,8 @@ export default function ReferencesTable({
     setIsDrawerOpen(true);
   };
 
+  const isLoading = isFetchingProjects || isFetchingReferences;
+
   const formattedReferenceRows = !isLoading
     ? nullthrows(
         formatReferenceRowData(
@@ -349,6 +349,8 @@ export default function ReferencesTable({
         )
       )
     : [];
+
+  const loadingRows = new Array(4).fill(null).map((_) => formatLoading({}));
 
   return (
     <DroppableZone
@@ -372,8 +374,7 @@ export default function ReferencesTable({
           }
           columns={columnsFormat}
           sx={DATA_GRID_STYLE_OVERRIDE}
-          rows={formattedReferenceRows}
-          loading={isLoading || isFetchingProjects}
+          rows={isLoading ? loadingRows : formattedReferenceRows}
           hideFooter
           ref={tableRef}
           className={
@@ -402,7 +403,7 @@ export default function ReferencesTable({
             },
           }}
           onCellClick={handleSingleClick}
-          onCellDoubleClick={handleDoubleClick}
+          // onCellDoubleClick={handleDoubleClick}
           rowSelectionModel={rowSelectionModel}
           onRowSelectionModelChange={(ids) => {
             handleRowSelection(ids);
