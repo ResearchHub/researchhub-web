@@ -276,32 +276,6 @@ export default function ReferencesTable({
 
   const handleSingleClick = (params, event, _details): void => {
     handleOpenAction({ row: params.row, id: params.id });
-
-    // // Ignore checkbox click
-    // if (event.target.matches('input[type="checkbox"], .action-button-class')) {
-    //   event.stopPropagation();
-    //   return;
-    // }
-
-    // if (event.metaKey) {
-    //   // If meta key is pressed, add or remove from the selection
-    //   if (selectedRows.includes(params.id)) {
-    //     handleRowSelection(selectedRows.filter((id) => id !== params.id));
-    //   } else {
-    //     handleRowSelection([...selectedRows, params.id]);
-    //   }
-    // } else {
-    //   // If meta key is not pressed, replace the selection
-    //   // Without timeout, double click will not be reached since the state update will interrupt it.
-    //   setTimeout(() => {
-    //     handleRowSelection([params.id]);
-    //   }, 150);
-    // }
-
-    // if (hasTouchCapability) {
-    //   handleOpenAction({ row: params.row, id: params.id });
-    //   event.stopPropagation();
-    // }
   };
 
   const handleOpenAction = ({ id, row }): void => {
@@ -399,7 +373,6 @@ export default function ReferencesTable({
             },
           }}
           onRowClick={handleSingleClick}
-          // onCellDoubleClick={handleDoubleClick}
           rowSelectionModel={rowSelectionModel}
           onRowSelectionModelChange={(ids) => {
             handleRowSelection(ids);
