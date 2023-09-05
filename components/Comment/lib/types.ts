@@ -82,8 +82,8 @@ export const parseThread = (raw: any): CommentThread => {
   return {
     id: String(raw.id),
     relatedContent: {
-      id: raw.related_content.id,
-      type: raw.related_content.content_type,
+      id: raw.object_id,
+      type: raw.content_type.model,
     },
     privacy: raw.privacy_type,
     threadType: raw.thread_type,
