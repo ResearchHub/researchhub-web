@@ -114,7 +114,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
             required: referenceSchemaValueSet.required,
           });
         };
-        if (schemaField === "creators") {
+        if (schemaField === "author") {
           return (
             <ReferenceItemFieldCreatorTagInput
               disabled={isSubmitting || isLoading}

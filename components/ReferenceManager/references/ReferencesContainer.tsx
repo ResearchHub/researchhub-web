@@ -143,24 +143,24 @@ function ReferencesContainer({
   };
 
   const onFileDrop = (acceptedFiles: File[] | any[]): void => {
+    const preload: Array<PreloadRow> = [];
     setLoading(true);
+    acceptedFiles.map(() => {
+      const uuid = window.URL.createObjectURL(new Blob([])).substring(31);
+      preload.push({
+        citation_type: "LOADING",
+        id: uuid,
+        created: true,
+      });
+    });
+
+    setCreatedReferences(preload);
     postUploadFiles({
       acceptedFiles,
       activeProjectID: activeProject?.projectID ?? undefined,
       currentUser: nullthrows(currentUser),
       onError: (): void => {},
       onSuccess: (): void => {
-        const preload: Array<PreloadRow> = [];
-        acceptedFiles.map(() => {
-          const uuid = window.URL.createObjectURL(new Blob([])).substring(31);
-          preload.push({
-            citation_type: "LOADING",
-            id: uuid,
-            created: true,
-          });
-        });
-
-        setCreatedReferences(preload);
         setLoading(false);
       },
       orgID: nullthrows(currentOrg).id,

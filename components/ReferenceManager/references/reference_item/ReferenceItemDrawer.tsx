@@ -17,6 +17,9 @@ import {
   resolveFieldKeyLabels,
   sortSchemaFieldKeys,
 } from "../utils/resolveFieldKeyLabels";
+import {
+  datePartsToDateString
+} from "../utils/formatCSLDate";
 import { snakeCaseToNormalCase, toTitleCase } from "~/config/utils/string";
 import { updateReferenceCitation } from "../api/updateReferenceCitation";
 import { useReferenceTabContext } from "./context/ReferenceItemDrawerContext";
@@ -72,11 +75,6 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
   );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const hasAttachment = !isEmpty(referenceItemDatum?.attachment);
-  const _requiredFieldsSet = useMemo(
-    // NOTE: calvinhlee - this needs to be improved from BE
-    () => new Set(referenceItemDatum?.required_fields ?? []),
-    [referenceItemDatum?.id]
-  );
 
   const { currentOrg } = useOrgs();
   useEffect((): void => {
@@ -86,9 +84,9 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
       setLocalReferenceFields(
         {
           ...referenceItemDatum?.fields,
-          creators: referenceItemDatum?.fields?.creators
+          author: referenceItemDatum?.fields?.author
             .map((creator): string => {
-              return `${creator.first_name} ${creator.last_name}`;
+              return `${creator.given} ${creator.family}`;
             })
             .join(", "),
         } ?? {}
@@ -99,18 +97,16 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
   const tabInputItems = filterNull(
     sortSchemaFieldKeys(Object.keys(localReferenceFields)).map(
       (field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
+        let issued;
         const label = resolveFieldKeyLabels(field_key),
           value =
-            field_key === "date"
-              ? dayjs(localReferenceFields[field_key]).format("MM-DD-YYYY")
+            field_key === "issued"
+              ? (issued = dayjs(datePartsToDateString(localReferenceFields[field_key])).format("YYYY-DD-MM")) === "Invalid Date" ? null : issued
               : localReferenceFields[field_key],
           isRequired = false;
         // isRequired = requiredFieldsSet.has(field_key);
 
-        if (field_key === "raw_oa_json") {
-          return null;
-        }
-        if (field_key === "creators") {
+        if (field_key === "author") {
           return (
             <ReferenceItemFieldCreatorTagInput
               formID={field_key}
@@ -255,14 +251,14 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
                   // TODO: calvinhlee - create utily functions to format these
                   fields: {
                     ...localReferenceFields,
-                    creators:
-                      localReferenceFields.creators
+                    author:
+                      localReferenceFields.author
                         ?.split(", ")
                         ?.map((creatorName) => {
                           const splittedName = creatorName.split(" ");
                           return {
-                            first_name: splittedName[0],
-                            last_name: splittedName.slice(1).join(" "),
+                            given: splittedName[0],
+                            family: splittedName.slice(1).join(" "),
                           };
                         }) ?? [],
                   },

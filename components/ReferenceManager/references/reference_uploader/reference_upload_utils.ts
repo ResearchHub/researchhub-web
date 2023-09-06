@@ -1,9 +1,13 @@
 import { createReferenceCitation } from "../api/createReferenceCitation";
 import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import { fetchReferenceCitationSchema } from "../api/fetchReferenceCitationSchema";
+import {
+  stringToDateParts
+} from "../utils/formatCSLDate";
 import { ID, NullableString } from "~/config/types/root_types";
 import { SyntheticEvent, useEffect } from "react";
 import { toFormData } from "~/config/utils/toFormData";
+
 import moment from "moment";
 
 export function useEffectOnReferenceTypeChange({
@@ -44,7 +48,7 @@ export function parseDoiSearchResultOntoValueSet({
     schema: {
       ...referenceSchemaValueSet.schema,
       access_date: moment().format("MM-DD-YYYY"),
-      creators: (authorships ?? []).map(
+      author: (authorships ?? []).map(
         (authorship) => authorship.author?.display_name ?? ""
       ),
       date: !isEmpty(publication_date)
@@ -83,10 +87,12 @@ export const handleSubmit = ({
     referenceSchemaValueSet?.schema?.creators?.map((creatorName) => {
       const splittedName = creatorName.split(" ");
       return {
-        first_name: splittedName[0],
-        last_name: splittedName.slice(1).join(" "),
+        given: splittedName[0],
+        family: splittedName.slice(1).join(" "),
       };
     }) ?? [];
+
+  const formattedCSLDate = stringToDateParts(referenceSchemaValueSet?.schema?.issued);
 
   const fields: {
     fields: any;
@@ -96,7 +102,8 @@ export const handleSubmit = ({
   } = {
     fields: {
       ...referenceSchemaValueSet.schema,
-      creators: formattedCreators,
+      author: formattedCreators,
+      issued: formattedCSLDate,
     },
     citation_type: selectedReferenceType,
     doi: referenceSchemaValueSet.schema.DOI,
