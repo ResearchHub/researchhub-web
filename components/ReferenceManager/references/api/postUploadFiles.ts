@@ -46,7 +46,7 @@ export default async function postUploadFiles({
         type: "application/pdf",
       });
 
-      const result = fetch(preSignedUrl, {
+      const result = await fetch(preSignedUrl, {
         method: "PUT",
         body: fileBlob,
       });
@@ -54,7 +54,6 @@ export default async function postUploadFiles({
       if (isDevelopment) {
         const preSignedUrlParts = preSignedUrl.split("?AWS");
         const path = preSignedUrlParts[0].split(".com/")[1];
-        await result;
         const _callBackResult = await fetch(
           generateApiUrl("citation_entry/upload_pdfs_callback"),
           API.POST_CONFIG({
