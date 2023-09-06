@@ -17,7 +17,7 @@ export const fetchCurrentUserReferenceCitations = ({
   onSuccess,
   organizationID,
   projectID,
-}: Args): void => {
+}: Args): Promise<any> => {
   const apiJson = { apiPath: "citation_entry/user_citations", queryString: "" };
   // TODO: calvinhlee - clean this up
   if (organizationID) {
@@ -30,7 +30,7 @@ export const fetchCurrentUserReferenceCitations = ({
     apiJson.queryString += `&project_id=${projectID}`;
   }
 
-  fetch(buildApiUri(apiJson), API.GET_CONFIG())
+  return fetch(buildApiUri(apiJson), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((result: any): void => onSuccess(result))
