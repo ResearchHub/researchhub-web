@@ -171,7 +171,7 @@ export default function BasicTogglableNavbarLeft({
           }}
         >
           <OrganizationPopover isReferenceManager={true} />
-          <div className={css(styles.sidebarButtonsContainer)}>
+          {/* <div className={css(styles.sidebarButtonsContainer)}>
             <div
               className={css(styles.sidebarButton)}
               onClick={openOrgSettingsModal}
@@ -181,7 +181,7 @@ export default function BasicTogglableNavbarLeft({
                 Settings & Members
               </span>
             </div>
-          </div>
+          </div> */}
         </Box>
       </Box>
       <Divider />

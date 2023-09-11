@@ -16,12 +16,14 @@ type Props = {
   authChecked?: boolean;
   currentUserID?: ID;
   isLoggedIn: boolean;
+  calloutOpen?: boolean;
 };
 
 function ReferencesRoot({
   authChecked,
   currentUserID,
   isLoggedIn,
+  calloutOpen,
 }: Props): ReactElement {
   const wsUrl = currentUserID ? WS_ROUTES.CITATION_ENTRY(currentUserID) : "";
 
@@ -39,7 +41,11 @@ function ReferencesRoot({
                 ></HeadComponent>
                 {isLoggedIn || !authChecked ? (
                   // @ts-ignore - faulty legacy connect hook
-                  <ReferencesContainer wsUrl={wsUrl} wsAuth />
+                  <ReferencesContainer
+                    wsUrl={wsUrl}
+                    wsAuth
+                    calloutOpen={calloutOpen}
+                  />
                 ) : (
                   <LoginModal
                     isOpen={true}
