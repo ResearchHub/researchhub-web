@@ -54,10 +54,11 @@ export default function RefManagerCallouts({
       </div>
       <div>
         <a
-          isWhite={true}
-          isLink={true}
+          target="_blank"
+          rel="noopener"
           className={css(styles.link)}
-          href="https://www.notion.so/researchhub/Microsoft-Word-Add-in-39f688a18cff4a33997ec06f54b91b05"
+          onClick={handleClose}
+          href="https://appsource.microsoft.com/en-US/product/office/WA200005973?tab=Overview"
         >
           <div className={css(styles.button)}>Download Plugin</div>
         </a>
