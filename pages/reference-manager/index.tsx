@@ -14,10 +14,6 @@ function Index(props) {
   useEffect(() => {
     const calloutOpenStorage = window.localStorage.getItem("callout_open");
 
-    console.log(calloutOpenStorage);
-
-    debugger;
-
     if (calloutOpenStorage && calloutOpenStorage === "false") {
       setCalloutIsOpen(false);
     }
@@ -35,7 +31,9 @@ function Index(props) {
 export async function getServerSideProps(ctx) {
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
-  const calloutOpen = cookies["callout_open"] || null;
+  const calloutOpen =
+    cookies["callout_open"] === undefined ? null : cookies["callout_open"];
+
   // const userURL = generateApiUrl("user");
   // const userResponse = await fetch(userURL, api.GET_CONFIG(authToken));
   // const userJson = await userResponse.json();

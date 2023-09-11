@@ -98,8 +98,6 @@ export default function ReferenceProjectsUpsertModal({
         handleCloseModal();
         setIsLoading(false);
 
-        console.log(result);
-
         if (nameChanged) {
           const slugsTilNow = router.query.slug
             .slice(0, router.query.slug.length - 1)

@@ -116,6 +116,7 @@ function ReferencesContainer({
     setIsDrawerOpen: setIsRefUploadDrawerOpen,
     setProjectID: setProjectIDForUploadDrawer,
   } = useReferenceUploadDrawerContext();
+
   const [createdReferences, setCreatedReferences] = useState<any[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isOrgModalOpen, setIsOrgModalOpen] = useState<boolean>(false);
@@ -123,7 +124,9 @@ function ReferencesContainer({
   const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [calloutIsOpen, setCalloutIsOpen] = useState<boolean>(
-    calloutOpen === undefined || calloutOpen === null ? true : calloutOpen
+    calloutOpen === undefined || calloutOpen === null
+      ? true
+      : calloutOpen !== "false"
   );
   const [isRemoveRefModalOpen, setIsRemoveRefModalOpen] =
     useState<boolean>(false);
