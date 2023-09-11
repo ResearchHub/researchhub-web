@@ -35,7 +35,7 @@ function Index(props) {
 export async function getServerSideProps(ctx) {
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
-  const calloutOpen = cookies["callout_open"];
+  const calloutOpen = cookies["callout_open"] || null;
   // const userURL = generateApiUrl("user");
   // const userResponse = await fetch(userURL, api.GET_CONFIG(authToken));
   // const userJson = await userResponse.json();

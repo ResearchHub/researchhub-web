@@ -27,7 +27,7 @@ function Index(props) {
 
 export async function getServerSideProps(ctx) {
   const cookies = nookies.get(ctx);
-  const calloutOpen = cookies["callout_open"];
+  const calloutOpen = cookies["callout_open"] || null;
   return {
     props: {
       calloutOpen,
