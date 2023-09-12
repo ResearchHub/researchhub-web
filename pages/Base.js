@@ -28,13 +28,58 @@ import {
 } from "@web3modal/ethereum";
 import { Web3Modal } from "@web3modal/react";
 import { ModalActions } from "~/redux/modals";
+import { publicProvider } from "wagmi/providers/public";
+import { infuraProvider } from "wagmi/providers/infura";
+import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
+import { InjectedConnector } from "wagmi/connectors/injected";
+import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
+
+// WalletConnect project ID
+const projectId = "a3e8904e258fe256bf772b764d3acfab";
+
+const { chains, publicClient, webSocketPublicClient } = configureChains(
+  [mainnet],
+  [
+    w3mProvider({ projectId }),
+    infuraProvider({ apiKey: "42fa8ef2001944acac0803b74614f301" }),
+    publicProvider(),
+  ]
+);
 
 const config = createConfig({
   autoConnect: true,
-  publicClient: createPublicClient({
-    chain: mainnet,
-    transport: http(),
-  }),
+  connectors: [
+    new MetaMaskConnector({ chains }),
+    new CoinbaseWalletConnector({
+      chains,
+      options: {
+        appName: "wagmi",
+      },
+    }),
+    new WalletConnectConnector({
+      chains,
+      options: {
+        projectId: "...",
+      },
+    }),
+    new InjectedConnector({
+      chains,
+      options: {
+        name: "Injected",
+        shimDisconnect: true,
+      },
+    }),
+    new InjectedConnector({
+      chains,
+      options: {
+        name: "Injected",
+        shimDisconnect: true,
+      },
+    }),
+  ],
+  publicClient,
+  webSocketPublicClient,
 });
 
 const DynamicPermissionNotification = dynamic(() =>
@@ -47,10 +92,6 @@ const DynamicAlertTemplate = dynamic(() =>
 const DynamicNavbar = dynamic(() => import("~/components/Navbar"));
 export const NavbarContext = createContext();
 
-const chains = [mainnet, goerli];
-const projectId = "a3e8904e258fe256bf772b764d3acfab";
-
-const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
 const wagmiConfig = createConfig({
   autoConnect: true,
   connectors: w3mConnectors({ projectId, chains }),
