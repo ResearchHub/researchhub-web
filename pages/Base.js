@@ -20,7 +20,7 @@ import OrganizationContextProvider from "~/components/contexts/OrganizationConte
 import CustomHead from "../components/Head";
 import { WagmiConfig, createConfig, configureChains } from "wagmi";
 import { createPublicClient, http } from "viem";
-import { mainnet, goerli } from "wagmi/chains";
+import { mainnet } from "wagmi/chains";
 import {
   EthereumClient,
   w3mConnectors,
@@ -42,7 +42,9 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet],
   [
     w3mProvider({ projectId }),
-    infuraProvider({ apiKey: "42fa8ef2001944acac0803b74614f301" }),
+    infuraProvider({
+      apiKey: "42fa8ef2001944acac0803b74614f301",
+    }),
     publicProvider(),
   ]
 );
@@ -60,7 +62,7 @@ const config = createConfig({
     new WalletConnectConnector({
       chains,
       options: {
-        projectId: "...",
+        projectId,
       },
     }),
     new InjectedConnector({
