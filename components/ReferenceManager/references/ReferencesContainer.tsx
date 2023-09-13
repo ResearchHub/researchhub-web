@@ -135,7 +135,6 @@ function ReferencesContainer({
     useState<boolean>(false);
   const { isRefManagerSidebarOpen, setIsRefManagerSidebarOpen } = navContext();
   const isOnOrgTab = !isEmpty(router.query?.org_refs);
-  const isOnMyRefs = !isEmpty(router.query?.my_refs);
   const [isSearchInputFullWidth, setIsSearchInputFullWidth] =
     useState<boolean>(false);
   const mainContentRef = createRef<HTMLDivElement>();
