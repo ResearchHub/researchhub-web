@@ -20,6 +20,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { useRouter } from "next/router";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { isOrgMember } from "~/components/Org/utils/orgHelper";
+import { useReferencesTableContext } from "~/components/ReferenceManager/references/reference_table/context/ReferencesTableContext";
 
 type Props = {
   isReferenceManager: boolean;
@@ -35,6 +36,8 @@ export default function OrganizationPopover({
   const { organization } = router.query;
 
   const { orgs, setCurrentOrg, currentOrg } = useOrgs();
+  const { setReferenceTableRowData, setReferencesContextLoading } =
+    useReferencesTableContext();
 
   useEffect(() => {
     if (organization && orgs.length) {
@@ -78,7 +81,14 @@ export default function OrganizationPopover({
                   }}
                   key={org.id.toString()}
                   className={css(styles.popoverBodyItem)}
-                  onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+                  onClick={() => {
+                    if (isReferenceManager) {
+                      setCurrentOrg(org);
+                      setReferenceTableRowData([]);
+                      setReferencesContextLoading(true);
+                    }
+                    setIsPopoverOpen(!isPopoverOpen);
+                  }}
                 >
                   <div className={css(styles.avatarWrapper)}>
                     <OrgAvatar org={org} />

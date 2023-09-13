@@ -64,43 +64,6 @@ export type PreloadRow = {
   created: boolean;
 };
 
-function useEffectFetchReferences({ onError, onSuccess, referencesFetchTime }) {
-  // NOTE: current we are assuming that citations only belong to users. In the future it may belong to orgs
-  const user = getCurrentUser();
-  const { activeProject, isFetchingProjects } =
-    useReferenceActiveProjectContext();
-  const pathRef = useRef<any>(null);
-
-  const { currentOrg } = useOrgs();
-  const router = useRouter();
-
-  useEffect(() => {
-    const shouldFetch = currentOrg?.id && router.asPath !== pathRef.current;
-    if (shouldFetch) {
-      fetchCurrentUserReferenceCitations({
-        onSuccess,
-        onError,
-        organizationID: currentOrg?.id,
-        // @ts-ignore
-        projectID: activeProject?.projectID,
-        getCurrentUserCitation: !isEmpty(router.query?.my_refs),
-      });
-
-      pathRef.current = router.asPath;
-    }
-  }, [
-    fetchCurrentUserReferenceCitations,
-    user?.id,
-    referencesFetchTime,
-    currentOrg,
-    activeProject?.projectID,
-    isFetchingProjects,
-    router.query.org_refs,
-    router.query.slug,
-    router.asPath,
-  ]);
-}
-
 // TODO: @lightninglu10 - ReferenceTableRowDataType became worthless after updating this component. We need to address this
 export default function ReferencesTable({
   createdReferences,
@@ -118,8 +81,12 @@ export default function ReferencesTable({
     setReferenceItemDatum,
     referencesFetchTime,
   } = useReferenceTabContext();
-  const { referenceTableRowData, setReferenceTableRowData } =
-    useReferencesTableContext();
+  const {
+    referenceTableRowData,
+    setReferenceTableRowData,
+    referencesContextLoading,
+    setReferencesContextLoading,
+  } = useReferencesTableContext();
   const [isFetchingReferences, setIsFetchingReferences] =
     useState<boolean>(true);
 
@@ -223,17 +190,45 @@ export default function ReferencesTable({
     setIsFetchingProjects,
   } = useReferenceActiveProjectContext();
 
-  useEffectFetchReferences({
-    onSuccess: (payload: any) => {
-      setReferenceTableRowData(payload);
-      setIsFetchingReferences(false);
-    },
-    onError: () => {
-      emptyFncWithMsg("Failed to fetch references");
-      setIsFetchingReferences(false);
-    },
+  // NOTE: current we are assuming that citations only belong to users. In the future it may belong to orgs
+  const user = getCurrentUser();
+  const pathRef = useRef<any>(null);
+
+  useEffect(() => {
+    const shouldFetch = router.asPath !== pathRef.current;
+    if (shouldFetch) {
+      setIsFetchingReferences(true);
+      setReferenceTableRowData([]);
+      fetchCurrentUserReferenceCitations({
+        onSuccess: (payload: any) => {
+          setReferenceTableRowData(payload);
+          setIsFetchingReferences(false);
+          setReferencesContextLoading(false);
+        },
+        onError: () => {
+          emptyFncWithMsg("Failed to fetch references");
+          setIsFetchingReferences(false);
+          setReferencesContextLoading(false);
+        },
+        organizationID: currentOrg?.id,
+        // @ts-ignore
+        projectID: activeProject?.projectID,
+        getCurrentUserCitation: !isEmpty(router.query?.my_refs),
+      });
+
+      pathRef.current = router.asPath;
+    }
+  }, [
+    fetchCurrentUserReferenceCitations,
+    user?.id,
     referencesFetchTime,
-  });
+    currentOrg,
+    activeProject?.projectID,
+    isFetchingProjects,
+    router.query.org_refs,
+    router.query.slug,
+    router.asPath,
+  ]);
 
   function combineAndDeduplicate(arr1, arr2) {
     const combinedArray = [...arr1, ...arr2];
@@ -301,7 +296,8 @@ export default function ReferencesTable({
     setIsDrawerOpen(true);
   };
 
-  const isLoading = isFetchingProjects || isFetchingReferences;
+  const isLoading =
+    isFetchingProjects || isFetchingReferences || referencesContextLoading;
 
   const formattedReferenceRows = !isLoading
     ? nullthrows(

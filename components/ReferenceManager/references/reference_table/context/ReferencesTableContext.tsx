@@ -5,6 +5,8 @@ import type { Context } from "react";
 export type ReferencesTableContextType = {
   referenceTableRowData: ReferenceTableRowDataType[];
   setReferenceTableRowData: (data: ReferenceTableRowDataType[]) => void;
+  referencesContextLoading: boolean;
+  setReferencesContextLoading: (boolean: boolean) => void;
 };
 
 export const DEFAULT_CONTEXT: ReferencesTableContextType = {
@@ -24,11 +26,16 @@ export function ReferencesTableContextProvider({ children }) {
     ReferenceTableRowDataType[]
   >([]);
 
+  const [referencesContextLoading, setReferencesContextLoading] =
+    useState<boolean>(false);
+
   return (
     <ReferencesTableContext.Provider
       value={{
         referenceTableRowData,
         setReferenceTableRowData,
+        referencesContextLoading,
+        setReferencesContextLoading,
       }}
     >
       {children}

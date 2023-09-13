@@ -59,7 +59,11 @@ const NewOrgModal = ({
   };
 
   const goToOrg = () => {
-    router.push(`/${org.slug}/notebook`);
+    if (router.asPath.includes("reference-manager")) {
+      router.push(`/reference-manager/${org.slug}?my_refs=true`);
+    } else {
+      router.push(`/${org.slug}/notebook`);
+    }
     handleCloseModal();
   };
 

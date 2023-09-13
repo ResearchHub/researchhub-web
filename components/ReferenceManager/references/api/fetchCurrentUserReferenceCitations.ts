@@ -9,6 +9,7 @@ type Args = {
   onSuccess: (response: any) => void;
   organizationID: ID;
   projectID: ID;
+  organizationSlug?: string;
 };
 
 export const fetchCurrentUserReferenceCitations = ({
@@ -16,23 +17,32 @@ export const fetchCurrentUserReferenceCitations = ({
   onError,
   onSuccess,
   organizationID,
+  organizationSlug,
   projectID,
 }: Args): Promise<any> => {
-  const apiJson = { apiPath: "citation_entry/user_citations", queryString: "" };
+  const apiJson = {
+    apiPath: "citation_entry/user_citations",
+    queryString: "?",
+  };
   // TODO: calvinhlee - clean this up
-  if (organizationID) {
-    apiJson.queryString += `?organization_id=${organizationID}`;
+  if (organizationSlug) {
+    apiJson.queryString += `organization__slug=${organizationSlug}&`;
+  } else if (organizationID) {
+    apiJson.queryString += `organization_id=${organizationID}&`;
   }
+
   if (getCurrentUserCitation) {
-    apiJson.queryString += `&get_current_user_citations=1`;
+    apiJson.queryString += `get_current_user_citations=1&`;
   }
   if (projectID) {
-    apiJson.queryString += `&project_id=${projectID}`;
+    apiJson.queryString += `project_id=${projectID}&`;
   }
 
   return fetch(buildApiUri(apiJson), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((result: any): void => onSuccess(result))
+    .then((result: any): void => {
+      onSuccess(result);
+    })
     .catch(onError);
 };
