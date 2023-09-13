@@ -89,6 +89,7 @@ class FormSelect extends Component {
       showCountInsteadOfLabels,
       showLabelAlongSelection,
       isOptionDisabled,
+      onInputChange,
     } = this.props;
 
     const configuredComponents = {
@@ -209,6 +210,7 @@ class FormSelect extends Component {
           styles={colorStyles}
           value={value}
           isOptionDisabled={isOptionDisabled}
+          onInputChange={this.props.onInputChange}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
       </div>

@@ -33,6 +33,7 @@ import { DocumentContext } from "./lib/DocumentContext";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import PaperMetadataModal from "./PaperMetadataModal";
 import DocumentOptions from "./DocumentOptions";
+import DocumentHubs from "./lib/DocumentHubs";
 
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
@@ -117,6 +118,11 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               </div>
               <h1 className={css(styles.title)}>{doc.title}</h1>
             </div>
+            {doc.hubs.length > 0 && (
+              <div className={css(styles.hubsWrapper)}>
+                <DocumentHubs hubs={doc.hubs} />
+              </div>
+            )}
             <div className={css(styles.lineItemsWrapper)}>
               <div className={css(styles.lineItems)}>
                 <DocumentLineItems document={doc} />
@@ -226,6 +232,7 @@ const styles = StyleSheet.create({
   headerRoot: {},
   title: {
     textTransform: "capitalize",
+    marginBottom: 0,
   },
   lineItems: {},
   headerWrapper: {
@@ -264,7 +271,11 @@ const styles = StyleSheet.create({
       paddingRight: 15,
     },
   },
+  hubsWrapper: {
+    marginBottom: 10,
+  },
   titleWrapper: {
+    marginBottom: 10,
     position: "relative",
     [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       paddingLeft: 15,
