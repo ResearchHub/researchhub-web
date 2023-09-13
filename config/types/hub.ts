@@ -6,12 +6,11 @@ export type Hub = {
   name: string;
   description: string;
   relevancyScore: number;
-  numPapers?: number;
+  numDocs?: number;
   numComments?: number;
 };
 
 export const parseHub = (raw: any): Hub => {
-
   const parsed = {
     id: raw.id,
     slug: raw.slug,
@@ -21,12 +20,12 @@ export const parseHub = (raw: any): Hub => {
   };
 
   if (raw.discussion_count) {
-    parsed["discussion_count"] = raw.discussion_count;
+    parsed["discussion_count"] = raw.discussion_count || 0;
   }
 
   if (raw.paper_count) {
-    parsed["numPapers"] = raw.paper_count;
-  }  
+    parsed["numDocs"] = raw.paper_count || 0;
+  }
 
   return parsed;
 };
