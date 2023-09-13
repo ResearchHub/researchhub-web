@@ -198,9 +198,9 @@ function RootLeftSidebar({
   });
 
   useEffect((): void => {
-    const onSpecficHubPage =
-      ["hubs"].includes(pathname.split("/")[1]) &&
-      !isEmpty(pathname.split("/")[2]);
+    // const onSpecficHubPage =
+    //   ["hubs"].includes(pathname.split("/")[1]) &&
+    //   !isEmpty(pathname.split("/")[2]);
     const onDefaultMinViewPages = ![
       "",
       "/",
@@ -213,10 +213,11 @@ function RootLeftSidebar({
       "user",
     ].includes(pathname.split("/")[1]);
 
-    if (onSpecficHubPage) {
-      setIsMinimized(isForceMinimized);
-      setGrowMinimized(isForceMinimized);
-    } else if (onDefaultMinViewPages) {
+    // if (onSpecficHubPage) {
+    //   setIsMinimized(isForceMinimized);
+    //   setGrowMinimized(isForceMinimized);
+    // } else 
+    if (onDefaultMinViewPages) {
       setIsMinimized(isForceMinimized || true);
       setGrowMinimized(isForceMinimized || true);
     } else {
@@ -295,7 +296,7 @@ function RootLeftSidebar({
       className={formattedRootLeftSidebar + " root-left-sidebar"}
       style={
         ["notebook"].includes(pathname.split("/")[2]) ||
-        ["hubs", "user", "reference-manager", "live"].includes(
+        ["user", "reference-manager", "live"].includes(
           pathname.split("/")[1]
         ) ||
         pathname === "/hypothesis/create"

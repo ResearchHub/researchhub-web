@@ -5,6 +5,8 @@ import IconButton from "~/components/Icons/IconButton";
 import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
+import HubTag from "~/components/Hubs/HubTag";
+
 
 const DocumentHubs = ({
   hubs,
@@ -22,13 +24,7 @@ const DocumentHubs = ({
   return (
     <div className={css(styles.wrapper)}>
       {visibleHubs.map((h, index) => (
-        <div key={index}>
-          <Link key={`/hubs/${h.slug ?? ""}-index`} href={`/hubs/${h.slug}`}>
-            <IconButton variant="round" overrideStyle={styles.hubBtn}>
-              <span>{toTitleCase(h.name)}</span>
-            </IconButton>
-          </Link>
-        </div>
+        <HubTag hub={h} key={index} />
       ))}
       {withShowMore && hubs.length > 3 && (
         <IconButton
@@ -59,6 +55,9 @@ const styles = StyleSheet.create({
     textDecoration: "none",
     fontWeight: 400,
     color: colors.NEW_BLUE(),
+    ":hover": {
+      background: colors.NEW_BLUE(0.2),
+    }
   },
   moreLessBtn: {
     padding: "4px 12px",
