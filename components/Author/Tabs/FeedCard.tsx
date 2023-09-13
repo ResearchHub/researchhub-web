@@ -37,7 +37,6 @@ import dynamic from "next/dynamic";
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
-import SubmissionDetails from "~/components/Document/SubmissionDetails";
 import VoteWidget from "~/components/VoteWidget";
 import { createVoteHandler } from "~/components/Vote/utils/createVoteHandler";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
@@ -46,6 +45,8 @@ import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import ContentBadge from "~/components/ContentBadge";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { parsePaperAuthors } from "~/components/Document/lib/types";
+import AuthorList from "../AuthorList";
 
 const DocumentViewer = dynamic(
   () => import("~/components/Document/DocumentViewer")
@@ -133,6 +134,7 @@ function FeedCard({
   user: currentUser,
   withSidePadding,
 }: FeedCardProps) {
+  const authors = parsePaperAuthors(paper);
   const router = useRouter();
   const [isPreviewing, setIsPreviewing] = useState(false);
   const [voteState, setVoteState] = useState<VoteType | null>(
@@ -236,9 +238,6 @@ function FeedCard({
   const user = uploaded_by || created_by;
   const cardTitle = getTitle();
   const cardBody = getBody();
-  const createdDate = created_date || uploaded_date;
-  const createdBy = isEmpty(user) ? null : parseUser(user);
-  const nextRouter = useRouter();
   let bountyAmount = 0;
   let hasActiveBounty = false;
   bounties &&
@@ -260,12 +259,6 @@ function FeedCard({
       key={`${formattedDocType}-${id}`}
       onClick={(event) => {
         handleClick && handleClick(event);
-
-        // if (event.metaKey || event.shiftKey) {
-        //   window.open(feDocUrl);
-        // } else {
-        //   nextRouter.push(feDocUrl);
-        // }
       }}
     >
       <Link href={feDocUrl} className={css(styles.link)}>
@@ -298,20 +291,17 @@ function FeedCard({
                 <div className={css(styles.featuredBadge)}>Featured</div>
               )}
               <div className={css(styles.rowContainer)}>
-                <SubmissionDetails
-                  createdDate={createdDate}
-                  hubs={hubs}
-                  createdBy={createdBy}
-                  avatarSize={20}
-                  bounties={bounties}
-                  showAllHubsProp={true}
-                />
-              </div>
-              <div className={css(styles.rowContainer)}>
                 <div className={css(styles.column, styles.metaData)}>
                   <div className={css(styles.rowContainer)}>
                     <div className={css(styles.cardBody)}>
                       <h2 className={css(styles.title)}>{cardTitle}</h2>
+                      <div className={css(styles.authorWrapper)}>
+                        <AuthorList
+                          authors={authors}
+                          moreAuthorsBtnStyle={styles.moreAuthorsBtnStyle}
+                        />
+                      </div>
+
                       {cardBody && (
                         <div className={css(styles.abstract) + " clamp2"}>
                           {cardBody}
@@ -500,6 +490,14 @@ function FeedCard({
 }
 
 const styles = StyleSheet.create({
+  authorWrapper: {
+    fontSize: 14,
+    color: colors.BLACK(),
+    marginBottom: 5,
+  },
+  moreAuthorsBtnStyle: {
+    color: colors.BLACK(),
+  },
   ripples: {
     display: "flex",
     width: "100%",
@@ -688,7 +686,7 @@ const styles = StyleSheet.create({
   abstract: {
     fontSize: 14,
     fontWeight: 400,
-    color: colors.BLACK(),
+    color: colors.MEDIUM_GREY2(),
     marginBottom: 10,
     lineHeight: "18px",
   },
@@ -696,7 +694,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(),
     fontSize: 20,
     fontWeight: 500,
-    marginBottom: 10,
+    marginBottom: 5,
     marginTop: 8,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 16,

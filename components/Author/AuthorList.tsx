@@ -6,6 +6,7 @@ import { StyleSheet, css } from "aphrodite";
 
 interface Props {
   authors: Array<AuthorProfile>;
+  moreAuthorsBtnStyle?: any;
 }
 
 const Author = ({ author }: { author: AuthorProfile }) => {
@@ -26,7 +27,7 @@ const Author = ({ author }: { author: AuthorProfile }) => {
   );
 };
 
-const AuthorList = ({ authors }: Props) => {
+const AuthorList = ({ authors, moreAuthorsBtnStyle }: Props) => {
   const [showSecondaryAuthors, setShowSecondaryAuthors] = useState(false);
 
   // If authors list is greater than this, we want to hide "secondary" authors
@@ -77,7 +78,7 @@ const AuthorList = ({ authors }: Props) => {
       </div>
       {!showSecondaryAuthors && secondaryAuthors.length > 0 && (
         <div
-          className={css(styles.toggleHiddenAuthorsBtn)}
+          className={css(styles.toggleHiddenAuthorsBtn, moreAuthorsBtnStyle)}
           onClick={() => setShowSecondaryAuthors(true)}
         >
           +{secondaryAuthors.length} authors
