@@ -1,5 +1,5 @@
 import { Paper } from "~/components/Document/lib/types";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import FormInput from "../Form/FormInput";
 import { css, StyleSheet } from "aphrodite";
 import Button from "../Form/Button";
@@ -11,7 +11,10 @@ import updatePaperMetadataAPI from "./api/updatePaperMetadataAPI";
 import colors from "~/config/themes/colors";
 import FormSelect from "../Form/FormSelect";
 import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
-import { parseHub } from "~/config/types/hub";
+import { Hub, parseHub } from "~/config/types/hub";
+import { fetchHubSuggestions } from "../SearchSuggestion/lib/api";
+import debounce from "lodash/debounce";
+import { HubSuggestion } from "../SearchSuggestion/lib/types";
 const { setMessage, showMessage } = MessageActions;
 
 interface FormProps {
@@ -24,13 +27,15 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
     doi: paper.doi || "",
     publishedDate: formatDateStandard(paper.publishedDate, "MM/DD/YYYY"),
     title: paper.title || "",
-    hubs: (paper.hubs || []).map(h => h.id),
+    hubs: (paper.hubs || []).map((h) => h.id),
   });
+
   const [editedFields, setEditedFields] = useState(new Set());
+  const [suggestedHubs, setSuggestedHubs] = useState<HubSuggestion[]>([]);
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
-  const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
-  useEffectFetchSuggestedHubs({ setSuggestedHubs });
+  // const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
+  // useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
   const validate = (name, value) => {
     if (name === "title") {
@@ -74,7 +79,9 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
           title: fields.title,
           publishedDate: fields.publishedDate,
           doi: fields.doi,
-          hubs: suggestedHubs.filter((hub) => fields.hubs.includes(hub.id)).map(h => parseHub(h)),
+          hubs: suggestedHubs
+            .filter((hub) => fields.hubs.includes(hub.id))
+            .map((h) => parseHub(h)),
         });
       dispatch(setMessage("Paper updated"));
 
@@ -84,6 +91,9 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
   };
 
   const handleChange = (name, value) => {
+    console.log("name", name);
+    console.log("value", value);
+
     if (!editedFields.has(name)) {
       setEditedFields((prev) => new Set(prev).add(name));
     }
@@ -103,8 +113,28 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
     }));
   };
 
-  
-  const selectedHubs = (suggestedHubs || []).filter((hub) => fields.hubs.includes(hub.id));
+  const handleHubInputChange = async (value) => {
+    if (value.length >= 3) {
+      const suggestions = await fetchHubSuggestions(value);
+      setSuggestedHubs(suggestions);
+      console.log("suggestions", suggestions);
+    }
+  };
+
+  const debouncedHandleInputChange = useCallback(
+    debounce(handleHubInputChange, 250),
+    [suggestedHubs]
+  );
+
+  const selectedHubs = fields.hubs
+    .map((hubId) => {
+      const hub = paper.hubs.find((h) => h.id === hubId);
+      return hub ? { label: hub.name, value: hub.id } : null;
+    })
+    .filter((h) => h !== null);
+
+  console.log("fields", fields);
+  console.log("selectedHubs", selectedHubs);
 
   return (
     <div className={css(formStyles.formWrapper)}>
@@ -125,16 +155,20 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
         isMulti
         label="Hubs"
         inputStyle={formStyles.inputStyle}
-        onChange={(field, value) => {
-          setFields((prev) => ({
-            ...prev,
-            hubs: (value || []).map((v) => v.id),
-          }));
+        onInputChange={(field, value) => {
+          debouncedHandleInputChange(field, value);
+        }}
+        onChange={(name, value) => {
+          console.log("value", value);
+          handleChange(
+            name,
+            value.map((v) => v.value)
+          );
         }}
         options={suggestedHubs}
         placeholder="Search Hubs"
         value={selectedHubs}
-      />      
+      />
       <div style={{ display: "flex", columnGap: 25 }}>
         <FormInput
           label="DOI"
