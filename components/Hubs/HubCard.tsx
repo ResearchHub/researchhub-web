@@ -6,16 +6,18 @@ import { faComments } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import colors from "~/config/themes/colors";
 import Link from "next/link";
+import { truncateText } from "~/config/utils/string";
 
 const HubCard = ({ hub }: { hub: Hub }) => {
   const numPapers = hub.numDocs || 0;
   const numComments = hub.numComments || 0;
+  const description = truncateText(hub.description, 150);
 
   return (
     <div className={css(styles.hubCard)}>
       <Link href={`/hubs/${hub.slug}`} style={{ textDecoration: "none" }}>
         <HubTag hub={hub} />
-        <div className={css(styles.description)}>{hub.description}</div>
+        <div className={css(styles.description)}>{description}</div>
         <div className={css(styles.metadata)}>
           <div className={css(styles.dataPoint)}>
             {/* @ts-ignore */}
@@ -65,6 +67,9 @@ const styles = StyleSheet.create({
     lineHeight: "22px",
     color: "#7C7989",
     height: 120,
+    overflow: "hidden",
+    // whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
     "::first-letter": {
       textTransform: "uppercase",
     },

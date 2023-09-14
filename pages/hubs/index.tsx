@@ -1,12 +1,14 @@
 import { GetStaticProps, NextPage } from "next";
 import { getHubs } from "~/components/Hubs/api/fetchHubs";
-import { parseHub } from "~/config/types/hub";
+import { Hub, parseHub } from "~/config/types/hub";
 import { StyleSheet, css } from "aphrodite";
 import HubCard from "~/components/Hubs/HubCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faSearch } from "@fortawesome/pro-light-svg-icons";
 import Menu, { MenuOption } from "~/components/shared/GenericMenu";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
+import { fetchHubSuggestions } from "~/components/SearchSuggestion/lib/api";
+import debounce from "lodash/debounce";
 
 type Props = {
   hubs: any[];
@@ -20,6 +22,24 @@ const HubsPage: NextPage<Props> = ({ hubs }) => {
 
   const [sort, setSort] = useState<MenuOption>(sortOpts[0]);
   const parsedHubs = hubs.map((hub) => parseHub(hub));
+  const [suggestions, setSuggestions] = useState<Hub[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    setLoading(true);
+    fetchHubSuggestions(query)
+      .then((suggestions) => {
+        setSuggestions(suggestions);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [query]);
+
+  const debouncedSetQuery = debounce(setQuery, 500);
+
+  const hubsToRender = suggestions.length > 0 ? suggestions : parsedHubs;
 
   return (
     <div className={css(styles.container)}>
@@ -32,10 +52,19 @@ const HubsPage: NextPage<Props> = ({ hubs }) => {
           <input
             className={css(styles.input)}
             type="text"
+            // value={query}
+            onChange={(e) => {
+              debouncedSetQuery(e.target.value);
+            }}
             placeholder="Search hubs"
           />
         </div>
-        <Menu options={sortOpts} id="hub-sort" selected={sort.value}>
+        <Menu
+          options={sortOpts}
+          id="hub-sort"
+          selected={sort.value}
+          direction="bottom-right"
+        >
           <div className={css(styles.sortTrigger)}>
             {sort.label}
             <FontAwesomeIcon
@@ -46,7 +75,7 @@ const HubsPage: NextPage<Props> = ({ hubs }) => {
         </Menu>
       </div>
       <div className={css(styles.cardsWrapper)}>
-        {parsedHubs.map((h, index) => (
+        {hubsToRender.map((h, index) => (
           <HubCard hub={h} key={index} />
         ))}
       </div>
@@ -89,7 +118,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   container: {
-    maxWidth: 1340,
+    width: 1340,
     margin: "0 auto",
     marginTop: 40,
   },

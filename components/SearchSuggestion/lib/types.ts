@@ -12,12 +12,6 @@ export type SuggestedUser = {
   authorProfile: AuthorProfile;
 };
 
-export type HubSuggestion = {
-  id: ID;
-  name: string;
-  description: string;
-};
-
 export const parseUserSuggestion = (raw: any): SuggestedUser => {
   return {
     firstName: raw.first_name,
@@ -25,15 +19,5 @@ export const parseUserSuggestion = (raw: any): SuggestedUser => {
     id: raw.id,
     reputation: raw.reputation || 0,
     authorProfile: parseAuthorProfile(raw.author_profile),
-  };
-};
-
-export const parseHubSuggestion = (raw: any): HubSuggestion => {
-  return {
-    id: raw.id,
-    name: raw.name,
-    value: raw.id,
-    label: raw.name,
-    description: raw.description,
   };
 };
