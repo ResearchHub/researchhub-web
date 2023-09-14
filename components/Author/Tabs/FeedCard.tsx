@@ -47,6 +47,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { parsePaperAuthors } from "~/components/Document/lib/types";
 import AuthorList from "../AuthorList";
+import { parseHub } from "~/config/types/hub";
+import DocumentHubs from "~/components/Document/lib/DocumentHubs";
 
 const DocumentViewer = dynamic(
   () => import("~/components/Document/DocumentViewer")
@@ -135,13 +137,13 @@ function FeedCard({
   withSidePadding,
 }: FeedCardProps) {
   const authors = parsePaperAuthors(paper);
+  const parsedHubs = hubs.map(parseHub);
   const router = useRouter();
   const [isPreviewing, setIsPreviewing] = useState(false);
   const [voteState, setVoteState] = useState<VoteType | null>(
     userVoteToConstant(userVote)
   );
   const [score, setScore] = useState<number>(initialScore);
-  const [isHubsOpen, setIsHubsOpen] = useState(false);
   const [rscBadgeHover, setRSCBadgeHover] = useState(false);
   const [previews] = useState(
     configurePreview([
@@ -252,8 +254,7 @@ function FeedCard({
     <Ripples
       className={css(
         styles.ripples,
-        singleCard ? styles.fullBorder : styles.noBorder,
-        isHubsOpen && styles.overflow
+        singleCard ? styles.fullBorder : styles.noBorder
       )}
       data-test={isDevEnv() ? `document-${id}` : undefined}
       key={`${formattedDocType}-${id}`}
@@ -365,14 +366,28 @@ function FeedCard({
                       className={css(styles.metaItem, styles.metaItemAsBadge)}
                     >
                       <ContentBadge
-                        contentType={
-                          formattedDocType === "bounty"
-                            ? "post"
-                            : formattedDocType
-                        }
+                        contentType={formattedDocType}
+                        badgeOverride={styles.badge}
                       />
+                      <DocumentHubs hubs={parsedHubs} withShowMore={false} />
                     </div>
-                    {hasActiveBounty && (
+
+                    <div
+                      className={css(styles.metaItem)}
+                      style={{ marginLeft: "auto" }}
+                    >
+                      <span className={css(styles.metadataIcon)}>
+                        {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
+                      </span>
+                      <span className={css(styles.metadataText)}>
+                        <span>{discussion_count}</span>
+                        <span className={css(styles.hideTextMobile)}>
+                          {` Comment${discussion_count === 1 ? "" : "s"}`}
+                        </span>
+                      </span>
+                    </div>
+
+                    {/* {hasActiveBounty && (
                       <div className={css(styles.metaItem)}>
                         <ContentBadge
                           contentType="bounty"
@@ -389,81 +404,7 @@ function FeedCard({
                           }
                         />
                       </div>
-                    )}
-                    {formattedDocType === "question" ? (
-                      <div
-                        className={css(
-                          styles.metaItem,
-                          hasAcceptedAnswer && styles.acceptedAnswer
-                        )}
-                      >
-                        <span
-                          className={css(
-                            styles.metadataIcon,
-                            hasAcceptedAnswer && styles.acceptedAnswer
-                          )}
-                        >
-                          {hasAcceptedAnswer ? (
-                            <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
-                          ) : (
-                            <FontAwesomeIcon
-                              icon={faCommentAltLines}
-                            ></FontAwesomeIcon>
-                          )}
-                        </span>
-                        <span className={css(styles.metadataText)}>
-                          <span>{discussion_count}</span>
-                          <span className={css(styles.hideTextMobile)}>
-                            {` Answer${discussion_count === 1 ? "" : "s"}`}
-                          </span>
-                        </span>
-                      </div>
-                    ) : (
-                      <div className={css(styles.metaItem)}>
-                        <span className={css(styles.metadataIcon)}>
-                          {
-                            <FontAwesomeIcon
-                              icon={faComments}
-                            ></FontAwesomeIcon>
-                          }
-                        </span>
-                        <span className={css(styles.metadataText)}>
-                          <span>{discussion_count}</span>
-                          <span className={css(styles.hideTextMobile)}>
-                            {` Comment${discussion_count === 1 ? "" : "s"}`}
-                          </span>
-                        </span>
-                      </div>
-                    )}
-
-                    {reviews?.count > 0 && (
-                      <div
-                        className={css(
-                          styles.reviewSummaryContainer,
-                          styles.metaItem
-                        )}
-                      >
-                        <PeerReviewScoreSummary
-                          summary={reviews}
-                          feDocUrl={feDocUrl}
-                        />
-                      </div>
-                    )}
-                    {/* {boostAmount > 0 && (
-                    <div className={css(styles.metaItem)}>
-                      <span className={css(styles.metadataIcon)}>
-                        <ResearchCoinIcon
-                          width={14}
-                          height={14}
-                          version={4}
-                          overrideStyle={styles.rscIcon}
-                        />
-                      </span>
-                      <span className={css(styles.metadataText)}>
-                        +{boostAmount}
-                      </span>
-                    </div>
-                  )} */}
+                    )} */}
                   </div>
                 </div>
               </div>
@@ -490,6 +431,12 @@ function FeedCard({
 }
 
 const styles = StyleSheet.create({
+  badge: {
+    padding: "4px 12px",
+    fontWeight: 400,
+    marginRight: 10,
+    borderRadius: "50px",
+  },
   authorWrapper: {
     fontSize: 14,
     color: colors.BLACK(),
@@ -557,8 +504,8 @@ const styles = StyleSheet.create({
   },
   image: {
     objectFit: "contain",
-    maxHeight: 90,
-    height: 90,
+    maxHeight: 85,
+    height: 85,
   },
   mobilePill: {
     fontSize: 14,
@@ -601,7 +548,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   publishContainer: {
-    marginRight: 10,
+    marginRight: 0,
     width: "100%",
   },
   metadataText: {
@@ -618,6 +565,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     display: "flex",
     alignItems: "center",
+    ":last-child": {
+      marginRight: 0,
+    },
   },
   rscToUsdAmount: {
     opacity: 0,
@@ -695,7 +645,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 500,
     marginBottom: 5,
-    marginTop: 8,
+    marginTop: 4,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 16,
       fontWeight: 500,
@@ -725,7 +675,7 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
   },
   paperPreview: {
-    height: 80,
+    height: 75,
     width: 70,
     position: "relative",
     border: `1px solid ${colors.LIGHT_GREY()}`,

@@ -80,10 +80,11 @@ const FeedMenu = ({ hubState }: Args) => {
     />
   );
 
+  const isHubPage = Boolean(router.query.slug);
   return (
     <div>
       <div className={css(styles.buttonGroup)}>
-        <div className={css(styles.mainFilters)}>
+        <div className={css(styles.mainFilters, isHubPage && styles.hubPage)}>
           <FeedMenuTopLevelFilters
             selectedFilters={selectedFilters}
             hubState={hubState}
@@ -115,6 +116,9 @@ const FeedMenu = ({ hubState }: Args) => {
 };
 
 const styles = StyleSheet.create({
+  hubPage: {
+    borderTop: `1px solid ${colors.GREY_LINE(1.0)}`,
+  },
   labelContainer: {
     display: "flex",
     height: "100%",

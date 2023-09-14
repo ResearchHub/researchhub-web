@@ -7,13 +7,17 @@ import colors from "~/config/themes/colors";
 
 const HubTag = ({ hub }: { hub: Hub }) => {
   return (
-    <Link key={`/hubs/${hub.slug ?? ""}-index`} href={`/hubs/${hub.slug}`}>
+    <Link
+      key={`/hubs/${hub.slug ?? ""}-index`}
+      href={`/hubs/${hub.slug}`}
+      onClick={(e) => e.stopPropagation()}
+    >
       <IconButton variant="round" overrideStyle={styles.hubBtn}>
         <span>{toTitleCase(hub.name)}</span>
       </IconButton>
-    </Link>    
-  )  
-}
+    </Link>
+  );
+};
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -33,7 +37,7 @@ const styles = StyleSheet.create({
     color: colors.NEW_BLUE(),
     ":hover": {
       background: colors.NEW_BLUE(0.2),
-    }
+    },
   },
   moreLessBtn: {
     padding: "4px 12px",

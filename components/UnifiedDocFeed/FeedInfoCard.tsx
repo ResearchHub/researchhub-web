@@ -7,6 +7,9 @@ import { ReactElement, ReactNode } from "react";
 import AuthorFacePile from "../shared/AuthorFacePile";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import Image from "next/image";
+import { parseHub } from "~/config/types/hub";
+import { PaperIcon } from "~/config/themes/icons";
+import { faComments } from "@fortawesome/pro-solid-svg-icons";
 
 type Props = {
   hub: any;
@@ -30,39 +33,37 @@ export default function FeedInfoCard({
   const editorProfiles = editor_permission_groups.map(
     (editor_group: any): any => editor_group?.user?.author_profile
   );
+  const parsedHub = parseHub(hub);
+  const numPapers = parsedHub.numDocs || 0;
+  const numComments = parsedHub.numComments || 0;
 
   return (
     <div className={css(styles.feedInfoCard)}>
       <div className={css(styles.detailRow)}>
-        <div>
-          <img
-            className={css(styles.hubImage)}
-            height={68}
-            hidden={false}
-            src={hubImage ?? "/static/background/hub-placeholder.svg"}
-            width={68}
-          />
-        </div>
         <div className={css(styles.titleContainer)}>
           <h1 className={css(styles.title) + " clamp2"}>{mainHeaderText}</h1>
-          <div className={css(styles.subscribeContainer)}>
-            {nullthrows(hubSubscribeButton)}
-          </div>
         </div>
       </div>
       <div className={css(styles.bodyContainer)}>
-        <div className={css(styles.detailRow)}>
-          <div className={css(styles.detailRowLabel)}>
+        <div className={css(styles.description)}>{description}</div>
+        <div className={css(styles.detailRow, styles.metadata)}>
+          <div className={css(styles.dataPoint)}>
+            {/* @ts-ignore */}
+            <PaperIcon height={13} width={14} color="#918F9B" />
+            <span>
+              {numPapers === 1 ? `${numPapers} Paper` : `${numPapers} Papers`}
+            </span>
+          </div>
+          <div className={css(styles.dataPoint)}>
             <FontAwesomeIcon
-              color={colors.LIGHT_GREY_TEXT}
-              icon={faUser}
-              style={{
-                marginRight: 8,
-                width: "16px",
-              }}
+              icon={faComments}
+              style={{ color: "#918F9B", fontSize: 12 }}
             />
-            <span style={{ fontWeight: 500, marginRight: 8 }}>{"Members"}</span>
-            <span style={{ color: colors.TEXT_GREY(1) }}>{subCount}</span>
+            <span>
+              {numComments === 1
+                ? `${numComments} Comment`
+                : `${numComments} Comments`}
+            </span>
           </div>
         </div>
         {!isEmpty(editorProfiles) && (
@@ -91,22 +92,32 @@ export default function FeedInfoCard({
             />
           </div>
         )}
-        <div className={css(styles.detailRow)}>
-          {isEmpty(description) ? null : description}
-        </div>
       </div>
     </div>
   );
 }
 
 const styles = StyleSheet.create({
+  metadata: {
+    display: "flex",
+    alignItems: "center",
+    columnGap: "25px",
+    color: "#545161",
+    marginTop: 15,
+  },
+  dataPoint: {
+    fontSize: 14,
+    fontWeight: 400,
+    display: "flex",
+    alignItems: "center",
+    columnGap: "3px",
+  },
   feedInfoCard: {
     backgroundColor: "#fff",
-    border: `1px solid ${genericCardColors.BORDER}`,
     borderRadius: 4,
     display: "flex",
     flexDirection: "column",
-    padding: 16,
+    marginTop: 20,
   },
   hubImage: {
     borderRadius: 4,
@@ -124,12 +135,17 @@ const styles = StyleSheet.create({
     display: "flex",
     fontSize: 16,
     justifyContent: "flex-start",
-    margin: "8px",
   },
   detailRowLabel: {
     alignItems: "center",
     display: "flex",
     marginRight: 8,
+  },
+  description: {
+    fontSize: 14,
+    "::first-letter": {
+      textTransform: "uppercase",
+    },
   },
   subscribeContainer: {
     marginLeft: 20,
@@ -155,7 +171,6 @@ const styles = StyleSheet.create({
   titleContainer: {
     alignItems: "center",
     display: "flex",
-    marginLeft: 20,
     width: "100%",
   },
 });
