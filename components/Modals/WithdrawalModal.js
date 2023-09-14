@@ -589,7 +589,7 @@ class WithdrawalModal extends Component {
         </div>
         <div className={css(styles.buttons)}>
           <Button
-            disabled={!this.state.buttonEnabled || !ethAccount}
+            disabled={!ethAccount}
             label={"Confirm"}
             type="submit"
             customButtonStyle={styles.button}
