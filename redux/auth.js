@@ -72,6 +72,8 @@ let getUserHelper = (dispatch, dispatchFetching) => {
       }
 
       if (json.results.length > 0) {
+        const token = Cookies.get(AUTH_TOKEN);
+        Cookies.set(AUTH_TOKEN, token, { expires: 14 });
         return dispatch({
           type: AuthConstants.GOT_USER,
           isFetchingUser: false,
@@ -114,7 +116,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          Cookies.set(AUTH_TOKEN, json.token);
+          Cookies.set(AUTH_TOKEN, json.token, { expires: 14 });
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -158,7 +160,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          Cookies.set(AUTH_TOKEN, json.key);
+          Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
 
           return dispatch({
             type: AuthConstants.REGISTER,
@@ -196,7 +198,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          Cookies.set(AUTH_TOKEN, json.key);
+          Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -242,7 +244,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          Cookies.set(AUTH_TOKEN, json.key);
+          Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -274,7 +276,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          Cookies.set(AUTH_TOKEN, json.key);
+          Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -299,7 +301,7 @@ export const AuthActions = {
    */
   orcidLogin: (params) => {
     return (dispatch) => {
-      Cookies.set(AUTH_TOKEN, params["token"]);
+      Cookies.set(AUTH_TOKEN, params["token"], { expires: 14 });
       return dispatch({
         type: AuthConstants.LOGIN,
         isLoggedIn: true,
