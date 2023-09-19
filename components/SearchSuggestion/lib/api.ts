@@ -1,11 +1,17 @@
 import API from "~/config/api";
-import { SuggestedUser, parseUserSuggestion } from "./types";
-import { Hub, parseHub } from "~/config/types/hub";
+import {
+  SuggestedUser,
+  HubSuggestion,
+  parseUserSuggestion,
+  parseHubSuggestion,
+} from "./types";
 
-export const fetchHubSuggestions = (query: string): Promise<Hub[]> => {
+export const fetchHubSuggestions = (
+  query: string
+): Promise<HubSuggestion[]> => {
   const url = `${API.BASE_URL}search/hub/suggest/?name_suggest__completion=${query}`;
 
-  const hubSuggestions: Hub[] = [];
+  const hubSuggestions: HubSuggestion[] = [];
   return fetch(url, API.GET_CONFIG())
     .then((response) => {
       if (response.ok) {
@@ -18,7 +24,7 @@ export const fetchHubSuggestions = (query: string): Promise<Hub[]> => {
       const suggestions = data.name_suggest__completion;
       suggestions.forEach((suggestion) => {
         suggestion.options.forEach((option) => {
-          const parsed = parseHub(option._source);
+          const parsed = parseHubSuggestion(option._source);
           hubSuggestions.push(parsed);
         });
       });

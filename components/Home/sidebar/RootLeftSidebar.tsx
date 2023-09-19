@@ -201,22 +201,22 @@ function RootLeftSidebar({
     // const onSpecficHubPage =
     //   ["hubs"].includes(pathname.split("/")[1]) &&
     //   !isEmpty(pathname.split("/")[2]);
-    const onDefaultMinViewPages = ![
-      "",
-      "/",
-      "paper",
-      "post",
-      "hypothesis",
-      "my-hubs",
-      "live",
-      "referral",
-      "user",
-    ].includes(pathname.split("/")[1]);
-
+    const onDefaultMinViewPages =
+      [
+        "",
+        "/",
+        "paper",
+        "post",
+        "hypothesis",
+        "live",
+        "hubs",
+        "referral",
+        "user",
+      ].includes(pathname.split("/")[1]) !== true;
     // if (onSpecficHubPage) {
     //   setIsMinimized(isForceMinimized);
     //   setGrowMinimized(isForceMinimized);
-    // } else 
+    // } else
     if (onDefaultMinViewPages) {
       setIsMinimized(isForceMinimized || true);
       setGrowMinimized(isForceMinimized || true);

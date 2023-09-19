@@ -45,7 +45,7 @@ export default function FeedInfoCard({
         </div>
       </div>
       <div className={css(styles.bodyContainer)}>
-        <div className={css(styles.description)}>{description}</div>
+        <div className={css(styles.description)}>{description}.</div>
         <div className={css(styles.detailRow, styles.metadata)}>
           <div className={css(styles.dataPoint)}>
             {/* @ts-ignore */}
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   description: {
-    fontSize: 14,
+    fontSize: 15,
     "::first-letter": {
       textTransform: "uppercase",
     },
@@ -158,15 +158,6 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 500,
     textOverflow: "ellipsis",
-    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-      fontSize: 30,
-    },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 24,
-    },
-    [`@media only screen and (max-width: ${breakpoints.xxxsmall.str})`]: {
-      fontSize: 20,
-    },
   },
   titleContainer: {
     alignItems: "center",

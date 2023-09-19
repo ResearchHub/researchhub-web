@@ -43,6 +43,14 @@ const HubsPage: NextPage<Props> = ({ hubs }) => {
 
   return (
     <div className={css(styles.container)}>
+      <div className={css(styles.titleContainer)}>
+        <h1 className={css(styles.title) + " clamp2"}>Hubs</h1>
+      </div>
+      <div className={css(styles.description)}>
+        Within ResearchHub, papers are organized into hubs. Hubs are collections
+        of papers that are related to a specific topic. Use this page to explore
+        hubs.
+      </div>
       <div className={css(styles.searchAndFilters)}>
         <div className={css(styles.search)}>
           <FontAwesomeIcon
@@ -88,6 +96,23 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 500,
+    textOverflow: "ellipsis",
+    marginBottom: 15,
+  },
+  titleContainer: {
+    alignItems: "center",
+    display: "flex",
+    width: "100%",
+  },
+  description: {
+    fontSize: 15,
+    marginBottom: 15,
+    maxWidth: 790,
+    lineHeight: "22px",
   },
   sortTrigger: {
     display: "flex",

@@ -5,7 +5,10 @@ import { emptyFncWithMsg, isEmpty } from "../../config/utils/nullchecks";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
 import { getDocumentCard } from "./utils/getDocumentCard";
 import { isServer } from "~/config/server/isServer";
-import { getPaginationInfoFromServerLoaded, useEffectFetchDocs } from "./utils/UnifiedDocFeedUtil";
+import {
+  getPaginationInfoFromServerLoaded,
+  useEffectFetchDocs,
+} from "./utils/UnifiedDocFeedUtil";
 import { ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import colors, { genericCardColors } from "~/config/themes/colors";
@@ -67,7 +70,6 @@ function UnifiedDocFeedContainer({
   //   serverLoadedData,
   //   setPaginationInfo,
   // });
-
 
   const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
   useEffectFetchDocs({
@@ -166,7 +168,7 @@ function UnifiedDocFeedContainer({
             isHomePage,
           })}
         />
-       )}
+      )}
       <FeedMenu />
       {unifiedDocsLoading || isServer() ? (
         <div className={css(styles.initPlaceholder)}>
@@ -296,21 +298,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     marginRight: 24,
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: 500,
-    textOverflow: "ellipsis",
-    marginBottom: 5,
-    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-      fontSize: 30,
-    },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 24,
-      marginTop: 0,
-    },
-    [`@media only screen and (max-width: ${breakpoints.xxxsmall.str})`]: {
-      fontSize: 20,
-    },
   },
 });

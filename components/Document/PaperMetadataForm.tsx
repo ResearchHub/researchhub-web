@@ -10,7 +10,6 @@ import dayjs from "dayjs";
 import updatePaperMetadataAPI from "./api/updatePaperMetadataAPI";
 import colors from "~/config/themes/colors";
 import FormSelect from "../Form/FormSelect";
-import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
 import { Hub, parseHub } from "~/config/types/hub";
 import { fetchHubSuggestions } from "../SearchSuggestion/lib/api";
 import debounce from "lodash/debounce";
@@ -34,8 +33,6 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
   const [suggestedHubs, setSuggestedHubs] = useState<HubSuggestion[]>([]);
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
-  // const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
-  // useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
   const validate = (name, value) => {
     if (name === "title") {
@@ -133,9 +130,6 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
     })
     .filter((h) => h !== null);
 
-  console.log("fields", fields);
-  console.log("selectedHubs", selectedHubs);
-
   return (
     <div className={css(formStyles.formWrapper)}>
       <FormInput
@@ -154,6 +148,8 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
         id="hubs"
         isMulti
         label="Hubs"
+        multiTagStyle={formStyles.tag}
+        multiTagLabelStyle={formStyles.tagLabel}
         inputStyle={formStyles.inputStyle}
         onInputChange={(field, value) => {
           debouncedHandleInputChange(field, value);
@@ -208,9 +204,16 @@ const formStyles = StyleSheet.create({
   tagLabel: {
     color: colors.NEW_BLUE(1),
     cursor: "pointer",
-    ":hover": {
-      textDecoration: "underline",
-    },
+  },
+  tag: {
+    border: 0,
+    background: colors.NEW_BLUE(0.1),
+    padding: "4px 12px",
+    height: "unset",
+    textDecoration: "none",
+    fontWeight: 400,
+    borderRadius: 50,
+    color: colors.NEW_BLUE(),
   },
 });
 

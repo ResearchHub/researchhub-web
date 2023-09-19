@@ -269,5 +269,6 @@ export default withWebSocket(
 const styles = StyleSheet.create({
   loaderStyle: {
     height: 23,
+    top: "70%",
   },
 });

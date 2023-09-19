@@ -7,7 +7,6 @@ import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 import HubTag from "~/components/Hubs/HubTag";
 
-
 const DocumentHubs = ({
   hubs,
   withShowMore = true,
@@ -57,12 +56,13 @@ const styles = StyleSheet.create({
     color: colors.NEW_BLUE(),
     ":hover": {
       background: colors.NEW_BLUE(0.2),
-    }
+    },
   },
   moreLessBtn: {
     padding: "4px 12px",
     height: "unset",
     border: 0,
+    fontWeight: 400,
   },
 });
 
