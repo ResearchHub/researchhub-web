@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
   main: {
     position: "relative",
     justifyContent: "center",
-    minHeight: "100vh",
+    // minHeight: "100vh",
   },
   scroll: {
     overflowX: "scroll",
@@ -445,8 +445,8 @@ const styles = StyleSheet.create({
   },
   documentViewer: {},
   postBody: {
-    padding: 45,
-    paddingTop: 25,
+    padding: "25px 45px",
+    paddingBottom: 15,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 15,
     },

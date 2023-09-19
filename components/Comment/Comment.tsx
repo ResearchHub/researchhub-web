@@ -430,7 +430,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     display: "flex",
     justifyContent: "space-between",
-    borderTop: `1px solid rgba(233, 234, 239, 1)`,
     paddingTop: `10px`,
   },
   privacyBadgeWrapper: {
@@ -477,7 +476,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     borderRadius: "4px",
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 0,
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       flexDirection: "column",
       alignItems: "flex-start",

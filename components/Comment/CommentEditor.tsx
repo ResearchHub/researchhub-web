@@ -454,13 +454,13 @@ const styles = StyleSheet.create({
   commentEditor: {
     display: "flex",
     padding: "15px",
-    boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.2)",
     backgroundColor: "white",
     borderRadius: 4,
     flex: "none",
     flexDirection: "column",
     justifyContent: "space-between",
     position: "relative",
+    border: `1px solid ${colors.border}`,
   },
   actions: {
     display: "flex",

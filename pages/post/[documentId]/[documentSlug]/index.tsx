@@ -30,6 +30,12 @@ import DocumentViewer, {
   ZoomAction,
 } from "~/components/Document/DocumentViewer";
 import dynamic from "next/dynamic";
+import CommentFeed from "~/components/Comment/CommentFeed";
+import { COMMENT_TYPES, parseComment } from "~/components/Comment/lib/types";
+import useCacheControl from "~/config/hooks/useCacheControl";
+import { faComments } from "@fortawesome/pro-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import colors from "~/config/themes/colors";
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
 );
@@ -58,14 +64,30 @@ interface Args {
   metadata?: any;
   postHtml?: TrustedHTML | string;
   errorCode?: number;
+  commentData?: any;
 }
 
 const DocumentIndexPage: NextPage<Args> = ({
   documentData,
   metadata,
   postHtml = "",
+  commentData,
   errorCode,
 }) => {
+
+
+  let displayCommentsFeed = false;
+  let parsedComments = [];
+  let commentCount = 0;
+  if (commentData) {
+    const { comments, count } = commentData;
+    commentCount = count;
+    parsedComments = comments.map((c) => parseComment({ raw: c }));
+    displayCommentsFeed = true;
+  }
+
+
+  const { revalidateDocument } = useCacheControl();
   const documentType = "post";
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -190,6 +212,49 @@ const DocumentIndexPage: NextPage<Args> = ({
                 />
               )}
             </div>
+            <div style={{ maxWidth: viewerWidth, margin: "20px auto 0 auto" }}>
+              <div className={css(styles.subheader)}>
+                <FontAwesomeIcon icon={faComments} style={{ marginRight: 10 }} />
+                Conversation
+              </div>
+              <CommentFeed
+                initialComments={parsedComments}
+                document={document}
+                showFilters={false}
+                showSort={false}
+                initialFilter={null}
+                editorType={COMMENT_TYPES.DISCUSSION}
+                allowBounty={false}
+                allowCommentTypeSelection={false}
+                onCommentCreate={(comment) => {
+                  revalidateDocument();
+                  if (!documentMetadata) return;
+                  if (comment.bounties.length > 0) {
+                    setDocumentMetadata({
+                      ...documentMetadata,
+                      bounties: [comment.bounties[0], ...documentMetadata.bounties],
+                    });
+                  } else if (comment.commentType === COMMENT_TYPES.REVIEW) {
+                    setDocumentMetadata({
+                      ...documentMetadata,
+                      reviewCount: documentMetadata.reviewCount + 1,
+                    });
+                  } else {
+                    setDocumentMetadata({
+                      ...documentMetadata,
+                      discussionCount: documentMetadata.discussionCount + 1,
+                    });
+                  }
+                }}
+                onCommentUpdate={() => {
+                  revalidateDocument();
+                }}
+                onCommentRemove={(comment) => {
+                  revalidateDocument();
+                }}
+                totalCommentCount={commentCount}
+              />
+            </div>             
           </div>
         </DocumentPageLayout>
       </DocumentContext.Provider>
@@ -205,6 +270,13 @@ const styles = StyleSheet.create({
     border: `1px solid ${config.border}`,
     width: "100%",
     boxSizing: "border-box",
+  },
+  subheader: {
+    marginTop: 50,
+    marginBottom: 15,
+    fontSize: 18,
+    fontWeight: 500,
+    color: colors.BLACK(0.5),
   },
   editor: {
     padding: 45,

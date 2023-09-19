@@ -47,9 +47,10 @@ type Args = {
   onCommentRemove?: Function;
   totalCommentCount: number;
   initialComments?: CommentType[] | undefined;
-  initialFilter?: string;
+  initialFilter?: string | null;
   editorType?: COMMENT_TYPES;
   showFilters?: boolean;
+  showSort?: boolean;
   allowCommentTypeSelection?: boolean;
   allowBounty?: boolean;
 };
@@ -64,6 +65,7 @@ const CommentFeed = ({
   initialFilter = undefined,
   context = COMMENT_CONTEXTS.GENERIC,
   showFilters = true,
+  showSort = true,
   allowCommentTypeSelection = false,
   allowBounty = false,
   editorType = COMMENT_TYPES.DISCUSSION,
@@ -86,9 +88,13 @@ const CommentFeed = ({
   const [selectedSortValue, setSelectedSortValue] = useState<string | null>(
     sortOpts[0].value
   );
-  const [selectedFilterValue, setSelectedFilterValue] = useState<string | null>(
-    initialFilter || filterOpts[0].value
+  const [selectedFilterValue, setSelectedFilterValue] = useState<string | null | undefined>(
+    initialFilter
   );
+
+  console.log('selectedFilterValue', selectedFilterValue)
+  console.log('initialFilter', initialFilter)
+
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
@@ -104,6 +110,8 @@ const CommentFeed = ({
   }) => {
     setIsFetching(true);
     try {
+      console.log('filter', filter)
+      console.log('selectedFilterValue', selectedFilterValue)
       const { comments, count } = await fetchCommentsAPI({
         documentId: document.id,
         documentType: document.apiDocumentType,
@@ -340,7 +348,7 @@ const CommentFeed = ({
     setComments([]);
     setCurrentPage(1);
     setSelectedSortValue(sortOpts[0].value);
-    setSelectedFilterValue(initialFilter || filterOpts[0].value);
+    setSelectedFilterValue(initialFilter);
     setRootLevelCommentCount(0);
   };
 
@@ -359,7 +367,7 @@ const CommentFeed = ({
     setCurrentPage(1);
     setRootLevelCommentCount(totalCommentCount || 0);
     setComments(initialComments || []);
-    setSelectedFilterValue(initialFilter || filterOpts[0].value);
+    setSelectedFilterValue(initialFilter);
   }, [router?.query?.tabName]);
 
   const isQuestion = document?.unifiedDocument?.documentType === "question";
@@ -455,34 +463,38 @@ const CommentFeed = ({
               />
             </div>
 
-            <div className={css(styles.filtersWrapper)}>
-              {showFilters && (
-                <CommentFilters
-                  selectedFilterValue={selectedFilterValue}
-                  hideOptions={isQuestion ? [COMMENT_TYPES.REVIEW] : []}
-                  handleSelect={(fval) => {
-                    resetFeed();
-                    setIsFetching(true);
-                    setSelectedFilterValue(fval);
-                    handleFetch({ filter: fval, sort: selectedSortValue });
-                  }}
-                />
-              )}
-              <div className={css(styles.sortWrapper)}>
-                <CommentSort
-                  selectedSortValue={selectedSortValue}
-                  dropdownDirection={
-                    showFilters ? "bottom-right" : "bottom-left"
-                  }
-                  handleSelect={(sval) => {
-                    setSelectedSortValue(sval);
-                    setIsFetching(true);
-                    setComments([]);
-                    handleFetch({ sort: sval });
-                  }}
-                />
+            {(showSort || showFilters) && (
+              <div className={css(styles.filtersWrapper)}>
+                {showFilters && (
+                  <CommentFilters
+                    selectedFilterValue={selectedFilterValue}
+                    hideOptions={isQuestion ? [COMMENT_TYPES.REVIEW] : []}
+                    handleSelect={(fval) => {
+                      resetFeed();
+                      setIsFetching(true);
+                      setSelectedFilterValue(fval);
+                      handleFetch({ filter: fval, sort: selectedSortValue });
+                    }}
+                  />
+                )}
+                {showSort && (
+                <div className={css(styles.sortWrapper)}>
+                  <CommentSort
+                    selectedSortValue={selectedSortValue}
+                    dropdownDirection={
+                      showFilters ? "bottom-right" : "bottom-left"
+                    }
+                    handleSelect={(sval) => {
+                      setSelectedSortValue(sval);
+                      setIsFetching(true);
+                      setComments([]);
+                      handleFetch({ sort: sval });
+                    }}
+                  />
+                </div>
+                )}
               </div>
-            </div>
+            )}
 
             <div
               className={css(

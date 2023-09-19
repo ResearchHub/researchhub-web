@@ -7,8 +7,8 @@ import {
 } from "~/components/Document/lib/types";
 
 type CommentTreeContext = {
-  sort: string | null;
-  filter: string | null;
+  sort: string | null | undefined;
+  filter: string | null | undefined;
   context: COMMENT_CONTEXTS;
   onCreate: Function;
   onUpdate: Function;
