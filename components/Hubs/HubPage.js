@@ -352,7 +352,8 @@ class HubPage extends Component {
               bannerKey={INFO_TAB_EXIT_KEY}
               content={
                 <Link
-                  href="researchhub.foundation/scicon"
+                  target="_blank"
+                  href="https://researchhub.foundation/scicon"
                   style={{ textDecoration: "none", color: "black" }}
                 >
                   <div
