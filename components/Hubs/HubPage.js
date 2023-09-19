@@ -27,6 +27,8 @@ import RhCarousel from "../shared/carousel/RhCarousel";
 import Router from "next/router";
 import SubscribeButton from "../Home/SubscribeButton";
 import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedContainer";
+import Link from "next/link";
+import RHLogo from "../Home/RHLogo";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -348,6 +350,80 @@ class HubPage extends Component {
           <div className={css(styles.mobileInfoTab)}>
             <ExitableBanner
               bannerKey={INFO_TAB_EXIT_KEY}
+              content={
+                <Link
+                  href="researchhub.foundation/scicon"
+                  style={{ textDecoration: "none", color: "black" }}
+                >
+                  <div
+                    style={{
+                      background:
+                        "linear-gradient(to bottom, #B74A9C, #5235A3)",
+                      padding: 14,
+                      boxSizing: "border-box",
+                    }}
+                  >
+                    <RHLogo withText white />
+                    <div
+                      style={{
+                        fontSize: 32,
+                        fontWeight: 600,
+                        marginTop: 15,
+                        color: "white",
+                      }}
+                    >
+                      SciCon 2023
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 16,
+                        marginTop: 2,
+                        color: "white",
+                        fontWeight: 500,
+                      }}
+                    >
+                      September 23-24
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 20,
+                        background: "#FECD03",
+                        fontWeight: 500,
+                        padding: "12px 0px",
+                        width: "100%",
+                        display: "inline-block",
+                        borderRadius: 4,
+                        textAlign: "center",
+                      }}
+                    >
+                      Register Now
+                    </div>
+                  </div>
+                </Link>
+              }
+              // contentStyleOverride={{
+              //   background: colors.NEW_BLUE(0.07),
+              //   borderRadius: 6,
+              //   boxSizing: "border-box !important",
+              //   height: "180px !important",
+              //   margin: 16,
+              //   maxHeight: "180px !important",
+              //   padding: 16,
+              // }}
+              exitButton={
+                <div style={{ fontSize: 20, color: "white" }}>
+                  {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
+                </div>
+              }
+              exitButtonPositionOverride={{
+                top: "20px !important",
+                right: "24px !important",
+              }}
+              onExit={silentEmptyFnc}
+            />
+
+            {/* <ExitableBanner
+              bannerKey={INFO_TAB_EXIT_KEY}
               content={<RhCarousel rhCarouselItems={carouselElements} />}
               contentStyleOverride={{
                 background: colors.NEW_BLUE(0.07),
@@ -368,7 +444,7 @@ class HubPage extends Component {
                 right: "24px !important",
               }}
               onExit={silentEmptyFnc}
-            />
+            /> */}
           </div>
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}
