@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   commentWrapper: {
-    paddingTop: 25,
+    paddingTop: 10,
     ":last-child": {
       borderBottom: 0,
       paddingBottom: 0,
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     },
   },
   rootCommentWrapper: {
-    paddingBottom: 25,
+    paddingBottom: 10,
   },
 });
 

@@ -21,6 +21,7 @@ import { markAsAcceptedAnswerAPI } from "./lib/api";
 import { findAllComments } from "./lib/findComment";
 import createSharableLinkToComment from "./lib/createSharableLinkToComment";
 import ReactTooltip from "react-tooltip";
+import { breakpoints } from "~/config/themes/screen";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
@@ -288,7 +289,7 @@ const CommentActions = ({ comment, toggleReply }: Args) => {
         )}
 
         <div
-          className={`${css(styles.action)} link-btn`}
+          className={`${css(styles.action, styles.copyLinkAction)} link-btn`}
           data-tip={tooltipText}
           data-for="link-tooltip"
         >
@@ -340,12 +341,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     cursor: "pointer",
     fontSize: 14,
-    fontWeight: 500,
+    fontWeight: 400,
     position: "relative",
-    color: colors.secondary.text,
+    color: colors.actionBtn.color,
   },
   actionReply: {
     // marginLeft: "auto",
+  },
+  copyLinkAction: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
   },
   editAction: {},
   actionText: {

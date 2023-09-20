@@ -27,6 +27,7 @@ import DocumentViewerContext, {
   ViewerContext,
 } from "./lib/DocumentViewerContext";
 import { useRouter } from "next/router";
+import colors from "~/config/themes/colors";
 
 const AnnotationLayer = dynamic(
   () => import("~/components/Comment/modules/annotation/AnnotationLayer")
@@ -422,7 +423,7 @@ const styles = StyleSheet.create({
   main: {
     position: "relative",
     justifyContent: "center",
-    minHeight: "100vh",
+    // minHeight: "100vh",
   },
   scroll: {
     overflowX: "scroll",
@@ -445,10 +446,10 @@ const styles = StyleSheet.create({
   },
   documentViewer: {},
   postBody: {
-    padding: 45,
-    paddingTop: 25,
+    paddingRight: 25,
+    color: colors.GREY_TEXT(1.0),
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: 15,
+      padding: 0,
     },
   },
   postHeader: {

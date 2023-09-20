@@ -6,6 +6,8 @@ const colors = {
   DARK_YELLOW: (opacity = 1) => `rgb(239, 160, 0, ${opacity})`,
   DARK_YELLOW: (opacity = 1) => `rgba(235, 175, 61, ${opacity})`,
   DARKER_GREY: (opacity = 1) => `rgba(102, 102, 102, ${opacity})`,
+  GREY_HEADING: (opacity = 1) => `rgba(90, 90, 90, ${opacity})`,
+  GREY_TEXT: (opacity = 1) => `rgba(50, 50, 50, ${opacity})`,
   EDITOR_TAG_BACKGROUND: "rgba(232, 181, 4, 0.1)",
   EDITOR_TAG_TEXT: "#E8B504",
   ERROR_BACKGROUND: (opacity = 1) => `rgba(255, 83, 83, ${opacity})`,

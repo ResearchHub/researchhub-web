@@ -23,7 +23,6 @@ export default async function sharedGetStaticProps({
 }: Props) {
   const { documentId, documentSlug } = ctx.params!;
   const tabName = ctx.params?.tabName || null;
-  const shouldFetchComments = !isEmpty(tabName);
   let documentData: any | null = null;
   let commentData: any | null = null;
   let postHtml: any | null = null;
@@ -84,16 +83,14 @@ export default async function sharedGetStaticProps({
         }
       }
 
-      if (shouldFetchComments) {
-        const filter = getCommentFilterByTab(tabName);
-        commentData = await fetchCommentsAPI({
-          documentId,
-          documentType:
-            documentType === "post" ? "researchhubpost" : documentType,
-          // @ts-ignore
-          filter,
-        });
-      }
+      const filter = getCommentFilterByTab(tabName);
+      commentData = await fetchCommentsAPI({
+        documentId,
+        documentType:
+          documentType === "post" ? "researchhubpost" : documentType,
+        // @ts-ignore
+        filter,
+      });
 
       documentData["postHtml"] = postHtml;
 
