@@ -105,7 +105,7 @@ export default function ReferenceProjectsUpsertModal({
 
         if (!router.query.slug) {
           setReferenceTableRowData([]);
-          const proj = { ...result };
+          const proj = { ...result, projectID: result.id };
           proj.flattenedCollaborators = flattenCollaborators(proj);
           setActiveProject(proj);
           router.push(
