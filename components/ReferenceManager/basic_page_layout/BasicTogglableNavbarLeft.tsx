@@ -31,6 +31,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { StyleSheet, css } from "aphrodite";
 import { faCog } from "@fortawesome/pro-solid-svg-icons";
 import { navContext } from "~/components/contexts/NavigationContext";
+import { useReferencesTableContext } from "../references/reference_table/context/ReferencesTableContext";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -105,6 +106,7 @@ export default function BasicTogglableNavbarLeft({
   const router = useRouter();
   const [childrenOpenMap, setChildrenOpenMap] = useState({});
   const { setActiveProject } = useReferenceActiveProjectContext();
+  const { setReferenceTableRowData } = useReferencesTableContext();
 
   useEffect(() => {
     const idsOpen = window.localStorage.getItem("projectIdsOpenv2") || "{}";
@@ -164,7 +166,8 @@ export default function BasicTogglableNavbarLeft({
             />
           }
           onClick={() => {
-            setActiveProject({});
+            // setReferenceTableRowData([]);
+            setActiveProject(null);
           }}
           isActive={
             isEmpty(router.query?.org_refs) && isEmpty(router.query?.slug)
@@ -178,7 +181,8 @@ export default function BasicTogglableNavbarLeft({
             isEmpty(router.query?.slug) && !isEmpty(router.query?.org_refs)
           }
           onClick={() => {
-            setActiveProject({});
+            // setReferenceTableRowData([]);
+            setActiveProject(null);
           }}
           icon={
             <FontAwesomeIcon

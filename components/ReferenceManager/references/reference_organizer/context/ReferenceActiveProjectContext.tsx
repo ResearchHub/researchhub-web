@@ -17,7 +17,7 @@ export type ReferenceActiveProjectContextValueType = {
   currentOrgProjects: ProjectValue[];
   isFetchingProjects: boolean;
   resetProjectsFetchTime: () => void;
-  setActiveProject: (proj: ProjectValue) => void;
+  setActiveProject: (proj: ProjectValue | null) => void;
   setCurrentOrgProjects: (projects: ProjectValue[]) => void;
   setIsFetchingProjects: (bool: boolean) => void;
   flattenCollaborators: (collaborators: any) => any[];

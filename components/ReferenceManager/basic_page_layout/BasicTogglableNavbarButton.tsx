@@ -32,10 +32,9 @@ export default function BasicTogglableNavbarButton({
         padding: "0 16px",
         width: "100%",
       }}
-      onClick={onClick}
     >
       <span style={{ width: "100%" }}>
-        <ALink href={link} disableTextDeco>
+        <ALink href={link} disableTextDeco onClick={onClick}>
           <Box
             sx={{
               alignItems: "center",
