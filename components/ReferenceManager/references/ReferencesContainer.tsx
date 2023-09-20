@@ -208,9 +208,11 @@ function ReferencesContainer({
       const url = generateApiUrl(`search/citation`, `?search=${searchQuery}`);
       fetchCitationsWithQuery(url);
     } else {
+      debugger;
       await fetchCurrentUserReferenceCitations({
         getCurrentUserCitation: true,
         organizationID: currentOrg.id,
+        projectSlug: router.query.slugs.slice(-1),
         projectID: activeProject?.projectID,
         onError: (error) => {
           console.log(error);

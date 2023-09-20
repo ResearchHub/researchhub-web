@@ -213,6 +213,7 @@ export default function ReferencesTable({
         organizationID: currentOrg?.id,
         // @ts-ignore
         projectID: activeProject?.projectID,
+        projectSlug: router.query.slug?.slice(-1)[0],
         getCurrentUserCitation: !isEmpty(router.query?.my_refs),
       });
 

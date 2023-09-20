@@ -10,6 +10,7 @@ type Args = {
   organizationID: ID;
   projectID: ID;
   organizationSlug?: string;
+  projectSlug: string;
 };
 
 export const fetchCurrentUserReferenceCitations = ({
@@ -18,6 +19,7 @@ export const fetchCurrentUserReferenceCitations = ({
   onSuccess,
   organizationID,
   organizationSlug,
+  projectSlug,
   projectID,
 }: Args): Promise<any> => {
   const apiJson = {
@@ -34,7 +36,9 @@ export const fetchCurrentUserReferenceCitations = ({
   if (getCurrentUserCitation) {
     apiJson.queryString += `get_current_user_citations=1&`;
   }
-  if (projectID) {
+  if (projectSlug) {
+    apiJson.queryString += `project_slug=${projectSlug}&`;
+  } else if (projectID) {
     apiJson.queryString += `project_id=${projectID}&`;
   }
 
