@@ -39,9 +39,14 @@ export default function HubLeaderDashboardCard({
       <div className={css(styles.container, index === 0 && styles.borderTop)}>
         <div className={css(styles.row)}>
           <div className={css(styles.nameSection)}>
-            <Image
+            <img
               width={28}
               height={28}
+              style={{
+                width: 28,
+                height: 28,
+              }}
+              alt={`${name} Hub`}
               src={hubImage ?? "/static/beaker.svg"}
             />
             <div className={css(styles.name) + " clamp1"}>
