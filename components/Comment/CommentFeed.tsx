@@ -92,9 +92,6 @@ const CommentFeed = ({
     initialFilter
   );
 
-  console.log('selectedFilterValue', selectedFilterValue)
-  console.log('initialFilter', initialFilter)
-
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
@@ -110,8 +107,6 @@ const CommentFeed = ({
   }) => {
     setIsFetching(true);
     try {
-      console.log('filter', filter)
-      console.log('selectedFilterValue', selectedFilterValue)
       const { comments, count } = await fetchCommentsAPI({
         documentId: document.id,
         documentType: document.apiDocumentType,
