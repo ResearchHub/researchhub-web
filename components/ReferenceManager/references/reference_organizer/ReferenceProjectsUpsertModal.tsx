@@ -25,6 +25,7 @@ import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinnerThird } from "@fortawesome/pro-light-svg-icons";
+import { useReferencesTableContext } from "../reference_table/context/ReferencesTableContext";
 
 const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
@@ -45,10 +46,14 @@ export default function ReferenceProjectsUpsertModal({
     setProjectValue,
     upsertPurpose,
   } = useReferenceProjectUpsertContext();
-  const { resetProjectsFetchTime } = useReferenceActiveProjectContext();
+
+  const { resetProjectsFetchTime, setActiveProject, flattenCollaborators } =
+    useReferenceActiveProjectContext();
   const router = useRouter();
   const nameChanged = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { setReferenceTableRowData } = useReferencesTableContext();
 
   useEffect(() => {
     if (!isModalOpen) {
@@ -98,7 +103,17 @@ export default function ReferenceProjectsUpsertModal({
         handleCloseModal();
         setIsLoading(false);
 
-        if (nameChanged) {
+        if (!router.query.slug) {
+          setReferenceTableRowData([]);
+          const proj = { ...result };
+          proj.flattenedCollaborators = flattenCollaborators(proj);
+          setActiveProject(proj);
+          router.push(
+            `/reference-manager/${
+              router.query.organization
+            }/${encodeURIComponent(result.slug)}`
+          );
+        } else if (nameChanged) {
           const slugsTilNow = router.query.slug
             .slice(0, router.query.slug.length - 1)
             .join("/");
@@ -116,7 +131,8 @@ export default function ReferenceProjectsUpsertModal({
     });
   };
 
-  const modalTitle = upsertPurpose === "update" ? "Update folder" : "";
+  const modalTitle =
+    upsertPurpose === "update" ? "Update folder" : "Create folder";
 
   return (
     <BaseModal

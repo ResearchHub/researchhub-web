@@ -8,6 +8,7 @@ export type UpsertPurpose = "create" | "create_sub_project" | "update";
 export type ProjectValue = {
   children: ProjectValue[];
   collaborators: LookupSuggestedUser[];
+  flattenedCollaborators: LookupSuggestedUser[];
   isPublic: boolean;
   projectID: ID;
   projectName: NullableString;
@@ -25,6 +26,7 @@ export type ReferenceProjectsUpsertContextValueType = {
 export const DEFAULT_PROJECT_VALUES: ProjectValue = {
   children: [],
   collaborators: [],
+  flattenedCollaborators: [],
   isPublic: true,
   projectID: undefined,
   projectName: undefined,
