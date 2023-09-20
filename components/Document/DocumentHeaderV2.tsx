@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     display: "flex",
     boxSizing: "border-box",
     justifyContent: "center",
-    borderBottom: `2px solid ${config.border}`,
+    borderBottom: `1px solid ${config.border}`,
   },
   lineItemsWrapper: {
     display: "flex",
