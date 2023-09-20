@@ -42,6 +42,7 @@ const colors = {
   },
   actionBtn: {
     hover: globalColors.NEW_BLUE(0.1),
+    color: globalColors.GREY(1.0),
   },
   dot: "rgb(200 200 202)",
   gray: globalColors.BLACK(0.6),

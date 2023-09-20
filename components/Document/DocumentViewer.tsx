@@ -27,6 +27,7 @@ import DocumentViewerContext, {
   ViewerContext,
 } from "./lib/DocumentViewerContext";
 import { useRouter } from "next/router";
+import colors from "~/config/themes/colors";
 
 const AnnotationLayer = dynamic(
   () => import("~/components/Comment/modules/annotation/AnnotationLayer")
@@ -445,10 +446,10 @@ const styles = StyleSheet.create({
   },
   documentViewer: {},
   postBody: {
-    padding: "25px 45px",
-    paddingBottom: 15,
+    paddingRight: 25,
+    color: colors.GREY_TEXT(1.0),
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: 15,
+      padding: 0,
     },
   },
   postHeader: {

@@ -1581,6 +1581,7 @@ const styles = StyleSheet.create({
   commentEditor: {
     boxShadow: "none",
     padding: 0,
+    border: "none",
   },
   commentEditorWrapper: {
     padding: 10,

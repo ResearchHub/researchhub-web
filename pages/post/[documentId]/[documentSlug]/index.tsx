@@ -33,8 +33,6 @@ import dynamic from "next/dynamic";
 import CommentFeed from "~/components/Comment/CommentFeed";
 import { COMMENT_TYPES, parseComment } from "~/components/Comment/lib/types";
 import useCacheControl from "~/config/hooks/useCacheControl";
-import { faComments } from "@fortawesome/pro-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import colors from "~/config/themes/colors";
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -74,8 +72,6 @@ const DocumentIndexPage: NextPage<Args> = ({
   commentData,
   errorCode,
 }) => {
-
-
   let displayCommentsFeed = false;
   let parsedComments = [];
   let commentCount = 0;
@@ -85,7 +81,6 @@ const DocumentIndexPage: NextPage<Args> = ({
     parsedComments = comments.map((c) => parseComment({ raw: c }));
     displayCommentsFeed = true;
   }
-
 
   const { revalidateDocument } = useCacheControl();
   const documentType = "post";
@@ -213,10 +208,7 @@ const DocumentIndexPage: NextPage<Args> = ({
               )}
             </div>
             <div style={{ maxWidth: viewerWidth, margin: "20px auto 0 auto" }}>
-              <div className={css(styles.subheader)}>
-                <FontAwesomeIcon icon={faComments} style={{ marginRight: 10 }} />
-                Conversation
-              </div>
+              <div className={css(styles.subheader)}>Conversation</div>
               <CommentFeed
                 initialComments={parsedComments}
                 document={document}
@@ -232,7 +224,10 @@ const DocumentIndexPage: NextPage<Args> = ({
                   if (comment.bounties.length > 0) {
                     setDocumentMetadata({
                       ...documentMetadata,
-                      bounties: [comment.bounties[0], ...documentMetadata.bounties],
+                      bounties: [
+                        comment.bounties[0],
+                        ...documentMetadata.bounties,
+                      ],
                     });
                   } else if (comment.commentType === COMMENT_TYPES.REVIEW) {
                     setDocumentMetadata({
@@ -254,7 +249,7 @@ const DocumentIndexPage: NextPage<Args> = ({
                 }}
                 totalCommentCount={commentCount}
               />
-            </div>             
+            </div>
           </div>
         </DocumentPageLayout>
       </DocumentContext.Provider>
@@ -266,17 +261,15 @@ const styles = StyleSheet.create({
   bodyWrapper: {
     borderRadius: "4px",
     marginTop: 15,
-    background: "white",
-    border: `1px solid ${config.border}`,
     width: "100%",
     boxSizing: "border-box",
   },
   subheader: {
     marginTop: 50,
     marginBottom: 15,
-    fontSize: 18,
-    fontWeight: 500,
-    color: colors.BLACK(0.5),
+    fontSize: 22,
+    fontWeight: 600,
+    color: colors.GREY_HEADING(),
   },
   editor: {
     padding: 45,
