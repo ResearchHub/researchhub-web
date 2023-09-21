@@ -55,13 +55,9 @@ export default function ReferenceItemFieldInput({
         fullWidth
         onClick={silentEmptyFnc}
         id={formID}
-        onChange={
-          !isNullOrUndefined(onChange)
-            ? (event: ChangeEvent<HTMLInputElement>): void => {
-                nullthrows(onChange)(event?.target?.value);
-              }
-            : undefined
-        }
+        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+          onChange && onChange(event?.target?.value);
+        }}
         placeholder={placeholder}
         required={required}
         size="small"

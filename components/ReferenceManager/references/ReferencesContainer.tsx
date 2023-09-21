@@ -92,10 +92,10 @@ function ReferencesContainer({
 }: Props): ReactNode {
   const currentUser = getCurrentUser();
 
-  const userAllowed = gateKeepCurrentUser({
-    application: "REFERENCE_MANAGER",
-    shouldRedirect: true,
-  });
+  // const userAllowed = gateKeepCurrentUser({
+  //   application: "REFERENCE_MANAGER",
+  //   shouldRedirect: true,
+  // });
   const { currentOrg, refetchOrgs } = useOrgs();
   const router = useRouter();
 
@@ -208,9 +208,11 @@ function ReferencesContainer({
       const url = generateApiUrl(`search/citation`, `?search=${searchQuery}`);
       fetchCitationsWithQuery(url);
     } else {
+      debugger;
       await fetchCurrentUserReferenceCitations({
         getCurrentUserCitation: true,
         organizationID: currentOrg.id,
+        projectSlug: router.query.slugs.slice(-1),
         projectID: activeProject?.projectID,
         onError: (error) => {
           console.log(error);
@@ -373,218 +375,213 @@ function ReferencesContainer({
     });
   };
 
-  if (!userAllowed) {
-    return <Fragment />;
-  } else {
-    return (
-      <>
-        <QuickModal
-          isOpen={isDeleteModalOpen}
-          modalContent={
-            <Box sx={{ marginBottom: "16px", height: "120px" }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginBottom: "38px",
-                }}
-              >
-                <Typography id="modal-modal-title" variant="subtitle2">
-                  {`Are you sure you want to remove this folder?`}
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Typography variant="h6">
-                  {activeProject?.projectName}
-                </Typography>
-              </Box>
+  return (
+    <>
+      <QuickModal
+        isOpen={isDeleteModalOpen}
+        modalContent={
+          <Box sx={{ marginBottom: "16px", height: "120px" }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: "38px",
+              }}
+            >
+              <Typography id="modal-modal-title" variant="subtitle2">
+                {`Are you sure you want to remove this folder?`}
+              </Typography>
             </Box>
-          }
-          modalWidth="300px"
-          onPrimaryButtonClick={(): void => {
-            removeReferenceProject({
-              projectID: activeProject?.projectID,
-              onSuccess: () => {
-                resetProjectsFetchTime();
-                setIsDeleteModalOpen(false);
-                router.push(`/reference-manager/${currentOrg?.slug ?? ""}`);
-              },
-              onError: emptyFncWithMsg,
-            });
-          }}
-          onSecondaryButtonClick={(): void => setIsDeleteModalOpen(false)}
-          onClose={(): void => setIsDeleteModalOpen(false)}
-          primaryButtonConfig={{ label: "Delete" }}
-        />
-        <ManageOrgModal
-          org={currentOrg}
-          isOpen={isOrgModalOpen}
-          closeModal={(): void => setIsOrgModalOpen(false)}
-          onOrgChange={onOrgUpdate}
-        />
-        <QuickModal
-          isOpen={isRemoveRefModalOpen}
-          modalContent={
-            <Box sx={{ height: "80px" }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Typography id="modal-modal-title" variant="h6">
-                  {`Remove ${selectedRows.length} selected item${
-                    selectedRows.length > 1 ? "s" : ""
-                  }`}
-                </Typography>
-              </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6">{activeProject?.projectName}</Typography>
             </Box>
-          }
-          modalWidth="300px"
-          onPrimaryButtonClick={() => handleDelete(selectedRows)}
-          onSecondaryButtonClick={(): void => setIsRemoveRefModalOpen(false)}
-          onClose={(): void => setIsRemoveRefModalOpen(false)}
-          primaryButtonConfig={{ label: "Remove" }}
-        />
-        <ReferencesBibliographyModal
-          isOpen={isBibModalOpen}
-          onClose={(): void => setIsBibModalOpen(false)}
-          selectedReferenceIDs={selectedRows}
-        />
-        <ReferenceProjectsUpsertModal onUpsertSuccess={addFolderToChildren} />
-        <ReferenceManualUploadDrawer key="root-nav" />
-        <ReferenceItemDrawer />
-        <Box
-          flexDirection="row"
-          display="flex"
-          sx={{
-            maxWidth: {
-              xs: "100vw",
-              sm: "calc(100vw - 79px)",
+          </Box>
+        }
+        modalWidth="300px"
+        onPrimaryButtonClick={(): void => {
+          removeReferenceProject({
+            projectID: activeProject?.projectID,
+            onSuccess: () => {
+              resetProjectsFetchTime();
+              setIsDeleteModalOpen(false);
+              router.push(`/reference-manager/${currentOrg?.slug ?? ""}`);
             },
+            onError: emptyFncWithMsg,
+          });
+        }}
+        onSecondaryButtonClick={(): void => setIsDeleteModalOpen(false)}
+        onClose={(): void => setIsDeleteModalOpen(false)}
+        primaryButtonConfig={{ label: "Delete" }}
+      />
+      <ManageOrgModal
+        org={currentOrg}
+        isOpen={isOrgModalOpen}
+        closeModal={(): void => setIsOrgModalOpen(false)}
+        onOrgChange={onOrgUpdate}
+      />
+      <QuickModal
+        isOpen={isRemoveRefModalOpen}
+        modalContent={
+          <Box sx={{ height: "80px" }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Typography id="modal-modal-title" variant="h6">
+                {`Remove ${selectedRows.length} selected item${
+                  selectedRows.length > 1 ? "s" : ""
+                }`}
+              </Typography>
+            </Box>
+          </Box>
+        }
+        modalWidth="300px"
+        onPrimaryButtonClick={() => handleDelete(selectedRows)}
+        onSecondaryButtonClick={(): void => setIsRemoveRefModalOpen(false)}
+        onClose={(): void => setIsRemoveRefModalOpen(false)}
+        primaryButtonConfig={{ label: "Remove" }}
+      />
+      <ReferencesBibliographyModal
+        isOpen={isBibModalOpen}
+        onClose={(): void => setIsBibModalOpen(false)}
+        selectedReferenceIDs={selectedRows}
+      />
+      <ReferenceProjectsUpsertModal onUpsertSuccess={addFolderToChildren} />
+      <ReferenceManualUploadDrawer key="root-nav" />
+      <ReferenceItemDrawer />
+      <Box
+        flexDirection="row"
+        display="flex"
+        sx={{
+          maxWidth: {
+            xs: "100vw",
+            sm: "calc(100vw - 79px)",
+          },
+        }}
+      >
+        <BasicTogglableNavbarLeft
+          currentOrgProjects={currentOrgProjects}
+          isOpen={isRefManagerSidebarOpen}
+          navWidth={LEFT_MAX_NAV_WIDTH}
+          openOrgSettingsModal={() => setIsOrgModalOpen(true)}
+          setIsOpen={setIsRefManagerSidebarOpen}
+        />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            padding: {
+              xs: "15px",
+              sm: "28px",
+            },
+            width: "100%",
+            overflow: "auto",
+            boxSizing: "border-box",
+            flex: 1,
           }}
+          className={"references-section"}
+          ref={mainContentRef}
         >
-          <BasicTogglableNavbarLeft
-            currentOrgProjects={currentOrgProjects}
-            isOpen={isRefManagerSidebarOpen}
-            navWidth={LEFT_MAX_NAV_WIDTH}
-            openOrgSettingsModal={() => setIsOrgModalOpen(true)}
-            setIsOpen={setIsRefManagerSidebarOpen}
-          />
-          <Box
-            sx={{
+          <div
+            style={{
+              marginBottom: 16,
               display: "flex",
-              flexDirection: "column",
-              padding: {
-                xs: "15px",
-                sm: "28px",
-              },
-              width: "100%",
-              overflow: "auto",
-              boxSizing: "border-box",
-              flex: 1,
+              alignItems: "center",
             }}
-            className={"references-section"}
-            ref={mainContentRef}
           >
+            <Typography variant="h5" sx={{ flex: 1 }}>
+              {router.query.slug ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    rowGap: "4px",
+                  }}
+                >
+                  {activeProject?.parent_names?.names?.map((name, index) => {
+                    const slugsTilNow = router.query.slug
+                      .slice(0, index + 1)
+                      .join("/");
+
+                    const isActiveProject =
+                      index + 1 === activeProject.parent_names?.names?.length;
+
+                    return (
+                      <div key={index}>
+                        <Link
+                          href={`/reference-manager/${currentOrg?.slug}/${slugsTilNow}`}
+                          className={css(
+                            styles.projectLink,
+                            isActiveProject && styles.activeProjectLink
+                          )}
+                        >
+                          {name}
+                        </Link>
+                        {index !==
+                          activeProject.parent_names?.names?.length - 1 && (
+                          <span
+                            style={{
+                              margin: 8,
+                              color: "rgb(115, 108, 100)",
+                            }}
+                          >
+                            /
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </Box>
+              ) : isOnOrgTab ? (
+                "Organization References"
+              ) : (
+                `My References`
+              )}
+            </Typography>
+            <input
+              ref={inputRef}
+              type="file"
+              accept=".pdf"
+              multiple
+              style={{ display: "none" }}
+              onChange={(event) => {
+                onFileDrop(Array.from(event?.target?.files ?? []));
+              }}
+            />
+
             <div
               style={{
-                marginBottom: 16,
+                marginLeft: "auto",
                 display: "flex",
                 alignItems: "center",
               }}
             >
-              <Typography variant="h5" sx={{ flex: 1 }}>
-                {router.query.slug ? (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      flexWrap: "wrap",
-                      rowGap: "4px",
-                    }}
-                  >
-                    {activeProject?.parent_names?.names?.map((name, index) => {
-                      const slugsTilNow = router.query.slug
-                        .slice(0, index + 1)
-                        .join("/");
-
-                      const isActiveProject =
-                        index + 1 === activeProject.parent_names?.names?.length;
-
-                      return (
-                        <div>
-                          <Link
-                            href={`/reference-manager/${currentOrg?.slug}/${slugsTilNow}`}
-                            className={css(
-                              styles.projectLink,
-                              isActiveProject && styles.activeProjectLink
-                            )}
-                          >
-                            {name}
-                          </Link>
-                          {index !==
-                            activeProject.parent_names?.names?.length - 1 && (
-                            <span
-                              style={{
-                                margin: 8,
-                                color: "rgb(115, 108, 100)",
-                              }}
-                            >
-                              /
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </Box>
-                ) : isOnOrgTab ? (
-                  "Organization References"
-                ) : (
-                  `My References`
-                )}
-              </Typography>
-              <input
-                ref={inputRef}
-                type="file"
-                accept=".pdf"
-                multiple
-                style={{ display: "none" }}
-                onChange={(event) => {
-                  onFileDrop(Array.from(event?.target?.files ?? []));
-                }}
-              />
-
-              <div
-                style={{
-                  marginLeft: "auto",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                {activeProject?.collaborators && (
-                  <AuthorFacePile
-                    horizontal
-                    margin={-10}
-                    imgSize={40}
-                    authorProfiles={activeProject?.collaborators.map(
-                      (collaborator) => {
-                        collaborator.authorProfile.user = collaborator;
-                        return collaborator.authorProfile;
-                      }
-                    )}
-                  />
-                )}
-                {/* TODO: Temporarily commenting until we time to implement folder permissions */}
-                {/* {!isOnOrgTab && (
+              {activeProject?.flattenedCollaborators && (
+                <AuthorFacePile
+                  horizontal
+                  margin={-10}
+                  imgSize={40}
+                  authorProfiles={activeProject?.flattenedCollaborators.map(
+                    (collaborator) => {
+                      collaborator.authorProfile.user = collaborator;
+                      return collaborator.authorProfile;
+                    }
+                  )}
+                />
+              )}
+              {/* TODO: Temporarily commenting until we time to implement folder permissions */}
+              {/* {!isOnOrgTab && (
                   <Button
                     variant="outlined"
                     fontSize="small"
@@ -599,180 +596,128 @@ function ReferencesContainer({
                     </Typography>
                   </Button>
                 )} */}
-              </div>
             </div>
+          </div>
 
-            <Box className="ReferencesContainerMain" sx={{ height: "100%" }}>
+          <Box className="ReferencesContainerMain" sx={{ height: "100%" }}>
+            <Box
+              className="ReferencesContainerTitleSection"
+              sx={{ marginBottom: "32px" }}
+            >
               <Box
-                className="ReferencesContainerTitleSection"
-                sx={{ marginBottom: "32px" }}
+                sx={{
+                  alignItems: "center",
+                  display: "flex",
+                  flexDirection: "row",
+                  columnGap: "15px",
+                  width: "100%",
+                  ...(isSearchInputFullWidth && { flexWrap: "wrap" }),
+                }}
               >
-                <Box
-                  sx={{
-                    alignItems: "center",
-                    display: "flex",
-                    flexDirection: "row",
-                    columnGap: "15px",
-                    width: "100%",
-                    ...(isSearchInputFullWidth && { flexWrap: "wrap" }),
+                <DropdownMenu
+                  menuItemProps={[
+                    {
+                      itemLabel: "DOI or URL",
+                      onClick: (): void => {
+                        setProjectIDForUploadDrawer(
+                          activeProject?.projectID ?? null
+                        );
+                        setIsRefUploadDrawerOpen(true);
+                      },
+                    },
+                    {
+                      itemLabel: "Upload PDF(s)",
+                      onClick: (): void =>
+                        // @ts-ignore unnecessary never handling
+                        nullthrows(inputRef?.current).click(),
+                    },
+                  ]}
+                  menuLabel={
+                    <Button
+                      variant="contained"
+                      size="med"
+                      customButtonStyle={styles.button}
+                    >
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <FontAwesomeIcon
+                          icon={faPlus}
+                          color="#fff"
+                          fontSize="18px"
+                          style={{ marginRight: 8 }}
+                        />
+                        {"Add reference"}
+                      </div>
+                    </Button>
+                  }
+                  size={"small"}
+                />
+
+                <Button
+                  variant="outlined"
+                  size="med"
+                  customButtonStyle={[styles.button, styles.secondary]}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setProjectUpsertPurpose("create_sub_project");
+                    setProjectUpsertValue({
+                      ...DEFAULT_PROJECT_VALUES,
+                      projectID: activeProject?.projectID,
+                    });
+                    setIsProjectUpsertModalOpen(true);
                   }}
                 >
-                  <DropdownMenu
-                    menuItemProps={[
-                      {
-                        itemLabel: "DOI or URL",
-                        onClick: (): void => {
-                          setProjectIDForUploadDrawer(
-                            activeProject?.projectID ?? null
-                          );
-                          setIsRefUploadDrawerOpen(true);
-                        },
-                      },
-                      {
-                        itemLabel: "Upload PDF(s)",
-                        onClick: (): void =>
-                          // @ts-ignore unnecessary never handling
-                          nullthrows(inputRef?.current).click(),
-                      },
-                    ]}
-                    menuLabel={
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <FontAwesomeIcon
+                      icon={faFolderPlus}
+                      fontSize="18px"
+                      style={{ marginRight: 8 }}
+                    />
+                    Create folder
+                  </div>
+                </Button>
+                {selectedRows.length > 0 && (
+                  <>
+                    <div className={css(styles.divider)}> </div>
+                    <Box sx={{ display: { xs: "none", md: "block" } }}>
                       <Button
-                        variant="contained"
+                        variant="outlined"
                         size="med"
-                        customButtonStyle={styles.button}
+                        customButtonStyle={[styles.button, styles.secondary]}
+                        onClick={() => setIsBibModalOpen(true)}
                       >
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <FontAwesomeIcon
-                            icon={faPlus}
-                            color="#fff"
+                            icon={faFileExport}
                             fontSize="18px"
                             style={{ marginRight: 8 }}
                           />
-                          {"Add reference"}
+                          Export
                         </div>
                       </Button>
-                    }
-                    size={"small"}
-                  />
+                    </Box>
+                    <Box sx={{ display: { xs: "none", md: "block" } }}>
+                      <Button
+                        variant="outlined"
+                        size="med"
+                        customButtonStyle={[styles.button, styles.secondary]}
+                        onClick={(event) => setIsRemoveRefModalOpen(true)}
+                      >
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <FontAwesomeIcon
+                            icon={faTrashCan}
+                            fontSize="18px"
+                            style={{ marginRight: 8 }}
+                          />
+                          Delete
+                        </div>
+                      </Button>
+                    </Box>
 
-                  <Button
-                    variant="outlined"
-                    size="med"
-                    customButtonStyle={[styles.button, styles.secondary]}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setProjectUpsertPurpose("create_sub_project");
-                      setProjectUpsertValue({
-                        ...DEFAULT_PROJECT_VALUES,
-                        projectID: activeProject?.projectID,
-                      });
-                      setIsProjectUpsertModalOpen(true);
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <FontAwesomeIcon
-                        icon={faFolderPlus}
-                        fontSize="18px"
-                        style={{ marginRight: 8 }}
-                      />
-                      Create folder
-                    </div>
-                  </Button>
-                  {selectedRows.length > 0 && (
-                    <>
-                      <div className={css(styles.divider)}> </div>
-                      <Box sx={{ display: { xs: "none", md: "block" } }}>
-                        <Button
-                          variant="outlined"
-                          size="med"
-                          customButtonStyle={[styles.button, styles.secondary]}
-                          onClick={() => setIsBibModalOpen(true)}
-                        >
-                          <div
-                            style={{ display: "flex", alignItems: "center" }}
-                          >
-                            <FontAwesomeIcon
-                              icon={faFileExport}
-                              fontSize="18px"
-                              style={{ marginRight: 8 }}
-                            />
-                            Export
-                          </div>
-                        </Button>
-                      </Box>
-                      <Box sx={{ display: { xs: "none", md: "block" } }}>
-                        <Button
-                          variant="outlined"
-                          size="med"
-                          customButtonStyle={[styles.button, styles.secondary]}
-                          onClick={(event) => setIsRemoveRefModalOpen(true)}
-                        >
-                          <div
-                            style={{ display: "flex", alignItems: "center" }}
-                          >
-                            <FontAwesomeIcon
-                              icon={faTrashCan}
-                              fontSize="18px"
-                              style={{ marginRight: 8 }}
-                            />
-                            Delete
-                          </div>
-                        </Button>
-                      </Box>
-
-                      <Box sx={{ display: { xs: "block", md: "none" } }}>
-                        <DropdownMenu
-                          menuItemProps={[
-                            {
-                              itemLabel: (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                  }}
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faFileExport}
-                                    fontSize="18px"
-                                    style={{ marginRight: 8 }}
-                                  />
-                                  Export
-                                </div>
-                              ),
-                              onClick: (): void => {
-                                setIsBibModalOpen(true);
-                              },
-                            },
-                            {
-                              itemLabel: (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                  }}
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faTrashCan}
-                                    fontSize="18px"
-                                    style={{ marginRight: 8 }}
-                                  />
-                                  Delete
-                                </div>
-                              ),
-                              onClick: (): void => {
-                                setIsRemoveRefModalOpen(true);
-                              },
-                            },
-                          ]}
-                          menuLabel={
-                            <Button
-                              variant="outlined"
-                              size="med"
-                              customButtonStyle={[
-                                styles.button,
-                                styles.secondary,
-                              ]}
-                            >
+                    <Box sx={{ display: { xs: "block", md: "none" } }}>
+                      <DropdownMenu
+                        menuItemProps={[
+                          {
+                            itemLabel: (
                               <div
                                 style={{
                                   display: "flex",
@@ -780,64 +725,112 @@ function ReferencesContainer({
                                 }}
                               >
                                 <FontAwesomeIcon
-                                  icon={faEllipsis}
-                                  fontSize="28px"
+                                  icon={faFileExport}
+                                  fontSize="18px"
+                                  style={{ marginRight: 8 }}
                                 />
+                                Export
                               </div>
-                            </Button>
-                          }
-                          size={"small"}
-                        />
-                      </Box>
-                    </>
-                  )}
+                            ),
+                            onClick: (): void => {
+                              setIsBibModalOpen(true);
+                            },
+                          },
+                          {
+                            itemLabel: (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faTrashCan}
+                                  fontSize="18px"
+                                  style={{ marginRight: 8 }}
+                                />
+                                Delete
+                              </div>
+                            ),
+                            onClick: (): void => {
+                              setIsRemoveRefModalOpen(true);
+                            },
+                          },
+                        ]}
+                        menuLabel={
+                          <Button
+                            variant="outlined"
+                            size="med"
+                            customButtonStyle={[
+                              styles.button,
+                              styles.secondary,
+                            ]}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              <FontAwesomeIcon
+                                icon={faEllipsis}
+                                fontSize="28px"
+                              />
+                            </div>
+                          </Button>
+                        }
+                        size={"small"}
+                      />
+                    </Box>
+                  </>
+                )}
 
-                  <FormInput
-                    placeholder={"Search references"}
-                    containerStyle={[
-                      styles.formInputContainer,
-                      isSearchInputFullWidth &&
-                        styles.formInputContainerFullWidth,
-                    ]}
-                    inputStyle={styles.inputStyle}
-                    icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
-                    iconStyles={styles.searchIcon}
-                    onSearchClick={onSearchClick}
-                    onKeyDown={onEnterClicked}
-                    onChange={(id, value) => setSearchQuery(value)}
-                  />
-                </Box>
+                <FormInput
+                  placeholder={"Search references"}
+                  containerStyle={[
+                    styles.formInputContainer,
+                    isSearchInputFullWidth &&
+                      styles.formInputContainerFullWidth,
+                  ]}
+                  inputStyle={styles.inputStyle}
+                  icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+                  iconStyles={styles.searchIcon}
+                  onSearchClick={onSearchClick}
+                  onKeyDown={onEnterClicked}
+                  onChange={(id, value) => setSearchQuery(value)}
+                />
               </Box>
-              <ReferencesTable
-                selectedRows={selectedRows}
-                createdReferences={createdReferences}
-                rowSelectionModel={selectedRows}
-                handleFileDrop={onFileDrop}
-                handleClearSelection={handleClearSelection}
-                handleRowSelection={handleRowSelection}
-                handleDelete={(refId: GridRowId) => {
-                  setSelectedRows([refId]);
-                  setIsRemoveRefModalOpen(true);
-                }}
-                loading={referencesSearchLoading}
-              />
             </Box>
-          </Box>
-          {/* </DroppableZone> */}
-          <ReactTooltip effect="solid" id="button-tooltips" />
-        </Box>
-        <div>
-          {calloutIsOpen && (
-            <RefManagerCallouts
-              handleClose={() => {
-                setCalloutIsOpen(false);
-                storeToCookie({ key: "callout_open", value: "false" });
-                window.localStorage.setItem("callout_open", "false");
+            <ReferencesTable
+              selectedRows={selectedRows}
+              createdReferences={createdReferences}
+              rowSelectionModel={selectedRows}
+              handleFileDrop={onFileDrop}
+              handleClearSelection={handleClearSelection}
+              handleRowSelection={handleRowSelection}
+              handleDelete={(refId: GridRowId) => {
+                setSelectedRows([refId]);
+                setIsRemoveRefModalOpen(true);
               }}
+              loading={referencesSearchLoading}
             />
-          )}
-        </div>
-        {/* <ToastContainer
+          </Box>
+        </Box>
+        {/* </DroppableZone> */}
+        <ReactTooltip effect="solid" id="button-tooltips" />
+      </Box>
+      <div>
+        {calloutIsOpen && (
+          <RefManagerCallouts
+            handleClose={() => {
+              setCalloutIsOpen(false);
+              storeToCookie({ key: "callout_open", value: "false" });
+              window.localStorage.setItem("callout_open", "false");
+            }}
+          />
+        )}
+      </div>
+      {/* <ToastContainer
           autoClose={true}
           closeOnClick
           hideProgressBar={false}
@@ -847,9 +840,8 @@ function ReferencesContainer({
           autoClose={5000}
           progressStyle={{ background: colors.NEW_BLUE() }}
         ></ToastContainer> */}
-      </>
-    );
-  }
+    </>
+  );
 }
 
 const styles = StyleSheet.create({

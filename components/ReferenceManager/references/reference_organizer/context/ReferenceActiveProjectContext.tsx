@@ -17,9 +17,10 @@ export type ReferenceActiveProjectContextValueType = {
   currentOrgProjects: ProjectValue[];
   isFetchingProjects: boolean;
   resetProjectsFetchTime: () => void;
-  setActiveProject: (proj: ProjectValue) => void;
+  setActiveProject: (proj: ProjectValue | null) => void;
   setCurrentOrgProjects: (projects: ProjectValue[]) => void;
   setIsFetchingProjects: (bool: boolean) => void;
+  flattenCollaborators: (collaborators: any) => any[];
 };
 
 export const DEFAULT_VALUE = {
@@ -30,6 +31,7 @@ export const DEFAULT_VALUE = {
   setActiveProject: silentEmptyFnc,
   setCurrentOrgProjects: silentEmptyFnc,
   setIsFetchingProjects: silentEmptyFnc,
+  flattenCollaborators: silentEmptyFnc,
 };
 
 export const ReferenceActiveProjectContext: Context<ReferenceActiveProjectContextValueType> =
@@ -79,11 +81,8 @@ export function ReferenceActiveProjectContextProvider({ children }) {
     ? router.query.slug[router.query.slug.length - 1]
     : null;
 
-  const findAndSetActiveProjects = (allProjects) => {
-    const activeProj = findNestedTargetProject(allProjects, activeSlugName);
-    const { collaborators, id, project_name, is_public } = activeProj ?? {
-      collaborators: { editors: [], viewers: [] },
-    };
+  const flattenCollaborators = (proj) => {
+    const { collaborators } = proj;
     const flattenedCollaborators = [
       ...collaborators.editors.map((rawUser: any) => {
         return {
@@ -98,9 +97,20 @@ export function ReferenceActiveProjectContextProvider({ children }) {
         };
       }),
     ];
+    return flattenedCollaborators;
+  };
+
+  const findAndSetActiveProjects = (allProjects) => {
+    const activeProj = findNestedTargetProject(allProjects, activeSlugName);
+    const curProj = activeProj ?? {
+      collaborators: { editors: [], viewers: [] },
+    };
+    const { id, project_name, is_public } = curProj;
+
+    const flattenedCollaborators = flattenCollaborators(curProj);
     setActiveProject({
       ...activeProj,
-      collaborators: flattenedCollaborators,
+      flattenedCollaborators,
       isPublic: is_public,
       projectID: id,
       projectName: project_name,
@@ -137,6 +147,7 @@ export function ReferenceActiveProjectContextProvider({ children }) {
         setActiveProject,
         setCurrentOrgProjects,
         setIsFetchingProjects,
+        flattenCollaborators,
       }}
     >
       {children}

@@ -9,6 +9,7 @@ type Props = {
   label: string;
   link: string;
   option?: ReactNode;
+  onClick?: (e) => void;
 };
 
 export default function BasicTogglableNavbarButton({
@@ -17,6 +18,7 @@ export default function BasicTogglableNavbarButton({
   label,
   link,
   option,
+  onClick,
 }: Props): ReactElement {
   return (
     <Box
@@ -32,7 +34,7 @@ export default function BasicTogglableNavbarButton({
       }}
     >
       <span style={{ width: "100%" }}>
-        <ALink href={link} disableTextDeco>
+        <ALink href={link} disableTextDeco onClick={onClick}>
           <Box
             sx={{
               alignItems: "center",

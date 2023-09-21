@@ -31,6 +31,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { StyleSheet, css } from "aphrodite";
 import { faCog } from "@fortawesome/pro-solid-svg-icons";
 import { navContext } from "~/components/contexts/NavigationContext";
+import { useReferencesTableContext } from "../references/reference_table/context/ReferencesTableContext";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -104,6 +105,8 @@ export default function BasicTogglableNavbarLeft({
   const currentOrg = getCurrentUserCurrentOrg();
   const router = useRouter();
   const [childrenOpenMap, setChildrenOpenMap] = useState({});
+  const { setActiveProject } = useReferenceActiveProjectContext();
+  const { setReferenceTableRowData } = useReferencesTableContext();
 
   useEffect(() => {
     const idsOpen = window.localStorage.getItem("projectIdsOpenv2") || "{}";
@@ -116,37 +119,6 @@ export default function BasicTogglableNavbarLeft({
     map[key] = value;
     setChildrenOpenMap(map);
   };
-
-  // const findNestedProjectIndex = ({
-  //   allProjects,
-  //   activeProject,
-  //   indices,
-  // }: {
-  //   allProjects: ProjectValue[];
-  //   activeProject: ProjectValue;
-  //   indices: number[];
-  // }) => {
-  //   for (let index = 0; index < allProjects.length; index++) {
-  //     const project = allProjects[index];
-  //     if (project.id === activeProject.id) {
-  //       return index;
-  //     }
-
-  //     const projectChildren = project.children;
-  //     if (!isEmpty(projectChildren)) {
-  //       indices.push(index);
-  //       const childTarget = findNestedProjectIndex({
-  //         allProjects: projectChildren,
-  //         activeProject,
-  //         indices,
-  //       });
-
-  //       if (!isNullOrUndefined(childTarget)) {
-  //         indices.push(childTarget);
-  //       }
-  //     }
-  //   }
-  // };
 
   const currentOrgSlug = currentOrg?.slug ?? null;
   const refProjectsNavbarEls = currentOrgProjects?.map((referenceProject) => {
@@ -193,6 +165,10 @@ export default function BasicTogglableNavbarLeft({
               style={{ marginLeft: 2, marginRight: 10, color: "#7C7989" }}
             />
           }
+          onClick={() => {
+            // setReferenceTableRowData([]);
+            setActiveProject(null);
+          }}
           isActive={
             isEmpty(router.query?.org_refs) && isEmpty(router.query?.slug)
           }
@@ -204,6 +180,10 @@ export default function BasicTogglableNavbarLeft({
           isActive={
             isEmpty(router.query?.slug) && !isEmpty(router.query?.org_refs)
           }
+          onClick={() => {
+            // setReferenceTableRowData([]);
+            setActiveProject(null);
+          }}
           icon={
             <FontAwesomeIcon
               icon={faSitemap}

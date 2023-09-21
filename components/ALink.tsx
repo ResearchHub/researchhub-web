@@ -19,6 +19,7 @@ interface Props {
   target?: string;
   disableTextDeco?: boolean;
   weight?: number;
+  onClick?: (e) => void;
 }
 
 const ALink: FunctionComponent<Props> = ({
@@ -30,6 +31,7 @@ const ALink: FunctionComponent<Props> = ({
   target = null,
   disableTextDeco = false,
   weight = 400,
+  onClick,
 }): ReactElement => {
   return (
     <Link
@@ -43,7 +45,10 @@ const ALink: FunctionComponent<Props> = ({
       )}
       style={{ fontWeight: weight }}
       target={target || undefined}
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        onClick && onClick(e);
+        e.stopPropagation();
+      }}
     >
       {children}
     </Link>

@@ -1,7 +1,6 @@
 import { connect } from "react-redux";
 import ReferencesRoot from "~/components/ReferenceManager/references/ReferencesRoot";
 import nookies from "nookies";
-import { AUTH_TOKEN } from "~/config/constants";
 import { useEffect, useState } from "react";
 
 function Index(props) {
@@ -29,7 +28,6 @@ export async function getServerSideProps(ctx) {
   const cookies = nookies.get(ctx);
   const calloutOpen =
     cookies["callout_open"] === undefined ? null : cookies["callout_open"];
-
   return {
     props: {
       calloutOpen,

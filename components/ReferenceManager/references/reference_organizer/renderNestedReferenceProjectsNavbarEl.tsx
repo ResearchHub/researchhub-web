@@ -27,7 +27,7 @@ export function renderNestedReferenceProjectsNavbarEl({
   const hasChildren = !isEmpty(referenceProject.children);
   const { activeProject, currentOrgProjects } =
     useReferenceActiveProjectContext();
-  const isActive = activeProject?.projectID === referenceProject.id;
+  const isActive = router.query.slug?.slice(-1)[0] === referenceProject.slug;
 
   return (
     <div
