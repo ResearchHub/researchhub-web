@@ -6,7 +6,6 @@ import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
 import { ReactElement, ReactNode } from "react";
 import AuthorFacePile from "../shared/AuthorFacePile";
 import colors, { genericCardColors } from "~/config/themes/colors";
-import Image from "next/image";
 
 type Props = {
   hub: any;
@@ -35,12 +34,10 @@ export default function FeedInfoCard({
     <div className={css(styles.feedInfoCard)}>
       <div className={css(styles.detailRow)}>
         <div>
-          <Image
+          <img
             className={css(styles.hubImage)}
             height={68}
             hidden={false}
-            layout="fixed"
-            objectFit="cover"
             src={hubImage ?? "/static/background/hub-placeholder.svg"}
             width={68}
           />
@@ -112,6 +109,9 @@ const styles = StyleSheet.create({
   },
   hubImage: {
     borderRadius: 4,
+    height: 68,
+    width: 68,
+    objectFit: "cover",
   },
   bodyContainer: {
     display: "flex",
