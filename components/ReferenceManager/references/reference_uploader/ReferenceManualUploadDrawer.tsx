@@ -33,6 +33,7 @@ import ReferenceUploadAttachments from "../../form/ReferenceUploadAttachments";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useReferenceActiveProjectContext } from "../reference_organizer/context/ReferenceActiveProjectContext";
+import { useReferencesTableContext } from "../reference_table/context/ReferencesTableContext";
 
 export default function ReferenceManualUploadDrawer(): ReactElement {
   const { setReferencesFetchTime } = useReferenceTabContext();
@@ -46,6 +47,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
     setReferenceSchemaValueSet,
     setSelectedReferenceType,
   } = useReferenceUploadDrawerContext();
+  const { addSingleReference } = useReferencesTableContext();
   const { projectID: activeProjectID } =
     useReferenceActiveProjectContext()?.activeProject ?? {};
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -260,6 +262,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
             <PrimaryButton
               onClick={(event: SyntheticEvent): void =>
                 handleSubmit({
+                  addSingleReference,
                   event,
                   referenceSchemaValueSet,
                   resetComponentState,

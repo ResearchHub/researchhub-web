@@ -195,7 +195,7 @@ export default function ReferencesTable({
   const pathRef = useRef<any>(null);
 
   useEffect(() => {
-    const shouldFetch = router.asPath !== pathRef.current;
+    const shouldFetch = router.asPath !== pathRef.current && currentOrg?.id;
     if (shouldFetch) {
       setIsFetchingReferences(true);
       setReferenceTableRowData([]);

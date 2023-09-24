@@ -1,14 +1,13 @@
 import { createReferenceCitation } from "../api/createReferenceCitation";
 import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import { fetchReferenceCitationSchema } from "../api/fetchReferenceCitationSchema";
-import {
-  stringToDateParts
-} from "../utils/formatCSLDate";
+import { stringToDateParts } from "../utils/formatCSLDate";
 import { ID, NullableString } from "~/config/types/root_types";
 import { SyntheticEvent, useEffect } from "react";
 import { toFormData } from "~/config/utils/toFormData";
 
 import moment from "moment";
+import { ReferenceTableRowDataType } from "../reference_table/utils/formatReferenceRowData";
 
 export function useEffectOnReferenceTypeChange({
   prevRefSchemaValueSet,
@@ -63,12 +62,12 @@ export function parseDoiSearchResultOntoValueSet({
 }
 
 export const handleSubmit = ({
+  addSingleReference,
   event,
   referenceSchemaValueSet,
   resetComponentState,
   selectedReferenceType,
   setIsSubmitting,
-  setReferencesFetchTime,
   organizationID,
   projectID,
 }: {
@@ -77,14 +76,15 @@ export const handleSubmit = ({
   referenceSchemaValueSet: any;
   selectedReferenceType: NullableString;
   setIsSubmitting: (flag: boolean) => void;
-  setReferencesFetchTime: (date: number) => void;
+  setReferencesFetchTime?: (date: number) => void;
   organizationID: ID;
   projectID: ID;
+  addSingleReference: (entry: ReferenceTableRowDataType) => void;
 }): void => {
   event.preventDefault();
   setIsSubmitting(true);
   const formattedCreators =
-    referenceSchemaValueSet?.schema?.creators?.map((creatorName) => {
+    referenceSchemaValueSet?.schema?.author?.map((creatorName) => {
       const splittedName = creatorName.split(" ");
       return {
         given: splittedName[0],
@@ -92,7 +92,9 @@ export const handleSubmit = ({
       };
     }) ?? [];
 
-  const formattedCSLDate = stringToDateParts(referenceSchemaValueSet?.schema?.issued);
+  const formattedCSLDate = stringToDateParts(
+    referenceSchemaValueSet?.schema?.issued
+  );
 
   const fields: {
     fields: any;
@@ -123,8 +125,8 @@ export const handleSubmit = ({
   }
   createReferenceCitation({
     onError: (error) => alert(error),
-    onSuccess: () => {
-      setReferencesFetchTime(Date.now());
+    onSuccess: (res) => {
+      addSingleReference(res);
       resetComponentState();
     },
     payload,

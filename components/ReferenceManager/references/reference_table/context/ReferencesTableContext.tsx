@@ -7,11 +7,15 @@ export type ReferencesTableContextType = {
   setReferenceTableRowData: (data: ReferenceTableRowDataType[]) => void;
   referencesContextLoading: boolean;
   setReferencesContextLoading: (boolean: boolean) => void;
+  addSingleReference: (entry: ReferenceTableRowDataType) => void;
 };
 
 export const DEFAULT_CONTEXT: ReferencesTableContextType = {
   referenceTableRowData: [],
   setReferenceTableRowData: () => {},
+  addSingleReference: () => {},
+  referencesContextLoading: false,
+  setReferencesContextLoading: () => {},
 };
 
 export const ReferencesTableContext: Context<ReferencesTableContextType> =
@@ -29,6 +33,10 @@ export function ReferencesTableContextProvider({ children }) {
   const [referencesContextLoading, setReferencesContextLoading] =
     useState<boolean>(false);
 
+  const addSingleReference = (newEntry: ReferenceTableRowDataType) => {
+    setReferenceTableRowData([newEntry, ...referenceTableRowData]);
+  };
+
   return (
     <ReferencesTableContext.Provider
       value={{
@@ -36,6 +44,7 @@ export function ReferencesTableContextProvider({ children }) {
         setReferenceTableRowData,
         referencesContextLoading,
         setReferencesContextLoading,
+        addSingleReference,
       }}
     >
       {children}
