@@ -74,7 +74,7 @@ export default function ReferenceProjectNavbarElOption({
               setIsDeleteModalOpen(true);
             }}
           >
-            <Typography color="red">{"Remove"}</Typography>
+            <Typography color="red">{"Delete Folder"}</Typography>
           </MenuItem>
         )}
       </Menu>
