@@ -22,9 +22,10 @@ export default function ReferenceDoiSearchInput({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchFailMsg, setSearchFailMsg] = useState<NullableString>(null);
 
-  const executeSearch = (): void => {
-    if (!isEmpty(doiOrUrl)) {
-      const isUrl = isStringURL(doiOrUrl ?? "");
+  const executeSearch = (inputtedDoiOrURL): void => {
+    const doi = inputtedDoiOrURL || doiOrUrl;
+    if (!isEmpty(doi)) {
+      const isUrl = isStringURL(doi ?? "");
       setIsLoading(true);
       if (isUrl) {
         fetchReferenceFromUrl({
@@ -39,11 +40,11 @@ export default function ReferenceDoiSearchInput({
             );
             setIsLoading(false);
           },
-          url: nullthrows(doiOrUrl),
+          url: nullthrows(doi),
         });
       } else {
         fetchReferenceFromDoi({
-          doi: nullthrows(doiOrUrl),
+          doi: nullthrows(doi),
           onError: (error) => {
             setSearchFailMsg(
               "DOI not found. Try different doi or update manually below"
@@ -94,6 +95,13 @@ export default function ReferenceDoiSearchInput({
           fullWidth
           onChange={(event: ChangeEvent<HTMLInputElement>): void => {
             setDoiOrUrl(event?.target?.value);
+          }}
+          onPaste={(e) => {
+            const pastedText = e.clipboardData.getData("Text");
+            setDoiOrUrl(pastedText);
+            if (pastedText) {
+              executeSearch(pastedText);
+            }
           }}
           onKeyDown={(event): void => {
             if (event.key === "Enter" || event?.keyCode === 13) {
