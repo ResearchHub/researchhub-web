@@ -6,6 +6,7 @@ import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
 import { ReactElement, ReactNode } from "react";
 import AuthorFacePile from "../shared/AuthorFacePile";
 import colors, { genericCardColors } from "~/config/themes/colors";
+import Image from "next/image";
 
 type Props = {
   hub: any;
