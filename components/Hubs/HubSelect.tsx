@@ -50,6 +50,8 @@ const CustomOption: React.FC<any> = (props) => {
         cardStyle={formStyles.hubCardStyle}
         descriptionStyle={formStyles.hubDescriptionStyle}
         hub={props.data.hub}
+        showCommentCount={false}
+        numberCharactersToShow={100}
         preventLinkClick={true}
         metadataStyle={formStyles.metadataStyle}
       />

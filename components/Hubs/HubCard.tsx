@@ -14,6 +14,8 @@ interface Props {
   descriptionStyle?: any;
   metadataStyle?: any;
   preventLinkClick?: boolean;
+  showCommentCount?: boolean;
+  numberCharactersToShow?: number;
 }
 
 const HubCard = ({
@@ -22,10 +24,12 @@ const HubCard = ({
   descriptionStyle,
   metadataStyle,
   preventLinkClick,
+  showCommentCount = true,
+  numberCharactersToShow = 150,
 }: Props) => {
   const numPapers = hub.numDocs || 0;
   const numComments = hub.numComments || 0;
-  const description = truncateText(hub.description, 150);
+  const description = truncateText(hub.description, numberCharactersToShow);
 
   return (
     <div className={css(styles.hubCard, cardStyle)}>
@@ -50,14 +54,16 @@ const HubCard = ({
               {numPapers === 1 ? `${numPapers} Paper` : `${numPapers} Papers`}
             </span>
           </div>
-          <div className={css(styles.dataPoint)}>
-            <FontAwesomeIcon icon={faComments} />
-            <span>
-              {numComments === 1
-                ? `${numComments} Discussion`
-                : `${numComments} Discussions`}
-            </span>
-          </div>
+          {showCommentCount && (
+            <div className={css(styles.dataPoint)}>
+              <FontAwesomeIcon icon={faComments} />
+              <span>
+                {numComments === 1
+                  ? `${numComments} Discussion`
+                  : `${numComments} Discussions`}
+              </span>
+            </div>
+          )}
         </div>
       </Link>
     </div>
