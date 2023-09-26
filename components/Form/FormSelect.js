@@ -91,6 +91,7 @@ class FormSelect extends Component {
       isOptionDisabled,
       onInputChange,
       selectComponents,
+      reactSelect,
     } = this.props;
 
     let configuredComponents = {
@@ -149,48 +150,28 @@ class FormSelect extends Component {
       }),
       indicatorSeparator: (styles) => ({
         ...styles,
-        ...formatStyle(indicatorSeparator),
+        ...formatStyle(reactSelect?.styles?.indicatorSeparator),
       }),
       singleValue: (styles) => ({
         ...styles,
-        ...formatStyle(singleValue),
+        ...formatStyle(reactSelect?.styles?.singleValue),
       }),
       menu: (styles) => ({
         ...styles,
-        ...formatStyle(menu),
-        // padding: "0px 0px 0px 5px",
+        ...formatStyle(reactSelect?.styles?.menu),
         textTransform: "capitalize",
       }),
-      option: (styles, state) => ({
+      option: (styles) => ({
         ...styles,
-        ...formatStyle(menu),
-        width: "calc(33% - 10px)",
-        boxSizing: "border-box",
-        textAlign: "center",
-        backgroundColor: "unset",
-        padding: 0,
-        marginTop: 0,
-        marginBottom: 8,
-        ":nth-child(3n+1)": {
-          paddingLeft: 5,
-        },
-        ":nth-child(3n)": {
-          width: "33%",
-        },
-        ":hover": {
-          backgroundColor: "unset",
-        },
+        ...formatStyle(reactSelect?.styles?.option),
       }),
       menuList: (styles) => ({
         ...styles,
-        // ...formatStyle(menuList),
-        display: "flex",
-        flexWrap: "wrap",
-        columnGap: "10px",
+        ...formatStyle(reactSelect?.styles?.menuList),
       }),
       valueContainer: (styles) => ({
         ...styles,
-        padding: "7px 7px 7px 4px",
+        ...formatStyle(reactSelect?.styles?.valueContainer),
       }),
       placeholder: (styles) => ({
         ...styles,
@@ -201,13 +182,13 @@ class FormSelect extends Component {
         return {
           ...styles,
           backgroundColor: "#edeefe",
-          ...formatStyle(multiTagStyle),
+          ...formatStyle(reactSelect?.styles?.multiTagStyle),
         };
       },
       multiValueLabel: (styles, { data }) => {
         return {
           ...styles,
-          ...formatStyle(multiTagLabelStyle),
+          ...formatStyle(reactSelect?.styles?.multiTagLabelStyle),
         };
       },
     };

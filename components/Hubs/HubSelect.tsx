@@ -14,6 +14,35 @@ interface Props {
   onChange: Function;
 }
 
+const selectDropdownStyles = {
+  option: {
+    width: "calc(33% - 10px)",
+    boxSizing: "border-box",
+    textAlign: "center",
+    backgroundColor: "unset",
+    padding: 0,
+    marginTop: 0,
+    marginBottom: 8,
+    ":nth-child(3n+1)": {
+      paddingLeft: 5,
+    },
+    ":nth-child(3n)": {
+      width: "33%",
+    },
+    ":hover": {
+      backgroundColor: "unset",
+    },
+  },
+  menuList: {
+    display: "flex",
+    flexWrap: "wrap",
+    columnGap: "10px",
+  },
+  valueContainer: {
+    padding: "7px 7px 7px 4px",
+  },
+};
+
 const CustomOption: React.FC<any> = (props) => {
   return (
     <components.Option {...props}>
@@ -58,6 +87,7 @@ const HubSelect = ({ selectedHubs = [], onChange }: Props) => {
         multiTagStyle={formStyles.tag}
         multiTagLabelStyle={formStyles.tagLabel}
         inputStyle={formStyles.inputStyle}
+        reactSelect={{ styles: selectDropdownStyles }}
         onInputChange={(field, value) => {
           debouncedHandleInputChange(field, value);
         }}
