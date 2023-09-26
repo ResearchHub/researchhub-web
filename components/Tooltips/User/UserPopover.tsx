@@ -55,7 +55,7 @@ const UserPopover = ({ userId }: { userId: ID }): ReactElement | null => {
           justifyContent: "flex-start",
         }}
       >
-        <Image
+        <img
           height={56}
           width={56}
           className={css(styles.avatar)}
@@ -202,6 +202,8 @@ const styles = StyleSheet.create({
   avatar: {
     borderRadius: "50%",
     objectFit: "cover",
+    width: 56,
+    height: 56,
   },
   editorImg: {
     // marginRight: 4,
