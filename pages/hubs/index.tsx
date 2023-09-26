@@ -6,22 +6,31 @@ import HubCard from "~/components/Hubs/HubCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faSearch } from "@fortawesome/pro-light-svg-icons";
 import Menu, { MenuOption } from "~/components/shared/GenericMenu";
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { fetchHubSuggestions } from "~/components/SearchSuggestion/lib/api";
 import debounce from "lodash/debounce";
+import Error from "next/error";
 
 type Props = {
   hubs: any[];
+  errorCode?: number;
 };
 
-const HubsPage: NextPage<Props> = ({ hubs }) => {
+const HubsPage: NextPage<Props> = ({ hubs, errorCode }) => {
   const sortOpts = [
-    { label: "Popular", value: "popular" },
-    { label: "Name", value: "Name" },
+    { label: "Popular", value: "score" },
+    { label: "Name", value: "name" },
   ];
 
+  if (errorCode) {
+    return <Error statusCode={errorCode} />;
+  }
+
+  const [parsedHubs, setParsedHubs] = useState<Hub[]>(
+    hubs.map((hub) => parseHub(hub))
+  );
   const [sort, setSort] = useState<MenuOption>(sortOpts[0]);
-  const parsedHubs = hubs.map((hub) => parseHub(hub));
+  const prevSortValue = useRef(sort);
   const [suggestions, setSuggestions] = useState<Hub[]>([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
@@ -30,12 +39,26 @@ const HubsPage: NextPage<Props> = ({ hubs }) => {
     setLoading(true);
     fetchHubSuggestions(query)
       .then((suggestions) => {
+        // @ts-ignore
         setSuggestions(suggestions);
       })
       .finally(() => {
         setLoading(false);
       });
   }, [query]);
+
+  useEffect(() => {
+    (async () => {
+      const sortValueChanged = prevSortValue.current.value !== sort.value;
+      if (sortValueChanged) {
+        // @ts-ignore
+        const { hubs } = await getHubs({ ordering: sort.value });
+        const parsedHubs = hubs.map((hub) => parseHub(hub));
+        setParsedHubs(parsedHubs);
+        prevSortValue.current = sort;
+      }
+    })();
+  }, [sort]);
 
   const debouncedSetQuery = debounce(setQuery, 500);
 
@@ -72,6 +95,9 @@ const HubsPage: NextPage<Props> = ({ hubs }) => {
           id="hub-sort"
           selected={sort.value}
           direction="bottom-right"
+          onSelect={(option) => {
+            setSort(option);
+          }}
         >
           <div className={css(styles.sortTrigger)}>
             {sort.label}
@@ -83,8 +109,8 @@ const HubsPage: NextPage<Props> = ({ hubs }) => {
         </Menu>
       </div>
       <div className={css(styles.cardsWrapper)}>
-        {hubsToRender.map((h, index) => (
-          <HubCard hub={h} key={index} />
+        {hubsToRender.map((h) => (
+          <HubCard hub={h} key={h.id} />
         ))}
       </div>
     </div>
@@ -160,16 +186,24 @@ const styles = StyleSheet.create({
 });
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  // @ts-ignore
-  const { hubs } = await getHubs();
+  try {
+    // @ts-ignore
+    const { hubs } = await getHubs({});
 
-  return {
-    props: {
-      errorCode: 500,
-      hubs,
-    },
-    revalidate: 600,
-  };
+    return {
+      props: {
+        hubs,
+      },
+      revalidate: 600,
+    };
+  } catch (error) {
+    return {
+      props: {
+        errorCode: 500,
+      },
+      revalidate: 5,
+    };
+  }
 };
 
 export default HubsPage;

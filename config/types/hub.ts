@@ -20,7 +20,7 @@ export const parseHub = (raw: any): Hub => {
   };
 
   if (raw.discussion_count) {
-    parsed["discussion_count"] = raw.discussion_count || 0;
+    parsed["numComments"] = raw.discussion_count || 0;
   }
 
   if (raw.paper_count) {

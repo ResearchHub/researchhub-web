@@ -1,4 +1,4 @@
-import { Paper } from "~/components/Document/lib/types";
+import { DocumentMetadata, Paper } from "~/components/Document/lib/types";
 import BaseModal from "../Modals/BaseModal";
 import { useState } from "react";
 import { css, StyleSheet } from "aphrodite";
@@ -7,6 +7,11 @@ import PaperPageAbstractSection from "../Paper/abstract/PaperPageAbstractSection
 import { MessageActions } from "~/redux/message";
 import { useDispatch } from "react-redux";
 import PaperMetadataForm from "./PaperMetadataForm";
+import HubSelect from "../Hubs/HubSelect";
+import Button from "../Form/Button";
+import { Hub, parseHub } from "~/config/types/hub";
+import updatePaperMetadataAPI from "./api/updatePaperMetadataAPI";
+
 const { setMessage, showMessage } = MessageActions;
 
 interface Props {
@@ -14,6 +19,7 @@ interface Props {
   children: any;
   onUpdate?: Function;
   isOpen?: boolean;
+  metadata: DocumentMetadata;
 }
 
 const tabs: Array<Tab> = [
@@ -31,6 +37,7 @@ const PaperMetadataModal = ({
   paper,
   children,
   onUpdate,
+  metadata,
   isOpen = false,
 }: Props) => {
   const [_isOpen, setIsOpen] = useState<boolean>(isOpen);
@@ -92,6 +99,7 @@ const PaperMetadataModal = ({
             )}
           >
             <PaperMetadataForm
+              metadata={metadata}
               onUpdate={(updated) => {
                 onUpdate && onUpdate(updated);
                 setIsOpen(false);

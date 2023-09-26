@@ -711,7 +711,7 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    HUB: ({ hubId, search, name, pageLimit, slug }) => {
+    HUB: ({ hubId, search, name, pageLimit, slug, ordering = "score" }) => {
       let url = BASE_URL + `hub/`;
 
       if (hubId) {
@@ -725,7 +725,7 @@ const routes = (BASE_URL) => {
       }
 
       if (slug) {
-        url += `slug=${encodeURIComponent(slug)}`;
+        url += `slug=${encodeURIComponent(slug)}&`;
       }
 
       if (search) {
@@ -734,6 +734,10 @@ const routes = (BASE_URL) => {
 
       if (!doesNotExist(pageLimit)) {
         url += `page_limit=${pageLimit}&`;
+      }
+
+      if (ordering) {
+        url += `ordering=${ordering}&`;
       }
 
       return url;

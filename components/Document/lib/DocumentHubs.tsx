@@ -12,7 +12,7 @@ const DocumentHubs = ({
   withShowMore = true,
 }: {
   hubs: Hub[];
-  withShowMore: boolean;
+  withShowMore?: boolean;
 }) => {
   const [showMore, setShowMore] = useState<boolean>(false);
   const sortedHubs = hubs.sort((a, b) => {

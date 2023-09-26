@@ -8,17 +8,41 @@ import colors from "~/config/themes/colors";
 import Link from "next/link";
 import { truncateText } from "~/config/utils/string";
 
-const HubCard = ({ hub }: { hub: Hub }) => {
+interface Props {
+  hub: Hub;
+  cardStyle?: any;
+  descriptionStyle?: any;
+  metadataStyle?: any;
+  preventLinkClick?: boolean;
+}
+
+const HubCard = ({
+  hub,
+  cardStyle,
+  descriptionStyle,
+  metadataStyle,
+  preventLinkClick,
+}: Props) => {
   const numPapers = hub.numDocs || 0;
   const numComments = hub.numComments || 0;
   const description = truncateText(hub.description, 150);
 
   return (
-    <div className={css(styles.hubCard)}>
-      <Link href={`/hubs/${hub.slug}`} style={{ textDecoration: "none" }}>
+    <div className={css(styles.hubCard, cardStyle)}>
+      <Link
+        href={`/hubs/${hub.slug}`}
+        style={{ textDecoration: "none" }}
+        onClick={(e) => {
+          if (preventLinkClick) {
+            e.preventDefault();
+          }
+        }}
+      >
         <HubTag hub={hub} />
-        <div className={css(styles.description)}>{description}</div>
-        <div className={css(styles.metadata)}>
+        <div className={css(styles.description, descriptionStyle)}>
+          {description}
+        </div>
+        <div className={css(styles.metadata, metadataStyle)}>
           <div className={css(styles.dataPoint)}>
             {/* @ts-ignore */}
             <PaperIcon height={13} width={14} />
@@ -30,8 +54,8 @@ const HubCard = ({ hub }: { hub: Hub }) => {
             <FontAwesomeIcon icon={faComments} />
             <span>
               {numComments === 1
-                ? `${numComments} Comment`
-                : `${numComments} Comments`}
+                ? `${numComments} Discussion`
+                : `${numComments} Discussions`}
             </span>
           </div>
         </div>
@@ -44,26 +68,27 @@ const styles = StyleSheet.create({
   hubCard: {
     border: "1px solid #E9EAEF",
     borderRadius: 4,
-    width: `calc(25% - 20px)`,
+    width: `100%`,
     height: 220,
     padding: 15,
+    fontSize: 16,
     boxSizing: "border-box",
     ":hover": {
       background: colors.LIGHTER_GREY(1),
       transition: "0.2s",
       cursor: "pointer",
     },
-    ":nth-child(4n)": {
-      width: "25%",
-    },
-    [`@media only screen and (max-width: 1340px)`]: {
-      width: "33.3%",
-    },
+    // ":nth-child(4n)": {
+    //   width: "25%",
+    // },
+    // [`@media only screen and (max-width: 1340px)`]: {
+    //   width: "33.3%",
+    // },
   },
   description: {
     marginTop: 20,
     fontWeight: 400,
-    fontSize: 16,
+    fontSize: "1em",
     lineHeight: "22px",
     color: "#7C7989",
     height: 120,
@@ -84,7 +109,7 @@ const styles = StyleSheet.create({
     color: "#545161",
   },
   dataPoint: {
-    fontSize: 12,
+    fontSize: "0.75em",
     fontWeight: 500,
     display: "flex",
     alignItems: "center",

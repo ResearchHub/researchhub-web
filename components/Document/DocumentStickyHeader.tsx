@@ -43,7 +43,7 @@ const DocumentStickyHeader = ({ document, handleTip, metadata }: Props) => {
         </div>
       </div>
       <div className={css(styles.optionsWrapper)}>
-        <DocumentOptions document={document} />
+        <DocumentOptions document={document} metadata={metadata} />
       </div>
     </div>
   );

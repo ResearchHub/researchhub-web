@@ -13,8 +13,8 @@ export const updatePaperMetadataAPI = async ({
   id: ID;
   title?: string;
   doi?: string;
-  publishedDate: string;
-  hubs: Array<ID>;
+  publishedDate?: string;
+  hubs?: Array<ID>;
 }) => {
   const url = generateApiUrl(`paper/${id}`);
   const response = await fetch(

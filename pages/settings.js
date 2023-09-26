@@ -99,7 +99,7 @@ class UserSettings extends Component {
   componentDidMount = async () => {
     this.props.dispatch(MessageActions.showMessage({ load: true, show: true }));
     if (!this.props.hubs.length) {
-      this.props.dispatch(HubActions.getHubs());
+      this.props.dispatch(HubActions.getHubs({}));
     }
     if (doesNotExist(this.props.user.email)) {
       await this.props.dispatch(AuthActions.getUser());

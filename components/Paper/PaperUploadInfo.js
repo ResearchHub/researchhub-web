@@ -89,7 +89,7 @@ class PaperUploadInfo extends Component {
   componentDidMount() {
     let { messageActions, paperId } = this.props;
     this.props.authActions.getUser();
-    this.getHubs();
+    this.getHubs({});
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0;
     if (paperId) {

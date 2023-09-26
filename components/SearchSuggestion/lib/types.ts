@@ -1,3 +1,4 @@
+import { Hub, parseHub } from "~/config/types/hub";
 import {
   AuthorProfile,
   ID,
@@ -14,9 +15,8 @@ export type SuggestedUser = {
 
 export type HubSuggestion = {
   id: ID;
+  hub: Hub;
   name: string;
-  description: string;
-  slug: string;
   label: string;
   value: ID;
 };
@@ -32,12 +32,12 @@ export const parseUserSuggestion = (raw: any): SuggestedUser => {
 };
 
 export const parseHubSuggestion = (raw: any): HubSuggestion => {
+  const hub = parseHub(raw);
   return {
-    id: raw.id,
+    hub,
     name: raw.name,
-    slug: raw.slug,
+    id: raw.id,
     label: raw.name,
     value: raw.id,
-    description: raw.description,
   };
 };

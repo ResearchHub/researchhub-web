@@ -118,9 +118,9 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               </div>
               <h1 className={css(styles.title)}>{doc.title}</h1>
             </div>
-            {doc.hubs.length > 0 && (
+            {metadata.hubs.length > 0 && (
               <div className={css(styles.hubsWrapper)}>
-                <DocumentHubs hubs={doc.hubs} />
+                <DocumentHubs hubs={metadata.hubs} />
               </div>
             )}
             <div className={css(styles.lineItemsWrapper)}>
@@ -131,12 +131,17 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               <div
                 className={css(styles.actionWrapper, styles.largeScreenActions)}
               >
-                {isPaper(doc) && currentUser && (
+                {isPaper(doc) && currentUser && metadata && (
                   <PaperMetadataModal
                     paper={doc as Paper}
+                    metadata={metadata}
                     onUpdate={(updatedFields) => {
                       const updated = { ...doc, ...updatedFields };
                       documentContext.updateDocument(updated);
+                      documentContext.updateMetadata({
+                        ...metadata,
+                        ...updatedFields,
+                      });
                       revalidateDocument();
                     }}
                   >
@@ -163,7 +168,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                     <span>Tip</span>
                   </IconButton>
                 </PermissionNotificationWrapper>
-                <DocumentOptions document={doc} />
+                <DocumentOptions document={doc} metadata={metadata} />
               </div>
             </div>
             <div className={css(styles.smallScreenActions)}>
@@ -194,7 +199,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                     <span>Tip</span>
                   </IconButton>
                 </PermissionNotificationWrapper>
-                <DocumentOptions document={doc} />
+                <DocumentOptions document={doc} metadata={metadata} />
               </div>
             </div>
             <div className={css(styles.tabsWrapper)}>

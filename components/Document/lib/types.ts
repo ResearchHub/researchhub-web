@@ -51,6 +51,7 @@ export type DocumentMetadata = {
   summaryCount: number;
   score: number;
   id: ID;
+  hubs: Hub[];
 };
 
 export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
@@ -71,6 +72,7 @@ export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
     summaryCount: document?.discussion_aggregates?.summary_count || 0,
     score: raw.score,
     id: raw.id,
+    hubs: (raw.hubs || []).map((h: any) => parseHub(h)),
   };
 
   return parsed;

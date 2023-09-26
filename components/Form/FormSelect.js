@@ -90,11 +90,16 @@ class FormSelect extends Component {
       showLabelAlongSelection,
       isOptionDisabled,
       onInputChange,
+      selectComponents,
     } = this.props;
 
-    const configuredComponents = {
+    let configuredComponents = {
       animatedComponents,
     };
+
+    if (selectComponents) {
+      configuredComponents = selectComponents;
+    }
 
     if (showCountInsteadOfLabels) {
       configuredComponents.ValueContainer = CustomValueContainerWithCount;
@@ -115,7 +120,7 @@ class FormSelect extends Component {
       return formattedStyle ? formattedStyle : styleObject;
     };
 
-    const colorStyles = {
+    const selectStyles = {
       menuPortal: (base) => ({ ...base, zIndex: 100000000 }),
       control: (styles) => ({
         ...styles,
@@ -154,6 +159,28 @@ class FormSelect extends Component {
         ...styles,
         ...formatStyle(menu),
         textTransform: "capitalize",
+      }),
+      option: (styles, state) => ({
+        ...styles,
+        ...formatStyle(menu),
+        width: "calc(33% - 8px)",
+        boxSizing: "border-box",
+        textAlign: "center",
+        backgroundColor: "unset",
+        padding: 0,
+        ":hover": {
+          backgroundColor: "unset",
+        },
+      }),
+      menuList: (styles) => ({
+        ...styles,
+        // ...formatStyle(menuList),
+        display: "flex",
+        flexWrap: "wrap",
+      }),
+      valueContainer: (styles) => ({
+        ...styles,
+        padding: "7px 7px 7px 4px",
       }),
       placeholder: (styles) => ({
         ...styles,
@@ -207,7 +234,7 @@ class FormSelect extends Component {
           options={options}
           placeholder={placeholder}
           required={required ? required : "false"}
-          styles={colorStyles}
+          styles={selectStyles}
           value={value}
           isOptionDisabled={isOptionDisabled}
           onInputChange={this.props.onInputChange}
