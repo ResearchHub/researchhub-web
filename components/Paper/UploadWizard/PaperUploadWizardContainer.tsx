@@ -25,7 +25,7 @@ function getWizardBody({
   currentUserID: ID;
   onExit: () => void;
 }): WizardBodyElement {
-  switch (currentStep) {
+  switch ("standby") {
     case "async_updated":
     case "posted_paper_update":
     case "standby":

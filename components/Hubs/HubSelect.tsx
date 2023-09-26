@@ -65,12 +65,9 @@ const HubSelect = ({ selectedHubs = [], onChange }: Props) => {
           const allAvailableHubs = suggestedHubs
             .map((suggestion) => suggestion.hub)
             .concat(selectedHubs);
-          const newHubs = values
+          const newHubs = (values || [])
             .map((v) => allAvailableHubs.find((h) => h.id === v.value))
             .filter((h) => ![undefined, null].includes(h));
-          console.log("values", values);
-          console.log("allAvailableHubs", allAvailableHubs);
-          console.log("newHubs", newHubs);
 
           onChange(newHubs);
         }}
@@ -94,6 +91,7 @@ const formStyles = StyleSheet.create({
   hubCardStyle: {
     fontSize: 14,
     border: 0,
+    borderLeft: "unset",
     textAlign: "left",
     padding: 8,
     paddingBottom: 0,

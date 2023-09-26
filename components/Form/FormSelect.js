@@ -158,16 +158,25 @@ class FormSelect extends Component {
       menu: (styles) => ({
         ...styles,
         ...formatStyle(menu),
+        // padding: "0px 0px 0px 5px",
         textTransform: "capitalize",
       }),
       option: (styles, state) => ({
         ...styles,
         ...formatStyle(menu),
-        width: "calc(33% - 8px)",
+        width: "calc(33% - 10px)",
         boxSizing: "border-box",
         textAlign: "center",
         backgroundColor: "unset",
         padding: 0,
+        marginTop: 0,
+        marginBottom: 8,
+        ":nth-child(3n+1)": {
+          paddingLeft: 5,
+        },
+        ":nth-child(3n)": {
+          width: "33%",
+        },
         ":hover": {
           backgroundColor: "unset",
         },
@@ -177,6 +186,7 @@ class FormSelect extends Component {
         // ...formatStyle(menuList),
         display: "flex",
         flexWrap: "wrap",
+        columnGap: "10px",
       }),
       valueContainer: (styles) => ({
         ...styles,

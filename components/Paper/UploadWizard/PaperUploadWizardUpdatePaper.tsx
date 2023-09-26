@@ -17,6 +17,7 @@ import {
 } from "~/components/contexts/NewPostButtonContext";
 import { PaperActions } from "~/redux/paper";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
+import { useEffectFetchSuggestedHubs } from "../Upload/api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
@@ -28,9 +29,11 @@ import Loader from "~/components/Loader/Loader";
 import withWebSocket from "~/components/withWebSocket";
 import { StyleSheet } from "aphrodite";
 import { ClipLoader } from "react-spinners";
+import HubSelect from "~/components/Hubs/HubSelect";
 
 export type FormErrors = {
   paperID: boolean;
+  selectedHubs: boolean;
   title: boolean /* editorialized title */;
   doi: boolean;
 };
@@ -38,6 +41,7 @@ export type FormErrors = {
 export type FormState = {
   doi: NullableString;
   paperID: ID;
+  selectedHubs: any[];
   title: NullableString /* editorialized title */;
 };
 
@@ -56,12 +60,14 @@ type GetIsFormValidArgs = {
 const defaulError: FormErrors = {
   doi: false,
   paperID: false,
+  selectedHubs: false,
   title: false,
 };
 
 const defaultFormState: FormState = {
   doi: null,
   paperID: null,
+  selectedHubs: [],
   title: null,
 };
 
@@ -71,9 +77,14 @@ const getIsFormValid = ({
 }: GetIsFormValidArgs): [verdict: boolean, errors: FormErrors] => {
   let verdict = true;
   const errorResult = { ...defaulError };
+  const { selectedHubs } = formState;
   if (submissionType !== "standby" && isNullOrUndefined(formState.paperID)) {
     verdict = false;
     errorResult.paperID = true;
+  }
+  if (isEmpty(selectedHubs ?? [])) {
+    verdict = false;
+    errorResult.selectedHubs = true;
   }
   return [verdict, errorResult];
 };
@@ -112,13 +123,17 @@ function PaperUploadWizardUpdatePaper({
   const [formErrors, setFormErrors] = useState<FormErrors>(defaulError);
   const [formState, setFormState] = useState<FormState>(defaultFormState);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
   const parsedWsResponse = JSON.parse(wsResponse) ?? null;
 
   const isAsyncComplete = parsedWsResponse?.data?.paper_status === "COMPLETE";
   const asyncPaperTitle = parsedWsResponse?.current_paper?.paper_title ?? null;
   const asyncDOI = parsedWsResponse?.data?.doi ?? null;
-  const { doi, paperID, title } = formState;
+  const { doi, paperID, selectedHubs, title } = formState;
 
+  useEffectFetchSuggestedHubs({
+    setSuggestedHubs,
+  });
   useEffectPasteMetaDataToForm({
     currentFormState: formState,
     parsedWsResponse,
@@ -140,6 +155,7 @@ function PaperUploadWizardUpdatePaper({
         ...formState,
         authors: undefined,
         publishDate: undefined,
+        hubs: selectedHubs.map((hub): ID => hub.id),
       };
 
       const response = await paperActions.patchPaper(paperID, formattedPayload);
@@ -179,6 +195,12 @@ function PaperUploadWizardUpdatePaper({
 
   return (
     <form onSubmit={onFormSubmit}>
+      <HubSelect
+        selectedHubs={formState.selectedHubs}
+        onChange={(hubs) => {
+          setFormState({ ...formState, selectedHubs: hubs });
+        }}
+      />
       {!uploaderContextValues.isWithDOI ? (
         <FormInput
           disabled={isSubmitting || isEmpty(asyncDOI)}
