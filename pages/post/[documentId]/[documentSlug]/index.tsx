@@ -191,6 +191,7 @@ const DocumentIndexPage: NextPage<Args> = ({
               ) : (
                 <DocumentViewer
                   // @ts-ignore
+                  isPost={true}
                   postHtml={_postHtml}
                   documentInstance={{
                     id: document.id,

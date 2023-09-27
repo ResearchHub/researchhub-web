@@ -527,7 +527,8 @@ export default function ReferencesTable({
 
         {isViewerOpen && (
           <DocumentViewer
-            hasError={!referenceItemDatum?.attachment}
+            setReferenceItemDatum={setReferenceItemDatum}
+            referenceItemDatum={referenceItemDatum}
             pdfUrl={referenceItemDatum?.attachment}
             expanded={true}
             citationInstance={{
