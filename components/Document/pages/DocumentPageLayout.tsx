@@ -25,6 +25,7 @@ interface Args {
   children?: any;
   metadata: DocumentMetadata;
   isExpanded?: boolean;
+  twitterScore?: number | undefined;
 }
 
 const toPlaintext = (text) => {
@@ -38,6 +39,7 @@ const DocumentPageLayout = ({
   tabName,
   children,
   errorCode,
+  twitterScore,
 }: Args) => {
   const router = useRouter();
   let openGraphData: OpenGraphData = { meta: {}, graph: [] };
@@ -71,7 +73,11 @@ const DocumentPageLayout = ({
       </HeadComponent>
 
       <div className={css(styles.topArea)}>
-        <DocumentHeader document={document} metadata={metadata} />
+        <DocumentHeader
+          document={document}
+          metadata={metadata}
+          twitterScore={twitterScore}
+        />
       </div>
       <div className={css(styles.bodyArea)}>{children}</div>
     </div>

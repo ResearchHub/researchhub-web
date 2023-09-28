@@ -9,7 +9,7 @@ import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 import PaperPageAbstractSection from "~/components/Paper/abstract/PaperPageAbstractSection";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   DocumentContext,
   DocumentPreferences,
@@ -28,6 +28,8 @@ import {
 import DocumentViewer, {
   ZoomAction,
 } from "~/components/Document/DocumentViewer";
+import api, { generateApiUrl } from "~/config/api";
+import { API } from "~/config/api/api";
 
 interface Args {
   documentData?: any;
@@ -47,6 +49,9 @@ const DocumentIndexPage: NextPage<Args> = ({
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(
     config.width
   );
+  const [twitterScore, setTwitterScore] = useState<number | undefined>(
+    documentData?.twitter_score || 0
+  );
   const [docPreferences, setDocPreferences] = useState<DocumentPreferences>({
     comments: "all",
   });
@@ -59,6 +64,21 @@ const DocumentIndexPage: NextPage<Args> = ({
     documentType,
   }) as [Paper | null, Function];
   const { revalidateDocument } = useCacheControl();
+
+  const refetchTwitterScore = async () => {
+    const url = generateApiUrl(
+      `paper/${router.query.documentId}/update_biorxiv_tweet_count`
+    );
+    const res = await fetch(url, api.POST_CONFIG({}));
+    const json = await res.json();
+    setTwitterScore(json.twitter_score);
+  };
+
+  useEffect(() => {
+    if (document?.journal?.includes("bioRxiv")) {
+      refetchTwitterScore();
+    }
+  }, [document]);
 
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
@@ -93,6 +113,7 @@ const DocumentIndexPage: NextPage<Args> = ({
         errorCode={errorCode}
         metadata={documentMetadata}
         documentType={documentType}
+        twitterScore={twitterScore}
       >
         <div
           className={css(styles.bodyContentWrapper)}

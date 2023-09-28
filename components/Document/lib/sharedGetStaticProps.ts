@@ -30,6 +30,7 @@ export default async function sharedGetStaticProps({
 
   try {
     documentData = await fetchDocumentByType({ documentType, documentId });
+    console.log(documentData);
     metadata = await fetchDocumentMetadata({
       unifiedDocId: documentData.unified_document.id,
     });

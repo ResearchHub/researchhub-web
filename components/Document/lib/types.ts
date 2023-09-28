@@ -111,6 +111,7 @@ export type Paper = GenericDocument & {
   abstract?: string;
   abstractHtml?: TrustedHTML;
   license?: string;
+  twitterScore?: number;
 };
 
 export type Post = GenericDocument & {
@@ -188,6 +189,7 @@ export const parsePaper = (raw: any): Paper => {
     publishedDate: formatDateStandard(raw.paper_publish_date, "MMM D, YYYY"),
     externalUrl: raw.url,
     abstract: raw.abstract,
+    twitterScore: raw.twitter_score,
     abstractHtml: raw.abstract_src_markdown,
     type: "paper",
     apiDocumentType: "paper",

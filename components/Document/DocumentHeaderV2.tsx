@@ -6,6 +6,8 @@ import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import colors from "~/config/themes/colors";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import { useRouter } from "next/router";
+import ReactTooltip from "react-tooltip";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   DocumentMetadata,
@@ -33,6 +35,7 @@ import { DocumentContext } from "./lib/DocumentContext";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import PaperMetadataModal from "./PaperMetadataModal";
 import DocumentOptions from "./DocumentOptions";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
@@ -41,9 +44,10 @@ const PaperTransactionModal = dynamic(
 interface Props {
   document: GenericDocument;
   metadata: DocumentMetadata;
+  twitterScore?: number | undefined;
 }
 
-const DocumentHeader = ({ document: doc, metadata }: Props) => {
+const DocumentHeader = ({ document: doc, metadata, twitterScore }: Props) => {
   const documentContext = useContext(DocumentContext);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -193,6 +197,28 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
             </div>
             <div className={css(styles.tabsWrapper)}>
               <HorizontalTabBar tabs={tabs} />
+              {!!twitterScore && (
+                <div
+                  className={css(styles.twitterScore)}
+                  data-tip={`This paper has been tweeted ${twitterScore} time${
+                    twitterScore > 1 ? "s" : ""
+                  }`}
+                  data-for={"twitter-score-tooltip"}
+                >
+                  <FontAwesomeIcon icon={faTwitter} /> {twitterScore}
+                  <ReactTooltip
+                    effect="solid"
+                    id="twitter-score-tooltip"
+                    place="top"
+                    // className={css(styles.tooltip)}
+                    // place={
+                    //   viewerContext === ViewerContext.DOCUMENT_PAGE
+                    //     ? "left"
+                    //     : "bottom"
+                    // }
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -259,6 +285,8 @@ const styles = StyleSheet.create({
   tabsWrapper: {
     borderTop: `1px solid #E9EAEF`,
     marginTop: 20,
+    display: "flex",
+    alignItems: "center",
     [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
@@ -270,6 +298,23 @@ const styles = StyleSheet.create({
       paddingLeft: 15,
       paddingRight: 15,
     },
+  },
+  twitterScore: {
+    alignItems: "center",
+    border: `1px solid ${colors.GREY_BORDER}`,
+    color: colors.MEDIUM_GREY(),
+    padding: "6px 12px",
+    borderRadius: 50,
+    fontSize: 14,
+    marginLeft: "auto",
+    height: "fit-content",
+    cursor: "default",
+    // cursor: "pointer",
+
+    // ":hover": {
+    //   color: "#1da1f2",
+    //   borderColor: "#1da1f2",
+    // },
   },
   stickyHeader: {
     position: "fixed",
