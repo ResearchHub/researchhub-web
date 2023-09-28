@@ -59,6 +59,22 @@ const DocumentHeader = ({ document: doc, metadata, twitterScore }: Props) => {
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
 
+  const twitterScoreRender = (props) => {
+    const { className } = props;
+    return (
+      <div
+        className={css(styles.twitterScore, className)}
+        data-tip={`This paper has been tweeted ${twitterScore} time${
+          twitterScore && twitterScore > 1 ? "s" : ""
+        }`}
+        data-for={"twitter-score-tooltip"}
+      >
+        <FontAwesomeIcon icon={faTwitter} /> {twitterScore}
+        <ReactTooltip effect="solid" id="twitter-score-tooltip" place="top" />
+      </div>
+    );
+  };
+
   const tabs = getTabs({
     router,
     document: doc,
@@ -194,31 +210,15 @@ const DocumentHeader = ({ document: doc, metadata, twitterScore }: Props) => {
                 </PermissionNotificationWrapper>
                 <DocumentOptions document={doc} />
               </div>
+              {!!twitterScore &&
+                twitterScoreRender({
+                  className: [styles.mobile, styles.rightBand],
+                })}
             </div>
             <div className={css(styles.tabsWrapper)}>
               <HorizontalTabBar tabs={tabs} />
-              {!!twitterScore && (
-                <div
-                  className={css(styles.twitterScore)}
-                  data-tip={`This paper has been tweeted ${twitterScore} time${
-                    twitterScore > 1 ? "s" : ""
-                  }`}
-                  data-for={"twitter-score-tooltip"}
-                >
-                  <FontAwesomeIcon icon={faTwitter} /> {twitterScore}
-                  <ReactTooltip
-                    effect="solid"
-                    id="twitter-score-tooltip"
-                    place="top"
-                    // className={css(styles.tooltip)}
-                    // place={
-                    //   viewerContext === ViewerContext.DOCUMENT_PAGE
-                    //     ? "left"
-                    //     : "bottom"
-                    // }
-                  />
-                </div>
-              )}
+              {!!twitterScore &&
+                twitterScoreRender({ className: styles.desktop })}
             </div>
           </div>
         </div>
@@ -299,6 +299,9 @@ const styles = StyleSheet.create({
       paddingRight: 15,
     },
   },
+  rightBand: {
+    marginLeft: "auto",
+  },
   twitterScore: {
     alignItems: "center",
     border: `1px solid ${colors.GREY_BORDER}`,
@@ -331,6 +334,16 @@ const styles = StyleSheet.create({
   },
   stickyVisible: {
     display: "block",
+  },
+  mobile: {
+    [`@media (min-width: 768px)`]: {
+      display: "none",
+    },
+  },
+  desktop: {
+    [`@media (max-width: 767px)`]: {
+      display: "none",
+    },
   },
   voteWrapper: {
     position: "absolute",
