@@ -7,6 +7,7 @@ export default function fetchHubFromSlug({ slug }: { slug: string }): any {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((res: any): any => {
+      console.log("res?.results", res?.results);
       return (res?.results ?? [])[0] ?? null;
     })
     .catch((error: Error): void => {

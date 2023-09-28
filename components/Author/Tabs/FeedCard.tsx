@@ -137,7 +137,7 @@ function FeedCard({
   withSidePadding,
 }: FeedCardProps) {
   const authors = parsePaperAuthors(paper);
-  const parsedHubs = hubs.map(parseHub);
+  const parsedHubs = (hubs || []).map(parseHub);
   const router = useRouter();
   const [isPreviewing, setIsPreviewing] = useState(false);
   const [voteState, setVoteState] = useState<VoteType | null>(

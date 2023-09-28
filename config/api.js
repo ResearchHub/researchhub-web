@@ -711,7 +711,7 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    HUB: ({ hubId, search, name, pageLimit, slug, ordering = "score" }) => {
+    HUB: ({ hubId, search, name, pageLimit, slug, ordering }) => {
       let url = BASE_URL + `hub/`;
 
       if (hubId) {

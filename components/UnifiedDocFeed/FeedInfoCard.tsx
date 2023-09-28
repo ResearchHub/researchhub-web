@@ -61,8 +61,8 @@ export default function FeedInfoCard({
             />
             <span>
               {numComments === 1
-                ? `${numComments} Comment`
-                : `${numComments} Comments`}
+                ? `${numComments} Discussion`
+                : `${numComments} Discussions`}
             </span>
           </div>
         </div>

@@ -84,12 +84,6 @@ const styles = StyleSheet.create({
       transition: "0.2s",
       cursor: "pointer",
     },
-    // ":nth-child(4n)": {
-    //   width: "25%",
-    // },
-    // [`@media only screen and (max-width: 1340px)`]: {
-    //   width: "33.3%",
-    // },
   },
   description: {
     marginTop: 20,

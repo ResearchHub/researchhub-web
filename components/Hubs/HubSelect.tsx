@@ -15,6 +15,20 @@ interface Props {
 }
 
 const selectDropdownStyles = {
+  multiTagLabelStyle: {
+    color: colors.NEW_BLUE(1),
+    cursor: "pointer",
+  },
+  multiTagStyle: {
+    border: 0,
+    background: colors.NEW_BLUE(0.1),
+    padding: "4px 12px",
+    height: "unset",
+    textDecoration: "none",
+    fontWeight: 400,
+    borderRadius: 50,
+    color: colors.NEW_BLUE(),
+  },
   option: {
     width: "calc(33% - 10px)",
     boxSizing: "border-box",
@@ -86,8 +100,7 @@ const HubSelect = ({ selectedHubs = [], onChange }: Props) => {
         id="hubs"
         isMulti
         label="Hubs"
-        multiTagStyle={formStyles.tag}
-        multiTagLabelStyle={formStyles.tagLabel}
+        reactStyles={{}}
         inputStyle={formStyles.inputStyle}
         reactSelect={{ styles: selectDropdownStyles }}
         onInputChange={(field, value) => {
@@ -142,20 +155,6 @@ const formStyles = StyleSheet.create({
   inputStyle: {},
   formWrapper: {
     width: "100%",
-  },
-  tagLabel: {
-    color: colors.NEW_BLUE(1),
-    cursor: "pointer",
-  },
-  tag: {
-    border: 0,
-    background: colors.NEW_BLUE(0.1),
-    padding: "4px 12px",
-    height: "unset",
-    textDecoration: "none",
-    fontWeight: 400,
-    borderRadius: 50,
-    color: colors.NEW_BLUE(),
   },
 });
 

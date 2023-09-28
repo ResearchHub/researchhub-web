@@ -10,6 +10,8 @@ import { use, useEffect, useRef, useState } from "react";
 import { fetchHubSuggestions } from "~/components/SearchSuggestion/lib/api";
 import debounce from "lodash/debounce";
 import Error from "next/error";
+import useWindow from "~/config/hooks/useWindow";
+import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
   hubs: any[];
@@ -34,13 +36,24 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode }) => {
   const [suggestions, setSuggestions] = useState<Hub[]>([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
+  const { width: winWidth, height: winHeight } = useWindow();
+  const [noSuggestionsFound, setNoSuggestionsFound] = useState(false);
 
   useEffect(() => {
+    if (query.length === 0) {
+      setNoSuggestionsFound(false);
+      return;
+    }
+
     setLoading(true);
     fetchHubSuggestions(query)
       .then((suggestions) => {
         // @ts-ignore
         setSuggestions(suggestions);
+        setNoSuggestionsFound(suggestions.length === 0 ? true : false);
+      })
+      .catch((err) => {
+        setNoSuggestionsFound(true);
       })
       .finally(() => {
         setLoading(false);
@@ -61,8 +74,8 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode }) => {
   }, [sort]);
 
   const debouncedSetQuery = debounce(setQuery, 500);
-
-  const hubsToRender = suggestions.length > 0 ? suggestions : parsedHubs;
+  const hubsToRender = query.length > 0 ? suggestions : parsedHubs;
+  const showCommentCount = (winWidth || 0) > breakpoints.medium.int;
 
   return (
     <div className={css(styles.container)}>
@@ -70,9 +83,8 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode }) => {
         <h1 className={css(styles.title) + " clamp2"}>Hubs</h1>
       </div>
       <div className={css(styles.description)}>
-        Within ResearchHub, papers are organized into hubs. Hubs are collections
-        of papers that are related to a specific topic. Use this page to explore
-        hubs.
+        Hubs are collections of papers that are related to a specific topic. Use
+        this page to explore hubs.
       </div>
       <div className={css(styles.searchAndFilters)}>
         <div className={css(styles.search)}>
@@ -110,14 +122,30 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode }) => {
       </div>
       <div className={css(styles.cardsWrapper)}>
         {hubsToRender.map((h) => (
-          <HubCard hub={h} key={h.id} />
+          <div className={css(styles.hubCardWrapper)} key={h.id}>
+            <HubCard
+              descriptionStyle={styles.hubCardDescription}
+              hub={h}
+              showCommentCount={showCommentCount}
+            />
+          </div>
         ))}
+        {noSuggestionsFound && <div>No hubs found.</div>}
       </div>
     </div>
   );
 };
 
 const styles = StyleSheet.create({
+  hubCardWrapper: {
+    width: "calc(25% - 15px)",
+    [`@media only screen and (max-width: 1340px)`]: {
+      width: "calc(33% - 15px)",
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "calc(50% - 15px)",
+    },
+  },
   searchAndFilters: {
     display: "flex",
     justifyContent: "space-between",
@@ -133,6 +161,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     width: "100%",
+  },
+  hubCardDescription: {
+    fontSize: 14,
+    lineHeight: "18px",
   },
   description: {
     fontSize: 15,
@@ -159,6 +191,9 @@ const styles = StyleSheet.create({
     display: "flex",
     borderRadius: 4,
     alignItems: "center",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "70%",
+    },
   },
   input: {
     border: 0,
@@ -169,9 +204,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   container: {
-    width: 1340,
+    width: "100%",
+    maxWidth: 1340,
     margin: "0 auto",
     marginTop: 40,
+    paddingLeft: 25,
+    paddingRight: 25,
+    boxSizing: "border-box",
   },
   cardsWrapper: {
     borderTop: `1px solid #E9EAEF`,
