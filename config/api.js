@@ -720,6 +720,10 @@ const routes = (BASE_URL) => {
         url += "?";
       }
 
+      if (!doesNotExist(pageLimit)) {
+        url += `page_limit=${pageLimit}&`;
+      }
+
       if (name) {
         url += `name__iexact=${name}&`;
       }
@@ -732,14 +736,11 @@ const routes = (BASE_URL) => {
         url += `name__fuzzy=${search}&`;
       }
 
-      if (!doesNotExist(pageLimit)) {
-        url += `page_limit=${pageLimit}&`;
-      }
-
       if (ordering) {
         url += `ordering=${ordering}&`;
       }
 
+      console.log("url", url);
       return url;
     },
     HUB_NEW_EDITOR: BASE_URL + "hub/create_new_editor/",

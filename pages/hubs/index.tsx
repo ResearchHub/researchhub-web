@@ -19,6 +19,7 @@ type Props = {
 };
 
 const HubsPage: NextPage<Props> = ({ hubs, errorCode }) => {
+
   const sortOpts = [
     { label: "Popular", value: "score" },
     { label: "Name", value: "name" },

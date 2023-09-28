@@ -2,16 +2,14 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
-export const getHubs = async ({ ordering = "score" }) => {
+export const getHubs = async ({ ordering = "score", pageLimit = 5 }) => {
   // Passing large page limit to return all hubs for hubs page
-  return fetch(API.HUB({ pageLimit: 1000, ordering }), API.GET_CONFIG())
+  return fetch(API.HUB({ pageLimit, ordering }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then(async (resp) => {
-      let hubs = [...resp.results];
-
       return {
-        hubs,
+        hubs: resp.results,
       };
     })
     .catch((err) => {
