@@ -369,6 +369,23 @@ function FeedCard({
                         contentType={formattedDocType}
                         badgeOverride={styles.badge}
                       />
+                      {hasActiveBounty && (
+                          <ContentBadge
+                            badgeOverride={styles.badge}
+                            contentType="bounty"
+                            bountyAmount={bountyAmount}
+                            label={
+                              <div style={{ display: "flex", whiteSpace: "pre" }}>
+                                <div style={{ flex: 1 }}>
+                                  {formatBountyAmount({
+                                    amount: bountyAmount,
+                                  })}{" "}
+                                  RSC
+                                </div>
+                              </div>
+                            }
+                          />
+                      )}                      
                       <DocumentHubs hubs={parsedHubs} withShowMore={false} />
                     </div>
 
@@ -386,25 +403,6 @@ function FeedCard({
                         </span>
                       </span>
                     </div>
-
-                    {/* {hasActiveBounty && (
-                      <div className={css(styles.metaItem)}>
-                        <ContentBadge
-                          contentType="bounty"
-                          bountyAmount={bountyAmount}
-                          label={
-                            <div style={{ display: "flex", whiteSpace: "pre" }}>
-                              <div style={{ flex: 1 }}>
-                                {formatBountyAmount({
-                                  amount: bountyAmount,
-                                })}{" "}
-                                RSC
-                              </div>
-                            </div>
-                          }
-                        />
-                      </div>
-                    )} */}
                   </div>
                 </div>
               </div>
