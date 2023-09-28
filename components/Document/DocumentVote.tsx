@@ -59,10 +59,6 @@ const DocumentVote = ({
       }
     }
 
-    console.log("newScore", newScore);
-    console.log("newUserVote", newUserVote);
-    console.log("currentUserVote", currentUserVote);
-
     documentContext?.updateMetadata({
       ...metadata,
       score: newScore,
@@ -141,12 +137,9 @@ const DocumentVote = ({
 const styles = StyleSheet.create({
   downvote: {
     fontSize: 16,
-    marginLeft: 2,
   },
   upvote: {
     fontSize: 16,
-    marginRight: 2,
-    marginLeft: -1,
   },
   pill: {
     background: "unset",

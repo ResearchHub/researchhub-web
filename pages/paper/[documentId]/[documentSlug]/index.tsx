@@ -54,6 +54,7 @@ const DocumentIndexPage: NextPage<Args> = ({
     rawMetadata: metadata,
     unifiedDocumentId: documentData?.unified_document?.id,
   });
+  console.log(documentMetadata);
   const [document, setDocument] = useDocument({
     rawDocumentData: documentData,
     documentType,
