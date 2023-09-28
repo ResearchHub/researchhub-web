@@ -45,7 +45,9 @@ export default function FeedInfoCard({
         </div>
       </div>
       <div className={css(styles.bodyContainer)}>
-        <div className={css(styles.description)}>{description}.</div>
+        {description?.length > 0 &&
+          <div className={css(styles.description)}>{description}.</div>
+        }
         <div className={css(styles.detailRow, styles.metadata)}>
           <div className={css(styles.dataPoint)}>
             {/* @ts-ignore */}

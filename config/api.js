@@ -711,7 +711,7 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    HUB: ({ hubId, search, name, pageLimit, slug, ordering }) => {
+    HUB: ({ hubId, search, name, pageLimit = 100, slug, ordering }) => {
       let url = BASE_URL + `hub/`;
 
       if (hubId) {
@@ -740,7 +740,6 @@ const routes = (BASE_URL) => {
         url += `ordering=${ordering}&`;
       }
 
-      console.log("url", url);
       return url;
     },
     HUB_NEW_EDITOR: BASE_URL + "hub/create_new_editor/",
