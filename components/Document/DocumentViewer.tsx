@@ -424,7 +424,7 @@ const DocumentViewer = ({
                 />
               )}
 
-              {!isPost ? (
+              {!postHtml ? (
                 <>
                   {pdfUrl ? (
                     <>
