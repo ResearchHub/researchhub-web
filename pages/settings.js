@@ -458,11 +458,6 @@ class UserSettings extends Component {
 
     return (
       <div className={css(styles.container)}>
-        <div className={css(styles.labelContainer)}>
-          <div className={css(styles.listLabel)} id={"hubListTitle"}>
-            {"My Hubs"}
-          </div>
-        </div>
         <div className={css(hubStyles.list, styles.hubsList)}>
           <FormSelect
             id={"hubSelect"}
@@ -739,7 +734,7 @@ class UserSettings extends Component {
             this.renderChangePassword()}
           <UserApiTokenInputField />
           {this.renderFrequencySelect()}
-          {this.renderSubscribedHubs()}
+          {/* {this.renderSubscribedHubs()} */}
           <div className={css(styles.container)}>
             <div className={css(styles.listLabel)} id={"hubListTitle"}>
               {"Notifications"}

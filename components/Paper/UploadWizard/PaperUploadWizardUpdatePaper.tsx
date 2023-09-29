@@ -196,7 +196,7 @@ function PaperUploadWizardUpdatePaper({
 
   return (
     <form onSubmit={onFormSubmit}>
-      {!uploaderContextValues.isWithDOI ? (
+      {(!uploaderContextValues.isWithDOI && !isEmpty(asyncDOI)) ? (
         <FormInput
           disabled={isSubmitting || isEmpty(asyncDOI)}
           id="doi"

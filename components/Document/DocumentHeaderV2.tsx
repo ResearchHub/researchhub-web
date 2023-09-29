@@ -278,6 +278,10 @@ const styles = StyleSheet.create({
   },
   hubsWrapper: {
     marginBottom: 10,
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
+      paddingLeft: 15,
+      paddingRight: 15,
+    },    
   },
   titleWrapper: {
     marginBottom: 10,

@@ -36,7 +36,7 @@ export default function FeedInfoCard({
   const parsedHub = parseHub(hub);
   const numPapers = parsedHub.numDocs || 0;
   const numComments = parsedHub.numComments || 0;
-
+  const formattedDescription = (description || "").replace(/\.$/, "");
   return (
     <div className={css(styles.feedInfoCard)}>
       <div className={css(styles.detailRow)}>
@@ -45,9 +45,34 @@ export default function FeedInfoCard({
         </div>
       </div>
       <div className={css(styles.bodyContainer)}>
-        {description?.length > 0 &&
-          <div className={css(styles.description)}>{description}.</div>
+        {formattedDescription?.length > 0 &&
+          <div className={css(styles.description)}>{formattedDescription}.</div>
         }
+        {!isEmpty(editorProfiles) && (
+          <div className={css(styles.detailRow, styles.editors)}>
+          <div className={css(styles.detailRowLabel)}>
+            <Image
+              height={20}
+              src="/static/icons/editor-star.png"
+              width={20}
+              layout="fixed"
+            />
+            <span
+              style={{
+                margin: "0px 0px 0px 5px",
+              }}
+            >{`Editor${editorProfiles.length > 1 ? "s" : ""}: `}</span>
+          </div>
+          <AuthorFacePile
+            authorProfiles={[editorProfiles]}
+            horizontal
+            imgSize={20}
+            fontSize={14}
+            labelSpacing={6}
+            withAuthorName
+          />
+        </div>
+      )}        
         <div className={css(styles.detailRow, styles.metadata)}>
           <div className={css(styles.dataPoint)}>
             {/* @ts-ignore */}
@@ -68,32 +93,7 @@ export default function FeedInfoCard({
             </span>
           </div>
         </div>
-        {!isEmpty(editorProfiles) && (
-          <div className={css(styles.detailRow)}>
-            <div className={css(styles.detailRowLabel)}>
-              <Image
-                height={20}
-                src="/static/icons/editor-star.png"
-                width={20}
-                layout="fixed"
-              />
-              <span
-                style={{
-                  fontWeight: 500,
-                  margin: "0px 8px 0px 5px",
-                }}
-              >{`Editor${editorProfiles.length > 1 ? "s" : ""} `}</span>
-            </div>
-            <AuthorFacePile
-              authorProfiles={editorProfiles}
-              horizontal
-              imgSize={22}
-              fontSize={16}
-              labelSpacing={6}
-              withAuthorName
-            />
-          </div>
-        )}
+
       </div>
     </div>
   );
@@ -106,6 +106,14 @@ const styles = StyleSheet.create({
     columnGap: "25px",
     color: "#545161",
     marginTop: 15,
+  },
+  editors: {
+    display: "flex",
+    alignItems: "center",
+    fontSize: 14,
+    // columnGap: "25px",
+    color: "#545161",
+    marginTop: 15,    
   },
   dataPoint: {
     fontSize: 14,

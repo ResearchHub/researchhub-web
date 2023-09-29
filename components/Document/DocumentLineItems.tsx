@@ -11,7 +11,6 @@ import {
   faLongArrowUp,
 } from "@fortawesome/pro-regular-svg-icons";
 import { GenericDocument, Paper, isPaper, isPost } from "./lib/types";
-import { toTitleCase } from "~/config/utils/string";
 import StarInput from "../Form/StarInput";
 import Link from "next/link";
 import { useRouter } from "next/router";
