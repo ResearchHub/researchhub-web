@@ -14,7 +14,10 @@ import throttle from "lodash/throttle";
 import { LEFT_SIDEBAR_MAX_WIDTH } from "../Home/sidebar/RootLeftSidebar";
 import DocumentPlaceholder from "./lib/Placeholders/DocumentPlaceholder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleExclamation } from "@fortawesome/pro-light-svg-icons";
+import {
+  faCircleExclamation,
+  faSpinnerThird,
+} from "@fortawesome/pro-light-svg-icons";
 import {
   Comment as CommentType,
   CommentThreadGroup,
@@ -28,6 +31,13 @@ import DocumentViewerContext, {
 } from "./lib/DocumentViewerContext";
 import { useRouter } from "next/router";
 import colors from "~/config/themes/colors";
+import UploadFileDragAndDrop from "../UploadFileDragAndDrop";
+import postUploadFiles from "../ReferenceManager/references/api/postUploadFiles";
+import { nullthrows } from "~/config/utils/nullchecks";
+import { useReferenceActiveProjectContext } from "../ReferenceManager/references/reference_organizer/context/ReferenceActiveProjectContext";
+import { useOrgs } from "../contexts/OrganizationContext";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import { updateReferenceCitationFile } from "../ReferenceManager/references/api/updateReferenceCitation";
 
 const AnnotationLayer = dynamic(
   () => import("~/components/Comment/modules/annotation/AnnotationLayer")
@@ -54,7 +64,10 @@ type Props = {
   hasError?: boolean;
   onClose?: Function;
   showExpandBtn?: boolean;
+  isPost?: boolean;
   expandedOnlyMode?: boolean;
+  setReferenceItemDatum?: (datum) => void;
+  referenceItemDatum: any;
 };
 
 const DocumentViewer = ({
@@ -62,6 +75,7 @@ const DocumentViewer = ({
   onZoom,
   viewerWidth = config.width,
   pdfUrl,
+  isPost,
   citationInstance,
   documentInstance,
   document: doc,
@@ -70,13 +84,17 @@ const DocumentViewer = ({
   showExpandBtn = true,
   onClose,
   expandedOnlyMode = false,
+  setReferenceItemDatum,
+  referenceItemDatum,
 }: Props) => {
   const router = useRouter();
+  const currentUser = getCurrentUser();
   const [isExpanded, setIsExpanded] = useState<boolean>(
     expandedOnlyMode || expanded
   );
   const [numAnnotations, setNumAnnotations] = useState<number>(0);
   const contentRef = useRef(null);
+  const [uploadingPdf, setUploadingPdf] = useState<boolean>(false);
   const [hasLoadError, setHasLoadError] = useState<boolean>(hasError);
   const [fullScreenSelectedZoom, setFullScreenSelectedZoom] =
     useState<number>(1.25);
@@ -102,6 +120,10 @@ const DocumentViewer = ({
     visibilityPreferenceForViewingComments,
     setVisibilityPreferenceForViewingComments,
   ] = useState<VisibilityPreferenceForViewingComments>(defaultPrivacyFilter);
+
+  const { activeProject } = useReferenceActiveProjectContext();
+
+  const { currentOrg } = useOrgs();
 
   const [windowDimensions, setWindowDimensions] = useState<{
     width: number;
@@ -300,6 +322,43 @@ const DocumentViewer = ({
   const shouldScroll =
     actualContentWidth > windowDimensions.width - LEFT_SIDEBAR_MAX_WIDTH;
 
+  const uploadPDF = (acceptedFiles: File[] | any[]): void => {
+    // const preload: Array<PreloadRow> = [];
+    // setLoading(true);
+    // acceptedFiles.map(() => {
+    //   const uuid = window.URL.createObjectURL(new Blob([])).substring(31);
+    //   preload.push({
+    //     citation_type: "LOADING",
+    //     id: uuid,
+    //     created: true,
+    //   });
+    // });
+
+    // setCreatedReferences(preload);
+    setUploadingPdf(true);
+
+    updateReferenceCitationFile({
+      payload: {
+        // TODO: calvinhlee - create utily functions to format these
+        citation_id: referenceItemDatum.id,
+        organization: currentOrg.id,
+        attachment: acceptedFiles[0],
+      },
+      onError: (e): void => {
+        console.log(e);
+        setUploadingPdf(false);
+      },
+      onSuccess: (res): void => {
+        setReferenceItemDatum &&
+          setReferenceItemDatum({
+            ...referenceItemDatum,
+            attachment: URL.createObjectURL(acceptedFiles[0]),
+          });
+        setUploadingPdf(false);
+      },
+    });
+  };
+
   return (
     <DocumentViewerContext.Provider
       value={{
@@ -337,7 +396,8 @@ const DocumentViewer = ({
           className={css(
             styles.main,
             isExpanded && styles.expandedContent,
-            shouldScroll && styles.scroll
+            shouldScroll && styles.scroll,
+            !pdfUrl && !isPost && styles.mainFileMissing
           )}
           style={{
             maxWidth: actualContentWidth,
@@ -364,24 +424,62 @@ const DocumentViewer = ({
                 />
               )}
 
-              {pdfUrl ? (
+              {!isPost ? (
                 <>
-                  {!isPdfReady && <DocumentPlaceholder />}
-                  <PDFViewer
-                    pdfUrl={pdfUrl}
-                    scale={actualZoom}
-                    onReady={onPdfReady}
-                    contentRef={contentRef}
-                    viewerWidth={actualContentWidth}
-                    onLoadError={setHasLoadError}
-                    onPageRender={setLastPageRendered}
-                    numPagesToPreload={numPagesToPreload}
-                    showWhenLoading={
-                      <div style={{ padding: 20 }}>
-                        <DocumentPlaceholder />
-                      </div>
-                    }
-                  />
+                  {pdfUrl ? (
+                    <>
+                      {!isPdfReady && <DocumentPlaceholder />}
+
+                      <PDFViewer
+                        pdfUrl={pdfUrl}
+                        scale={actualZoom}
+                        onReady={onPdfReady}
+                        contentRef={contentRef}
+                        viewerWidth={actualContentWidth}
+                        onLoadError={setHasLoadError}
+                        onPageRender={setLastPageRendered}
+                        numPagesToPreload={numPagesToPreload}
+                        showWhenLoading={
+                          <div style={{ padding: 20 }}>
+                            <DocumentPlaceholder />
+                          </div>
+                        }
+                      />
+                    </>
+                  ) : (
+                    <div className={css(styles.uploadFile)}>
+                      <UploadFileDragAndDrop
+                        children={
+                          uploadingPdf ? (
+                            <FontAwesomeIcon
+                              icon={faSpinnerThird}
+                              spin
+                              style={{ fontSize: 30 }}
+                            />
+                          ) : (
+                            ""
+                          )
+                        }
+                        accept={".pdf"}
+                        beforeImageInstructions={
+                          <h3 className={css(styles.uploadFileTitle)}>
+                            Upload your pdf
+                          </h3>
+                        }
+                        // extraInstructions={
+                        //   <div className={css(styles.extraInstructions)}>
+                        //     We weren't able to fetch the PDF
+                        //   </div>
+                        // }
+                        handleFileDrop={
+                          uploadPDF
+                          // formattedReferenceRows.length === 0
+                          //   ? handleFileDrop
+                          //   : silentEmptyFnc
+                        }
+                      />
+                    </div>
+                  )}
                 </>
               ) : (
                 <>
@@ -428,6 +526,12 @@ const styles = StyleSheet.create({
     overflowX: "scroll",
     overflowY: "hidden",
   },
+  uploadFileTitle: {
+    fontWeight: 500,
+  },
+  extraInstructions: {
+    marginBottom: 8,
+  },
   expandedWrapper: {
     position: "fixed",
     zIndex: 999999,
@@ -439,9 +543,15 @@ const styles = StyleSheet.create({
     marginTop: 0,
     overflow: "scroll",
   },
+  uploadFile: {
+    height: "100%",
+  },
   expandedContent: {
     background: "white",
     margin: "75px auto 0 auto",
+  },
+  mainFileMissing: {
+    height: "80%",
   },
   documentViewer: {},
   postBody: {
