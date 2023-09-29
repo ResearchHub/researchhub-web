@@ -37,6 +37,7 @@ import { breakpoints } from "~/config/themes/screen";
 import getReviewCategoryScore from "./lib/quill/getReviewCategoryScore";
 import { captureEvent } from "~/config/utils/events";
 import CommentPrivacyBadge from "./CommentPrivacyBadge";
+import CommentVote from "./CommentVote";
 const { setMessage, showMessage } = MessageActions;
 
 type CommentArgs = {
@@ -209,14 +210,8 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
               annotationContext && styles.headerWrapperAnnotationContext
             )}
           >
-            {annotationContext ? (
+            {annotationContext && (
               <CommentHeaderForAnnotation
-                authorProfile={comment.createdBy.authorProfile}
-                comment={comment}
-                handleEdit={handleEdit}
-              />
-            ) : (
-              <CommentHeader
                 authorProfile={comment.createdBy.authorProfile}
                 comment={comment}
                 handleEdit={handleEdit}
@@ -233,6 +228,15 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                 styles.contentWrapperForAnnotation
             )}
           >
+            {commentTreeState.context === COMMENT_CONTEXTS.GENERIC && (
+              <div className={css(styles.genericCommentWrapperHeader)}>
+                <CommentHeader
+                  authorProfile={comment.createdBy.authorProfile}
+                  comment={comment}
+                  handleEdit={handleEdit}
+                />
+              </div>
+            )}
             {isEditMode ? (
               <CommentEditor
                 displayCurrentUser={annotationContext ? false : true}
@@ -414,6 +418,10 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
 };
 
 const styles = StyleSheet.create({
+  genericCommentWrapperHeader: {
+    marginBottom: 15,
+  },
+
   commentWrapper: {
     marginTop: 5,
   },
@@ -437,6 +445,7 @@ const styles = StyleSheet.create({
   },
   mainWrapper: {},
   contentWrapper: {
+    position: "relative",
     paddingLeft: 22,
     borderLeft: `3px solid ${colors.border}`,
     marginLeft: 15,

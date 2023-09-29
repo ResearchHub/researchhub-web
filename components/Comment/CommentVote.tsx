@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   upvote: {
     fontSize: 16,
     marginRight: 2,
-    marginLeft: -1,
+    marginLeft: 2,
     color: colors.secondary.text,
   },
   pill: {

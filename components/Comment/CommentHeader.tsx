@@ -5,7 +5,7 @@ import colors from "./lib/colors";
 import { getClosedBounties, getOpenBounties } from "./lib/bounty";
 import { Comment, COMMENT_CONTEXTS, COMMENT_TYPES } from "./lib/types";
 import CommentMenu from "./CommentMenu";
-import CommentBadges from "./CommentBadges";
+import CommentBadges, { hasBadges } from "./CommentBadges";
 import UserTooltip from "../Tooltips/User/UserTooltip";
 import ALink from "../ALink";
 import { useContext } from "react";
@@ -14,6 +14,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/pro-regular-svg-icons";
 import { timeSince } from "~/config/utils/dates";
+import CommentVote from "./CommentVote";
 
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
@@ -46,6 +47,15 @@ const CommentHeader = ({
   return (
     <div className={css(styles.commentHeader)}>
       <CommentBadges comment={comment} />
+      <div className={css(styles.voteWrapper)}>
+        <CommentVote
+          comment={comment}
+          score={comment.score}
+          userVote={comment.userVote}
+          documentType={commentTreeState?.document!.apiDocumentType}
+          documentID={commentTreeState?.document!.id}
+        />
+      </div>
       <div className={css(styles.details)}>
         <CommentAvatars
           people={[comment.createdBy, ...bountyContributors]}
@@ -126,6 +136,15 @@ const CommentHeader = ({
 };
 
 const styles = StyleSheet.create({
+  voteWrapper: {
+    background: "#FCFCFC",
+    zIndex: 2,
+    height: 100,
+    position: "absolute",
+    left: -15,
+    top: -5,
+    width: 25,
+  },
   dot: {
     color: colors.dot,
     marginLeft: 8,
