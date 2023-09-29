@@ -197,6 +197,8 @@ MyApp.getInitialProps = async (appContext) => {
     "/paper/[documentId]/[documentSlug]/[tabName]",
     "/post/[documentId]/[documentSlug]",
     "/post/[documentId]/[documentSlug]/[tabName]",
+    "/question/[documentId]/[documentSlug]",
+    "/question/[documentId]/[documentSlug]/[tabName]",
     "/notebook",
   ];
   const cookies = nookies.get(appContext.ctx);

@@ -15,6 +15,8 @@ import colors from "../../config/themes/colors";
 import dynamic from "next/dynamic";
 import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
+import HubSelect from "../Hubs/HubSelect";
+
 
 const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 
@@ -166,21 +168,12 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         containerStyle={styles.editor}
         required
       />
-      <FormSelect
-        containerStyle={[styles.chooseHub]}
-        error={shouldDisplayError && formErrors.hubs && `Please select a hub`}
-        errorStyle={styles.errorText}
-        id="hubs"
-        inputStyle={shouldDisplayError && formErrors.hubs && styles.error}
-        isMulti={true}
-        label="Hubs"
-        labelStyle={styles.label}
-        menu={styles.dropDown}
-        onChange={handleOnChangeFields}
-        options={suggestedHubs}
-        placeholder="Search Hubs"
-        required
-      />
+      <HubSelect
+        selectedHubs={mutableFormFields.hubs}
+        onChange={(hubs) => {
+          handleOnChangeFields("hubs", hubs);
+        }}
+      />      
       <div className={css(styles.buttonsContainer)}>
         <Button
           customButtonStyle={styles.buttonStyle}

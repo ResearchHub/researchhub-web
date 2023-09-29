@@ -59,8 +59,7 @@ const DocumentPageLayout = ({
   return (
     <div
       className={css(
-        styles.pageWrapper,
-        tabName !== undefined && styles.pageWrapperAlternate
+        styles.pageWrapper
       )}
     >
       <HeadComponent {...openGraphData.meta} graph={openGraphData.graph}>
@@ -89,9 +88,6 @@ const styles = StyleSheet.create({
     [`@media (max-width: ${breakpoints.xsmall.str})`]: {
       maxWidth: `100vw`,
     },
-  },
-  pageWrapperAlternate: {
-    background: "white",
   },
   topArea: {
     background: "white",

@@ -197,7 +197,7 @@ const CommentActions = ({ comment, toggleReply }: Args) => {
         id="link-tooltip"
       />
       <div className={css(styles.actionsWrapper)}>
-        {doc && (
+        {doc && context !== COMMENT_CONTEXTS.GENERIC && (
           <div
             className={`${css(
               styles.action,

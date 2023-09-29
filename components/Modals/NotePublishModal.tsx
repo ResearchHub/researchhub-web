@@ -18,6 +18,7 @@ import { useRouter } from "next/router";
 import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinnerThird } from "@fortawesome/pro-duotone-svg-icons";
+import HubSelect from "../Hubs/HubSelect";
 
 type FormFields = {
   authors: any[];
@@ -240,7 +241,7 @@ function NotePublishModal({
         authors: mutableFormFields.authors.map((author) => author.value),
         document_type: "DISCUSSION",
         full_src: editorContent.full_src,
-        hubs: mutableFormFields.hubs.map((hub) => hub.value),
+        hubs: mutableFormFields.hubs.map((hub) => hub.id),
         note_id: currentNote.id,
         preview_img: null,
         renderable_text: tempHtml.textContent,
@@ -252,7 +253,7 @@ function NotePublishModal({
         authors: mutableFormFields.authors.map((author) => author.value),
         document_type: "DISCUSSION",
         full_src: editorContent.full_src,
-        hubs: mutableFormFields.hubs.map((hub) => hub.value),
+        hubs: mutableFormFields.hubs.map((hub) => hub.id),
         post_id: currentNote.post.id,
         preview_img: null,
         renderable_text: tempHtml.textContent,
@@ -323,26 +324,11 @@ function NotePublishModal({
             placeholder="Add authors"
             required
           />
-          <FormSelect
-            containerStyle={[styles.chooseHub]}
-            defaultValue={getDefaultHubs(currentNote)}
-            error={
-              shouldDisplayError &&
-              formErrors.hubs &&
-              `Please select at least one hub`
-            }
-            errorStyle={styles.errorText}
-            id="hubs"
-            inputStyle={shouldDisplayError && formErrors.hubs && styles.error}
-            isOptionDisabled={() => mutableFormFields.hubs.length >= 3}
-            isMulti={true}
-            label="Hubs"
-            labelStyle={styles.label}
-            menu={styles.dropDown}
-            onChange={handleOnChangeFields}
-            options={hubOptions}
-            placeholder="Choose hubs to publish in"
-            required
+          <HubSelect
+            selectedHubs={mutableFormFields.hubs}
+            onChange={(hubs) => {
+              handleOnChangeFields("hubs", hubs);
+            }}
           />
           <div className={css(styles.label)}>Guidelines for posts</div>
           <ul className={css(styles.guidelinesContent)}>

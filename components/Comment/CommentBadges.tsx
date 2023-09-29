@@ -4,19 +4,38 @@ import {
   getOpenBounties,
   getClosedBounties,
 } from "./lib/bounty";
-import { Comment, COMMENT_TYPES } from "./lib/types";
+import { Comment, COMMENT_CONTEXTS, COMMENT_TYPES } from "./lib/types";
 import ContentBadge from "../ContentBadge";
 import { Purchase } from "~/config/types/purchase";
 import { formatBountyAmount } from "~/config/types/bounty";
+import { useContext } from "react";
+import { CommentTreeContext } from "./lib/contexts";
+
+export const hasBadges = ({ comment }) => {
+  const closedBounties = getClosedBounties({ comment });
+  const openBounties = getOpenBounties({ comment });
+  const tips = comment.tips;
+  if (
+    comment.isAcceptedAnswer ||
+    openBounties.length > 0 ||
+    tips.length > 0 ||
+    closedBounties.length > 0
+  ) {
+    return true;
+  }
+
+  return false;
+};
 
 const CommentBadges = ({ comment }: { comment: Comment }) => {
+  const closedBounties = getClosedBounties({ comment });
   const openBounties = getOpenBounties({ comment });
   const openBountyAmountFormatted = getBountyAmount({
     comment,
     formatted: true,
   });
+  const commentTreeState = useContext(CommentTreeContext);
   const openBountyAmount = getBountyAmount({ comment, formatted: false });
-  const closedBounties = getClosedBounties({ comment });
   const closedBountyAmount = getBountyAmount({
     comment,
     status: "CLOSED",
@@ -90,6 +109,9 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
       </div>
     );
   } else {
+    if (commentTreeState.context === COMMENT_CONTEXTS.GENERIC) {
+      return <div className={css(styles.badgesWrapper)}></div>;
+    }
     return null;
   }
 };
@@ -100,6 +122,7 @@ const styles = StyleSheet.create({
     display: "flex",
     cursor: "default",
     marginBottom: 4,
+    height: 20,
   },
   badgeWrapper: {
     display: "inline-block",
