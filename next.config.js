@@ -28,6 +28,7 @@ const nextConfig = {
       "researchhub.com",
       "lh3.googleusercontent.com",
       "lh5.googleusercontent.com",
+      "d2ogkcqdn9wsvr.cloudfront.net",
     ],
   },
   sentry: {
