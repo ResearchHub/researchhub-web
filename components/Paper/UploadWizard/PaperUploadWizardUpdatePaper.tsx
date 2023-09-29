@@ -17,7 +17,6 @@ import {
 } from "~/components/contexts/NewPostButtonContext";
 import { PaperActions } from "~/redux/paper";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
-import { useEffectFetchSuggestedHubs } from "../Upload/api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
@@ -29,6 +28,8 @@ import Loader from "~/components/Loader/Loader";
 import withWebSocket from "~/components/withWebSocket";
 import { StyleSheet } from "aphrodite";
 import { ClipLoader } from "react-spinners";
+import HubSelect from "~/components/Hubs/HubSelect";
+import { parseHub } from "~/config/types/hub";
 
 export type FormErrors = {
   paperID: boolean;
@@ -100,11 +101,16 @@ function useEffectPasteMetaDataToForm({
   uploaderContextValues: NewPostButtonContextValues;
 }): void {
   const asyncDOI = parsedWsResponse?.data?.doi ?? null;
+  const hubs = (parsedWsResponse?.current_hubs || []).map((hub) =>
+    parseHub(hub)
+  );
+
   useEffect(() => {
     setFormState({
       ...currentFormState,
       doi: asyncDOI ?? uploaderContextValues?.doi ?? null,
       paperID: uploaderContextValues?.paperID,
+      selectedHubs: hubs,
     });
   }, [asyncDOI, uploaderContextValues?.doi, uploaderContextValues?.paperID]);
 }
@@ -122,7 +128,6 @@ function PaperUploadWizardUpdatePaper({
   const [formErrors, setFormErrors] = useState<FormErrors>(defaulError);
   const [formState, setFormState] = useState<FormState>(defaultFormState);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
   const parsedWsResponse = JSON.parse(wsResponse) ?? null;
 
   const isAsyncComplete = parsedWsResponse?.data?.paper_status === "COMPLETE";
@@ -130,9 +135,6 @@ function PaperUploadWizardUpdatePaper({
   const asyncDOI = parsedWsResponse?.data?.doi ?? null;
   const { doi, paperID, selectedHubs, title } = formState;
 
-  useEffectFetchSuggestedHubs({
-    setSuggestedHubs,
-  });
   useEffectPasteMetaDataToForm({
     currentFormState: formState,
     parsedWsResponse,
@@ -192,39 +194,9 @@ function PaperUploadWizardUpdatePaper({
     }
   };
 
-  const handleHubSelection = (_id: ID, selectedHubs: any): void => {
-    if (isNullOrUndefined(selectedHubs)) {
-      setFormState({ ...formState, selectedHubs: [] });
-    } else {
-      setFormState({ ...formState, selectedHubs });
-    }
-  };
-
   return (
     <form onSubmit={onFormSubmit}>
-      <FormSelect
-        disabled={isSubmitting}
-        error={formErrors.selectedHubs}
-        id="hubs"
-        isOptionDisabled={() => selectedHubs.length >= 3}
-        isMulti
-        label={
-          <div>
-            <span>{"Hubs"}</span>
-          </div>
-        }
-        inputStyle={
-          (customStyles.input,
-          selectedHubs.length > 0 && customStyles.capitalize)
-        }
-        labelStyle={formGenericStyles.labelStyle}
-        onChange={handleHubSelection}
-        options={suggestedHubs}
-        placeholder="Search Hubs"
-        required
-        value={selectedHubs}
-      />
-      {!uploaderContextValues.isWithDOI ? (
+      {(!uploaderContextValues.isWithDOI && !isEmpty(asyncDOI)) ? (
         <FormInput
           disabled={isSubmitting || isEmpty(asyncDOI)}
           id="doi"
@@ -251,18 +223,29 @@ function PaperUploadWizardUpdatePaper({
         />
       ) : null}
       {isAsyncComplete && (
-        <FormInput
-          disabled={isSubmitting}
-          id="title"
-          label="Editorialized Title (optional)"
-          labelStyle={formGenericStyles.labelStyle}
-          subtitle={asyncPaperTitle ?? null}
-          onChange={(_id: ID, title: string): void =>
-            setFormState({ ...formState, title: isEmpty(title) ? null : title })
-          }
-          placeholder="Jargon free version of the title that the average person would understand"
-          value={title}
-        />
+        <>
+          <HubSelect
+            selectedHubs={formState.selectedHubs}
+            onChange={(hubs) => {
+              setFormState({ ...formState, selectedHubs: hubs });
+            }}
+          />
+          <FormInput
+            disabled={isSubmitting}
+            id="title"
+            label="Editorialized Title (optional)"
+            labelStyle={formGenericStyles.labelStyle}
+            subtitle={asyncPaperTitle ?? null}
+            onChange={(_id: ID, title: string): void =>
+              setFormState({
+                ...formState,
+                title: isEmpty(title) ? null : title,
+              })
+            }
+            placeholder="Jargon free version of the title that the average person would understand"
+            value={title}
+          />
+        </>
       )}
       <div
         style={{
@@ -314,5 +297,6 @@ export default withWebSocket(
 const styles = StyleSheet.create({
   loaderStyle: {
     height: 23,
+    top: "70%",
   },
 });

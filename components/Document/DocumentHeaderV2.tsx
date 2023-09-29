@@ -33,6 +33,7 @@ import { DocumentContext } from "./lib/DocumentContext";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import PaperMetadataModal from "./PaperMetadataModal";
 import DocumentOptions from "./DocumentOptions";
+import DocumentHubs from "./lib/DocumentHubs";
 
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
@@ -117,6 +118,11 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               </div>
               <h1 className={css(styles.title)}>{doc.title}</h1>
             </div>
+            {metadata.hubs.length > 0 && (
+              <div className={css(styles.hubsWrapper)}>
+                <DocumentHubs hubs={metadata.hubs} />
+              </div>
+            )}
             <div className={css(styles.lineItemsWrapper)}>
               <div className={css(styles.lineItems)}>
                 <DocumentLineItems document={doc} />
@@ -125,12 +131,17 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               <div
                 className={css(styles.actionWrapper, styles.largeScreenActions)}
               >
-                {isPaper(doc) && currentUser && (
+                {isPaper(doc) && currentUser && metadata && (
                   <PaperMetadataModal
                     paper={doc as Paper}
+                    metadata={metadata}
                     onUpdate={(updatedFields) => {
                       const updated = { ...doc, ...updatedFields };
                       documentContext.updateDocument(updated);
+                      documentContext.updateMetadata({
+                        ...metadata,
+                        ...updatedFields,
+                      });
                       revalidateDocument();
                     }}
                   >
@@ -157,7 +168,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                     <span>Tip</span>
                   </IconButton>
                 </PermissionNotificationWrapper>
-                <DocumentOptions document={doc} />
+                <DocumentOptions document={doc} metadata={metadata} />
               </div>
             </div>
             <div className={css(styles.smallScreenActions)}>
@@ -188,7 +199,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                     <span>Tip</span>
                   </IconButton>
                 </PermissionNotificationWrapper>
-                <DocumentOptions document={doc} />
+                <DocumentOptions document={doc} metadata={metadata} />
               </div>
             </div>
             <div className={css(styles.tabsWrapper)}>
@@ -226,6 +237,7 @@ const styles = StyleSheet.create({
   headerRoot: {},
   title: {
     textTransform: "capitalize",
+    marginBottom: 0,
   },
   lineItems: {},
   headerWrapper: {
@@ -264,7 +276,15 @@ const styles = StyleSheet.create({
       paddingRight: 15,
     },
   },
+  hubsWrapper: {
+    marginBottom: 10,
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
+      paddingLeft: 15,
+      paddingRight: 15,
+    },    
+  },
   titleWrapper: {
+    marginBottom: 10,
     position: "relative",
     [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       paddingLeft: 15,

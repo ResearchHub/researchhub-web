@@ -1,5 +1,5 @@
-import { Paper } from "~/components/Document/lib/types";
-import { useState } from "react";
+import { DocumentMetadata, Paper } from "~/components/Document/lib/types";
+import { useCallback, useState } from "react";
 import FormInput from "../Form/FormInput";
 import { css, StyleSheet } from "aphrodite";
 import Button from "../Form/Button";
@@ -9,28 +9,28 @@ import { useDispatch } from "react-redux";
 import dayjs from "dayjs";
 import updatePaperMetadataAPI from "./api/updatePaperMetadataAPI";
 import colors from "~/config/themes/colors";
-import FormSelect from "../Form/FormSelect";
-import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
-import { parseHub } from "~/config/types/hub";
+import HubSelect from "../Hubs/HubSelect";
+import { ClipLoader } from "react-spinners";
 const { setMessage, showMessage } = MessageActions;
 
 interface FormProps {
   paper: Paper;
   onUpdate?: Function;
+  metadata: DocumentMetadata;
 }
 
-const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
+const PaperMetadataForm = ({ paper, onUpdate, metadata }: FormProps) => {
   const [fields, setFields] = useState({
     doi: paper.doi || "",
     publishedDate: formatDateStandard(paper.publishedDate, "MM/DD/YYYY"),
     title: paper.title || "",
-    hubs: (paper.hubs || []).map(h => h.id),
+    hubs: metadata.hubs,
   });
+
+  const [saveInProgress, setSaveInProgress] = useState(false);
   const [editedFields, setEditedFields] = useState(new Set());
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
-  const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
-  useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
   const validate = (name, value) => {
     if (name === "title") {
@@ -62,25 +62,30 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
       return;
     }
 
+    setSaveInProgress(true);
     updatePaperMetadataAPI({
       id: paper.id,
       title: fields.title,
       doi: fields.doi,
       publishedDate: fields.publishedDate,
-      hubs: fields.hubs,
-    }).then(() => {
-      onUpdate &&
-        onUpdate({
-          title: fields.title,
-          publishedDate: fields.publishedDate,
-          doi: fields.doi,
-          hubs: suggestedHubs.filter((hub) => fields.hubs.includes(hub.id)).map(h => parseHub(h)),
-        });
-      dispatch(setMessage("Paper updated"));
+      hubs: fields.hubs.map((h) => h.id),
+    })
+      .then(() => {
+        onUpdate &&
+          onUpdate({
+            title: fields.title,
+            publishedDate: fields.publishedDate,
+            doi: fields.doi,
+            hubs: fields.hubs,
+          });
+        dispatch(setMessage("Paper updated"));
 
-      // @ts-ignore
-      dispatch(showMessage({ show: true, error: false }));
-    });
+        // @ts-ignore
+        dispatch(showMessage({ show: true, error: false }));
+      })
+      .finally(() => {
+        setSaveInProgress(false);
+      });
   };
 
   const handleChange = (name, value) => {
@@ -103,9 +108,6 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
     }));
   };
 
-  
-  const selectedHubs = (suggestedHubs || []).filter((hub) => fields.hubs.includes(hub.id));
-
   return (
     <div className={css(formStyles.formWrapper)}>
       <FormInput
@@ -118,23 +120,12 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
         id="title"
         onChange={handleChange}
       />
-      <FormSelect
-        containerStyle={formStyles.container}
-        error={errors["hubs"]}
-        id="hubs"
-        isMulti
-        label="Hubs"
-        inputStyle={formStyles.inputStyle}
-        onChange={(field, value) => {
-          setFields((prev) => ({
-            ...prev,
-            hubs: (value || []).map((v) => v.id),
-          }));
+      <HubSelect
+        selectedHubs={fields.hubs}
+        onChange={(hubs) => {
+          handleChange("hubs", hubs);
         }}
-        options={suggestedHubs}
-        placeholder="Search Hubs"
-        value={selectedHubs}
-      />      
+      />
       <div style={{ display: "flex", columnGap: 25 }}>
         <FormInput
           label="DOI"
@@ -159,7 +150,21 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
       </div>
 
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button onClick={handleSubmit} label="Save changes" type="submit" />
+        <Button disabled={saveInProgress} onClick={handleSubmit} type="submit">
+          <div
+            style={{ display: "flex", alignItems: "center", columnGap: "5px" }}
+          >
+            Save changes
+            {saveInProgress && (
+              <ClipLoader
+                sizeUnit={"px"}
+                size={18}
+                color={"white"}
+                loading={true}
+              />
+            )}
+          </div>
+        </Button>
       </div>
     </div>
   );
@@ -174,9 +179,16 @@ const formStyles = StyleSheet.create({
   tagLabel: {
     color: colors.NEW_BLUE(1),
     cursor: "pointer",
-    ":hover": {
-      textDecoration: "underline",
-    },
+  },
+  tag: {
+    border: 0,
+    background: colors.NEW_BLUE(0.1),
+    padding: "4px 12px",
+    height: "unset",
+    textDecoration: "none",
+    fontWeight: 400,
+    borderRadius: 50,
+    color: colors.NEW_BLUE(),
   },
 });
 

@@ -1,5 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { GenericDocument, Paper, isPaper, isPost } from "./lib/types";
+import {
+  DocumentMetadata,
+  GenericDocument,
+  Paper,
+  isPaper,
+  isPost,
+} from "./lib/types";
 import GenericMenu, { MenuOption } from "../shared/GenericMenu";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
@@ -22,6 +28,7 @@ import useCacheControl from "~/config/hooks/useCacheControl";
 
 interface Props {
   document: GenericDocument;
+  metadata: DocumentMetadata;
 }
 
 function downloadPDF(pdfUrl) {
@@ -39,7 +46,7 @@ function downloadPDF(pdfUrl) {
   document.body.removeChild(link);
 }
 
-const DocumentOptions = ({ document: doc }: Props) => {
+const DocumentOptions = ({ document: doc, metadata }: Props) => {
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
@@ -54,6 +61,7 @@ const DocumentOptions = ({ document: doc }: Props) => {
             group: "Document",
             html: (
               <PaperMetadataModal
+                metadata={metadata}
                 paper={doc as Paper}
                 onUpdate={(updatedFields) => {
                   const updated = { ...doc, ...updatedFields };

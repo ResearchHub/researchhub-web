@@ -89,11 +89,18 @@ class FormSelect extends Component {
       showCountInsteadOfLabels,
       showLabelAlongSelection,
       isOptionDisabled,
+      onInputChange,
+      selectComponents,
+      reactSelect,
     } = this.props;
 
-    const configuredComponents = {
+    let configuredComponents = {
       animatedComponents,
     };
+
+    if (selectComponents) {
+      configuredComponents = selectComponents;
+    }
 
     if (showCountInsteadOfLabels) {
       configuredComponents.ValueContainer = CustomValueContainerWithCount;
@@ -114,7 +121,7 @@ class FormSelect extends Component {
       return formattedStyle ? formattedStyle : styleObject;
     };
 
-    const colorStyles = {
+    const selectStyles = {
       menuPortal: (base) => ({ ...base, zIndex: 100000000 }),
       control: (styles) => ({
         ...styles,
@@ -143,16 +150,28 @@ class FormSelect extends Component {
       }),
       indicatorSeparator: (styles) => ({
         ...styles,
-        ...formatStyle(indicatorSeparator),
+        ...formatStyle(reactSelect?.styles?.indicatorSeparator),
       }),
       singleValue: (styles) => ({
         ...styles,
-        ...formatStyle(singleValue),
+        ...formatStyle(reactSelect?.styles?.singleValue),
       }),
       menu: (styles) => ({
         ...styles,
-        ...formatStyle(menu),
+        ...formatStyle(reactSelect?.styles?.menu),
         textTransform: "capitalize",
+      }),
+      option: (styles) => ({
+        ...styles,
+        ...formatStyle(reactSelect?.styles?.option),
+      }),
+      menuList: (styles) => ({
+        ...styles,
+        ...formatStyle(reactSelect?.styles?.menuList),
+      }),
+      valueContainer: (styles) => ({
+        ...styles,
+        ...formatStyle(reactSelect?.styles?.valueContainer),
       }),
       placeholder: (styles) => ({
         ...styles,
@@ -163,13 +182,13 @@ class FormSelect extends Component {
         return {
           ...styles,
           backgroundColor: "#edeefe",
-          ...formatStyle(multiTagStyle),
+          ...formatStyle(reactSelect?.styles?.multiTagStyle),
         };
       },
       multiValueLabel: (styles, { data }) => {
         return {
           ...styles,
-          ...formatStyle(multiTagLabelStyle),
+          ...formatStyle(reactSelect?.styles?.multiTagLabelStyle),
         };
       },
     };
@@ -206,9 +225,10 @@ class FormSelect extends Component {
           options={options}
           placeholder={placeholder}
           required={required ? required : "false"}
-          styles={colorStyles}
+          styles={selectStyles}
           value={value}
           isOptionDisabled={isOptionDisabled}
+          onInputChange={this.props.onInputChange}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
       </div>

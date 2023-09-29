@@ -99,7 +99,7 @@ class UserSettings extends Component {
   componentDidMount = async () => {
     this.props.dispatch(MessageActions.showMessage({ load: true, show: true }));
     if (!this.props.hubs.length) {
-      this.props.dispatch(HubActions.getHubs());
+      this.props.dispatch(HubActions.getHubs({}));
     }
     if (doesNotExist(this.props.user.email)) {
       await this.props.dispatch(AuthActions.getUser());
@@ -458,11 +458,6 @@ class UserSettings extends Component {
 
     return (
       <div className={css(styles.container)}>
-        <div className={css(styles.labelContainer)}>
-          <div className={css(styles.listLabel)} id={"hubListTitle"}>
-            {"My Hubs"}
-          </div>
-        </div>
         <div className={css(hubStyles.list, styles.hubsList)}>
           <FormSelect
             id={"hubSelect"}
@@ -739,7 +734,7 @@ class UserSettings extends Component {
             this.renderChangePassword()}
           <UserApiTokenInputField />
           {this.renderFrequencySelect()}
-          {this.renderSubscribedHubs()}
+          {/* {this.renderSubscribedHubs()} */}
           <div className={css(styles.container)}>
             <div className={css(styles.listLabel)} id={"hubListTitle"}>
               {"Notifications"}

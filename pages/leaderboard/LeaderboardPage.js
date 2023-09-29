@@ -1,9 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChartNetwork } from "@fortawesome/pro-solid-svg-icons";
-import { faStar } from "@fortawesome/pro-solid-svg-icons";
-import { faBookOpen } from "@fortawesome/pro-solid-svg-icons";
-import { faUserEdit } from "@fortawesome/pro-solid-svg-icons";
-import { faUser } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faChartNetwork,
+  faStar,
+  faBookOpen,
+  faUserEdit,
+  faUser,
+} from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import Router from "next/router";
@@ -288,7 +290,7 @@ class Index extends Component {
   componentDidMount() {
     let { getHubs } = this.props;
     if (!this.props.hubs.hubs.length) {
-      getHubs();
+      getHubs({});
     }
     let byOptions = this.setHubs(this.props.hubs.hubs);
     let type = decodeURIComponent(Router.router.query.type);

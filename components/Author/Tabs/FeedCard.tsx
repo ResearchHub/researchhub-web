@@ -37,7 +37,6 @@ import dynamic from "next/dynamic";
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
-import SubmissionDetails from "~/components/Document/SubmissionDetails";
 import VoteWidget from "~/components/VoteWidget";
 import { createVoteHandler } from "~/components/Vote/utils/createVoteHandler";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
@@ -46,6 +45,10 @@ import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import ContentBadge from "~/components/ContentBadge";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { parsePaperAuthors } from "~/components/Document/lib/types";
+import AuthorList from "../AuthorList";
+import { parseHub } from "~/config/types/hub";
+import DocumentHubs from "~/components/Document/lib/DocumentHubs";
 
 const DocumentViewer = dynamic(
   () => import("~/components/Document/DocumentViewer")
@@ -133,13 +136,14 @@ function FeedCard({
   user: currentUser,
   withSidePadding,
 }: FeedCardProps) {
+  const authors = parsePaperAuthors(paper);
+  const parsedHubs = (hubs || []).map(parseHub);
   const router = useRouter();
   const [isPreviewing, setIsPreviewing] = useState(false);
   const [voteState, setVoteState] = useState<VoteType | null>(
     userVoteToConstant(userVote)
   );
   const [score, setScore] = useState<number>(initialScore);
-  const [isHubsOpen, setIsHubsOpen] = useState(false);
   const [rscBadgeHover, setRSCBadgeHover] = useState(false);
   const [previews] = useState(
     configurePreview([
@@ -236,9 +240,6 @@ function FeedCard({
   const user = uploaded_by || created_by;
   const cardTitle = getTitle();
   const cardBody = getBody();
-  const createdDate = created_date || uploaded_date;
-  const createdBy = isEmpty(user) ? null : parseUser(user);
-  const nextRouter = useRouter();
   let bountyAmount = 0;
   let hasActiveBounty = false;
   bounties &&
@@ -253,19 +254,12 @@ function FeedCard({
     <Ripples
       className={css(
         styles.ripples,
-        singleCard ? styles.fullBorder : styles.noBorder,
-        isHubsOpen && styles.overflow
+        singleCard ? styles.fullBorder : styles.noBorder
       )}
       data-test={isDevEnv() ? `document-${id}` : undefined}
       key={`${formattedDocType}-${id}`}
       onClick={(event) => {
         handleClick && handleClick(event);
-
-        // if (event.metaKey || event.shiftKey) {
-        //   window.open(feDocUrl);
-        // } else {
-        //   nextRouter.push(feDocUrl);
-        // }
       }}
     >
       <Link href={feDocUrl} className={css(styles.link)}>
@@ -298,20 +292,17 @@ function FeedCard({
                 <div className={css(styles.featuredBadge)}>Featured</div>
               )}
               <div className={css(styles.rowContainer)}>
-                <SubmissionDetails
-                  createdDate={createdDate}
-                  hubs={hubs}
-                  createdBy={createdBy}
-                  avatarSize={20}
-                  bounties={bounties}
-                  showAllHubsProp={true}
-                />
-              </div>
-              <div className={css(styles.rowContainer)}>
                 <div className={css(styles.column, styles.metaData)}>
                   <div className={css(styles.rowContainer)}>
                     <div className={css(styles.cardBody)}>
                       <h2 className={css(styles.title)}>{cardTitle}</h2>
+                      <div className={css(styles.authorWrapper)}>
+                        <AuthorList
+                          authors={authors}
+                          moreAuthorsBtnStyle={styles.moreAuthorsBtnStyle}
+                        />
+                      </div>
+
                       {cardBody && (
                         <div className={css(styles.abstract) + " clamp2"}>
                           {cardBody}
@@ -375,105 +366,43 @@ function FeedCard({
                       className={css(styles.metaItem, styles.metaItemAsBadge)}
                     >
                       <ContentBadge
-                        contentType={
-                          formattedDocType === "bounty"
-                            ? "post"
-                            : formattedDocType
-                        }
+                        contentType={formattedDocType}
+                        badgeOverride={styles.badge}
                       />
-                    </div>
-                    {hasActiveBounty && (
-                      <div className={css(styles.metaItem)}>
-                        <ContentBadge
-                          contentType="bounty"
-                          bountyAmount={bountyAmount}
-                          label={
-                            <div style={{ display: "flex", whiteSpace: "pre" }}>
-                              <div style={{ flex: 1 }}>
-                                {formatBountyAmount({
-                                  amount: bountyAmount,
-                                })}{" "}
-                                RSC
+                      {hasActiveBounty && (
+                          <ContentBadge
+                            badgeOverride={styles.badge}
+                            contentType="bounty"
+                            bountyAmount={bountyAmount}
+                            label={
+                              <div style={{ display: "flex", whiteSpace: "pre" }}>
+                                <div style={{ flex: 1 }}>
+                                  {formatBountyAmount({
+                                    amount: bountyAmount,
+                                  })}{" "}
+                                  RSC
+                                </div>
                               </div>
-                            </div>
-                          }
-                        />
-                      </div>
-                    )}
-                    {formattedDocType === "question" ? (
-                      <div
-                        className={css(
-                          styles.metaItem,
-                          hasAcceptedAnswer && styles.acceptedAnswer
-                        )}
-                      >
-                        <span
-                          className={css(
-                            styles.metadataIcon,
-                            hasAcceptedAnswer && styles.acceptedAnswer
-                          )}
-                        >
-                          {hasAcceptedAnswer ? (
-                            <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
-                          ) : (
-                            <FontAwesomeIcon
-                              icon={faCommentAltLines}
-                            ></FontAwesomeIcon>
-                          )}
-                        </span>
-                        <span className={css(styles.metadataText)}>
-                          <span>{discussion_count}</span>
-                          <span className={css(styles.hideTextMobile)}>
-                            {` Answer${discussion_count === 1 ? "" : "s"}`}
-                          </span>
-                        </span>
-                      </div>
-                    ) : (
-                      <div className={css(styles.metaItem)}>
-                        <span className={css(styles.metadataIcon)}>
-                          {
-                            <FontAwesomeIcon
-                              icon={faComments}
-                            ></FontAwesomeIcon>
-                          }
-                        </span>
-                        <span className={css(styles.metadataText)}>
-                          <span>{discussion_count}</span>
-                          <span className={css(styles.hideTextMobile)}>
-                            {` Comment${discussion_count === 1 ? "" : "s"}`}
-                          </span>
-                        </span>
-                      </div>
-                    )}
+                            }
+                          />
+                      )}                      
+                      <DocumentHubs hubs={parsedHubs} withShowMore={false} />
+                    </div>
 
-                    {reviews?.count > 0 && (
-                      <div
-                        className={css(
-                          styles.reviewSummaryContainer,
-                          styles.metaItem
-                        )}
-                      >
-                        <PeerReviewScoreSummary
-                          summary={reviews}
-                          feDocUrl={feDocUrl}
-                        />
-                      </div>
-                    )}
-                    {/* {boostAmount > 0 && (
-                    <div className={css(styles.metaItem)}>
+                    <div
+                      className={css(styles.metaItem)}
+                      style={{ marginLeft: "auto" }}
+                    >
                       <span className={css(styles.metadataIcon)}>
-                        <ResearchCoinIcon
-                          width={14}
-                          height={14}
-                          version={4}
-                          overrideStyle={styles.rscIcon}
-                        />
+                        {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
                       </span>
                       <span className={css(styles.metadataText)}>
-                        +{boostAmount}
+                        <span>{discussion_count}</span>
+                        <span className={css(styles.hideTextMobile)}>
+                          {` Comment${discussion_count === 1 ? "" : "s"}`}
+                        </span>
                       </span>
                     </div>
-                  )} */}
                   </div>
                 </div>
               </div>
@@ -500,6 +429,20 @@ function FeedCard({
 }
 
 const styles = StyleSheet.create({
+  badge: {
+    padding: "4px 12px",
+    fontWeight: 400,
+    marginRight: 10,
+    borderRadius: "50px",
+  },
+  authorWrapper: {
+    fontSize: 14,
+    color: colors.BLACK(),
+    marginBottom: 5,
+  },
+  moreAuthorsBtnStyle: {
+    color: colors.BLACK(),
+  },
   ripples: {
     display: "flex",
     width: "100%",
@@ -559,8 +502,8 @@ const styles = StyleSheet.create({
   },
   image: {
     objectFit: "contain",
-    maxHeight: 90,
-    height: 90,
+    maxHeight: 85,
+    height: 85,
   },
   mobilePill: {
     fontSize: 14,
@@ -603,7 +546,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   publishContainer: {
-    marginRight: 10,
+    marginRight: 0,
     width: "100%",
   },
   metadataText: {
@@ -620,6 +563,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     display: "flex",
     alignItems: "center",
+    ":last-child": {
+      marginRight: 0,
+    },
   },
   rscToUsdAmount: {
     opacity: 0,
@@ -688,7 +634,7 @@ const styles = StyleSheet.create({
   abstract: {
     fontSize: 14,
     fontWeight: 400,
-    color: colors.BLACK(),
+    color: colors.MEDIUM_GREY2(),
     marginBottom: 10,
     lineHeight: "18px",
   },
@@ -696,8 +642,8 @@ const styles = StyleSheet.create({
     color: colors.BLACK(),
     fontSize: 20,
     fontWeight: 500,
-    marginBottom: 10,
-    marginTop: 8,
+    marginBottom: 5,
+    marginTop: 4,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 16,
       fontWeight: 500,
@@ -727,7 +673,7 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
   },
   paperPreview: {
-    height: 80,
+    height: 75,
     width: 70,
     position: "relative",
     border: `1px solid ${colors.LIGHT_GREY()}`,

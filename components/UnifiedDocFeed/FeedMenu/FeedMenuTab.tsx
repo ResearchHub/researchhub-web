@@ -121,8 +121,11 @@ const styles = StyleSheet.create({
     },
   },
   tabSelected: {
-    color: colors.NEW_BLUE(1.0),
-    background: colors.LIGHTER_BLUE(1.0),
+    color: "white",
+    background: colors.NEW_BLUE(1.0),
+    ":hover": {
+      color: "white",
+    },
   },
   tabText: {},
   labelContainer: {

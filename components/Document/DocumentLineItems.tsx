@@ -11,7 +11,6 @@ import {
   faLongArrowUp,
 } from "@fortawesome/pro-regular-svg-icons";
 import { GenericDocument, Paper, isPaper, isPost } from "./lib/types";
-import { toTitleCase } from "~/config/utils/string";
 import StarInput from "../Form/StarInput";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -98,25 +97,6 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
                 </span>
               </Link>
             ),
-          },
-        ]
-      : []),
-
-    ...(document.hubs && document.hubs.length > 0
-      ? [
-          {
-            title: "Hubs",
-            value: document.hubs.map((h, index) => (
-              <div key={index}>
-                <ALink
-                  key={`/hubs/${h.slug ?? ""}-index`}
-                  href={`/hubs/${h.slug}`}
-                >
-                  {toTitleCase(h.name)}
-                </ALink>
-                {index < document.hubs?.length - 1 ? "," : ""}
-              </div>
-            )),
           },
         ]
       : []),

@@ -423,7 +423,6 @@ const styles = StyleSheet.create({
   main: {
     position: "relative",
     justifyContent: "center",
-    // minHeight: "100vh",
   },
   scroll: {
     overflowX: "scroll",
