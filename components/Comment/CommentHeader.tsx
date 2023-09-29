@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     height: 100,
     position: "absolute",
     left: -15,
-    top: -5,
+    top: -3,
     width: 25,
   },
   dot: {
