@@ -15,15 +15,14 @@ export const removeReferenceProject = ({
   onSuccess,
   projectID,
 }: Args): void => {
-  fetch(
-    buildApiUri({
-      apiPath: `citation_project/${nullthrows(
-        projectID,
-        "projectID cannot be empty"
-      )}/remove`,
-    }),
-    API.POST_CONFIG()
-  )
+  const url = buildApiUri({
+    apiPath: `citation_project/${nullthrows(
+      projectID,
+      "projectID cannot be empty"
+    )}/remove`,
+  });
+
+  fetch(url, API.POST_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((payload: any): void => onSuccess(payload))

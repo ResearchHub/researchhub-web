@@ -106,7 +106,6 @@ function ReferencesContainer({
     setCurrentOrgProjects,
     setActiveProject,
   } = useReferenceActiveProjectContext();
-  const { setReferencesFetchTime } = useReferenceTabContext();
   const {
     setIsModalOpen: setIsProjectUpsertModalOpen,
     setProjectValue: setProjectUpsertValue,
@@ -188,7 +187,8 @@ function ReferencesContainer({
     ReactTooltip.rebuild();
   }, [selectedRows]);
 
-  const { setReferenceTableRowData } = useReferencesTableContext();
+  const { setReferenceTableRowData, referenceTableRowData } =
+    useReferencesTableContext();
 
   const fetchCitationsWithQuery = async (url) => {
     const config = api.GET_CONFIG();
@@ -349,11 +349,17 @@ function ReferencesContainer({
 
     const folderIds = _rowIds.filter((id) => String(id).includes("folder"));
     const referenceIds = _rowIds.filter((id) => !String(id).includes("folder"));
+    console.log(folderIds);
 
     removeReferenceCitations({
       onError: emptyFncWithMsg,
       onSuccess: (): void => {
-        setReferencesFetchTime(Date.now());
+        // setReferencesFetchTime(Date.now());
+        const previousCitations = [...referenceTableRowData];
+        const newCitations = previousCitations.filter((citation) => {
+          return !referenceIds.includes(citation.id);
+        });
+        setReferenceTableRowData(newCitations);
         setIsRemoveRefModalOpen(false);
       },
       payload: {
@@ -367,6 +373,7 @@ function ReferencesContainer({
         projectID: intId,
         onSuccess: () => {
           resetProjectsFetchTime();
+
           setIsRemoveRefModalOpen(false);
         },
         onError: emptyFncWithMsg,
