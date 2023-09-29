@@ -206,6 +206,7 @@ function RootLeftSidebar({
         "",
         "/",
         "paper",
+        "question",
         "post",
         "hypothesis",
         "live",

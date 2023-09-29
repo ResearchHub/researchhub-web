@@ -154,7 +154,7 @@ function FeedCard({
 
   // const bounty = bounties?.[0];
   const feDocUrl = `/${
-    RESEARCHHUB_POST_DOCUMENT_TYPES.includes(formattedDocType ?? "")
+    formattedDocType === "question" ? "question" : RESEARCHHUB_POST_DOCUMENT_TYPES.includes(formattedDocType ?? "")
       ? "post"
       : formattedDocType
   }/${id}/${slug ?? "new"}`;
@@ -544,6 +544,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     flexWrap: "wrap",
+    marginTop: 10,
   },
   publishContainer: {
     marginRight: 0,
@@ -635,7 +636,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 400,
     color: colors.MEDIUM_GREY2(),
-    marginBottom: 10,
     lineHeight: "18px",
   },
   title: {

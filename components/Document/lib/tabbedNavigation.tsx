@@ -54,7 +54,7 @@ export const getTabs = ({
   let _tabs = tabs;
 
   if (isPost(document) && document.postType === "question") {
-    _tabs = _tabs.filter((tab) => tab.value !== "reviews");
+    _tabs = _tabs.filter((tab) => tab.value !== "reviews" && tab.value !== "conversation");
   }
 
   _tabs = withDocTypeTab({ tabs: _tabs, document });

@@ -61,6 +61,7 @@ const Navbar = (props) => {
 
   const isPost = ["post"].includes(router.pathname.split("/")[1]);
   const isPaper = ["paper"].includes(router.pathname.split("/")[1]);
+  const isQuestion = ["question"].includes(router.pathname.split("/")[1]);
   const isRefManager = router.pathname.includes("reference-manager");
 
   const unstickyNavbar = router.pathname.includes("/hubs") || isPost || isPaper;
@@ -84,9 +85,17 @@ const Navbar = (props) => {
     </div>
   ) : pathname.includes("live") ? (
     "Live Activity"
-  ) : isPost || isPaper ? (
+  ) : isPaper ? (
     <div className={css(styles.backBtnWrapper)}>
-      <BackBtn label={isPaper ? "Paper" : "Post"} href="/" />
+      <BackBtn label={"Paper"} href="/" />
+    </div>
+  ) : isPost ? (
+    <div className={css(styles.backBtnWrapper)}>
+      <BackBtn label={"Post"} href="/" />
+    </div>
+  ) : isQuestion ? (
+    <div className={css(styles.backBtnWrapper)}>
+      <BackBtn label={"Question"} href="/" />
     </div>
   ) : (
     "Explore ResearchHub"
