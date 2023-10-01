@@ -9,7 +9,7 @@ import {
 export const fetchHubSuggestions = (
   query: string
 ): Promise<HubSuggestion[]> => {
-  const url = `${API.BASE_URL}search/hub/suggest/?name_suggest__completion=${query}`;
+  const url = `${API.BASE_URL}search/hubs/suggest/?name_suggest__completion=${query}`;
 
   const hubSuggestions: HubSuggestion[] = [];
   return fetch(url, API.GET_CONFIG())
