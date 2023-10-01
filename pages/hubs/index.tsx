@@ -12,6 +12,7 @@ import debounce from "lodash/debounce";
 import Error from "next/error";
 import useWindow from "~/config/hooks/useWindow";
 import { breakpoints } from "~/config/themes/screen";
+import { HubSuggestion } from "~/components/SearchSuggestion/lib/types";
 
 type Props = {
   hubs: any[];
@@ -34,7 +35,7 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode }) => {
   );
   const [sort, setSort] = useState<MenuOption>(sortOpts[0]);
   const prevSortValue = useRef(sort);
-  const [suggestions, setSuggestions] = useState<Hub[]>([]);
+  const [suggestions, setSuggestions] = useState<HubSuggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const { width: winWidth, height: winHeight } = useWindow();
@@ -75,7 +76,7 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode }) => {
   }, [sort]);
 
   const debouncedSetQuery = debounce(setQuery, 500);
-  const hubsToRender = query.length > 0 ? suggestions : parsedHubs;
+  const hubsToRender = query.length > 0 ? suggestions.map(s => s.hub) : parsedHubs;
   const showCommentCount = (winWidth || 0) > breakpoints.medium.int;
 
   return (

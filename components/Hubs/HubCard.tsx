@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import colors from "~/config/themes/colors";
 import Link from "next/link";
 import { truncateText } from "~/config/utils/string";
+import { formatNumber } from "~/config/utils/number";
 
 interface Props {
   hub: Hub;
@@ -27,8 +28,8 @@ const HubCard = ({
   showCommentCount = true,
   numberCharactersToShow = 150,
 }: Props) => {
-  const numPapers = hub.numDocs || 0;
-  const numComments = hub.numComments || 0;
+  const numPapers = formatNumber(hub.numDocs || 0);
+  const numComments = formatNumber(hub.numComments || 0);
   const description = truncateText(hub.description, numberCharactersToShow);
 
   return (

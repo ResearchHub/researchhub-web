@@ -263,8 +263,8 @@ const getDocumentFromRaw = ({
 };
 
 export const parsePaperAuthors = (rawPaper: any): Array<AuthorProfile> => {
-  const rawAuthors = rawPaper.raw_authors || [];
-  const claimedAuthors = rawPaper.authors || [];
+  const rawAuthors = rawPaper?.raw_authors || [];
+  const claimedAuthors = rawPaper?.authors || [];
   const nameToObjMap = {};
 
   for (let i = 0; i < rawAuthors.length; i++) {
