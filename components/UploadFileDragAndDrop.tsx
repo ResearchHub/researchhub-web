@@ -3,7 +3,13 @@ import { useState } from "react";
 import Dropzone from "react-dropzone";
 import colors from "~/config/themes/colors";
 
-function UploadFileDragAndDrop({ handleFileDrop, accept, children }) {
+function UploadFileDragAndDrop({
+  handleFileDrop,
+  accept,
+  children,
+  extraInstructions,
+  beforeImageInstructions,
+}) {
   const [isFileDragged, setIsFileDragged] = useState(false);
 
   return (
@@ -26,11 +32,13 @@ function UploadFileDragAndDrop({ handleFileDrop, accept, children }) {
                 children
               ) : (
                 <>
+                  {beforeImageInstructions && beforeImageInstructions}
                   <img
                     className={css(styles.uploadImage)}
                     src={"/static/background/homepage-empty-state.png"}
                     alt="Drag N Drop Icon"
                   />
+                  {extraInstructions && extraInstructions}
                   <div className={css(styles.instructions)}>
                     {"Drag & drop \n"}
                     <span className={css(styles.subtext)}>

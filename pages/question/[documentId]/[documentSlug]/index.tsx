@@ -72,7 +72,6 @@ const DocumentIndexPage: NextPage<Args> = ({
   commentData,
   errorCode,
 }) => {
-  console.log('documentData', documentData)
 
   let displayCommentsFeed = false;
   let parsedComments = [];
@@ -193,6 +192,7 @@ const DocumentIndexPage: NextPage<Args> = ({
               ) : (
                 <DocumentViewer
                   // @ts-ignore
+                  isPost={true}
                   postHtml={_postHtml}
                   documentInstance={{
                     id: document.id,
