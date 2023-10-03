@@ -42,8 +42,6 @@ function DocumentActions({
 }: Args): ReactElement<"div"> {
   const isModerator = Boolean(currentUser?.moderator);
   const isHubEditor = Boolean(currentUser?.author_profile?.isHubEditor);
-  console.log(isModerator);
-  console.log(isHubEditor);
   const isSubmitter = unifiedDocument?.createdBy?.id === currentUser.id;
   const [isRemoved, setIsRemoved] = useState(unifiedDocument.isRemoved);
 
