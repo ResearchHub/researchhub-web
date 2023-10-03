@@ -9,7 +9,7 @@ import {
 import GenericMenu, { MenuOption } from "../shared/GenericMenu";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
-import { faPen, faFlag } from "@fortawesome/pro-light-svg-icons";
+import { faPen, faFlag, faBan } from "@fortawesome/pro-light-svg-icons";
 import PaperMetadataModal from "./PaperMetadataModal";
 import { useSelector } from "react-redux";
 import { parseUser } from "~/config/types/root_types";
@@ -25,6 +25,8 @@ import colors from "~/config/themes/colors";
 import { useContext } from "react";
 import { DocumentContext } from "./lib/DocumentContext";
 import useCacheControl from "~/config/hooks/useCacheControl";
+import removeDocFromFeatured from "../Admin/api/removeDocFromFeaturedAPI";
+import excludeFromFeed from "../Admin/api/excludeDocFromFeedAPI";
 
 interface Props {
   document: GenericDocument;
@@ -52,6 +54,9 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
   );
   const documentContext = useContext(DocumentContext);
   const { revalidateDocument } = useCacheControl();
+
+  const isModerator = Boolean(currentUser?.moderator);
+  const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
 
   const options: Array<MenuOption> = [
     ...(isPaper(doc) && currentUser
@@ -137,6 +142,32 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
         </FlagButtonV2>
       ),
     },
+
+    ...(isModerator || isHubEditor
+      ? [
+          {
+            label: "Remove From Feed",
+            group: "Admin",
+            icon: <FontAwesomeIcon icon={faBan} />,
+            value: "remove-from-feed",
+            onClick: () => {
+              excludeFromFeed({
+                unifiedDocumentId: doc.unifiedDocument.id,
+                params: {
+                  excludeFromHomepage: true,
+                  excludeFromHubs: true,
+                },
+                onError: () => {
+                  alert("Something went wrong trying to remove doc from feed");
+                },
+                onSuccess: () => {
+                  alert("Document successfully removed from feed!");
+                },
+              });
+            },
+          },
+        ]
+      : []),
   ];
 
   return (

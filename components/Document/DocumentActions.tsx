@@ -41,7 +41,7 @@ function DocumentActions({
   unifiedDocument,
 }: Args): ReactElement<"div"> {
   const isModerator = Boolean(currentUser?.moderator);
-  const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
+  const isHubEditor = Boolean(currentUser?.author_profile?.isHubEditor);
   const isSubmitter = unifiedDocument?.createdBy?.id === currentUser.id;
   const [isRemoved, setIsRemoved] = useState(unifiedDocument.isRemoved);
 
@@ -179,6 +179,16 @@ function DocumentActions({
       active: isModerator,
       key: "admin",
       tooltip: "Admin",
+      html: (
+        <span className={css(styles.actionIcon, styles.moderatorAction)}>
+          <AdminButton unifiedDocumentId={unifiedDocument.id} />
+        </span>
+      ),
+    },
+    {
+      active: isModerator || isHubEditor,
+      key: "remove-from-feed",
+      tooltip: "Remove item from Feed",
       html: (
         <span className={css(styles.actionIcon, styles.moderatorAction)}>
           <AdminButton unifiedDocumentId={unifiedDocument.id} />
