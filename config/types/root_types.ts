@@ -91,6 +91,7 @@ export type AuthorProfile = {
   url: string;
   description: string;
   headline: string;
+  isHubEditor: boolean;
 };
 
 /**
@@ -184,6 +185,7 @@ export type RHUser = {
   editorOf?: Array<Hub>;
   reputation: number;
   raw: any;
+  moderator: boolean;
   balance?: number;
 };
 
