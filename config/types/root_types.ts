@@ -268,6 +268,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     description: raw.description,
     education: raw.education,
     headline: raw?.headline?.title || "",
+    isHubEditor: raw.is_hub_editor,
     ...(raw.sequence && { sequence: raw.sequence }),
   };
 
@@ -315,6 +316,7 @@ export const parseUser = (raw: any): RHUser => {
     reputation: _raw.reputation,
     createdAt: _raw.created_date,
     balance: _raw.balance,
+    moderator: _raw.moderator,
     // Used for legacy components
     raw,
   };
