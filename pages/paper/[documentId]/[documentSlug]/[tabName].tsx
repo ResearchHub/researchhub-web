@@ -1,6 +1,7 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import DocumentCommentsPage from "~/components/Document/pages/DocumentCommentsPage";
 import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps";
+import DocumentReplicationMarketPage from "~/components/Document/pages/DocumentReplicationMarketPage";
 
 interface Args {
   documentData?: any;
@@ -16,6 +17,18 @@ const TabPage: NextPage<Args> = ({
   errorCode,
   metadata,
 }) => {
+  if (tabName === "replicability") {
+    return (
+      <DocumentReplicationMarketPage
+        documentData={documentData}
+        documentType="paper"
+        metadata={metadata}
+        tabName={tabName}
+        errorCode={errorCode}
+      />
+    );
+  }
+
   return (
     <DocumentCommentsPage
       documentData={documentData}

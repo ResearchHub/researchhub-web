@@ -1,5 +1,6 @@
 import Bounty, { parseBountyList } from "~/config/types/bounty";
 import { Hub, parseHub } from "~/config/types/hub";
+import { EmptyPredictionMarketDetails, PredictionMarketDetails, parsePredictionMarketDetails } from "~/components/PredictionMarket/lib/types";
 import { Purchase, parsePurchase } from "~/config/types/purchase";
 import {
   AuthorProfile,
@@ -51,6 +52,7 @@ export type DocumentMetadata = {
   discussionCount: number;
   reviewCount: number;
   summaryCount: number;
+  predictionMarket?: PredictionMarketDetails;
   score: number;
   id: ID;
   hubs: Hub[];
@@ -73,6 +75,9 @@ export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
     discussionCount: document?.discussion_aggregates?.discussion_count || 0,
     reviewCount: document?.discussion_aggregates?.review_count || 0,
     summaryCount: document?.discussion_aggregates?.summary_count || 0,
+    predictionMarket: raw.prediction_market
+      ? parsePredictionMarketDetails(raw.prediction_market)
+      : EmptyPredictionMarketDetails,
     score: raw.score,
     twitterScore: document?.twitter_score || 0,
     id: raw.id,

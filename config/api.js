@@ -1305,6 +1305,38 @@ const routes = (BASE_URL) => {
         );
       }
     },
+
+    PREDICTION_MARKET: ({ marketId } = {}) => {
+      if (marketId) {
+        return BASE_URL + `prediction_market/${marketId}/`;
+      }
+      return BASE_URL + "prediction_market/";
+    },
+    PREDICTION_MARKET_VOTE: ({
+      paperId,
+      predictionMarketId,
+      isUserVote,
+      ordering,
+    } = {}) => {
+      const queryArry = [];
+      if (isUserVote) {
+        queryArry.push("is_user_vote=true");
+      }
+      if (!!predictionMarketId) {
+        queryArry.push(`prediction_market_id=${predictionMarketId}`);
+      }
+      if (!!paperId) {
+        queryArry.push(`paper_id=${paperId}`);
+      }
+      if (!!ordering) {
+        queryArry.push(`ordering=${ordering}`);
+      }
+      if (queryArry.length > 0) {
+        return BASE_URL + `prediction_market_vote/?${queryArry.join("&")}`;
+      }
+      return BASE_URL + "prediction_market_vote/";
+    },
+
     buildPaperChainUrl: buildPaperChainUrl,
     BASE_URL,
   };
