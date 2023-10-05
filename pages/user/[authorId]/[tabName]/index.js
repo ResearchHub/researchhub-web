@@ -12,6 +12,10 @@ import {
   faTwitter,
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
+import {
+  faEllipsis,
+  faArrowDownToBracket,
+} from "@fortawesome/pro-regular-svg-icons";
 import { buildSlug } from "~/config/utils/buildSlug";
 import { connect, useStore, useDispatch } from "react-redux";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";
@@ -45,6 +49,9 @@ import AuthorActivityFeed from "~/components/Author/Feed/AuthorActivityFeed";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import ReactPlaceholder from "react-placeholder/lib";
 import AuthorDetailsPlaceholder from "~/components/Placeholders/AuthorDetailsPlaceholder";
+import GenericMenu, { MenuOption } from "~/components/shared/GenericMenu";
+import IconButton from "~/components/Icons/IconButton";
+import UserDeleteRequestModal from "~/components/Modals/UserDeleteRequestModal";
 // Dynamic modules
 import dynamic from "next/dynamic";
 const UserInfoModal = dynamic(() =>
@@ -100,6 +107,8 @@ function AuthorPage(props) {
   // User Profile Update
   const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
   const [hoverProfilePicture, setHoverProfilePicture] = useState(false);
+  const [extraProfileOptionsIsOpen, setExtraProfileOptionsIsOpen] =
+    useState(false);
 
   const [description, setDescription] = useState(fetchedAuthor.description);
   const [name, setName] = useState(
@@ -569,6 +578,14 @@ function AuthorPage(props) {
     setAvatarUploadIsOpen(false);
   };
 
+  const onClickExtraProfileOptions = () => {
+    setExtraProfileOptionsIsOpen(true);
+  };
+
+  const closeExtraProfileOptions = () => {
+    setExtraProfileOptionsIsOpen(false);
+  };
+
   const authorOrcidId = !isNullOrUndefined(author) ? author.orcid_id : null;
 
   const orcidLinkButton = !isNullOrUndefined(authorOrcidId) ? (
@@ -603,6 +620,27 @@ function AuthorPage(props) {
       )}
     </div>
   );
+
+  const extraProfileOptions = [
+    {
+      label: "Edit paper",
+      group: "Document",
+      html: (
+        <div>
+          Request
+          <UserDeleteRequestModal
+            isOpen={extraProfileOptionsIsOpen}
+            closeModal={closeExtraProfileOptions}
+            currentUser={author}
+          />
+        </div>
+      ),
+      value: "edit-paper",
+      onClick: () => {
+        onClickExtraProfileOptions();
+      },
+    },
+  ];
 
   const authorRscBalance =
     !isNullOrUndefined(author.user) &&
@@ -858,6 +896,17 @@ function AuthorPage(props) {
     <div className={css(styles.socialLinks)}>
       {socialMediaLinkButtons}
       {orcidLinkButton}
+      <GenericMenu
+        softHide={true}
+        options={extraProfileOptions}
+        width={200}
+        id="header-more-options"
+        direction="bottom-right"
+      >
+        <IconButton overrideStyle={styles.btnDots}>
+          <FontAwesomeIcon icon={faEllipsis} />
+        </IconButton>
+      </GenericMenu>
     </div>
   );
 
