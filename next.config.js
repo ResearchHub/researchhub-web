@@ -10,6 +10,7 @@ const nextConfig = {
   swcMinify: true,
   experimental: {
     forceSwcTransforms: true,
+    largePageDataBytes: 500 * 100000,
   },
   typescript: {
     ignoreBuildErrors: true,
