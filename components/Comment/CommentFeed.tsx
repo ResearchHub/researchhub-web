@@ -30,7 +30,7 @@ import CommentSidebar from "./CommentSidebar";
 import CommentSort from "./CommentSort";
 import ContentSupportModal from "../Modals/ContentSupportModal";
 import findComment from "./lib/findComment";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import removeComment from "./lib/removeComment";
 import replaceComment from "./lib/replaceComment";
 import { GenericDocument } from "../Document/lib/types";
@@ -373,10 +373,13 @@ const CommentFeed = ({
       ? CommentSidebar
       : context === COMMENT_CONTEXTS.DRAWER
       ? CommentDrawer
-      : React.Fragment;
+      : Fragment;
   const isNarrowWidthContext =
     context === COMMENT_CONTEXTS.SIDEBAR || context === COMMENT_CONTEXTS.DRAWER;
-
+  let wrapperProps = {};
+  if (isNarrowWidthContext) {
+    wrapperProps = { isInitialFetchDone, totalCommentCount };
+  }
   return (
     <CommentTreeContext.Provider
       value={{
@@ -392,10 +395,7 @@ const CommentFeed = ({
       }}
     >
       {/* @ts-ignore */}
-      <WrapperEl
-        {...(context ? { isInitialFetchDone } : {})}
-        {...(context ? { totalCommentCount } : {})}
-      >
+      <WrapperEl {...wrapperProps}>
         <ContentSupportModal
           // @ts-ignore
           onSupport={(data: any) => {
@@ -467,7 +467,10 @@ const CommentFeed = ({
                       resetFeed();
                       setIsFetching(true);
                       setSelectedFilterValue(fval);
-                      handleFetch({ filter: fval, sort: selectedSortValue });
+                      handleFetch({
+                        filter: fval,
+                        sort: selectedSortValue,
+                      });
                     }}
                   />
                 )}

@@ -41,7 +41,6 @@ const DocumentIndexPage: NextPage<Args> = ({
   metadata,
   errorCode,
 }) => {
-  console.log(errorCode);
   const documentType = "paper";
   const router = useRouter();
   const wrapperRef = useRef<HTMLDivElement>(null);

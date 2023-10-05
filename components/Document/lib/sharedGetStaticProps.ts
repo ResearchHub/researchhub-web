@@ -5,6 +5,7 @@ import fetchPostFromS3 from "../api/fetchPostFromS3";
 import getCommentFilterByTab from "./getCommentFilterByTab";
 import { DocumentType } from "~/components/Document/lib/types";
 import fetchDocumentMetadata from "../api/fetchDocumentMetadata";
+import { captureException } from "@sentry/browser";
 
 const config = {
   revalidateTimeIfNotFound: 1,
@@ -34,6 +35,7 @@ export default async function sharedGetStaticProps({
       unifiedDocId: documentData.unified_document.id,
     });
   } catch (err) {
+    captureException(err);
     console.log("Error getting document", err);
     return {
       props: {
@@ -47,11 +49,6 @@ export default async function sharedGetStaticProps({
       // If paper has an error, we want to try again immediately
       revalidate: config.revalidateTimeIfError,
     };
-  }
-
-  if (documentId === 1299036) {
-    console.log(documentData);
-    console.log(metadata);
   }
 
   if (documentData) {
@@ -73,6 +70,7 @@ export default async function sharedGetStaticProps({
         try {
           postHtml = await fetchPostFromS3({ s3Url: documentData.post_src });
         } catch (error) {
+          captureException(error);
           console.log("Failed to fetch post html from S3", error);
           return {
             props: {
@@ -88,14 +86,19 @@ export default async function sharedGetStaticProps({
         }
       }
 
-      const filter = getCommentFilterByTab(tabName);
-      commentData = await fetchCommentsAPI({
-        documentId,
-        documentType:
-          documentType === "post" ? "researchhubpost" : documentType,
-        // @ts-ignore
-        filter,
-      });
+      try {
+        const filter = getCommentFilterByTab(tabName);
+        commentData = await fetchCommentsAPI({
+          documentId,
+          documentType:
+            documentType === "post" ? "researchhubpost" : documentType,
+          // @ts-ignore
+          filter,
+        });
+      } catch (error) {
+        console.log(error);
+        captureException(error);
+      }
 
       documentData["postHtml"] = postHtml;
 
