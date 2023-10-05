@@ -31,6 +31,10 @@ interface props {
 }
 
 function XRange({ rangyObj }: props) {
+  if (process.browser) {
+    return null;
+  }
+
   if (rangy.initialized === false) {
     rangy.init();
   }
