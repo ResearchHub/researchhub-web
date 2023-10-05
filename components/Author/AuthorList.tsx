@@ -11,7 +11,10 @@ interface Props {
 
 const Author = ({ author }: { author: AuthorProfile }) => {
   return (
-    <span className={css(styles.author)}>
+    <span
+      className={css(styles.author)}
+      key={author.firstName + author.lastName + "_author"}
+    >
       {author.id ? (
         <span>
           <ALink href={`/user/${author.id}/overview`}>

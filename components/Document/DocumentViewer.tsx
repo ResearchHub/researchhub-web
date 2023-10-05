@@ -323,18 +323,6 @@ const DocumentViewer = ({
     actualContentWidth > windowDimensions.width - LEFT_SIDEBAR_MAX_WIDTH;
 
   const uploadPDF = (acceptedFiles: File[] | any[]): void => {
-    // const preload: Array<PreloadRow> = [];
-    // setLoading(true);
-    // acceptedFiles.map(() => {
-    //   const uuid = window.URL.createObjectURL(new Blob([])).substring(31);
-    //   preload.push({
-    //     citation_type: "LOADING",
-    //     id: uuid,
-    //     created: true,
-    //   });
-    // });
-
-    // setCreatedReferences(preload);
     setUploadingPdf(true);
 
     updateReferenceCitationFile({
@@ -415,14 +403,15 @@ const DocumentViewer = ({
             </div>
           ) : (
             <>
-              {visibilityPreferenceForViewingComments !== "OFF" && (
-                <AnnotationLayer
-                  documentInstance={documentInstance}
-                  citationInstance={citationInstance}
-                  contentRef={contentRef}
-                  onFetch={onCommentsFetched}
-                />
-              )}
+              {visibilityPreferenceForViewingComments !== "OFF" &&
+                process.browser && (
+                  <AnnotationLayer
+                    documentInstance={documentInstance}
+                    citationInstance={citationInstance}
+                    contentRef={contentRef}
+                    onFetch={onCommentsFetched}
+                  />
+                )}
 
               {!postHtml ? (
                 <>

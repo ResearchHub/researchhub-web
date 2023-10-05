@@ -41,6 +41,7 @@ const DocumentIndexPage: NextPage<Args> = ({
   metadata,
   errorCode,
 }) => {
+  console.log(errorCode);
   const documentType = "paper";
   const router = useRouter();
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -63,6 +64,7 @@ const DocumentIndexPage: NextPage<Args> = ({
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
   }
+
   if (errorCode) {
     return <Error statusCode={errorCode} />;
   }
@@ -102,17 +104,19 @@ const DocumentIndexPage: NextPage<Args> = ({
           <div className={css(styles.bodyWrapper)}>
             {pdfUrl ? (
               <div className={css(styles.viewerWrapper)}>
-                <DocumentViewer
-                  documentInstance={{ id: document.id, type: "paper" }}
-                  document={document}
-                  pdfUrl={pdfUrl}
-                  viewerWidth={config.width}
-                  onZoom={(zoom: ZoomAction) => {
-                    if (!zoom.isExpanded) {
-                      setViewerWidth(zoom.newWidth);
-                    }
-                  }}
-                />
+                {process.browser && (
+                  <DocumentViewer
+                    documentInstance={{ id: document.id, type: "paper" }}
+                    document={document}
+                    pdfUrl={pdfUrl}
+                    viewerWidth={config.width}
+                    onZoom={(zoom: ZoomAction) => {
+                      if (!zoom.isExpanded) {
+                        setViewerWidth(zoom.newWidth);
+                      }
+                    }}
+                  />
+                )}
               </div>
             ) : (
               <div className={css(styles.body)}>

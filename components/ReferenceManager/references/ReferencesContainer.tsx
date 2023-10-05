@@ -349,7 +349,6 @@ function ReferencesContainer({
 
     const folderIds = _rowIds.filter((id) => String(id).includes("folder"));
     const referenceIds = _rowIds.filter((id) => !String(id).includes("folder"));
-    console.log(folderIds);
 
     removeReferenceCitations({
       onError: emptyFncWithMsg,
