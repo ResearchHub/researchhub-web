@@ -45,7 +45,7 @@ type Args = {
   onCommentCreate?: Function;
   onCommentUpdate?: Function;
   onCommentRemove?: Function;
-  totalCommentCount: number;
+  totalCommentCount?: number;
   initialComments?: CommentType[] | undefined;
   initialFilter?: string | null;
   editorType?: COMMENT_TYPES;

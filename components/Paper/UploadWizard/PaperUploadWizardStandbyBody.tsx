@@ -19,7 +19,8 @@ type Props = {
 const TWENTY_FIVE_SEC = 25000;
 
 const FAKE_PERCENTS = [
-  2, 7, 11, 13, 24, 28, 32, 50, 55, 63, 70, 81, 83, 85, 88, 89, 91,
+  2, 7, 11, 13, 24, 28, 32, 50, 55, 63, 70, 81, 83, 85, 88, 89, 91, 92, 93, 94,
+  95, 96, 97, 98, 99,
 ];
 
 const timeLoop = ({
@@ -112,7 +113,7 @@ function PaperUploadWizardStandbyBody({
   const didProcessFail = ["FAILED", "FAILED_DOI"].includes(uploadStatus);
 
   return (
-    (<div className={css(styles.wizardStandby)}>
+    <div className={css(styles.wizardStandby)}>
       {!didProcessFail ? (
         <div className={css(styles.wizardStandbyBox)}>
           <div className={css(styles.title)}>{"Uploading a paper"}</div>
@@ -209,7 +210,7 @@ function PaperUploadWizardStandbyBody({
           </div>
         </div>
       )}
-    </div>)
+    </div>
   );
 }
 

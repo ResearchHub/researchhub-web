@@ -62,26 +62,14 @@ interface Args {
   metadata?: any;
   postHtml?: TrustedHTML | string;
   errorCode?: number;
-  commentData?: any;
 }
 
 const DocumentIndexPage: NextPage<Args> = ({
   documentData,
   metadata,
   postHtml = "",
-  commentData,
   errorCode,
 }) => {
-  let displayCommentsFeed = false;
-  let parsedComments = [];
-  let commentCount = 0;
-  if (commentData) {
-    const { comments, count } = commentData;
-    commentCount = count;
-    parsedComments = comments.map((c) => parseComment({ raw: c }));
-    displayCommentsFeed = true;
-  }
-
   const { revalidateDocument } = useCacheControl();
   const documentType = "post";
   const router = useRouter();
@@ -190,8 +178,8 @@ const DocumentIndexPage: NextPage<Args> = ({
                 </div>
               ) : (
                 <DocumentViewer
-                  // @ts-ignore
                   isPost={true}
+                  // @ts-ignore
                   postHtml={_postHtml}
                   documentInstance={{
                     id: document.id,
@@ -211,7 +199,6 @@ const DocumentIndexPage: NextPage<Args> = ({
             <div style={{ maxWidth: viewerWidth, margin: "20px auto 0 auto" }}>
               <div className={css(styles.subheader)}>Conversation</div>
               <CommentFeed
-                initialComments={parsedComments}
                 document={document}
                 showFilters={false}
                 showSort={false}
@@ -248,7 +235,6 @@ const DocumentIndexPage: NextPage<Args> = ({
                 onCommentRemove={(comment) => {
                   revalidateDocument();
                 }}
-                totalCommentCount={commentCount}
               />
             </div>
           </div>

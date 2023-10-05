@@ -4,7 +4,6 @@ import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps
 
 interface Args {
   documentData?: any;
-  commentData?: any;
   errorCode?: number;
   tabName: string;
   metadata?: any;
@@ -12,7 +11,6 @@ interface Args {
 
 const TabPage: NextPage<Args> = ({
   documentData,
-  commentData,
   tabName,
   errorCode,
   metadata,
@@ -23,7 +21,6 @@ const TabPage: NextPage<Args> = ({
       documentType="post"
       tabName={tabName}
       metadata={metadata}
-      commentData={commentData}
       errorCode={errorCode}
     />
   );
