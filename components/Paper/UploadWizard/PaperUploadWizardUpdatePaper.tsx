@@ -130,7 +130,6 @@ function PaperUploadWizardUpdatePaper({
   const onFormSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
     setIsSubmitting(true);
-    console.log(`/paper/${parsedWsResponse.current_paper.id}/${parsedWsResponse.current_paper.slug}`)
     onExit();
     router.push(`/paper/${parsedWsResponse.current_paper.id}/${parsedWsResponse.current_paper.slug}`);
   };
