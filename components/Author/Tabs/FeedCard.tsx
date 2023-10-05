@@ -154,7 +154,9 @@ function FeedCard({
 
   // const bounty = bounties?.[0];
   const feDocUrl = `/${
-    formattedDocType === "question" ? "question" : RESEARCHHUB_POST_DOCUMENT_TYPES.includes(formattedDocType ?? "")
+    formattedDocType === "question"
+      ? "question"
+      : RESEARCHHUB_POST_DOCUMENT_TYPES.includes(formattedDocType ?? "")
       ? "post"
       : formattedDocType
   }/${id}/${slug ?? "new"}`;
@@ -370,22 +372,22 @@ function FeedCard({
                         badgeOverride={styles.badge}
                       />
                       {hasActiveBounty && (
-                          <ContentBadge
-                            badgeOverride={styles.badge}
-                            contentType="bounty"
-                            bountyAmount={bountyAmount}
-                            label={
-                              <div style={{ display: "flex", whiteSpace: "pre" }}>
-                                <div style={{ flex: 1 }}>
-                                  {formatBountyAmount({
-                                    amount: bountyAmount,
-                                  })}{" "}
-                                  RSC
-                                </div>
+                        <ContentBadge
+                          badgeOverride={styles.badge}
+                          contentType="bounty"
+                          bountyAmount={bountyAmount}
+                          label={
+                            <div style={{ display: "flex", whiteSpace: "pre" }}>
+                              <div style={{ flex: 1 }}>
+                                {formatBountyAmount({
+                                  amount: bountyAmount,
+                                })}{" "}
+                                RSC
                               </div>
-                            }
-                          />
-                      )}                      
+                            </div>
+                          }
+                        />
+                      )}
                       <DocumentHubs hubs={parsedHubs} withShowMore={false} />
                     </div>
 
@@ -434,6 +436,9 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     marginRight: 10,
     borderRadius: "50px",
+    ":hover": {
+      borderRadius: 5,
+    },
   },
   authorWrapper: {
     fontSize: 14,

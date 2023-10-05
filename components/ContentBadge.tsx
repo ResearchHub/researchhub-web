@@ -307,9 +307,9 @@ const styles = StyleSheet.create({
       width: "100%",
       height: "100%",
       opacity: 0,
-      borderRadius: 50,
+      borderRadius: 5,
       boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
-      transition: "opacity 0.3s ease-in-out",
+      transition: "opacity 0.3s ease-in-out, border-radius 0s",
       top: 0,
       left: 0,
     },
@@ -357,6 +357,7 @@ const styles = StyleSheet.create({
   bountyHovered: {
     position: "absolute",
     transform: "scale(1.1)",
+    borderRadius: 5,
     ":after": {
       opacity: 1,
     },
