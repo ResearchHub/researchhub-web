@@ -54,7 +54,7 @@ const ContentBadgeBase = ({
         styles["badgeFor_" + contentType],
         styles[size],
         badgeOverride,
-        badgeHovered && contentType === "bounty" && styles.bountyHovered,
+        true && contentType === "bounty" && styles.bountyHovered,
         keepPositionAbsolute && styles.keepPositionAbsolute,
       ]}
     >
@@ -307,10 +307,10 @@ const styles = StyleSheet.create({
       width: "100%",
       height: "100%",
       opacity: 0,
-      borderRadius: 5,
       boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
       transition: "opacity 0.3s ease-in-out",
       top: 0,
+      borderRadius: 50,
       left: 0,
     },
   },
