@@ -120,7 +120,6 @@ class UploadPaperModal extends Component {
   render() {
     let { modals } = this.props;
 
-    let count = this.props.modals.uploadPaperModal.suggestedPapers.length;
     return (
       <BaseModal
         isOpen={modals.openUploadPaperModal}

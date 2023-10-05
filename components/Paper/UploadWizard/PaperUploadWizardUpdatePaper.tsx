@@ -28,12 +28,9 @@ import Loader from "~/components/Loader/Loader";
 import withWebSocket from "~/components/withWebSocket";
 import { StyleSheet } from "aphrodite";
 import { ClipLoader } from "react-spinners";
-import HubSelect from "~/components/Hubs/HubSelect";
-import { parseHub } from "~/config/types/hub";
 
 export type FormErrors = {
   paperID: boolean;
-  selectedHubs: boolean;
   title: boolean /* editorialized title */;
   doi: boolean;
 };
@@ -41,7 +38,6 @@ export type FormErrors = {
 export type FormState = {
   doi: NullableString;
   paperID: ID;
-  selectedHubs: any[];
   title: NullableString /* editorialized title */;
 };
 
@@ -60,14 +56,12 @@ type GetIsFormValidArgs = {
 const defaulError: FormErrors = {
   doi: false,
   paperID: false,
-  selectedHubs: false,
   title: false,
 };
 
 const defaultFormState: FormState = {
   doi: null,
   paperID: null,
-  selectedHubs: [],
   title: null,
 };
 
@@ -77,14 +71,9 @@ const getIsFormValid = ({
 }: GetIsFormValidArgs): [verdict: boolean, errors: FormErrors] => {
   let verdict = true;
   const errorResult = { ...defaulError };
-  const { selectedHubs } = formState;
   if (submissionType !== "standby" && isNullOrUndefined(formState.paperID)) {
     verdict = false;
     errorResult.paperID = true;
-  }
-  if (isEmpty(selectedHubs ?? [])) {
-    verdict = false;
-    errorResult.selectedHubs = true;
   }
   return [verdict, errorResult];
 };
@@ -101,16 +90,12 @@ function useEffectPasteMetaDataToForm({
   uploaderContextValues: NewPostButtonContextValues;
 }): void {
   const asyncDOI = parsedWsResponse?.data?.doi ?? null;
-  const hubs = (parsedWsResponse?.current_hubs || []).map((hub) =>
-    parseHub(hub)
-  );
 
   useEffect(() => {
     setFormState({
       ...currentFormState,
       doi: asyncDOI ?? uploaderContextValues?.doi ?? null,
       paperID: uploaderContextValues?.paperID,
-      selectedHubs: hubs,
     });
   }, [asyncDOI, uploaderContextValues?.doi, uploaderContextValues?.paperID]);
 }
@@ -133,7 +118,7 @@ function PaperUploadWizardUpdatePaper({
   const isAsyncComplete = parsedWsResponse?.data?.paper_status === "COMPLETE";
   const asyncPaperTitle = parsedWsResponse?.current_paper?.paper_title ?? null;
   const asyncDOI = parsedWsResponse?.data?.doi ?? null;
-  const { doi, paperID, selectedHubs, title } = formState;
+  const { doi, paperID, title } = formState;
 
   useEffectPasteMetaDataToForm({
     currentFormState: formState,
@@ -145,108 +130,13 @@ function PaperUploadWizardUpdatePaper({
   const onFormSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
     setIsSubmitting(true);
-    const [verdict, formErrors] = getIsFormValid({
-      formState,
-      submissionType: uploaderContextValues.wizardBodyType ?? null,
-    });
-    if (verdict && isAsyncComplete) {
-      // update paper instance directly
-      const formattedPayload: any = {
-        // intentional undefined to avoid overriding BE-proccessed metadata
-        ...formState,
-        authors: undefined,
-        publishDate: undefined,
-        hubs: selectedHubs.map((hub): ID => hub.id),
-      };
-
-      const response = await paperActions.patchPaper(paperID, formattedPayload);
-      const { payload: resPayload } = response;
-      if (resPayload.success) {
-        const { postedPaper } = resPayload;
-        const {
-          id: paperID,
-          paper_title,
-          slug,
-          title,
-          unified_document_id: postedPaperUniDocID,
-        } = postedPaper || {};
-        setIsSubmitting(false);
-        const paperSlug = !isEmpty(slug)
-          ? slug
-          : buildSlug(paper_title ? paper_title : title);
-        if (Boolean(uploaderContextValues?.hypothesis?.isUploadForHypothesis)) {
-          const { onPaperUpdateComplete } =
-            uploaderContextValues?.hypothesis ?? {};
-          nullthrows(onPaperUpdateComplete)({
-            postedPaperUniDocID,
-            exitPaperUploadModal: onExit,
-          });
-          return;
-        }
-        router.push(`/paper/${paperID}/${paperSlug}`);
-        onExit();
-      } else {
-        setIsSubmitting(false);
-      }
-    } else {
-      setFormErrors(formErrors);
-      setIsSubmitting(false);
-    }
+    console.log(`/paper/${parsedWsResponse.current_paper.id}/${parsedWsResponse.current_paper.slug}`)
+    onExit();
+    router.push(`/paper/${parsedWsResponse.current_paper.id}/${parsedWsResponse.current_paper.slug}`);
   };
 
   return (
     <form onSubmit={onFormSubmit}>
-      {(!uploaderContextValues.isWithDOI && !isEmpty(asyncDOI)) ? (
-        <FormInput
-          disabled={isSubmitting || isEmpty(asyncDOI)}
-          id="doi"
-          noDisabledStyles={true}
-          label={["DOI"]}
-          required
-          labelStyle={formGenericStyles.labelStyle}
-          onChange={(_id: ID, doi: string): void =>
-            setFormState({ ...formState, doi: isEmpty(doi) ? null : doi })
-          }
-          placeholder={isEmpty(asyncDOI) ? "" : "DOI"}
-          icon={
-            isEmpty(asyncDOI) && (
-              <ClipLoader
-                sizeUnit={"px"}
-                size={14}
-                color={colors.BLUE(1)}
-                loading={true}
-              />
-            )
-          }
-          value={doi}
-          iconStyles={styles.loaderStyle}
-        />
-      ) : null}
-      {isAsyncComplete && (
-        <>
-          <HubSelect
-            selectedHubs={formState.selectedHubs}
-            onChange={(hubs) => {
-              setFormState({ ...formState, selectedHubs: hubs });
-            }}
-          />
-          <FormInput
-            disabled={isSubmitting}
-            id="title"
-            label="Editorialized Title (optional)"
-            labelStyle={formGenericStyles.labelStyle}
-            subtitle={asyncPaperTitle ?? null}
-            onChange={(_id: ID, title: string): void =>
-              setFormState({
-                ...formState,
-                title: isEmpty(title) ? null : title,
-              })
-            }
-            placeholder="Jargon free version of the title that the average person would understand"
-            value={title}
-          />
-        </>
-      )}
       <div
         style={{
           display: "flex",
@@ -257,11 +147,11 @@ function PaperUploadWizardUpdatePaper({
       >
         <Button
           customButtonStyle={verifStyles.buttonCustomStyle}
-          disabled={isSubmitting || !isAsyncComplete}
+          disabled={!isAsyncComplete}
           key="upload-wizard-button"
           label={
             !isSubmitting ? (
-              "Save"
+              "View Paper"
             ) : (
               <ClipLoader
                 sizeUnit={"px"}
