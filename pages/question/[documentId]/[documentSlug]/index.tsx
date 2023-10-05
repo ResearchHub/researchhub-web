@@ -70,19 +70,6 @@ const DocumentIndexPage: NextPage<Args> = ({
   postHtml = "",
   errorCode,
 }) => {
-<<<<<<< HEAD
-  let displayCommentsFeed = false;
-  let parsedComments = [];
-  let commentCount = 0;
-  if (commentData) {
-    const { comments, count } = commentData;
-    commentCount = count;
-    parsedComments = comments.map((c) => parseComment({ raw: c }));
-    displayCommentsFeed = true;
-  }
-
-=======
->>>>>>> f8d1a7ffc (Removing statically generated comments because of base64 issues)
   const { revalidateDocument } = useCacheControl();
   const documentType = "post";
   const router = useRouter();
