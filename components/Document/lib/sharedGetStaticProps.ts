@@ -49,6 +49,11 @@ export default async function sharedGetStaticProps({
     };
   }
 
+  if (documentId === 1299036) {
+    console.log(documentData);
+    console.log(metadata);
+  }
+
   if (documentData) {
     // If slug is not present or does not match paper's, we want to redirect
     // DANGER ZONE: Be careful when updating this. Could result
