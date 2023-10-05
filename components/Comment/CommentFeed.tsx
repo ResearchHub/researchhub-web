@@ -88,9 +88,9 @@ const CommentFeed = ({
   const [selectedSortValue, setSelectedSortValue] = useState<string | null>(
     sortOpts[0].value
   );
-  const [selectedFilterValue, setSelectedFilterValue] = useState<string | null | undefined>(
-    initialFilter
-  );
+  const [selectedFilterValue, setSelectedFilterValue] = useState<
+    string | null | undefined
+  >(initialFilter);
 
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
@@ -297,7 +297,6 @@ const CommentFeed = ({
   const onSupport = (data: any) => {
     const found = findComment({ id: data.object_id, comments });
     if (found) {
-      console.log(found);
       const updatedComment = { ...found.comment };
       const tip: Purchase = {
         amount: data.amount,
@@ -473,20 +472,20 @@ const CommentFeed = ({
                   />
                 )}
                 {showSort && (
-                <div className={css(styles.sortWrapper)}>
-                  <CommentSort
-                    selectedSortValue={selectedSortValue}
-                    dropdownDirection={
-                      showFilters ? "bottom-right" : "bottom-left"
-                    }
-                    handleSelect={(sval) => {
-                      setSelectedSortValue(sval);
-                      setIsFetching(true);
-                      setComments([]);
-                      handleFetch({ sort: sval });
-                    }}
-                  />
-                </div>
+                  <div className={css(styles.sortWrapper)}>
+                    <CommentSort
+                      selectedSortValue={selectedSortValue}
+                      dropdownDirection={
+                        showFilters ? "bottom-right" : "bottom-left"
+                      }
+                      handleSelect={(sval) => {
+                        setSelectedSortValue(sval);
+                        setIsFetching(true);
+                        setComments([]);
+                        handleFetch({ sort: sval });
+                      }}
+                    />
+                  </div>
                 )}
               </div>
             )}

@@ -72,8 +72,6 @@ const DocumentIndexPage: NextPage<Args> = ({
   commentData,
   errorCode,
 }) => {
-  console.log("documentData", documentData);
-
   let displayCommentsFeed = false;
   let parsedComments = [];
   let commentCount = 0;
