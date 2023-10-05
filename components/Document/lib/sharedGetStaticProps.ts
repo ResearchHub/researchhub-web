@@ -1,8 +1,5 @@
-import { fetchCommentsAPI } from "~/components/Comment/lib/api";
 import { fetchDocumentByType } from "./fetchDocumentByType";
-import isEmpty from "lodash/isEmpty";
 import fetchPostFromS3 from "../api/fetchPostFromS3";
-import getCommentFilterByTab from "./getCommentFilterByTab";
 import { DocumentType } from "~/components/Document/lib/types";
 import fetchDocumentMetadata from "../api/fetchDocumentMetadata";
 import { captureException } from "@sentry/browser";
@@ -25,7 +22,6 @@ export default async function sharedGetStaticProps({
   const { documentId, documentSlug } = ctx.params!;
   const tabName = ctx.params?.tabName || null;
   let documentData: any | null = null;
-  let commentData: any | null = null;
   let postHtml: any | null = null;
   let metadata: any | null = null;
 
@@ -41,7 +37,6 @@ export default async function sharedGetStaticProps({
       props: {
         errorCode: 500,
         documentType,
-        commentData,
         postHtml,
         tabName,
         metadata,
@@ -76,7 +71,6 @@ export default async function sharedGetStaticProps({
             props: {
               errorCode: 404,
               documentType,
-              commentData,
               postHtml,
               tabName,
               metadata,
@@ -86,26 +80,11 @@ export default async function sharedGetStaticProps({
         }
       }
 
-      try {
-        const filter = getCommentFilterByTab(tabName);
-        commentData = await fetchCommentsAPI({
-          documentId,
-          documentType:
-            documentType === "post" ? "researchhubpost" : documentType,
-          // @ts-ignore
-          filter,
-        });
-      } catch (error) {
-        console.log(error);
-        captureException(error);
-      }
-
       documentData["postHtml"] = postHtml;
 
       return {
         props: {
           documentData,
-          commentData,
           documentType,
           postHtml,
           tabName,
@@ -120,7 +99,6 @@ export default async function sharedGetStaticProps({
         errorCode: 404,
         documentType,
         postHtml,
-        commentData,
         tabName,
         metadata,
       },

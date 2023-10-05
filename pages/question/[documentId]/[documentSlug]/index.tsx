@@ -62,16 +62,15 @@ interface Args {
   metadata?: any;
   postHtml?: TrustedHTML | string;
   errorCode?: number;
-  commentData?: any;
 }
 
 const DocumentIndexPage: NextPage<Args> = ({
   documentData,
   metadata,
   postHtml = "",
-  commentData,
   errorCode,
 }) => {
+<<<<<<< HEAD
   let displayCommentsFeed = false;
   let parsedComments = [];
   let commentCount = 0;
@@ -82,6 +81,8 @@ const DocumentIndexPage: NextPage<Args> = ({
     displayCommentsFeed = true;
   }
 
+=======
+>>>>>>> f8d1a7ffc (Removing statically generated comments because of base64 issues)
   const { revalidateDocument } = useCacheControl();
   const documentType = "post";
   const router = useRouter();
@@ -190,8 +191,8 @@ const DocumentIndexPage: NextPage<Args> = ({
                 </div>
               ) : (
                 <DocumentViewer
-                  // @ts-ignore
                   isPost={true}
+                  // @ts-ignore
                   postHtml={_postHtml}
                   documentInstance={{
                     id: document.id,
@@ -211,7 +212,6 @@ const DocumentIndexPage: NextPage<Args> = ({
             <div style={{ maxWidth: viewerWidth, margin: "20px auto 0 auto" }}>
               <div className={css(styles.subheader)}>Answers</div>
               <CommentFeed
-                initialComments={parsedComments}
                 document={document}
                 showFilters={false}
                 showSort={false}
@@ -248,7 +248,6 @@ const DocumentIndexPage: NextPage<Args> = ({
                 onCommentRemove={(comment) => {
                   revalidateDocument();
                 }}
-                totalCommentCount={commentCount}
               />
             </div>
           </div>

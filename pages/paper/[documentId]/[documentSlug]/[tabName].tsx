@@ -12,7 +12,6 @@ interface Args {
 
 const TabPage: NextPage<Args> = ({
   documentData,
-  commentData,
   tabName,
   errorCode,
   metadata,
@@ -23,7 +22,6 @@ const TabPage: NextPage<Args> = ({
       documentType="paper"
       metadata={metadata}
       tabName={tabName}
-      commentData={commentData}
       errorCode={errorCode}
     />
   );

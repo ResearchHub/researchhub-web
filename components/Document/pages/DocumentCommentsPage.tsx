@@ -32,7 +32,6 @@ const getEditorTypeFromTabName = (tabName: string): COMMENT_TYPES => {
 
 interface Args {
   documentData?: any;
-  commentData?: any;
   metadata?: any;
   errorCode?: number;
   documentType: DocumentType;
@@ -41,7 +40,6 @@ interface Args {
 
 const DocumentCommentsPage: NextPage<Args> = ({
   documentData,
-  commentData,
   documentType,
   tabName,
   metadata,
@@ -51,7 +49,7 @@ const DocumentCommentsPage: NextPage<Args> = ({
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(
     config.width
   );
-  
+
   const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({
     rawMetadata: metadata,
     unifiedDocumentId: documentData?.unified_document?.id,
@@ -77,15 +75,8 @@ const DocumentCommentsPage: NextPage<Args> = ({
     return <Error statusCode={500} />;
   }
 
-  let displayCommentsFeed = false;
-  let parsedComments = [];
-  let commentCount = 0;
-  if (commentData) {
-    const { comments, count } = commentData;
-    commentCount = count;
-    parsedComments = comments.map((c) => parseComment({ raw: c }));
-    displayCommentsFeed = true;
-  }
+  const displayCommentsFeed = false;
+  const commentCount = 0;
 
   return (
     <DocumentContext.Provider
@@ -109,7 +100,6 @@ const DocumentCommentsPage: NextPage<Args> = ({
           style={{ maxWidth: viewerWidth }}
         >
           <CommentFeed
-            initialComments={parsedComments}
             document={document}
             showFilters={false}
             initialFilter={getCommentFilterByTab(tabName)}
