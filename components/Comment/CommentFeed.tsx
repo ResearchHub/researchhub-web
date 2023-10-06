@@ -37,6 +37,8 @@ import { GenericDocument } from "../Document/lib/types";
 import { useRouter } from "next/router";
 import getReviewCategoryScore from "./lib/quill/getReviewCategoryScore";
 import { captureEvent } from "~/config/utils/events";
+import getCommentFilterByTab from "../Document/lib/getCommentFilterByTab";
+
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
@@ -361,7 +363,11 @@ const CommentFeed = ({
     setCurrentPage(1);
     setRootLevelCommentCount(totalCommentCount || 0);
     setComments(initialComments || []);
-    setSelectedFilterValue(initialFilter);
+
+    // @ts-ignore
+    const filter = getCommentFilterByTab(router?.query?.tabName);
+    setSelectedFilterValue(filter);
+    handleFetch({ filter });
   }, [router?.query?.tabName]);
 
   const isQuestion = document?.unifiedDocument?.documentType === "question";
