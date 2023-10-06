@@ -623,11 +623,10 @@ function AuthorPage(props) {
 
   const extraProfileOptions = [
     {
-      label: "Edit paper",
-      group: "Document",
+      label: "Request to Delete Profile",
       html: (
         <div>
-          Request
+          Request Profile Deletion
           <UserDeleteRequestModal
             isOpen={extraProfileOptionsIsOpen}
             closeModal={closeExtraProfileOptions}
@@ -635,7 +634,7 @@ function AuthorPage(props) {
           />
         </div>
       ),
-      value: "edit-paper",
+      value: "request-to-delete-profile",
       onClick: () => {
         onClickExtraProfileOptions();
       },
@@ -1799,6 +1798,18 @@ const styles = StyleSheet.create({
   mobileEditButtonCustom: {},
   editProfileWrapper: {
     marginTop: 15,
+  },
+  btnDots: {
+    fontSize: 22,
+    borderRadius: "30px",
+    color: colors.BLACK(1.0),
+    background: colors.LIGHTER_GREY(),
+    border: `1px solid ${colors.LIGHTER_GREY()}`,
+    padding: "6px 8px",
+    ":hover": {
+      background: colors.DARKER_GREY(0.2),
+      transition: "0.2s",
+    },
   },
 });
 

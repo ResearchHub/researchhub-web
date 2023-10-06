@@ -1,3 +1,4 @@
+import { bindActionCreators } from "redux";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { firstImageFromHtml } from "~/config/utils/getFirstImageOfHtml";
@@ -6,6 +7,8 @@ import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdow
 import { StyleSheet, css } from "aphrodite";
 import { Fragment, SyntheticEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { ModalActions } from "~/redux/modals";
+import { MessageActions } from "~/redux/message";
 import { toFormData } from "~/config/utils/toFormData";
 import { buildApiUri } from "~/config/utils/buildApiUri";
 import { Helpers } from "@quantfive/js-web-config";
@@ -46,7 +49,6 @@ export const createVerificationRequest = ({ onError, onSuccess, payload }: Args)
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((res: any) => {
-      console.log(res);
       onSuccess();
     })
     .catch(onError);
@@ -54,11 +56,13 @@ export const createVerificationRequest = ({ onError, onSuccess, payload }: Args)
 
 
 export type UserDeleteRequestFormProps = {
-  onExit: (event?: SyntheticEvent) => void;
   author: any;
+  modalReduxActions?: any;
+  msgReduxActions: any;
+  onExit: (event?: SyntheticEvent) => void;
 };
 
-function UserDeleteRequestForm({ author, onExit }: UserDeleteRequestFormProps) {
+function UserDeleteRequestForm({ author, modalReduxActions, msgReduxActions, onExit }: UserDeleteRequestFormProps) {
   const [files, setFiles] = useState([]);
   const [isFileDragged, setIsFiledDragged] = useState<boolean>(false);
   const router = useRouter();
@@ -90,8 +94,27 @@ function UserDeleteRequestForm({ author, onExit }: UserDeleteRequestFormProps) {
     });
     createVerificationRequest({
       payload: payload,
-      onError: (_err: Error): void => setIsSubmitting(false),
+      onError: (_err: Error): void => {
+        const { response: errorResponse } = _err ?? {};
+        const { status: statusCode } = errorResponse ?? {};
+
+        if (statusCode === 413) {
+          msgReduxActions.setMessage(
+            "The max total file size is 5 MB. Please upload smaller file(s)."
+          );
+          msgReduxActions.showMessage({ show: true, error: true });
+        } else if (statusCode === 429) {
+          modalReduxActions.openRecaptchaPrompt(true);
+          onExit()
+        } else {
+          msgReduxActions.setMessage("An error has occured. Please email us for profile deletion");
+          msgReduxActions.showMessage({ show: true, error: true });
+        }
+        setIsSubmitting(false)
+      },
       onSuccess: (response: any): void => {
+        msgReduxActions.setMessage("Request Submitted");
+        msgReduxActions.showMessage({ show: true, error: false });
         onExit();
       },
     });
@@ -225,7 +248,12 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
 });
 
-export default connect(mapStateToProps)(UserDeleteRequestForm);
+const mapDispatchToProps = (dispatch) => ({
+  modalReduxActions: bindActionCreators(ModalActions, dispatch),
+  msgReduxActions: bindActionCreators(MessageActions, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserDeleteRequestForm);
 
 const styles = StyleSheet.create({
   userDeleteRequestForm: {
@@ -265,14 +293,8 @@ const styles = StyleSheet.create({
     fontSize: "19px",
     lineHeight: "21px",
   },
-  error: {
-    border: `1px solid ${colors.RED(1)}`,
-  },
   errorText: {
     marginTop: "5px",
-  },
-  dropDown: {
-    zIndex: 999,
   },
   dropzone: {
     display: "flex",
@@ -303,6 +325,9 @@ const styles = StyleSheet.create({
     ":hover #browse": {
       textDecoration: "underline",
     },
+  },
+  browse: {
+    color: colors.BLUE(),
   },
   fullCanvas: {
     height: "100%",

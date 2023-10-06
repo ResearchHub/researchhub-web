@@ -190,6 +190,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   currentUser: state.auth.user,
 });
+
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
