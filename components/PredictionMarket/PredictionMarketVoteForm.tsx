@@ -33,6 +33,7 @@ const PredictionMarketVoteForm = ({
   const [vote, setVote] = useState<boolean | null>(null);
   const [prevVote, setPrevVote] = useState<PredictionMarketVote | null>(null);
   const [isFetching, setIsFetching] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleFetch = async () => {
     setIsFetching(true);
@@ -62,13 +63,20 @@ const PredictionMarketVoteForm = ({
   }, []);
 
   const handleSubmit = async (vote: boolean) => {
-    setVote(vote);
+    if (vote === null || vote === prevVote?.vote) {
+      // don't resubmit if the vote is the same
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
       const { vote: v } = await createVote({
         paperId,
         predictionMarketId: predictionMarket.id,
         vote,
       });
+
+      setVote(vote);
 
       if (v !== undefined) {
         setSubmitError(null);
@@ -91,6 +99,8 @@ const PredictionMarketVoteForm = ({
       });
       setSubmitError("Failed to create vote.");
       setVote(null);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -165,6 +175,7 @@ const PredictionMarketVoteForm = ({
                 </span>
               }
               fullWidth
+              disabled={isSubmitting}
               variant={vote === true ? "outlined" : "contained"}
               customButtonStyle={[
                 styles.button,
@@ -189,6 +200,7 @@ const PredictionMarketVoteForm = ({
                 </span>
               }
               fullWidth
+              disabled={isSubmitting}
               variant={vote === false ? "outlined" : "contained"}
               customButtonStyle={[
                 styles.button,

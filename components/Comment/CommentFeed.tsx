@@ -90,7 +90,7 @@ const CommentFeed = ({
     hasInitialComments ? false : true
   );
   const [rootLevelCommentCount, setRootLevelCommentCount] = useState<number>(
-    totalCommentCount || 0
+    totalCommentCount > 0 ? totalCommentCount : 0
   );
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(

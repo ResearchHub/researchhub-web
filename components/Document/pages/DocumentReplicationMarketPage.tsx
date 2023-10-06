@@ -23,9 +23,14 @@ import { RootState } from "~/redux";
 import { parseUser } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
+import { COMMENT_TYPES, parseComment } from "~/components/Comment/lib/types";
+import CommentFeed from "~/components/Comment/CommentFeed";
+import getCommentFilterByTab from "../lib/getCommentFilterByTab";
+import HorizontalTabBar from "~/components/HorizontalTabBar";
 
 interface Args {
   documentData?: any;
+  commentData?: any;
   metadata?: any;
   errorCode?: number;
   documentType: DocumentType;
@@ -34,6 +39,7 @@ interface Args {
 
 const DocumentReplicationMarketPage: NextPage<Args> = ({
   documentData,
+  commentData,
   documentType,
   tabName,
   metadata,
@@ -43,6 +49,7 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(
     config.width
   );
+  const [tab, setTab] = useState<"COMMENTS" | "VOTES">("COMMENTS");
   const { revalidateDocument } = useCacheControl();
 
   const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({
@@ -60,6 +67,7 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
     documentMetadata?.predictionMarket
   );
   const [votes, setVotes] = useState<PredictionMarketVote[]>([]);
+  const [commentCount, setCommentCount] = useState<number>(0);
 
   // figure out if the current user is an author of the paper
   const currentUser = useSelector((state: RootState) =>
@@ -102,6 +110,15 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
   // Update the local state when a vote is created
   const handleVoteCreated = (vote: PredictionMarketVote) => {
     if (market) {
+      // this is a fallback in-case we fail to fetch the user's vote from the backend
+      // double-check if there's an existing vote that matches the vote id,
+      // in which case we should update the vote instead of creating a new one
+      const existingVote = votes.find((v) => v.id === vote.id);
+      if (existingVote) {
+        handleVoteUpdated(vote, existingVote);
+        return;
+      }
+
       const newMarket = {
         ...market,
         votes: {
@@ -156,6 +173,24 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
     revalidateDocument();
   };
 
+  const { parsedComments, parsedCommentCount } = useMemo(() => {
+    let parsedComments = [];
+    let parsedCommentCount = 0;
+    if (commentData) {
+      const { comments, count } = commentData;
+      parsedCommentCount = count;
+      parsedComments = comments.map((c) => parseComment({ raw: c }));
+    }
+
+    return { parsedComments, parsedCommentCount };
+  }, [commentData]);
+
+  // this is done separately in a useEffect because we want to be able to
+  // locally update the comment count using the hooks on `CommentFeed` below.
+  useEffect(() => {
+    setCommentCount(parsedCommentCount);
+  }, [parsedCommentCount]);
+
   return (
     <DocumentContext.Provider
       value={{
@@ -190,7 +225,59 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
             />
           </div>
 
-          <PredictionMarketVoteFeed marketId={market.id} includeVotes={votes} />
+          <div className={css(styles.tabsHeader)}>
+            <HorizontalTabBar
+              tabs={[
+                {
+                  label: "Comments",
+                  value: "COMMENTS",
+                  isSelected: tab === "COMMENTS",
+                  pillContent: commentCount > 0 ? commentCount : undefined,
+                },
+                {
+                  label: "Votes",
+                  value: "VOTES",
+                  isSelected: tab === "VOTES",
+                  pillContent:
+                    market.votes.total > 0 ? market.votes.total : undefined,
+                },
+              ]}
+              onClick={(tab) => setTab(tab.value as "COMMENTS" | "VOTES")}
+              tabStyle={styles.tab}
+            />
+          </div>
+
+          {tab === "VOTES" && (
+            <PredictionMarketVoteFeed
+              marketId={market.id}
+              includeVotes={votes}
+            />
+          )}
+          {tab === "COMMENTS" && (
+            <CommentFeed
+              initialComments={parsedComments}
+              document={document}
+              showFilters={false}
+              initialFilter={getCommentFilterByTab(tabName)}
+              editorType={COMMENT_TYPES.REPLICABILITY_COMMENT}
+              allowBounty={false}
+              allowCommentTypeSelection={false}
+              // The primary reason for these callbacks is to "optimistically" update the metadata on the page and refresh the cache.
+              // Not every use case is taken into account since many scenarios are uncommon. For those, a page refresh will be required.
+              onCommentCreate={() => {
+                revalidateDocument();
+                setCommentCount(commentCount + 1);
+              }}
+              onCommentUpdate={() => {
+                revalidateDocument();
+              }}
+              onCommentRemove={() => {
+                revalidateDocument();
+                setCommentCount(commentCount - 1);
+              }}
+              totalCommentCount={commentCount}
+            />
+          )}
         </div>
       </DocumentPageLayout>
     </DocumentContext.Provider>
@@ -198,6 +285,20 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
 };
 
 const styles = StyleSheet.create({
+  tabsHeader: {
+    margin: "45px 0 24px 0",
+    borderBottom: `1px solid ${colors.GREY_BORDER}`,
+  },
+  tab: {
+    fontSize: 14,
+    fontWeight: 400,
+    paddingBottom: 8,
+    paddingTop: 8,
+    height: 20,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   bodyContentWrapper: {
     margin: "0 auto",
   },

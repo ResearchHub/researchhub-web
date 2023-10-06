@@ -21,6 +21,7 @@ const TabPage: NextPage<Args> = ({
     return (
       <DocumentReplicationMarketPage
         documentData={documentData}
+        commentData={commentData}
         documentType="paper"
         metadata={metadata}
         tabName={tabName}

@@ -149,7 +149,9 @@ const CommentEditor = ({
       if (_isEmpty) {
         forceShowPlaceholder({
           quillRef,
-          placeholderText: placeholder,
+          placeholderText:
+            commentTypes.find((ctype) => ctype.value === commentType)
+              ?.placeholder || placeholder,
         });
       }
 

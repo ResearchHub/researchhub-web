@@ -10,6 +10,7 @@ import {
   faArrowAltUp,
 } from "@fortawesome/pro-light-svg-icons";
 import { COMMENT_FILTERS, COMMENT_TYPES } from "./types";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
 
 export const commentTypes = [
   {
@@ -36,6 +37,15 @@ export const commentTypes = [
     placeholder: "Share a summary of this paper with the community",
     // @ts-ignore
     icon: <FontAwesomeIcon icon={faLayerGroup} />,
+  },
+  {
+    label: "Replicability",
+    value: COMMENT_TYPES.REPLICABILITY_COMMENT,
+    isDefault: false,
+    placeholder:
+      "Add a comment on why you think this paper is replicable or not",
+    // @ts-ignore
+    icon: <FontAwesomeIcon icon={faCheckCircle} />,
   },
 ];
 

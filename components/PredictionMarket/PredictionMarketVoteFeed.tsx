@@ -80,12 +80,6 @@ const PredictionMarketVoteFeed = ({
 
   return (
     <div>
-      <div className={css(styles.header)}>
-        Votes
-        {votes.length > 0 && (
-          <div className={css(styles.pillContent)}>{votes.length}</div>
-        )}
-      </div>
       {isFetching && (
         <div className={css(styles.placeholderWrapper)}>
           <CommentPlaceholder />
@@ -125,24 +119,6 @@ const PredictionMarketVoteFeed = ({
 };
 
 const styles = StyleSheet.create({
-  header: {
-    margin: "45px 0 15px 0",
-    display: "flex",
-    paddingBottom: 8,
-    borderBottom: `1px solid ${colors.GREY_BORDER}`,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    fontSize: 14,
-    fontWeight: 400,
-    gap: 6,
-  },
-  pillContent: {
-    background: "#F5F5F9",
-    borderRadius: "5px",
-    padding: "2px 10px",
-    color: colors.BLACK(0.5),
-    fontSize: 14,
-  },
   placeholderWrapper: {
     marginTop: 15,
   },
