@@ -30,7 +30,7 @@ const HubCard = (props) => {
           src={hub_image ? hub_image : "/static/background/hub-placeholder.svg"}
           alt={hub.name}
         />
-        <span className={"clamp1"}>{name}</span>
+        <span className={css(styles.text) + " clamp1"}>{name}</span>
       </Link>
     </Ripples>
   );
@@ -68,6 +68,9 @@ const styles = StyleSheet.create({
   last: {
     opacity: 1,
     borderBottom: "none",
+  },
+  text: {
+    textDecoration: "none",
   },
   hubImage: {
     height: 30,

@@ -120,7 +120,10 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
             </div>
             {metadata.hubs.length > 0 && (
               <div className={css(styles.hubsWrapper)}>
-                <DocumentHubs hubs={metadata.hubs} />
+                <DocumentHubs
+                  hubs={metadata.hubs}
+                  containerStyle={styles.hubsContainerOverride}
+                />
               </div>
             )}
             <div className={css(styles.lineItemsWrapper)}>
@@ -234,6 +237,9 @@ const BUFFER = 40;
 const SMALL_SCREEN_BREAKPOINT =
   config.width + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH + BUFFER;
 const styles = StyleSheet.create({
+  hubsContainerOverride: {
+    flexWrap: "wrap",
+  },
   headerRoot: {},
   title: {
     textTransform: "capitalize",
@@ -281,7 +287,7 @@ const styles = StyleSheet.create({
     [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
-    },    
+    },
   },
   titleWrapper: {
     marginBottom: 10,

@@ -25,7 +25,13 @@ import {
 import { isDevEnv } from "~/config/utils/env";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
-import { ID, RhDocumentType, parseUser } from "~/config/types/root_types";
+import {
+  AuthorProfile,
+  ID,
+  RhDocumentType,
+  parseAuthorProfile,
+  parseUser,
+} from "~/config/types/root_types";
 import { useState, useEffect, SyntheticEvent } from "react";
 import colors, {
   genericCardColors,
@@ -45,7 +51,14 @@ import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import ContentBadge from "~/components/ContentBadge";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { parsePaperAuthors } from "~/components/Document/lib/types";
+import {
+  Paper,
+  Post,
+  isPaper,
+  parsePaper,
+  parsePaperAuthors,
+  parsePost,
+} from "~/components/Document/lib/types";
 import AuthorList from "../AuthorList";
 import { parseHub } from "~/config/types/hub";
 import DocumentHubs from "~/components/Document/lib/DocumentHubs";
@@ -59,6 +72,7 @@ export type FeedCardProps = {
   boost_amount: number;
   bounties: Bounty[];
   created_by: any;
+  document: any;
   created_date: any;
   discussion_count: number;
   featured: boolean;
@@ -114,6 +128,7 @@ function FeedCard({
   first_figure,
   first_preview,
   type,
+  document,
   formattedDocLabel,
   formattedDocType,
   handleClick,
@@ -136,7 +151,16 @@ function FeedCard({
   user: currentUser,
   withSidePadding,
 }: FeedCardProps) {
-  const authors = parsePaperAuthors(paper);
+  let parsedDoc: null | Paper | Post = null;
+  let authors: AuthorProfile[] = [];
+
+  try {
+    // This should not fail, but just for in case, we don't want to break the whole feed.
+    parsedDoc =
+      formattedDocType === "paper" ? parsePaper(document) : parsePost(document);
+    authors = parsedDoc.authors;
+  } catch (error) {}
+
   const parsedHubs = (hubs || []).map(parseHub);
   const router = useRouter();
   const [isPreviewing, setIsPreviewing] = useState(false);
@@ -298,11 +322,19 @@ function FeedCard({
                   <div className={css(styles.rowContainer)}>
                     <div className={css(styles.cardBody)}>
                       <h2 className={css(styles.title)}>{cardTitle}</h2>
-                      <div className={css(styles.authorWrapper)}>
-                        <AuthorList
-                          authors={authors}
-                          moreAuthorsBtnStyle={styles.moreAuthorsBtnStyle}
-                        />
+                      <div className={css(styles.subheaderWrapper)}>
+                        {Boolean(authors[0]) && (
+                          <span className={css(styles.authors)}>
+                            {authors[0]?.firstName + " " + authors[0]?.lastName}
+                          </span>
+                        )}
+                        {authors?.length > 1 && <span>{` et al.`}</span>}
+                        {parsedDoc?.publishedDate && (
+                          <>
+                            <span className={css(styles.metaDivider)}></span>
+                            {parsedDoc?.publishedDate}
+                          </>
+                        )}
                       </div>
 
                       {cardBody && (
@@ -367,10 +399,12 @@ function FeedCard({
                     <div
                       className={css(styles.metaItem, styles.metaItemAsBadge)}
                     >
-                      <ContentBadge
-                        contentType={formattedDocType}
-                        badgeOverride={styles.badge}
-                      />
+                      <div className={css(styles.docBadgeWrapper)}>
+                        <ContentBadge
+                          contentType={formattedDocType}
+                          badgeOverride={styles.badge}
+                        />
+                      </div>
                       {hasActiveBounty && (
                         <ContentBadge
                           badgeOverride={styles.badge}
@@ -388,7 +422,11 @@ function FeedCard({
                           }
                         />
                       )}
-                      <DocumentHubs hubs={parsedHubs} withShowMore={false} />
+                      <DocumentHubs
+                        hubs={parsedHubs}
+                        withShowMore={false}
+                        hideOnSmallerResolution={true}
+                      />
                     </div>
 
                     <div
@@ -431,6 +469,20 @@ function FeedCard({
 }
 
 const styles = StyleSheet.create({
+  metaDivider: {
+    marginLeft: 8,
+    marginRight: 8,
+    borderLeft: `1px solid ${colors.BLACK(0.6)}`,
+    height: 20,
+  },
+  docBadgeWrapper: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
+  },
+  authors: {
+    textTransform: "capitalize",
+  },
   badge: {
     padding: "4px 12px",
     fontWeight: 400,
@@ -440,7 +492,7 @@ const styles = StyleSheet.create({
       borderRadius: 5,
     },
   },
-  authorWrapper: {
+  subheaderWrapper: {
     fontSize: 14,
     color: colors.BLACK(),
     marginBottom: 5,

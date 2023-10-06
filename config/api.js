@@ -720,9 +720,7 @@ const routes = (BASE_URL) => {
         url += "?";
       }
 
-      if (!doesNotExist(pageLimit)) {
-        url += `page_limit=${pageLimit}&`;
-      }
+      url += `page_limit=${pageLimit}&`;
 
       if (name) {
         url += `name__iexact=${name}&`;

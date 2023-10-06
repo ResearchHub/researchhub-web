@@ -38,6 +38,7 @@ export function getDocumentCard({
       return (
         <FeedCard
           {...targetDoc}
+          document={targetDoc}
           formattedDocType={formattedDocType}
           formattedDocLabel={formattedDocLabel}
           index={arrIndex}
