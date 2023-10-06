@@ -46,7 +46,7 @@ class WithdrawalModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      buttonEnabled: false,
+      buttonEnabled: true,
       networkVersion: null,
       connectedMetaMask: false,
       connectedWalletLink: false,
@@ -273,12 +273,12 @@ class WithdrawalModal extends Component {
     const { buttonEnabled, amount, transactionFee, userBalance, ethAccount } =
       this.state;
 
-    if (!buttonEnabled) {
-      showMessage({ show: false });
-      setMessage("Please agree to the ResearchHub ToS.");
-      showMessage({ show: true, error: true });
-      return;
-    }
+    // if (!buttonEnabled) {
+    //   showMessage({ show: false });
+    //   setMessage("Please agree to the ResearchHub ToS.");
+    //   showMessage({ show: true, error: true });
+    //   return;
+    // }
 
     if (amount < transactionFee) {
       showMessage({ show: false });
