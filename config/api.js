@@ -750,7 +750,7 @@ const routes = (BASE_URL) => {
       }),
     SORTED_HUB: (params = {}) => {
       // hard codedlimit to 10
-      let url = BASE_URL + `hub/?page_limit=10&ordering=-score`;
+      let url = BASE_URL + `hub/?page_limit=100&ordering=-score`;
 
       return url;
     },
