@@ -20,7 +20,6 @@ type Props = {
 };
 
 const HubsPage: NextPage<Props> = ({ hubs, errorCode }) => {
-
   const sortOpts = [
     { label: "Popular", value: "score" },
     { label: "Name", value: "name" },
@@ -76,7 +75,8 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode }) => {
   }, [sort]);
 
   const debouncedSetQuery = debounce(setQuery, 500);
-  const hubsToRender = query.length > 0 ? suggestions.map(s => s.hub) : parsedHubs;
+  const hubsToRender =
+    query.length > 0 ? suggestions.map((s) => s.hub) : parsedHubs;
   const showCommentCount = (winWidth || 0) > breakpoints.medium.int;
 
   return (

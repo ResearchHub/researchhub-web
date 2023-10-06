@@ -145,8 +145,8 @@ export const parseNote = (raw: any): Note => {
 
 export const parseReviewSummary = (raw: any): ReviewSummary => {
   return {
-    count: raw.count,
-    averageRating: raw.avg,
+    count: raw?.count || 0,
+    averageRating: raw?.avg || 0,
   };
 };
 
@@ -168,7 +168,7 @@ export const parseGenericDocument = (raw: any): GenericDocument => {
     createdBy: parseUser(raw.uploaded_by || raw.created_by),
     doi: raw.doi,
     publishedDate: formatDateStandard(raw.created_date, "MMM D, YYYY"),
-    reviewSummary: parseReviewSummary(raw.unified_document.reviews),
+    reviewSummary: parseReviewSummary(raw?.unified_document?.reviews),
     // @ts-ignore
     formats: [...(raw.file ? [{ type: "pdf", url: raw.file }] : [])],
     raw, // For legacy compatibility purposes
@@ -216,7 +216,7 @@ export const parsePost = (raw: any): Post => {
     srcUrl: raw.post_src,
     postHtml: raw.postHtml || "",
     postType:
-      raw.unified_document.document_type === "QUESTION"
+      raw?.unified_document?.document_type === "QUESTION"
         ? "question"
         : "publication",
   };

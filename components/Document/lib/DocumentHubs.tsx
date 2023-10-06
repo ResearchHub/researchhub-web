@@ -6,13 +6,18 @@ import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 import HubTag from "~/components/Hubs/HubTag";
+import { breakpoints } from "~/config/themes/screen";
 
 const DocumentHubs = ({
   hubs,
   withShowMore = true,
+  hideOnSmallerResolution = false,
+  containerStyle = null,
 }: {
   hubs: Hub[];
   withShowMore?: boolean;
+  hideOnSmallerResolution?: boolean;
+  containerStyle?: any;
 }) => {
   const [showMore, setShowMore] = useState<boolean>(false);
   const sortedHubs = hubs.sort((a, b) => {
@@ -21,9 +26,18 @@ const DocumentHubs = ({
   const visibleHubs = showMore ? sortedHubs : sortedHubs.slice(0, 3);
 
   return (
-    <div className={css(styles.wrapper)}>
+    <div className={css(styles.wrapper, containerStyle)}>
       {visibleHubs.map((h, index) => (
-        <HubTag hub={h} key={index} />
+        <div
+          key={index}
+          className={css(
+            index === 0 || !hideOnSmallerResolution
+              ? [styles.wrapper, styles.primaryHub]
+              : [styles.wrapper, styles.secondaryHub]
+          )}
+        >
+          <HubTag hub={h} />
+        </div>
       ))}
       {withShowMore && hubs.length > 3 && (
         <IconButton
@@ -44,7 +58,12 @@ const styles = StyleSheet.create({
     display: "flex",
     columnGap: "7px",
     rowGap: "10px",
-    flexWrap: "wrap",
+  },
+  primaryHub: {},
+  secondaryHub: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
   },
   hubBtn: {
     border: 0,
