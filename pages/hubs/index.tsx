@@ -231,8 +231,6 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     // @ts-ignore
     const { hubs } = await getHubs({});
 
-    console.log("TESTING HUBS", hubs.length);
-
     return {
       props: {
         hubs,
