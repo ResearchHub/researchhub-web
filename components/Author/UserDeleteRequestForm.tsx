@@ -89,9 +89,13 @@ function UserDeleteRequestForm({ author, modalReduxActions, msgReduxActions, onE
     const payload = toFormData({
       related_author: author.id,
       user: currentUser.id,
-      file: files,
       details: mutableFormFields.details,
     });
+
+    files.forEach((file: File) => {
+      payload.append("file[]", file)
+    });
+
     createVerificationRequest({
       payload: payload,
       onError: (_err: Error): void => {
@@ -137,7 +141,6 @@ function UserDeleteRequestForm({ author, modalReduxActions, msgReduxActions, onE
     setFiles(acceptedFiles.map(file => Object.assign(file, {
       preview: URL.createObjectURL(file)
     })));
-
   };
 
   const thumbs = files.map(file => (
