@@ -8,12 +8,6 @@ import {
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 import {
-  PostIcon,
-  PaperIcon,
-  HypothesisIcon,
-  QuestionIcon,
-} from "~/config/themes/icons";
-import {
   ReactElement,
   useState,
   SyntheticEvent,
@@ -40,59 +34,20 @@ import BountyWizard from "../Bounty/BountyWizard";
 import { breakpoints } from "~/config/themes/screen";
 
 export type UserDeleteRequestProps = {
-  currentUser: any;
+  author: any;
   isOpen: boolean;
   closeModal: func;
 };
 
 function UserDeleteRequestModal({
-  currentUser, isOpen, closeModal
+  author, isOpen, closeModal
 }: UserDeleteRequestProps): ReactElement<typeof Modal> {
   const router = useRouter();
   const { values: buttonValues, setValues: setButtonValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
-  const { isQuestionType, wizardBodyType, type } = buttonValues;
 
   // TODO: calvinhlee - reorganize these context values to better represent currently available post-types
   const [modalSelectedItemIndex, setModalSelectedItemIndex] = useState(0);
-  const [bodyType, setBodyType] = useState<NullableString>(
-    isQuestionType ? "question" : Boolean(wizardBodyType) ? "paperWizard" : type
-  );
-  const isMobileScreen = getIsOnMobileScreenSize();
-  const shouldModalStayOpen = true;
-
-  useEffect((): void => {
-    setBodyType(
-      isQuestionType
-        ? "question"
-        : Boolean(wizardBodyType)
-        ? "paperWizard"
-        : type
-    );
-  }, [isQuestionType, wizardBodyType, type]);
-
-  // const closeModal = (event?: SyntheticEvent): void => {
-  //   event?.preventDefault();
-  //   setModalSelectedItemIndex(0);
-  //   setBodyType(null);
-  //   setButtonValues({ ...DEFAULT_POST_BUTTON_VALUES });
-  // };
-
-  const handleContinue = (event?: SyntheticEvent): void => {
-    event && event.preventDefault();
-    if (modalSelectedItemIndex === 0) {
-      setButtonValues({
-        ...DEFAULT_POST_BUTTON_VALUES,
-        isOpen: true,
-        wizardBodyType: "url_or_doi_upload",
-      });
-      setBodyType("paperWizard");
-    } else if ([1, 2].includes(modalSelectedItemIndex)) {
-      return;
-    } else {
-      closeModal(event);
-    }
-  };
 
   return (
     <BaseModal
@@ -101,7 +56,8 @@ function UserDeleteRequestModal({
       title={"Request to Delete Profile"}
     >
       <UserDeleteRequestForm
-        user={currentUser}
+        author={author}
+        onExit={closeModal}
       />
     </BaseModal>
   );

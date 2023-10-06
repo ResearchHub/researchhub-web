@@ -631,7 +631,7 @@ function AuthorPage(props) {
           <UserDeleteRequestModal
             isOpen={extraProfileOptionsIsOpen}
             closeModal={closeExtraProfileOptions}
-            currentUser={author}
+            author={author}
           />
         </div>
       ),

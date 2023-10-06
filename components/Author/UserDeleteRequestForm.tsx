@@ -1,20 +1,20 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { firstImageFromHtml } from "~/config/utils/getFirstImageOfHtml";
 import { formGenericStyles } from "../Paper/Upload/styles/formGenericStyles";
 import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdown";
 import { StyleSheet, css } from "aphrodite";
-import { Fragment, SyntheticEvent, useState } from "react";
-import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
+import { Fragment, SyntheticEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { toFormData } from "~/config/utils/toFormData";
+import { buildApiUri } from "~/config/utils/buildApiUri";
+import { Helpers } from "@quantfive/js-web-config";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import API from "~/config/api";
 import Button from "../Form/Button";
 import colors from "../../config/themes/colors";
 import dynamic from "next/dynamic";
 import FormInput from "../Form/FormInput";
-import FormSelect from "../Form/FormSelect";
-import HubSelect from "../Hubs/HubSelect";
 import Ripples from "react-ripples";
 import Dropzone from "react-dropzone";
 
@@ -22,17 +22,14 @@ import Dropzone from "react-dropzone";
 const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 
 type FormFields = {
-  reason: string;
-  author: string;
+  details: string;
 };
 
-type FormError = {
-  reason: boolean;
-  author: boolean;
+type Args = {
+  onError: (error: Error) => void;
+  onSuccess: (response: any) => void;
+  payload: any;
 };
-
-const MIN_TITLE_LENGTH = 10;
-const MAX_TITLE_LENGTH = 250;
 
 function validateFormField(fieldID: string, value: any): boolean {
   let result: boolean = true;
@@ -44,24 +41,36 @@ function validateFormField(fieldID: string, value: any): boolean {
   }
 }
 
-export type UserDeleteRequestFormProps = {
-  onExit: (event?: SyntheticEvent) => void;
-  user: any;
+export const createVerificationRequest = ({ onError, onSuccess, payload }: Args): void => {
+  fetch(buildApiUri({ apiPath: "user_verification" }), API.POST_FILE_CONFIG(payload))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((res: any) => {
+      console.log(res);
+      onSuccess();
+    })
+    .catch(onError);
 };
 
-function UserDeleteRequestForm({ user, onExit }: UserDeleteRequestFormProps) {
+
+export type UserDeleteRequestFormProps = {
+  onExit: (event?: SyntheticEvent) => void;
+  author: any;
+};
+
+function UserDeleteRequestForm({ author, onExit }: UserDeleteRequestFormProps) {
+  const [files, setFiles] = useState([]);
   const [isFileDragged, setIsFiledDragged] = useState<boolean>(false);
   const router = useRouter();
   const [formErrors, setFormErrors] = useState<FormError>({
-    reason: true,
-    author: true,
+    details: false,
   });
   const [mutableFormFields, setMutableFormFields] = useState<FormFields>({
-    reason: "",
-    author: "",
+    details: "",
   });
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const currentUser = getCurrentUser();
 
   const onFormSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
@@ -73,24 +82,16 @@ function UserDeleteRequestForm({ user, onExit }: UserDeleteRequestFormProps) {
       setIsSubmitting(true);
     }
 
-    createQuestion({
-      payload: {
-        admins: null,
-        created_by: user.id,
-        document_type: "QUESTION",
-        editors: null,
-        full_src: mutableFormFields.text,
-        hubs: mutableFormFields.hubs.map((hub) => hub.id),
-        is_public: true,
-        preview_img: firstImageFromHtml(mutableFormFields.text),
-        renderable_text: getPlainTextFromMarkdown(mutableFormFields.text),
-        title: mutableFormFields.title,
-        viewers: null,
-      },
+    const payload = toFormData({
+      related_author: author.id,
+      user: currentUser.id,
+      file: files,
+      details: mutableFormFields.details,
+    });
+    createVerificationRequest({
+      payload: payload,
       onError: (_err: Error): void => setIsSubmitting(false),
       onSuccess: (response: any): void => {
-        const { id, slug } = response ?? {};
-        router.push(`/post/${id}/${slug}`);
         onExit();
       },
     });
@@ -110,9 +111,29 @@ function UserDeleteRequestForm({ user, onExit }: UserDeleteRequestFormProps) {
       return;
     }
 
-    const targetFile = acceptedFiles[0];
-    const { name, type, path } = targetFile ?? {};
+    setFiles(acceptedFiles.map(file => Object.assign(file, {
+      preview: URL.createObjectURL(file)
+    })));
+
   };
+
+  const thumbs = files.map(file => (
+    <div className={css(styles.thumb)} key={file.name}>
+      <div className={css(styles.thumbInner)}>
+        <img
+          src={file.preview}
+          className={css(styles.img)}
+          // Revoke data uri after image is loaded
+          onLoad={() => { URL.revokeObjectURL(file.preview) }}
+        />
+      </div>
+    </div>
+  ));
+
+  useEffect(() => {
+    // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
+    return () => files.forEach(file => URL.revokeObjectURL(file.preview));
+  }, []);
 
   return (
     (<form
@@ -123,17 +144,17 @@ function UserDeleteRequestForm({ user, onExit }: UserDeleteRequestFormProps) {
     >
       <FormInput
         containerStyle={[styles.titleInputContainer]}
-        value={user.id}
+        value={author.id}
         errorStyle={styles.errorText}
-        id="title"
+        id="author"
         label={"Author ID"}
         labelStyle={styles.label}
-        disabled
         required
+        disabled
       />
       {/* @ts-ignore */}
       <SimpleEditor
-        id="text"
+        id="details"
         initialData={mutableFormFields.text}
         label="Additional Details"
         placeholder={
@@ -143,7 +164,7 @@ function UserDeleteRequestForm({ user, onExit }: UserDeleteRequestFormProps) {
         onChange={handleOnChangeFields}
         containerStyle={styles.editor}
       />
-      <div className={css(formGenericStyles.text, styles.label)}>
+      <div className={css(formGenericStyles.text, styles.label, styles.padding)}>
         {"Additional Images"}
       </div>
       <Ripples className={css(styles.dropzoneContainer)}>
@@ -163,7 +184,7 @@ function UserDeleteRequestForm({ user, onExit }: UserDeleteRequestFormProps) {
                   isFileDragged && styles.dragged
                 )}
               >
-                <input {...getInputProps()} required={true} />
+                <input {...getInputProps()} required={false} />
                 <Fragment>
                   <img
                     className={css(styles.uploadImage)}
@@ -185,6 +206,9 @@ function UserDeleteRequestForm({ user, onExit }: UserDeleteRequestFormProps) {
           )}
         </Dropzone>
       </Ripples>
+      <aside className={css(styles.thumbContainer)}>
+        {thumbs}
+      </aside>
       <div className={css(styles.buttonsContainer)}>
         <Button
           customButtonStyle={styles.buttonStyle}
@@ -220,34 +244,6 @@ const styles = StyleSheet.create({
       width: "100%",
     },
   },
-  close: {
-    cursor: "pointer",
-    fontSize: 18,
-    position: "absolute",
-    right: 0,
-    top: -12,
-    opacity: 0.6,
-    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      fontSize: 20,
-      top: -32,
-      right: -14,
-    },
-  },
-  header: {
-    alignItems: "center",
-    borderBottom: `1px solid ${colors.GREY_BORDER}`,
-    display: "flex",
-    fontSize: 26,
-    fontWeight: 500,
-    justifyContent: "space-between",
-    paddingBottom: 8,
-    paddingTop: 20,
-    position: "relative",
-    width: "100%",
-    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      fontSize: 18,
-    },
-  },
   buttonsContainer: {
     width: "auto",
     display: "flex",
@@ -257,15 +253,6 @@ const styles = StyleSheet.create({
       width: "auto",
       justifyContent: "center",
     },
-  },
-  buttonSpacer: {
-    width: "100%",
-    maxWidth: "31px",
-  },
-  chooseHub: {
-    width: "100%",
-    minHeight: "55px",
-    marginBottom: "21px",
   },
   titleInputContainer: {
     width: "auto",
@@ -294,7 +281,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     boxSizing: "border-box",
-    padding: "20px 0px",
+    padding: "15px 0px",
     transition: "all ease-out 0.1s",
   },
   dropzoneContainer: {
@@ -352,12 +339,35 @@ const styles = StyleSheet.create({
       width: "86vw",
     },
   },
-  supportText: {
-    marginTop: 6,
-    opacity: 0.6,
-    fontSize: 14,
-    letterSpacing: 0.7,
-    fontStyle: "italic",
-    marginBottom: 6,
+  img: {
+    display: 'block',
+    width: 'auto',
+    height: '100%'
   },
+  thumbInner: {
+    display: 'flex',
+    minWidth: 0,
+    overflow: 'hidden'
+  },
+  thumb: {
+    display: 'inline-flex',
+    borderRadius: 2,
+    border: '1px solid #eaeaea',
+    marginBottom: 8,
+    marginRight: 8,
+    width: 125,
+    height: 150,
+    padding: 4,
+    boxSizing: 'border-box'
+  },
+  thumbContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 16
+  },
+  padding: {
+    "padding-top": "7px",
+    "padding-bottom": "7px",
+  }
 });
