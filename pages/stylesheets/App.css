@@ -476,3 +476,7 @@ input[type="number"] {
 .react-pdf__Page__svg {
   margin: 0 auto;
 }
+
+.rh-post video {
+  width: 100%;
+}

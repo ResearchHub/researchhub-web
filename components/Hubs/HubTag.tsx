@@ -10,6 +10,7 @@ const HubTag = ({ hub }: { hub: Hub }) => {
     <Link
       key={`/hubs/${hub.slug ?? ""}-index`}
       href={`/hubs/${hub.slug}`}
+      className={css(styles.noUnderline)}
       onClick={(e) => e.stopPropagation()}
     >
       <IconButton variant="round" overrideStyle={styles.hubBtn}>
@@ -37,6 +38,9 @@ const styles = StyleSheet.create({
     ":hover": {
       background: colors.NEW_BLUE(0.2),
     },
+  },
+  noUnderline: {
+    textDecoration: "none",
   },
   moreLessBtn: {
     padding: "4px 12px",

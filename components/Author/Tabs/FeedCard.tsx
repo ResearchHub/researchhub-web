@@ -158,7 +158,10 @@ function FeedCard({
     // This should not fail, but just for in case, we don't want to break the whole feed.
     parsedDoc =
       formattedDocType === "paper" ? parsePaper(document) : parsePost(document);
-    authors = parsedDoc.authors;
+    authors =
+      formattedDocType === "question"
+        ? [parsedDoc!.createdBy!.authorProfile]
+        : parsedDoc.authors;
   } catch (error) {}
 
   const parsedHubs = (hubs || []).map(parseHub);
