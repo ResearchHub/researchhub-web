@@ -9,17 +9,21 @@ import { captureEvent } from "~/config/utils/events";
 import colors from "~/config/themes/colors";
 import { SortOptionValue } from "./lib/options";
 import { breakpoints } from "~/config/themes/screen";
+import { VoteTreeContext } from "./lib/contexts";
 
 export type PredictionMarketVoteFeedProps = {
   marketId: ID;
   // votes that we want to include, that haven't been fetched yet.
   // we use this to update the UI when a user submits a vote
   includeVotes?: PredictionMarketVote[];
+
+  onVoteRemove: (vote: PredictionMarketVote) => void;
 };
 
 const PredictionMarketVoteFeed = ({
   marketId,
   includeVotes = [],
+  onVoteRemove,
 }: PredictionMarketVoteFeedProps): ReactElement => {
   const [votes, setVotes] = useState<PredictionMarketVote[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(false);
@@ -54,6 +58,12 @@ const PredictionMarketVoteFeed = ({
     handleFetch({});
   }, []);
 
+  const handleRemoveVote = (vote: PredictionMarketVote) => {
+    const newVotes = votes.filter((v) => v.id !== vote.id);
+    setVotes(newVotes);
+    onVoteRemove(vote);
+  };
+
   useEffect(() => {
     // add `includeVotes` to the votes list if they are not already there
     const newVotes = [...votes];
@@ -79,7 +89,11 @@ const PredictionMarketVoteFeed = ({
   );
 
   return (
-    <div>
+    <VoteTreeContext.Provider
+      value={{
+        onRemove: handleRemoveVote,
+      }}
+    >
       {isFetching && (
         <div className={css(styles.placeholderWrapper)}>
           <CommentPlaceholder />
@@ -109,12 +123,14 @@ const PredictionMarketVoteFeed = ({
               </Fragment>
             ))}
           </div>
+          {/* create an empty column so that the "no" votes column is limited to 50% width */}
+          {yesVotes.length === 0 && <div className={css(styles.votesColumn)} />}
         </div>
       )}
       {!isFetching && votes.length === 0 && (
         <div className={css(styles.emptyStateWrapper)}>No votes yet.</div>
       )}
-    </div>
+    </VoteTreeContext.Provider>
   );
 };
 

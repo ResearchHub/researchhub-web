@@ -68,6 +68,7 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
   );
   const [votes, setVotes] = useState<PredictionMarketVote[]>([]);
   const [commentCount, setCommentCount] = useState<number>(0);
+  const [formRefreshKey, setFormRefreshKey] = useState<number>(0); // refresh key for the vote form
 
   // figure out if the current user is an author of the paper
   const currentUser = useSelector((state: RootState) =>
@@ -173,6 +174,34 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
     revalidateDocument();
   };
 
+  const handleVoteRemoved = (vote: PredictionMarketVote) => {
+    if (market) {
+      const newMarket = {
+        ...market,
+        votes: {
+          ...market.votes,
+          total: market.votes.total - 1,
+          yes: market.votes.yes - (vote.vote ? 1 : 0),
+          no: market.votes.no - (!vote.vote ? 1 : 0),
+        },
+      };
+
+      setMarket(newMarket);
+      setVotes([...votes.filter((v) => v.id !== vote.id)]);
+      setDocumentMetadata({
+        ...documentMetadata,
+        predictionMarket: newMarket,
+      });
+
+      if (vote.createdBy.id === currentUser?.id) {
+        // if the vote was created by the current user, we need to refresh the vote form
+        // so that it doesn't have the user's "previos vote" cached.
+        setFormRefreshKey(formRefreshKey + 1);
+      }
+    }
+    revalidateDocument();
+  };
+
   const { parsedComments, parsedCommentCount } = useMemo(() => {
     let parsedComments = [];
     let parsedCommentCount = 0;
@@ -222,6 +251,7 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
               onVoteCreated={handleVoteCreated}
               onVoteUpdated={handleVoteUpdated}
               isCurrentUserAuthor={isCurrentUserAuthor}
+              refreshKey={formRefreshKey}
             />
           </div>
 
@@ -251,6 +281,7 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
             <PredictionMarketVoteFeed
               marketId={market.id}
               includeVotes={votes}
+              onVoteRemove={handleVoteRemoved}
             />
           )}
           {tab === "COMMENTS" && (
@@ -275,7 +306,9 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
                 revalidateDocument();
                 setCommentCount(commentCount - 1);
               }}
-              totalCommentCount={commentCount}
+              // we purposefully used `commentData.count` here instead of `commentCount` because
+              // `commentCount` takes a few renders to get set, and `CommentFeed` uses the first-render value.
+              totalCommentCount={commentData?.count}
             />
           )}
         </div>

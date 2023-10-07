@@ -100,3 +100,21 @@ export const fetchVotesForUser = async ({
     throw Error(err as any);
   }
 };
+
+export const deleteVote = async ({ voteId }: { voteId: ID }): Promise<void> => {
+  try {
+    await fetch(
+      API.PREDICTION_MARKET_VOTE({ voteId }),
+      API.DELETE_CONFIG()
+    ).then(Helpers.checkStatus);
+
+    return;
+  } catch (err) {
+    captureEvent({
+      msg: "Error deleting vote",
+      data: { voteId },
+    });
+
+    throw Error(err as any);
+  }
+};

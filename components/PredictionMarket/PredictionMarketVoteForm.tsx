@@ -5,7 +5,7 @@ import colors from "../../config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/pro-regular-svg-icons";
 import { createVote, fetchVotesForUser } from "./api/votes";
-import { ID } from "~/config/types/root_types";
+import { ID, parseUser } from "~/config/types/root_types";
 import { PredictionMarketDetails, PredictionMarketVote } from "./lib/types";
 import { ReactElement, useEffect, useState } from "react";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
@@ -13,6 +13,9 @@ import { captureEvent } from "~/config/utils/events";
 import { faCaretDown, faCaretUp } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { RectShape } from "react-placeholder/lib/placeholders";
+import { useSelector } from "react-redux";
+import { RootState } from "~/redux";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 export type PredictionMarketVoteFormProps = {
   paperId: ID;
@@ -20,6 +23,7 @@ export type PredictionMarketVoteFormProps = {
   onVoteCreated?: (v: PredictionMarketVote) => void;
   onVoteUpdated?: (v: PredictionMarketVote, prev: PredictionMarketVote) => void;
   isCurrentUserAuthor?: boolean;
+  refreshKey?: number;
 };
 
 const PredictionMarketVoteForm = ({
@@ -28,6 +32,7 @@ const PredictionMarketVoteForm = ({
   onVoteCreated,
   onVoteUpdated,
   isCurrentUserAuthor = false,
+  refreshKey = 0,
 }: PredictionMarketVoteFormProps): ReactElement => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [vote, setVote] = useState<boolean | null>(null);
@@ -35,7 +40,16 @@ const PredictionMarketVoteForm = ({
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const handleFetch = async () => {
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
+
+  const handleFetchUserPrevVote = async () => {
+    if (!currentUser) {
+      setIsFetching(false);
+      return;
+    }
+
     setIsFetching(true);
     try {
       const { votes } = await fetchVotesForUser({
@@ -46,6 +60,9 @@ const PredictionMarketVoteForm = ({
         // there should only be one vote per user per market
         setVote(votes[0].vote);
         setPrevVote(votes[0]);
+      } else {
+        setVote(null);
+        setPrevVote(null);
       }
     } catch (error) {
       captureEvent({
@@ -59,8 +76,8 @@ const PredictionMarketVoteForm = ({
   };
 
   useEffect(() => {
-    handleFetch();
-  }, []);
+    handleFetchUserPrevVote();
+  }, [refreshKey]);
 
   const handleSubmit = async (vote: boolean) => {
     if (vote === null || vote === prevVote?.vote) {

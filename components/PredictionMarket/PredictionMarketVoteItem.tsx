@@ -6,6 +6,7 @@ import UserTooltip from "../Tooltips/User/UserTooltip";
 import ALink from "../ALink";
 import { ReactElement } from "react";
 import { breakpoints } from "~/config/themes/screen";
+import VoteItemMenu from "./VoteItemMenu";
 
 export type PredictionMarketVoteItemProps = {
   vote: PredictionMarketVote;
@@ -34,7 +35,8 @@ const PredictionMarketVoteItem = ({
                       href={`/user/${vote.createdBy.authorProfile?.id}/overview`}
                       key={`/user/${vote.createdBy.authorProfile?.id}/overview-key`}
                     >
-                      {vote.createdBy.authorProfile.firstName}&nbsp;
+                      {vote.createdBy.authorProfile.firstName}
+                      {vote.createdBy.authorProfile.lastName && " "}
                       {vote.createdBy.authorProfile.lastName}
                     </ALink>
                   }
@@ -46,6 +48,9 @@ const PredictionMarketVoteItem = ({
               >
                 {vote.vote ? "YES" : "NO"}
               </div>
+            </div>
+            <div className={css(styles.menuWrapper)}>
+              <VoteItemMenu vote={vote} />
             </div>
           </div>
           <div className={css(styles.lightText)}>{vote.timeAgo}</div>
@@ -67,12 +72,14 @@ const styles = StyleSheet.create({
       alignItems: "flex-start",
       gap: 8,
     },
+    width: "100%",
   },
   leftContent: {
     display: "flex",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       alignItems: "flex-start",
     },
+    width: "100%",
   },
 
   lightText: {
@@ -94,7 +101,8 @@ const styles = StyleSheet.create({
     columnGap: "5px",
     fontSize: 15,
     alignItems: "flex-start",
-    marginBottom: 4,
+    marginBottom: 2,
+    minHeight: 21,
   },
   name: {
     display: "flex",
@@ -105,6 +113,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexWrap: "wrap",
     columnGap: "5px",
+  },
+
+  menuWrapper: {
+    marginLeft: "auto",
+    marginTop: -10,
+    display: "flex",
+    alignItems: "center",
   },
 });
 

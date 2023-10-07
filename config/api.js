@@ -1314,6 +1314,7 @@ const routes = (BASE_URL) => {
     },
     PREDICTION_MARKET_VOTE: ({
       paperId,
+      voteId,
       predictionMarketId,
       isUserVote,
       ordering,
@@ -1331,10 +1332,15 @@ const routes = (BASE_URL) => {
       if (!!ordering) {
         queryArry.push(`ordering=${ordering}`);
       }
-      if (queryArry.length > 0) {
-        return BASE_URL + `prediction_market_vote/?${queryArry.join("&")}`;
+      let baseURL = `${BASE_URL}prediction_market_vote/`;
+      if (!!voteId) {
+        baseURL += `${voteId}/`;
       }
-      return BASE_URL + "prediction_market_vote/";
+
+      if (queryArry.length > 0) {
+        return baseURL + `?${queryArry.join("&")}`;
+      }
+      return baseURL;
     },
 
     buildPaperChainUrl: buildPaperChainUrl,
