@@ -213,6 +213,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     boxSizing: "border-box",
     boxShadow: "rgb(0 0 0 / 28%) 0px 8px 28px",
+    maxHeight: "90vh",
+    overflow: "auto",
     "@media only screen and (max-width: 665px)": {
       width: "90%",
       borderRadius: 0,
@@ -311,6 +313,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     fontSize: 16,
     minHeight: 22,
+    lineHeight: 1.5,
     width: "100%",
     fontWeight: "400",
     color: "#4f4d5f",

@@ -1,9 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFlag } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faBan,
+  faFlag,
+  faUserEdit,
+  faUser,
+  faBookOpen,
+} from "@fortawesome/pro-solid-svg-icons";
 import { faCoin } from "@fortawesome/pro-duotone-svg-icons";
-import { faUserEdit } from "@fortawesome/pro-solid-svg-icons";
-import { faUser } from "@fortawesome/pro-solid-svg-icons";
-import { faBookOpen } from "@fortawesome/pro-solid-svg-icons";
 import { filterNull } from "~/config/utils/nullchecks";
 import { Fragment, useContext } from "react";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
@@ -23,7 +26,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
   const router = useRouter();
   const currentPath = router.pathname;
   const currentUser = getCurrentUser();
-  const { numNavInteractions } = useContext(NavbarContext);
+  const { numNavInteractions, numProfileDeletes } = useContext(NavbarContext);
   const isUserModerator = Boolean(currentUser?.moderator);
   const isUserHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
   const userAllowedOnPermissionsDash = gateKeepCurrentUser({
@@ -77,6 +80,18 @@ export default function ModeratorDashboardSidebar({}: Props) {
           extraHTML:
             numNavInteractions > 0 ? (
               <span className={css(style.count)}>{numNavInteractions}</span>
+            ) : null,
+        }
+      : null,
+    isUserModerator
+      ? {
+          icon: <FontAwesomeIcon icon={faBan}></FontAwesomeIcon>,
+          id: "profile-delete",
+          name: "Profile Delete",
+          pathname: "/moderators/profile-delete",
+          extraHTML:
+            numProfileDeletes > 0 ? (
+              <span className={css(style.count)}>{numProfileDeletes}</span>
             ) : null,
         }
       : null,

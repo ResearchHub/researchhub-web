@@ -40,7 +40,9 @@ export type UserDeleteRequestProps = {
 };
 
 function UserDeleteRequestModal({
-  author, isOpen, closeModal
+  author,
+  isOpen,
+  closeModal,
 }: UserDeleteRequestProps): ReactElement<typeof Modal> {
   const router = useRouter();
   const { values: buttonValues, setValues: setButtonValues } =
@@ -53,12 +55,12 @@ function UserDeleteRequestModal({
     <BaseModal
       isOpen={isOpen}
       closeModal={closeModal}
-      title={"Request to Delete Profile"}
+      title={"Request to Remove Profile"}
+      subtitle={
+        "Upon successfully verifying your identity, we will remove\nyour public profile from researchhub.com"
+      }
     >
-      <UserDeleteRequestForm
-        author={author}
-        onExit={closeModal}
-      />
+      <UserDeleteRequestForm author={author} onExit={closeModal} />
     </BaseModal>
   );
 }
@@ -196,4 +198,7 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserDeleteRequestModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserDeleteRequestModal);

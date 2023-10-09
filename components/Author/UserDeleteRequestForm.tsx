@@ -21,7 +21,6 @@ import FormInput from "../Form/FormInput";
 import Ripples from "react-ripples";
 import Dropzone from "react-dropzone";
 
-
 const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 
 type FormFields = {
@@ -44,8 +43,15 @@ function validateFormField(fieldID: string, value: any): boolean {
   }
 }
 
-export const createVerificationRequest = ({ onError, onSuccess, payload }: Args): void => {
-  fetch(buildApiUri({ apiPath: "user_verification" }), API.POST_FILE_CONFIG(payload))
+export const createVerificationRequest = ({
+  onError,
+  onSuccess,
+  payload,
+}: Args): void => {
+  fetch(
+    buildApiUri({ apiPath: "user_verification" }),
+    API.POST_FILE_CONFIG(payload)
+  )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((res: any) => {
@@ -54,7 +60,6 @@ export const createVerificationRequest = ({ onError, onSuccess, payload }: Args)
     .catch(onError);
 };
 
-
 export type UserDeleteRequestFormProps = {
   author: any;
   modalReduxActions?: any;
@@ -62,7 +67,12 @@ export type UserDeleteRequestFormProps = {
   onExit: (event?: SyntheticEvent) => void;
 };
 
-function UserDeleteRequestForm({ author, modalReduxActions, msgReduxActions, onExit }: UserDeleteRequestFormProps) {
+function UserDeleteRequestForm({
+  author,
+  modalReduxActions,
+  msgReduxActions,
+  onExit,
+}: UserDeleteRequestFormProps) {
   const [files, setFiles] = useState([]);
   const [isFileDragged, setIsFiledDragged] = useState<boolean>(false);
   const router = useRouter();
@@ -86,14 +96,14 @@ function UserDeleteRequestForm({ author, modalReduxActions, msgReduxActions, onE
       setIsSubmitting(true);
     }
 
-    const payload = toFormData({
-      related_author: author.id,
-      user: currentUser.id,
-      details: mutableFormFields.details,
-    });
+    const authorId = router.query.authorId?.toString();
+    const payload = new FormData();
+    payload.append("user", currentUser.id);
+    payload.append("details", mutableFormFields.details);
+    payload.append("related_author", authorId);
 
     files.forEach((file: File) => {
-      payload.append("file[]", file)
+      payload.append("file[]", file);
     });
 
     createVerificationRequest({
@@ -109,12 +119,14 @@ function UserDeleteRequestForm({ author, modalReduxActions, msgReduxActions, onE
           msgReduxActions.showMessage({ show: true, error: true });
         } else if (statusCode === 429) {
           modalReduxActions.openRecaptchaPrompt(true);
-          onExit()
+          onExit();
         } else {
-          msgReduxActions.setMessage("An error has occured. Please email us for profile deletion");
+          msgReduxActions.setMessage(
+            "An error has occured. Please email us for profile deletion"
+          );
           msgReduxActions.showMessage({ show: true, error: true });
         }
-        setIsSubmitting(false)
+        setIsSubmitting(false);
       },
       onSuccess: (response: any): void => {
         msgReduxActions.setMessage("Request Submitted");
@@ -138,19 +150,25 @@ function UserDeleteRequestForm({ author, modalReduxActions, msgReduxActions, onE
       return;
     }
 
-    setFiles(acceptedFiles.map(file => Object.assign(file, {
-      preview: URL.createObjectURL(file)
-    })));
+    setFiles(
+      acceptedFiles.map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      )
+    );
   };
 
-  const thumbs = files.map(file => (
+  const thumbs = files.map((file) => (
     <div className={css(styles.thumb)} key={file.name}>
       <div className={css(styles.thumbInner)}>
         <img
           src={file.preview}
           className={css(styles.img)}
           // Revoke data uri after image is loaded
-          onLoad={() => { URL.revokeObjectURL(file.preview) }}
+          onLoad={() => {
+            URL.revokeObjectURL(file.preview);
+          }}
         />
       </div>
     </div>
@@ -158,31 +176,21 @@ function UserDeleteRequestForm({ author, modalReduxActions, msgReduxActions, onE
 
   useEffect(() => {
     // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
-    return () => files.forEach(file => URL.revokeObjectURL(file.preview));
+    return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
   }, []);
 
   return (
-    (<form
+    <form
       autoComplete={"off"}
       className={css(styles.userDeleteRequestForm)}
       id="userDeleteRequestForm"
       onSubmit={onFormSubmit}
     >
-      <FormInput
-        containerStyle={[styles.titleInputContainer]}
-        value={author.id}
-        errorStyle={styles.errorText}
-        id="author"
-        label={"Author ID"}
-        labelStyle={styles.label}
-        required
-        disabled
-      />
       {/* @ts-ignore */}
       <SimpleEditor
         id="details"
         initialData={mutableFormFields.text}
-        label="Additional Details"
+        label="Removal Details"
         placeholder={
           "Include any relevant information to verify your identity to this profile"
         }
@@ -190,8 +198,10 @@ function UserDeleteRequestForm({ author, modalReduxActions, msgReduxActions, onE
         onChange={handleOnChangeFields}
         containerStyle={styles.editor}
       />
-      <div className={css(formGenericStyles.text, styles.label, styles.padding)}>
-        {"Additional Images"}
+      <div
+        className={css(formGenericStyles.text, styles.label, styles.padding)}
+      >
+        {"Images to include"}
       </div>
       <Ripples className={css(styles.dropzoneContainer)}>
         <Dropzone
@@ -232,9 +242,7 @@ function UserDeleteRequestForm({ author, modalReduxActions, msgReduxActions, onE
           )}
         </Dropzone>
       </Ripples>
-      <aside className={css(styles.thumbContainer)}>
-        {thumbs}
-      </aside>
+      <aside className={css(styles.thumbContainer)}>{thumbs}</aside>
       <div className={css(styles.buttonsContainer)}>
         <Button
           customButtonStyle={styles.buttonStyle}
@@ -243,7 +251,7 @@ function UserDeleteRequestForm({ author, modalReduxActions, msgReduxActions, onE
           type="submit"
         />
       </div>
-    </form>)
+    </form>
   );
 }
 
@@ -256,7 +264,10 @@ const mapDispatchToProps = (dispatch) => ({
   msgReduxActions: bindActionCreators(MessageActions, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserDeleteRequestForm);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserDeleteRequestForm);
 
 const styles = StyleSheet.create({
   userDeleteRequestForm: {
@@ -284,6 +295,9 @@ const styles = StyleSheet.create({
       width: "auto",
       justifyContent: "center",
     },
+  },
+  noShow: {
+    display: "none",
   },
   titleInputContainer: {
     width: "auto",
@@ -360,6 +374,7 @@ const styles = StyleSheet.create({
   },
   editor: {
     width: "721px",
+    marginTop: 16,
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "80vw",
     },
@@ -368,34 +383,34 @@ const styles = StyleSheet.create({
     },
   },
   img: {
-    display: 'block',
-    width: 'auto',
-    height: '100%'
+    display: "block",
+    width: "100%",
+    objectFit: "contain",
   },
   thumbInner: {
-    display: 'flex',
+    display: "flex",
     minWidth: 0,
-    overflow: 'hidden'
+    width: "100%",
+    overflow: "hidden",
   },
   thumb: {
-    display: 'inline-flex',
+    display: "inline-flex",
     borderRadius: 2,
-    border: '1px solid #eaeaea',
+    border: "1px solid #eaeaea",
     marginBottom: 8,
     marginRight: 8,
     width: 125,
     height: 150,
     padding: 4,
-    boxSizing: 'border-box'
+    boxSizing: "border-box",
   },
   thumbContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 16
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 16,
   },
   padding: {
-    "padding-top": "7px",
-    "padding-bottom": "7px",
-  }
+    padding: "16px 0px",
+  },
 });

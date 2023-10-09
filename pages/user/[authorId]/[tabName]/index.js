@@ -621,26 +621,6 @@ function AuthorPage(props) {
     </div>
   );
 
-  const extraProfileOptions = [
-    {
-      label: "Request to Delete Profile",
-      html: (
-        <div>
-          Request Profile Deletion
-          <UserDeleteRequestModal
-            isOpen={extraProfileOptionsIsOpen}
-            closeModal={closeExtraProfileOptions}
-            author={author}
-          />
-        </div>
-      ),
-      value: "request-to-delete-profile",
-      onClick: () => {
-        onClickExtraProfileOptions();
-      },
-    },
-  ];
-
   const authorRscBalance =
     !isNullOrUndefined(author.user) &&
     !isNullOrUndefined(user) &&
@@ -895,7 +875,7 @@ function AuthorPage(props) {
     <div className={css(styles.socialLinks)}>
       {socialMediaLinkButtons}
       {orcidLinkButton}
-      <GenericMenu
+      {/* <GenericMenu
         softHide={true}
         options={extraProfileOptions}
         width={200}
@@ -905,7 +885,7 @@ function AuthorPage(props) {
         <IconButton overrideStyle={styles.btnDots}>
           <FontAwesomeIcon icon={faEllipsis} />
         </IconButton>
-      </GenericMenu>
+      </GenericMenu> */}
     </div>
   );
 
@@ -1084,6 +1064,12 @@ function AuthorPage(props) {
             showArrowsOnWidth={breakpoints.xsmall.int}
             showArrows={Boolean(tabs.length > 2)}
           />
+          <div
+            className={css(styles.requestToRemoveProfile)}
+            onClick={onClickExtraProfileOptions}
+          >
+            Request to Remove Profile
+          </div>
         </ComponentWrapper>
       </div>
       <div className={css(styles.contentContainer)}>{tabContents}</div>
@@ -1092,6 +1078,11 @@ function AuthorPage(props) {
         closeModal={onCloseAvatarModal}
         saveButton={renderSaveButton}
         section={SECTIONS.picture}
+      />
+      <UserDeleteRequestModal
+        isOpen={extraProfileOptionsIsOpen}
+        closeModal={closeExtraProfileOptions}
+        author={author}
       />
     </div>
   );
@@ -1167,6 +1158,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     borderBottom: 0,
+    flex: 1,
   },
   contentContainer: {
     padding: "30px 0px",
@@ -1189,6 +1181,19 @@ const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
     },
+  },
+  componentWrapper: {
+    display: "flex",
+    alignItems: "center",
+  },
+  requestToRemoveProfile: {
+    fontSize: 13,
+    opacity: 0.6,
+    letterSpacing: 0.4,
+    // textDecoration: "underline",
+    cursor: "pointer",
+    // fontStyle: "italic",
+    width: "fit-content",
   },
   componentWrapperOverride: {
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {

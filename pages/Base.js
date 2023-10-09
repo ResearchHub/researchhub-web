@@ -118,6 +118,7 @@ function Base({
   openRecaptchaPrompt,
 }) {
   const [numNavInteractions, setNumNavInteractions] = useState(0);
+  const [numProfileDeletes, setNumProfileDeletes] = useState(0);
   const [newPostButtonValues, setNewPostButtonValues] = useState({
     isOpen: false,
     paperID: null,
@@ -201,7 +202,12 @@ function Base({
           <ExchangeRateContextProvider>
             <WagmiConfig config={config}>
               <NavbarContext.Provider
-                value={{ numNavInteractions, setNumNavInteractions }}
+                value={{
+                  numNavInteractions,
+                  setNumNavInteractions,
+                  numProfileDeletes,
+                  setNumProfileDeletes,
+                }}
               >
                 <NewPostButtonContext.Provider
                   value={{
