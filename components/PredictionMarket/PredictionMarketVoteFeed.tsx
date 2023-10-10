@@ -80,11 +80,11 @@ const PredictionMarketVoteFeed = ({
   }, [includeVotes]);
 
   const yesVotes = useMemo(
-    () => votes.filter((vote) => vote.vote === true),
+    () => votes.filter((vote) => vote.vote === "YES"),
     [votes]
   );
   const noVotes = useMemo(
-    () => votes.filter((vote) => vote.vote === false),
+    () => votes.filter((vote) => vote.vote === "NO"),
     [votes]
   );
 

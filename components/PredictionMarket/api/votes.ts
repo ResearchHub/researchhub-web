@@ -12,7 +12,7 @@ export const createVote = async ({
 }: {
   predictionMarketId: ID;
   paperId: ID;
-  vote: boolean;
+  vote: "YES" | "NO";
   betAmount?: number;
 }): Promise<{
   vote?: PredictionMarketVote;
@@ -63,7 +63,7 @@ export const fetchVotes = async ({
     ).then((res): any => Helpers.parseJSON(res));
 
     return {
-      votes: response.map(parsePredictionMarketVote),
+      votes: response.results.map(parsePredictionMarketVote),
     };
   } catch (err) {
     captureEvent({
@@ -89,7 +89,7 @@ export const fetchVotesForUser = async ({
     ).then((res): any => Helpers.parseJSON(res));
 
     return {
-      votes: response.map(parsePredictionMarketVote),
+      votes: response.results.map(parsePredictionMarketVote),
     };
   } catch (err) {
     captureEvent({
@@ -103,10 +103,10 @@ export const fetchVotesForUser = async ({
 
 export const deleteVote = async ({ voteId }: { voteId: ID }): Promise<void> => {
   try {
-    await fetch(
-      API.PREDICTION_MARKET_VOTE({ voteId }),
-      API.DELETE_CONFIG()
-    ).then(Helpers.checkStatus);
+    const url = API.PREDICTION_MARKET_VOTE({ voteId });
+    await fetch(`${url}soft_delete/`, API.POST_CONFIG()).then(
+      Helpers.checkStatus
+    );
 
     return;
   } catch (err) {

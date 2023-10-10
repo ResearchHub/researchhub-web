@@ -36,12 +36,13 @@ export const parsePredictionMarketDetails = (
   predictionType: raw.prediction_type,
 });
 
+export type PredictionMarketVoteValue = "YES" | "NO";
 export type PredictionMarketVote = {
   id: ID;
 
   predictionMarketId: ID;
 
-  vote: boolean;
+  vote: PredictionMarketVoteValue;
   betAmount?: number;
 
   createdDate?: string;

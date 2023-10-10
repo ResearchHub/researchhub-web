@@ -44,9 +44,11 @@ const PredictionMarketVoteItem = ({
               </div>
               <div className={css(styles.lightText)}>voted</div>
               <div
-                className={css(vote.vote ? styles.greenText : styles.redText)}
+                className={css(
+                  vote.vote === "YES" ? styles.greenText : styles.redText
+                )}
               >
-                {vote.vote ? "YES" : "NO"}
+                {vote.vote}
               </div>
             </div>
             <div className={css(styles.menuWrapper)}>

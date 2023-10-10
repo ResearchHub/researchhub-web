@@ -125,8 +125,8 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
         votes: {
           ...market.votes,
           total: market.votes.total + 1,
-          yes: market.votes.yes + (vote.vote ? 1 : 0),
-          no: market.votes.no + (!vote.vote ? 1 : 0),
+          yes: market.votes.yes + (vote.vote === "YES" ? 1 : 0),
+          no: market.votes.no + (vote.vote === "NO" ? 1 : 0),
         },
       };
 
@@ -156,11 +156,13 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
         votes: {
           ...market.votes,
           yes:
-            market.votes.yes + (newVote.vote ? 1 : 0) - (prevVote.vote ? 1 : 0),
+            market.votes.yes +
+            (newVote.vote === "YES" ? 1 : 0) -
+            (prevVote.vote === "YES" ? 1 : 0),
           no:
             market.votes.no +
-            (!newVote.vote ? 1 : 0) -
-            (!prevVote.vote ? 1 : 0),
+            (newVote.vote === "NO" ? 1 : 0) -
+            (prevVote.vote === "NO" ? 1 : 0),
         },
       };
 
@@ -181,8 +183,8 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
         votes: {
           ...market.votes,
           total: market.votes.total - 1,
-          yes: market.votes.yes - (vote.vote ? 1 : 0),
-          no: market.votes.no - (!vote.vote ? 1 : 0),
+          yes: market.votes.yes - (vote.vote === "YES" ? 1 : 0),
+          no: market.votes.no - (vote.vote === "NO" ? 1 : 0),
         },
       };
 

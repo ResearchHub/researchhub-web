@@ -35,7 +35,7 @@ const PredictionMarketVoteForm = ({
   refreshKey = 0,
 }: PredictionMarketVoteFormProps): ReactElement => {
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [vote, setVote] = useState<boolean | null>(null);
+  const [vote, setVote] = useState<"YES" | "NO" | null>(null);
   const [prevVote, setPrevVote] = useState<PredictionMarketVote | null>(null);
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -79,7 +79,7 @@ const PredictionMarketVoteForm = ({
     handleFetchUserPrevVote();
   }, [refreshKey]);
 
-  const handleSubmit = async (vote: boolean) => {
+  const handleSubmit = async (vote: "YES" | "NO") => {
     if (vote === null || vote === prevVote?.vote) {
       // don't resubmit if the vote is the same
       return;
@@ -177,7 +177,7 @@ const PredictionMarketVoteForm = ({
           <PermissionNotificationWrapper
             loginRequired
             modalMessage="vote"
-            onClick={() => handleSubmit(true)}
+            onClick={() => handleSubmit("YES")}
             hideRipples
             styling={styles.button}
           >
@@ -193,10 +193,10 @@ const PredictionMarketVoteForm = ({
               }
               fullWidth
               disabled={isSubmitting}
-              variant={vote === true ? "outlined" : "contained"}
+              variant={vote === "YES" ? "outlined" : "contained"}
               customButtonStyle={[
                 styles.button,
-                vote === false
+                vote === "NO"
                   ? styles.greenButtonUnselected
                   : styles.greenButton,
               ]}
@@ -205,7 +205,7 @@ const PredictionMarketVoteForm = ({
           <PermissionNotificationWrapper
             loginRequired
             modalMessage="vote"
-            onClick={() => handleSubmit(false)}
+            onClick={() => handleSubmit("NO")}
             hideRipples
             styling={styles.button}
           >
@@ -218,10 +218,10 @@ const PredictionMarketVoteForm = ({
               }
               fullWidth
               disabled={isSubmitting}
-              variant={vote === false ? "outlined" : "contained"}
+              variant={vote === "NO" ? "outlined" : "contained"}
               customButtonStyle={[
                 styles.button,
-                vote === true ? styles.redButtonUnselected : styles.redButton,
+                vote === "YES" ? styles.redButtonUnselected : styles.redButton,
               ]}
             />
           </PermissionNotificationWrapper>
