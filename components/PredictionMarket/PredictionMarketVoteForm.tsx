@@ -133,7 +133,7 @@ const PredictionMarketVoteForm = ({
           Do you think this paper will replicate?
         </div>
         <div
-          data-tip="Do you think an independent researcher/lab can produce the same results in the paper by performing the documented methods."
+          data-tip="Do you think an independent researcher/lab can produce results that confirm the conclusion(s) of the paper."
           data-for="link-tooltip"
           className={css(styles.tooltipIcon)}
         >
