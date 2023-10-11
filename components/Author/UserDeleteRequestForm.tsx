@@ -275,6 +275,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     boxSizing: "border-box",
     background: "#FFFFFF",
+    paddingBottom: 16,
     "@media only screen and (min-width: 1024px)": {
       minWidth: 720,
     },
@@ -376,10 +377,10 @@ const styles = StyleSheet.create({
     width: "721px",
     marginTop: 16,
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      width: "80vw",
+      width: "100%",
     },
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      width: "86vw",
+      width: "100%",
     },
   },
   img: {

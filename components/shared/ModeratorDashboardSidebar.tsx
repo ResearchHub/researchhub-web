@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/pro-solid-svg-icons";
 import { faCoin } from "@fortawesome/pro-duotone-svg-icons";
 import { filterNull } from "~/config/utils/nullchecks";
-import { Fragment, useContext } from "react";
+import { Fragment, useContext, useEffect } from "react";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { styles } from "~/pages/leaderboard/LeaderboardPage";
 import { useRouter } from "next/router";
@@ -19,6 +19,7 @@ import Ripples from "react-ripples";
 import { NavbarContext } from "~/pages/Base";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
+import api, { generateApiUrl } from "~/config/api";
 
 type Props = {};
 
@@ -26,7 +27,8 @@ export default function ModeratorDashboardSidebar({}: Props) {
   const router = useRouter();
   const currentPath = router.pathname;
   const currentUser = getCurrentUser();
-  const { numNavInteractions, numProfileDeletes } = useContext(NavbarContext);
+  const { numNavInteractions, numProfileDeletes, setNumProfileDeletes } =
+    useContext(NavbarContext);
   const isUserModerator = Boolean(currentUser?.moderator);
   const isUserHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
   const userAllowedOnPermissionsDash = gateKeepCurrentUser({
@@ -37,6 +39,20 @@ export default function ModeratorDashboardSidebar({}: Props) {
     application: "SEND_RSC",
     shouldRedirect: false,
   });
+
+  const fetchProfileDeletes = async () => {
+    const url = generateApiUrl(
+      "user_verification",
+      "?ordering=created_date&status=INITIATED"
+    );
+    const res = await fetch(url, api.GET_CONFIG());
+    const json = await res.json();
+    setNumProfileDeletes(json.count);
+  };
+
+  useEffect(() => {
+    fetchProfileDeletes();
+  }, []);
 
   const SIDE_BAR_ITEMS = filterNull([
     isUserModerator

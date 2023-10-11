@@ -22,13 +22,14 @@ const SimpleEditor = dynamic(
 
 export default function ModeratorProfileDelete() {
   const shouldRenderUI = useEffectCheckModCredentials({ shouldRedirect: true });
-  const { setNumProfileDeletes } = useContext(NavbarContext);
+  const { setNumProfileDeletes, numProfileDeletes } = useContext(NavbarContext);
   const [profileDeletes, setProfileDeletes] = useState([]);
 
   const removeFromProfileDeletes = ({ index }) => {
     const newProfileDeletes = [...profileDeletes];
     newProfileDeletes.splice(index, 1);
     setProfileDeletes(newProfileDeletes);
+    setNumProfileDeletes(numProfileDeletes - 1);
   };
 
   const fetchProfileDeletes = async () => {
@@ -101,7 +102,7 @@ function AuthorProfileCard({ profile, index, removeFromProfileDeletes }) {
 
   const cancelRequest = async () => {
     const url = generateApiUrl(`user_verification/${profile.id}`);
-    const res = await fetch(url, api.PATCH_CONFIG({ status: "CLOSED" }));
+    const res = await fetch(url, api.PATCH_CONFIG({ status: "DENIED" }));
     removeFromProfileDeletes({ index });
     alert("Request closed!");
   };

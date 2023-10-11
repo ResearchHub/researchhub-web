@@ -57,7 +57,7 @@ function UserDeleteRequestModal({
       closeModal={closeModal}
       title={"Request to Remove Profile"}
       subtitle={
-        "Upon successfully verifying your identity, we will remove\nyour public profile from researchhub.com"
+        "Upon successfully verifying your identity, we will remove your public profile from researchhub.com"
       }
     >
       <UserDeleteRequestForm author={author} onExit={closeModal} />
