@@ -1,5 +1,5 @@
 import { Helpers } from "@quantfive/js-web-config";
-import API from "~/config/api";
+import API, { buildQueryString, generateApiUrl } from "~/config/api";
 import { ID } from "~/config/types/root_types";
 import { captureEvent } from "~/config/utils/events";
 import { PredictionMarketVote, parsePredictionMarketVote } from "../lib/types";
@@ -18,8 +18,10 @@ export const createVote = async ({
   vote?: PredictionMarketVote;
 }> => {
   try {
+    const url = generateApiUrl("prediction_market_vote");
+
     const response = await fetch(
-      API.PREDICTION_MARKET_VOTE(),
+      url,
       API.POST_CONFIG(
         {
           prediction_market_id: predictionMarketId,
@@ -54,13 +56,16 @@ export const fetchVotes = async ({
   votes?: PredictionMarketVote[];
 }> => {
   try {
-    const response = await fetch(
-      API.PREDICTION_MARKET_VOTE({
-        predictionMarketId,
-        ordering: sort?.toLowerCase(),
-      }),
-      API.GET_CONFIG()
-    ).then((res): any => Helpers.parseJSON(res));
+    const query = {
+      ...(sort && { ordering: sort.toLowerCase() }),
+      prediction_market_id: predictionMarketId,
+    };
+    const baseFetchUrl = generateApiUrl("prediction_market_vote");
+    const url = baseFetchUrl + buildQueryString(query);
+
+    const response = await fetch(url, API.GET_CONFIG()).then((res): any =>
+      Helpers.parseJSON(res)
+    );
 
     return {
       votes: response.results.map(parsePredictionMarketVote),
@@ -83,10 +88,16 @@ export const fetchVotesForUser = async ({
   votes?: PredictionMarketVote[];
 }> => {
   try {
-    const response = await fetch(
-      API.PREDICTION_MARKET_VOTE({ predictionMarketId, isUserVote: true }),
-      API.GET_CONFIG()
-    ).then((res): any => Helpers.parseJSON(res));
+    const query = {
+      prediction_market_id: predictionMarketId,
+      is_user_vote: true,
+    };
+    const baseFetchUrl = generateApiUrl("prediction_market_vote");
+    const url = baseFetchUrl + buildQueryString(query);
+
+    const response = await fetch(url, API.GET_CONFIG()).then((res): any =>
+      Helpers.parseJSON(res)
+    );
 
     return {
       votes: response.results.map(parsePredictionMarketVote),
@@ -103,10 +114,8 @@ export const fetchVotesForUser = async ({
 
 export const deleteVote = async ({ voteId }: { voteId: ID }): Promise<void> => {
   try {
-    const url = API.PREDICTION_MARKET_VOTE({ voteId });
-    await fetch(`${url}soft_delete/`, API.POST_CONFIG()).then(
-      Helpers.checkStatus
-    );
+    const url = generateApiUrl(`prediction_market_vote/${voteId}/soft_delete`);
+    await fetch(url, API.POST_CONFIG()).then(Helpers.checkStatus);
 
     return;
   } catch (err) {

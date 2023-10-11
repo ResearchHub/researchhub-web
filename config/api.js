@@ -1306,43 +1306,6 @@ const routes = (BASE_URL) => {
       }
     },
 
-    PREDICTION_MARKET: ({ marketId } = {}) => {
-      if (marketId) {
-        return BASE_URL + `prediction_market/${marketId}/`;
-      }
-      return BASE_URL + "prediction_market/";
-    },
-    PREDICTION_MARKET_VOTE: ({
-      paperId,
-      voteId,
-      predictionMarketId,
-      isUserVote,
-      ordering,
-    } = {}) => {
-      const queryArry = [];
-      if (isUserVote) {
-        queryArry.push("is_user_vote=true");
-      }
-      if (!!predictionMarketId) {
-        queryArry.push(`prediction_market_id=${predictionMarketId}`);
-      }
-      if (!!paperId) {
-        queryArry.push(`paper_id=${paperId}`);
-      }
-      if (!!ordering) {
-        queryArry.push(`ordering=${ordering}`);
-      }
-      let baseURL = `${BASE_URL}prediction_market_vote/`;
-      if (!!voteId) {
-        baseURL += `${voteId}/`;
-      }
-
-      if (queryArry.length > 0) {
-        return baseURL + `?${queryArry.join("&")}`;
-      }
-      return baseURL;
-    },
-
     buildPaperChainUrl: buildPaperChainUrl,
     BASE_URL,
   };

@@ -67,7 +67,7 @@ type CommentEditorArgs = {
 const CommentEditor = ({
   editorId,
   commentId,
-  placeholder = "Add a comment about this paper...",
+  placeholder,
   handleSubmit,
   handleCancel,
   content = {},
@@ -150,8 +150,10 @@ const CommentEditor = ({
         forceShowPlaceholder({
           quillRef,
           placeholderText:
+            placeholder ||
             commentTypes.find((ctype) => ctype.value === commentType)
-              ?.placeholder || placeholder,
+              ?.placeholder ||
+            "Add a comment about this paper...",
         });
       }
 

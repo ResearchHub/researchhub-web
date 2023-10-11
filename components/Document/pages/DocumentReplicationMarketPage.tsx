@@ -30,7 +30,6 @@ import HorizontalTabBar from "~/components/HorizontalTabBar";
 
 interface Args {
   documentData?: any;
-  commentData?: any;
   metadata?: any;
   errorCode?: number;
   documentType: DocumentType;
@@ -39,7 +38,6 @@ interface Args {
 
 const DocumentReplicationMarketPage: NextPage<Args> = ({
   documentData,
-  commentData,
   documentType,
   tabName,
   metadata,
@@ -88,18 +86,20 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
   if (errorCode) {
     return <Error statusCode={errorCode} />;
   }
-
-  if (!document || !documentMetadata) {
+  if (
+    !document ||
+    !documentMetadata ||
+    !documentMetadata.predictionMarket ||
+    !market
+  ) {
     captureEvent({
       msg: "[Document] Could not parse",
-      data: { document, documentType, documentMetadata },
-    });
-    return <Error statusCode={500} />;
-  }
-  if (!documentMetadata.predictionMarket || !market) {
-    captureEvent({
-      msg: "[Prediction Market] Could not parse",
-      data: { predictionMarket: documentMetadata.predictionMarket },
+      data: {
+        document,
+        documentType,
+        documentMetadata,
+        predictionMarket: documentMetadata?.predictionMarket,
+      },
     });
     return <Error statusCode={500} />;
   }
@@ -204,24 +204,6 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
     revalidateDocument();
   };
 
-  const { parsedComments, parsedCommentCount } = useMemo(() => {
-    let parsedComments = [];
-    let parsedCommentCount = 0;
-    if (commentData) {
-      const { comments, count } = commentData;
-      parsedCommentCount = count;
-      parsedComments = comments.map((c) => parseComment({ raw: c }));
-    }
-
-    return { parsedComments, parsedCommentCount };
-  }, [commentData]);
-
-  // this is done separately in a useEffect because we want to be able to
-  // locally update the comment count using the hooks on `CommentFeed` below.
-  useEffect(() => {
-    setCommentCount(parsedCommentCount);
-  }, [parsedCommentCount]);
-
   return (
     <DocumentContext.Provider
       value={{
@@ -288,7 +270,6 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
           )}
           {tab === "COMMENTS" && (
             <CommentFeed
-              initialComments={parsedComments}
               document={document}
               showFilters={false}
               initialFilter={getCommentFilterByTab(tabName)}
@@ -308,9 +289,7 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
                 revalidateDocument();
                 setCommentCount(commentCount - 1);
               }}
-              // we purposefully used `commentData.count` here instead of `commentCount` because
-              // `commentCount` takes a few renders to get set, and `CommentFeed` uses the first-render value.
-              totalCommentCount={commentData?.count}
+              totalCommentCount={0}
             />
           )}
         </div>

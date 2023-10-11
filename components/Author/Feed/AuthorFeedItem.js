@@ -148,8 +148,10 @@ const AuthorFeedItem = ({
         actionText = (
           <span>
             voted&nbsp;
-            <span style={{ color: vote ? colors.GREEN() : colors.RED() }}>
-              {vote ? "YES" : "NO"}
+            <span
+              style={{ color: vote === "YES" ? colors.GREEN() : colors.RED() }}
+            >
+              {vote}
             </span>
           </span>
         );
