@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/pro-solid-svg-icons";
 import { faCoin } from "@fortawesome/pro-duotone-svg-icons";
 import { filterNull } from "~/config/utils/nullchecks";
-import { Fragment, useContext, useEffect } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { styles } from "~/pages/leaderboard/LeaderboardPage";
 import { useRouter } from "next/router";
@@ -20,6 +20,7 @@ import { NavbarContext } from "~/pages/Base";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 import api, { generateApiUrl } from "~/config/api";
+import { getCaseCounts } from "../AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
 
 type Props = {};
 
@@ -27,6 +28,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
   const router = useRouter();
   const currentPath = router.pathname;
   const currentUser = getCurrentUser();
+  const [authorClaimCount, setAuthorClaimCount] = useState(0);
   const { numNavInteractions, numProfileDeletes, setNumProfileDeletes } =
     useContext(NavbarContext);
   const isUserModerator = Boolean(currentUser?.moderator);
@@ -52,6 +54,11 @@ export default function ModeratorDashboardSidebar({}: Props) {
 
   useEffect(() => {
     fetchProfileDeletes();
+    getCaseCounts({
+      onSuccess: (counts) => {
+        setAuthorClaimCount(counts.OPEN);
+      },
+    });
   }, []);
 
   const SIDE_BAR_ITEMS = filterNull([
@@ -61,6 +68,10 @@ export default function ModeratorDashboardSidebar({}: Props) {
           id: "author-claim-case-dashboard",
           name: "Author Claim",
           pathname: "/moderators/author-claim-case-dashboard",
+          extraHTML:
+            authorClaimCount > 0 ? (
+              <span className={css(style.count)}>{authorClaimCount}</span>
+            ) : null,
         }
       : null,
     isUserModerator

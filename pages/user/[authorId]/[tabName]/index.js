@@ -73,6 +73,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { captureEvent } from "~/config/utils/events";
+import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 
 const AUTHOR_USER_STATUS = {
   EXISTS: "EXISTS",
@@ -120,6 +121,7 @@ function AuthorPage(props) {
   // FetchingState
   const [fetching, setFetching] = useState(false);
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
+  const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState(false);
   const [fetchedUser, setFetchedUser] = useState(false);
 
   // KT Constants
@@ -578,11 +580,12 @@ function AuthorPage(props) {
     setAvatarUploadIsOpen(false);
   };
 
-  const onClickExtraProfileOptions = () => {
+  const openRemoveProfile = () => {
     setExtraProfileOptionsIsOpen(true);
+    setIsAuthorClaimModalOpen(false);
   };
 
-  const closeExtraProfileOptions = () => {
+  const closeRemoveProfile = () => {
     setExtraProfileOptionsIsOpen(false);
   };
 
@@ -946,6 +949,8 @@ function AuthorPage(props) {
     );
   });
 
+  console.log(name);
+
   return (
     <div
       className={css(styles.profilePageRoot)}
@@ -1064,14 +1069,23 @@ function AuthorPage(props) {
             showArrowsOnWidth={breakpoints.xsmall.int}
             showArrows={Boolean(tabs.length > 2)}
           />
-          <div
-            className={css(styles.requestToRemoveProfile)}
-            onClick={onClickExtraProfileOptions}
-          >
-            Request to Remove Profile
-          </div>
+          {!author.user && (
+            <div
+              className={css(styles.requestToRemoveProfile)}
+              onClick={() => setIsAuthorClaimModalOpen(true)}
+            >
+              Claim Profile
+            </div>
+          )}
         </ComponentWrapper>
       </div>
+      <AuthorClaimModal
+        auth={auth}
+        authors={[{ firstName: author.first_name, lastName: author.last_name }]}
+        isOpen={isAuthorClaimModalOpen}
+        setIsOpen={(isOpen) => setIsAuthorClaimModalOpen(isOpen)}
+        removeProfileClick={() => openRemoveProfile()}
+      />
       <div className={css(styles.contentContainer)}>{tabContents}</div>
       <AvatarUpload
         isOpen={avatarUploadIsOpen}
@@ -1081,7 +1095,7 @@ function AuthorPage(props) {
       />
       <UserDeleteRequestModal
         isOpen={extraProfileOptionsIsOpen}
-        closeModal={closeExtraProfileOptions}
+        closeModal={closeRemoveProfile}
         author={author}
       />
     </div>

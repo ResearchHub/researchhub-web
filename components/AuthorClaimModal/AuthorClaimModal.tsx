@@ -16,6 +16,7 @@ export type AuthorClaimDataProps = {
   authors: Array<AuthorProfile>;
   isOpen: boolean;
   setIsOpen: (flag: boolean) => void;
+  removeProfileClick: () => void;
 };
 
 const getPrompt = ({
@@ -24,22 +25,32 @@ const getPrompt = ({
   onCloseModal,
   promptName,
   setOpenModalType,
+  removeProfileClick,
 }) => {
   switch (promptName) {
     case "enterEmail":
       return (
-        <AuthorClaimPromptEmail
-          authorData={authors.map(
-            (author: any): AuthorDatum => {
+        <>
+          <AuthorClaimPromptEmail
+            authorData={authors.map((author: any): AuthorDatum => {
               return {
                 name: `${author.firstName} ${author.lastName}`,
                 id: author.id,
               };
-            }
+            })}
+            onSuccess={() => setOpenModalType("success")}
+            userID={auth.user.id}
+          />
+
+          {removeProfileClick && (
+            <div
+              className={css(customModalStyle.requestToRemoveProfile)}
+              onClick={() => removeProfileClick()}
+            >
+              Request to Remove Profile
+            </div>
           )}
-          onSuccess={() => setOpenModalType("success")}
-          userID={auth.user.id}
-        />
+        </>
       );
     case "success":
       return <AuthorClaimPromptSuccess handleContinue={onCloseModal} />;
@@ -53,6 +64,7 @@ export default function AuthorClaimModal({
   authors,
   isOpen,
   setIsOpen,
+  removeProfileClick,
 }: AuthorClaimDataProps): ReactElement<typeof Modal> | null {
   const [openModalType, setOpenModalType] = useState<string>("enterEmail");
 
@@ -75,6 +87,7 @@ export default function AuthorClaimModal({
     onCloseModal,
     promptName: openModalType,
     setOpenModalType,
+    removeProfileClick,
   });
 
   return (
@@ -127,5 +140,15 @@ const customModalStyle = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       overflowY: "auto",
     },
+  },
+  requestToRemoveProfile: {
+    fontSize: 13,
+    opacity: 0.6,
+    letterSpacing: 0.4,
+    marginTop: -16,
+    cursor: "pointer",
+    width: "100%",
+    paddingBottom: 16,
+    textAlign: "center",
   },
 });
