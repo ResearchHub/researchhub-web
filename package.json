@@ -111,6 +111,8 @@
     "react-google-recaptcha": "^2.1.0",
     "react-horizontal-scrolling-menu": "0.7.8",
     "react-html-parser": "^2.0.2",
+    "react-image-gallery": "^1.3.0",
+    "react-images-viewer": "^1.7.1",
     "react-infinite-scroller": "^1.2.4",
     "react-katex": "^2.0.2",
     "react-lazyload": "^3.2.0",
@@ -150,7 +152,8 @@
     "wagmi": "^1.4.1",
     "webpack": "^5.75.0",
     "webpack-bundle-analyzer": "^4.3.0",
-    "yarn": "^1.22.19"
+    "yarn": "^1.22.19",
+    "yet-another-react-lightbox": "^3.13.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-inspector": "^2.2.2",

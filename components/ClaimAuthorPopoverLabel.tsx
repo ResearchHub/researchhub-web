@@ -32,7 +32,7 @@ export default function ClaimAuthorPopoverLabel({
   }
 
   return (
-    (<Fragment>
+    <Fragment>
       <AuthorClaimModal
         auth={auth}
         authors={[author]}
@@ -96,7 +96,7 @@ export default function ClaimAuthorPopoverLabel({
           withArrow
         />
       </div>
-    </Fragment>)
+    </Fragment>
   );
 }
 

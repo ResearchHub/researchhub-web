@@ -71,12 +71,12 @@ function Button(props) {
       <button
         className={css(
           styles.button,
-          isWhite && styles.isWhite,
           size && styles[size],
           variant === "contained" && styles.variantContained,
           variant === "outlined" && styles.variantOutlined,
           variant === "text" && styles.variantText,
           customButtonStyle && customButtonStyle,
+          isWhite && styles.isWhite,
           disabled && styles.disabled,
           fullWidth && styles.fullWidth
         )}
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.75,
     fontFamily: "Roboto, sans-serif",
     ":hover": {
-      opacity: 0.9,
+      opacity: 0.7,
     },
   },
   fullWidth: {
@@ -167,10 +167,11 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.NEW_BLUE(1)}`,
     color: colors.NEW_BLUE(1),
     ":hover": {
-      borderColor: "#FFF",
-      boxShadow: "2px 2x 2px 2px #EDEDED",
-      backgroundColor: colors.NEW_BLUE(1),
-      color: "#FFF",
+      opacity: 0.6,
+      // borderColor: "#FFF",
+      // boxShadow: "2px 2x 2px 2px #EDEDED",
+      // backgroundColor: colors.NEW_BLUE(1),
+      // color: "#FFF",
     },
   },
   label: {

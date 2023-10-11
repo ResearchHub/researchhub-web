@@ -12,6 +12,10 @@ import {
   faTwitter,
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
+import {
+  faEllipsis,
+  faArrowDownToBracket,
+} from "@fortawesome/pro-regular-svg-icons";
 import { buildSlug } from "~/config/utils/buildSlug";
 import { connect, useStore, useDispatch } from "react-redux";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";
@@ -45,6 +49,9 @@ import AuthorActivityFeed from "~/components/Author/Feed/AuthorActivityFeed";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import ReactPlaceholder from "react-placeholder/lib";
 import AuthorDetailsPlaceholder from "~/components/Placeholders/AuthorDetailsPlaceholder";
+import GenericMenu, { MenuOption } from "~/components/shared/GenericMenu";
+import IconButton from "~/components/Icons/IconButton";
+import UserDeleteRequestModal from "~/components/Modals/UserDeleteRequestModal";
 // Dynamic modules
 import dynamic from "next/dynamic";
 const UserInfoModal = dynamic(() =>
@@ -66,6 +73,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { captureEvent } from "~/config/utils/events";
+import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 
 const AUTHOR_USER_STATUS = {
   EXISTS: "EXISTS",
@@ -100,6 +108,8 @@ function AuthorPage(props) {
   // User Profile Update
   const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
   const [hoverProfilePicture, setHoverProfilePicture] = useState(false);
+  const [extraProfileOptionsIsOpen, setExtraProfileOptionsIsOpen] =
+    useState(false);
 
   const [description, setDescription] = useState(fetchedAuthor.description);
   const [name, setName] = useState(
@@ -111,6 +121,7 @@ function AuthorPage(props) {
   // FetchingState
   const [fetching, setFetching] = useState(false);
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
+  const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState(false);
   const [fetchedUser, setFetchedUser] = useState(false);
 
   // KT Constants
@@ -569,6 +580,15 @@ function AuthorPage(props) {
     setAvatarUploadIsOpen(false);
   };
 
+  const openRemoveProfile = () => {
+    setExtraProfileOptionsIsOpen(true);
+    setIsAuthorClaimModalOpen(false);
+  };
+
+  const closeRemoveProfile = () => {
+    setExtraProfileOptionsIsOpen(false);
+  };
+
   const authorOrcidId = !isNullOrUndefined(author) ? author.orcid_id : null;
 
   const orcidLinkButton = !isNullOrUndefined(authorOrcidId) ? (
@@ -858,6 +878,17 @@ function AuthorPage(props) {
     <div className={css(styles.socialLinks)}>
       {socialMediaLinkButtons}
       {orcidLinkButton}
+      {/* <GenericMenu
+        softHide={true}
+        options={extraProfileOptions}
+        width={200}
+        id="header-more-options"
+        direction="bottom-right"
+      >
+        <IconButton overrideStyle={styles.btnDots}>
+          <FontAwesomeIcon icon={faEllipsis} />
+        </IconButton>
+      </GenericMenu> */}
     </div>
   );
 
@@ -917,6 +948,8 @@ function AuthorPage(props) {
       </Link>
     );
   });
+
+  console.log(name);
 
   return (
     <div
@@ -1036,14 +1069,34 @@ function AuthorPage(props) {
             showArrowsOnWidth={breakpoints.xsmall.int}
             showArrows={Boolean(tabs.length > 2)}
           />
+          {!author.user && (
+            <div
+              className={css(styles.requestToRemoveProfile)}
+              onClick={() => setIsAuthorClaimModalOpen(true)}
+            >
+              Claim Profile
+            </div>
+          )}
         </ComponentWrapper>
       </div>
+      <AuthorClaimModal
+        auth={auth}
+        authors={[{ firstName: author.first_name, lastName: author.last_name }]}
+        isOpen={isAuthorClaimModalOpen}
+        setIsOpen={(isOpen) => setIsAuthorClaimModalOpen(isOpen)}
+        removeProfileClick={() => openRemoveProfile()}
+      />
       <div className={css(styles.contentContainer)}>{tabContents}</div>
       <AvatarUpload
         isOpen={avatarUploadIsOpen}
         closeModal={onCloseAvatarModal}
         saveButton={renderSaveButton}
         section={SECTIONS.picture}
+      />
+      <UserDeleteRequestModal
+        isOpen={extraProfileOptionsIsOpen}
+        closeModal={closeRemoveProfile}
+        author={author}
       />
     </div>
   );
@@ -1119,6 +1172,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     borderBottom: 0,
+    flex: 1,
   },
   contentContainer: {
     padding: "30px 0px",
@@ -1141,6 +1195,19 @@ const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
     },
+  },
+  componentWrapper: {
+    display: "flex",
+    alignItems: "center",
+  },
+  requestToRemoveProfile: {
+    fontSize: 13,
+    opacity: 0.6,
+    letterSpacing: 0.4,
+    // textDecoration: "underline",
+    cursor: "pointer",
+    // fontStyle: "italic",
+    width: "fit-content",
   },
   componentWrapperOverride: {
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
@@ -1750,6 +1817,18 @@ const styles = StyleSheet.create({
   mobileEditButtonCustom: {},
   editProfileWrapper: {
     marginTop: 15,
+  },
+  btnDots: {
+    fontSize: 22,
+    borderRadius: "30px",
+    color: colors.BLACK(1.0),
+    background: colors.LIGHTER_GREY(),
+    border: `1px solid ${colors.LIGHTER_GREY()}`,
+    padding: "6px 8px",
+    ":hover": {
+      background: colors.DARKER_GREY(0.2),
+      transition: "0.2s",
+    },
   },
 });
 

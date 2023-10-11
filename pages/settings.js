@@ -38,9 +38,10 @@ import Toggle from "react-toggle";
 import colors from "~/config/themes/colors";
 
 import UserApiTokenInputField from "~/components/shared/UserApiTokenInputField";
-import API from "~/config/api";
+import API, { generateApiUrl } from "~/config/api";
 import Button from "~/components/Form/Button";
 import { Helpers } from "@quantfive/js-web-config";
+import api from "~/config/api";
 
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
   return {
@@ -675,6 +676,18 @@ class UserSettings extends Component {
       });
   };
 
+  deleteAccount = async () => {
+    const deleteOrNot = confirm(
+      "Are you sure you want to delete your account?"
+    );
+
+    if (deleteOrNot) {
+      const url = generateApiUrl(`user/${this.props.user.id}`);
+      const res = await fetch(url, api.DELETE_CONFIG());
+      window.location.href = "/";
+    }
+  };
+
   renderOptOut = () => {
     return (
       <div className={css(styles.checkboxEntry)}>
@@ -770,6 +783,13 @@ class UserSettings extends Component {
             </div>
             {this.renderOptOut()}
           </div>
+          <div>
+            <Button
+              label="Delete Account"
+              onClick={this.deleteAccount}
+              customButtonStyle={styles.deleteButton}
+            ></Button>
+          </div>
         </div>
       </ComponentWrapper>
     );
@@ -777,6 +797,11 @@ class UserSettings extends Component {
 }
 
 const styles = StyleSheet.create({
+  deleteButton: {
+    width: "100%",
+    background: "red",
+    border: "none",
+  },
   componentWrapper: {
     "@media only screen and (min-width: 1280px)": {
       width: 800,
