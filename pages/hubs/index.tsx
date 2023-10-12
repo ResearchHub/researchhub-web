@@ -89,6 +89,23 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode, openAddHubModal }) => {
   const isModerator = Boolean(currentUser?.moderator);
   const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
 
+  const addHub = (newHub) => {
+    setParsedHubs([...parsedHubs, parseHub(newHub)]);
+  };
+
+  const editHub = (newHub) => {
+    const newParsedHub = parseHub(newHub);
+    const newHubs = parsedHubs.map((hub) => {
+      if (newParsedHub.id === hub.id) {
+        return newParsedHub;
+      } else {
+        return hub;
+      }
+    });
+
+    setParsedHubs(newHubs);
+  };
+
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.titleContainer)}>
@@ -117,8 +134,8 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode, openAddHubModal }) => {
         Hubs are collections of papers that are related to a specific topic. Use
         this page to explore hubs.
       </div>
-      <AddHubModal />
-      <EditHubModal />
+      <AddHubModal addHub={addHub} />
+      <EditHubModal editHub={editHub} />
       <div className={css(styles.searchAndFilters)}>
         <div className={css(styles.search)}>
           <FontAwesomeIcon
@@ -253,6 +270,7 @@ const styles = StyleSheet.create({
     paddingLeft: 25,
     paddingRight: 25,
     boxSizing: "border-box",
+    marginBottom: 40,
   },
   cardsWrapper: {
     borderTop: `1px solid #E9EAEF`,

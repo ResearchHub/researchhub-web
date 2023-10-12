@@ -22,6 +22,7 @@ interface Props {
   preventLinkClick?: boolean;
   showCommentCount?: boolean;
   numberCharactersToShow?: number;
+  openEditHubModal: (boolean: boolean, hub) => void;
   canEdit?: boolean;
 }
 

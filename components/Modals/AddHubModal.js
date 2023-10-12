@@ -18,6 +18,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../config/themes/colors";
 import FormTextArea from "../Form/FormTextArea";
+import { parseHub } from "~/config/types/hub";
 
 class AddHubModal extends Component {
   constructor(props) {
@@ -105,7 +106,6 @@ class AddHubModal extends Component {
             this.props.showMessage({ show: false });
           }, 2000);
           this.closeModal();
-          Router.push(`/hubs/${newHub.slug}`);
         })
         .catch((err) => {
           if (err.response.status === 429) {
