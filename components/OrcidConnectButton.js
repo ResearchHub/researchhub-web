@@ -1,54 +1,9 @@
-/**
- * Connects an ORCID account to an existing Google account.
- */
-import { Fragment } from "react";
-import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
+import React from "react";
+import { ORCID_CLIENT_ID } from "~/config/constants";
 
-import OrcidLogin from "~/components/OrcidLogin";
-import Button from "~/components/Form/Button";
-
-import { AuthActions } from "~/redux/auth";
-import { MessageActions } from "~/redux/message";
-
-import { ORCID_CLIENT_ID, orcidMethods } from "~/config/constants";
-import { useRouter } from "next/router";
-
-const OrcidConnectButton = (props) => {
-  const {
-    // state
-    auth,
-    // dispatch
-    getUser,
-    login,
-    setMessage,
-    showMessage,
-    // passed
-    customLabel,
-    customLabelStyle,
-    iconStyle,
-    refreshProfileOnSuccess,
-    iconButton,
-    loginCallback,
-  } = props;
-
-  const router = useRouter();
-
-  async function showSuccessMessage(author_id) {
-    if (refreshProfileOnSuccess) {
-      router.push(`/user/${author_id}`);
-    }
-    loginCallback && loginCallback();
-  }
-
-  function showLoginFailureMessage(response) {
-    console.error(response);
-    setMessage("Failed to connect with ORCID");
-    showMessage({ show: true, error: true });
-  }
-
+const OrcidConnectButton = ({ children, onSuccess, onFailure }) => {
   const buildRedirectUri = () => {
-    let hostname = props.hostname || window.location.host;
+    let hostname = window.location.host;
     let scheme = "http";
 
     if (!hostname.includes("localhost")) {
@@ -57,87 +12,48 @@ const OrcidConnectButton = (props) => {
     return scheme + "://" + hostname + "/orcid/connect";
   };
 
-  return (
-    <OrcidLogin
-      clientId={ORCID_CLIENT_ID}
-      redirectUri={buildRedirectUri()}
-      method={orcidMethods.CONNECT}
-      onSuccess={showSuccessMessage}
-      onFailure={showLoginFailureMessage}
-      cookiePolicy={"single_host_origin"}
-      render={(renderProps) => {
-        return (
-          <Fragment>
-            {iconButton ? (
-              <img
-                src={"/static/icons/orcid.png"}
-                onClick={renderProps.onClick}
-                className={css(
-                  styles.iconButton,
-                  renderProps.disabled && styles.disabled
-                )}
-                alt="Orcid Login"
-              />
-            ) : (
-              <Button
-                disabled={renderProps.disabled}
-                onClick={renderProps.onClick}
-                rippleClass={styles.rippleClass}
-                customButtonStyle={[styles.button, props.styles]}
-                icon={"/static/icons/orcid.png"}
-                customLabelStyle={customLabelStyle}
-                customIconStyle={[styles.iconStyle, iconStyle]}
-                label={customLabel ? customLabel : "Sign in ORCID"}
-              />
-            )}
-          </Fragment>
-        );
-      }}
-    />
-  );
+  const initiateOAuth = () => {
+    const redirectUri = buildRedirectUri();
+    const oauthUrl =
+      "https://orcid.org/oauth/authorize?" +
+      "response_type=token" +
+      "&redirect_uri=" +
+      redirectUri +
+      "&client_id=" +
+      ORCID_CLIENT_ID +
+      "&scope=openid" +
+      "&nonce=11235";
+
+    const newWindow = window.open(oauthUrl, "_blank", "width=600,height=400");
+
+    const interval = setInterval(() => {
+      if (newWindow.closed) {
+        clearInterval(interval);
+        console.log("OAuth window closed by user");
+      } else {
+        let currentUrl;
+        try {
+          currentUrl = newWindow.location.href;
+        } catch (e) {
+          // Due to same-origin policy, we may not be able to directly read the location.href property.
+          // Just ignore this error for now.
+        }
+
+        if (currentUrl) {
+          const searchParams = new URL(currentUrl).searchParams;
+          const success = searchParams.get("success");
+
+          if (success) {
+            clearInterval(interval);
+            newWindow.close();
+            onSuccess();
+          }
+        }
+      }
+    }, 1500);
+  };
+
+  return <div onClick={initiateOAuth}>{children}</div>;
 };
 
-const styles = StyleSheet.create({
-  iconStyle: {
-    height: 28,
-    width: 28,
-  },
-  button: {
-    height: 45,
-    padding: "0px 16px",
-    marginBottom: 0,
-    width: "unset",
-    "@media only screen and (max-width: 415px)": {
-      width: "100%",
-      height: 45,
-    },
-
-    "@media only screen and (max-width: 767px)": {
-      width: "100%",
-    },
-  },
-  rippleClass: {
-    "@media only screen and (max-width: 767px)": {
-      width: "100%",
-    },
-  },
-  iconButton: {
-    height: 35,
-    width: 35,
-    background: "none",
-    background: "transparent",
-  },
-});
-
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-});
-
-const mapDispatchToProps = {
-  login: AuthActions.orcidLogin,
-  getUser: AuthActions.getUser,
-  setMessage: MessageActions.setMessage,
-  showMessage: MessageActions.showMessage,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(OrcidConnectButton);
+export default OrcidConnectButton;
