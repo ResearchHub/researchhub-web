@@ -13,13 +13,20 @@ import Error from "next/error";
 import useWindow from "~/config/hooks/useWindow";
 import { breakpoints } from "~/config/themes/screen";
 import { HubSuggestion } from "~/components/SearchSuggestion/lib/types";
+import Button from "~/components/Form/Button";
+import { faPlus } from "@fortawesome/pro-regular-svg-icons";
+import { connect } from "react-redux";
+import { ModalActions } from "~/redux/modals";
+import AddHubModal from "~/components/Modals/AddHubModal";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import EditHubModal from "~/components/Modals/EditHubModal";
 
 type Props = {
   hubs: any[];
   errorCode?: number;
 };
 
-const HubsPage: NextPage<Props> = ({ hubs, errorCode }) => {
+const HubsPage: NextPage<Props> = ({ hubs, errorCode, openAddHubModal }) => {
   const sortOpts = [
     { label: "Popular", value: "score" },
     { label: "Name", value: "name" },
@@ -78,16 +85,57 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode }) => {
   const hubsToRender =
     query.length > 0 ? suggestions.map((s) => s.hub) : parsedHubs;
   const showCommentCount = (winWidth || 0) > breakpoints.medium.int;
+  const currentUser = getCurrentUser();
+  const isModerator = Boolean(currentUser?.moderator);
+  const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
+
+  const addHub = (newHub) => {
+    setParsedHubs([...parsedHubs, parseHub(newHub)]);
+  };
+
+  const editHub = (newHub) => {
+    const newParsedHub = parseHub(newHub);
+    const newHubs = parsedHubs.map((hub) => {
+      if (newParsedHub.id === hub.id) {
+        return newParsedHub;
+      } else {
+        return hub;
+      }
+    });
+
+    setParsedHubs(newHubs);
+  };
 
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.titleContainer)}>
         <h1 className={css(styles.title) + " clamp2"}>Hubs</h1>
+        {(isModerator || isHubEditor) && (
+          <Button
+            customButtonStyle={styles.createHubButton}
+            label={
+              <div className={css(styles.createHubButtonContainer)}>
+                <FontAwesomeIcon
+                  style={{ marginRight: 8 }}
+                  // @ts-ignore icon prop works with FontAwesome
+                  icon={faPlus}
+                />
+                <div>Create a Hub</div>
+              </div>
+            }
+            onClick={() => {
+              openAddHubModal(true);
+            }}
+            isWhite
+          />
+        )}
       </div>
       <div className={css(styles.description)}>
         Hubs are collections of papers that are related to a specific topic. Use
         this page to explore hubs.
       </div>
+      <AddHubModal addHub={addHub} />
+      <EditHubModal editHub={editHub} />
       <div className={css(styles.searchAndFilters)}>
         <div className={css(styles.search)}>
           <FontAwesomeIcon
@@ -129,6 +177,7 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode }) => {
               descriptionStyle={styles.hubCardDescription}
               hub={h}
               showCommentCount={showCommentCount}
+              canEdit={isModerator || isHubEditor}
             />
           </div>
         ))}
@@ -157,12 +206,20 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 500,
     textOverflow: "ellipsis",
-    marginBottom: 15,
+    marginBottom: 0,
   },
   titleContainer: {
     alignItems: "center",
     display: "flex",
     width: "100%",
+    marginBottom: 15,
+  },
+  createHubButton: {
+    marginLeft: "auto",
+  },
+  createHubButtonContainer: {
+    display: "flex",
+    alignItems: "center",
   },
   hubCardDescription: {
     fontSize: 14,
@@ -213,6 +270,7 @@ const styles = StyleSheet.create({
     paddingLeft: 25,
     paddingRight: 25,
     boxSizing: "border-box",
+    marginBottom: 40,
   },
   cardsWrapper: {
     borderTop: `1px solid #E9EAEF`,
@@ -247,4 +305,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   }
 };
 
-export default HubsPage;
+const mapDispatchToProps = {
+  openAddHubModal: ModalActions.openAddHubModal,
+};
+export default connect(null, mapDispatchToProps)(HubsPage);

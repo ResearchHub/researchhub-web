@@ -75,8 +75,8 @@ function Button(props) {
           variant === "contained" && styles.variantContained,
           variant === "outlined" && styles.variantOutlined,
           variant === "text" && styles.variantText,
-          customButtonStyle && customButtonStyle,
           isWhite && styles.isWhite,
+          customButtonStyle && customButtonStyle,
           disabled && styles.disabled,
           fullWidth && styles.fullWidth
         )}

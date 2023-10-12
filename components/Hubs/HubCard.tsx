@@ -8,6 +8,11 @@ import colors from "~/config/themes/colors";
 import Link from "next/link";
 import { truncateText } from "~/config/utils/string";
 import { formatNumber } from "~/config/utils/number";
+import { faPenToSquare } from "@fortawesome/pro-light-svg-icons";
+import { useState } from "react";
+import EditHubModal from "../Modals/EditHubModal";
+import { ModalActions } from "~/redux/modals";
+import { connect } from "react-redux";
 
 interface Props {
   hub: Hub;
@@ -17,6 +22,8 @@ interface Props {
   preventLinkClick?: boolean;
   showCommentCount?: boolean;
   numberCharactersToShow?: number;
+  openEditHubModal: (boolean: boolean, hub) => void;
+  canEdit?: boolean;
 }
 
 const HubCard = ({
@@ -25,6 +32,8 @@ const HubCard = ({
   descriptionStyle,
   metadataStyle,
   preventLinkClick,
+  canEdit,
+  openEditHubModal,
   showCommentCount = true,
   numberCharactersToShow = 150,
 }: Props) => {
@@ -32,8 +41,25 @@ const HubCard = ({
   const numComments = formatNumber(hub.numComments || 0);
   const description = truncateText(hub.description, numberCharactersToShow);
 
+  const [hoverEditIcon, setHoverEditIcon] = useState(false);
+
   return (
     <div className={css(styles.hubCard, cardStyle)}>
+      {!!canEdit && (
+        <div
+          className={css(
+            styles.editIcon,
+            hoverEditIcon && styles.hoverEditIcon
+          )}
+          onClick={() => {
+            openEditHubModal(true, hub);
+          }}
+          onMouseEnter={() => setHoverEditIcon(true)}
+          onMouseLeave={() => setHoverEditIcon(false)}
+        >
+          <FontAwesomeIcon icon={faPenToSquare} />
+        </div>
+      )}
       <Link
         href={`/hubs/${hub.slug}`}
         style={{ textDecoration: "none" }}
@@ -74,6 +100,7 @@ const HubCard = ({
 const styles = StyleSheet.create({
   hubCard: {
     border: "1px solid #E9EAEF",
+    position: "relative",
     borderRadius: 4,
     width: `100%`,
     height: 220,
@@ -81,7 +108,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     boxSizing: "border-box",
     ":hover": {
-      background: colors.LIGHTER_GREY(1),
+      background: colors.LIGHTER_GREY(0.5),
       transition: "0.2s",
       cursor: "pointer",
     },
@@ -116,6 +143,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     columnGap: "5px",
   },
+  hoverEditIcon: {
+    background: colors.GREY_BORDER,
+  },
+  editIcon: {
+    position: "absolute",
+    right: 0,
+    top: 0,
+    padding: 8,
+    borderRadius: "0px 4px 0px 4px",
+  },
 });
 
-export default HubCard;
+const mapDispatchToProps = {
+  openEditHubModal: ModalActions.openEditHubModal,
+};
+export default connect(null, mapDispatchToProps)(HubCard);

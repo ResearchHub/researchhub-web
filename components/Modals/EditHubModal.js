@@ -17,6 +17,7 @@ import API from "~/config/api";
 import { toTitleCase } from "~/config/utils/string";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../config/themes/colors";
+import FormTextArea from "../Form/FormTextArea";
 
 class EditHubModal extends Component {
   constructor(props) {
@@ -42,8 +43,6 @@ class EditHubModal extends Component {
         originalHubName: hub ? toTitleCase(hub.name) : "",
         hubName: hub ? toTitleCase(hub.name) : "",
         hubDescription: hub ? hub.description : "",
-        hubImage: undefined,
-        hubCategory: undefined,
       });
     }
   };
@@ -165,22 +164,8 @@ class EditHubModal extends Component {
   };
 
   render() {
-    const { categories, modals } = this.props;
-    const categoryOptions = categories
-      .filter((elem) => elem.category_name !== "Trending")
-      .map((elem) => ({ value: elem.id, label: elem.category_name }));
+    const { modals } = this.props;
     const hub = modals.editHubModal.hub;
-    let image;
-    let name;
-    let description;
-    if (hub) {
-      image = hub.hub_image
-        ? hub.hub_image
-        : "/static/background/twitter-banner.jpg";
-    } else {
-      image = null;
-    }
-
     return (
       <BaseModal
         isOpen={modals.openEditHubModal}
@@ -205,7 +190,7 @@ class EditHubModal extends Component {
             inputStyle={this.state.error && styles.error}
             required={true}
           />
-          <FormInput
+          <FormTextArea
             label={"Hub Description"}
             value={this.state.hubDescription}
             id={"hubDescription"}
@@ -214,38 +199,6 @@ class EditHubModal extends Component {
             labelStyle={styles.labelStyle}
             inputStyle={this.state.error && styles.error}
             required={true}
-          />
-          <FormSelect
-            label={"Category"}
-            placeholder={hub ? this.getMatchingCategory(hub.category) : null}
-            required={true}
-            containerStyle={styles.containerStyle}
-            inputStyle={styles.input}
-            labelStyle={styles.labelStyle}
-            isMulti={false}
-            id={"hubCategory"}
-            options={categoryOptions}
-            onChange={this.handleInputChange}
-            error={this.state.error && this.state.error}
-          />
-          <div className={css(styles.imageContainer)}>
-            <p>Existing Image:</p>
-          </div>
-          <img
-            className={css(styles.image)}
-            src={image}
-            alt={"Existing Hub Image"}
-          ></img>
-          <FormInput
-            label={"Upload New Hub Image"}
-            type="file"
-            accept="image/*"
-            id={"hubImage"}
-            onChange={this.handleInputChange}
-            containerStyle={styles.containerStyle}
-            labelStyle={styles.labelStyle}
-            inputStyle={this.state.error && styles.error}
-            required={false}
           />
           <div className={css(styles.button)}>
             <Button
@@ -267,14 +220,19 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     maxHeight: "70vh",
+    width: "100%",
+    "@media only screen and (min-width: 1024px)": {
+      width: 500,
+    },
+  },
+  buttonStyle: {
+    height: 50,
+    width: "100%",
   },
   button: {
     marginTop: 16,
     marginBottom: 16,
-  },
-  buttonStyle: {
-    height: 45,
-    width: 140,
+    width: "100%",
   },
   containerStyle: {
     "@media only screen and (max-width: 665px)": {
