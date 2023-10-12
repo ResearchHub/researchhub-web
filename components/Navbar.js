@@ -26,6 +26,7 @@ import Login from "./Login/Login";
 import Button from "./Form/Button";
 import BackBtn from "./shared/BackBtn";
 import { navContext } from "./contexts/NavigationContext";
+import LinkedInButton from "./LinkedInButton";
 
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
@@ -212,6 +213,7 @@ const Navbar = (props) => {
             )}
           </div>
           {isLoggedIn && <NewPostButton />}
+          <LinkedInButton />
 
           {Boolean(user.id) && (
             <PaperUploadStateNotifier
