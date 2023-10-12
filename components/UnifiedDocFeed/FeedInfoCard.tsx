@@ -3,13 +3,17 @@ import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
-import { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode, useEffect, useState } from "react";
 import AuthorFacePile from "../shared/AuthorFacePile";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import Image from "next/image";
 import { parseHub } from "~/config/types/hub";
 import { PaperIcon } from "~/config/themes/icons";
 import { faComments } from "@fortawesome/pro-solid-svg-icons";
+import Button from "../Form/Button";
+import api, { generateApiUrl } from "~/config/api";
+import { subscribeToHub, unsubscribeFromHub } from "~/config/fetch";
+import { capitalize } from "~/config/utils/string";
 
 type Props = {
   hub: any;
@@ -30,6 +34,10 @@ export default function FeedInfoCard({
     hub_image: hubImage,
     subscriber_count: subCount,
   } = hub ?? {};
+
+  const [userIsSubscribed, setUserIsSubscribed] = useState(false);
+  const [hubJoinHovered, setHubJoinedHovered] = useState(false);
+
   const editorProfiles = editor_permission_groups.map(
     (editor_group: any): any => editor_group?.user?.author_profile
   );
@@ -37,42 +45,86 @@ export default function FeedInfoCard({
   const numPapers = parsedHub.numDocs || 0;
   const numComments = parsedHub.numComments || 0;
   const formattedDescription = (description || "").replace(/\.$/, "");
+
+  const getUserIsSubscribedToHub = async () => {
+    const url = generateApiUrl(`hub/${hub.id}/check_subscribed`);
+    const res = await fetch(url, api.GET_CONFIG());
+    const json = await res.json();
+    setUserIsSubscribed(json.is_subscribed);
+  };
+
+  useEffect(() => {
+    setUserIsSubscribed(false);
+    getUserIsSubscribedToHub();
+  }, [hub]);
+
+  const leaveOrJoinHub = () => {
+    const SUBSCRIBE_API = userIsSubscribed
+      ? unsubscribeFromHub
+      : subscribeToHub;
+    const hubName = hub.name && capitalize(hub.name);
+    SUBSCRIBE_API({ hubId: hub.id }).then((_) =>
+      userIsSubscribed ? setUserIsSubscribed(false) : setUserIsSubscribed(true)
+    );
+  };
+
   return (
     <div className={css(styles.feedInfoCard)}>
       <div className={css(styles.detailRow)}>
         <div className={css(styles.titleContainer)}>
           <h1 className={css(styles.title) + " clamp2"}>{mainHeaderText}</h1>
         </div>
-      </div>
-      <div className={css(styles.bodyContainer)}>
-        {formattedDescription?.length > 0 &&
-          <div className={css(styles.description)}>{formattedDescription}.</div>
-        }
-        {!isEmpty(editorProfiles) && (
-          <div className={css(styles.detailRow, styles.editors)}>
-          <div className={css(styles.detailRowLabel)}>
-            <Image
-              height={20}
-              src="/static/icons/editor-star.png"
-              width={20}
-              layout="fixed"
-            />
-            <span
-              style={{
-                margin: "0px 0px 0px 5px",
-              }}
-            >{`Editor${editorProfiles.length > 1 ? "s" : ""}: `}</span>
-          </div>
-          <AuthorFacePile
-            authorProfiles={[editorProfiles]}
-            horizontal
-            imgSize={20}
-            fontSize={14}
-            labelSpacing={6}
-            withAuthorName
+        <div
+          onMouseEnter={() => setHubJoinedHovered(true)}
+          onMouseLeave={() => setHubJoinedHovered(false)}
+        >
+          <Button
+            label={
+              userIsSubscribed
+                ? hubJoinHovered
+                  ? "Leave Hub"
+                  : "Joined"
+                : "Join Hub"
+            }
+            customButtonStyle={[
+              styles.joinHubButtonStyle,
+              userIsSubscribed && hubJoinHovered && styles.leaveButtonStyle,
+            ]}
+            onClick={leaveOrJoinHub}
+            isWhite
           />
         </div>
-      )}        
+      </div>
+      <div className={css(styles.bodyContainer)}>
+        {formattedDescription?.length > 0 && (
+          <div className={css(styles.description)}>{formattedDescription}.</div>
+        )}
+        {!isEmpty(editorProfiles) && (
+          <div className={css(styles.detailRow, styles.editors)}>
+            <div className={css(styles.detailRowLabel)}>
+              <Image
+                height={20}
+                alt={"Editor Image"}
+                src="/static/icons/editor-star.png"
+                width={20}
+                layout="fixed"
+              />
+              <span
+                style={{
+                  margin: "0px 0px 0px 5px",
+                }}
+              >{`Editor${editorProfiles.length > 1 ? "s" : ""}: `}</span>
+            </div>
+            <AuthorFacePile
+              authorProfiles={[editorProfiles]}
+              horizontal
+              imgSize={20}
+              fontSize={14}
+              labelSpacing={6}
+              withAuthorName
+            />
+          </div>
+        )}
         <div className={css(styles.detailRow, styles.metadata)}>
           <div className={css(styles.dataPoint)}>
             {/* @ts-ignore */}
@@ -93,7 +145,6 @@ export default function FeedInfoCard({
             </span>
           </div>
         </div>
-
       </div>
     </div>
   );
@@ -113,7 +164,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     // columnGap: "25px",
     color: "#545161",
-    marginTop: 15,    
+    marginTop: 15,
   },
   dataPoint: {
     fontSize: 14,
@@ -145,6 +196,7 @@ const styles = StyleSheet.create({
     display: "flex",
     fontSize: 16,
     justifyContent: "flex-start",
+    marginBottom: 16,
   },
   detailRowLabel: {
     alignItems: "center",
@@ -166,6 +218,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
+    marginBottom: 0,
     fontWeight: 500,
     textOverflow: "ellipsis",
   },
@@ -173,5 +226,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     width: "100%",
+    flex: 1,
+  },
+  joinHubButtonStyle: {
+    marginLeft: "auto",
+    ":hover": {
+      opacity: 1,
+      // borderColor: "red",
+      // color: "red",
+    },
+  },
+  leaveButtonStyle: {
+    ":hover": {
+      opacity: 1,
+      // borderColor: "red",
+      // color: "red",
+    },
   },
 });
