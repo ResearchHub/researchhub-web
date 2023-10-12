@@ -17,6 +17,7 @@ import { ModalActions } from "~/redux/modals";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../config/themes/colors";
+import FormTextArea from "../Form/FormTextArea";
 
 class AddHubModal extends Component {
   constructor(props) {
@@ -26,7 +27,6 @@ class AddHubModal extends Component {
       hubName: "",
       error: {
         upload: false,
-        category: true,
         changed: false,
       },
     };
@@ -88,10 +88,6 @@ class AddHubModal extends Component {
       const data = new FormData();
       data.append("name", hubName.toLowerCase());
       data.append("description", hubDescription);
-      if (hubImage) {
-        data.append("hub_image", hubImage);
-      }
-      data.append("category", hubCategory.value);
       return fetch(API.HUB({}), API.POST_FILE_CONFIG(data))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
@@ -149,16 +145,17 @@ class AddHubModal extends Component {
   };
 
   render() {
-    const { categories, modals, openAddHubModal } = this.props;
-    const categoryOptions = categories
-      .filter((elem) => elem.category_name !== "Trending")
-      .map((elem) => ({ value: elem.id, label: elem.category_name }));
+    const { modals } = this.props;
     return (
       <BaseModal
         isOpen={modals.openAddHubModal}
         closeModal={this.closeModal}
-        title={"Create a New Hub"}
-        subtitle={"All newly created hubs will be locked."}
+        title={"Create a Hub"}
+        modalContentStyle={styles.modalContentStyle}
+        subtitleStyle={styles.subtitleStyle}
+        subtitle={
+          "Make sure the hub you wish to create is not duplicative of any existing hub."
+        }
       >
         <form
           encType="multipart/form-data"
@@ -170,7 +167,7 @@ class AddHubModal extends Component {
         >
           <FormInput
             label={"Hub Name"}
-            placeholder={"Enter the name of hub"}
+            placeholder={"Enter the name of the hub"}
             id={"hubName"}
             onChange={this.handleInputChange}
             containerStyle={styles.containerStyle}
@@ -179,7 +176,7 @@ class AddHubModal extends Component {
             required={true}
             value={this.state.hubName}
           />
-          <FormInput
+          <FormTextArea
             label={"Hub Description"}
             placeholder={"Enter a short description for the hub"}
             id={"hubDescription"}
@@ -190,34 +187,9 @@ class AddHubModal extends Component {
             required={true}
             value={this.state.hubDescription}
           />
-          <FormSelect
-            label={"Category"}
-            maxMenuHeight={200}
-            placeholder="Search Hub Categories"
-            required={true}
-            containerStyle={styles.container}
-            inputStyle={styles.input}
-            labelStyle={styles.labelStyle}
-            isMulti={false}
-            id={"hubCategory"}
-            options={categoryOptions}
-            onChange={this.handleCategoryChange}
-            error={this.state.error.category && this.state.error.changed}
-          />
-          <FormInput
-            label={"Hub Image (Optional)"}
-            type="file"
-            accept="image/*"
-            id={"hubImage"}
-            onChange={this.handleInputChange}
-            containerStyle={styles.containerStyle}
-            labelStyle={styles.labelStyle}
-            inputStyle={this.state.error.upload && styles.error}
-            required={false}
-          />
           <div className={css(styles.button)}>
             <Button
-              label={"Create New Hub"}
+              label={"Create Hub"}
               type={"submit"}
               customButtonStyle={styles.buttonStyle}
             />
@@ -237,9 +209,21 @@ const styles = StyleSheet.create({
     maxHeight: "70vh",
     overflowY: "auto",
     paddingRight: 15,
+    width: "100%",
+    "@media only screen and (min-width: 1024px)": {
+      width: 500,
+    },
+  },
+  buttonStyle: {
+    height: 50,
+    width: "100%",
   },
   button: {
     marginTop: 20,
+    width: "100%",
+  },
+  modalContentStyle: {
+    padding: 50,
   },
   containerStyle: {
     "@media only screen and (max-width: 665px)": {
@@ -260,6 +244,9 @@ const styles = StyleSheet.create({
   },
   error: {
     border: `1px solid ${colors.RED(1)}`,
+  },
+  subtitleStyle: {
+    width: "70%",
   },
   dndContainer: {
     marginTop: 20,
