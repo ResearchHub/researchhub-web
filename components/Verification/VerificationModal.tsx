@@ -15,7 +15,7 @@ import { captureEvent } from "~/config/utils/events";
 import { formatDateStandard } from "~/config/utils/dates";
 import { faAngleDown, faAngleUp } from "@fortawesome/pro-light-svg-icons";
 import Button from "../Form/Button";
-
+import LinkedInButton from "~/components/LinkedInButton";
 
 interface Option {
   value: "LINKEDIN" | "ORCID" | null;
@@ -172,10 +172,12 @@ const VerificationFormSelectProviderStep = ({ onProviderConnectSuccess, onProvid
         </div>
 
         <div className={css(formStyles.option)}>
-          <div className={css(formStyles.optionValue)}>LinkedIn</div>
-          <div className={css(formStyles.optionDescription)}>
-            Verify your authorship with LinkedIn (A few minutes)
-          </div>
+          <LinkedInButton>
+            <div className={css(formStyles.optionValue)}>LinkedIn</div>
+            <div className={css(formStyles.optionDescription)}>
+              Verify your authorship with LinkedIn (A few minutes)
+            </div>
+          </LinkedInButton>
         </div>
       </div>
     </div>
