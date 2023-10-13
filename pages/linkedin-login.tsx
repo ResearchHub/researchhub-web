@@ -18,7 +18,7 @@ function LinkedInLogin() {
     const json = await resp.json();
     if (resp.ok) {
       if (window.opener) {
-        window.opener.postMessage({ ...json, provider: "LINKEDIN" }, "*");
+        window.opener.postMessage({ ...json, provider: "LINKEDIN", name: "Jeffrey Koury" }, "*");
       }
       close();
     }

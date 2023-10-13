@@ -23,7 +23,7 @@ import { HubBadge } from "../Hubs/HubTag";
 import Link from "next/link";
 
 
-const VerifiedBadge = ({height = 25, width = 25}) => {
+export const VerifiedBadge = ({height = 25, width = 25}) => {
   return (
     <Image src="/static/verified.svg" width={width} height={height} alt="Verified" />
   )
@@ -66,7 +66,7 @@ const fetchOpenAlexProfiles = async ({
 const completeProfileVerification = async ({ openAlexProfileId }) => {
   const url = generateApiUrl(`user/verify_user`);
 
-  return fetch(url, API.POST_CONFIG({ id: openAlexProfileId }))
+  return fetch(url, API.POST_CONFIG({ openalex_id: openAlexProfileId }))
     .then((res): any => true)
     .catch((error) => {
       captureEvent({
@@ -179,8 +179,8 @@ const VerificationFormSuccessStep = ({}) => {
       <div style={{ fontSize: 26, fontWeight: 500, marginTop: 50, }}>Your account is now verified</div>      
       <div style={{ marginTop: 10, color: colors.MEDIUM_GREY2(), lineHeight: "26px", }}>Your account will be updated to reflect your academic reputation in a few minutes.</div>
       <div style={{ width: 250, marginTop: 75, }}>
-        <Button fullWidth onClick={() => null}>
-          Close
+        <Button fullWidth onClick={() => window.location.href = "/"}>
+          Back Home
         </Button>      
       </div>
     </div>
@@ -289,6 +289,7 @@ const VerificationFormSelectProfileStep = ({
   const [isLoadingProfiles, setIsLoadingProfiles] = useState(true);
   const [isVerifying, setIsVerifying] = useState(true);
   const [isInitialFetchComplete, setIsInitialFetchComplete] = useState(false);
+  const [name, setName] = useState(providerDataResponse?.name || "");
 
   const toggleAuthorWorksVisibility = (profileId) => {
     if (showWorksForAuthors.includes(profileId)) {
@@ -359,30 +360,33 @@ const VerificationFormSelectProfileStep = ({
           </IconButton>
         </div>
         <div>
-            {isLoadingProfiles && (
-              <div
-                style={{ display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100%",
-                marginTop: 150,
-              }}>
-                  <ClipLoader
-                    sizeUnit={"px"}
-                    size={44}
-                    color={colors.NEW_BLUE()}
-                    loading={true}
-                  />
-              </div>
-              )}
+          {isLoadingProfiles && (
+            <div
+              style={{ display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              marginTop: 150,
+            }}>
+                <ClipLoader
+                  sizeUnit={"px"}
+                  size={44}
+                  color={colors.NEW_BLUE()}
+                  loading={true}
+                />
+            </div>
+            )}
 
 
-          {providerDataResponse.provider === "LINKED" && (
+          {/* {(providerDataResponse.provider === "LINKEDIN" && !isLoadingProfiles) && (
             <FormInput
-              value={providerDataResponse?.name || ""}
-              onChange={(name, value) => debounceFetchProfiles(value)}
+              value={name}
+              onChange={(name, value) =>{
+                setName(value)
+                debounceFetchProfiles(value)
+              }}
             />
-          )}
+          )} */}
           {profileOptions.map((profile, index) => {
             return (
               <div

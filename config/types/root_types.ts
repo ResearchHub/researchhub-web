@@ -187,6 +187,7 @@ export type RHUser = {
   raw: any;
   moderator: boolean;
   balance?: number;
+  isVerified?: boolean;
 };
 
 export type Organization = {
@@ -269,6 +270,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     url: `/user/${raw.id}/overview`,
     description: raw.description,
     education: raw.education,
+    isVerified: raw.is_verified,
     headline: raw?.headline?.title || "",
     isHubEditor: raw.is_hub_editor,
     ...(raw.sequence && { sequence: raw.sequence }),
@@ -318,6 +320,7 @@ export const parseUser = (raw: any): RHUser => {
     reputation: _raw.reputation,
     createdAt: _raw.created_date,
     balance: _raw.balance,
+    isVerified: _raw.is_verified,
     moderator: _raw.moderator,
     // Used for legacy components
     raw,
