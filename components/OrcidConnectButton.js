@@ -46,7 +46,7 @@ const OrcidConnectButton = ({ children, onSuccess, onFailure }) => {
           if (success) {
             clearInterval(interval);
             newWindow.close();
-            onSuccess();
+            onSuccess({ provider: "ORCID" });
           }
         }
       }

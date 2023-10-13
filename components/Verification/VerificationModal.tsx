@@ -8,14 +8,15 @@ import colors from "~/config/themes/colors";
 import { PaperIcon } from "~/config/themes/icons";
 import CheckBox from "../Form/CheckBox";
 import OrcidConnectButton from "../OrcidConnectButton";
-import { generateApiUrl } from "~/config/api";
+import API, { generateApiUrl } from "~/config/api";
 import helpers from "~/config/api/helpers";
-import API from "~/config/api";
 import { captureEvent } from "~/config/utils/events";
 import { formatDateStandard } from "~/config/utils/dates";
 import { faAngleDown, faAngleUp } from "@fortawesome/pro-light-svg-icons";
 import Button from "../Form/Button";
 import LinkedInButton from "~/components/LinkedInButton";
+import FormInput from "../Form/FormInput";
+import debounce from "lodash/debounce";
 
 interface Option {
   value: "LINKEDIN" | "ORCID" | null;
@@ -23,43 +24,52 @@ interface Option {
   description: string;
 }
 
-
-const fetchOpenAlexProfiles = async ({ requestType }: { requestType: "ORCID" | "LINKEDIN" }) => {
+const fetchOpenAlexProfiles = async ({
+  requestType,
+  name,
+}: {
+  requestType: "ORCID" | "NAME";
+  name?: string;
+}): Promise<any[]> => {
   const url = generateApiUrl(`user_verification/get_openalex_author_profiles`);
 
-  return fetch(url, API.POST_CONFIG({ request_type: requestType }))
-  .then((res): any =>
-    helpers.parseJSON(res)
-  )
-  .catch((error) => {
-    captureEvent({
-      error,
-      msg: "[VERIFICATION] Failed to fetch openalex profiles",
-      data: { requestType },
-    });    
-  })
-}
+  return fetch(url, API.POST_CONFIG({ request_type: requestType, name }))
+    .then(async (res) => {
+      const parsed = await helpers.parseJSON(res);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      } else {
+        return [parsed];
+      }
+    })
+    .catch((error) => {
+      captureEvent({
+        error,
+        msg: "[VERIFICATION] Failed to fetch openalex profiles",
+        data: { requestType },
+      });
+      throw error;
+    });
+};
 
 const completeProfileVerification = async ({ openAlexProfileId }) => {
   const url = generateApiUrl(`user/verify_user`);
 
   return fetch(url, API.POST_CONFIG({ id: openAlexProfileId }))
-  .then((res): any =>
-    helpers.parseJSON(res)
-  )
-  .catch((error) => {
-    captureEvent({
-      error,
-      msg: "[VERIFICATION] Failed to verify profile",
-      data: { openAlexProfileId },
-    });    
-  })
-}
+    .then((res): any => helpers.parseJSON(res))
+    .catch((error) => {
+      captureEvent({
+        error,
+        msg: "[VERIFICATION] Failed to verify profile",
+        data: { openAlexProfileId },
+      });
+    });
+};
 
 interface OpenAlexProfile {
   id: string;
   displayName: string;
-  institution: OpenAlexInstitution;
+  institution: OpenAlexInstitution | null;
   summaryStats: OpenAlexSummaryStats;
   works: OpenAlexWork[];
 }
@@ -86,64 +96,65 @@ interface OpenAlexWork {
 
 interface OpenAlexSummaryStats {
   hIndex: number;
-  i10Index: number;  
+  i10Index: number;
 }
 
 const parseOpenAlexSummaryStats = (raw: any): OpenAlexSummaryStats => {
   return {
     hIndex: raw.h_index,
     i10Index: raw.i10_index,
-  }
-}
+  };
+};
 
-const parseOpenAlexInstitution = (raw: any):OpenAlexInstitution => {
-
+const parseOpenAlexInstitution = (raw: any): OpenAlexInstitution => {
   return {
     id: raw.id,
     displayName: raw.display_name,
     countryCode: raw.country_code,
-  }
-}
+  };
+};
 
-const parseOpenAlexConcept = (raw: any):OpenAlexConcept => {
+const parseOpenAlexConcept = (raw: any): OpenAlexConcept => {
   return {
     displayName: raw.display_name,
     level: raw.level,
     relevancyScore: raw.score,
-  }
-}
+  };
+};
 
-const parseOpenAlexWork = (raw: any):OpenAlexWork => {
+const parseOpenAlexWork = (raw: any): OpenAlexWork => {
   return {
     title: raw.title,
     id: raw.id,
     publishedDate: formatDateStandard(raw.publication_date, "MMM D, YYYY"),
-    authors: raw.authorships.map(authorship => authorship.author.display_name),
-    concepts: raw.concepts.map(concept => parseOpenAlexConcept(concept)),
-  }
-}
+    authors: raw.authorships.map(
+      (authorship) => authorship.author.display_name
+    ),
+    concepts: raw.concepts.map((concept) => parseOpenAlexConcept(concept)),
+  };
+};
 
-const parseOpenAlexProfile = (raw: any):OpenAlexProfile => {
+const parseOpenAlexProfile = (raw: any): OpenAlexProfile => {
+  console.log("raw", raw);
   return {
     id: raw.id,
     displayName: raw.display_name,
-    institution: parseOpenAlexInstitution(raw.last_known_institution),
+    institution:
+      raw.last_known_institution &&
+      parseOpenAlexInstitution(raw.last_known_institution),
     summaryStats: parseOpenAlexSummaryStats(raw.summary_stats),
-    works: raw.works.map(work => parseOpenAlexWork(work)),
-  }
-}
+    works: raw.works.map((work) => parseOpenAlexWork(work)),
+  };
+};
 
 const VerificationFormSuccessStep = ({}) => {
-  return (
-    <div>
-      Success!
-    </div>
-  ) 
-}
+  return <div>Success!</div>;
+};
 
-
-const VerificationFormSelectProviderStep = ({ onProviderConnectSuccess, onProviderConnectFailure }) => {
-
+const VerificationFormSelectProviderStep = ({
+  onProviderConnectSuccess,
+  onProviderConnectFailure,
+}) => {
   return (
     <div>
       <div className={css(formStyles.title)}>Become a Verified Author</div>
@@ -156,10 +167,10 @@ const VerificationFormSelectProviderStep = ({ onProviderConnectSuccess, onProvid
         <div className={css(formStyles.option)}>
           <OrcidConnectButton
             onSuccess={(data) => {
-              onProviderConnectSuccess();
+              onProviderConnectSuccess(data);
             }}
             onFailure={(data) => {
-              onProviderConnectFailure()
+              onProviderConnectFailure();
             }}
           >
             <>
@@ -172,7 +183,14 @@ const VerificationFormSelectProviderStep = ({ onProviderConnectSuccess, onProvid
         </div>
 
         <div className={css(formStyles.option)}>
-          <LinkedInButton>
+          <LinkedInButton
+            onSuccess={(data) => {
+              onProviderConnectSuccess(data);
+            }}
+            onFailure={(data) => {
+              onProviderConnectFailure();
+            }}
+          >
             <div className={css(formStyles.optionValue)}>LinkedIn</div>
             <div className={css(formStyles.optionDescription)}>
               Verify your authorship with LinkedIn (A few minutes)
@@ -187,41 +205,58 @@ const VerificationFormSelectProviderStep = ({ onProviderConnectSuccess, onProvid
 interface ProfileStepProps {
   onPrevClick: () => void;
   onVerificationComplete: () => void;
+  providerDataResponse: any;
 }
 
 const VerificationFormSelectProfileStep = ({
   onPrevClick,
   onVerificationComplete,
+  providerDataResponse,
 }: ProfileStepProps) => {
-
   const [showWorksForAuthors, setShowWorksForAuthors] = useState<string[]>([]);
   const [profileOptions, setProfileOptions] = useState<OpenAlexProfile[]>([]);
   const [selectedProfileId, setSelectedProfileId] = useState<string | null>(
     null
   );
+  const requestType =
+    providerDataResponse.provider === "ORCID" ? "ORCID" : "NAME";
 
   const toggleAuthorWorksVisibility = (profileId) => {
     if (showWorksForAuthors.includes(profileId)) {
-      setShowWorksForAuthors(showWorksForAuthors.filter(id => id !== profileId))
+      setShowWorksForAuthors(
+        showWorksForAuthors.filter((id) => id !== profileId)
+      );
     } else {
-      setShowWorksForAuthors([...showWorksForAuthors, profileId])
+      setShowWorksForAuthors([...showWorksForAuthors, profileId]);
     }
-  }
+  };
 
   const completeVerification = async () => {
-    await completeProfileVerification({ openAlexProfileId: selectedProfileId })
+    await completeProfileVerification({ openAlexProfileId: selectedProfileId });
     onVerificationComplete();
-  }
+  };
+
+  const debounceFetchProfiles = debounce(async (name) => {
+    if (name.length > 5) {
+      const rawProfiles = await fetchOpenAlexProfiles({
+        requestType,
+        name: providerDataResponse.name,
+      });
+      const profiles = rawProfiles.map((p) => parseOpenAlexProfile(p));
+      setProfileOptions(profiles);
+    }
+  }, 1500);
 
   useEffect(() => {
     (async () => {
-      const raw = await fetchOpenAlexProfiles({ requestType: "ORCID" })
-      console.log('raw', raw)
-      const profile = parseOpenAlexProfile(raw);
-      console.log('profile', profile)
-      setProfileOptions([profile]);      
+      const rawProfiles = await fetchOpenAlexProfiles({
+        requestType,
+        name: providerDataResponse.name,
+      });
+      const profiles = rawProfiles.map((p) => parseOpenAlexProfile(p));
+      setProfileOptions(profiles);
     })();
-  }, [])
+  }, []);
 
   return (
     <div>
@@ -236,38 +271,59 @@ const VerificationFormSelectProfileStep = ({
         </IconButton>
       </div>
 
+      {providerDataResponse.provider === "LINKED" && (
+        <FormInput
+          value={providerDataResponse?.name || ""}
+          onChange={(name, value) => debounceFetchProfiles(value)}
+        />
+      )}
       {profileOptions.map((profile, index) => {
         return (
           <div
             className={css(profileStepStyles.profile)}
-            key={`profile-${profile.id}`} 
+            key={`profile-${profile.id}`}
           >
-            <div onClick={() => profile.id === selectedProfileId ? setSelectedProfileId(null) : setSelectedProfileId(profile.id)}>
+            <div
+              onClick={() =>
+                profile.id === selectedProfileId
+                  ? setSelectedProfileId(null)
+                  : setSelectedProfileId(profile.id)
+              }
+            >
               {/* @ts-ignore */}
               <CheckBox
                 isSquare={true}
                 active={profile.id === selectedProfileId}
               />
             </div>
-            <div className={css(profileStepStyles.name)}>{profile.displayName}</div>
-            <div className={css(profileStepStyles.institution)}>
-              {profile.institution.displayName}
+            <div className={css(profileStepStyles.name)}>
+              {profile.displayName}
             </div>
-            {(profile.summaryStats.hIndex > 0 || profile.summaryStats.i10Index > 0) && (
+            {profile.institution && (
+              <div className={css(profileStepStyles.institution)}>
+                {profile.institution.displayName}
+              </div>
+            )}
+            {(profile.summaryStats.hIndex > 0 ||
+              profile.summaryStats.i10Index > 0) && (
               <div className={css(profileStepStyles.metadata)}>
                 {profile.summaryStats.hIndex > 0 && (
                   <div className={css(profileStepStyles.metadataItem)}>
-                    <div className={css(profileStepStyles.metadataKey)}>H Index:</div>
+                    <div className={css(profileStepStyles.metadataKey)}>
+                      h Index:
+                    </div>
                     <div className={css(profileStepStyles.metadataValue)}>
-                      {profile.summaryStats.hIndex}
+                      {String(profile.summaryStats.hIndex)}
                     </div>
                   </div>
                 )}
                 {profile.summaryStats.i10Index > 0 && (
                   <div className={css(profileStepStyles.metadataItem)}>
-                    <div className={css(profileStepStyles.metadataKey)}>i10 Index:</div>
+                    <div className={css(profileStepStyles.metadataKey)}>
+                      i10 Index:
+                    </div>
                     <div className={css(profileStepStyles.metadataValue)}>
-                      {profile.summaryStats.i10Index}
+                      {String(profile.summaryStats.i10Index)}
                     </div>
                   </div>
                 )}
@@ -277,9 +333,21 @@ const VerificationFormSelectProfileStep = ({
             <div>
               <div onClick={() => toggleAuthorWorksVisibility(profile.id)}>
                 {profile.works.length}Published papers
-                <FontAwesomeIcon icon={showWorksForAuthors.includes(profile.id) ? faAngleUp : faAngleDown} />
+                <FontAwesomeIcon
+                  icon={
+                    showWorksForAuthors.includes(profile.id)
+                      ? faAngleUp
+                      : faAngleDown
+                  }
+                />
               </div>
-              <div className={css(profileStepStyles.worksWrapper, showWorksForAuthors.includes(profile.id) && profileStepStyles.worksWrapperActive)}>
+              <div
+                className={css(
+                  profileStepStyles.worksWrapper,
+                  showWorksForAuthors.includes(profile.id) &&
+                    profileStepStyles.worksWrapperActive
+                )}
+              >
                 {profile.works.map((work, index) => {
                   return (
                     <div className={css(profileStepStyles.paper)}>
@@ -295,54 +363,55 @@ const VerificationFormSelectProfileStep = ({
                 })}
               </div>
             </div>
-
           </div>
         );
       })}
 
-      <Button onClick={completeVerification} disabled={!selectedProfileId}>Complete Verification</Button>
+      <Button onClick={completeVerification} disabled={!selectedProfileId}>
+        Complete Verification
+      </Button>
     </div>
   );
 };
 
-
 interface VerificationFormProps {
-  onProfileSelect?: (profileId: string|null) => void;
+  onProfileSelect?: (profileId: string | null) => void;
   onStepSelect?: (step: "PROVIDER_STEP" | "PROFILE_STEP") => void;
 }
 
-const VerificationForm = ({
-  onStepSelect,
-}: VerificationFormProps) => {
+const VerificationForm = ({ onStepSelect }: VerificationFormProps) => {
+  const [step, setStep] = useState<
+    "PROVIDER_STEP" | "PROFILE_STEP" | "SUCCESS_STEP" | "FAILURE_STEP"
+  >("PROVIDER_STEP");
 
-  const [step, setStep] = useState<"PROVIDER_STEP" | "PROFILE_STEP" | "SUCCESS_STEP" | "FAILURE_STEP">(
-    "PROVIDER_STEP"
+  const [providerDataResponse, setProviderDataResponse] = useState<any | null>(
+    null
   );
 
   return (
     <div>
       {step === "PROVIDER_STEP" && (
         <VerificationFormSelectProviderStep
-          onProviderConnectSuccess={(provider) => {
+          onProviderConnectSuccess={(data) => {
+            setProviderDataResponse(data);
             setStep("PROFILE_STEP");
             onStepSelect && onStepSelect("PROFILE_STEP");
           }}
           onProviderConnectFailure={() => {
-            console.log('failure to connect')
+            console.log("failure to connect");
           }}
         />
       )}
-      {step === "PROFILE_STEP" &&  (
+      {step === "PROFILE_STEP" && providerDataResponse && (
         <VerificationFormSelectProfileStep
           onPrevClick={() => setStep("PROVIDER_STEP")}
+          providerDataResponse={providerDataResponse}
           onVerificationComplete={() => {
             setStep("SUCCESS_STEP");
           }}
         />
       )}
-      {step === "SUCCESS_STEP" &&  (
-        <VerificationFormSuccessStep />
-      )}      
+      {step === "SUCCESS_STEP" && <VerificationFormSuccessStep />}
     </div>
   );
 };
@@ -355,9 +424,8 @@ const profileStepStyles = StyleSheet.create({
   },
   worksWrapperActive: {
     display: "block",
-  },  
+  },
 });
-
 
 const formStyles = StyleSheet.create({
   option: {
