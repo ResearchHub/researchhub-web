@@ -109,9 +109,9 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
       </div>
     );
   } else {
-    if (commentTreeState.context === COMMENT_CONTEXTS.GENERIC) {
-      return <div className={css(styles.badgesWrapper)}></div>;
-    }
+    // if (commentTreeState.context === COMMENT_CONTEXTS.GENERIC) {
+    //   return <div className={css(styles.badgesWrapper)}></div>;
+    // }
     return null;
   }
 };
