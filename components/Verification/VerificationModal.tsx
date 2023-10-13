@@ -67,7 +67,7 @@ const completeProfileVerification = async ({ openAlexProfileId }) => {
   const url = generateApiUrl(`user/verify_user`);
 
   return fetch(url, API.POST_CONFIG({ id: openAlexProfileId }))
-    .then((res): any => helpers.parseJSON(res))
+    .then((res): any => true)
     .catch((error) => {
       captureEvent({
         error,
@@ -173,7 +173,18 @@ const parseOpenAlexProfile = (raw: any): OpenAlexProfile => {
 };
 
 const VerificationFormSuccessStep = ({}) => {
-  return <div>Success!</div>;
+  return (
+    <div style={{ display: "flex", alignItems: "center", flexDirection: "column", textAlign: "center", paddingTop: 75, }}>
+      <VerifiedBadge width={100} height={100} />
+      <div style={{ fontSize: 26, fontWeight: 500, marginTop: 50, }}>Your account is now verified</div>      
+      <div style={{ marginTop: 10, color: colors.MEDIUM_GREY2(), lineHeight: "26px", }}>Your account will be updated to reflect your academic reputation in a few minutes.</div>
+      <div style={{ width: 250, marginTop: 75, }}>
+        <Button fullWidth onClick={() => null}>
+          Close
+        </Button>      
+      </div>
+    </div>
+  );
 };
 
 const VerificationFormSelectProviderStep = ({
@@ -500,9 +511,6 @@ const VerificationFormSelectProfileStep = ({
       }
 
       </div>
-
-
-      
   );
 };
 
@@ -542,10 +550,11 @@ interface VerificationFormProps {
 const VerificationForm = ({ onStepSelect }: VerificationFormProps) => {
   const [step, setStep] = useState<
     "PROVIDER_STEP" | "PROFILE_STEP" | "SUCCESS_STEP" | "FAILURE_STEP"
-  >("PROFILE_STEP");
+  >("PROVIDER_STEP");
 
   const [providerDataResponse, setProviderDataResponse] = useState<any | null>(
-    {provider: "LINKEDIN", name: "Jeffrey Koury"}
+    // {provider: "LINKEDIN", name: "Jeffrey Koury"}
+    null
   );
 
   return (
