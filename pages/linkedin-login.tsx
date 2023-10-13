@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 import Loader from "~/components/Loader/Loader";
 
-
 import api, { generateApiUrl } from "~/config/api";
 
 function LinkedInLogin() {
@@ -18,6 +17,9 @@ function LinkedInLogin() {
     const resp = await fetch(url, api.POST_CONFIG(params));
     const json = await resp.json();
     if (resp.ok) {
+      if (window.opener) {
+        window.opener.postMessage({ ...json, provider: "LINKEDIN" }, "*");
+      }
       close();
     }
   };
