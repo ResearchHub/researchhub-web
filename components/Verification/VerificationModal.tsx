@@ -17,6 +17,7 @@ import Button from "../Form/Button";
 import LinkedInButton from "~/components/LinkedInButton";
 import FormInput from "../Form/FormInput";
 import debounce from "lodash/debounce";
+import Image from "next/image";
 
 interface Option {
   value: "LINKEDIN" | "ORCID" | null;
@@ -163,8 +164,16 @@ const VerificationFormSelectProviderStep = ({
         offer.
       </p>
 
-      <div>
+      <div className={css(formStyles.chooseVerificationTitle)}>Choose a verification method:</div>
+      <div className={css(formStyles.verificationOptions)}>
         <div className={css(formStyles.option)}>
+          <Image
+            src="/static/logos/orcid.png"
+            width={22}
+            height={22}
+            alt="Orcid"
+            style={{ marginTop: 0 }}
+          />
           <OrcidConnectButton
             onSuccess={(data) => {
               onProviderConnectSuccess(data);
@@ -176,13 +185,20 @@ const VerificationFormSelectProviderStep = ({
             <>
               <div className={css(formStyles.optionValue)}>Orcid</div>
               <div className={css(formStyles.optionDescription)}>
-                Verify your authorship with Orcid (A few minutes)
+                Verify authorship instantly with Orcid
               </div>
             </>
           </OrcidConnectButton>
         </div>
 
         <div className={css(formStyles.option)}>
+          <Image
+            src="/static/logos/linkedin.png"
+            width={22}
+            height={22}
+            alt="Linkedin"
+            style={{ marginTop: -2 }}
+          />          
           <LinkedInButton
             onSuccess={(data) => {
               onProviderConnectSuccess(data);
@@ -193,9 +209,20 @@ const VerificationFormSelectProviderStep = ({
           >
             <div className={css(formStyles.optionValue)}>LinkedIn</div>
             <div className={css(formStyles.optionDescription)}>
-              Verify your authorship with LinkedIn (A few minutes)
+              Verify authorship instantly with LinkedIn
             </div>
           </LinkedInButton>
+        </div>
+      </div>
+
+      <div className={css(formStyles.whyVerifyWrapper)}>
+        <div className={css(formStyles.whyVerify)}>
+          <div className={css(formStyles.whyVerifyTitle)}>Why should you verify your authorship:</div>
+          <ul className={css(formStyles.whyVerifyList)}>
+            <li className={css(formStyles.whyVerifyItem)}>Auto-import your papers and academic data into ResearchHub</li>
+            <li className={css(formStyles.whyVerifyItem)}>Earn ResearchCoin on your papers</li>
+            <li className={css(formStyles.whyVerifyItem)}>Improve your academic reputation on the platform</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -428,10 +455,44 @@ const profileStepStyles = StyleSheet.create({
 });
 
 const formStyles = StyleSheet.create({
+  whyVerify: {
+    background: colors.LIGHTER_GREY(0.7),
+    color: colors.MEDIUM_GREY2(),
+    position: "absolute",
+    width: "100%",
+    left: "0",
+    bottom: 0,
+    boxSizing: "border-box",    
+    padding: "25px 50px ",
+  },
+  whyVerifyWrapper: {
+    height: 180,
+    width: "100%",
+  },
+  whyVerifyTitle: {
+    color: colors.BLACK(),
+    fontSize: 16,
+    marginBottom: 15,
+  },
+  whyVerifyItem: {
+    fontSize: 15,
+  },
+  whyVerifyList: {
+    padding: 0,
+    paddingLeft: 10,
+    lineHeight: "1.5em",
+    listStylePosition: "inside",
+  },
+  verificationOptions: {
+    marginTop: 10,    
+  },
   option: {
+    display: "flex",
+    columnGap: "10px",
+    marginTop: 15,
+    background: colors.LIGHTER_GREY(0.7),
     border: "1px solid #E9EAEF",
     borderRadius: "8px",
-    height: 76,
     boxSizing: "border-box",
     width: "100%",
     padding: 15,
@@ -443,9 +504,26 @@ const formStyles = StyleSheet.create({
   optionValue: {
     fontWeight: 500,
   },
-  optionDescription: {},
-  title: {},
-  description: {},
+  optionDescription: {
+    marginTop: 5,
+    color: colors.MEDIUM_GREY2(),
+    fontSize: 14,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 500,
+  },
+  chooseVerificationTitle: {
+    fontSize: 16,
+    fontWeight: 500,
+    marginTop: 30,
+  },
+  description: {
+    marginTop: 5,
+    color: colors.MEDIUM_GREY(),
+    fontSize: 16,
+    lineHeight: "22px",
+  },
 });
 
 const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
