@@ -5,6 +5,15 @@ import IconButton from "~/components/Icons/IconButton";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 
+
+export const HubBadge = ({ name, size }: { name: string, size?: string }) => {
+  return (
+    <IconButton variant="round" overrideStyle={[styles.hubBtn, styles[`hubBtn--${size}`]]}>
+      <span className={css(styles.text)}>{toTitleCase(name)}</span>
+    </IconButton>
+  )
+}
+
 const HubTag = ({ hub }: { hub: Hub }) => {
   return (
     <Link
@@ -13,9 +22,7 @@ const HubTag = ({ hub }: { hub: Hub }) => {
       className={css(styles.noUnderline)}
       onClick={(e) => e.stopPropagation()}
     >
-      <IconButton variant="round" overrideStyle={styles.hubBtn}>
-        <span className={css(styles.text)}>{toTitleCase(hub.name)}</span>
-      </IconButton>
+      <HubBadge name={hub.name} />
     </Link>
   );
 };
@@ -25,6 +32,10 @@ const styles = StyleSheet.create({
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
+  },
+  [`hubBtn--small`]: {
+    padding: "2px 8px",
+    fontSize: 13,
   },
   hubBtn: {
     border: 0,
