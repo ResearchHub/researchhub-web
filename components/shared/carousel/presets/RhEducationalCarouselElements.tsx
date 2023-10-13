@@ -12,7 +12,7 @@ export const getEducationalCarouselElements = () => [
   {
     title: <></>,
     body: (
-      <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
+      <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)} style={{ marginTop: -30 }}>
         <VerificationSmallBanner />
       </div>
     ),

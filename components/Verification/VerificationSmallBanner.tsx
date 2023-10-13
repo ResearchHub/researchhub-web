@@ -1,20 +1,21 @@
 import { StyleSheet, css } from "aphrodite";
 import Button from "../Form/Button";
-import VerificationModal from "./VerificationModal";
+import VerificationModal, { VerifiedBadge } from "./VerificationModal";
 import { useState } from "react";
+
 
 const VerificationSmallBanner = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div>
+      <VerifiedBadge height={35} width={35} />
       <div className={css(styles.title)}>Become a Verified Author</div>
       <p className={css(styles.description)}>
-        Verify your authorship to get access to the best ResearchHub has to
-        offer.
+        Verify your authorship to improve your academic reputation on the platform and earn RSC.
       </p>
-      <Button type="primary" onClick={() => setIsModalOpen(true)}>
-        Verify
+      <Button type="primary" onClick={() => setIsModalOpen(true)} size="small">
+        Verify now
       </Button>
       <VerificationModal
         handleModalClose={() => setIsModalOpen(false)}
@@ -25,8 +26,15 @@ const VerificationSmallBanner = () => {
 };
 
 const styles = StyleSheet.create({
-  title: {},
-  description: {},
+  title: {
+    fontSize: 18,
+    fontWeight: 500,
+  },
+  description: {
+    marginTop: 5,
+    fontSize: 14,
+    lineHeight: "19px"
+  },
 });
 
 export default VerificationSmallBanner;

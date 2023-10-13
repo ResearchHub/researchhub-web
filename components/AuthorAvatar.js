@@ -3,8 +3,8 @@ import { faCircleUser } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
 import colors from "~/config/themes/colors";
+import { VerifiedBadge } from "./Verification/VerificationModal";
 
 const AuthorAvatar = (props) => {
   const [error, setError] = useState(false);
@@ -17,6 +17,7 @@ const AuthorAvatar = (props) => {
     disableLink,
     dropShadow,
     fontColor,
+    showBadgeIfVerified = false,
     fontSize = 16,
     showModeratorBadge,
     size = 30,
@@ -47,9 +48,13 @@ const AuthorAvatar = (props) => {
     if (deviceWidth && deviceWidth < 768 && !trueSize) {
       finalSize = size - 5;
     }
-
     return (
       <>
+        {showBadgeIfVerified && author?.is_verified && (
+          <div style={{ position: "absolute", right: -9, top: -3 }}>
+            <VerifiedBadge height={20} width={20} />
+          </div>
+        )}
         {author && profileImage && !error ? (
           <img
             src={profileImage}

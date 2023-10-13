@@ -116,6 +116,7 @@ function NavbarRightButtonGroup({
           >
             <AuthorAvatar
               author={user?.author_profile}
+              showBadgeIfVerified={true}
               size={32}
               disableLink
               showModeratorBadge={user?.moderator}
