@@ -57,6 +57,7 @@ const Navbar = (props) => {
   const navbarRef = useRef(null);
   const { isLoggedIn, user, auth, updateUser } = props;
   const [shouldShowSlider, setShouldShowSlider] = useState(false);
+  const [stickyNavbar, setStickyNavbar] = useState(true);
   const { open, close } = useWeb3Modal();
 
   const isPost = ["post"].includes(router.pathname.split("/")[1]);
@@ -64,7 +65,14 @@ const Navbar = (props) => {
   const isQuestion = ["question"].includes(router.pathname.split("/")[1]);
   const isRefManager = router.pathname.includes("reference-manager");
 
-  const unstickyNavbar = router.pathname.includes("/hubs") || isPost || isPaper;
+  useEffect(() => {
+    const isPost = ["post"].includes(router.pathname.split("/")[1]);
+    const isPaper = ["paper"].includes(router.pathname.split("/")[1]);
+    const unstickyNavbar = isPost || isPaper;
+
+    setStickyNavbar(!unstickyNavbar);
+  }, [router.pathname]);
+
   const { setIsRefManagerSidebarOpen, isRefManagerSidebarOpen } = navContext();
   const pathname = router?.pathname ?? "";
   const headerLabel = pathname.includes("notebook") ? (
@@ -156,7 +164,7 @@ const Navbar = (props) => {
         ref={navbarRef}
         className={`${css(
           styles.navbarContainer,
-          unstickyNavbar && styles.unstickyNavbar
+          !stickyNavbar && styles.unstickyNavbar
         )} navbar`}
       >
         <div className={css(styles.logoContainer)}>
