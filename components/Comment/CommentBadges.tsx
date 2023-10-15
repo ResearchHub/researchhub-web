@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     columnGap: "8px",
     display: "flex",
     cursor: "default",
-    marginBottom: 4,
+    marginBottom: 8,
     height: 20,
   },
   badgeWrapper: {
