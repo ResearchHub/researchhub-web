@@ -210,6 +210,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
   const isNarrowWidthContext =
     commentTreeState.context === COMMENT_CONTEXTS.SIDEBAR ||
     commentTreeState.context === COMMENT_CONTEXTS.DRAWER;
+
   return (
     <div>
       <div>
@@ -385,7 +386,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
             <div className={css(styles.bottomActions)}>
               <div>
                 <CommentActions
-                  toggleReply={() => _handleToggleReply()}
+                  toggleReply={_handleToggleReply}
                   onBountyAdd={onBountyAdd}
                   comment={comment}
                 />
@@ -410,6 +411,12 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                     await handleReplyCreate({ content, mentions });
                     setIsReplyOpen(false);
                   }}
+                  commentType={
+                    hasOpenBounties
+                      ? comment.bounties[0]._bountyType
+                      : undefined
+                  }
+                  allowCommentTypeSelection={true}
                   editorId={`reply-to-${comment.id}`}
                   author={currentUser?.authorProfile}
                   placeholder={`Enter reply to this comment`}

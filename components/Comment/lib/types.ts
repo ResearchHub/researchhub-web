@@ -64,7 +64,7 @@ export type Comment = {
   bounties: Bounty[];
   timeAgo: string;
   createdBy: RHUser;
-  content: object;
+  content: any;
   score: number;
   userVote: Vote | null;
   isEdited: boolean;
