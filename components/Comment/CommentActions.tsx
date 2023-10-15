@@ -1,6 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown, faCommentCheck } from "@fortawesome/pro-regular-svg-icons";
-import { faReply, faLinkSimple } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faReply,
+  faLinkSimple,
+  faPlus,
+} from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import CommentVote from "./CommentVote";
 import { parseUser } from "~/config/types/root_types";
@@ -22,14 +26,16 @@ import { findAllComments } from "./lib/findComment";
 import createSharableLinkToComment from "./lib/createSharableLinkToComment";
 import ReactTooltip from "react-tooltip";
 import { breakpoints } from "~/config/themes/screen";
+import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   toggleReply: Function;
   comment: Comment;
+  onBountyAdd: (bounty) => void;
 };
 
-const CommentActions = ({ comment, toggleReply }: Args) => {
+const CommentActions = ({ comment, toggleReply, onBountyAdd }: Args) => {
   const dispatch = useDispatch();
   const {
     context,
@@ -303,6 +309,22 @@ const CommentActions = ({ comment, toggleReply }: Args) => {
             />
             <span className={css(styles.actionText)}>Copy link</span>
           </IconButton>
+        </div>
+        <div
+          className={`${css(styles.action, styles.copyLinkAction)} link-btn`}
+          data-tip={tooltipText}
+          data-for="link-tooltip"
+        >
+          <CreateBountyBtn
+            onBountyAdd={onBountyAdd}
+            withPreview={false}
+            relatedItemId={comment.id}
+            relatedItemContentType={"rhcommentmodel"}
+            originalBounty={comment.bounties[0]}
+          >
+            <FontAwesomeIcon icon={faPlus} />{" "}
+            <span className={css(styles.actionText)}>Contribute to Bounty</span>
+          </CreateBountyBtn>
         </div>
       </div>
     </div>
