@@ -310,7 +310,7 @@ const CommentActions = ({ comment, toggleReply, onBountyAdd }: Args) => {
             <span className={css(styles.actionText)}>Copy link</span>
           </IconButton>
         </div>
-        {comment.bounties[0] && (
+        {comment.bounties[0] && comment.bounties[0]?.status !== "CLOSED" && (
           <div
             className={`${css(styles.action, styles.copyLinkAction)} link-btn`}
             data-tip={tooltipText}
