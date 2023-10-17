@@ -10,7 +10,7 @@ import numeral from "numeral";
 import { captureEvent } from "../utils/events";
 import { ContentType, parseContentType } from "./contentType";
 import Router from "next/router";
-import { Comment } from "~/components/Comment/lib/types";
+import { COMMENT_TYPES, Comment } from "~/components/Comment/lib/types";
 
 export function formatBountyAmount({
   amount,
@@ -101,6 +101,7 @@ export default class Bounty {
   _parentId: ID | undefined;
   _children: Bounty[];
   _relatedItem: RelatedItem | undefined;
+  _bountyType: COMMENT_TYPES;
 
   constructor(raw: any, relatedItem?: RelatedItem | undefined) {
     this._id = raw.id;
@@ -125,6 +126,7 @@ export default class Bounty {
     this._children = [];
     this._parentId = raw?.parent?.id;
     this._relatedItem = relatedItem;
+    this._bountyType = raw.bounty_type;
   }
 
   static awardAPI({
@@ -315,6 +317,10 @@ export default class Bounty {
 
   get effortLevel(): string {
     return this._effortLevel;
+  }
+
+  get bountyType(): string {
+    return this._bountyType;
   }
 
   appendChild(bounty: Bounty): void {

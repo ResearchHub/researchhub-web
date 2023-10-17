@@ -9,24 +9,20 @@ export const getBountyAmount = ({
 }: {
   comment: Comment;
   formatted?: boolean;
-  status?: "OPEN"|"CLOSED"
+  status?: "OPEN" | "CLOSED";
 }): number => {
-  const amount = comment.bounties.reduce(
-    (total: number, b: Bounty) => {
-      if (status === "OPEN") {
-        return total + (b.isOpen ? b.amount : 0)
-      }
-      else {
-        return total + (b.isExpiredOrClosed ? b.amount : 0)
-      }
-    },0
-  );
+  const amount = comment.bounties.reduce((total: number, b: Bounty) => {
+    if (status === "OPEN") {
+      return total + (b.isOpen ? b.amount : 0);
+    } else {
+      return total + (b.isExpiredOrClosed ? b.amount : 0);
+    }
+  }, 0);
 
   return formatted
     ? formatBountyAmount({ amount, withPrecision: false })
     : amount;
 };
-
 
 export const getOpenBounties = ({
   comment,
@@ -45,22 +41,35 @@ export const getClosedBounties = ({
 };
 
 export const hasOpenBounties = ({ comment }: { comment: Comment }): boolean => {
-  return getOpenBounties({comment}).length > 0;
+  return getOpenBounties({ comment }).length > 0;
 };
 
-export const getUserOpenBounties = ({ comment, user, rootBountyOnly = true }: { comment: Comment, user: RHUser | null, rootBountyOnly?: boolean }): Bounty[] => {
-  return comment.bounties.reduce(
-    (bounties: Bounty[], b: Bounty) => {
-      const isUserBounty = b.isOpen && b?.createdBy?.id === user?.id;
-      const isRootBounty = !Boolean(b.parentId);
+export const getUserOpenBounties = ({
+  comment,
+  user,
+  rootBountyOnly = true,
+}: {
+  comment: Comment;
+  user: RHUser | null;
+  rootBountyOnly?: boolean;
+}): Bounty[] => {
+  return comment.bounties.reduce((bounties: Bounty[], b: Bounty) => {
+    const isUserBounty = b.isOpen && b?.createdBy?.id === user?.id;
+    const isRootBounty = !Boolean(b.parentId);
 
-      if (isUserBounty && (rootBountyOnly ? isRootBounty : true)) {
-        return [...bounties, b];
-      }
-      return bounties;
-    }, []);
+    if (isUserBounty && (rootBountyOnly ? isRootBounty : true)) {
+      return [...bounties, b];
+    }
+    return bounties;
+  }, []);
 };
 
 export const findOpenRootBounties = ({ user, comments }) => {
-  return comments.reduce((bounties:Bounty[], c:Comment) => [...bounties, ...getUserOpenBounties({ comment: c, user })] ,[]);
-}
+  return comments.reduce(
+    (bounties: Bounty[], c: Comment) => [
+      ...bounties,
+      ...getUserOpenBounties({ comment: c, user }),
+    ],
+    []
+  );
+};

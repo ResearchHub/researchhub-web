@@ -6,6 +6,7 @@ import { css, StyleSheet } from "aphrodite";
 import CommentActions from "./CommentActions";
 import {
   COMMENT_CONTEXTS,
+  COMMENT_TYPES,
   CommentPrivacyFilter,
   Comment as CommentType,
 } from "./lib/types";
@@ -21,6 +22,7 @@ import { RootState } from "~/redux";
 import CommentList from "./CommentList";
 import {
   createCommentAPI,
+  createPeerReview,
   fetchSingleCommentAPI,
   updateCommentAPI,
   updatePeerReview,
@@ -38,6 +40,7 @@ import getReviewCategoryScore from "./lib/quill/getReviewCategoryScore";
 import { captureEvent } from "~/config/utils/events";
 import CommentPrivacyBadge from "./CommentPrivacyBadge";
 import CommentVote from "./CommentVote";
+import { faReply } from "@fortawesome/pro-solid-svg-icons";
 const { setMessage, showMessage } = MessageActions;
 
 type CommentArgs = {
@@ -111,21 +114,72 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
     }
   };
 
+  const handleReviewCreate = async ({
+    content,
+    commentId,
+    unifiedDocumentId,
+  }: {
+    content: any;
+    commentId: ID;
+    unifiedDocumentId: ID;
+  }): Promise<Review | boolean> => {
+    const reviewScore = getReviewCategoryScore({
+      quillContents: content,
+      category: "overall",
+    });
+
+    try {
+      const reviewResponse = await createPeerReview({
+        unifiedDocumentId: unifiedDocumentId,
+        commentId,
+        score: reviewScore,
+      });
+
+      return parseReview(reviewResponse);
+    } catch (error: any) {
+      captureEvent({
+        error,
+        msg: "Failed to create review",
+        data: { reviewScore, commentId, document, content },
+      });
+      return false;
+    }
+  };
+
   const handleReplyCreate = async ({
     content,
     mentions,
+    commentType,
   }: {
     content: object;
     mentions?: Array<string>;
+    commentType: COMMENT_TYPES;
   }) => {
     try {
-      const _comment: CommentType = await createCommentAPI({
+      const params = {
         content,
         documentId: relatedContent.id,
         documentType: relatedContent.type,
         parentComment: comment,
         mentions,
-      });
+        commentType: COMMENT_TYPES.DISCUSSION,
+      };
+
+      if (commentType) {
+        params["commentType"] = commentType;
+      }
+
+      const _comment: CommentType = await createCommentAPI(params);
+
+      if (commentType === COMMENT_TYPES.REVIEW) {
+        const review = await handleReviewCreate({
+          commentId: _comment.id,
+          content: content,
+          unifiedDocumentId: document?.unifiedDocument.id,
+        });
+
+        comment = { ...comment, review: review as Review };
+      }
 
       commentTreeState.onCreate({ comment: _comment, parent: comment });
     } catch (error) {
@@ -191,6 +245,15 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
     setIsEditMode(!isEditMode);
   };
 
+  const onBountyAdd = (bounty) => {
+    const updatedComment = Object.assign({}, comment);
+    comment.bounties[0].appendChild(bounty);
+    updatedComment.bounties.push(bounty);
+    commentTreeState.onUpdate({
+      comment: updatedComment,
+    });
+  };
+
   const hasOpenBounties = openBounties.length > 0;
   const currentUserIsOpenBountyCreator = userOpenRootBounties.length > 0;
   const isQuestion = relatedContent.type === "question";
@@ -200,6 +263,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
   const isNarrowWidthContext =
     commentTreeState.context === COMMENT_CONTEXTS.SIDEBAR ||
     commentTreeState.context === COMMENT_CONTEXTS.DRAWER;
+
   return (
     <div>
       <div>
@@ -311,28 +375,24 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                         } to be eligible for bounty award.`}</>
                       </span>
                     </div>
-                    <CreateBountyBtn
-                      onBountyAdd={(bounty) => {
-                        const updatedComment = Object.assign({}, comment);
-                        comment.bounties[0].appendChild(bounty);
-                        updatedComment.bounties.push(bounty);
-                        commentTreeState.onUpdate({ comment: updatedComment });
-                      }}
-                      withPreview={false}
-                      relatedItemId={comment.id}
-                      relatedItemContentType={"rhcommentmodel"}
-                      originalBounty={comment.bounties[0]}
-                    >
-                      <Button
-                        customButtonStyle={styles.contributeBtn}
-                        customLabelStyle={styles.contributeBtnLabel}
-                        hideRipples={true}
-                        size="small"
+                    {currentUserIsOpenBountyCreator ? (
+                      <CreateBountyBtn
+                        onBountyAdd={onBountyAdd}
+                        withPreview={false}
+                        relatedItemId={comment.id}
+                        relatedItemContentType={"rhcommentmodel"}
+                        originalBounty={comment.bounties[0]}
                       >
-                        <div>
-                          <FontAwesomeIcon icon={faPlus} />
-                          {` `}
-                          {currentUserIsOpenBountyCreator ? (
+                        <Button
+                          customButtonStyle={styles.contributeBtn}
+                          customLabelStyle={styles.contributeBtnLabel}
+                          hideRipples={true}
+                          size="small"
+                        >
+                          <div>
+                            <FontAwesomeIcon icon={faPlus} />
+                            {` `}
+
                             <>
                               Add RSC
                               <span
@@ -346,24 +406,32 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                                 to bounty
                               </span>
                             </>
-                          ) : (
-                            <>
-                              Contribute
-                              <span
-                                className={css(
-                                  styles.bountyBtnText,
-                                  isNarrowWidthContext &&
-                                    styles.hideForNarrowWidthContexts
-                                )}
-                              >
-                                {" "}
-                                to bounty
-                              </span>
-                            </>
-                          )}
+                          </div>
+                        </Button>
+                      </CreateBountyBtn>
+                    ) : (
+                      <Button
+                        customButtonStyle={styles.contributeBtn}
+                        customLabelStyle={styles.contributeBtnLabel}
+                        hideRipples={true}
+                        onClick={_handleToggleReply}
+                        size="small"
+                      >
+                        <div>
+                          <FontAwesomeIcon icon={faReply} />
+                          {` `}
+                          <span
+                            className={css(
+                              styles.bountyBtnText,
+                              isNarrowWidthContext &&
+                                styles.hideForNarrowWidthContexts
+                            )}
+                          >
+                            Answer the Bounty
+                          </span>
                         </div>
                       </Button>
-                    </CreateBountyBtn>
+                    )}
                   </div>
                 )}
               </div>
@@ -371,7 +439,8 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
             <div className={css(styles.bottomActions)}>
               <div>
                 <CommentActions
-                  toggleReply={() => _handleToggleReply()}
+                  toggleReply={_handleToggleReply}
+                  onBountyAdd={onBountyAdd}
                   comment={comment}
                 />
               </div>
@@ -391,10 +460,24 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                 <CommentEditor
                   focusOnMount={true}
                   handleClose={() => _handleToggleReply()}
-                  handleSubmit={async ({ content, mentions }) => {
-                    await handleReplyCreate({ content, mentions });
+                  handleSubmit={async ({ content, mentions, commentType }) => {
+                    let _commentType = COMMENT_TYPES.DISCUSSION;
+                    if (commentType) {
+                      _commentType = commentType;
+                    }
+                    await handleReplyCreate({
+                      content,
+                      mentions,
+                      commentType: _commentType,
+                    });
                     setIsReplyOpen(false);
                   }}
+                  commentType={
+                    hasOpenBounties
+                      ? comment.bounties[0]._bountyType
+                      : undefined
+                  }
+                  allowCommentTypeSelection={true}
                   editorId={`reply-to-${comment.id}`}
                   author={currentUser?.authorProfile}
                   placeholder={`Enter reply to this comment`}

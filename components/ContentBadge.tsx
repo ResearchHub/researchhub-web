@@ -252,19 +252,20 @@ const ContentBadge = (props) => {
 const styles = StyleSheet.create({
   badgeContainer: {
     position: "relative",
+    zIndex: 3,
   },
   small: {
     fontSize: 12,
-    padding: "3px 6px 1px",
+    padding: "3px 6px",
   },
   medium: {
     fontSize: 14,
-    padding: "6px 11px 6px",
+    padding: "6px 11px",
     lineHeight: "18px",
   },
   large: {
     fontSize: 15,
-    padding: "8px 14px 8px",
+    padding: "8px 14px",
     lineHeight: "18px",
   },
   withTooltip: {
