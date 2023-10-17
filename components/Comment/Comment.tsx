@@ -460,15 +460,15 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                 <CommentEditor
                   focusOnMount={true}
                   handleClose={() => _handleToggleReply()}
-                  handleSubmit={async ({ content, mentions }) => {
-                    let commentType = COMMENT_TYPES.DISCUSSION;
-                    if (hasOpenBounties && comment.bounties[0]._bountyType) {
-                      commentType = comment.bounties[0]._bountyType;
+                  handleSubmit={async ({ content, mentions, commentType }) => {
+                    let _commentType = COMMENT_TYPES.DISCUSSION;
+                    if (commentType) {
+                      _commentType = commentType;
                     }
                     await handleReplyCreate({
                       content,
                       mentions,
-                      commentType,
+                      commentType: _commentType,
                     });
                     setIsReplyOpen(false);
                   }}
