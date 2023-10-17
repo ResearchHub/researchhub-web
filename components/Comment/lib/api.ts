@@ -162,6 +162,7 @@ export const createCommentAPI = async ({
       {
         comment_content_json: content,
         thread_type: commentType,
+        comment_type: commentType,
         privacy_type: privacy,
         mentions: uniqBy(mentions),
         ...(parentComment && { parent_id: parentComment.id }),

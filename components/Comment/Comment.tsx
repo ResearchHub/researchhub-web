@@ -6,6 +6,7 @@ import { css, StyleSheet } from "aphrodite";
 import CommentActions from "./CommentActions";
 import {
   COMMENT_CONTEXTS,
+  COMMENT_TYPES,
   CommentPrivacyFilter,
   Comment as CommentType,
 } from "./lib/types";
@@ -21,6 +22,7 @@ import { RootState } from "~/redux";
 import CommentList from "./CommentList";
 import {
   createCommentAPI,
+  createPeerReview,
   fetchSingleCommentAPI,
   updateCommentAPI,
   updatePeerReview,
@@ -112,21 +114,70 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
     }
   };
 
+  const handleReviewCreate = async ({
+    content,
+    commentId,
+    unifiedDocumentId,
+  }: {
+    content: any;
+    commentId: ID;
+    unifiedDocumentId: ID;
+  }): Promise<Review | boolean> => {
+    const reviewScore = getReviewCategoryScore({
+      quillContents: content,
+      category: "overall",
+    });
+
+    try {
+      const reviewResponse = await createPeerReview({
+        unifiedDocumentId: unifiedDocumentId,
+        commentId,
+        score: reviewScore,
+      });
+
+      return parseReview(reviewResponse);
+    } catch (error: any) {
+      captureEvent({
+        error,
+        msg: "Failed to create review",
+        data: { reviewScore, commentId, document, content },
+      });
+      return false;
+    }
+  };
+
   const handleReplyCreate = async ({
     content,
     mentions,
+    commentType,
   }: {
     content: object;
     mentions?: Array<string>;
+    commentType: COMMENT_TYPES;
   }) => {
     try {
-      const _comment: CommentType = await createCommentAPI({
+      const params = {
         content,
         documentId: relatedContent.id,
         documentType: relatedContent.type,
         parentComment: comment,
         mentions,
-      });
+      };
+
+      if (commentType) {
+        params["commentType"] = commentType;
+      }
+      const _comment: CommentType = await createCommentAPI(params);
+
+      if (commentType === COMMENT_TYPES.REVIEW) {
+        const review = await handleReviewCreate({
+          commentId: _comment.id,
+          content: content,
+          unifiedDocumentId: document?.unifiedDocument.id,
+        });
+
+        comment = { ...comment, review: review as Review };
+      }
 
       commentTreeState.onCreate({ comment: _comment, parent: comment });
     } catch (error) {
@@ -408,7 +459,15 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                   focusOnMount={true}
                   handleClose={() => _handleToggleReply()}
                   handleSubmit={async ({ content, mentions }) => {
-                    await handleReplyCreate({ content, mentions });
+                    let commentType = COMMENT_TYPES.DISCUSSION;
+                    if (hasOpenBounties && comment.bounties[0]._bountyType) {
+                      commentType = comment.bounties[0]._bountyType;
+                    }
+                    await handleReplyCreate({
+                      content,
+                      mentions,
+                      commentType,
+                    });
                     setIsReplyOpen(false);
                   }}
                   commentType={

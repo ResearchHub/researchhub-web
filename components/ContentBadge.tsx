@@ -252,7 +252,7 @@ const ContentBadge = (props) => {
 const styles = StyleSheet.create({
   badgeContainer: {
     position: "relative",
-    zIndex: 9,
+    zIndex: 3,
   },
   small: {
     fontSize: 12,
