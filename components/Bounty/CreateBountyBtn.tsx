@@ -19,6 +19,7 @@ type Args = {
   relatedItemContentType?: string;
   children: any;
   originalBounty?: Bounty;
+  overrideStyles?: any;
 };
 
 function CreateBountyBtn({
@@ -28,6 +29,7 @@ function CreateBountyBtn({
   relatedItemContentType,
   originalBounty,
   children,
+  overrideStyles,
 }: Args): ReactElement {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,7 +38,7 @@ function CreateBountyBtn({
 
   return (
     <div
-      className={css(styles.createBountyBtn)}
+      className={css(styles.createBountyBtn, overrideStyles)}
       onClick={() => {
         if (!isLoggedIn) {
           dispatch(

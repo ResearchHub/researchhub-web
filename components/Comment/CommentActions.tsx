@@ -310,22 +310,27 @@ const CommentActions = ({ comment, toggleReply, onBountyAdd }: Args) => {
             <span className={css(styles.actionText)}>Copy link</span>
           </IconButton>
         </div>
-        <div
-          className={`${css(styles.action, styles.copyLinkAction)} link-btn`}
-          data-tip={tooltipText}
-          data-for="link-tooltip"
-        >
-          <CreateBountyBtn
-            onBountyAdd={onBountyAdd}
-            withPreview={false}
-            relatedItemId={comment.id}
-            relatedItemContentType={"rhcommentmodel"}
-            originalBounty={comment.bounties[0]}
+        {comment.bounties[0] && (
+          <div
+            className={`${css(styles.action, styles.copyLinkAction)} link-btn`}
+            data-tip={tooltipText}
+            data-for="link-tooltip"
           >
-            <FontAwesomeIcon icon={faPlus} />{" "}
-            <span className={css(styles.actionText)}>Contribute to Bounty</span>
-          </CreateBountyBtn>
-        </div>
+            <CreateBountyBtn
+              onBountyAdd={onBountyAdd}
+              withPreview={false}
+              relatedItemId={comment.id}
+              overrideStyles={styles.button}
+              relatedItemContentType={"rhcommentmodel"}
+              originalBounty={comment.bounties[0]}
+            >
+              <FontAwesomeIcon icon={faPlus} />{" "}
+              <span className={css(styles.actionText)}>
+                Contribute to Bounty
+              </span>
+            </CreateBountyBtn>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -333,6 +338,8 @@ const CommentActions = ({ comment, toggleReply, onBountyAdd }: Args) => {
 
 const styles = StyleSheet.create({
   button: {
+    padding: 8,
+    borderRadius: 4,
     ":hover": {
       background: colors.actionBtn.hover,
     },

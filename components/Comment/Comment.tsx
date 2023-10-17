@@ -162,11 +162,13 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
         documentType: relatedContent.type,
         parentComment: comment,
         mentions,
+        commentType: COMMENT_TYPES.DISCUSSION,
       };
 
       if (commentType) {
         params["commentType"] = commentType;
       }
+
       const _comment: CommentType = await createCommentAPI(params);
 
       if (commentType === COMMENT_TYPES.REVIEW) {
