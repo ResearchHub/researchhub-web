@@ -15,6 +15,12 @@ import {
   SerializedAnchorPosition,
 } from "../modules/annotation/lib/types";
 import { ContentInstance } from "~/components/Document/lib/types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faComments,
+  faMessagesQuestion,
+  faStar,
+} from "@fortawesome/pro-solid-svg-icons";
 
 export enum COMMENT_TYPES {
   DISCUSSION = "GENERIC_COMMENT",
@@ -25,9 +31,21 @@ export enum COMMENT_TYPES {
 }
 
 export const COMMENT_TYPE_OPTIONS = [
-  { value: COMMENT_TYPES.REVIEW, label: "Peer Review" },
-  { value: COMMENT_TYPES.DISCUSSION, label: "Discussion" },
-  { value: COMMENT_TYPES.ANSWER, label: "Answer" },
+  {
+    value: COMMENT_TYPES.REVIEW,
+    label: "Peer Review",
+    icon: <FontAwesomeIcon icon={faStar} />,
+  },
+  {
+    value: COMMENT_TYPES.DISCUSSION,
+    label: "Discussion",
+    icon: <FontAwesomeIcon icon={faComments} />,
+  },
+  {
+    value: COMMENT_TYPES.ANSWER,
+    label: "Answer",
+    icon: <FontAwesomeIcon icon={faMessagesQuestion} />,
+  },
 ];
 
 export enum COMMENT_FILTERS {
