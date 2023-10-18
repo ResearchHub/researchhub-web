@@ -112,6 +112,7 @@ const CommentFeed = ({
       const { comments, count } = await fetchCommentsAPI({
         documentId: document.id,
         documentType: document.apiDocumentType,
+        tabName: router.query.tabName,
         sort: sort || sort === null ? sort : selectedSortValue,
         // @ts-ignore
         filter: filter || (filter === null ? filter : selectedFilterValue),

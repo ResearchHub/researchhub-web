@@ -31,6 +31,7 @@ export const fetchCommentsAPI = async ({
   ascending = false,
   privacyType = "PUBLIC",
   organizationId,
+  tabName,
 }: {
   documentType: RhDocumentType;
   documentId: ID;
@@ -42,6 +43,7 @@ export const fetchCommentsAPI = async ({
   ascending?: boolean;
   privacyType?: CommentPrivacyFilter;
   organizationId?: ID;
+  tabName?: string;
 }): Promise<{ comments: any[]; count: number }> => {
   const query = {
     ...(filter && { filtering: filter }),
@@ -52,6 +54,10 @@ export const fetchCommentsAPI = async ({
     ascending: ascending ? "TRUE" : "FALSE",
     privacy_type: privacyType,
   };
+
+  if (tabName === "conversation") {
+    query["parent__isnull"] = true;
+  }
 
   const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);
   const url = baseFetchUrl + buildQueryString(query);
