@@ -155,7 +155,7 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
                 unifiedDocumentId: doc.unifiedDocument.id,
                 params: {
                   excludeFromHomepage: true,
-                  excludeFromHubs: true,
+                  excludeFromHubs: false,
                 },
                 onError: () => {
                   alert("Something went wrong trying to remove doc from feed");
