@@ -166,6 +166,7 @@ export default class Bounty {
   static createAPI({
     bountyAmount,
     itemObjectId,
+    bountyType,
     itemContentType = "researchhubunifieddocument",
   }) {
     // TODO: Change hard coded value
@@ -180,6 +181,7 @@ export default class Bounty {
       item_content_type: itemContentType,
       item_object_id: itemObjectId,
       expiration_date: thirtyDaysFromNow,
+      bounty_type: bountyType,
     };
 
     return new Promise((resolve, reject) => {

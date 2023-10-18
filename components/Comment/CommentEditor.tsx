@@ -202,7 +202,10 @@ const CommentEditor = ({
         mentions,
         ...(commentId && { id: commentId }),
         ...(!commentId && { commentType: _commentType }),
-        ...(interimBounty && { bountyAmount: interimBounty.amount }),
+        ...(interimBounty && {
+          bountyAmount: interimBounty.amount,
+          bountyType: interimBounty.bountyType,
+        }),
       });
 
       dangerouslySetContent({});

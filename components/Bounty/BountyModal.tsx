@@ -28,6 +28,8 @@ import ContentBadge from "../ContentBadge";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { RootState } from "~/redux";
 import { ID, parseUser } from "~/config/types/root_types";
+import FormSelect from "../Form/FormSelect";
+import { COMMENT_TYPE_OPTIONS } from "../Comment/lib/types";
 
 type Props = {
   isOpen: boolean;
@@ -68,6 +70,7 @@ function BountyModal({
   );
   const [hasMinRscAlert, setHasMinRscAlert] = useState(false);
   const [hasMaxRscAlert, setHasMaxRscAlert] = useState(false);
+  const [bountyType, setBountyType] = useState(COMMENT_TYPE_OPTIONS[0]);
   const [success, setSuccess] = useState(false);
 
   const { rscToUSDDisplay } = useExchangeRate();
@@ -137,6 +140,7 @@ function BountyModal({
         handleBountyAdded(
           new Bounty({
             amount: offeredAmount,
+            bounty_type: bountyType.value,
           })
         );
         closeModal();
@@ -145,6 +149,7 @@ function BountyModal({
           bountyAmount: offeredAmount,
           itemObjectId: relatedItemId,
           itemContentType: relatedItemContentType,
+          bountyType,
         })
           .then((createdBounty) => {
             sendBountyCreateAmpEvent({ currentUser, createdBounty });
@@ -222,6 +227,30 @@ function BountyModal({
             <div className={css(styles.rootContainer)}>
               <div className={css(styles.values)}>
                 <div className={css(styles.offeringLine)}>
+                  <div className={css(styles.lineItem, styles.offeringLine)}>
+                    <div
+                      className={css(styles.lineItemText, styles.offeringText)}
+                    >
+                      I want a
+                    </div>
+                    <div
+                      className={css(
+                        styles.lineItemValue,
+                        styles.offeringValue
+                      )}
+                    >
+                      <FormSelect
+                        options={COMMENT_TYPE_OPTIONS}
+                        containerStyle={styles.selectContainerStyle}
+                        value={bountyType}
+                        minHeight={30}
+                        onChange={(id, option) => {
+                          setBountyType(option);
+                        }}
+                        required
+                      />
+                    </div>
+                  </div>
                   <div className={css(styles.lineItem, styles.offeringLine)}>
                     <div
                       className={css(styles.lineItemText, styles.offeringText)}
@@ -313,12 +342,7 @@ function BountyModal({
               </div>
               <div className={css(infoSectionStyles.bountyInfo)}>
                 {originalBounty && (
-                  <div
-                    className={css(
-                      infoSectionStyles.infoRow,
-                      infoSectionStyles.specialInfoRow
-                    )}
-                  >
+                  <div className={css(infoSectionStyles.infoRow)}>
                     <span className={css(infoSectionStyles.infoIcon)}>
                       {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
                     </span>{" "}
@@ -437,7 +461,6 @@ const alertStyles = StyleSheet.create({
 });
 
 const infoSectionStyles = StyleSheet.create({
-  specialInfoRow: {},
   bountyInfo: {
     textAlign: "left",
     fontSize: 16,
@@ -456,7 +479,7 @@ const infoSectionStyles = StyleSheet.create({
     fontSize: 14,
     lineHeight: "20px",
     alignItems: "flex-start",
-    borderBottom: `1px solid ${colors.GREY_BORDER}`,
+    // borderBottom: `1px solid ${colors.GREY_BORDER}`,
     ":last-child": {
       marginBottom: 0,
       borderBottom: 0,
@@ -521,6 +544,10 @@ const styles = StyleSheet.create({
   },
   modalStyle: {
     maxWidth: 500,
+  },
+  selectContainerStyle: {
+    minHeight: "unset",
+    margin: 0,
   },
   modalContentStyle: {
     padding: 0,

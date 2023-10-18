@@ -24,6 +24,12 @@ export enum COMMENT_TYPES {
   ANNOTATION = "INNER_CONTENT_COMMENT",
 }
 
+export const COMMENT_TYPE_OPTIONS = [
+  { value: COMMENT_TYPES.REVIEW, label: "Peer Review" },
+  { value: COMMENT_TYPES.DISCUSSION, label: "Discussion" },
+  { value: COMMENT_TYPES.ANSWER, label: "Answer" },
+];
+
 export enum COMMENT_FILTERS {
   BOUNTY = "BOUNTY",
   REVIEW = "REVIEW",
