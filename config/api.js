@@ -810,7 +810,7 @@ const routes = (BASE_URL) => {
           ...(backendFilters.topLevel === "/my-hubs" && {
             subscribed_hubs: true,
           }),
-          ...(isHomeHub && { ignore_excluded: true }),
+          ...(isHomeHub && { ignore_excluded_homepage: true }),
         },
       };
 
