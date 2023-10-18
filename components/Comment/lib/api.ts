@@ -32,6 +32,7 @@ export const fetchCommentsAPI = async ({
   privacyType = "PUBLIC",
   organizationId,
   tabName,
+  parent__isnull,
 }: {
   documentType: RhDocumentType;
   documentId: ID;
@@ -43,12 +44,14 @@ export const fetchCommentsAPI = async ({
   ascending?: boolean;
   privacyType?: CommentPrivacyFilter;
   organizationId?: ID;
-  tabName?: string;
+  tabName?: string | undefined | null;
+  parent__isnull?: boolean;
 }): Promise<{ comments: any[]; count: number }> => {
   const query = {
     ...(filter && { filtering: filter }),
     ...(sort && { ordering: sort }),
     ...(page && page > 1 && { page: page }),
+    ...(parent__isnull && { parent__isnull: true }),
     child_count: childPageSize,
     page_size: pageSize,
     ascending: ascending ? "TRUE" : "FALSE",

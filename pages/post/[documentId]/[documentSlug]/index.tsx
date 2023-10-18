@@ -203,6 +203,7 @@ const DocumentIndexPage: NextPage<Args> = ({
                 showFilters={false}
                 showSort={false}
                 initialFilter={null}
+                tabName={"conversation"}
                 editorType={COMMENT_TYPES.DISCUSSION}
                 allowBounty={false}
                 allowCommentTypeSelection={false}

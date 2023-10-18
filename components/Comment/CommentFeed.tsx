@@ -55,10 +55,12 @@ type Args = {
   showSort?: boolean;
   allowCommentTypeSelection?: boolean;
   allowBounty?: boolean;
+  tabName?: string;
 };
 
 const CommentFeed = ({
   document,
+  tabName,
   onCommentCreate,
   onCommentRemove,
   onCommentUpdate,
@@ -112,7 +114,7 @@ const CommentFeed = ({
       const { comments, count } = await fetchCommentsAPI({
         documentId: document.id,
         documentType: document.apiDocumentType,
-        tabName: router.query.tabName,
+        tabName: tabName || router.query.tabName,
         sort: sort || sort === null ? sort : selectedSortValue,
         // @ts-ignore
         filter: filter || (filter === null ? filter : selectedFilterValue),
