@@ -28,6 +28,8 @@ import ContentBadge from "../ContentBadge";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { RootState } from "~/redux";
 import { ID, parseUser } from "~/config/types/root_types";
+import FormSelect from "../Form/FormSelect";
+import { COMMENT_TYPES, COMMENT_TYPE_OPTIONS } from "../Comment/lib/types";
 
 type Props = {
   isOpen: boolean;
@@ -68,6 +70,7 @@ function BountyModal({
   );
   const [hasMinRscAlert, setHasMinRscAlert] = useState(false);
   const [hasMaxRscAlert, setHasMaxRscAlert] = useState(false);
+  const [bountyType, setBountyType] = useState<COMMENT_TYPES | null>(null);
   const [success, setSuccess] = useState(false);
 
   const { rscToUSDDisplay } = useExchangeRate();
@@ -83,6 +86,7 @@ function BountyModal({
   const handleClose = () => {
     closeModal();
     setSuccess(false);
+    setBountyType(null);
     setOfferedAmount(BOUNTY_DEFAULT_AMOUNT);
   };
 
@@ -131,12 +135,18 @@ function BountyModal({
   };
 
   const handleAddBounty = () => {
+    if (!bountyType) {
+      setMessage("Please select a bounty type before adding a bounty");
+      showMessage({ show: true, error: true });
+      return;
+    }
     if (!(hasMinRscAlert || hasMaxRscAlert)) {
       const totalBountyAmount = calcTotalAmount({ offeredAmount });
       if (withPreview) {
         handleBountyAdded(
           new Bounty({
             amount: offeredAmount,
+            bounty_type: bountyType,
           })
         );
         closeModal();
@@ -145,6 +155,7 @@ function BountyModal({
           bountyAmount: offeredAmount,
           itemObjectId: relatedItemId,
           itemContentType: relatedItemContentType,
+          bountyType,
         })
           .then((createdBounty) => {
             sendBountyCreateAmpEvent({ currentUser, createdBounty });
@@ -222,6 +233,32 @@ function BountyModal({
             <div className={css(styles.rootContainer)}>
               <div className={css(styles.values)}>
                 <div className={css(styles.offeringLine)}>
+                  <div
+                    className={css(styles.lineItemText, styles.offeringText)}
+                  >
+                    What type of bounty do you want to create?
+                  </div>
+                  <div className={css(styles.bountyTypes)}>
+                    {COMMENT_TYPE_OPTIONS.map(
+                      ({ value, label, icon }, index) => {
+                        return (
+                          <div
+                            className={css(
+                              styles.bountyTypeBadge,
+                              value === bountyType && styles.bountyBadgeActive
+                            )}
+                            onClick={() => setBountyType(value)}
+                          >
+                            <span className={css(styles.bountyTypeIcon)}>
+                              {icon}
+                            </span>
+                            {label}
+                          </div>
+                        );
+                      }
+                    )}
+                  </div>
+
                   <div className={css(styles.lineItem, styles.offeringLine)}>
                     <div
                       className={css(styles.lineItemText, styles.offeringText)}
@@ -313,12 +350,7 @@ function BountyModal({
               </div>
               <div className={css(infoSectionStyles.bountyInfo)}>
                 {originalBounty && (
-                  <div
-                    className={css(
-                      infoSectionStyles.infoRow,
-                      infoSectionStyles.specialInfoRow
-                    )}
-                  >
+                  <div className={css(infoSectionStyles.infoRow)}>
                     <span className={css(infoSectionStyles.infoIcon)}>
                       {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
                     </span>{" "}
@@ -437,7 +469,6 @@ const alertStyles = StyleSheet.create({
 });
 
 const infoSectionStyles = StyleSheet.create({
-  specialInfoRow: {},
   bountyInfo: {
     textAlign: "left",
     fontSize: 16,
@@ -456,7 +487,7 @@ const infoSectionStyles = StyleSheet.create({
     fontSize: 14,
     lineHeight: "20px",
     alignItems: "flex-start",
-    borderBottom: `1px solid ${colors.GREY_BORDER}`,
+    // borderBottom: `1px solid ${colors.GREY_BORDER}`,
     ":last-child": {
       marginBottom: 0,
       borderBottom: 0,
@@ -478,6 +509,35 @@ const styles = StyleSheet.create({
     width: "100%",
     textAlign: "center",
   },
+  bountyTypes: {
+    display: "flex",
+    gap: 16,
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  bountyTypeBadge: {
+    padding: "6px 10px",
+    border: `1px solid #DEDEE6`,
+    borderRadius: 5,
+    cursor: "pointer",
+    fontWeight: 500,
+    fontSize: 16,
+    lineHeight: "20px",
+
+    ":hover": {
+      opacity: 0.7,
+    },
+  },
+  bountyTypeIcon: {
+    color: colors.NEW_BLUE(),
+    marginRight: 8,
+  },
+  bountyBadgeActive: {
+    border: `2px solid ${colors.NEW_BLUE()}`,
+    ":hover": {
+      opacity: 1,
+    },
+  },
   modalTitle: {
     // color: colors.ORANGE_DARK(),
     marginBottom: 25,
@@ -496,7 +556,8 @@ const styles = StyleSheet.create({
     marginRight: -10,
     textAlign: "right",
     padding: "5px 7px",
-    border: `2px solid rgb(229 229 230)`,
+    borderRadius: 2,
+    border: `1px solid rgb(229 229 230)`,
     background: "#FBFBFD",
     fontSize: 16,
     [`[type="number"]`]: {
@@ -521,6 +582,10 @@ const styles = StyleSheet.create({
   },
   modalStyle: {
     maxWidth: 500,
+  },
+  selectContainerStyle: {
+    minHeight: "unset",
+    margin: 0,
   },
   modalContentStyle: {
     padding: 0,

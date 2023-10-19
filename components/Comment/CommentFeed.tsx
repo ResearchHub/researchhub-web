@@ -237,12 +237,14 @@ const CommentFeed = ({
     content,
     commentType,
     bountyAmount,
+    bountyType,
     mentions,
   }: {
-    content: object;
+    content: any;
     commentType: COMMENT_TYPES;
     bountyAmount?: number;
     mentions?: Array<string>;
+    bountyType: COMMENT_TYPES;
   }) => {
     let comment: CommentType;
     try {
@@ -252,6 +254,7 @@ const CommentFeed = ({
         documentId: document.id,
         documentType: document.apiDocumentType,
         bountyAmount,
+        bountyType,
         mentions,
       });
 

@@ -92,6 +92,7 @@ class FormSelect extends Component {
       onInputChange,
       selectComponents,
       reactSelect,
+      minHeight,
     } = this.props;
 
     let configuredComponents = {
@@ -129,7 +130,7 @@ class FormSelect extends Component {
         justifyContent: "center",
         alignItems: "center",
         border: error ? `1px solid ${colors.RED(1)}` : "1px solid #E8E8F2",
-        minHeight: 50,
+        minHeight: minHeight ? minHeight : 50,
         width: "100%",
         backgroundColor: "#FBFBFD",
         paddingLeft: 8,
