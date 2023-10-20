@@ -1051,6 +1051,17 @@ function AuthorPage(props) {
             </div>
             <div>
               {userLinks}
+              {!author.user && (
+                <div className={css(styles.modActions, styles.requestToRemove)}>
+                  <Button
+                    customButtonStyle={styles.editButtonCustom}
+                    isWhite
+                    onClick={() => setIsAuthorClaimModalOpen(true)}
+                  >
+                    Claim Profile
+                  </Button>
+                </div>
+              )}
               {modButtons}
             </div>
           </div>
@@ -1069,14 +1080,6 @@ function AuthorPage(props) {
             showArrowsOnWidth={breakpoints.xsmall.int}
             showArrows={Boolean(tabs.length > 2)}
           />
-          {!author.user && (
-            <div
-              className={css(styles.requestToRemoveProfile)}
-              onClick={() => setIsAuthorClaimModalOpen(true)}
-            >
-              Claim Profile
-            </div>
-          )}
         </ComponentWrapper>
       </div>
       <AuthorClaimModal
@@ -1200,14 +1203,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
   },
-  requestToRemoveProfile: {
-    fontSize: 13,
-    opacity: 0.6,
-    letterSpacing: 0.4,
-    // textDecoration: "underline",
-    cursor: "pointer",
-    // fontStyle: "italic",
-    width: "fit-content",
+  requestToRemove: {
+    marginTop: 16,
   },
   componentWrapperOverride: {
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {

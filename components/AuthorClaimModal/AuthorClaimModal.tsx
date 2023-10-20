@@ -148,7 +148,8 @@ const customModalStyle = StyleSheet.create({
     marginTop: -16,
     cursor: "pointer",
     width: "100%",
-    paddingBottom: 16,
+    paddingBottom: 32,
     textAlign: "center",
+    textDecoration: "underline",
   },
 });
