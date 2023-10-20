@@ -63,14 +63,12 @@ export const getLeftSidebarItemAttrs = ({
   isMinimized,
   router,
   openLoginModal,
-  refManagerGateKeeper,
 }: /* intentional string literal */
 {
   currentUser: any;
   isMinimized: boolean;
   router: NextRouter;
   openLoginModal: any;
-  refManagerGateKeeper: boolean;
 }): RootLeftSidebarItemProps[] => {
   const { pathname = "" } = router ?? {};
   const { organization_slug = "", id } = currentUser ?? {};
@@ -158,10 +156,7 @@ export const getLeftSidebarItemAttrs = ({
           ),
           isActive: pathname.includes("reference-manager"),
           isMinimized,
-          href: refManagerGateKeeper
-            ? "/reference-manager"
-            : "https://docs.google.com/forms/d/e/1FAIpQLSc51K8cm7QrAwzTknDspqJ7MQ6k6GYBImehEgp8-ajRvQaa7A/viewform?usp=sharing",
-          target: refManagerGateKeeper ? undefined : "__blank",
+          href: "/reference-manager",
           onClick: silentEmptyFnc,
         }
       : null,
@@ -185,10 +180,6 @@ function RootLeftSidebar({
     useState<boolean>(isForceMinimized);
   const [growMinimized, setGrowMinimized] = useState<boolean>(isForceMinimized);
   const [didMount, setDidMount] = useState<boolean>(false);
-  const refManagerGateKeeper = gateKeepCurrentUser({
-    application: "REFERENCE_MANAGER",
-    shouldRedirect: false,
-  });
 
   useEffectOnScreenResize({
     onResize: (newMediaWidth): void => {
@@ -251,9 +242,8 @@ function RootLeftSidebar({
         isMinimized,
         router,
         openLoginModal,
-        refManagerGateKeeper,
       }),
-    [currentUser?.id, router.pathname, isMinimized, refManagerGateKeeper]
+    [currentUser?.id, router.pathname, isMinimized]
   );
 
   const leftSidebarItems = leftSidebarItemAttrs.map(

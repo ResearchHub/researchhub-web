@@ -332,10 +332,10 @@ function FeedCard({
                           </span>
                         )}
                         {authors?.length > 1 && <span>{` et al.`}</span>}
-                        {parsedDoc?.publishedDate && (
+                        {parsedDoc?.createdDate && (
                           <>
                             <span className={css(styles.metaDivider)}></span>
-                            {parsedDoc?.publishedDate}
+                            {parsedDoc?.createdDate}
                           </>
                         )}
                       </div>
