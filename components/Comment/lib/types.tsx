@@ -37,14 +37,14 @@ export const COMMENT_TYPE_OPTIONS = [
     icon: <FontAwesomeIcon icon={faStar} />,
   },
   {
-    value: COMMENT_TYPES.DISCUSSION,
-    label: "Discussion",
-    icon: <FontAwesomeIcon icon={faComments} />,
+    value: COMMENT_TYPES.ANSWER,
+    label: "Answer to Question",
+    icon: <FontAwesomeIcon icon={faMessagesQuestion} />,
   },
   {
-    value: COMMENT_TYPES.ANSWER,
-    label: "Answer",
-    icon: <FontAwesomeIcon icon={faMessagesQuestion} />,
+    value: COMMENT_TYPES.DISCUSSION,
+    label: "Other",
+    icon: <FontAwesomeIcon icon={faComments} />,
   },
 ];
 

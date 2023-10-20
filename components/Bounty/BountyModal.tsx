@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
     display: "flex",
     gap: 16,
     marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 30,
   },
   bountyTypeBadge: {
     padding: "6px 10px",
@@ -541,7 +541,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     // color: colors.ORANGE_DARK(),
     marginBottom: 25,
-    fontSize: 22,
+    fontSize: 26,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -581,7 +581,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   modalStyle: {
-    maxWidth: 500,
+    maxWidth: 550,
+
+    "@media only screen and (min-width: 768px)": {
+      width: 550,
+    },
   },
   selectContainerStyle: {
     minHeight: "unset",
