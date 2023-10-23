@@ -52,7 +52,12 @@ export default function ReferenceProjectNavbarElOption({
     <Fragment>
       <span
         onClick={handleMenuClick}
-        style={{ alignItems: "center", display: "flex", height: "100%" }}
+        style={{
+          alignItems: "center",
+          display: "flex",
+          height: "100%",
+          marginLeft: "auto",
+        }}
       >
         <MoreVertIcon fontSize="small" />
       </span>

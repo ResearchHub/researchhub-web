@@ -80,7 +80,6 @@ const ContentWrapper = ({ children, width, isOpen, setIsOpen }) => {
           borderRight: "1px solid #e8e8ef",
           zIndex: 4,
           background: colors.GREY_ICY_BLUE_HUE,
-          height: "100%",
           height: "calc(100vh - 68px)",
           overflow: "auto",
           display: isOpen ? "block" : "none",

@@ -86,14 +86,15 @@ export default function ReferencesTable({
     setReferenceTableRowData,
     referencesContextLoading,
     setReferencesContextLoading,
+    rowDraggedOver,
+    setRowDraggedOver,
+    setRowDragged,
+    rowDropped,
   } = useReferencesTableContext();
   const [isFetchingReferences, setIsFetchingReferences] =
     useState<boolean>(true);
 
   const [isViewerOpen, setIsViewerOpen] = useState<boolean>(false);
-  const [dragStarted, setDragStarted] = useState(false);
-  const [rowDraggedOver, setRowDraggedOver] = useState<any>();
-  const [rowDragged, setRowDragged] = useState();
   const [rowHovered, setRowHovered] = useState<null | ID>(null);
   const { currentOrg } = useOrgs();
   const hasTouchCapability = useHasTouchCapability();
@@ -101,68 +102,6 @@ export default function ReferencesTable({
 
   const router = useRouter();
   const apiRef = useGridApiRef();
-
-  const moveCitationToFolder = ({ moveToFolderId }) => {
-    const newReferenceData = referenceTableRowData.filter((data) => {
-      return data.id !== rowDragged;
-    });
-    setReferenceTableRowData(newReferenceData);
-    updateReferenceCitation({
-      payload: {
-        citation_id: rowDragged,
-        // TODO: calvinhlee - create utily functions to format these
-        project: parseInt(moveToFolderId, 10),
-      },
-      onSuccess: () => {
-        setRowDraggedOver(null);
-      },
-      onError: () => {},
-    });
-  };
-
-  const moveFolderToFolder = ({ moveToFolderId }) => {
-    const intId = parseInt(rowDragged?.split("-folder")[0], 10);
-    const newChildren = activeProject?.children.filter((data) => {
-      return data.id !== intId;
-    });
-    const newActiveProject = { ...activeProject };
-    newActiveProject.children = newChildren;
-    setActiveProject(newActiveProject);
-
-    upsertReferenceProject({
-      upsertPurpose: "update",
-      onSuccess: () => {
-        fetchReferenceOrgProjects({
-          onSuccess: (payload) => {
-            setCurrentOrgProjects(payload);
-          },
-          payload: {
-            organization: currentOrg.id,
-          },
-        });
-      },
-      payload: {
-        project: intId,
-        parent: parseInt(moveToFolderId, 10),
-      },
-    });
-  };
-
-  const rowDropped = (params) => {
-    setDragStarted(false);
-
-    const stringId = params.id.toString();
-    if (stringId.includes("folder")) {
-      const moveToFolderId = stringId.split("-folder")[0];
-      if (rowDragged?.toString().includes("folder")) {
-        moveFolderToFolder({ moveToFolderId });
-      } else {
-        moveCitationToFolder({
-          moveToFolderId,
-        });
-      }
-    }
-  };
 
   const openFolder = ({ row, event }) => {
     let url = `/reference-manager/${
@@ -266,6 +205,7 @@ export default function ReferencesTable({
         ...activeProject?.parent_data,
         parentFolder: true,
         title: activeProject?.parent_data?.project_name,
+        rawId: activeProject?.parent_data?.id,
         id: `${activeProject?.parent_data?.id}-folder-parent`,
       }
     : null;
@@ -309,6 +249,7 @@ export default function ReferencesTable({
             return {
               ...child,
               title: child.project_name,
+              rawId: child.id,
               id: `${child.id}-folder`,
             };
           }),
@@ -480,7 +421,6 @@ export default function ReferencesTable({
                     rowType === "FOLDER" && setRowDraggedOver(null)
                   }
                   onDrag={() => {
-                    setDragStarted(true);
                     setRowDragged(row.row.id);
                   }}
                   onDrop={() => rowType === "FOLDER" && rowDropped(row.row)}

@@ -25,6 +25,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { faDown, faUp } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { voteWidgetIcons } from "~/config/themes/icons";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 const VoteWidget = (props) => {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ const VoteWidget = (props) => {
     onDownvote,
     fontSize,
     selected,
+    title,
     width,
     horizontalView,
     searchResult,
@@ -58,6 +60,7 @@ const VoteWidget = (props) => {
     onNeutralVote,
     disableUpvote,
     disableDownvote,
+    twitterScore,
     downvoteIcon = voteWidgetIcons.downvote,
     upvoteIcon = voteWidgetIcons.upvote,
   } = props;
@@ -153,6 +156,10 @@ const VoteWidget = (props) => {
   const noDownvote = upvoteDisabled || searchResult || disableUpvote;
   const noUpvote = upvoteDisabled || searchResult || disableUpvote;
 
+  if (title?.includes("CDK")) {
+    console.log(twitterScore + "");
+  }
+
   return (
     <div
       className={css(
@@ -208,6 +215,18 @@ const VoteWidget = (props) => {
           icon={downvoteIcon}
         />
       </PermissionNotificationWrapper>
+      {/* {twitterScore && (
+        <div
+          className={css(styles.twitterScore)}
+          data-twitter-score={twitterScore}
+        >
+          {twitterScore}
+          <FontAwesomeIcon
+            icon={faTwitter}
+            className={css(styles.twitterIcon)}
+          />
+        </div>
+      )} */}
     </div>
   );
 };
@@ -325,6 +344,24 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     textAlign: "center",
     marginRight: 17,
+  },
+  twitterScore: {
+    display: "flex",
+    flexDirection: "column",
+    border: "1px solid #ddd",
+    borderRadius: 4,
+    // padding: 8,
+    fontSize: 12,
+    // height: 25,
+    width: 28,
+    padding: 4,
+    boxSizing: "border-box",
+    margin: "0 auto",
+    marginTop: 8,
+    color: "rgba(36, 31, 58, 0.5)",
+  },
+  twitterIcon: {
+    marginTop: 4,
   },
   horizontalView: {
     flexDirection: "row",

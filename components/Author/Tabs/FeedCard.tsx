@@ -108,6 +108,7 @@ export type FeedCardProps = {
   voteCallback: any;
   withSidePadding?: boolean;
   type: string;
+  twitterScore?: number | undefined | null;
 };
 
 const documentIcons = {
@@ -144,6 +145,7 @@ function FeedCard({
   singleCard,
   slug,
   title,
+  twitterScore,
   titleAsHtml, // In some contexts we want to wrap the title/renderable_text with html. e.g. rendering search highlights.
   uploaded_by,
   uploaded_date,
@@ -310,6 +312,7 @@ function FeedCard({
                   onDownvote={onDownvote}
                   onUpvote={onUpvote}
                   score={score}
+                  twitterScore={twitterScore}
                   voteState={voteState}
                 />
               </div>
@@ -391,10 +394,12 @@ function FeedCard({
                           onUpvote={onUpvote}
                           onNeutralVote={onNeutralVote}
                           score={score}
+                          twitterScore={twitterScore}
                           styles={styles.voteWidget}
                           upvoteStyleClass={styles.mobileVote}
                           downvoteStyleClass={styles.mobileVote}
                           type="Discussion"
+                          title={cardTitle}
                           selected={voteState}
                         />
                       </div>
