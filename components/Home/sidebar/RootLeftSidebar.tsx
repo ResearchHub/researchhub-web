@@ -112,54 +112,57 @@ export const getLeftSidebarItemAttrs = ({
         }
       },
     },
-    killswitch("reference-manager")
-      ? {
-          icon: isMinimized ? (
-            <RhTextTag
-              width="28px"
-              height="16px"
-              tagLabel="Beta"
-              style={{
-                fontVariant: "all-small-caps",
-              }}
-              textColor={"grey"}
-              backgroundColor={"transparent"}
-              fontSize="10px"
-              tagPosition={{ right: "-20px", bottom: "-10px", top: "unset" }}
-            >
-              <FontAwesomeIcon icon={faTableTree} />
-            </RhTextTag>
-          ) : (
-            <FontAwesomeIcon icon={faTableTree} />
-          ),
-          label: isMinimized ? (
-            "Reference Manager"
-          ) : (
-            <RhTextTag
-              width="32px"
-              height="20px"
-              tagLabel="Beta"
-              textTransform={"small-caps"}
-              backgroundColor={"transparent"}
-              textColor={"grey"}
-              style={{
-                fontVariant: "all-small-caps",
-                top: "unset",
-                bottom: -10,
-                // right: 0,
-              }}
-              fontSize="12px"
-              tagPosition={{ right: "-28px", top: "-10px" }}
-            >
-              {"Reference Manager"}
-            </RhTextTag>
-          ),
-          isActive: pathname.includes("reference-manager"),
-          isMinimized,
-          href: "/reference-manager",
-          onClick: silentEmptyFnc,
+    {
+      icon: isMinimized ? (
+        <RhTextTag
+          width="28px"
+          height="16px"
+          tagLabel="Beta"
+          style={{
+            fontVariant: "all-small-caps",
+          }}
+          textColor={"grey"}
+          backgroundColor={"transparent"}
+          fontSize="10px"
+          tagPosition={{ right: "-20px", bottom: "-10px", top: "unset" }}
+        >
+          <FontAwesomeIcon icon={faTableTree} />
+        </RhTextTag>
+      ) : (
+        <FontAwesomeIcon icon={faTableTree} />
+      ),
+      label: isMinimized ? (
+        "Reference Manager"
+      ) : (
+        <RhTextTag
+          width="32px"
+          height="20px"
+          tagLabel="Beta"
+          textTransform={"small-caps"}
+          backgroundColor={"transparent"}
+          textColor={"grey"}
+          style={{
+            fontVariant: "all-small-caps",
+            top: "unset",
+            bottom: -10,
+            // right: 0,
+          }}
+          fontSize="12px"
+          tagPosition={{ right: "-28px", top: "-10px" }}
+        >
+          {"Reference Manager"}
+        </RhTextTag>
+      ),
+      isActive: pathname.includes("reference-manager"),
+      isMinimized,
+      href: "/reference-manager",
+      onClick: (event: SyntheticEvent): void => {
+        if (!isLoggedIn) {
+          event.preventDefault();
+          openLoginModal(true, "Please Sign in with Google to continue.");
         }
-      : null,
+      },
+    },
   ]);
 };
 
