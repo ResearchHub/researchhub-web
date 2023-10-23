@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/pro-regular-svg-icons";
 import { timeSince } from "~/config/utils/dates";
 import CommentVote from "./CommentVote";
+import { VerifiedBadge } from "../Verification/VerificationModal";
 
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
@@ -75,7 +76,18 @@ const CommentHeader = ({
                       href={`/user/${authorProfile?.id}/overview`}
                       key={`/user/${authorProfile?.id}/overview-key`}
                     >
-                      {authorProfile.firstName} {authorProfile.lastName}
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          columnGap: "5px",
+                        }}
+                      >
+                        {authorProfile.firstName} {authorProfile.lastName}
+                        {authorProfile.isVerified && (
+                          <VerifiedBadge height={18} width={18} />
+                        )}
+                      </div>
                     </ALink>
                   }
                 />

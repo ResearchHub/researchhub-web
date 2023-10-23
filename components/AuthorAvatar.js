@@ -48,9 +48,10 @@ const AuthorAvatar = (props) => {
     if (deviceWidth && deviceWidth < 768 && !trueSize) {
       finalSize = size - 5;
     }
+
     return (
       <>
-        {showBadgeIfVerified && author?.is_verified && (
+        {showBadgeIfVerified && (author?.is_verified || author?.isVerified) && (
           <div style={{ position: "absolute", right: -9, top: -3 }}>
             <VerifiedBadge height={20} width={20} />
           </div>

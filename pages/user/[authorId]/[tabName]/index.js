@@ -74,6 +74,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { captureEvent } from "~/config/utils/events";
 import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
+import { VerifiedBadge } from "~/components/Verification/VerificationModal";
 
 const AUTHOR_USER_STATUS = {
   EXISTS: "EXISTS",
@@ -1009,7 +1010,18 @@ function AuthorPage(props) {
                     )}
                     property="name"
                   >
-                    {name}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        columnGap: "5px",
+                      }}
+                    >
+                      {name}
+                      {author.is_verified && (
+                        <VerifiedBadge height={24} width={24} />
+                      )}
+                    </div>
                     {editProfileBtn}
                   </h1>
                   <div className={css(styles.headline)}>

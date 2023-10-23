@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 import { faAngleLeft, faCircleXmark } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import IconButton from "../Icons/IconButton";
@@ -26,17 +26,88 @@ import { ClipLoader } from "react-spinners";
 import { HubBadge } from "../Hubs/HubTag";
 import Link from "next/link";
 import ALink from "../ALink";
+import ReactTooltip from "react-tooltip";
+import { genClientId } from "~/config/utils/id";
 
 export const VerifiedBadge = ({ height = 25, width = 25 }) => {
+  const id = genClientId();
+
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <Image
-      src="/static/verified.svg"
-      width={width}
-      height={height}
-      alt="Verified"
-    />
+    <>
+      <VerificationModal
+        isModalOpen={isOpen}
+        handleModalClose={() => setIsOpen(false)}
+      />
+      <Image
+        src="/static/verified.svg"
+        width={width}
+        height={height}
+        alt="Verified"
+        data-for={`verified-${id}`}
+        data-tip={""}
+        style={{ cursor: "pointer" }}
+      />
+      <ReactTooltip
+        arrowColor={"white"}
+        id={`verified-${id}`}
+        className={css(verifiedBadgeStyles.tooltip)}
+        place="bottom"
+        effect="solid"
+        delayShow={500}
+        delayHide={500}
+        delayUpdate={500}
+      >
+        <div className={css(verifiedBadgeStyles.verifiedWrapper)}>
+          <div>Verified Author Account</div>
+          <Image
+            src="/static/verified.svg"
+            width={width}
+            height={height}
+            alt="Verified"
+          />
+        </div>
+        <div className={css(verifiedBadgeStyles.learnMoreWrapper)}>
+          <span
+            className={css(verifiedBadgeStyles.learnMore)}
+            onClick={(e) => {
+              e.preventDefault();
+              setIsOpen(true);
+            }}
+          >
+            Learn More
+          </span>
+        </div>
+      </ReactTooltip>
+    </>
   );
 };
+
+const verifiedBadgeStyles = StyleSheet.create({
+  tooltip: {
+    color: "black",
+    background: "#fff",
+    boxShadow: "0px 0px 10px 0px #00000026",
+    ":after": {
+      display: "none",
+    },
+  },
+  verifiedWrapper: {
+    background: "white",
+    columnGap: "5px",
+    display: "flex",
+    alignItems: "center",
+  },
+  learnMoreWrapper: {
+    marginTop: 0,
+  },
+  learnMore: {
+    color: colors.NEW_BLUE(),
+    textDecoration: "underline",
+    cursor: "pointer",
+  },
+});
 
 interface Option {
   value: "LINKEDIN" | "ORCID" | null;
@@ -72,11 +143,11 @@ const fetchOpenAlexProfiles = async ({
     });
 };
 
-const completeProfileVerification = async ({ openAlexProfileId }) => {
+const completeProfileVerification = async ({ openAlexProfileIds }) => {
   const url = generateApiUrl(`user/verify_user`);
 
-  return fetch(url, API.POST_CONFIG({ openalex_id: openAlexProfileId })).then(
-    (res): any => true
+  return fetch(url, API.POST_CONFIG({ openalex_ids: openAlexProfileIds })).then(
+    helpers.checkStatus
   );
 };
 
@@ -398,9 +469,9 @@ const VerificationFormSelectProfileStep = ({
     try {
       setIsVerifying(true);
       await completeProfileVerification({
-        openAlexProfileId: selectedProfileIds[0],
+        openAlexProfileIds: selectedProfileIds,
       });
-      onVerificationComplete();
+      // onVerificationComplete();
     } catch (error) {
       onError();
       captureEvent({
@@ -479,7 +550,7 @@ const VerificationFormSelectProfileStep = ({
         </div>
         <p className={css(profileStepStyles.description)}>
           {profileOptions.length <= 1 && (
-            <>Select profile associated with yourself.</>
+            <>Select the profile associated with yourself.</>
           )}
           {providerDataResponse.provider === "LINKEDIN" && (
             <>Select all the profiles associated with yourself.</>
