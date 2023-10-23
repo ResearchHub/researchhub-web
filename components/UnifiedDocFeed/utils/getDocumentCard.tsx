@@ -42,6 +42,7 @@ export function getDocumentCard({
           formattedDocType={formattedDocType}
           formattedDocLabel={formattedDocLabel}
           index={arrIndex}
+          twitterScore={targetDoc.twitter_score}
           key={`${formattedDocType}-${docID}-${arrIndex}`}
           paper={uniDoc.documents}
           vote={uniDoc.user_vote}

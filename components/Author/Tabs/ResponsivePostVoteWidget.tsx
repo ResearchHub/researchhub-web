@@ -17,6 +17,7 @@ export default function ResponsivePostVoteWidget({
   onUpvote,
   score,
   voteState,
+  twitterScore,
   onNeutralVote,
 }: ResponsivePostVoteWidgetProps) {
   return (
@@ -32,6 +33,7 @@ export default function ResponsivePostVoteWidget({
             onUpvote={onUpvote}
             onNeutralVote={onNeutralVote}
             promoted={false}
+            twitterScore={twitterScore}
             score={score}
             styles={styles.voteWidget}
             type="Discussion"
