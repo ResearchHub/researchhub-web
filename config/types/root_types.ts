@@ -92,6 +92,7 @@ export type AuthorProfile = {
   description: string;
   headline: string;
   isHubEditor: boolean;
+  isVerified: boolean;
 };
 
 /**

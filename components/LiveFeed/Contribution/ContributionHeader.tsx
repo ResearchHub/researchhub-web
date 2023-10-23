@@ -21,6 +21,7 @@ import ContentBadge from "~/components/ContentBadge";
 import { formatBountyAmount } from "~/config/types/bounty";
 import { truncateText } from "~/config/utils/string";
 import { COMMENT_TYPES } from "~/components/Comment/lib/types";
+import { VerifiedBadge } from "~/components/Verification/VerificationModal";
 
 type Args = {
   entry: Contribution;
@@ -183,8 +184,19 @@ const ContributionHeader = ({ entry }: Args) => {
                   href={`/user/${createdBy.authorProfile?.id}/overview`}
                   key={`/user/${createdBy.authorProfile?.id}/overview-key`}
                 >
-                  {createdBy.authorProfile.firstName}{" "}
-                  {createdBy.authorProfile.lastName}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      columnGap: "5px",
+                    }}
+                  >
+                    {createdBy.authorProfile.firstName}{" "}
+                    {createdBy.authorProfile.lastName}
+                    {createdBy.authorProfile.isVerified && (
+                      <VerifiedBadge height={18} width={18} />
+                    )}
+                  </div>
                 </ALink>
               }
             />
