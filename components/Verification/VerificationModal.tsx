@@ -28,15 +28,24 @@ import Link from "next/link";
 import ALink from "../ALink";
 import ReactTooltip from "react-tooltip";
 import { genClientId } from "~/config/utils/id";
+import { isEmpty } from "~/config/utils/nullchecks";
+import { parseUser } from "~/config/types/root_types";
+import { RootState } from "~/redux";
+import { useSelector } from "react-redux";
 
 interface VerificationModalProps {
-  height: number,
-  width: number,
-  variation?: "blue" | "grey",
-  showTooltipOnHover?: boolean,
+  height: number;
+  width: number;
+  variation?: "blue" | "grey";
+  showTooltipOnHover?: boolean;
 }
 
-export const VerifiedBadge = ({ height = 25, width = 25, variation = "blue", showTooltipOnHover = true }: VerificationModalProps) => {
+export const VerifiedBadge = ({
+  height = 25,
+  width = 25,
+  variation = "blue",
+  showTooltipOnHover = true,
+}: VerificationModalProps) => {
   const id = genClientId();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -50,11 +59,15 @@ export const VerifiedBadge = ({ height = 25, width = 25, variation = "blue", sho
           // We need this stopPropagation to prevent the click action on the card from taking place.
           e.preventDefault();
           e.stopPropagation();
-          setIsOpen(false)
+          setIsOpen(false);
         }}
       />
       <Image
-        src={variation === "grey" ? "/static/verified-grey.svg" : "/static/verified.svg"}
+        src={
+          variation === "grey"
+            ? "/static/verified-grey.svg"
+            : "/static/verified.svg"
+        }
         width={width}
         height={height}
         alt="Verified"
@@ -62,7 +75,7 @@ export const VerifiedBadge = ({ height = 25, width = 25, variation = "blue", sho
         data-tip={""}
         style={{ cursor: "pointer" }}
       />
-      {showTooltipOnHover && 
+      {showTooltipOnHover && (
         <ReactTooltip
           arrowColor={"white"}
           id={`verified-${id}`}
@@ -86,8 +99,8 @@ export const VerifiedBadge = ({ height = 25, width = 25, variation = "blue", sho
             <span
               className={css(verifiedBadgeStyles.learnMore)}
               onClick={(e) => {
-              // stopPropagation is necessary because this component is included various card components with a click action.
-              // We need this stopPropagation to prevent the click action on the card from taking place.                
+                // stopPropagation is necessary because this component is included various card components with a click action.
+                // We need this stopPropagation to prevent the click action on the card from taking place.
                 e.stopPropagation();
                 e.preventDefault();
                 setIsOpen(true);
@@ -97,7 +110,7 @@ export const VerifiedBadge = ({ height = 25, width = 25, variation = "blue", sho
             </span>
           </div>
         </ReactTooltip>
-      }
+      )}
     </>
   );
 };
@@ -282,7 +295,7 @@ const VerificationFormSuccessStep = ({}) => {
         paddingTop: 75,
       }}
     >
-      <VerifiedBadge width={100} height={100} />
+      <VerifiedBadge width={100} height={100} showTooltipOnHover={false} />
       <div style={{ fontSize: 26, fontWeight: 500, marginTop: 50 }}>
         Your account is now verified
       </div>
@@ -299,6 +312,39 @@ const VerificationFormSuccessStep = ({}) => {
       <div style={{ width: 250, marginTop: 75 }}>
         <Button fullWidth onClick={() => (window.location.href = "/")}>
           Back Home
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const VerificationFormAlreadyVerifiedStep = ({ onClose }) => {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "column",
+        textAlign: "center",
+        paddingTop: 75,
+      }}
+    >
+      <VerifiedBadge width={100} height={100} showTooltipOnHover={false} />
+      <div style={{ fontSize: 26, fontWeight: 500, marginTop: 50 }}>
+        Your account is already verified
+      </div>
+      <div
+        style={{
+          marginTop: 10,
+          color: colors.MEDIUM_GREY2(),
+          lineHeight: "26px",
+        }}
+      >
+        Thank you for verifying your account with ResearchHub.
+      </div>
+      <div style={{ width: 250, marginTop: 75 }}>
+        <Button fullWidth onClick={onClose}>
+          Close
         </Button>
       </div>
     </div>
@@ -355,13 +401,20 @@ const VerificationFormErrorStep = ({ onPrevClick }) => {
 const VerificationFormSelectProviderStep = ({
   onProviderConnectSuccess,
   onProviderConnectFailure,
+  onProfileAlreadyVerified,
 }) => {
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
+
+  const isAlreadyVerified = currentUser?.authorProfile?.isVerified;
+
   return (
     <div>
       <div className={css(formStyles.title)}>Become a Verified Author</div>
       <p className={css(formStyles.description)}>
-        Verify your authorship to get access to the best ResearchHub has to
-        offer.
+        Authors with at least one published paper on any academic journal can
+        now verify their authorship.
       </p>
 
       <div className={css(formStyles.chooseVerificationTitle)}>
@@ -377,7 +430,15 @@ const VerificationFormSelectProviderStep = ({
               onProviderConnectFailure();
             }}
           >
-            <div className={css(formStyles.optionContent)}>
+            <div
+              className={css(formStyles.optionContent)}
+              onClick={(e) => {
+                if (isAlreadyVerified) {
+                  e.stopPropagation();
+                  onProfileAlreadyVerified();
+                }
+              }}
+            >
               <Image
                 src="/static/logos/orcid.png"
                 width={26}
@@ -404,7 +465,15 @@ const VerificationFormSelectProviderStep = ({
               onProviderConnectFailure();
             }}
           >
-            <div className={css(formStyles.optionContent)}>
+            <div
+              className={css(formStyles.optionContent)}
+              onClick={(e) => {
+                if (isAlreadyVerified) {
+                  e.stopPropagation();
+                  onProfileAlreadyVerified();
+                }
+              }}
+            >
               <Image
                 src="/static/logos/linkedin.png"
                 width={26}
@@ -425,7 +494,7 @@ const VerificationFormSelectProviderStep = ({
       <div className={css(formStyles.whyVerifyWrapper)}>
         <div className={css(formStyles.whyVerify)}>
           <div className={css(formStyles.whyVerifyTitle)}>
-            Reasons to verify your authorship:
+            Reasons to become a verified author:
           </div>
           <ul className={css(formStyles.whyVerifyList)}>
             <li className={css(formStyles.whyVerifyItem)}>
@@ -440,7 +509,11 @@ const VerificationFormSelectProviderStep = ({
             <li className={css(formStyles.whyVerifyItem)}>
               <div style={{ display: "inline-flex", columnGap: 10 }}>
                 Have the verified badge appear in your profile
-                <VerifiedBadge width={25} height={25} />
+                <VerifiedBadge
+                  width={25}
+                  height={25}
+                  showTooltipOnHover={false}
+                />
               </div>
             </li>
           </ul>
@@ -474,6 +547,9 @@ const VerificationFormSelectProfileStep = ({
   const [isVerifying, setIsVerifying] = useState(false);
   const [isInitialFetchComplete, setIsInitialFetchComplete] = useState(false);
   const [name, setName] = useState(providerDataResponse?.name || "");
+  const [hasAgreedToAuthorTerms, setHasAgreedToAuthorTerms] = useState(false);
+  const [hasAgreedToImpersonationTerms, setHasAgreedToImpersonationTerms] =
+    useState(false);
 
   const toggleAuthorWorksVisibility = (profileId) => {
     if (showWorksForAuthors.includes(profileId)) {
@@ -551,6 +627,8 @@ const VerificationFormSelectProfileStep = ({
     })();
   }, [isInitialFetchComplete]);
 
+  const noResults = !isLoadingProfiles && profileOptions.length === 0;
+
   return (
     <div
       style={{
@@ -569,12 +647,7 @@ const VerificationFormSelectProfileStep = ({
           )}
         </div>
         <p className={css(profileStepStyles.description)}>
-          {profileOptions.length <= 1 && (
-            <>Select the profile associated with yourself.</>
-          )}
-          {providerDataResponse.provider === "LINKEDIN" && (
-            <>Select all the profiles associated with yourself.</>
-          )}
+          Select all the author profiles associated with yourself.
         </p>
         <div className={css(styles.prevActionWrapper)}>
           <IconButton onClick={onPrevClick}>
@@ -621,6 +694,32 @@ const VerificationFormSelectProfileStep = ({
                 color={colors.NEW_BLUE()}
                 loading={true}
               />
+            </div>
+          )}
+          {noResults && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+                marginTop: 130,
+              }}
+            >
+              <div
+                style={{
+                  textAlign: "center",
+                }}
+              >
+                <div style={{ fontWeight: 500, fontSize: 18 }}>
+                  No results found.
+                </div>
+                <div
+                  style={{ fontWeight: 400, fontSize: 14, lineHeight: "20px" }}
+                >
+                  Please ensure spelling of your name is correct.
+                </div>
+              </div>
             </div>
           )}
           {!isLoadingProfiles &&
@@ -859,13 +958,66 @@ const VerificationFormSelectProfileStep = ({
         </div>
       </div>
 
-      {!isLoadingProfiles && (
-        <Button
-          onClick={completeVerification}
-          disabled={selectedProfileIds.length === 0}
-        >
-          Complete Verification
-        </Button>
+      {!isLoadingProfiles && profileOptions.length > 0 && (
+        <div>
+          <div
+            className={css(profileStepStyles.terms)}
+            style={{
+              marginTop: 15,
+              marginBottom: 10,
+              display: "flex",
+              flexDirection: "column",
+              rowGap: "5px",
+            }}
+          >
+            <div
+              onClick={() => setHasAgreedToAuthorTerms(!hasAgreedToAuthorTerms)}
+            >
+              {/* @ts-ignore */}
+              <CheckBox
+                small
+                isSquare={true}
+                active={hasAgreedToAuthorTerms}
+                label={
+                  <div style={{ marginLeft: 5, fontSize: 14 }}>
+                    I confirm that I am the author of the above papers.
+                  </div>
+                }
+              />
+            </div>
+            <div
+              onClick={() =>
+                setHasAgreedToImpersonationTerms(!hasAgreedToImpersonationTerms)
+              }
+            >
+              {/* @ts-ignore */}
+              <CheckBox
+                small
+                isSquare={true}
+                active={hasAgreedToImpersonationTerms}
+                label={
+                  <div style={{ marginLeft: 5, fontSize: 14 }}>
+                    I understand that impersonating an author can result in a
+                    permanent account ban.
+                  </div>
+                }
+              />
+            </div>
+          </div>
+          <div>
+            <Button
+              fullWidth
+              onClick={completeVerification}
+              disabled={
+                selectedProfileIds.length === 0 ||
+                !hasAgreedToAuthorTerms ||
+                !hasAgreedToImpersonationTerms
+              }
+            >
+              Complete Verification
+            </Button>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -904,17 +1056,20 @@ const profileStepStyles = StyleSheet.create({
 });
 
 interface VerificationFormProps {
-  onProfileSelect?: (profileId: string | null) => void;
   onStepSelect?: (step: "PROVIDER_STEP" | "PROFILE_STEP") => void;
+  onClose: () => void;
 }
 
-const VerificationForm = ({ onStepSelect }: VerificationFormProps) => {
+const VerificationForm = ({ onStepSelect, onClose }: VerificationFormProps) => {
   const [step, setStep] = useState<
-    "PROVIDER_STEP" | "PROFILE_STEP" | "SUCCESS_STEP" | "ERROR_STEP"
+    | "PROVIDER_STEP"
+    | "PROFILE_STEP"
+    | "SUCCESS_STEP"
+    | "ALREADY_VERIFIED_STEP"
+    | "ERROR_STEP"
   >("PROVIDER_STEP");
 
   const [providerDataResponse, setProviderDataResponse] = useState<any | null>(
-    // {provider: "LINKEDIN", name: "Jeffrey Koury"}
     null
   );
 
@@ -930,6 +1085,7 @@ const VerificationForm = ({ onStepSelect }: VerificationFormProps) => {
           onProviderConnectFailure={() => {
             console.log("failure to connect");
           }}
+          onProfileAlreadyVerified={() => setStep("ALREADY_VERIFIED_STEP")}
         />
       )}
       {step === "PROFILE_STEP" && providerDataResponse && (
@@ -948,6 +1104,9 @@ const VerificationForm = ({ onStepSelect }: VerificationFormProps) => {
         />
       )}
       {step === "SUCCESS_STEP" && <VerificationFormSuccessStep />}
+      {step === "ALREADY_VERIFIED_STEP" && (
+        <VerificationFormAlreadyVerifiedStep onClose={onClose} />
+      )}
     </div>
   );
 };
@@ -1039,12 +1198,10 @@ const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
       closeModal={handleModalClose}
       zIndex={1000000001}
       modalStyle={styles.modalStyle}
-      // titleStyle={styles.modalTitleStyleOverride}
       modalContentStyle={styles.modalContentStyle}
-      // title={step === "PROVIDER_STEP" ? "Become a Verified Author" : "Select Profile" }
     >
       <div className={css(styles.formWrapper)}>
-        <VerificationForm />
+        <VerificationForm onClose={handleModalClose} />
       </div>
     </BaseModal>
   );
@@ -1052,7 +1209,7 @@ const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
 
 const styles = StyleSheet.create({
   formWrapper: {
-    width: 500,
+    width: 540,
     height: "100%",
   },
   modalStyle: {},

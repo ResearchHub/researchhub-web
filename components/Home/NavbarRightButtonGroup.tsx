@@ -1,10 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOut } from "@fortawesome/pro-duotone-svg-icons";
-import { faAsterisk } from "@fortawesome/pro-solid-svg-icons";
-import { faCog } from "@fortawesome/pro-solid-svg-icons";
-import { faBookOpen } from "@fortawesome/pro-solid-svg-icons";
-import { faPortrait } from "@fortawesome/pro-solid-svg-icons";
-import { faShieldHalved } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faAsterisk,
+  faCog,
+  faBookOpen,
+  faPortrait,
+  faShieldHalved,
+} from "@fortawesome/pro-solid-svg-icons";
 import { AuthActions } from "~/redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -73,6 +75,8 @@ function NavbarRightButtonGroup({
     const totalCount = (caseCount["OPEN"] ?? 0) + flagCount;
     setOpenCaseCounts(totalCount);
   }, [isUserModerator, isUserHubEditor]);
+
+  console.log("user", user.author_profile);
 
   return (
     <div className={css(styles.userDropdown)}>
