@@ -175,7 +175,11 @@ const ContributionHeader = ({ entry }: Args) => {
       </div>
       <div className={css(styles.metadataWrapper)}>
         <div className={css(styles.metadataRow)}>
-          <div>
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            columnGap: "3px",
+          }}>
             <UserTooltip
               createdBy={createdBy}
               overrideTargetStyle={styles.userTooltip}
@@ -184,22 +188,14 @@ const ContributionHeader = ({ entry }: Args) => {
                   href={`/user/${createdBy.authorProfile?.id}/overview`}
                   key={`/user/${createdBy.authorProfile?.id}/overview-key`}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      columnGap: "5px",
-                    }}
-                  >
                     {createdBy.authorProfile.firstName}{" "}
                     {createdBy.authorProfile.lastName}
-                    {createdBy.authorProfile.isVerified && (
-                      <VerifiedBadge height={18} width={18} />
-                    )}
-                  </div>
                 </ALink>
               }
             />
+            {createdBy.authorProfile.isVerified && (
+              <VerifiedBadge height={18} width={18} />
+            )}            
 
             {actionLabel}
             {/* @ts-ignore */}

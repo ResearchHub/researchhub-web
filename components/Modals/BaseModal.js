@@ -68,7 +68,7 @@ class BaseModal extends Component {
   /**
    * closes the modal on button click
    */
-  closeModal = () => {
+  closeModal = (e) => {
     if (this.props?.persistent) return;
 
     this.setState({ reveal: false }, () => {
@@ -76,7 +76,7 @@ class BaseModal extends Component {
         this.setState({
           ...this.initialState,
         });
-        this.props.closeModal && this.props.closeModal();
+        this.props.closeModal && this.props.closeModal(e);
       }, 200);
     });
   };
