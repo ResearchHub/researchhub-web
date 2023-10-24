@@ -59,12 +59,14 @@ export default function BountiesSidebarItem({
                     fontSize={14}
                     imgSize={17}
                   />
-                  {createdByAuthor.is_verified && (
-                    <VerifiedBadge height={18} width={18} />
-                  )}
                 </div>
               }
             />
+            {createdByAuthor.is_verified && (
+              <div style={{marginLeft: 0, marginTop: 4}}>
+                <VerifiedBadge height={18} width={18} />
+                </div>
+            )}
             <span className={css(styles.bountiesSidebarTitle)}>
               <span>{"is offering "}</span>
             </span>

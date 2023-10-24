@@ -46,6 +46,7 @@ import InviteButton from "~/components/Referral/InviteButton";
 import killswitch from "~/config/killswitch/killswitch";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import RhTextTag from "~/components/shared/RhTextTag";
+import VerificationModal, { VerifiedBadge } from "~/components/Verification/VerificationModal";
 
 type Props = {
   openLoginModal: any;
@@ -189,6 +190,7 @@ function RootLeftSidebar({
     application: "REFERENCE_MANAGER",
     shouldRedirect: false,
   });
+  const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
 
   useEffectOnScreenResize({
     onResize: (newMediaWidth): void => {
@@ -374,6 +376,16 @@ function RootLeftSidebar({
         </div>
         <div className={css(styles.leftSidebarFooter)}>
           <div className={css(styles.leftSidebarFooterItemsTop)}>
+          <span className={css(formattedFooterTxtItem)}>
+              <VerificationModal
+                isModalOpen={isVerificationModalOpen}
+                handleModalClose={() => setIsVerificationModalOpen(false)}
+              />
+              <span className={css(styles.referralProgramItem)} onClick={() => setIsVerificationModalOpen(true)} >
+                {"Verify Authorship"}
+                <VerifiedBadge height={22} width={22} variation="grey" showTooltipOnHover={false} />
+              </span>
+            </span>            
             <span className={css(formattedFooterTxtItem)}>
               <InviteButton context={"referral"}>
                 <span className={css(styles.referralProgramItem)}>
