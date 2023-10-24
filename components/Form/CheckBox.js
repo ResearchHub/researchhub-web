@@ -51,7 +51,12 @@ const CheckBox = ({
             style={{ color: `${active ? "#FFF" : "#FBFBFD"}` }}
             className={css(checkStyleOverride)}
           >
-            {<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
+            {
+              <FontAwesomeIcon
+                fontSize={small ? 12 : 18}
+                icon={faCheck}
+              ></FontAwesomeIcon>
+            }
           </span>
         ) : (
           <div
@@ -90,8 +95,8 @@ const styles = StyleSheet.create({
     },
   },
   checkBoxSmall: {
-    minHeight: 12,
-    minWidth: 12,
+    height: 18,
+    width: 18,
     borderRadius: "50%",
     border: "1px solid #e8e8f1",
     cursor: "pointer",

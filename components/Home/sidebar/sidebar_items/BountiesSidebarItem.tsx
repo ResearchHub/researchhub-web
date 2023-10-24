@@ -33,7 +33,7 @@ export default function BountiesSidebarItem({
   rawBountyAmount,
 }: Props): ReactElement {
   const roundedOfferAmount = bountyAmount;
-  console.log("createdByAuthor", createdByAuthor);
+
   return (
     <div className={css(styles.bountiesSidebarItemContainer)}>
       {/* NOTE: href is subject to change */}
@@ -63,9 +63,9 @@ export default function BountiesSidebarItem({
               }
             />
             {createdByAuthor.is_verified && (
-              <div style={{marginLeft: 0, marginTop: 4}}>
+              <div style={{ marginLeft: 0, marginTop: 4 }}>
                 <VerifiedBadge height={18} width={18} />
-                </div>
+              </div>
             )}
             <span className={css(styles.bountiesSidebarTitle)}>
               <span>{"is offering "}</span>
