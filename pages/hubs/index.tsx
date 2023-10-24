@@ -20,13 +20,20 @@ import { ModalActions } from "~/redux/modals";
 import AddHubModal from "~/components/Modals/AddHubModal";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import EditHubModal from "~/components/Modals/EditHubModal";
+import { Pagination } from "@mui/material";
 
 type Props = {
   hubs: any[];
   errorCode?: number;
+  count: number;
 };
 
-const HubsPage: NextPage<Props> = ({ hubs, errorCode, openAddHubModal }) => {
+const HubsPage: NextPage<Props> = ({
+  hubs,
+  errorCode,
+  openAddHubModal,
+  count,
+}) => {
   const sortOpts = [
     { label: "Popular", value: "score" },
     { label: "Name", value: "name" },
@@ -40,12 +47,15 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode, openAddHubModal }) => {
     hubs.map((hub) => parseHub(hub))
   );
   const [sort, setSort] = useState<MenuOption>(sortOpts[0]);
+  const [page, setPage] = useState<number>(1);
   const prevSortValue = useRef(sort);
   const [suggestions, setSuggestions] = useState<HubSuggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const { width: winWidth, height: winHeight } = useWindow();
   const [noSuggestionsFound, setNoSuggestionsFound] = useState(false);
+
+  const firstLoadRef = useRef(true);
 
   useEffect(() => {
     if (query.length === 0) {
@@ -183,6 +193,24 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode, openAddHubModal }) => {
         ))}
         {noSuggestionsFound && <div>No hubs found.</div>}
       </div>
+      <div className={css(styles.pagination)}>
+        <Pagination
+          count={Math.ceil(count / 40)}
+          onChange={(event, page) => {
+            const fetchHubs = async () => {
+              // @ts-ignore
+              const { hubs } = await getHubs({
+                page,
+                ordering: sort.value,
+              });
+              const parsedHubs = hubs.map((hub) => parseHub(hub));
+              setParsedHubs(parsedHubs);
+            };
+            fetchHubs();
+            setPage(page);
+          }}
+        />
+      </div>
     </div>
   );
 };
@@ -216,6 +244,11 @@ const styles = StyleSheet.create({
   },
   createHubButton: {
     marginLeft: "auto",
+  },
+  pagination: {
+    marginTop: 16,
+    display: "flex",
+    justifyContent: "flex-end",
   },
   createHubButtonContainer: {
     display: "flex",
@@ -287,11 +320,12 @@ const styles = StyleSheet.create({
 export const getStaticProps: GetStaticProps = async (ctx) => {
   try {
     // @ts-ignore
-    const { hubs } = await getHubs({});
+    const { hubs, count } = await getHubs({});
 
     return {
       props: {
         hubs,
+        count,
       },
       revalidate: 600,
     };

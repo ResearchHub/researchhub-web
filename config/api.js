@@ -711,7 +711,7 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    HUB: ({ hubId, search, name, slug, ordering }) => {
+    HUB: ({ hubId, search, name, slug, ordering, page }) => {
       let url = BASE_URL + `hub/`;
 
       if (hubId) {
@@ -734,6 +734,10 @@ const routes = (BASE_URL) => {
 
       if (ordering) {
         url += `ordering=${ordering}&`;
+      }
+
+      if (page) {
+        url += `page=${page}&`;
       }
 
       return url;
