@@ -23,14 +23,13 @@ export const columnsFormat: GridColDef[] = [
           >
             <FontAwesomeIcon
               icon={idString.includes("parent") ? faArrowTurnUp : faFolder}
-              style={{ marginRight: 13, fontSize: 16, width: 16, }}
+              style={{ marginRight: 13, fontSize: 16, width: 16 }}
               color={idString.includes("parent") ? "#7C7989" : "#AAA8B4"}
             />
             {cell.value}
           </div>
         );
-      }
-      else  {
+      } else {
         return (
           <div
             style={{
@@ -42,12 +41,12 @@ export const columnsFormat: GridColDef[] = [
           >
             <FontAwesomeIcon
               icon={faFileLines}
-              style={{ marginRight: 13, fontSize: 19, width: 16, }}
+              style={{ marginRight: 13, fontSize: 19, width: 16 }}
               color={idString.includes("parent") ? "#7C7989" : "#AAA8B4"}
             />
             {cell.value}
           </div>
-        );        
+        );
       }
     },
   },

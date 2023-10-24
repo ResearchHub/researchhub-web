@@ -83,6 +83,8 @@ const ContentWrapper = ({ children, width, isOpen, setIsOpen }) => {
           height: "calc(100vh - 68px)",
           overflow: "auto",
           display: isOpen ? "block" : "none",
+          position: "sticky",
+          top: 68,
         }}
       >
         {children}
@@ -105,7 +107,6 @@ export default function BasicTogglableNavbarLeft({
   const router = useRouter();
   const [childrenOpenMap, setChildrenOpenMap] = useState({});
   const { setActiveProject } = useReferenceActiveProjectContext();
-  const { setReferenceTableRowData } = useReferencesTableContext();
 
   useEffect(() => {
     const idsOpen = window.localStorage.getItem("projectIdsOpenv2") || "{}";

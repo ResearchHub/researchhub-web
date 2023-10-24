@@ -68,6 +68,7 @@ type Props = {
   expandedOnlyMode?: boolean;
   setReferenceItemDatum?: (datum) => void;
   referenceItemDatum: any;
+  documentViewerClass: any;
 };
 
 const DocumentViewer = ({
@@ -86,6 +87,7 @@ const DocumentViewer = ({
   expandedOnlyMode = false,
   setReferenceItemDatum,
   referenceItemDatum,
+  documentViewerClass,
 }: Props) => {
   const router = useRouter();
   const currentUser = getCurrentUser();
@@ -366,6 +368,7 @@ const DocumentViewer = ({
       <div
         className={css(
           styles.documentViewer,
+          documentViewerClass,
           isExpanded && styles.expandedWrapper
         )}
       >

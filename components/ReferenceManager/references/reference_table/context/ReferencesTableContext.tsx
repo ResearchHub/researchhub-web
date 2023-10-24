@@ -21,6 +21,14 @@ export type ReferencesTableContextType = {
   moveCitationToFolder: ({ moveToFolderId }: { moveToFolderId: ID }) => void;
   moveFolderToFolder: ({ moveToFolderId }: { moveToFolderId: ID }) => void;
   rowDropped: ({ id }: { id: ID }) => void;
+  openedTabs: any[];
+  setOpenedTabs: (openedPdfs: any[]) => void;
+  activeTab: string;
+  setActiveTab: (activeTab: string) => void;
+  openTabIndex: number | null | undefined;
+  setOpenTabIndex: (index: number) => void;
+  openTab: (tab: any) => void;
+  removeTab: (tab: any) => void;
 };
 
 export const DEFAULT_CONTEXT: ReferencesTableContextType = {
@@ -36,6 +44,14 @@ export const DEFAULT_CONTEXT: ReferencesTableContextType = {
   moveCitationToFolder: ({}) => {},
   moveFolderToFolder: ({}) => {},
   rowDropped: ({ id }) => {},
+  openedTabs: [],
+  activeTab: "",
+  setActiveTab: () => {},
+  setOpenedTabs: () => {},
+  openTabIndex: null,
+  setOpenTabIndex: () => {},
+  openTab: () => {},
+  removeTab: () => {},
 };
 
 export const ReferencesTableContext: Context<ReferencesTableContextType> =
@@ -59,10 +75,46 @@ export function ReferencesTableContextProvider({ children }) {
 
   const [rowDraggedOver, setRowDraggedOver] = useState<ID>();
   const [rowDragged, setRowDragged] = useState<ID>();
+  const [openTabIndex, setOpenTabIndex] = useState<number>();
+  const [openedTabs, setOpenedTabs] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState("all-references");
   const { currentOrg } = useOrgs();
 
   const { activeProject, setActiveProject, setCurrentOrgProjects } =
     useReferenceActiveProjectContext();
+
+  function uuidv4() {
+    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
+      (
+        c ^
+        (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+      ).toString(16)
+    );
+  }
+
+  const openTab = (tab) => {
+    const parsedTab = tab;
+    parsedTab["title"] = tab.fields.title;
+    parsedTab["id"] = uuidv4();
+    const newOpenTabs = [...openedTabs, parsedTab];
+    setOpenedTabs(newOpenTabs);
+    setActiveTab(tab.id);
+    setOpenTabIndex(newOpenTabs.length - 1);
+  };
+
+  const removeTab = ({ index }) => {
+    const newOpenTabs = [...openedTabs];
+    newOpenTabs.splice(index, 1);
+    setOpenedTabs(newOpenTabs);
+    if (newOpenTabs.length) {
+      if (openTabIndex >= newOpenTabs.length) {
+        setActiveTab(newOpenTabs[openTabIndex - 1].id);
+        setOpenTabIndex(openTabIndex - 1);
+      } else {
+        setActiveTab(newOpenTabs[openTabIndex].id);
+      }
+    }
+  };
 
   const moveCitationToFolder = ({ moveToFolderId }) => {
     const newReferenceData = referenceTableRowData.filter((data) => {
@@ -135,6 +187,14 @@ export function ReferencesTableContextProvider({ children }) {
         moveCitationToFolder,
         moveFolderToFolder,
         rowDropped,
+        openedTabs,
+        setActiveTab,
+        setOpenedTabs,
+        activeTab,
+        openTabIndex,
+        setOpenTabIndex,
+        openTab,
+        removeTab,
       }}
     >
       {children}
