@@ -76,38 +76,38 @@ const MyApp = ({
     setPrevPath(router.pathname);
   }, [router.asPath]);
 
-  // useEffect(() => {
-  //   if (!containerLoaded.current) {
-  //     connectSift();
+  useEffect(() => {
+    if (!containerLoaded.current) {
+      connectSift();
 
-  //     router.events.on("routeChangeStart", (url) => {
-  //       console.log("route change queued");
-  //       clearTimeout(showLoader.current);
-  //       showLoader.current = setTimeout(() => {
-  //         store.dispatch(MessageActions.setMessage(""));
-  //         store.dispatch(
-  //           MessageActions.showMessage({ show: true, load: true })
-  //         );
-  //         console.log("route change starting");
-  //       }, 200);
-  //     });
+      router.events.on("routeChangeStart", (url) => {
+        console.log("route change queued");
+        clearTimeout(showLoader.current);
+        showLoader.current = setTimeout(() => {
+          store.dispatch(MessageActions.setMessage(""));
+          store.dispatch(
+            MessageActions.showMessage({ show: true, load: true })
+          );
+          console.log("route change starting");
+        }, 200);
+      });
 
-  //     router.events.on("routeChangeComplete", (url) => {
-  //       connectSift();
-  //       clearTimeout(showLoader.current);
-  //       store.dispatch(MessageActions.showMessage({ show: false }));
-  //       console.log("route change complete");
-  //     });
+      router.events.on("routeChangeComplete", (url) => {
+        connectSift();
+        clearTimeout(showLoader.current);
+        store.dispatch(MessageActions.showMessage({ show: false }));
+        console.log("route change complete");
+      });
 
-  //     Router.events.on("routeChangeError", () => {
-  //       store.dispatch(MessageActions.showMessage({ show: false }));
-  //     });
-  //     containerLoaded.current = true;
-  //   }
-  //   return () => {
-  //     window.removeEventListener("load", loadSift);
-  //   };
-  // }, []);
+      Router.events.on("routeChangeError", () => {
+        store.dispatch(MessageActions.showMessage({ show: false }));
+      });
+      containerLoaded.current = true;
+    }
+    return () => {
+      window.removeEventListener("load", loadSift);
+    };
+  }, []);
 
   const connectSift = () => {
     let auth = getAuthProps();
