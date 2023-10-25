@@ -35,7 +35,11 @@ const LinkedInButton = ({ children, onSuccess, onFailure }: Props) => {
     );
   }, []);
 
-  return <div onClick={linkedInLogin}>{children}</div>;
+  return (
+    <div style={{ width: "100%" }} onClick={linkedInLogin}>
+      {children}
+    </div>
+  );
 };
 
 export default LinkedInButton;
