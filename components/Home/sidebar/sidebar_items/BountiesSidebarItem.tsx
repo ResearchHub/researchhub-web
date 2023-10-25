@@ -6,7 +6,7 @@ import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import colors from "~/config/themes/colors";
 import ContentBadge from "~/components/ContentBadge";
 import UserTooltip from "~/components/Tooltips/User/UserTooltip";
-import { VerifiedBadge } from "~/components/Verification/VerificationModal";
+import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 
 type Props = {
   bountyAmount: number;
