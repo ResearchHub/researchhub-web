@@ -883,24 +883,28 @@ function ReferencesContainer({
                   );
                 })}
               </div>
-              {activeTab === "all-references" ? (
-                renderReferencesContainer()
-              ) : (
-                <DocumentViewer
-                  pdfUrl={openedTabs[openTabIndex]?.attachment}
-                  documentViewerClass={styles.documentViewerClass}
-                  referenceItemDatum={openedTabs[openTabIndex]}
-                  documentInstance={
-                    openedTabs[openTabIndex].related_unified_doc
-                      ? {
-                          id: openedTabs[openTabIndex].related_unified_doc
-                            ?.documents?.id,
-                          type: "paper",
+              {activeTab === "all-references"
+                ? renderReferencesContainer()
+                : openedTabs.map((tab, index) => {
+                    return (
+                      <DocumentViewer
+                        pdfUrl={tab.attachment}
+                        documentViewerClass={[
+                          styles.documentViewerClass,
+                          openTabIndex === index && styles.display,
+                        ]}
+                        referenceItemDatum={tab}
+                        documentInstance={
+                          tab.related_unified_doc
+                            ? {
+                                id: tab.related_unified_doc?.documents?.id,
+                                type: "paper",
+                              }
+                            : undefined
                         }
-                      : undefined
-                  }
-                />
-              )}
+                      />
+                    );
+                  })}
             </div>
           ) : (
             renderReferencesContainer()
@@ -1027,6 +1031,10 @@ const styles = StyleSheet.create({
     height: "calc(100vh - 48px - 68px)",
     display: "flex",
     justifyContent: "center",
+    display: "none",
+  },
+  display: {
+    display: "flex",
   },
   searchIcon: {
     left: "unset",

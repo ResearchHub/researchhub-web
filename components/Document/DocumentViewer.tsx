@@ -513,6 +513,7 @@ const styles = StyleSheet.create({
   main: {
     position: "relative",
     justifyContent: "center",
+    width: "100%",
   },
   scroll: {
     overflowX: "scroll",
