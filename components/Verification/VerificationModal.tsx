@@ -1,5 +1,9 @@
 import { use, useCallback, useEffect, useState } from "react";
-import { faAngleLeft, faCircleXmark } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faAngleLeft,
+  faCircleCheck,
+  faCircleXmark,
+} from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import IconButton from "../Icons/IconButton";
 import BaseModal from "../Modals/BaseModal";
@@ -408,6 +412,10 @@ const VerificationFormSelectProviderStep = ({
   );
 
   const isAlreadyVerified = currentUser?.authorProfile?.isVerified;
+  const isLinkedInVerified = Boolean(
+    currentUser?.authorProfile?.linkedIn?.linkedInId
+  );
+  const isOrcidVerified = Boolean(currentUser?.authorProfile?.orcid?.orcidId);
 
   return (
     <div>
@@ -421,7 +429,12 @@ const VerificationFormSelectProviderStep = ({
         Choose a verification method:
       </div>
       <div className={css(formStyles.verificationOptions)}>
-        <div className={css(formStyles.option)}>
+        <div
+          className={css(
+            formStyles.option,
+            isOrcidVerified && formStyles.optionVerified
+          )}
+        >
           <OrcidConnectButton
             onSuccess={(data) => {
               onProviderConnectSuccess(data);
@@ -433,9 +446,8 @@ const VerificationFormSelectProviderStep = ({
             <div
               className={css(formStyles.optionContent)}
               onClick={(e) => {
-                if (isAlreadyVerified) {
+                if (isOrcidVerified) {
                   e.stopPropagation();
-                  onProfileAlreadyVerified();
                 }
               }}
             >
@@ -447,16 +459,43 @@ const VerificationFormSelectProviderStep = ({
                 style={{ marginTop: 0 }}
               />
               <div>
-                <div className={css(formStyles.optionValue)}>Orcid</div>
+                <div className={css(formStyles.optionValue)}>
+                  Orcid
+                  {isOrcidVerified && (
+                    <div
+                      style={{
+                        color: colors.NEW_BLUE(),
+                        fontWeight: 500,
+                        fontSize: 13,
+                      }}
+                    >
+                      (Verified)
+                    </div>
+                  )}
+                </div>
                 <div className={css(formStyles.optionDescription)}>
                   Verify authorship instantly with Orcid
                 </div>
               </div>
+              {isOrcidVerified && (
+                <div style={{ marginLeft: "auto" }}>
+                  <VerifiedBadge
+                    width={26}
+                    height={26}
+                    showTooltipOnHover={false}
+                  />
+                </div>
+              )}
             </div>
           </OrcidConnectButton>
         </div>
 
-        <div className={css(formStyles.option)}>
+        <div
+          className={css(
+            formStyles.option,
+            isLinkedInVerified && formStyles.optionVerified
+          )}
+        >
           <LinkedInButton
             onSuccess={(data) => {
               onProviderConnectSuccess(data);
@@ -468,9 +507,8 @@ const VerificationFormSelectProviderStep = ({
             <div
               className={css(formStyles.optionContent)}
               onClick={(e) => {
-                if (isAlreadyVerified) {
+                if (isOLinkedinVerified) {
                   e.stopPropagation();
-                  onProfileAlreadyVerified();
                 }
               }}
             >
@@ -482,11 +520,33 @@ const VerificationFormSelectProviderStep = ({
                 style={{ marginTop: -2 }}
               />
               <div>
-                <div className={css(formStyles.optionValue)}>LinkedIn</div>
+                <div className={css(formStyles.optionValue)}>
+                  LinkedIn
+                  {isLinkedInVerified && (
+                    <div
+                      style={{
+                        color: colors.NEW_BLUE(),
+                        fontWeight: 500,
+                        fontSize: 14,
+                      }}
+                    >
+                      (Verified)
+                    </div>
+                  )}
+                </div>
                 <div className={css(formStyles.optionDescription)}>
                   Verify authorship instantly with LinkedIn
                 </div>
               </div>
+              {isLinkedInVerified && (
+                <div style={{ marginLeft: "auto" }}>
+                  <VerifiedBadge
+                    width={26}
+                    height={26}
+                    showTooltipOnHover={false}
+                  />
+                </div>
+              )}
             </div>
           </LinkedInButton>
         </div>
@@ -509,11 +569,13 @@ const VerificationFormSelectProviderStep = ({
             <li className={css(formStyles.whyVerifyItem)}>
               <div style={{ display: "inline-flex", columnGap: 10 }}>
                 Have the verified badge appear in your profile
-                <VerifiedBadge
-                  width={25}
-                  height={25}
-                  showTooltipOnHover={false}
-                />
+                {!isAlreadyVerified && (
+                  <VerifiedBadge
+                    width={25}
+                    height={25}
+                    showTooltipOnHover={false}
+                  />
+                )}
               </div>
             </li>
           </ul>
@@ -1164,8 +1226,17 @@ const formStyles = StyleSheet.create({
       border: `1px solid ${colors.NEW_BLUE()}`,
     },
   },
+  optionVerified: {
+    ":hover": {
+      border: `1px solid #E9EAEF`,
+      cursor: "initial",
+    },
+  },
   optionValue: {
     fontWeight: 500,
+    display: "flex",
+    alignItems: "center",
+    columnGap: "5px",
   },
   optionDescription: {
     marginTop: 5,

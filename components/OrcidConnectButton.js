@@ -4,11 +4,13 @@ import { ORCID_CLIENT_ID } from "~/config/constants";
 const OrcidConnectButton = ({ children, onSuccess, onFailure }) => {
   const buildRedirectUri = () => {
     let hostname = window.location.host;
-    let scheme = "http";
+    let scheme = "https";
 
-    if (!hostname.includes("localhost")) {
-      scheme += "s";
+    // Orcid callback does not work with localhost. We need to use IP address to get callback working.
+    if (hostname.includes("localhost") || hostname.includes("127.0.0.1")) {
+      return "http://127.0.0.1:3000/orcid/connect";
     }
+
     return scheme + "://" + hostname + "/orcid/connect";
   };
 
@@ -53,7 +55,11 @@ const OrcidConnectButton = ({ children, onSuccess, onFailure }) => {
     }, 1500);
   };
 
-  return <div onClick={initiateOAuth}>{children}</div>;
+  return (
+    <div onClick={initiateOAuth} style={{ width: "100%" }}>
+      {children}
+    </div>
+  );
 };
 
 export default OrcidConnectButton;

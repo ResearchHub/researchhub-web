@@ -81,6 +81,14 @@ export type UnifiedDocument = {
   isRemoved: boolean;
 };
 
+export type LinkedInConnect = {
+  linkedInId: string;
+};
+
+export type OrcidConnect = {
+  orcidId: string;
+};
+
 export type AuthorProfile = {
   firstName?: string;
   id?: ID;
@@ -93,6 +101,9 @@ export type AuthorProfile = {
   headline: string;
   isHubEditor: boolean;
   isVerified: boolean;
+  linkedIn?: LinkedInConnect;
+  orcid?: OrcidConnect;
+  openAlexIds: Array<string>;
 };
 
 /**
@@ -274,8 +285,21 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     isVerified: raw.is_verified,
     headline: raw?.headline?.title || "",
     isHubEditor: raw.is_hub_editor,
+    openAlexIds: raw.openalex_ids || [],
     ...(raw.sequence && { sequence: raw.sequence }),
   };
+
+  if (raw.orcid_id) {
+    parsed["orcid"] = {
+      orcidId: raw.orcid_id,
+    };
+  }
+
+  if (raw.linkedin) {
+    parsed["linkedIn"] = {
+      linkedInId: raw.linkedin_id,
+    };
+  }
 
   if (!parsed.firstName) {
     parsed.firstName = "N/A";
