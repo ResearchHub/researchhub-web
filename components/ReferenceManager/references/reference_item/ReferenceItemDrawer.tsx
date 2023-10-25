@@ -109,7 +109,6 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
         // isRequired = requiredFieldsSet.has(field_key);
 
         if (field_key === "author") {
-          console.log(value);
           return (
             <ReferenceItemFieldCreatorTagInput
               formID={field_key}
