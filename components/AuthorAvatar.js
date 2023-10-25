@@ -4,7 +4,7 @@ import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import colors from "~/config/themes/colors";
-import { VerifiedBadge } from "./Verification/VerificationModal";
+import VerifiedBadge from "./Verification/VerifiedBadge";
 
 const AuthorAvatar = (props) => {
   const [error, setError] = useState(false);

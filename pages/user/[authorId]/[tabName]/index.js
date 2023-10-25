@@ -74,7 +74,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { captureEvent } from "~/config/utils/events";
 import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
-import { VerifiedBadge } from "~/components/Verification/VerificationModal";
+import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 
 const AUTHOR_USER_STATUS = {
   EXISTS: "EXISTS",

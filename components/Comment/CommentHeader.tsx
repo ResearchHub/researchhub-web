@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/pro-regular-svg-icons";
 import { timeSince } from "~/config/utils/dates";
 import CommentVote from "./CommentVote";
-import { VerifiedBadge } from "../Verification/VerificationModal";
+import VerifiedBadge from "../Verification/VerifiedBadge";
 
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;

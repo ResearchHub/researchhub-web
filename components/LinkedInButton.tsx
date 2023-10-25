@@ -5,7 +5,7 @@ import linkedin from "react-linkedin-login-oauth2/assets/linkedin.png";
 import { generateApiUrl } from "~/config/api";
 
 interface Props {
-  children: React.ReactElement[];
+  children: React.ReactElement;
   onSuccess: Function;
   onFailure: Function;
 }
