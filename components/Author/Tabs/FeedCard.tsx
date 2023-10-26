@@ -421,12 +421,24 @@ function FeedCard({
                           bountyAmount={bountyAmount}
                           label={
                             <div style={{ display: "flex", whiteSpace: "pre" }}>
-                              <div style={{ flex: 1 }}>
+                              <div
+                                style={{ flex: 1 }}
+                                className={css(styles.mobile)}
+                              >
                                 {numeral(
                                   formatBountyAmount({
                                     amount: bountyAmount,
                                   })
                                 ).format("0,0a")}{" "}
+                                RSC
+                              </div>
+                              <div
+                                style={{ flex: 1 }}
+                                className={css(styles.desktop)}
+                              >
+                                {formatBountyAmount({
+                                  amount: bountyAmount,
+                                })}{" "}
                                 RSC
                               </div>
                             </div>
@@ -530,6 +542,16 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     ":hover": {
       backgroundColor: "#FAFAFA",
+    },
+  },
+  mobile: {
+    "@media only screen and (min-width: 768px)": {
+      display: "none",
+    },
+  },
+  desktop: {
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
     },
   },
   paperUploadCard: {
