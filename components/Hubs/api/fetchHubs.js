@@ -2,7 +2,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
-export const getHubs = async ({ ordering = "score", page }) => {
+export const getHubs = async ({ ordering = "-score", page }) => {
   const url = API.HUB({ ordering, page });
 
   return fetch(url, API.GET_CONFIG())
