@@ -3,6 +3,7 @@ import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import { connect, useDispatch, useStore } from "react-redux";
 import ReactTooltip from "react-tooltip";
+import numeral from "numeral";
 
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
@@ -156,10 +157,6 @@ const VoteWidget = (props) => {
   const noDownvote = upvoteDisabled || searchResult || disableUpvote;
   const noUpvote = upvoteDisabled || searchResult || disableUpvote;
 
-  if (title?.includes("CDK")) {
-    console.log(twitterScore + "");
-  }
-
   return (
     <div
       className={css(
@@ -210,19 +207,21 @@ const VoteWidget = (props) => {
           icon={downvoteIcon}
         />
       </PermissionNotificationWrapper>
-      {twitterScore && (
+      {twitterScore ? (
         <div
           className={css(styles.twitterScore)}
           data-for={"tweets"}
-          data-tip={"The number of tweets this paper received."}
+          data-tip={"The number of tweets this paper received"}
         >
           <FontAwesomeIcon
             icon={faTwitter}
             className={css(styles.twitterIcon)}
           />
-          {twitterScore}
+          <div className={css(styles.twitterScoreText)}>
+            {numeral(twitterScore).format("0a")}
+          </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
@@ -313,10 +312,15 @@ const DownvoteButton = (props) => {
 };
 
 function getScore(props) {
-  const { score } = props;
+  const { score, twitterScore } = props;
   if (doesNotExist(score)) {
     return 0;
   }
+
+  if (twitterScore) {
+    return parseInt(score, 10) - parseInt(twitterScore, 10);
+  }
+
   return score;
 }
 
@@ -347,9 +351,10 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     fontSize: 14,
     fontWeight: 500,
-    width: 28,
-    paddingTop: 6,
-    paddingBottom: 6,
+    padding: "6px 0px",
+    width: 32,
+    // padding: "6px 10px",
+    // paddingBottom: 6,
     boxSizing: "border-box",
     margin: "0 auto",
     marginTop: 8,
@@ -358,6 +363,9 @@ const styles = StyleSheet.create({
   },
   twitterIcon: {
     marginBottom: 4,
+  },
+  twitterScoreText: {
+    fontSize: 13,
   },
   horizontalView: {
     flexDirection: "row",
@@ -371,7 +379,7 @@ const styles = StyleSheet.create({
   },
   pillContainer: {
     background: "rgba(240, 240, 240, 0.5)",
-    width: 28,
+    width: 32,
     margin: "4px auto",
     color: colors.NEW_GREEN(),
     boxSizing: "border-box",
