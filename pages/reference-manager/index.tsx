@@ -6,6 +6,7 @@ import nookies from "nookies";
 import ReferencesRoot from "~/components/ReferenceManager/references/ReferencesRoot";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import { getCookieOrLocalStorageValue } from "~/config/utils/storeToCookieOrLocalStorage";
 
 function Index(props) {
   const { isLoggedIn, authChecked, calloutOpen } = props;
@@ -48,7 +49,13 @@ export async function getServerSideProps(ctx) {
   // }
   const url = generateApiUrl(`organization/0/get_user_organizations`);
   const orgResponse = await fetchUserOrgs({ url }, authToken);
-  const org = orgResponse[0];
+  const orgId = cookies["current-org-id"];
+  let org = orgResponse[0];
+  if (orgId) {
+    org = orgResponse.find((org) => {
+      return org.id === parseInt(orgId, 10);
+    });
+  }
 
   return {
     props: {
