@@ -3,6 +3,7 @@ import numeral from "numeral";
 import { fetchUserOrgs } from "~/config/fetch";
 import { captureEvent } from "~/config/utils/events";
 import { useRouter } from "next/router";
+import { storeToCookieAndLocalStorage } from "~/config/utils/storeToCookieOrLocalStorage";
 
 type ContextType = {
   orgs: Org[];
@@ -50,6 +51,13 @@ export const OrganizationContextProvider = ({ children, user }) => {
       });
     }
   };
+
+  useEffect(() => {
+    storeToCookieAndLocalStorage({
+      key: "current-org-id",
+      value: currentOrg.id,
+    });
+  }, [currentOrg]);
 
   useEffect(() => {
     if (user?.id) {
