@@ -478,6 +478,7 @@ function ReferencesContainer({
           currentOrgProjects={currentOrgProjects}
           isOpen={isRefManagerSidebarOpen}
           navWidth={LEFT_MAX_NAV_WIDTH}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
           openOrgSettingsModal={() => setIsOrgModalOpen(true)}
           setIsOpen={setIsRefManagerSidebarOpen}
         />

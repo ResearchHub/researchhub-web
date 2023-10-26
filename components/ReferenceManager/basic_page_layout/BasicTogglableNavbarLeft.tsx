@@ -43,6 +43,7 @@ type Props = {
   openOrgSettingsModal: () => void;
   theme?: Theme;
   currentOrgProjects: any[];
+  setIsDeleteModalOpen: () => void;
 };
 
 const ContentWrapper = ({ children, width, isOpen, setIsOpen }) => {
@@ -95,6 +96,7 @@ export default function BasicTogglableNavbarLeft({
   isOpen,
   setIsOpen,
   navWidth,
+  setIsDeleteModalOpen,
   theme,
   openOrgSettingsModal,
   currentOrgProjects,
@@ -126,6 +128,7 @@ export default function BasicTogglableNavbarLeft({
       referenceProject,
       addChildrenOpen,
       childrenOpenMap,
+      setIsDeleteModalOpen,
       slug: `${encodeURIComponent(referenceProject.slug)}`,
     });
   });

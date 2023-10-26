@@ -30,6 +30,7 @@ type Props = {
   depth: number;
   referenceProject: any;
   isOpen: boolean;
+  setIsDeleteModalOpen: () => void;
 };
 
 export default function ReferenceProjectsNavbarEl({
@@ -45,6 +46,7 @@ export default function ReferenceProjectsNavbarEl({
   projectID,
   projectName,
   slug,
+  setIsDeleteModalOpen,
 }: Props): ReactElement {
   const {
     setIsDrawerOpen: setIsUploadDrawerOpen,
@@ -162,11 +164,12 @@ export default function ReferenceProjectsNavbarEl({
           </div>
         </Box>
       </ALink>
-      {shouldShowOptions && isCurrentUserAdmin && (
+      {/* {shouldShowOptions && isCurrentUserAdmin && (
         <ReferenceProjectNavbarElOption
           isCurrentUserAdmin={isCurrentUserAdmin}
           projectID={projectID}
           projectName={projectName}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
           onSelectAddNewReference={(event: SyntheticEvent): void => {
             event.preventDefault();
             setProjectIDRefUploader(projectID);
@@ -196,7 +199,7 @@ export default function ReferenceProjectsNavbarEl({
           }}
           setShouldShowOptions={setShouldShowOptions}
         />
-      )}
+      )} */}
     </Box>
   );
 }

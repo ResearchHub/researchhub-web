@@ -24,12 +24,14 @@ type Props = {
   onSelectCreateSubProject: (event: SyntheticEvent) => void;
   onSelectEditProject: (event: SyntheticEvent) => void;
   projectID: ID;
+  setIsDeleteModalOpen: () => void;
   projectName: string;
   setShouldShowOptions: (flag: boolean) => void;
 };
 
 export default function ReferenceProjectNavbarElOption({
   isCurrentUserAdmin,
+  setIsDeleteModalOpen,
   onSelectAddNewReference,
   onSelectCreateSubProject,
   onSelectEditProject,

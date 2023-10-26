@@ -12,6 +12,7 @@ type Args = {
   depth?: number;
   referenceProject: any;
   slug: string;
+  setIsDeleteModalOpen: () => void;
 };
 
 export function renderNestedReferenceProjectsNavbarEl({
@@ -21,6 +22,7 @@ export function renderNestedReferenceProjectsNavbarEl({
   currentOrgSlug,
   depth = 0,
   referenceProject,
+  setIsDeleteModalOpen,
   slug,
 }: Args) {
   const router = useRouter();
@@ -48,6 +50,7 @@ export function renderNestedReferenceProjectsNavbarEl({
         isOpen={childrenOpenMap[referenceProject?.id]}
         addChildrenOpen={addChildrenOpen}
         slug={slug}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
       />
       {hasChildren && childrenOpenMap[referenceProject?.id] && (
         <div
