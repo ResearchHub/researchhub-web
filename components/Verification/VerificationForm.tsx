@@ -29,6 +29,7 @@ import { useSelector } from "react-redux";
 import VerifiedBadge from "./VerifiedBadge";
 import { OpenAlexProfile, parseOpenAlexProfile } from "./lib/types";
 import { completeProfileVerification, fetchOpenAlexProfiles } from "./lib/api";
+import { breakpoints } from "~/config/themes/screen";
 
 interface VerificationFormProps {
   onStepSelect?: (step: "PROVIDER_STEP" | "PROFILE_STEP") => void;
@@ -885,6 +886,14 @@ const formStyles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: "20px 20px",
+      position: "absolute",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      padding: "25px 25px 10px 20px ",
+    }      
+
   },
   whyVerifyTitle: {
     color: colors.BLACK(),

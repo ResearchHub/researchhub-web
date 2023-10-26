@@ -1,7 +1,7 @@
 import BaseModal from "../Modals/BaseModal";
 import { css, StyleSheet } from "aphrodite";
 import VerificationForm from "./VerificationForm";
-
+import { breakpoints } from "~/config/themes/screen";
 
 const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
   return (
@@ -25,6 +25,12 @@ const styles = StyleSheet.create({
   formWrapper: {
     width: 540,
     height: "100%",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "100%",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      width: "90%",
+    }
   },
   modalStyle: {},
   modalTitleStyleOverride: {},
@@ -32,6 +38,9 @@ const styles = StyleSheet.create({
     position: "relative",
     minHeight: 560,
     padding: "50px 25px ",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      height: "100%",
+    }    
   },
   prevActionWrapper: {
     position: "absolute",
