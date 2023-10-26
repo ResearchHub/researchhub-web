@@ -54,7 +54,9 @@ const AuthorAvatar = (props) => {
         {showBadgeIfVerified &&
           !showModeratorBadge &&
           (author?.is_verified || author?.isVerified) && (
-            <div style={{ position: "absolute", right: -9, top: -3 }}>
+            <div
+              style={{ position: "absolute", right: -9, top: -3, zIndex: 1 }}
+            >
               <VerifiedBadge
                 height={20}
                 width={20}

@@ -1,7 +1,16 @@
 import React from "react";
 import { ORCID_CLIENT_ID } from "~/config/constants";
+import { parseUser } from "~/config/types/root_types";
+import { isEmpty } from "~/config/utils/nullchecks";
+import { useSelector, useDispatch } from "react-redux";
+import { ModalActions } from "~/redux/modals";
 
 const OrcidConnectButton = ({ children, onSuccess, onFailure }) => {
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
+
   const buildRedirectUri = () => {
     let hostname = window.location.host;
     let scheme = "https";
@@ -64,8 +73,16 @@ const OrcidConnectButton = ({ children, onSuccess, onFailure }) => {
     }, 1500);
   };
 
+  const handleClick = () => {
+    if (currentUser) {
+      initiateOAuth();
+    } else {
+      dispatch(ModalActions.openLoginModal(true, `Please sign in first`));
+    }
+  };
+
   return (
-    <div onClick={initiateOAuth} style={{ width: "100%" }}>
+    <div onClick={handleClick} style={{ width: "100%" }}>
       {children}
     </div>
   );

@@ -3,13 +3,14 @@ import Button from "../Form/Button";
 import VerificationModal from "./VerificationModal";
 import { useState } from "react";
 import VerifiedBadge from "./VerifiedBadge";
+import { breakpoints } from "~/config/themes/screen";
 
 const VerificationSmallBanner = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div>
-      <VerifiedBadge height={35} width={35} showTooltipOnHover={false} />
+      <VerifiedBadge height={32} width={32} showTooltipOnHover={false} />
       <div className={css(styles.title)}>Become a Verified Author</div>
       <p className={css(styles.description)}>
         Verify your authorship to improve your academic reputation on the
@@ -30,6 +31,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 500,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      fontSize: 16,
+    },
   },
   description: {
     marginTop: 5,
