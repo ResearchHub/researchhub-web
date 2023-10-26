@@ -295,9 +295,9 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     };
   }
 
-  if (raw.linkedin) {
+  if (raw.linkedin_data) {
     parsed["linkedIn"] = {
-      linkedInId: raw.linkedin_id,
+      linkedInId: raw.linkedin_data.sub,
     };
   }
 

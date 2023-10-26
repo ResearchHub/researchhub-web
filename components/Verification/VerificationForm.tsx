@@ -78,6 +78,10 @@ const VerificationForm = ({ onStepSelect }: VerificationFormProps) => {
 };
 
 const VerificationFormSuccessStep = ({}) => {
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
+
   return (
     <div
       style={{
@@ -85,11 +89,11 @@ const VerificationFormSuccessStep = ({}) => {
         alignItems: "center",
         flexDirection: "column",
         textAlign: "center",
-        paddingTop: 75,
+        paddingTop: 15,
       }}
     >
       <VerifiedBadge width={100} height={100} showTooltipOnHover={false} />
-      <div style={{ fontSize: 26, fontWeight: 500, marginTop: 50 }}>
+      <div style={{ fontSize: 26, fontWeight: 500, marginTop: 20 }}>
         Your account is now verified
       </div>
       <div
@@ -99,8 +103,22 @@ const VerificationFormSuccessStep = ({}) => {
           lineHeight: "26px",
         }}
       >
-        Your account will be updated to reflect your academic reputation in a
-        few minutes.
+        <ul style={{ marginTop: 40, textAlign: "left" }}>
+          <li>
+            Your account will be updated to reflect your academic reputation in
+            a few minutes.
+          </li>
+          <li>
+            You will be able to view the papers you authored in the{" "}
+            <ALink
+              theme="solidPrimary"
+              href={`/user/${currentUser?.authorProfile.id}/authored-papers`}
+            >
+              Authored Papers
+            </ALink>{" "}
+            section.
+          </li>
+        </ul>
       </div>
       <div style={{ width: 250, marginTop: 75 }}>
         <Button fullWidth onClick={() => (window.location.href = "/")}>

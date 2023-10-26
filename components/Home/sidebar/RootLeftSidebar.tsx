@@ -383,13 +383,19 @@ function RootLeftSidebar({
                 className={css(styles.referralProgramItem)}
                 onClick={() => setIsVerificationModalOpen(true)}
               >
-                {"Verify Authorship"}
-                <VerifiedBadge
-                  height={22}
-                  width={22}
-                  variation="grey"
-                  showTooltipOnHover={false}
-                />
+                {isMinimized ? (
+                  "Verify"
+                ) : (
+                  <>
+                    {"Verify Authorship"}
+                    <VerifiedBadge
+                      height={22}
+                      width={22}
+                      variation="grey"
+                      showTooltipOnHover={false}
+                    />
+                  </>
+                )}
               </span>
             </span>
             <span className={css(formattedFooterTxtItem)}>

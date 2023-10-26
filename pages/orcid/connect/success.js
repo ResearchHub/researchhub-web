@@ -15,8 +15,7 @@ class OrcidConnectSuccessPage extends Component {
   }
 
   componentDidMount() {
-    const setHasSeenModal = true;
-    this.props.openOrcidConnectModal(false, setHasSeenModal);
+    window.opener.postMessage("success", "*");
   }
 
   render() {

@@ -26,7 +26,15 @@ const OrcidConnectButton = ({ children, onSuccess, onFailure }) => {
       "&scope=openid" +
       "&nonce=11235";
 
+    // This approach is for localhost only. We are posting a message from the window to the child to avoid CORS issues which exists only in development.
     const newWindow = window.open(oauthUrl, "_blank", "width=600,height=400");
+    window.addEventListener("message", (event) => {
+      if (event.data === "success") {
+        clearInterval(interval);
+        newWindow.close();
+        onSuccess({ provider: "ORCID" });
+      }
+    });
 
     const interval = setInterval(() => {
       if (newWindow.closed) {
@@ -37,6 +45,7 @@ const OrcidConnectButton = ({ children, onSuccess, onFailure }) => {
         try {
           currentUrl = newWindow.location.href;
         } catch (e) {
+          console.log(e);
           // Due to same-origin policy, we may not be able to directly read the location.href property.
           // Just ignore this error for now.
         }
