@@ -1,6 +1,10 @@
 import OrcidConnectButton from "../OrcidConnectButton";
-import { useCallback, useEffect, useState } from "react";
-import { faAngleLeft, faCircleXmark } from "@fortawesome/pro-solid-svg-icons";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  faAngleLeft,
+  faAngleRight,
+  faCircleXmark,
+} from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import IconButton from "../Icons/IconButton";
 import { css, StyleSheet } from "aphrodite";
@@ -190,7 +194,6 @@ const VerificationFormSelectProviderStep = ({
     currentUser?.authorProfile?.linkedIn?.linkedInId
   );
   const isOrcidVerified = Boolean(currentUser?.authorProfile?.orcid?.orcidId);
-
   return (
     <div>
       <div className={css(formStyles.title)}>Become a Verified Author</div>
@@ -380,9 +383,14 @@ const VerificationFormSelectProfileStep = ({
   const requestType =
     providerDataResponse.provider === "ORCID" ? "ORCID" : "NAME";
   const [isLoadingProfiles, setIsLoadingProfiles] = useState(true);
+  const [paginationInfo, setPaginationInfo] = useState<{
+    count: number;
+    perPage: number;
+  }>({ count: 0, perPage: 0 });
+  const [currentPage, setCurrentPage] = useState<{ num: number }>({ num: 1 });
   const [isVerifying, setIsVerifying] = useState(false);
-  const [isInitialFetchComplete, setIsInitialFetchComplete] = useState(false);
   const [name, setName] = useState(providerDataResponse?.name || "");
+  const nameRef = useRef(name);
   const [hasAgreedToAuthorTerms, setHasAgreedToAuthorTerms] = useState(false);
   const [hasAgreedToImpersonationTerms, setHasAgreedToImpersonationTerms] =
     useState(false);
@@ -423,48 +431,41 @@ const VerificationFormSelectProfileStep = ({
   const debounceFetchProfiles = useCallback(
     debounce(async (name) => {
       if (name.length > 5) {
-        setIsLoadingProfiles(true);
-        try {
-          const rawProfiles = await fetchOpenAlexProfiles({
-            requestType,
-            name,
-          });
-          const profiles = rawProfiles.map((p) => parseOpenAlexProfile(p));
-          setProfileOptions(profiles);
-        } catch (error) {
-        } finally {
-          setIsLoadingProfiles(false);
-        }
+        setCurrentPage({ num: 1 });
       }
     }, 1500),
     []
   );
 
   useEffect(() => {
-    if (isInitialFetchComplete) {
-      return;
-    }
-
     (async () => {
       try {
-        const rawProfiles = await fetchOpenAlexProfiles({
+        setIsLoadingProfiles(true);
+        const response = await fetchOpenAlexProfiles({
           requestType,
-          name: providerDataResponse.name,
+          name: nameRef.current,
+          pageNumber: currentPage.num,
         });
-        const profiles = rawProfiles.map((p) => parseOpenAlexProfile(p));
+        const profiles = response.results.map((p) => parseOpenAlexProfile(p));
+
         setProfileOptions(profiles);
-        setIsLoadingProfiles(false);
-        setIsInitialFetchComplete(true);
+        setPaginationInfo({
+          count: response.count,
+          perPage: response.perPage,
+        });
+        // setIsInitialFetchComplete(true);
       } catch (error) {
         // This error is mostly okay and does not need to be captured since it implies
         // the user could not be found in OpenAlex.
         onError();
+      } finally {
+        setIsLoadingProfiles(false);
       }
     })();
-  }, [isInitialFetchComplete]);
+  }, [currentPage]);
 
   const noResults = !isLoadingProfiles && profileOptions.length === 0;
-
+  const numPages = Math.ceil(paginationInfo.count / paginationInfo.perPage);
   return (
     <div
       style={{
@@ -497,8 +498,11 @@ const VerificationFormSelectProfileStep = ({
               <FormInput
                 disabled={isLoadingProfiles}
                 value={name}
+                containerStyle={profileStepStyles.inputContainer}
                 onChange={(name, value) => {
+                  setSelectedProfileIds([]);
                   setName(value);
+                  nameRef.current = value;
                   debounceFetchProfiles(value);
                 }}
               />
@@ -514,6 +518,7 @@ const VerificationFormSelectProfileStep = ({
               />
             </div>
           )}
+
           {(isLoadingProfiles || isVerifying) && (
             <div
               style={{
@@ -532,6 +537,7 @@ const VerificationFormSelectProfileStep = ({
               />
             </div>
           )}
+
           {noResults && (
             <div
               style={{
@@ -558,172 +564,221 @@ const VerificationFormSelectProfileStep = ({
               </div>
             </div>
           )}
-          {!isLoadingProfiles &&
-            !isVerifying &&
-            profileOptions.map((profile, index) => {
-              return (
-                <div
-                  style={{
-                    background: colors.LIGHTER_GREY(0.7),
-                    position: "relative",
-                    padding: 10,
-                    marginBottom: 10,
-                    fontSize: 14,
-                  }}
-                  className={css(
-                    profileStepStyles.profile,
-                    selectedProfileIds.includes(profile.id) &&
-                      profileStepStyles.profileSelected
-                  )}
-                  key={`profile-${profile.id}`}
-                >
-                  <div
-                    style={{ position: "absolute", right: 0 }}
-                    onClick={() =>
-                      selectedProfileIds.includes(profile.id)
-                        ? setSelectedProfileIds(
-                            selectedProfileIds.filter((p) => p !== profile.id)
-                          )
-                        : setSelectedProfileIds([
-                            ...selectedProfileIds,
-                            profile.id,
-                          ])
-                    }
-                  >
-                    {/* @ts-ignore */}
-                    <CheckBox
-                      isSquare={true}
-                      active={selectedProfileIds.includes(profile.id)}
-                    />
-                  </div>
-                  <div className={css(profileStepStyles.name)}>
-                    {profile.displayName}
-                  </div>
-                  {profile.institution && (
-                    <div className={css(profileStepStyles.institution)}>
-                      {profile.institution.displayName}
-                    </div>
-                  )}
-                  {(profile.summaryStats.hIndex > 0 ||
-                    profile.summaryStats.i10Index > 0) && (
-                    <div className={css(profileStepStyles.metadata)}>
-                      {profile.summaryStats.hIndex > 0 && (
-                        <div className={css(profileStepStyles.metadataItem)}>
-                          <div>h-index:</div>
-                          <div>{String(profile.summaryStats.hIndex)},</div>
-                        </div>
-                      )}
-                      {profile.summaryStats.i10Index > 0 && (
-                        <div className={css(profileStepStyles.metadataItem)}>
-                          <div>i10-index:</div>
-                          <div>{String(profile.summaryStats.i10Index)}</div>
-                        </div>
-                      )}
-                    </div>
-                  )}
 
-                  <div style={{ marginTop: 8 }}>
+          {!isLoadingProfiles && !isVerifying && (
+            <div>
+              {selectedProfileIds.length > 0 && (
+                <div style={{ marginBottom: 10 }}>
+                  Profiles selected:{" "}
+                  <span style={{ fontWeight: 500 }}>
+                    {selectedProfileIds.length}
+                  </span>{" "}
+                </div>
+              )}
+              {profileOptions.map((profile, index) => {
+                return (
+                  <div
+                    style={{
+                      background: colors.LIGHTER_GREY(0.7),
+                      position: "relative",
+                      padding: 10,
+                      marginBottom: 10,
+                      fontSize: 14,
+                    }}
+                    className={css(
+                      profileStepStyles.profile,
+                      selectedProfileIds.includes(profile.id) &&
+                        profileStepStyles.profileSelected
+                    )}
+                    key={`profile-${profile.id}`}
+                  >
                     <div
-                      className={css(profileStepStyles.publishedWorksTitle)}
-                      onClick={() => toggleAuthorWorksVisibility(profile.id)}
-                      style={{
-                        display: "flex",
-                        columnGap: 4,
-                        justifyContent: "space-between",
-                        cursor: "pointer",
-                        alignItems: "center",
-                      }}
+                      style={{ position: "absolute", right: 0 }}
+                      onClick={() =>
+                        selectedProfileIds.includes(profile.id)
+                          ? setSelectedProfileIds(
+                              selectedProfileIds.filter((p) => p !== profile.id)
+                            )
+                          : setSelectedProfileIds([
+                              ...selectedProfileIds,
+                              profile.id,
+                            ])
+                      }
                     >
-                      {profile.works.length} Published papers
-                      <FontAwesomeIcon
-                        style={{ fontSize: 18 }}
-                        icon={
-                          showWorksForAuthors.includes(profile.id)
-                            ? faAngleUp
-                            : faAngleDown
-                        }
+                      {/* @ts-ignore */}
+                      <CheckBox
+                        isSquare={true}
+                        active={selectedProfileIds.includes(profile.id)}
                       />
                     </div>
-                    <div
-                      style={{
-                        borderTop: "1px solid #E9EAEF",
-                        paddingTop: 10,
-                        marginTop: 10,
-                      }}
-                      className={css(
-                        profileStepStyles.worksWrapper,
-                        showWorksForAuthors.includes(profile.id) &&
-                          profileStepStyles.worksWrapperActive
-                      )}
-                    >
-                      {profile.works.map((work, index) => {
-                        return (
-                          <div className={css(profileStepStyles.paper)}>
-                            <PaperIcon
-                              withAnimation={false}
-                              onClick={undefined}
-                              color={colors.MEDIUM_GREY2()}
-                            />
-                            <div>
-                              <div style={{ fontSize: 16 }}>{work.title}</div>
-                              <div
-                                className={css(profileStepStyles.metaWrapper)}
-                              >
-                                <div>
-                                  <>{work.authors[0]}</>
-                                  {work.authors.length > 1 && ` et al.`}
-                                </div>
-                                <div
-                                  style={{
-                                    marginLeft: 8,
-                                    marginRight: 8,
-                                    borderLeft: `1px solid ${colors.MEDIUM_GREY()}`,
-                                    height: 13,
-                                  }}
-                                ></div>
-                                <div>{work.publishedDate}</div>
-                                <div
-                                  style={{
-                                    marginLeft: 8,
-                                    marginRight: 8,
-                                    borderLeft: `1px solid ${colors.MEDIUM_GREY()}`,
-                                    height: 13,
-                                  }}
-                                ></div>
-                                <div>
-                                  {work.doiUrl && (
-                                    <Link
-                                      href={work.doiUrl}
-                                      target={"_blank"}
-                                      style={{ color: colors.NEW_BLUE() }}
-                                    >
-                                      {work.doi}
-                                    </Link>
-                                  )}
-                                </div>
-                              </div>
+                    <div className={css(profileStepStyles.name)}>
+                      {profile.displayName}
+                    </div>
+                    {profile.institution && (
+                      <div className={css(profileStepStyles.institution)}>
+                        {profile.institution.displayName}
+                      </div>
+                    )}
+                    {(profile.summaryStats.hIndex > 0 ||
+                      profile.summaryStats.i10Index > 0) && (
+                      <div className={css(profileStepStyles.metadata)}>
+                        {profile.summaryStats.hIndex > 0 && (
+                          <div className={css(profileStepStyles.metadataItem)}>
+                            <div>h-index:</div>
+                            <div>{String(profile.summaryStats.hIndex)},</div>
+                          </div>
+                        )}
+                        {profile.summaryStats.i10Index > 0 && (
+                          <div className={css(profileStepStyles.metadataItem)}>
+                            <div>i10-index:</div>
+                            <div>{String(profile.summaryStats.i10Index)}</div>
+                          </div>
+                        )}
+                      </div>
+                    )}
 
-                              <div className={css(profileStepStyles.concepts)}>
-                                {work.concepts.map((concept, index) => {
-                                  return (
-                                    <div>
-                                      <HubBadge
-                                        size={"small"}
-                                        name={concept.displayName}
-                                      />
-                                    </div>
-                                  );
-                                })}
+                    <div style={{ marginTop: 8 }}>
+                      <div
+                        className={css(profileStepStyles.publishedWorksTitle)}
+                        onClick={() => toggleAuthorWorksVisibility(profile.id)}
+                        style={{
+                          display: "flex",
+                          columnGap: 4,
+                          justifyContent: "space-between",
+                          cursor: "pointer",
+                          alignItems: "center",
+                        }}
+                      >
+                        {profile.works.length} Published papers
+                        <FontAwesomeIcon
+                          style={{ fontSize: 18 }}
+                          icon={
+                            showWorksForAuthors.includes(profile.id)
+                              ? faAngleUp
+                              : faAngleDown
+                          }
+                        />
+                      </div>
+                      <div
+                        style={{
+                          borderTop: "1px solid #E9EAEF",
+                          paddingTop: 10,
+                          marginTop: 10,
+                        }}
+                        className={css(
+                          profileStepStyles.worksWrapper,
+                          showWorksForAuthors.includes(profile.id) &&
+                            profileStepStyles.worksWrapperActive
+                        )}
+                      >
+                        {profile.works.map((work, index) => {
+                          return (
+                            <div className={css(profileStepStyles.paper)}>
+                              <PaperIcon
+                                withAnimation={false}
+                                onClick={undefined}
+                                color={colors.MEDIUM_GREY2()}
+                              />
+                              <div>
+                                <div style={{ fontSize: 16 }}>{work.title}</div>
+                                <div
+                                  className={css(profileStepStyles.metaWrapper)}
+                                >
+                                  <div>
+                                    <>{work.authors[0]}</>
+                                    {work.authors.length > 1 && ` et al.`}
+                                  </div>
+                                  <div
+                                    style={{
+                                      marginLeft: 8,
+                                      marginRight: 8,
+                                      borderLeft: `1px solid ${colors.MEDIUM_GREY()}`,
+                                      height: 13,
+                                    }}
+                                  ></div>
+                                  <div>{work.publishedDate}</div>
+                                  <div
+                                    style={{
+                                      marginLeft: 8,
+                                      marginRight: 8,
+                                      borderLeft: `1px solid ${colors.MEDIUM_GREY()}`,
+                                      height: 13,
+                                    }}
+                                  ></div>
+                                  <div>
+                                    {work.doiUrl && (
+                                      <Link
+                                        href={work.doiUrl}
+                                        target={"_blank"}
+                                        style={{ color: colors.NEW_BLUE() }}
+                                      >
+                                        {work.doi}
+                                      </Link>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div
+                                  className={css(profileStepStyles.concepts)}
+                                >
+                                  {work.concepts.map((concept, index) => {
+                                    return (
+                                      <div>
+                                        <HubBadge
+                                          size={"small"}
+                                          name={concept.displayName}
+                                        />
+                                      </div>
+                                    );
+                                  })}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
+                );
+              })}
+              {paginationInfo.count > paginationInfo.perPage && (
+                <div className={css(profileStepStyles.pagination)}>
+                  <div
+                    className={css(profileStepStyles.paginationSquare)}
+                    onClick={() => {
+                      if (currentPage.num === 1) return;
+                      setCurrentPage({ num: currentPage.num - 1 });
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faAngleLeft} />
+                  </div>
+                  {Array.from({ length: numPages }).map((page, index) => (
+                    <div
+                      className={css(
+                        profileStepStyles.paginationSquare,
+                        currentPage.num === index + 1 &&
+                          profileStepStyles.paginationSelected
+                      )}
+                      onClick={() => {
+                        setCurrentPage({ num: index + 1 });
+                      }}
+                    >
+                      {index + 1}
+                    </div>
+                  ))}
+                  <div
+                    className={css(profileStepStyles.paginationSquare)}
+                    onClick={() => {
+                      if (currentPage.num === numPages) return;
+                      setCurrentPage({ num: currentPage.num + 1 });
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faAngleRight} />
+                  </div>
                 </div>
-              );
-            })}
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -784,6 +839,40 @@ const VerificationFormSelectProfileStep = ({
 };
 
 const profileStepStyles = StyleSheet.create({
+  pagination: {
+    display: "flex",
+    columnGap: "5px",
+    marginBottom: 15,
+  },
+  paginationDisabled: {
+    color: colors.MEDIUM_GREY2(),
+    cursor: "initial",
+  },
+  inputContainer: {
+    marginBottom: 0,
+  },
+  paginationSquare: {
+    cursor: "pointer",
+    border: `1px solid ${colors.GREY(0.4)}`,
+    height: "30px",
+    width: "30px",
+    display: "flex",
+    alignItems: "center",
+    textAlign: "center",
+    justifyContent: "center",
+
+    ":hover": {
+      transition: "0.2s",
+      backgroundColor: colors.NEW_BLUE(0.2),
+      color: colors.NEW_BLUE(),
+      border: `1px solid ${colors.NEW_BLUE(0.4)}`,
+    },
+  },
+  paginationSelected: {
+    backgroundColor: colors.NEW_BLUE(0.1),
+    color: colors.NEW_BLUE(),
+    border: `1px solid ${colors.NEW_BLUE(0.6)}`,
+  },
   worksWrapper: {
     display: "none",
   },
@@ -892,8 +981,7 @@ const formStyles = StyleSheet.create({
     },
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       padding: "25px 25px 10px 20px ",
-    }      
-
+    },
   },
   whyVerifyTitle: {
     color: colors.BLACK(),

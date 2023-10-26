@@ -2,22 +2,42 @@ import API, { generateApiUrl } from "~/config/api";
 import helpers from "~/config/api/helpers";
 import { captureEvent } from "~/config/utils/events";
 
+type OpenAlexResponse = {
+  count: number;
+  perPage: number;
+  results: any[];
+};
+
 export const fetchOpenAlexProfiles = async ({
   requestType,
   name,
+  pageNumber,
 }: {
   requestType: "ORCID" | "NAME";
   name?: string;
-}): Promise<any[]> => {
-  const url = generateApiUrl(`user_verification/get_openalex_author_profiles`);
+  pageNumber: number;
+}): Promise<OpenAlexResponse> => {
+  const url = generateApiUrl(
+    `user_verification/get_openalex_author_profiles`,
+    `?page=${pageNumber}`
+  );
 
   return fetch(url, API.POST_CONFIG({ request_type: requestType, name }))
     .then(async (res) => {
       const parsed = await helpers.parseJSON(res);
-      if (Array.isArray(parsed)) {
-        return parsed;
+
+      if (requestType === "ORCID") {
+        return {
+          count: parsed ? 1 : 0,
+          perPage: 1,
+          results: [parsed],
+        };
       } else {
-        return [parsed];
+        return {
+          count: parsed.meta.count,
+          perPage: parsed.meta.per_page,
+          results: parsed.results,
+        };
       }
     })
     .catch((error) => {
