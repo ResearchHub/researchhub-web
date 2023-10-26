@@ -220,7 +220,7 @@ function ReferencesContainer({
       await fetchCurrentUserReferenceCitations({
         getCurrentUserCitation: true,
         organizationID: currentOrg.id,
-        projectSlug: router.query.slugs.slice(-1),
+        projectSlug: router.query.slugs?.slice(-1),
         projectID: activeProject?.projectID,
         onError: (error) => {
           console.log(error);
