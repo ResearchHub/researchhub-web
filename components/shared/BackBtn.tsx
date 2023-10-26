@@ -4,6 +4,7 @@ import { faArrowLeftLong } from "@fortawesome/pro-regular-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { breakpoints } from "~/config/themes/screen";
+import { useRouter } from "next/router";
 
 const BackBtn = ({
   label,
@@ -14,16 +15,38 @@ const BackBtn = ({
   href: string;
   labelStyle?: any;
 }) => {
+  const router = useRouter();
+  const hasHistory = typeof window !== "undefined" && window.history.length > 1;
+
+  const handleBackClick = (e) => {
+    const shouldOpenNewTab = e.metaKey || e.ctrlKey; // metaKey is for Command on Mac
+    // if (shouldOpenNewTab && document.referrer) {
+    //   window.open(document.referrer, "_blank");
+    // } else {
+    //   router.back();
+    // }
+    router.back();
+  };
+
   return (
     <div className={css(styles.backToPrev)}>
       <div className={css(styles.backToPrev)}>
         <IconButton variant="round" overrideStyle={styles.backButton}>
-          <Link href={href}>
-            <FontAwesomeIcon
-              icon={faArrowLeftLong}
-              style={{ color: "black" }}
-            />
-          </Link>
+          {hasHistory ? (
+            <div onClick={handleBackClick}>
+              <FontAwesomeIcon
+                icon={faArrowLeftLong}
+                style={{ color: "black" }}
+              />
+            </div>
+          ) : (
+            <Link href={href}>
+              <FontAwesomeIcon
+                icon={faArrowLeftLong}
+                style={{ color: "black" }}
+              />
+            </Link>
+          )}
         </IconButton>
         <div className={css(styles.label, labelStyle)}>{label}</div>
       </div>
