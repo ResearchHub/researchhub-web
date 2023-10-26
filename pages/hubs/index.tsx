@@ -20,7 +20,8 @@ import { ModalActions } from "~/redux/modals";
 import AddHubModal from "~/components/Modals/AddHubModal";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import EditHubModal from "~/components/Modals/EditHubModal";
-import { Pagination } from "@mui/material";
+import Pagination from "~/components/shared/Pagination";
+import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
 
 type Props = {
   hubs: any[];
@@ -98,6 +99,7 @@ const HubsPage: NextPage<Props> = ({
   const currentUser = getCurrentUser();
   const isModerator = Boolean(currentUser?.moderator);
   const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
+  const isMobileScreen = getIsOnMobileScreenSize();
 
   const addHub = (newHub) => {
     setParsedHubs([...parsedHubs, parseHub(newHub)]);
@@ -169,6 +171,7 @@ const HubsPage: NextPage<Props> = ({
           direction="bottom-right"
           onSelect={(option) => {
             setSort(option);
+            setPage(1);
           }}
         >
           <div className={css(styles.sortTrigger)}>
@@ -196,6 +199,14 @@ const HubsPage: NextPage<Props> = ({
       <div className={css(styles.pagination)}>
         <Pagination
           count={Math.ceil(count / 40)}
+          variant="outlined"
+          shape="rounded"
+          color="primary"
+          page={page}
+          // limiting boundary and sibling count reduces width of entire component,
+          // which is useful to prevent overflow/wrappping on mobile.
+          boundaryCount={isMobileScreen ? 1 : undefined}
+          siblingCount={isMobileScreen ? 0 : undefined}
           onChange={(event, page) => {
             const fetchHubs = async () => {
               // @ts-ignore
@@ -205,9 +216,11 @@ const HubsPage: NextPage<Props> = ({
               });
               const parsedHubs = hubs.map((hub) => parseHub(hub));
               setParsedHubs(parsedHubs);
+              setPage(page);
+              // scroll to top
+              window.scrollTo({ top: 0 });
             };
             fetchHubs();
-            setPage(page);
           }}
         />
       </div>
@@ -246,9 +259,15 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
   },
   pagination: {
-    marginTop: 16,
+    marginTop: 24,
+    marginBottom: 24,
     display: "flex",
     justifyContent: "flex-end",
+    // mobile
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      justifyContent: "center",
+      width: "100%",
+    },
   },
   createHubButtonContainer: {
     display: "flex",
