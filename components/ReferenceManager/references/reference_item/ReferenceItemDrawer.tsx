@@ -17,9 +17,7 @@ import {
   resolveFieldKeyLabels,
   sortSchemaFieldKeys,
 } from "../utils/resolveFieldKeyLabels";
-import {
-  datePartsToDateString
-} from "../utils/formatCSLDate";
+import { datePartsToDateString } from "../utils/formatCSLDate";
 import { snakeCaseToNormalCase, toTitleCase } from "~/config/utils/string";
 import { updateReferenceCitation } from "../api/updateReferenceCitation";
 import { useReferenceTabContext } from "./context/ReferenceItemDrawerContext";
@@ -101,7 +99,11 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
         const label = resolveFieldKeyLabels(field_key),
           value =
             field_key === "issued"
-              ? (issued = dayjs(datePartsToDateString(localReferenceFields[field_key])).format("YYYY-DD-MM")) === "Invalid Date" ? null : issued
+              ? (issued = dayjs(
+                  datePartsToDateString(localReferenceFields[field_key])
+                ).format("YYYY-DD-MM")) === "Invalid Date"
+                ? null
+                : issued
               : localReferenceFields[field_key],
           isRequired = false;
         // isRequired = requiredFieldsSet.has(field_key);
@@ -120,7 +122,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
               }}
               placeholder={label}
               required={isRequired}
-              value={value.split(", ")}
+              value={value && !!value.length && value?.split(", ")}
             />
           );
         } else {

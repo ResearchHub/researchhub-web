@@ -11,7 +11,7 @@ const getAnnotationFromPosition = ({
   contentRef: any;
   annotations: AnnotationType[];
 }): AnnotationType | null => {
-  const contentRefRect = contentRef!.current!.getBoundingClientRect();
+  const contentRefRect = contentRef?.current?.getBoundingClientRect();
   const relativeClickX = x - contentRefRect.left;
   const relativeClickY = y - contentRefRect.top;
 

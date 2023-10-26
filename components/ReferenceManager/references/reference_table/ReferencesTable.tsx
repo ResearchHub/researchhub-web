@@ -90,6 +90,7 @@ export default function ReferencesTable({
     setRowDraggedOver,
     setRowDragged,
     rowDropped,
+    openTab,
   } = useReferencesTableContext();
   const [isFetchingReferences, setIsFetchingReferences] =
     useState<boolean>(true);
@@ -227,7 +228,7 @@ export default function ReferencesTable({
         ),
       });
 
-      setIsViewerOpen(true);
+      openTab(row.raw_data);
     }
   };
 
@@ -350,7 +351,7 @@ export default function ReferencesTable({
                                 onClick={(event) => {
                                   event.stopPropagation();
                                   setReferenceItemDatum(hoveredRow);
-                                  setIsViewerOpen(true);
+                                  openTab(hoveredRow);
                                 }}
                                 sx={{
                                   padding: 1,
@@ -464,30 +465,6 @@ export default function ReferencesTable({
             },
           }}
         />
-
-        {isViewerOpen && (
-          <DocumentViewer
-            setReferenceItemDatum={setReferenceItemDatum}
-            referenceItemDatum={referenceItemDatum}
-            pdfUrl={referenceItemDatum?.attachment}
-            expanded={true}
-            citationInstance={{
-              id: referenceItemDatum.id,
-              type: "citationentry",
-            }}
-            documentInstance={
-              referenceItemDatum.related_unified_doc
-                ? {
-                    id: referenceItemDatum.related_unified_doc?.documents?.id,
-                    type: "paper",
-                  }
-                : undefined
-            }
-            onClose={() => {
-              setIsViewerOpen(false);
-            }}
-          />
-        )}
       </div>
     </DroppableZone>
   );
