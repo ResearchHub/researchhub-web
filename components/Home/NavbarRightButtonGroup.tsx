@@ -76,8 +76,6 @@ function NavbarRightButtonGroup({
     setOpenCaseCounts(totalCount);
   }, [isUserModerator, isUserHubEditor]);
 
-  console.log("user", user.author_profile);
-
   return (
     <div className={css(styles.userDropdown)}>
       <div className={css(styles.navbarButtonContainer)}>
