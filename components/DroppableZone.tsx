@@ -23,34 +23,33 @@ function DroppableZone({
   const [isFileDragged, setIsFileDragged] = useState(false);
 
   return (
-    <div
-      className={css(
-        styles.dropzoneContainer,
-        isFileDragged && styles.dragged,
-        fullWidth && styles.fullWidth
-      )}
+    <Dropzone
+      accept={accept}
+      multiple={multiple}
+      noClick={noClick}
+      onDragEnter={(): void => setIsFileDragged(true)}
+      onDragLeave={(): void => setIsFileDragged(false)}
+      onDrop={(acceptedFiles) => {
+        setIsFileDragged(false);
+        handleFileDrop(acceptedFiles);
+      }}
     >
-      <Dropzone
-        accept={accept}
-        multiple={multiple}
-        noClick={noClick}
-        onDragEnter={(): void => setIsFileDragged(true)}
-        onDragLeave={(): void => setIsFileDragged(false)}
-        onDrop={(acceptedFiles) => {
-          setIsFileDragged(false);
-          handleFileDrop(acceptedFiles);
-        }}
-      >
-        {({ getRootProps, getInputProps }) => (
-          <section className={css(styles.fullCanvas)}>
-            <div {...getRootProps()} className={css(styles.dropzone)}>
-              <input {...getInputProps()} required={true} />
-              <>{children}</>
-            </div>
-          </section>
-        )}
-      </Dropzone>
-    </div>
+      {({ getRootProps, getInputProps }) => (
+        <section
+          className={css(
+            styles.fullCanvas,
+            styles.dropzoneContainer,
+            isFileDragged && styles.dragged,
+            fullWidth && styles.fullWidth
+          )}
+        >
+          <div {...getRootProps()} className={css(styles.dropzone)}>
+            <input {...getInputProps()} required={true} />
+            <>{children}</>
+          </div>
+        </section>
+      )}
+    </Dropzone>
   );
 }
 
