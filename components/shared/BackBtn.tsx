@@ -16,7 +16,7 @@ const BackBtn = ({
   labelStyle?: any;
 }) => {
   const router = useRouter();
-  const hasHistory = typeof window !== "undefined" && window.history.length > 1;
+  const hasHistory = typeof window !== "undefined" && window.history.length > 2;
 
   const handleBackClick = (e) => {
     const shouldOpenNewTab = e.metaKey || e.ctrlKey; // metaKey is for Command on Mac
