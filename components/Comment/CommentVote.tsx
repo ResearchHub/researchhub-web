@@ -69,6 +69,7 @@ const CommentVote = ({
   return (
     <VoteWidget
       score={_score}
+      comment={true}
       horizontalView={isHorizontal}
       onUpvote={async (e) => {
         e.stopPropagation();

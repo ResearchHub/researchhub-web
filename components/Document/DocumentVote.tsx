@@ -20,6 +20,7 @@ type Args = {
   metadata: DocumentMetadata;
   apiDocumentType: ApiDocumentType;
   isHorizontal?: boolean;
+  iconButton?: boolean;
 };
 
 const DocumentVote = ({
@@ -28,6 +29,7 @@ const DocumentVote = ({
   score,
   userVote,
   apiDocumentType,
+  iconButton,
   isHorizontal = false,
 }: Args) => {
   const documentContext = useContext(DocumentContext);
@@ -70,6 +72,8 @@ const DocumentVote = ({
   return (
     <VoteWidget
       score={score}
+      iconButton={iconButton}
+      twitterScore={metadata.twitterScore}
       horizontalView={isHorizontal}
       onUpvote={async () => {
         try {

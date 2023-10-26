@@ -27,6 +27,7 @@ import { faDown, faUp } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { voteWidgetIcons } from "~/config/themes/icons";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import IconButton from "./Icons/IconButton";
 
 const VoteWidget = (props) => {
   const dispatch = useDispatch();
@@ -43,6 +44,7 @@ const VoteWidget = (props) => {
     searchResult,
     isPaper,
     type,
+    comment,
     promoted,
     paper,
     showPromotion,
@@ -62,6 +64,7 @@ const VoteWidget = (props) => {
     disableUpvote,
     disableDownvote,
     twitterScore,
+    iconButton,
     downvoteIcon = voteWidgetIcons.downvote,
     upvoteIcon = voteWidgetIcons.upvote,
   } = props;
@@ -160,62 +163,133 @@ const VoteWidget = (props) => {
   return (
     <div
       className={css(
-        styles.container,
-        horizontalView && styles.horizontalView,
+        styles.voteContainer,
+        horizontalView && styles.row,
         props.styles
       )}
-      style={{ fontSize: fontSize, width: width }}
     >
-      <PermissionNotificationWrapper
-        loginRequired={true}
-        onClick={!noUpvote && onUpvoteClick}
-        modalMessage={"vote"}
-        hideRipples={noUpvote}
-      >
-        <UpvoteButton
-          selected={upvoteSelected}
-          disabled={noUpvote}
-          horizontalView={horizontalView && horizontalView}
-          styleClass={upvoteStyleClass}
-          small={small}
-          icon={upvoteIcon}
-        />
-      </PermissionNotificationWrapper>
-      <ReactTooltip id="tweets" effect="solid" />
-      <ScorePill
-        score={displayableScore}
-        promoted={promoted}
-        paper={paper}
-        showPromotion={showPromotion}
-        type={type}
-        small={small}
-        pillClass={pillClass}
-        horizontalView={horizontalView && horizontalView}
-      />
-      <PermissionNotificationWrapper
-        loginRequired={true}
-        onClick={!noDownvote && onDownvoteClick}
-        modalMessage={"vote"}
-        hideRipples={noDownvote}
-      >
-        <DownvoteButton
-          selected={downvoteSelected}
-          disabled={downvoteDisabled || searchResult || disableDownvote}
-          horizontalView={horizontalView && horizontalView}
-          styleClass={downvoteStyleClass}
-          small={small}
-          icon={downvoteIcon}
-        />
-      </PermissionNotificationWrapper>
+      {iconButton ? (
+        <IconButton variant="round">
+          <div
+            className={css(
+              styles.container,
+              horizontalView && styles.horizontalView
+            )}
+            style={{ fontSize: fontSize, width: width }}
+          >
+            <PermissionNotificationWrapper
+              loginRequired={true}
+              onClick={!noUpvote && onUpvoteClick}
+              modalMessage={"vote"}
+              hideRipples={noUpvote}
+            >
+              <UpvoteButton
+                selected={upvoteSelected}
+                disabled={noUpvote}
+                horizontalView={horizontalView && horizontalView}
+                styleClass={upvoteStyleClass}
+                small={small}
+                icon={upvoteIcon}
+              />
+            </PermissionNotificationWrapper>
+            <ReactTooltip id="tweets" effect="solid" />
+            <ScorePill
+              score={displayableScore}
+              promoted={promoted}
+              paper={paper}
+              showPromotion={showPromotion}
+              type={type}
+              small={small}
+              pillClass={pillClass}
+              comment={comment}
+              horizontalView={horizontalView && horizontalView}
+            />
+            <PermissionNotificationWrapper
+              loginRequired={true}
+              onClick={!noDownvote && onDownvoteClick}
+              modalMessage={"vote"}
+              hideRipples={noDownvote}
+            >
+              <DownvoteButton
+                selected={downvoteSelected}
+                disabled={downvoteDisabled || searchResult || disableDownvote}
+                horizontalView={horizontalView && horizontalView}
+                styleClass={downvoteStyleClass}
+                small={small}
+                icon={downvoteIcon}
+              />
+            </PermissionNotificationWrapper>
+          </div>
+        </IconButton>
+      ) : (
+        <div
+          className={css(
+            styles.container,
+            horizontalView && styles.horizontalView,
+            props.styles
+          )}
+          style={{ fontSize: fontSize, width: width }}
+        >
+          <PermissionNotificationWrapper
+            loginRequired={true}
+            onClick={!noUpvote && onUpvoteClick}
+            modalMessage={"vote"}
+            hideRipples={noUpvote}
+          >
+            <UpvoteButton
+              selected={upvoteSelected}
+              disabled={noUpvote}
+              horizontalView={horizontalView && horizontalView}
+              styleClass={upvoteStyleClass}
+              small={small}
+              icon={upvoteIcon}
+            />
+          </PermissionNotificationWrapper>
+          <ReactTooltip id="tweets" effect="solid" />
+          <ScorePill
+            score={displayableScore}
+            promoted={promoted}
+            paper={paper}
+            showPromotion={showPromotion}
+            type={type}
+            small={small}
+            pillClass={pillClass}
+            horizontalView={horizontalView && horizontalView}
+          />
+          <PermissionNotificationWrapper
+            loginRequired={true}
+            onClick={!noDownvote && onDownvoteClick}
+            modalMessage={"vote"}
+            hideRipples={noDownvote}
+          >
+            <DownvoteButton
+              selected={downvoteSelected}
+              disabled={downvoteDisabled || searchResult || disableDownvote}
+              horizontalView={horizontalView && horizontalView}
+              styleClass={downvoteStyleClass}
+              small={small}
+              icon={downvoteIcon}
+            />
+          </PermissionNotificationWrapper>
+        </div>
+      )}
+
       {twitterScore ? (
         <div
-          className={css(styles.twitterScore)}
+          className={css(
+            styles.twitterScore,
+            horizontalView && styles.horizontalTwitterScore,
+            iconButton && styles.iconButtonTwitterScore
+          )}
           data-for={"tweets"}
           data-tip={"The number of tweets this paper received"}
         >
           <FontAwesomeIcon
             icon={faTwitter}
-            className={css(styles.twitterIcon)}
+            className={css(
+              styles.twitterIcon,
+              horizontalView && styles.horizontalTwitterIcon
+            )}
           />
           <div className={css(styles.twitterScoreText)}>
             {numeral(twitterScore).format("0a")}
@@ -241,7 +315,13 @@ export const ScorePill = (props) => {
   const isScoreNumeric = !isNaN(score);
 
   return (
-    <div className={css(styles.pillContainer, pillClass)}>
+    <div
+      className={css(
+        styles.pillContainer,
+        props.comment && styles.pillComment,
+        pillClass
+      )}
+    >
       <div
         className={css(
           small && styles.small,
@@ -338,12 +418,24 @@ function getScore(props) {
 // });
 
 const styles = StyleSheet.create({
+  voteContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    marginRight: 15,
+  },
   container: {
     display: "flex",
     justifyContent: "center",
     flexDirection: "column",
     textAlign: "center",
-    marginRight: 17,
+  },
+  row: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
   },
   twitterScore: {
     display: "flex",
@@ -353,6 +445,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     padding: "6px 0px",
     width: 32,
+    alignItems: "center",
     // padding: "6px 10px",
     // paddingBottom: 6,
     boxSizing: "border-box",
@@ -361,8 +454,28 @@ const styles = StyleSheet.create({
     background: "rgba(240, 240, 240, 0.5)",
     color: "#1DA1F2",
   },
+  horizontalTwitterScore: {
+    flexDirection: "row",
+    marginTop: 0,
+    // background: "unset",
+    padding: "6px",
+    width: "unset",
+    alignItems: "center",
+    marginLeft: 10,
+  },
+  iconButtonTwitterScore: {
+    border: `1px solid ${colors.GREY_LINE()}`,
+    padding: "6px 12px",
+    height: 36,
+    background: "unset",
+    borderRadius: 50,
+  },
   twitterIcon: {
     marginBottom: 4,
+  },
+  horizontalTwitterIcon: {
+    marginBottom: 0,
+    marginRight: 4,
   },
   twitterScoreText: {
     fontSize: 13,
@@ -393,6 +506,9 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 14,
     },
+  },
+  pillComment: {
+    width: 28,
   },
   hideScore: {
     visibility: "hidden",
@@ -442,7 +558,10 @@ const styles = StyleSheet.create({
     color: colors.GREEN(),
   },
   marginRight: {
-    marginRight: 5,
+    marginRight: 3,
+  },
+  marginLeft: {
+    marginLeft: 3,
   },
   promotionContainer: {
     display: "flex",
@@ -456,9 +575,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       display: "unset",
     },
-  },
-  marginLeft: {
-    marginLeft: 5,
   },
   divider: {
     margin: "5px 0 15px",

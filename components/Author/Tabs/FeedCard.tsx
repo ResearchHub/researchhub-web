@@ -10,6 +10,7 @@ import { faLightbulb, faFileLines } from "@fortawesome/pro-regular-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import numeral from "numeral";
 import {
   DOWNVOTE,
   NEUTRALVOTE,
@@ -421,9 +422,11 @@ function FeedCard({
                           label={
                             <div style={{ display: "flex", whiteSpace: "pre" }}>
                               <div style={{ flex: 1 }}>
-                                {formatBountyAmount({
-                                  amount: bountyAmount,
-                                })}{" "}
+                                {numeral(
+                                  formatBountyAmount({
+                                    amount: bountyAmount,
+                                  })
+                                ).format("0,0a")}{" "}
                                 RSC
                               </div>
                             </div>
@@ -603,12 +606,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginRight: "8px",
     color: colors.BLACK(0.6),
+
+    "@media only screen and (max-width: 767px)": {
+      marginRight: 0,
+    },
   },
   metadataContainer: {
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
-    flexWrap: "wrap",
+    gap: 10,
+    // flexWrap: "wrap",
     marginTop: 10,
   },
   publishContainer: {
@@ -625,8 +633,6 @@ const styles = StyleSheet.create({
     },
   },
   metaItem: {
-    marginRight: 10,
-    marginBottom: 5,
     display: "flex",
     alignItems: "center",
     ":last-child": {
@@ -645,9 +651,7 @@ const styles = StyleSheet.create({
     height: "100%",
     opacity: 1,
   },
-  metaItemAsBadge: {
-    marginRight: 10,
-  },
+  metaItemAsBadge: {},
   hideTextMobile: {
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       display: "none",
