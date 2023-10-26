@@ -34,6 +34,7 @@ import useCacheControl from "~/config/hooks/useCacheControl";
 import PaperMetadataModal from "./PaperMetadataModal";
 import DocumentOptions from "./DocumentOptions";
 import DocumentHubs from "./lib/DocumentHubs";
+import SaveToRefManager from "./lib/SaveToRefManager";
 
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
@@ -157,6 +158,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                     </IconButton>
                   </PaperMetadataModal>
                 )}
+                {isPaper(doc) && <SaveToRefManager />}
                 <PermissionNotificationWrapper
                   modalMessage="edit document"
                   permissionKey="UpdatePaper"

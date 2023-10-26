@@ -32,6 +32,7 @@ import { StyleSheet, css } from "aphrodite";
 import { faCog } from "@fortawesome/pro-solid-svg-icons";
 import { navContext } from "~/components/contexts/NavigationContext";
 import { useReferencesTableContext } from "../references/reference_table/context/ReferencesTableContext";
+import ProjectExplorer from "../lib/ProjectExplorer";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -104,32 +105,32 @@ export default function BasicTogglableNavbarLeft({
     useReferenceProjectUpsertContext();
   const currentOrg = getCurrentUserCurrentOrg();
   const router = useRouter();
-  const [childrenOpenMap, setChildrenOpenMap] = useState({});
+  // const [childrenOpenMap, setChildrenOpenMap] = useState({});
   const { setActiveProject } = useReferenceActiveProjectContext();
   const { setReferenceTableRowData } = useReferencesTableContext();
 
-  useEffect(() => {
-    const idsOpen = window.localStorage.getItem("projectIdsOpenv2") || "{}";
-    const childrenOpenMap = JSON.parse(idsOpen);
-    setChildrenOpenMap(childrenOpenMap);
-  }, []);
+  // useEffect(() => {
+  //   const idsOpen = window.localStorage.getItem("projectIdsOpenv2") || "{}";
+  //   const childrenOpenMap = JSON.parse(idsOpen);
+  //   setChildrenOpenMap(childrenOpenMap);
+  // }, []);
 
-  const addChildrenOpen = ({ key, value }) => {
-    const map = { ...childrenOpenMap };
-    map[key] = value;
-    setChildrenOpenMap(map);
-  };
+  // const addChildrenOpen = ({ key, value }) => {
+  //   const map = { ...childrenOpenMap };
+  //   map[key] = value;
+  //   setChildrenOpenMap(map);
+  // };
 
   const currentOrgSlug = currentOrg?.slug ?? null;
-  const refProjectsNavbarEls = currentOrgProjects?.map((referenceProject) => {
-    return renderNestedReferenceProjectsNavbarEl({
-      currentOrgSlug: nullthrows(currentOrgSlug, "Org must be present"),
-      referenceProject,
-      addChildrenOpen,
-      childrenOpenMap,
-      slug: `${encodeURIComponent(referenceProject.slug)}`,
-    });
-  });
+  // const refProjectsNavbarEls = currentOrgProjects?.map((referenceProject) => {
+  //   return renderNestedReferenceProjectsNavbarEl({
+  //     currentOrgSlug: nullthrows(currentOrgSlug, "Org must be present"),
+  //     referenceProject,
+  //     addChildrenOpen,
+  //     childrenOpenMap,
+  //     slug: `${encodeURIComponent(referenceProject.slug)}`,
+  //   });
+  // });
 
   return (
     <ContentWrapper width={navWidth} isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -258,7 +259,8 @@ export default function BasicTogglableNavbarLeft({
             {"Create a new folder"}
           </Typography>
         </ListItemButton>
-        {refProjectsNavbarEls}
+
+        <ProjectExplorer currentOrgProjects={currentOrgProjects} />
       </List>
     </ContentWrapper>
   );
