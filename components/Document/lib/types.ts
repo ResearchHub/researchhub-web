@@ -52,6 +52,7 @@ export type DocumentMetadata = {
   score: number;
   id: ID;
   hubs: Hub[];
+  twitterScore: number;
 };
 
 export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
@@ -71,6 +72,7 @@ export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
     reviewCount: document?.discussion_aggregates?.review_count || 0,
     summaryCount: document?.discussion_aggregates?.summary_count || 0,
     score: raw.score,
+    twitterScore: document?.twitter_score || 0,
     id: raw.id,
     hubs: (raw.hubs || []).map((h: any) => parseHub(h)),
   };

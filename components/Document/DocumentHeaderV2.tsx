@@ -176,16 +176,15 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
             </div>
             <div className={css(styles.smallScreenActions)}>
               <div className={css(styles.voteWrapperForSmallScreen)}>
-                <IconButton variant="round">
-                  <DocumentVote
-                    id={doc.id}
-                    metadata={metadata}
-                    score={metadata.score}
-                    apiDocumentType={doc.apiDocumentType}
-                    userVote={metadata.userVote}
-                    isHorizontal={true}
-                  />
-                </IconButton>
+                <DocumentVote
+                  id={doc.id}
+                  metadata={metadata}
+                  score={metadata.score}
+                  iconButton={true}
+                  apiDocumentType={doc.apiDocumentType}
+                  userVote={metadata.userVote}
+                  isHorizontal={true}
+                />
               </div>
               <div className={css(styles.actionWrapper)}>
                 <PermissionNotificationWrapper

@@ -61,6 +61,6 @@ const styles = StyleSheet.create({
     },
   },
   voteWidget: {
-    marginRight: 15,
+    // marginRight: 15,
   },
 });

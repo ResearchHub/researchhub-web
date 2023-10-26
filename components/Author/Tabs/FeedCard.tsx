@@ -10,6 +10,7 @@ import { faLightbulb, faFileLines } from "@fortawesome/pro-regular-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import numeral from "numeral";
 import {
   DOWNVOTE,
   NEUTRALVOTE,
@@ -319,7 +320,7 @@ function FeedCard({
             </DesktopOnly>
           )}
           <div className={css(styles.container)}>
-            <div>
+            <div style={{ height: "100%" }}>
               {featured && (
                 <div className={css(styles.featuredBadge)}>Featured</div>
               )}
@@ -421,9 +422,11 @@ function FeedCard({
                           label={
                             <div style={{ display: "flex", whiteSpace: "pre" }}>
                               <div style={{ flex: 1 }}>
-                                {formatBountyAmount({
-                                  amount: bountyAmount,
-                                })}{" "}
+                                {numeral(
+                                  formatBountyAmount({
+                                    amount: bountyAmount,
+                                  })
+                                ).format("0,0a")}{" "}
                                 RSC
                               </div>
                             </div>
@@ -523,6 +526,8 @@ const styles = StyleSheet.create({
     padding: "16px 0px",
     textDecoration: "none",
     width: "100%",
+    height: "100%",
+    boxSizing: "border-box",
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
@@ -579,11 +584,13 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     width: "100%",
+    height: "100%",
   },
   rowContainer: {
     display: "flex",
     alignItems: "flex-start",
     width: "100%",
+    height: "100%",
   },
   column: {
     display: "flex",
@@ -603,12 +610,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginRight: "8px",
     color: colors.BLACK(0.6),
+
+    "@media only screen and (max-width: 767px)": {
+      marginRight: 0,
+    },
   },
   metadataContainer: {
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
-    flexWrap: "wrap",
+    gap: 10,
+    // flexWrap: "wrap",
     marginTop: 10,
   },
   publishContainer: {
@@ -625,8 +637,6 @@ const styles = StyleSheet.create({
     },
   },
   metaItem: {
-    marginRight: 10,
-    marginBottom: 5,
     display: "flex",
     alignItems: "center",
     ":last-child": {
@@ -645,9 +655,7 @@ const styles = StyleSheet.create({
     height: "100%",
     opacity: 1,
   },
-  metaItemAsBadge: {
-    marginRight: 10,
-  },
+  metaItemAsBadge: {},
   hideTextMobile: {
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       display: "none",

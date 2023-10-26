@@ -50,7 +50,8 @@ export default async function sharedGetStaticProps({
     // If slug is not present or does not match paper's, we want to redirect
     // DANGER ZONE: Be careful when updating this. Could result
     // in an infinite 301 loop.
-    const shouldRedirect = !documentData.slug || documentData.slug !== documentSlug;
+    const shouldRedirect =
+      !documentData.slug || documentData.slug !== documentSlug;
 
     if (shouldRedirect) {
       return {
