@@ -320,7 +320,7 @@ function FeedCard({
             </DesktopOnly>
           )}
           <div className={css(styles.container)}>
-            <div>
+            <div style={{ height: "100%" }}>
               {featured && (
                 <div className={css(styles.featuredBadge)}>Featured</div>
               )}
@@ -526,6 +526,8 @@ const styles = StyleSheet.create({
     padding: "16px 0px",
     textDecoration: "none",
     width: "100%",
+    height: "100%",
+    boxSizing: "border-box",
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
@@ -582,11 +584,13 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     width: "100%",
+    height: "100%",
   },
   rowContainer: {
     display: "flex",
     alignItems: "flex-start",
     width: "100%",
+    height: "100%",
   },
   column: {
     display: "flex",
