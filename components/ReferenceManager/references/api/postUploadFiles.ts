@@ -51,20 +51,19 @@ export default async function postUploadFiles({
         body: fileBlob,
       });
 
-      if (isDevelopment) {
-        const preSignedUrlParts = preSignedUrl.split("?AWS");
-        const path = preSignedUrlParts[0].split(".com/")[1];
-        const _callBackResult = await fetch(
-          generateApiUrl("citation_entry/upload_pdfs_callback"),
-          API.POST_CONFIG({
-            path: path,
-            filename: file.name,
-            organization_id: orgID,
-            project_id: activeProjectID,
-            creator_id: currentUser?.id,
-          })
-        );
-      }
+      const preSignedUrlParts = preSignedUrl.split("?AWS");
+      const path = preSignedUrlParts[0].split(".com/")[1];
+      const _callBackResult = await fetch(
+        generateApiUrl("citation_entry/upload_pdfs_callback"),
+        API.POST_CONFIG({
+          path: path,
+          filename: file.name,
+          organization_id: orgID,
+          project_id: activeProjectID,
+          creator_id: currentUser?.id,
+        })
+      );
+
       onSuccess();
     });
   } catch (error: any) {
