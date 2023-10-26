@@ -184,12 +184,7 @@ const VoteWidget = (props) => {
           icon={upvoteIcon}
         />
       </PermissionNotificationWrapper>
-      <ReactTooltip
-        id="reputationTooltip"
-        className={css(styles.tooltip)}
-        place="bottom"
-        effect="solid"
-      />
+      <ReactTooltip id="tweets" effect="solid" />
       <ScorePill
         score={displayableScore}
         promoted={promoted}
@@ -215,18 +210,19 @@ const VoteWidget = (props) => {
           icon={downvoteIcon}
         />
       </PermissionNotificationWrapper>
-      {/* {twitterScore && (
+      {twitterScore && (
         <div
           className={css(styles.twitterScore)}
-          data-twitter-score={twitterScore}
+          data-for={"tweets"}
+          data-tip={"The number of tweets this paper received."}
         >
-          {twitterScore}
           <FontAwesomeIcon
             icon={faTwitter}
             className={css(styles.twitterIcon)}
           />
+          {twitterScore}
         </div>
-      )} */}
+      )}
     </div>
   );
 };
@@ -348,20 +344,20 @@ const styles = StyleSheet.create({
   twitterScore: {
     display: "flex",
     flexDirection: "column",
-    border: "1px solid #ddd",
     borderRadius: 4,
-    // padding: 8,
-    fontSize: 12,
-    // height: 25,
+    fontSize: 14,
+    fontWeight: 500,
     width: 28,
-    padding: 4,
+    paddingTop: 6,
+    paddingBottom: 6,
     boxSizing: "border-box",
     margin: "0 auto",
     marginTop: 8,
-    color: "rgba(36, 31, 58, 0.5)",
+    background: "rgba(240, 240, 240, 0.5)",
+    color: "#1DA1F2",
   },
   twitterIcon: {
-    marginTop: 4,
+    marginBottom: 4,
   },
   horizontalView: {
     flexDirection: "row",
@@ -471,7 +467,6 @@ const styles = StyleSheet.create({
   },
   tooltip: {
     maxWidth: 200,
-    width: 200,
     padding: 15,
     fontSize: 14,
     // background: colors.BLUE(1),
