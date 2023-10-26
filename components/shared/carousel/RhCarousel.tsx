@@ -1,6 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
-import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
+import {
+  faChevronRight,
+  faChevronLeft,
+} from "@fortawesome/pro-regular-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, ReactNode, SyntheticEvent, useState } from "react";
 import { AnimatePresence } from "framer-motion";
@@ -123,7 +125,7 @@ const styles = StyleSheet.create({
       minHeight: 200,
     },
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      minHeight: 165,
+      minHeight: 175,
     },
   },
   rhCarouselControl: {

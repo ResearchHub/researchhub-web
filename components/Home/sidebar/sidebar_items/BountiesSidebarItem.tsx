@@ -6,6 +6,7 @@ import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import colors from "~/config/themes/colors";
 import ContentBadge from "~/components/ContentBadge";
 import UserTooltip from "~/components/Tooltips/User/UserTooltip";
+import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 
 type Props = {
   bountyAmount: number;
@@ -48,16 +49,24 @@ export default function BountiesSidebarItem({
               createdBy={createdBy}
               positions={["left"]}
               targetContent={
-                <AuthorFacePile
-                  authorProfiles={[createdByAuthor]}
-                  withAuthorName
-                  horizontal
-                  border={null}
-                  fontSize={14}
-                  imgSize={17}
-                />
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <AuthorFacePile
+                    authorProfiles={[createdByAuthor]}
+                    withAuthorName
+                    horizontal
+                    margin={3}
+                    border={null}
+                    fontSize={14}
+                    imgSize={17}
+                  />
+                </div>
               }
             />
+            {createdByAuthor.is_verified && (
+              <div style={{ marginLeft: 0, marginTop: 4 }}>
+                <VerifiedBadge height={18} width={18} />
+              </div>
+            )}
             <span className={css(styles.bountiesSidebarTitle)}>
               <span>{"is offering "}</span>
             </span>
@@ -110,7 +119,7 @@ const styles = StyleSheet.create({
     color: colors.TEXT_GREY(1),
     display: "flex",
     fontSize: 12,
-    marginLeft: -8,
+    marginLeft: 3,
     height: "100%",
     textOverflow: "ellipsis",
     marginTop: 1, // arbitrary to match AuthorFacePile

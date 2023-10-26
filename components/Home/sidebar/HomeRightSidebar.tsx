@@ -12,10 +12,20 @@ import HomeSidebarBountiesSection from "./HomeSidebarBountiesSection";
 import HomeSidebarFeaturedDocsSection from "./HomeSidebarFeaturedDocsSection";
 
 import RhCarousel from "~/components/shared/carousel/RhCarousel";
+import { useSelector } from "react-redux";
+import { RootState } from "~/redux";
+import { parseUser } from "~/config/types/root_types";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 export default function HomeRightSidebar(): ReactElement {
   const [shouldLimitNumCards, setShouldLimitNumCards] = useState<boolean>(true);
-  const carouselElements = getEducationalCarouselElements();
+  let carouselElements = getEducationalCarouselElements();
+
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
+
+  carouselElements = currentUser?.isVerified ? carouselElements.slice(1) : carouselElements;
 
   return (
     <div className={css(styles.HomeRightSidebar)}>

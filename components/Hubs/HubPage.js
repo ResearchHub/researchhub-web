@@ -18,7 +18,6 @@ import { StyleSheet, css } from "aphrodite";
 import API from "~/config/api";
 import colors from "~/config/themes/colors";
 import ExitableBanner from "~/components/Banner/ExitableBanner";
-import FeedMenu from "../UnifiedDocFeed/FeedMenu/FeedMenu";
 import Head from "~/components/Head";
 import HomeRightSidebar from "~/components/Home/sidebar/HomeRightSidebar";
 
@@ -27,6 +26,7 @@ import RhCarousel from "../shared/carousel/RhCarousel";
 import Router from "next/router";
 import SubscribeButton from "../Home/SubscribeButton";
 import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedContainer";
+import { parseUser } from "~/config/types/root_types";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -340,8 +340,12 @@ class HubPage extends Component {
       );
     }
 
-    const carouselElements = getEducationalCarouselElements();
+    let carouselElements = getEducationalCarouselElements();
+    const currentUser = parseUser(this.props.user);
 
+    carouselElements = currentUser?.isVerified
+      ? carouselElements.slice(1)
+      : carouselElements;
     return (
       <div className={css(styles.rhHomeContainer)}>
         <div className={css(styles.homeContentContainer, styles.column)}>

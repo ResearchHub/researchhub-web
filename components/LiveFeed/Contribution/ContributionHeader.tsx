@@ -21,6 +21,7 @@ import ContentBadge from "~/components/ContentBadge";
 import { formatBountyAmount } from "~/config/types/bounty";
 import { truncateText } from "~/config/utils/string";
 import { COMMENT_TYPES } from "~/components/Comment/lib/types";
+import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 
 type Args = {
   entry: Contribution;
@@ -174,7 +175,13 @@ const ContributionHeader = ({ entry }: Args) => {
       </div>
       <div className={css(styles.metadataWrapper)}>
         <div className={css(styles.metadataRow)}>
-          <div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              columnGap: "3px",
+            }}
+          >
             <UserTooltip
               createdBy={createdBy}
               overrideTargetStyle={styles.userTooltip}
@@ -188,6 +195,9 @@ const ContributionHeader = ({ entry }: Args) => {
                 </ALink>
               }
             />
+            {createdBy.authorProfile.isVerified && (
+              <VerifiedBadge height={18} width={18} />
+            )}
 
             {actionLabel}
             {/* @ts-ignore */}

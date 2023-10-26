@@ -46,6 +46,8 @@ import InviteButton from "~/components/Referral/InviteButton";
 import killswitch from "~/config/killswitch/killswitch";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import RhTextTag from "~/components/shared/RhTextTag";
+import VerificationModal from "~/components/Verification/VerificationModal";
+import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 
 type Props = {
   openLoginModal: any;
@@ -183,6 +185,11 @@ function RootLeftSidebar({
     useState<boolean>(isForceMinimized);
   const [growMinimized, setGrowMinimized] = useState<boolean>(isForceMinimized);
   const [didMount, setDidMount] = useState<boolean>(false);
+  const refManagerGateKeeper = gateKeepCurrentUser({
+    application: "REFERENCE_MANAGER",
+    shouldRedirect: false,
+  });
+  const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
 
   useEffectOnScreenResize({
     onResize: (newMediaWidth): void => {
@@ -367,6 +374,30 @@ function RootLeftSidebar({
         </div>
         <div className={css(styles.leftSidebarFooter)}>
           <div className={css(styles.leftSidebarFooterItemsTop)}>
+            <span className={css(formattedFooterTxtItem)}>
+              <VerificationModal
+                isModalOpen={isVerificationModalOpen}
+                handleModalClose={() => setIsVerificationModalOpen(false)}
+              />
+              <span
+                className={css(styles.referralProgramItem)}
+                onClick={() => setIsVerificationModalOpen(true)}
+              >
+                {isMinimized ? (
+                  "Verify"
+                ) : (
+                  <>
+                    {"Verify Authorship"}
+                    <VerifiedBadge
+                      height={22}
+                      width={22}
+                      variation="grey"
+                      showTooltipOnHover={false}
+                    />
+                  </>
+                )}
+              </span>
+            </span>
             <span className={css(formattedFooterTxtItem)}>
               <InviteButton context={"referral"}>
                 <span className={css(styles.referralProgramItem)}>

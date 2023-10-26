@@ -6,8 +6,18 @@ import { styles } from "~/components/Home/sidebar/styles/HomeRightSidebarStyles"
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
 import { RSC } from "~/config/themes/icons";
+import VerificationSmallBanner from "~/components/Verification/VerificationSmallBanner";
 
 export const getEducationalCarouselElements = () => [
+  {
+    title: <></>,
+    body: (
+      <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)} style={{ marginTop: -30 }}>
+        <VerificationSmallBanner />
+      </div>
+    ),
+  },
+
   {
     title: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
@@ -78,7 +88,10 @@ export const getEducationalCarouselElements = () => [
     ),
     body: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
-        Introducing ResearchHub's all-new reference manager: your partner in scholarly research. Streamline your academic workflow with its multiplayer features, effortlessly organizing and citing references across various formats.
+        Introducing ResearchHub's all-new reference manager: your partner in
+        scholarly research. Streamline your academic workflow with its
+        multiplayer features, effortlessly organizing and citing references
+        across various formats.
         <div className={css(DEFAULT_ITEM_STYLE.learnMore)}>
           <ALink
             theme="solidPrimary"

@@ -48,7 +48,7 @@ export default function RhCarouselItem({
       transition={{ duration: 0.5 }}
       variants={variants}
     >
-      <div className={css(styles.title)}>{title}</div>
+      {title && <div className={css(styles.title)}>{title}</div>}
       <div
         className={css(onBodyClick && DEFAULT_ITEM_STYLE.clickableBody)}
         onClick={() => (onBodyClick ? onBodyClick() : null)}

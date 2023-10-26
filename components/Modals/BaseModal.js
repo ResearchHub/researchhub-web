@@ -68,7 +68,7 @@ class BaseModal extends Component {
   /**
    * closes the modal on button click
    */
-  closeModal = () => {
+  closeModal = (e) => {
     if (this.props?.persistent) return;
 
     this.setState({ reveal: false }, () => {
@@ -76,7 +76,7 @@ class BaseModal extends Component {
         this.setState({
           ...this.initialState,
         });
-        this.props.closeModal && this.props.closeModal();
+        this.props.closeModal && this.props.closeModal(e);
       }, 200);
     });
   };
@@ -161,36 +161,38 @@ class BaseModal extends Component {
                   />
                 </div>
               )}
-              <div
-                className={css(
-                  styles.titleContainer,
-                  this.props.backgroundImage && styles.zIndex,
-                  this.props.textAlign === "left" && styles.left
-                )}
-              >
+              {this.props.title && (
                 <div
                   className={css(
-                    styles.title,
-                    this.props.titleStyle && this.props.titleStyle
+                    styles.titleContainer,
+                    this.props.backgroundImage && styles.zIndex,
+                    this.props.textAlign === "left" && styles.left
                   )}
                 >
-                  {this.props.title && typeof this.props.title === "function"
-                    ? this.props.title()
-                    : this.props.title}
-                </div>
-                {this.props.subtitle && (
                   <div
                     className={css(
-                      styles.subtitle,
-                      this.props.subtitleStyle && this.props.subtitleStyle
+                      styles.title,
+                      this.props.titleStyle && this.props.titleStyle
                     )}
                   >
-                    {typeof this.props.subtitle === "function"
-                      ? this.props.subtitle()
-                      : this.props.subtitle}
+                    {this.props.title && typeof this.props.title === "function"
+                      ? this.props.title()
+                      : this.props.title}
                   </div>
-                )}
-              </div>
+                  {this.props.subtitle && (
+                    <div
+                      className={css(
+                        styles.subtitle,
+                        this.props.subtitleStyle && this.props.subtitleStyle
+                      )}
+                    >
+                      {typeof this.props.subtitle === "function"
+                        ? this.props.subtitle()
+                        : this.props.subtitle}
+                    </div>
+                  )}
+                </div>
+              )}
             </Fragment>
           )}
           {this.props.children}
@@ -270,8 +272,8 @@ const styles = StyleSheet.create({
   closeButtonWrapper: {
     position: "absolute",
     cursor: "pointer",
-    top: 0,
-    right: 0,
+    top: 10,
+    right: 10,
     zIndex: 2,
   },
   titleContainer: {
