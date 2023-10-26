@@ -468,6 +468,7 @@ function ReferencesContainer({
         flexDirection="row"
         display="flex"
         sx={{
+          height: "100%",
           maxWidth: {
             xs: "100vw",
             sm: "calc(100vw - 79px)",
