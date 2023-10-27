@@ -592,11 +592,11 @@ const styles = StyleSheet.create({
     // color: colors.ORANGE_DARK2(),
     display: "flex",
     alignItems: "center",
-    columnGap: "10px",
+    columnGap: "6px",
     cursor: "pointer",
   },
   rscIcon: {
-    marginTop: 5,
+    // marginTop: 5,
   },
   leftSidebarFooterIcon: {
     fontSize: 18,
