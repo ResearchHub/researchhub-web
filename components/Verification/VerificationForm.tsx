@@ -387,7 +387,7 @@ const VerificationFormSelectProfileStep = ({
   }>({ count: 0, perPage: 0 });
   const [currentPage, setCurrentPage] = useState<{ num: number }>({ num: 1 });
   const [isVerifying, setIsVerifying] = useState(false);
-  const [name, setName] = useState(providerDataResponse?.name || "");
+  const [name, setName] = useState("Jeffrey Koury");
   const nameRef = useRef(name);
   const [hasAgreedToAuthorTerms, setHasAgreedToAuthorTerms] = useState(false);
   const [hasAgreedToImpersonationTerms, setHasAgreedToImpersonationTerms] =
