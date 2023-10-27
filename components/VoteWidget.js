@@ -26,7 +26,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { faDown, faUp } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { voteWidgetIcons } from "~/config/themes/icons";
-import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { faTwitter, faXTwitter } from "@fortawesome/free-brands-svg-icons";
 import IconButton from "./Icons/IconButton";
 
 const VoteWidget = (props) => {
@@ -285,7 +285,7 @@ const VoteWidget = (props) => {
           data-tip={"The number of tweets this paper received"}
         >
           <FontAwesomeIcon
-            icon={faTwitter}
+            icon={faXTwitter}
             className={css(
               styles.twitterIcon,
               horizontalView && styles.horizontalTwitterIcon
@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
     margin: "0 auto",
     marginTop: 8,
     background: "rgba(240, 240, 240, 0.5)",
-    color: "#1DA1F2",
+    // color: "#1DA1F2",
   },
   horizontalTwitterScore: {
     flexDirection: "row",
