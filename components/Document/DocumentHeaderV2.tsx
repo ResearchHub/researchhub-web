@@ -135,7 +135,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               <div
                 className={css(styles.actionWrapper, styles.largeScreenActions)}
               >
-                {isPaper(doc) && currentUser && metadata && (
+                {/* {isPaper(doc) && currentUser && metadata && (
                   <PaperMetadataModal
                     paper={doc as Paper}
                     metadata={metadata}
@@ -157,8 +157,12 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                       <span>Edit</span>
                     </IconButton>
                   </PaperMetadataModal>
+                )} */}
+                {isPaper(doc) && (
+                  <SaveToRefManager
+                    contentId={doc.unifiedDocument.document?.id}
+                  />
                 )}
-                {isPaper(doc) && <SaveToRefManager />}
                 <PermissionNotificationWrapper
                   modalMessage="edit document"
                   permissionKey="UpdatePaper"
