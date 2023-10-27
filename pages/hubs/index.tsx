@@ -63,7 +63,7 @@ const HubsPage: NextPage<Props> = ({
 
   const firstLoadRef = useRef(true);
 
-  const addQueryParam = ({ param, value }) => {
+  const setQueryParam = ({ param, value }) => {
     // Destructure the current pathname and query
     const { pathname, query } = router;
 
@@ -80,7 +80,7 @@ const HubsPage: NextPage<Props> = ({
   const setPageHubs = async (page) => {
     // @ts-ignore
     setLoading(true);
-    addQueryParam({ param: "page", value: page });
+    setQueryParam({ param: "page", value: page });
     const { hubs } = await getHubs({
       page,
       ordering: sort.value,
@@ -225,6 +225,7 @@ const HubsPage: NextPage<Props> = ({
           direction="bottom-right"
           onSelect={(option) => {
             setSort(option);
+            setQueryParam({ param: "page", value: 1 });
             setPage(1);
           }}
         >
