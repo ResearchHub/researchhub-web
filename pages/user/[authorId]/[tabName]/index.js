@@ -950,8 +950,6 @@ function AuthorPage(props) {
     );
   });
 
-  console.log(name);
-
   return (
     <div
       className={css(styles.profilePageRoot)}
