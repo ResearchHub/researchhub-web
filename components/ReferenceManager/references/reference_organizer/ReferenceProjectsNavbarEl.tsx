@@ -115,11 +115,11 @@ export default function ReferenceProjectsNavbarEl({
         />
         <Typography
           component="div"
-          fontSize={child ? 13 : 14}
-          letterSpacing={"1.2px"}
+          fontSize={14}
           noWrap
-          variant="h6"
+          // variant="span"
           ml={"6px"}
+          sx={{ fontWeight: 400 }}
           color={"#241F3A"}
         >
           {projectName}
