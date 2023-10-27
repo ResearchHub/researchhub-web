@@ -283,7 +283,7 @@ function FeedCard({
     });
 
   return (
-    <Ripples
+    <div
       className={css(
         styles.ripples,
         singleCard ? styles.fullBorder : styles.noBorder
@@ -487,7 +487,7 @@ function FeedCard({
           />
         </div>
       )}
-    </Ripples>
+    </div>
   );
 }
 
@@ -630,7 +630,6 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     justifyContent: "space-between",
-    marginRight: "8px",
     color: colors.BLACK(0.6),
 
     "@media only screen and (max-width: 767px)": {

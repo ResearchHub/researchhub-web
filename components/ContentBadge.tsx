@@ -358,6 +358,7 @@ const styles = StyleSheet.create({
   bountyHovered: {
     position: "absolute",
     transform: "scale(1.1)",
+    zIndex: 5,
     borderRadius: 5,
     ":after": {
       opacity: 1,
