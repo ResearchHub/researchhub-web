@@ -12,6 +12,7 @@ type Args = {
   depth?: number;
   referenceProject: any;
   slug: string;
+  handleClick?: Function;
 };
 
 export function renderNestedReferenceProjectsNavbarEl({
@@ -22,6 +23,7 @@ export function renderNestedReferenceProjectsNavbarEl({
   depth = 0,
   referenceProject,
   slug,
+  handleClick,
 }: Args) {
   const router = useRouter();
   const hasChildren = !isEmpty(referenceProject.children);
@@ -48,6 +50,7 @@ export function renderNestedReferenceProjectsNavbarEl({
         isOpen={childrenOpenMap[referenceProject?.id]}
         addChildrenOpen={addChildrenOpen}
         slug={slug}
+        handleClick={handleClick}
       />
       {hasChildren && childrenOpenMap[referenceProject?.id] && (
         <div
@@ -58,6 +61,7 @@ export function renderNestedReferenceProjectsNavbarEl({
               currentOrgSlug,
               referenceProject: childReferenceProject,
               child: true,
+              handleClick,
               depth: depth + 1,
               addChildrenOpen,
               childrenOpenMap,

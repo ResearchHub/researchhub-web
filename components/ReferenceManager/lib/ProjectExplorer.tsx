@@ -3,7 +3,12 @@ import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationCont
 import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_organizer/renderNestedReferenceProjectsNavbarEl";
 import { useEffect, useState } from "react";
 
-const ProjectExplorer = ({ currentOrgProjects }) => {
+interface Props {
+  currentOrgProjects: any[];
+  handleClick?: Function;
+}
+
+const ProjectExplorer = ({ currentOrgProjects, handleClick }: Props) => {
   const currentOrg = getCurrentUserCurrentOrg();
   const [childrenOpenMap, setChildrenOpenMap] = useState({});
 
@@ -26,6 +31,7 @@ const ProjectExplorer = ({ currentOrgProjects }) => {
       referenceProject,
       addChildrenOpen,
       childrenOpenMap,
+      handleClick,
       slug: `${encodeURIComponent(referenceProject.slug)}`,
     });
   });
