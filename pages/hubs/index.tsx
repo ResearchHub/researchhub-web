@@ -55,6 +55,7 @@ const HubsPage: NextPage<Props> = ({
   const [page, setPage] = useState<number>(1);
   const prevSortValue = useRef(sort);
   const [suggestions, setSuggestions] = useState<HubSuggestion[]>([]);
+  const [showCommentCount, setShowCommentCount] = useState(true);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const { width: winWidth, height: winHeight } = useWindow();
@@ -93,6 +94,13 @@ const HubsPage: NextPage<Props> = ({
     let params = new URL(url).searchParams;
     return params.get(name);
   }
+
+  useEffect(() => {
+    if (winWidth) {
+      const showCommentCount = (winWidth || 0) > breakpoints.medium.int;
+      setShowCommentCount(showCommentCount);
+    }
+  }, [winWidth]);
 
   useEffect(() => {
     const pageParam = getQueryParam("page");
@@ -142,7 +150,6 @@ const HubsPage: NextPage<Props> = ({
   const debouncedSetQuery = debounce(setQuery, 500);
   const hubsToRender =
     query.length > 0 ? suggestions.map((s) => s.hub) : parsedHubs;
-  const showCommentCount = (winWidth || 0) > breakpoints.medium.int;
   const currentUser = getCurrentUser();
   const isModerator = Boolean(currentUser?.moderator);
   const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
