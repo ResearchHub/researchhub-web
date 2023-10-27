@@ -22,6 +22,9 @@ import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import EditHubModal from "~/components/Modals/EditHubModal";
 import Pagination from "~/components/shared/Pagination";
 import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
+import { useRouter } from "next/router";
+import ReactPlaceholder from "react-placeholder/lib";
+import { RectShape } from "react-placeholder/lib/placeholders";
 
 type Props = {
   hubs: any[];
@@ -35,6 +38,7 @@ const HubsPage: NextPage<Props> = ({
   openAddHubModal,
   count,
 }) => {
+  const router = useRouter();
   const sortOpts = [
     { label: "Popular", value: "-paper_count,-discussion_count,id" },
     { label: "Name", value: "name" },
@@ -51,12 +55,55 @@ const HubsPage: NextPage<Props> = ({
   const [page, setPage] = useState<number>(1);
   const prevSortValue = useRef(sort);
   const [suggestions, setSuggestions] = useState<HubSuggestion[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const { width: winWidth, height: winHeight } = useWindow();
   const [noSuggestionsFound, setNoSuggestionsFound] = useState(false);
 
   const firstLoadRef = useRef(true);
+
+  const addQueryParam = ({ param, value }) => {
+    // Destructure the current pathname and query
+    const { pathname, query } = router;
+
+    // Update the specific query parameter you want
+    query[param] = value;
+
+    // Push the new URL to the router
+    router.push({
+      pathname: pathname,
+      query: query,
+    });
+  };
+
+  const setPageHubs = async (page) => {
+    // @ts-ignore
+    setLoading(true);
+    addQueryParam({ param: "page", value: page });
+    const { hubs } = await getHubs({
+      page,
+      ordering: sort.value,
+    });
+    const parsedHubs = hubs.map((hub) => parseHub(hub));
+    setLoading(false);
+    setParsedHubs(parsedHubs);
+  };
+
+  function getQueryParam(name, url = window.location.href) {
+    let params = new URL(url).searchParams;
+    return params.get(name);
+  }
+
+  useEffect(() => {
+    const pageParam = getQueryParam("page");
+    if (pageParam) {
+      const page = parseInt(pageParam, 10);
+      setPage(page);
+      setPageHubs(page);
+    } else {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (query.length === 0) {
@@ -184,16 +231,21 @@ const HubsPage: NextPage<Props> = ({
         </Menu>
       </div>
       <div className={css(styles.cardsWrapper)}>
-        {hubsToRender.map((h) => (
-          <div className={css(styles.hubCardWrapper)} key={h.id}>
-            <HubCard
-              descriptionStyle={styles.hubCardDescription}
-              hub={h}
-              showCommentCount={showCommentCount}
-              canEdit={isModerator || isHubEditor}
-            />
-          </div>
-        ))}
+        <ReactPlaceholder
+          ready={!loading}
+          customPlaceholder={<HubsPlaceholder />}
+        >
+          {hubsToRender.map((h) => (
+            <div className={css(styles.hubCardWrapper)} key={h.id}>
+              <HubCard
+                descriptionStyle={styles.hubCardDescription}
+                hub={h}
+                showCommentCount={showCommentCount}
+                canEdit={isModerator || isHubEditor}
+              />
+            </div>
+          ))}
+        </ReactPlaceholder>
         {noSuggestionsFound && <div>No hubs found.</div>}
       </div>
       <div className={css(styles.pagination)}>
@@ -209,21 +261,35 @@ const HubsPage: NextPage<Props> = ({
           siblingCount={isMobileScreen ? 0 : undefined}
           onChange={(event, page) => {
             const fetchHubs = async () => {
-              // @ts-ignore
-              const { hubs } = await getHubs({
-                page,
-                ordering: sort.value,
-              });
-              const parsedHubs = hubs.map((hub) => parseHub(hub));
-              setParsedHubs(parsedHubs);
+              window.scrollTo({ top: 0 });
+              setPageHubs(page);
               setPage(page);
               // scroll to top
-              window.scrollTo({ top: 0 });
             };
             fetchHubs();
           }}
         />
       </div>
+    </div>
+  );
+};
+
+const HubsPlaceholder = () => {
+  const numPlaceholder = new Array(12).fill(null);
+  return (
+    <div
+      className={"show-loading-animation" + " " + css(styles.hubsPlaceholder)}
+    >
+      {numPlaceholder.map((_, index) => {
+        return (
+          <RectShape
+            color="#efefef"
+            className={css(styles.hubCardWrapper)}
+            style={{ width: "100%", height: 220, marginRight: 0 }}
+            key={index}
+          />
+        );
+      })}
     </div>
   );
 };
@@ -237,6 +303,13 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "calc(50% - 15px)",
     },
+  },
+  hubsPlaceholder: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 20,
+    width: "100%",
+    // gridTemplateColumns: "1fr 1fr 1fr 1fr",
   },
   searchAndFilters: {
     display: "flex",
