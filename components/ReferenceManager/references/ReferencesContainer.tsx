@@ -1053,6 +1053,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     background: "#F5F5F9",
+    overflow: "auto",
   },
   close: {
     marginLeft: "auto",
