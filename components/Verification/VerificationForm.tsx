@@ -190,10 +190,8 @@ const VerificationFormSelectProviderStep = ({
   );
 
   const isAlreadyVerified = currentUser?.authorProfile?.isVerified;
-  const isLinkedInVerified = Boolean(
-    currentUser?.authorProfile?.linkedIn?.linkedInId
-  );
-  const isOrcidVerified = Boolean(currentUser?.authorProfile?.orcid?.orcidId);
+  const isLinkedInVerified = Boolean(isAlreadyVerified && currentUser?.authorProfile?.linkedIn?.linkedInId);
+  const isOrcidVerified = Boolean(isAlreadyVerified && currentUser?.authorProfile?.orcid?.orcidId);
   return (
     <div>
       <div className={css(formStyles.title)}>Become a Verified Author</div>
