@@ -30,7 +30,8 @@ export const getNewestCommentTimestamp = (discussionItem) => {
 
 export const formatTimestamp = (timestamp) => {
   if (!timestamp) {
-    return null;
+    // we return "" so that `null` or `undefined` doesn't show on the UI by accident
+    return "";
   }
   const date = new Date(timestamp);
   return timeAgo.format(date);
