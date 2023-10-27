@@ -32,6 +32,7 @@ type Props = {
   setActiveTab: (tab) => void;
   isOpen: boolean;
   slug: string;
+  handleClick?: Function;
   setIsDeleteModalOpen: () => void;
 };
 
@@ -48,7 +49,7 @@ export default function ReferenceProjectsNavbarEl({
   projectID,
   projectName,
   slug,
-  setActiveTab,
+  handleClick,
   setIsDeleteModalOpen,
 }: Props): ReactElement {
   const {
@@ -66,6 +67,66 @@ export default function ReferenceProjectsNavbarEl({
   const { rowDropped } = useReferencesTableContext();
   const { isRefManagerDisplayedAsDrawer, setIsRefManagerSidebarOpen } =
     navContext();
+
+  const projectItemElement = (
+    <Box
+      sx={{ width: "100%", minWidth: "100%" }}
+      onMouseDown={(event: SyntheticEvent): void => {
+        event.preventDefault();
+        setIsUploadDrawerOpen(false);
+        setProjectIDRefUploader(null);
+        if (isRefManagerDisplayedAsDrawer) {
+          setIsRefManagerSidebarOpen(false);
+        }
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {/* <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} /> */}
+        <FontAwesomeIcon
+          icon={isOpen ? faAngleDown : faAngleRight}
+          color={"rgba(55, 53, 47, 0.35)"}
+          className={css(styles.arrowIcon)}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            addChildrenOpen({ key: projectID, value: !isOpen });
+            const projectIdsOpenv2 =
+              window.localStorage.getItem("projectIdsOpenv2") || "{}";
+
+            const projectIdsJson = JSON.parse(projectIdsOpenv2);
+
+            if (isOpen) {
+              projectIdsJson[projectID] = false;
+            } else {
+              projectIdsJson[projectID] = true;
+            }
+
+            window.localStorage.setItem(
+              "projectIdsOpenv2",
+              JSON.stringify(projectIdsJson)
+            );
+          }}
+        />
+
+        <FontAwesomeIcon
+          icon={faFolder}
+          style={{ marginLeft: 4, fontSize: 16, width: 16 }}
+          color={"#AAA8B4"}
+        />
+        <Typography
+          component="div"
+          fontSize={child ? 13 : 14}
+          letterSpacing={"1.2px"}
+          noWrap
+          variant="h6"
+          ml={"6px"}
+          color={"#241F3A"}
+        >
+          {projectName}
+        </Typography>
+      </div>
+    </Box>
+  );
 
   return (
     <Box
@@ -104,71 +165,18 @@ export default function ReferenceProjectsNavbarEl({
         marginLeft: child ? `${16 * depth}px` : "8px",
       }}
     >
-      <ALink
-        href={`/reference-manager/${orgSlug}/${slug}`}
-        overrideStyle={styles.linkOverride}
-        onClick={() => {
-          setActiveTab("all-references");
-        }}
-      >
-        <Box
-          sx={{ width: "100%", minWidth: "100%" }}
-          onMouseDown={(event: SyntheticEvent): void => {
-            event.preventDefault();
-            setIsUploadDrawerOpen(false);
-            setProjectIDRefUploader(null);
-            if (isRefManagerDisplayedAsDrawer) {
-              setIsRefManagerSidebarOpen(false);
-            }
-          }}
+      {handleClick ? (
+        <div onClick={() => handleClick({ projectID, projectName })}>
+          {projectItemElement}
+        </div>
+      ) : (
+        <ALink
+          href={`/reference-manager/${orgSlug}/${slug}`}
+          overrideStyle={styles.linkOverride}
         >
-          <div style={{ display: "flex", alignItems: "center" }}>
-            {/* <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} /> */}
-            <FontAwesomeIcon
-              icon={isOpen ? faAngleDown : faAngleRight}
-              color={"rgba(55, 53, 47, 0.35)"}
-              className={css(styles.arrowIcon)}
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                addChildrenOpen({ key: projectID, value: !isOpen });
-                const projectIdsOpenv2 =
-                  window.localStorage.getItem("projectIdsOpenv2") || "{}";
-
-                const projectIdsJson = JSON.parse(projectIdsOpenv2);
-
-                if (isOpen) {
-                  projectIdsJson[projectID] = false;
-                } else {
-                  projectIdsJson[projectID] = true;
-                }
-
-                window.localStorage.setItem(
-                  "projectIdsOpenv2",
-                  JSON.stringify(projectIdsJson)
-                );
-              }}
-            />
-
-            <FontAwesomeIcon
-              icon={faFolder}
-              style={{ marginLeft: 4, fontSize: 16, width: 16 }}
-              color={"#AAA8B4"}
-            />
-            <Typography
-              component="div"
-              fontSize={child ? 13 : 14}
-              letterSpacing={"1.2px"}
-              noWrap
-              variant="h6"
-              ml={"6px"}
-              color={"#241F3A"}
-            >
-              {projectName}
-            </Typography>
-          </div>
-        </Box>
-      </ALink>
+          {projectItemElement}
+        </ALink>
+      )}
       {/* {shouldShowOptions && isCurrentUserAdmin && (
         <ReferenceProjectNavbarElOption
           isCurrentUserAdmin={isCurrentUserAdmin}
