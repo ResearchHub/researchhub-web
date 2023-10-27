@@ -17,6 +17,7 @@ export function storeToCookieAndLocalStorage({
 }: Args): StorageType {
   setCookie(null, key, value ?? "", {
     maxAge: 30 * 24 * 60 * 60,
+    path: "/",
   });
   localStorage.setItem(`${storageKeyPrefix}.${key}`, value ?? "");
 }
