@@ -749,8 +749,7 @@ const routes = (BASE_URL) => {
         querystring: params,
       }),
     SORTED_HUB: (params = {}) => {
-      // hard codedlimit to 10
-      let url = BASE_URL + `hub/?page_limit=10&ordering=-score`;
+      let url = BASE_URL + `hub/?ordering=-paper_count,-discussion_count,id`;
 
       return url;
     },

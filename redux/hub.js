@@ -94,7 +94,6 @@ export const HubActions = {
     };
   },
   getTopHubs: (auth) => {
-    // call returns 10 by default
     return (dispatch) => {
       return fetch(API.SORTED_HUB({}), API.GET_CONFIG())
         .then(Helpers.checkStatus)

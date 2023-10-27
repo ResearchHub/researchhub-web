@@ -36,7 +36,7 @@ const HubsPage: NextPage<Props> = ({
   count,
 }) => {
   const sortOpts = [
-    { label: "Popular", value: "-score" },
+    { label: "Popular", value: "-paper_count,-discussion_count,id" },
     { label: "Name", value: "name" },
   ];
 
