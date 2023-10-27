@@ -20,15 +20,23 @@ import { ModalActions } from "~/redux/modals";
 import AddHubModal from "~/components/Modals/AddHubModal";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import EditHubModal from "~/components/Modals/EditHubModal";
+import Pagination from "~/components/shared/Pagination";
+import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
 
 type Props = {
   hubs: any[];
   errorCode?: number;
+  count: number;
 };
 
-const HubsPage: NextPage<Props> = ({ hubs, errorCode, openAddHubModal }) => {
+const HubsPage: NextPage<Props> = ({
+  hubs,
+  errorCode,
+  openAddHubModal,
+  count,
+}) => {
   const sortOpts = [
-    { label: "Popular", value: "score" },
+    { label: "Popular", value: "-paper_count,-discussion_count,id" },
     { label: "Name", value: "name" },
   ];
 
@@ -40,12 +48,15 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode, openAddHubModal }) => {
     hubs.map((hub) => parseHub(hub))
   );
   const [sort, setSort] = useState<MenuOption>(sortOpts[0]);
+  const [page, setPage] = useState<number>(1);
   const prevSortValue = useRef(sort);
   const [suggestions, setSuggestions] = useState<HubSuggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const { width: winWidth, height: winHeight } = useWindow();
   const [noSuggestionsFound, setNoSuggestionsFound] = useState(false);
+
+  const firstLoadRef = useRef(true);
 
   useEffect(() => {
     if (query.length === 0) {
@@ -88,6 +99,7 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode, openAddHubModal }) => {
   const currentUser = getCurrentUser();
   const isModerator = Boolean(currentUser?.moderator);
   const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
+  const isMobileScreen = getIsOnMobileScreenSize();
 
   const addHub = (newHub) => {
     setParsedHubs([...parsedHubs, parseHub(newHub)]);
@@ -159,6 +171,7 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode, openAddHubModal }) => {
           direction="bottom-right"
           onSelect={(option) => {
             setSort(option);
+            setPage(1);
           }}
         >
           <div className={css(styles.sortTrigger)}>
@@ -182,6 +195,34 @@ const HubsPage: NextPage<Props> = ({ hubs, errorCode, openAddHubModal }) => {
           </div>
         ))}
         {noSuggestionsFound && <div>No hubs found.</div>}
+      </div>
+      <div className={css(styles.pagination)}>
+        <Pagination
+          count={Math.ceil(count / 40)}
+          variant="outlined"
+          shape="rounded"
+          color="primary"
+          page={page}
+          // limiting boundary and sibling count reduces width of entire component,
+          // which is useful to prevent overflow/wrappping on mobile.
+          boundaryCount={isMobileScreen ? 1 : undefined}
+          siblingCount={isMobileScreen ? 0 : undefined}
+          onChange={(event, page) => {
+            const fetchHubs = async () => {
+              // @ts-ignore
+              const { hubs } = await getHubs({
+                page,
+                ordering: sort.value,
+              });
+              const parsedHubs = hubs.map((hub) => parseHub(hub));
+              setParsedHubs(parsedHubs);
+              setPage(page);
+              // scroll to top
+              window.scrollTo({ top: 0 });
+            };
+            fetchHubs();
+          }}
+        />
       </div>
     </div>
   );
@@ -216,6 +257,17 @@ const styles = StyleSheet.create({
   },
   createHubButton: {
     marginLeft: "auto",
+  },
+  pagination: {
+    marginTop: 24,
+    marginBottom: 24,
+    display: "flex",
+    justifyContent: "flex-end",
+    // mobile
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      justifyContent: "center",
+      width: "100%",
+    },
   },
   createHubButtonContainer: {
     display: "flex",
@@ -287,11 +339,12 @@ const styles = StyleSheet.create({
 export const getStaticProps: GetStaticProps = async (ctx) => {
   try {
     // @ts-ignore
-    const { hubs } = await getHubs({});
+    const { hubs, count } = await getHubs({});
 
     return {
       props: {
         hubs,
+        count,
       },
       revalidate: 600,
     };

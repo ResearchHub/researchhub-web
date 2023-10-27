@@ -711,7 +711,7 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    HUB: ({ hubId, search, name, slug, ordering }) => {
+    HUB: ({ hubId, search, name, slug, ordering, page }) => {
       let url = BASE_URL + `hub/`;
 
       if (hubId) {
@@ -736,6 +736,10 @@ const routes = (BASE_URL) => {
         url += `ordering=${ordering}&`;
       }
 
+      if (page) {
+        url += `page=${page}&`;
+      }
+
       return url;
     },
     HUB_NEW_EDITOR: BASE_URL + "hub/create_new_editor/",
@@ -745,8 +749,7 @@ const routes = (BASE_URL) => {
         querystring: params,
       }),
     SORTED_HUB: (params = {}) => {
-      // hard codedlimit to 10
-      let url = BASE_URL + `hub/?page_limit=10&ordering=-score`;
+      let url = BASE_URL + `hub/?ordering=-paper_count,-discussion_count,id`;
 
       return url;
     },
