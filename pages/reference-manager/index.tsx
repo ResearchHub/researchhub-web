@@ -51,6 +51,8 @@ export async function getServerSideProps(ctx) {
   const orgResponse = await fetchUserOrgs({ url }, authToken);
   const orgId = cookies["current-org-id"];
   let org = orgResponse[0];
+  console.log(orgId);
+  console.log(cookies);
   if (orgId) {
     org = orgResponse.find((org) => {
       return org.id === parseInt(orgId, 10);

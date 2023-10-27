@@ -53,10 +53,12 @@ export const OrganizationContextProvider = ({ children, user }) => {
   };
 
   useEffect(() => {
-    storeToCookieAndLocalStorage({
-      key: "current-org-id",
-      value: currentOrg.id,
-    });
+    if (currentOrg?.id) {
+      storeToCookieAndLocalStorage({
+        key: "current-org-id",
+        value: currentOrg.id,
+      });
+    }
   }, [currentOrg]);
 
   useEffect(() => {
