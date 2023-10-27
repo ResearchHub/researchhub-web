@@ -180,6 +180,7 @@ const ContributionHeader = ({ entry }: Args) => {
               display: "flex",
               alignItems: "center",
               columnGap: "3px",
+              flexWrap: "wrap",
             }}
           >
             <UserTooltip
