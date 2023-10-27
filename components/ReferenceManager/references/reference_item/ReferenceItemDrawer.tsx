@@ -37,6 +37,7 @@ import Stack from "@mui/material/Stack";
 import ReferenceItemFieldCreatorTagInput from "../../form/ReferenceItemFieldCreatorTagInput";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import dayjs from "dayjs";
+import { useReferencesTableContext } from "../reference_table/context/ReferencesTableContext";
 
 type Props = {};
 
@@ -73,6 +74,8 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
   );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const hasAttachment = !isEmpty(referenceItemDatum?.attachment);
+  const { setReferenceTableRowData, referenceTableRowData } =
+    useReferencesTableContext();
 
   const { currentOrg } = useOrgs();
   useEffect((): void => {
@@ -268,12 +271,19 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
                   citation_type,
                   organization: currentOrg.id,
                 },
-                onSuccess: () => {
-                  setReferencesFetchTime(Date.now());
-                  setTimeout(() => {
-                    setIsSubmitting(false);
-                    setIsDrawerOpen(false);
-                  }, 1000);
+                onSuccess: (res) => {
+                  const newReferenceTableRowData = [
+                    ...referenceTableRowData,
+                  ].map((reference, index) => {
+                    if (reference.id === referenceItemDatum.id) {
+                      return res;
+                    } else {
+                      return reference;
+                    }
+                  });
+                  setReferenceTableRowData(newReferenceTableRowData);
+                  setIsSubmitting(false);
+                  setIsDrawerOpen(false);
                 },
                 onError: emptyFncWithMsg,
               });
