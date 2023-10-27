@@ -24,7 +24,7 @@ import { useEffect, useRef, useState } from "react";
 import App from "next/app";
 import Base from "./Base";
 import nookies from "nookies";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import withRedux from "next-redux-wrapper";
 
 if (process.env.ELASTIC_APM_URL) {
@@ -99,7 +99,8 @@ const MyApp = ({
         console.log("route change complete");
       });
 
-      Router.events.on("routeChangeError", () => {
+      router.events.on("routeChangeError", (err) => {
+        clearTimeout(showLoader.current);
         store.dispatch(MessageActions.showMessage({ show: false }));
       });
       containerLoaded.current = true;
