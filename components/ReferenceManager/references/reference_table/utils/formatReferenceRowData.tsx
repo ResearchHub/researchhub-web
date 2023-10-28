@@ -79,8 +79,6 @@ function formatManuscript(datum: any): ReferenceTableRowDataType {
   const lastAuthor = author[author.length - 1];
   const publishedDate = dayjs(datePartsToDateString(issued)).format("M/D/YY");
 
-  console.log(datum);
-
   const addedDate = dayjs(created_date).format("M/D/YY");
 
   return {
