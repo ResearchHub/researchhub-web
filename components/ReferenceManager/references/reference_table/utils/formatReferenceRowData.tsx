@@ -1,8 +1,6 @@
 import { filterNull } from "~/config/utils/nullchecks";
 import { ID, NullableString } from "~/config/types/root_types";
-import {
-  datePartsToDateString
-} from "../../utils/formatCSLDate";
+import { datePartsToDateString } from "../../utils/formatCSLDate";
 import { ProjectValue } from "../../reference_organizer/context/ReferenceProjectsUpsertContext";
 import dayjs from "dayjs";
 import { genClientId } from "~/config/utils/id";
@@ -24,13 +22,9 @@ export type ReferenceTableRowDataType = {
   is_loading?: boolean;
 };
 
-function formatAuthors(
-  authors: { given: string; family: string }[]
-): string {
+function formatAuthors(authors: { given: string; family: string }[]): string {
   return authors
-    .map(
-      (artistEl) => `${artistEl.given ?? ""} ${artistEl.family ?? ""}`
-    )
+    .map((artistEl) => `${artistEl.given ?? ""} ${artistEl.family ?? ""}`)
     .join(", ");
 }
 
@@ -58,7 +52,9 @@ function formatArtwork(datum: any): ReferenceTableRowDataType {
     id,
   } = datum ?? { fields: {}, author: {} };
   const lastAuthor = author[author.length - 1];
-  const publishedDate = dayjs(datePartsToDateString(issued)).format("YYYY-DD-MM");
+  const publishedDate = dayjs(datePartsToDateString(issued)).format(
+    "YYYY-DD-MM"
+  );
 
   return {
     added_date: created_date.split("T")[0],
@@ -66,9 +62,7 @@ function formatArtwork(datum: any): ReferenceTableRowDataType {
     citation_type,
     title,
     authors: formatAuthors(author),
-    last_author: `${lastAuthor?.given ?? ""} ${
-      lastAuthor?.family ?? ""
-    }`,
+    last_author: `${lastAuthor?.given ?? ""} ${lastAuthor?.family ?? ""}`,
     hubs: "",
     published_date: publishedDate === "Invalid Date" ? null : publishedDate,
     raw_data: datum,
@@ -83,17 +77,19 @@ function formatManuscript(datum: any): ReferenceTableRowDataType {
     id,
   } = datum ?? { fields: {}, author: {} };
   const lastAuthor = author[author.length - 1];
-  const publishedDate = dayjs(datePartsToDateString(issued)).format("YYYY-DD-MM");
+  const publishedDate = dayjs(datePartsToDateString(issued)).format("M/D/YY");
+
+  console.log(datum);
+
+  const addedDate = dayjs(created_date).format("M/D/YY");
 
   return {
-    added_date: created_date.split("T")[0],
+    added_date: addedDate,
     id,
     citation_type,
     title,
     authors: formatAuthors(author),
-    last_author: `${lastAuthor?.given ?? ""} ${
-      lastAuthor?.family ?? ""
-    }`,
+    last_author: `${lastAuthor?.given ?? ""} ${lastAuthor?.family ?? ""}`,
     hubs: "",
     published_date: publishedDate === "Invalid Date" ? null : publishedDate,
     raw_data: datum,
