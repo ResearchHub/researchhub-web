@@ -536,6 +536,8 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     padding: "16px 0px",
+    paddingRight: 16,
+    paddingLeft: 12,
     textDecoration: "none",
     width: "100%",
     height: "100%",
