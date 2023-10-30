@@ -392,13 +392,9 @@ const DownvoteButton = (props) => {
 };
 
 function getScore(props) {
-  const { score, twitterScore } = props;
+  const { score } = props;
   if (doesNotExist(score)) {
     return 0;
-  }
-
-  if (twitterScore) {
-    return parseInt(score, 10) - parseInt(twitterScore, 10);
   }
 
   return score;
