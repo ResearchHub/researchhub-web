@@ -46,6 +46,7 @@ export function getDocumentCard({
           key={`${formattedDocType}-${docID}-${arrIndex}`}
           paper={uniDoc.documents}
           vote={uniDoc.user_vote}
+          score={uniDoc.score}
           featured={uniDoc.featured}
           reviews={uniDoc.reviews}
           bounties={bounties}
