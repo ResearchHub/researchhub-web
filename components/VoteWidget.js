@@ -282,7 +282,7 @@ const VoteWidget = (props) => {
             iconButton && styles.iconButtonTwitterScore
           )}
           data-for={"tweets"}
-          data-tip={"The number of tweets this paper received"}
+          data-tip={"The number of posts on X this paper received"}
         >
           <FontAwesomeIcon
             icon={faXTwitter}
