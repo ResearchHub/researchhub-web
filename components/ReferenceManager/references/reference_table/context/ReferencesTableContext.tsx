@@ -95,7 +95,7 @@ export function ReferencesTableContextProvider({ children }) {
   const openTab = (tab) => {
     const parsedTab = tab;
     parsedTab["title"] = tab.fields.title;
-    parsedTab["id"] = uuidv4();
+    parsedTab["clientId"] = uuidv4();
     const newOpenTabs = [...openedTabs, parsedTab];
     setOpenedTabs(newOpenTabs);
     setActiveTab(tab.id);
