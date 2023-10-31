@@ -274,7 +274,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
               annotationContext && styles.headerWrapperAnnotationContext
             )}
           >
-            {annotationContext && (
+            {(annotationContext || refManagerContext) && (
               <CommentHeaderForAnnotation
                 authorProfile={comment.createdBy.authorProfile}
                 comment={comment}
