@@ -859,16 +859,16 @@ function ReferencesContainer({
                     />
                   </div>
                 </div>
-                {openedTabs.map(({ title: tabName, id }, index) => {
+                {openedTabs.map(({ title: tabName, clientId }, index) => {
                   return (
                     <div
                       className={css(
                         styles.tab,
-                        activeTab === id && styles.activeTab
+                        activeTab === clientId && styles.activeTab
                       )}
                       onClick={() => {
                         setOpenTabIndex(index);
-                        setActiveTab(id);
+                        setActiveTab(clientId);
                       }}
                     >
                       <div className={css(styles.tabName)}>{tabName}</div>
@@ -896,6 +896,7 @@ function ReferencesContainer({
                           openTabIndex === index && styles.display,
                         ]}
                         referenceItemDatum={tab}
+                        citationInstance={{ id: tab.id, type: "citationentry" }}
                         documentInstance={
                           tab.related_unified_doc
                             ? {
