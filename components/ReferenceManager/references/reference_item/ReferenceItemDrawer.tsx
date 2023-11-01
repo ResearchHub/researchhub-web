@@ -104,7 +104,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
             field_key === "issued"
               ? (issued = dayjs(
                   datePartsToDateString(localReferenceFields[field_key])
-                ).format("YYYY-DD-MM")) === "Invalid Date"
+                ).format("M-D-YYYY")) === "Invalid Date"
                 ? null
                 : issued
               : localReferenceFields[field_key],
@@ -171,7 +171,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
         }}
       >
         <Stack direction="row" alignItems="center" spacing={1} mb="24px">
-          <Stack direction="row" alignItems="center" spacing={1}>
+          {/* <Stack direction="row" alignItems="center" spacing={1}>
             <ReferenceItemDrawerButton>
               <InfoOutlinedIcon fontSize="inherit" />
             </ReferenceItemDrawerButton>
@@ -190,7 +190,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
             <ReferenceItemDrawerButton>
               <MoreHorizOutlinedIcon fontSize="inherit" />
             </ReferenceItemDrawerButton>
-          </Stack>
+          </Stack> */}
           <Stack
             alignItems="center"
             direction="row"

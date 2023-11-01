@@ -39,10 +39,9 @@ export function parseDoiSearchResultOntoValueSet({
   setReferenceSchemaValueSet,
   referenceSchemaValueSet,
 }) {
-  const { title, doi, display_name, authorships, publication_date } =
-    doiMetaData ?? {};
+  const { title, doi, display_name, authorships, issued } = doiMetaData ?? {};
   const formattedTitle = title ?? display_name ?? "";
-  setReferenceSchemaValueSet({
+  const schemaSet = {
     attachment: referenceSchemaValueSet.attachment,
     schema: {
       ...referenceSchemaValueSet.schema,
@@ -50,15 +49,15 @@ export function parseDoiSearchResultOntoValueSet({
       author: (authorships ?? []).map(
         (authorship) => authorship.author?.display_name ?? ""
       ),
-      date: !isEmpty(publication_date)
-        ? moment(publication_date).format("MM-DD-YYYY")
-        : "",
+      issued: issued ? moment(issued).format("MM-DD-YYYY") : "",
+      date: !isEmpty(issued) ? moment(issued).format("MM-DD-YYYY") : "",
       DOI: doi,
       title: formattedTitle,
       publication_title: formattedTitle,
     },
     required: referenceSchemaValueSet.required,
-  });
+  };
+  setReferenceSchemaValueSet(schemaSet);
 }
 
 export const handleSubmit = ({

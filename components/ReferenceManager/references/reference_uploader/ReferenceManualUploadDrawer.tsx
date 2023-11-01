@@ -106,6 +106,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
         const label = resolveFieldKeyLabels(schemaField),
           schemaFieldValue = referenceSchemaValueSet.schema[schemaField],
           isRequired = false;
+
         const onChange = (newValue: string): void => {
           setReferenceSchemaValueSet({
             attachment: referenceSchemaValueSet.attachment,

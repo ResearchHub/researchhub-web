@@ -16,6 +16,7 @@ export type ReferenceTableRowDataType = {
   hubs: NullableString;
   last_author: NullableString;
   published_date: NullableString;
+  issued: NullableString;
   raw_data?: any;
   actions?: any;
   attachment?: string;
@@ -52,9 +53,7 @@ function formatArtwork(datum: any): ReferenceTableRowDataType {
     id,
   } = datum ?? { fields: {}, author: {} };
   const lastAuthor = author[author.length - 1];
-  const publishedDate = dayjs(datePartsToDateString(issued)).format(
-    "YYYY-DD-MM"
-  );
+  const publishedDate = dayjs(datePartsToDateString(issued)).format("M-D-YYYY");
 
   return {
     added_date: created_date.split("T")[0],
@@ -64,6 +63,7 @@ function formatArtwork(datum: any): ReferenceTableRowDataType {
     authors: formatAuthors(author),
     last_author: `${lastAuthor?.given ?? ""} ${lastAuthor?.family ?? ""}`,
     hubs: "",
+    issued: publishedDate === "Invalid Date" ? null : publishedDate,
     published_date: publishedDate === "Invalid Date" ? null : publishedDate,
     raw_data: datum,
   };
@@ -77,9 +77,9 @@ function formatManuscript(datum: any): ReferenceTableRowDataType {
     id,
   } = datum ?? { fields: {}, author: {} };
   const lastAuthor = author[author.length - 1];
-  const publishedDate = dayjs(datePartsToDateString(issued)).format("M/D/YY");
+  const publishedDate = dayjs(datePartsToDateString(issued)).format("M-D-YYYY");
 
-  const addedDate = dayjs(created_date).format("M/D/YY");
+  const addedDate = dayjs(created_date).format("M-D-YYYY");
 
   return {
     added_date: addedDate,
@@ -89,6 +89,7 @@ function formatManuscript(datum: any): ReferenceTableRowDataType {
     authors: formatAuthors(author),
     last_author: `${lastAuthor?.given ?? ""} ${lastAuthor?.family ?? ""}`,
     hubs: "",
+    issued: publishedDate === "Invalid Date" ? null : publishedDate,
     published_date: publishedDate === "Invalid Date" ? null : publishedDate,
     raw_data: datum,
     actions: null,
@@ -105,6 +106,7 @@ export function formatLoading(datum): ReferenceTableRowDataType {
     last_author: "load",
     hubs: "load",
     published_date: "load",
+    issued: "load",
     actions: "load",
     is_loading: true,
   };
