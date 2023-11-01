@@ -39,7 +39,15 @@ export function parseDoiSearchResultOntoValueSet({
   setReferenceSchemaValueSet,
   referenceSchemaValueSet,
 }) {
-  const { title, doi, display_name, authorships, issued } = doiMetaData ?? {};
+  const {
+    title,
+    doi,
+    display_name,
+    authorships,
+    issued,
+    issn_l,
+    journal_name,
+  } = doiMetaData ?? {};
   const formattedTitle = title ?? display_name ?? "";
   const schemaSet = {
     attachment: referenceSchemaValueSet.attachment,
@@ -53,7 +61,9 @@ export function parseDoiSearchResultOntoValueSet({
       date: !isEmpty(issued) ? moment(issued).format("MM-DD-YYYY") : "",
       DOI: doi,
       title: formattedTitle,
+      ISSN: issn_l,
       publication_title: formattedTitle,
+      "journal-name": journal_name,
     },
     required: referenceSchemaValueSet.required,
   };

@@ -16,7 +16,9 @@ const labelMap = {
   "number-of-volumes": "Number of volumes",
   "publisher-place": "Place",
   "title-short": "Short title",
-  url: "URL",
+  URL: "URL",
+  ISSN: "ISSN",
+  "journal-name": "Journal Name",
 };
 
 export const resolveFieldKeyLabels = (str: string): string => {
@@ -36,7 +38,7 @@ export const sortSchemaFieldKeys = (fieldKeys: string[]): string[] => {
   keySet.has("abstract") && subResult.push("abstract");
   keySet.has("publication_title") && subResult.push("publication_title");
   keySet.delete("author");
-  keySet.delete("abstract")
+  keySet.delete("abstract");
   keySet.delete("title");
   keySet.delete("publication_title");
   keySet.delete("DOI");
