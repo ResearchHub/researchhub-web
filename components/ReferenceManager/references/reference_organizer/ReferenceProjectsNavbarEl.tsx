@@ -29,7 +29,9 @@ type Props = {
   child: boolean;
   depth: number;
   referenceProject: any;
+  setActiveTab: (tab) => void;
   isOpen: boolean;
+  slug: string;
   setIsDeleteModalOpen: () => void;
 };
 
@@ -46,6 +48,7 @@ export default function ReferenceProjectsNavbarEl({
   projectID,
   projectName,
   slug,
+  setActiveTab,
   setIsDeleteModalOpen,
 }: Props): ReactElement {
   const {
@@ -104,6 +107,9 @@ export default function ReferenceProjectsNavbarEl({
       <ALink
         href={`/reference-manager/${orgSlug}/${slug}`}
         overrideStyle={styles.linkOverride}
+        onClick={() => {
+          setActiveTab("all-references");
+        }}
       >
         <Box
           sx={{ width: "100%", minWidth: "100%" }}

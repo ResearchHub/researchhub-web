@@ -109,6 +109,7 @@ export default function BasicTogglableNavbarLeft({
   const router = useRouter();
   const [childrenOpenMap, setChildrenOpenMap] = useState({});
   const { setActiveProject } = useReferenceActiveProjectContext();
+  const { setActiveTab } = useReferencesTableContext();
 
   useEffect(() => {
     const idsOpen = window.localStorage.getItem("projectIdsOpenv2") || "{}";
@@ -125,6 +126,7 @@ export default function BasicTogglableNavbarLeft({
   const currentOrgSlug = currentOrg?.slug ?? null;
   const refProjectsNavbarEls = currentOrgProjects?.map((referenceProject) => {
     return renderNestedReferenceProjectsNavbarEl({
+      setActiveTab,
       currentOrgSlug: nullthrows(currentOrgSlug, "Org must be present"),
       referenceProject,
       addChildrenOpen,
@@ -146,7 +148,7 @@ export default function BasicTogglableNavbarLeft({
           }}
         >
           <OrganizationPopover isReferenceManager={true} />
-          {/* <div className={css(styles.sidebarButtonsContainer)}>
+          <div className={css(styles.sidebarButtonsContainer)}>
             <div
               className={css(styles.sidebarButton)}
               onClick={openOrgSettingsModal}
@@ -156,7 +158,7 @@ export default function BasicTogglableNavbarLeft({
                 Settings & Members
               </span>
             </div>
-          </div> */}
+          </div>
         </Box>
       </Box>
       <Divider />
