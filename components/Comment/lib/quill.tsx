@@ -116,7 +116,7 @@ export const insertReviewCategory = ({
     insertAtIndex,
     "peer-review-rating",
     {
-      rating: 3,
+      rating: 0,
       category: category.value,
     },
     "silent"

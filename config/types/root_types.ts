@@ -353,3 +353,16 @@ export const parseUser = (raw: any): RHUser => {
 
   return mapped;
 };
+
+export class ErrorWithCode extends Error {
+  code: number;
+
+  constructor({ message, code }) {
+    super(message);
+    this.code = code;
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ErrorWithCode);
+    }
+  }
+}

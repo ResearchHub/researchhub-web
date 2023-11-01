@@ -13,7 +13,13 @@ import {
 } from "./lib/api";
 import { css, StyleSheet } from "aphrodite";
 import { filterOpts, sortOpts } from "./lib/options";
-import { ID, Review, parseReview, parseUser } from "~/config/types/root_types";
+import {
+  ErrorWithCode,
+  ID,
+  Review,
+  parseReview,
+  parseUser,
+} from "~/config/types/root_types";
 import { isEmpty, localWarn } from "~/config/utils/nullchecks";
 import { MessageActions } from "~/redux/message";
 import { Purchase } from "~/config/types/purchase";
@@ -38,6 +44,7 @@ import { useRouter } from "next/router";
 import getReviewCategoryScore from "./lib/quill/getReviewCategoryScore";
 import { captureEvent } from "~/config/utils/events";
 import getCommentFilterByTab from "../Document/lib/getCommentFilterByTab";
+import { genClientId } from "~/config/utils/id";
 
 const { setMessage, showMessage } = MessageActions;
 
@@ -101,6 +108,9 @@ const CommentFeed = ({
   );
   const [currentDocumentId, setCurrentDocumentId] = useState<ID | null>(null);
   const dispatch = useDispatch();
+  const [editorId, setEditorId] = useState<string>(
+    `${editorType}-new-thread-${genClientId()}`
+  );
 
   const handleFetch = async ({
     sort,
@@ -392,6 +402,7 @@ const CommentFeed = ({
   if (isNarrowWidthContext) {
     wrapperProps = { isInitialFetchDone, totalCommentCount };
   }
+
   return (
     <CommentTreeContext.Provider
       value={{
@@ -431,11 +442,26 @@ const CommentFeed = ({
               )}
             >
               <CommentEditor
-                key={`${editorType}-new-thread`}
-                editorId={`${editorType}-new-thread`}
+                key={editorId}
+                editorId={editorId}
                 commentType={editorType}
                 handleSubmit={async (props) => {
                   try {
+                    if (props.commentType === COMMENT_TYPES.REVIEW) {
+                      const reviewScore = getReviewCategoryScore({
+                        quillContents: props.content,
+                        category: "overall",
+                      });
+
+                      if (reviewScore === 0) {
+                        throw new ErrorWithCode({
+                          message:
+                            "Please select a review score before submitting",
+                          code: "NO_REVIEW_SCORE",
+                        });
+                      }
+                    }
+
                     let comment = (await handleRootCommentCreate(
                       props
                     )) as CommentType;
@@ -448,14 +474,25 @@ const CommentFeed = ({
                       comment = { ...comment, review: review as Review };
                     }
                     onCreate({ comment });
+                    setEditorId(`${editorType}-new-thread-${genClientId()}`);
                   } catch (error: any) {
-                    captureEvent({
-                      error,
-                      msg: `Failed to create ${props.commentType}`,
-                      data: {
-                        props,
-                      },
-                    });
+                    if (error instanceof ErrorWithCode) {
+                      dispatch(setMessage(error.message));
+                    } else {
+                      dispatch(
+                        setMessage("Could not create a comment at this time")
+                      );
+                      captureEvent({
+                        error,
+                        msg: `Failed to create ${props.commentType}`,
+                        data: {
+                          props,
+                        },
+                      });
+                    }
+                    // @ts-ignore
+                    dispatch(showMessage({ show: true, error: true }));
+                    throw error;
                   }
                 }}
                 allowBounty={allowBounty}
