@@ -160,7 +160,7 @@ function NavbarRightButtonGroup({
               {"Settings"}
             </div>
           </Link>
-          <Link
+          {/* <Link
             href={{
               pathname: "/referral",
             }}
@@ -172,7 +172,7 @@ function NavbarRightButtonGroup({
               </span>
               {"Referral Program"}
             </div>
-          </Link>
+          </Link> */}
           <div
             className={css(styles.option, styles.lastOption)}
             onClick={() => {

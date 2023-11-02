@@ -101,6 +101,7 @@ const CommentEditor = ({
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
+
   const { quill, quillRef, isReady } = useQuill({
     options: {
       placeholder,
@@ -122,6 +123,7 @@ const CommentEditor = ({
     quillRef,
     isReady,
     commentType: _commentType,
+    editorId,
   });
 
   useEffectHandleClick({
@@ -209,7 +211,7 @@ const CommentEditor = ({
       });
 
       dangerouslySetContent({});
-      _setCommentType(commentTypes.find((t) => t.isDefault)!.value);
+      _setCommentType(_commentType);
       setInterimBounty(null);
       if (minimalMode) {
         setIsMinimalMode(true);

@@ -12,7 +12,13 @@ import {
 } from "./lib/types";
 import { useContext, useState } from "react";
 import CommentEditor from "./CommentEditor";
-import { ID, parseReview, parseUser, Review } from "~/config/types/root_types";
+import {
+  ErrorWithCode,
+  ID,
+  parseReview,
+  parseUser,
+  Review,
+} from "~/config/types/root_types";
 import colors from "./lib/colors";
 import { getOpenBounties, getUserOpenBounties } from "./lib/bounty";
 import Button from "../Form/Button";
@@ -154,7 +160,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
     content: object;
     mentions?: Array<string>;
     commentType: COMMENT_TYPES;
-  }) => {
+  }): Promise<{ success: boolean; comment?: CommentType }> => {
     try {
       const params = {
         content,
@@ -164,6 +170,20 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
         mentions,
         commentType: COMMENT_TYPES.DISCUSSION,
       };
+
+      if (commentType === COMMENT_TYPES.REVIEW) {
+        const reviewScore = getReviewCategoryScore({
+          quillContents: content,
+          category: "overall",
+        });
+
+        if (reviewScore === 0) {
+          throw new ErrorWithCode({
+            message: "Please select a review score before submitting",
+            code: "NO_REVIEW_SCORE",
+          });
+        }
+      }
 
       if (commentType) {
         params["commentType"] = commentType;
@@ -182,10 +202,17 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
       }
 
       commentTreeState.onCreate({ comment: _comment, parent: comment });
+      return { success: true, comment: _comment };
     } catch (error) {
-      dispatch(setMessage("Could not create a comment at this time"));
+      if (error instanceof ErrorWithCode) {
+        dispatch(setMessage(error.message));
+      } else {
+        dispatch(setMessage("Could not create a comment at this time"));
+      }
       // @ts-ignore
       dispatch(showMessage({ show: true, error: true }));
+
+      // Throwing this error is necessary to prevent downstream editor effects within CommentEditor
       throw error;
     }
   };
