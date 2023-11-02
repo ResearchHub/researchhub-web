@@ -1,8 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRedo } from "@fortawesome/pro-solid-svg-icons";
+import { faRedo, faCheck, faTrash } from "@fortawesome/pro-solid-svg-icons";
 import { faFlag } from "@fortawesome/pro-regular-svg-icons";
-import { faCheck } from "@fortawesome/pro-solid-svg-icons";
-import { faTrash } from "@fortawesome/pro-solid-svg-icons";
 import fetchFlaggedContributions, {
   ApiFilters,
   verdictOpts,
@@ -31,6 +29,7 @@ import Loader from "../Loader/Loader";
 import LoadMoreButton from "../LoadMoreButton";
 import removeFlaggedContent from "./api/removeFlaggedContentAPI";
 import ContributionEntry from "./Contribution/ContributionEntry";
+import IconButton from "../Icons/IconButton";
 
 function FlaggedContentDashboard({
   setMessage,
@@ -236,7 +235,11 @@ function FlaggedContentDashboard({
                   },
                 });
               }}
-            />
+            >
+              <IconButton>
+                <span style={{ color: colors.RED() }}>Remove content</span>
+              </IconButton>
+            </FlagButtonV2>
           ),
           label: "Remove Content",
           style: styles.flagAndRemove,
@@ -244,7 +247,7 @@ function FlaggedContentDashboard({
         },
         {
           html: (
-            <span
+            <IconButton
               className={css(
                 styles.bulkAction,
                 styles.checkIcon,
@@ -272,8 +275,8 @@ function FlaggedContentDashboard({
                 }
               }}
             >
-              {<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
-            </span>
+              Dismiss Flag
+            </IconButton>
           ),
           label: "Dismiss Flag",
           // style: styles.flagAndRemove,
@@ -282,7 +285,7 @@ function FlaggedContentDashboard({
       ];
 
       return (
-        (<div className={css(styles.result)} key={r.id}>
+        <div className={css(styles.result)} key={r.id}>
           {r.verdict && !isOneLineAction && (
             <>
               <div
@@ -310,14 +313,16 @@ function FlaggedContentDashboard({
                     {appliedFilters.verdict === "APPROVED" ? (
                       <>
                         <span className={css(styles.icon)}>
-                          &nbsp;{<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
+                          &nbsp;
+                          {<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
                         </span>
                         &nbsp;dismissed flag
                       </>
                     ) : (
                       <>
                         <span className={css(styles.icon, styles.trashIcon)}>
-                          &nbsp;{<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
+                          &nbsp;
+                          {<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
                         </span>
                         &nbsp;removed this content due to{" "}
                         <span className={css(styles.reason)}>
@@ -358,14 +363,16 @@ function FlaggedContentDashboard({
                   appliedFilters.verdict === "APPROVED" ? (
                     <>
                       <span className={css(styles.icon)}>
-                        &nbsp;{<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
+                        &nbsp;
+                        {<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
                       </span>
                       &nbsp;dismissed flag
                     </>
                   ) : (
                     <>
                       <span className={css(styles.icon, styles.trashIcon)}>
-                        &nbsp;{<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
+                        &nbsp;
+                        {<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
                       </span>
                       {/* @ts-ignore */}
                       &nbsp;removed this content due to{" "}
@@ -383,8 +390,7 @@ function FlaggedContentDashboard({
                     &nbsp;flagged this content as{" "}
                     <span className={css(styles.reason)}>
                       {/* @ts-ignore */}
-                      {FLAG_REASON[r.reason] ??
-                        FLAG_REASON["NOT_SPECIFIED"]}
+                      {FLAG_REASON[r.reason] ?? FLAG_REASON["NOT_SPECIFIED"]}
                     </span>
                   </>
                 )}
@@ -417,7 +423,7 @@ function FlaggedContentDashboard({
               />
             </div>
           </div>
-        </div>)
+        </div>
       );
     });
   };
@@ -429,7 +435,7 @@ function FlaggedContentDashboard({
     (v) => String(appliedFilters.verdict) === String(v.value)
   ) || { label: "Open", value: "OPEN" };
   return (
-    (<div className={css(styles.dashboardContainer)}>
+    <div className={css(styles.dashboardContainer)}>
       <div className={css(styles.header)}>
         <div className={css(styles.title)}>
           Flagged Content
@@ -492,11 +498,9 @@ function FlaggedContentDashboard({
                 )}
                 onClick={() => {
                   if (window.confirm("Remove all selected content?")) {
-
                     removeFlaggedContent({
                       apiParams: {
                         flagIds: selectedResultIds,
-                        
                       },
                       onSuccess: () => {
                         setNumNavInteractions(
@@ -519,7 +523,7 @@ function FlaggedContentDashboard({
                   }
                 }}
               >
-                {<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
+                <span style={{ color: colors.RED() }}>Remove Content</span>
               </span>
               <span
                 className={css(
@@ -554,7 +558,7 @@ function FlaggedContentDashboard({
                   }
                 }}
               >
-                {<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
+                <span>Dismiss Flag</span>
               </span>
             </div>
           </div>
@@ -588,7 +592,7 @@ function FlaggedContentDashboard({
           )}
         </>
       )}
-    </div>)
+    </div>
   );
 }
 
@@ -618,12 +622,6 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   flagIcon: {
-    width: 14,
-    height: 14,
-    maxHeight: 14,
-    maxWidth: 14,
-    minWidth: 14,
-    minHeight: 14,
     fontSize: 13,
     border: "0",
     backgroundColor: "none",
@@ -631,10 +629,6 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
     justifyContent: "center",
     color: colors.RED(0.6),
-    ":hover": {
-      backgroundColor: "#EDEDF0",
-      color: "rgba(36, 31, 58, 0.8)",
-    },
   },
   redo: {
     fontSize: 17,
@@ -729,22 +723,10 @@ const styles = StyleSheet.create({
   },
   bulkActionApprove: {},
   checkIcon: {
-    color: colors.GREEN(),
     cursor: "pointer",
-    width: 14,
-    height: 14,
-    maxHeight: 14,
-    maxWidth: 14,
-    minWidth: 14,
-    minHeight: 14,
     fontSize: 13,
     padding: 5,
     borderRadius: "50%",
-    ":hover": {
-      color: "rgba(36, 31, 58, 0.8)",
-      backgroundColor: "#EDEDF0",
-      borderColor: "#d8d8de",
-    },
   },
   bulkActionIcon: {
     marginRight: 10,
