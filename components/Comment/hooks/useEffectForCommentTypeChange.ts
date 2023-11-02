@@ -28,7 +28,6 @@ function useEffectForCommentTypeChange({
     if (!(isReady && quill)) {
       return;
     }
-    console.log("commentType", commentType);
     if (commentType === COMMENT_TYPES.REVIEW) {
       quill?.enable();
 
