@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     padding: "15px 0px 0px 0px",
     marginTop: 0,
     position: "relative",
-    display: "flex",
+    // display: "flex",
     justifyContent: "space-between",
   },
   highlightedContent: {
