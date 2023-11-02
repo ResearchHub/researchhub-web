@@ -16,6 +16,8 @@ import {
 import { parseVote, Vote } from "~/config/types/vote";
 import { formatDateStandard } from "~/config/utils/dates";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { stripHTML } from "~/config/utils/string";
+
 
 export type DocumentFormat = {
   type: "pdf" | "latex";
@@ -166,7 +168,7 @@ export const parseGenericDocument = (raw: any): GenericDocument => {
     createdDate: formatDateStandard(raw.created_date, "MMM D, YYYY"),
     discussionCount: raw.discussion_count || 0,
     userVote: raw.user_vote ? parseVote(raw.user_vote) : null,
-    title: raw.title,
+    title: stripHTML(raw.title),
     createdBy: parseUser(raw.uploaded_by || raw.created_by),
     doi: raw.doi,
     publishedDate: formatDateStandard(raw.created_date, "MMM D, YYYY"),
@@ -184,14 +186,14 @@ export const parsePaper = (raw: any): Paper => {
   const commonAttributes = parseGenericDocument(raw);
   const parsed: Paper = {
     ...commonAttributes,
-    title: raw.paper_title || raw.title,
+    title: stripHTML(raw.paper_title || raw.title),
     authors: parsePaperAuthors(raw),
     journal: raw.external_source,
     isOpenAccess: Boolean(raw.is_open_access),
-    laymanTitle: raw.title,
+    laymanTitle: stripHTML(raw.title),
     publishedDate: formatDateStandard(raw.paper_publish_date, "MMM D, YYYY"),
     externalUrl: raw.url,
-    abstract: raw.abstract,
+    abstract: stripHTML(raw.abstract),
     abstractHtml: raw.abstract_src_markdown,
     type: "paper",
     apiDocumentType: "paper",
