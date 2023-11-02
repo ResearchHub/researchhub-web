@@ -398,7 +398,7 @@ function RootLeftSidebar({
                 )}
               </span>
             </span>
-            <span className={css(formattedFooterTxtItem)}>
+            {/* <span className={css(formattedFooterTxtItem)}>
               <InviteButton context={"referral"}>
                 <span className={css(styles.referralProgramItem)}>
                   {isMinimized ? (
@@ -417,7 +417,7 @@ function RootLeftSidebar({
                   )}
                 </span>
               </InviteButton>
-            </span>
+            </span> */}
             <ALink
               href="https://docs.researchhub.com"
               target="_blank"
