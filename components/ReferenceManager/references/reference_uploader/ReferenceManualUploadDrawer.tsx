@@ -138,6 +138,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
               key={`reference-manual-upload-field-${schemaField}`}
               label={label}
               onChange={onChange}
+              multiline={schemaField === "abstract"}
               placeholder={label}
               required={isRequired}
               value={schemaFieldValue}

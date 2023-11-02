@@ -63,9 +63,9 @@ export default function ReferenceDoiSearchInput({
 
   return (
     <Box
+      className={"reference-doi-search-input"}
       sx={{
         background: "transparent",
-        minHeight: "72px",
         marginBottom: "16px",
         width: "100%",
       }}

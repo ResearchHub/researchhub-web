@@ -47,6 +47,7 @@ export function parseDoiSearchResultOntoValueSet({
     issued,
     issn_l,
     journal_name,
+    abstract,
   } = doiMetaData ?? {};
   const formattedTitle = title ?? display_name ?? "";
   const schemaSet = {
@@ -62,6 +63,7 @@ export function parseDoiSearchResultOntoValueSet({
       DOI: doi,
       title: formattedTitle,
       ISSN: issn_l,
+      abstract,
       publication_title: formattedTitle,
       "journal-name": journal_name,
     },

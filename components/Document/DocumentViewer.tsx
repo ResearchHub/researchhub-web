@@ -538,6 +538,7 @@ const styles = StyleSheet.create({
   },
   uploadFile: {
     height: "100%",
+    paddingTop: 16,
   },
   expandedContent: {
     background: "white",

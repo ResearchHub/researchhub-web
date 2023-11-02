@@ -21,7 +21,7 @@ export default function ReferenceUploadAttachments({
     <Box
       sx={{
         background: "transparent",
-        height: "72px",
+        minHeight: "72px",
         marginBottom: "16px",
         width: "100%",
       }}
