@@ -46,7 +46,10 @@ export function parseDoiSearchResultOntoValueSet({
     authorships,
     issued,
     issn_l,
-    journal_name,
+    issn,
+    url,
+    landing_page_url,
+    source,
     abstract,
   } = doiMetaData ?? {};
   const formattedTitle = title ?? display_name ?? "";
@@ -62,10 +65,11 @@ export function parseDoiSearchResultOntoValueSet({
       date: !isEmpty(issued) ? moment(issued).format("MM-DD-YYYY") : "",
       DOI: doi,
       title: formattedTitle,
-      ISSN: issn_l,
+      ISSN: issn.join(", "),
+      URL: landing_page_url,
       abstract,
+      source: source,
       publication_title: formattedTitle,
-      "journal-name": journal_name,
     },
     required: referenceSchemaValueSet.required,
   };

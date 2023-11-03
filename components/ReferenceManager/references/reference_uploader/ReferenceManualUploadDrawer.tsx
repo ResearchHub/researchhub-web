@@ -210,7 +210,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
           sx={{
             height: "calc(88% - 70px) " /* 70 is the height of footer */,
             padding: "16px 24px",
-            overflow: "scroll",
+            overflow: "auto",
             marginBottom: "100px",
           }}
         >

@@ -35,7 +35,6 @@ export default function ReferenceItemFieldInput({
       className={"reference-field-input"}
       sx={{
         background: "transparent",
-        minHeight: "72px",
         marginBottom: "16px",
         width: "100%",
       }}
