@@ -860,8 +860,6 @@ function ReferencesContainer({
                   </div>
                 </div>
                 {openedTabs.map(({ title: tabName, clientId }, index) => {
-                  console.log(clientId);
-                  console.log(activeTab);
                   return (
                     <div
                       className={css(
