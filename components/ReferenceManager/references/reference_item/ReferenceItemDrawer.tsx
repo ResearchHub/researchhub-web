@@ -104,7 +104,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
             field_key === "issued"
               ? (issued = dayjs(
                   datePartsToDateString(localReferenceFields[field_key])
-                ).format("YYYY-DD-MM")) === "Invalid Date"
+                ).format("M-D-YYYY")) === "Invalid Date"
                 ? null
                 : issued
               : localReferenceFields[field_key],
@@ -134,6 +134,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
               formID={field_key}
               key={`reference-item-tab-input-${field_key}`}
               label={label}
+              multiline={field_key === "abstract"}
               onChange={(newValue: string): void => {
                 setLocalReferenceFields({
                   ...localReferenceFields,
@@ -163,6 +164,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
       }}
     >
       <Box
+        className={"reference-item-drawer"}
         sx={{
           padding: "32px 24px 0",
           background: "rgb(250 250 252)",
@@ -170,8 +172,8 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
           width: "472px",
         }}
       >
-        <Stack direction="row" alignItems="center" spacing={1} mb="24px">
-          <Stack direction="row" alignItems="center" spacing={1}>
+        <Stack direction="row" alignItems="center" spacing={1}>
+          {/* <Stack direction="row" alignItems="center" spacing={1}>
             <ReferenceItemDrawerButton>
               <InfoOutlinedIcon fontSize="inherit" />
             </ReferenceItemDrawerButton>
@@ -190,12 +192,15 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
             <ReferenceItemDrawerButton>
               <MoreHorizOutlinedIcon fontSize="inherit" />
             </ReferenceItemDrawerButton>
-          </Stack>
+          </Stack> */}
           <Stack
             alignItems="center"
             direction="row"
             justifyContent="flex-end"
             width="100%"
+            position="absolute"
+            top="24px"
+            right="24px"
           >
             <ReferenceItemDrawerButton
               onClick={() => {

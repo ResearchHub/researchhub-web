@@ -1031,7 +1031,7 @@ const styles = StyleSheet.create({
   },
   documentViewerClass: {
     overflow: "auto",
-    height: "calc(100vh - 48px - 68px)",
+    height: "calc(100vh - 45px - 68px)",
     display: "flex",
     justifyContent: "center",
     display: "none",

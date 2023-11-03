@@ -5,6 +5,9 @@ export type CSLDateParts = {
 };
 
 export const datePartsToDateString = (dateParts: CSLDateParts): array => {
+  if (typeof dateParts === "string") {
+    return dateParts;
+  }
   if (isEmpty(dateParts)) {
     return [];
   }
@@ -12,15 +15,15 @@ export const datePartsToDateString = (dateParts: CSLDateParts): array => {
   const date = dateParts["date-parts"];
 
   if (date) {
-    return date[0];
+    return date.join("-");
   }
   return [];
 };
 
 export const stringToDateParts = (dateString: string): CSLDateParts => {
-  const dateParts = dateString.split(/[-,./]/, 0);
+  const dateParts = dateString.split(/[-/]/);
   if (dateParts.length === 0) {
     return {};
   }
-  return {"date-parts": dateParts};
+  return { "date-parts": dateParts };
 };

@@ -534,10 +534,11 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     marginTop: 0,
-    overflow: "scroll",
+    overflow: "auto",
   },
   uploadFile: {
     height: "100%",
+    paddingTop: 16,
   },
   expandedContent: {
     background: "white",

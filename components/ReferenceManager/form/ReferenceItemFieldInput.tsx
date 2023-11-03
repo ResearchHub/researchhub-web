@@ -17,12 +17,14 @@ export type InputProps = {
   placeholder?: string;
   required?: boolean;
   value?: any;
+  multiline?: boolean;
 };
 
 export default function ReferenceItemFieldInput({
   disabled,
   formID,
   label,
+  multiline,
   onChange,
   placeholder,
   required = false,
@@ -30,9 +32,9 @@ export default function ReferenceItemFieldInput({
 }: InputProps): ReactElement {
   return (
     <Box
+      className={"reference-field-input"}
       sx={{
         background: "transparent",
-        height: "72px",
         marginBottom: "16px",
         width: "100%",
       }}
@@ -53,6 +55,7 @@ export default function ReferenceItemFieldInput({
       <OutlinedInput
         disabled={Boolean(disabled)}
         fullWidth
+        multiline={multiline}
         onClick={silentEmptyFnc}
         id={formID}
         onChange={(event: ChangeEvent<HTMLInputElement>) => {

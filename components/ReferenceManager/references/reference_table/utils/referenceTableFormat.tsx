@@ -2,6 +2,7 @@ import { GridColDef } from "@mui/x-data-grid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowTurnUp, faFolder } from "@fortawesome/pro-solid-svg-icons";
 import { faFileLines } from "@fortawesome/pro-regular-svg-icons";
+import dayjs from "dayjs";
 
 export const columnsFormat: GridColDef[] = [
   { field: "id", headerName: "", width: 0 },
@@ -63,10 +64,15 @@ export const columnsFormat: GridColDef[] = [
   //   //   `${params.row.firstName || ""} ${params.row.lastName || ""}`,
   // },
   {
-    field: "published_date",
+    field: "issued",
     headerName: "Publication Date",
-    type: "string",
     width: 140,
+    renderCell: (cell) => {
+      if (cell.row.published_date) {
+        return <div>{dayjs(cell.row.published_date).format("M-D-YYYY")}</div>;
+      }
+      return <div>{cell.value}</div>;
+    },
   },
   {
     field: "added_date",

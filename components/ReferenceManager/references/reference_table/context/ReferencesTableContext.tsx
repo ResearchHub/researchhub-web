@@ -98,7 +98,7 @@ export function ReferencesTableContextProvider({ children }) {
     parsedTab["clientId"] = uuidv4();
     const newOpenTabs = [...openedTabs, parsedTab];
     setOpenedTabs(newOpenTabs);
-    setActiveTab(tab.id);
+    setActiveTab(parsedTab["clientId"]);
     setOpenTabIndex(newOpenTabs.length - 1);
   };
 

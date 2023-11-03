@@ -106,6 +106,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
         const label = resolveFieldKeyLabels(schemaField),
           schemaFieldValue = referenceSchemaValueSet.schema[schemaField],
           isRequired = false;
+
         const onChange = (newValue: string): void => {
           setReferenceSchemaValueSet({
             attachment: referenceSchemaValueSet.attachment,
@@ -137,6 +138,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
               key={`reference-manual-upload-field-${schemaField}`}
               label={label}
               onChange={onChange}
+              multiline={schemaField === "abstract"}
               placeholder={label}
               required={isRequired}
               value={schemaFieldValue}
@@ -208,7 +210,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
           sx={{
             height: "calc(88% - 70px) " /* 70 is the height of footer */,
             padding: "16px 24px",
-            overflow: "scroll",
+            overflow: "auto",
             marginBottom: "100px",
           }}
         >

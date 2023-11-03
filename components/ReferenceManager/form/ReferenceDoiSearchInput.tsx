@@ -63,9 +63,9 @@ export default function ReferenceDoiSearchInput({
 
   return (
     <Box
+      className={"reference-doi-search-input"}
       sx={{
         background: "transparent",
-        height: "72px",
         marginBottom: "16px",
         width: "100%",
       }}
@@ -138,7 +138,15 @@ export default function ReferenceDoiSearchInput({
         </Box>
       </Box>
       {!isEmpty(searchFailMsg) && (
-        <div style={{ color: colors.RED(), width: "100%", fontSize: 14 }}>
+        <div
+          style={{
+            color: colors.RED(),
+            width: "100%",
+            fontSize: 14,
+            marginTop: 8,
+            marginBottom: 8,
+          }}
+        >
           {searchFailMsg}
         </div>
       )}
