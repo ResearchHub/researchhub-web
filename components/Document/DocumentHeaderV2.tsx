@@ -35,7 +35,10 @@ import PaperMetadataModal from "./PaperMetadataModal";
 import DocumentOptions from "./DocumentOptions";
 import DocumentHubs from "./lib/DocumentHubs";
 import SaveToRefManager from "./lib/SaveToRefManager";
-
+import {
+  ReferenceProjectsUpsertContextProvider,
+  useReferenceProjectUpsertContext,
+} from "~/components/ReferenceManager/references/reference_organizer/context/ReferenceProjectsUpsertContext";
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
 );
@@ -159,9 +162,11 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                   </PaperMetadataModal>
                 )} */}
                 {isPaper(doc) && (
-                  <SaveToRefManager
-                    contentId={doc.unifiedDocument.document?.id}
-                  />
+                  <ReferenceProjectsUpsertContextProvider>
+                    <SaveToRefManager
+                      contentId={doc.unifiedDocument.document?.id}
+                    />
+                  </ReferenceProjectsUpsertContextProvider>
                 )}
                 <PermissionNotificationWrapper
                   modalMessage="edit document"

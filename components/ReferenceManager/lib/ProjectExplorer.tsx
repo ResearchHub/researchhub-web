@@ -4,12 +4,16 @@ import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_o
 import { useEffect, useState } from "react";
 
 interface Props {
+  currentOrg: any;
   currentOrgProjects: any[];
   handleClick?: Function;
 }
 
-const ProjectExplorer = ({ currentOrgProjects, handleClick }: Props) => {
-  const currentOrg = getCurrentUserCurrentOrg();
+const ProjectExplorer = ({
+  currentOrg,
+  currentOrgProjects,
+  handleClick,
+}: Props) => {
   const [childrenOpenMap, setChildrenOpenMap] = useState({});
 
   useEffect(() => {
