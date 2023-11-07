@@ -38,6 +38,7 @@ import { useReferenceActiveProjectContext } from "../ReferenceManager/references
 import { useOrgs } from "../contexts/OrganizationContext";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { updateReferenceCitationFile } from "../ReferenceManager/references/api/updateReferenceCitation";
+import { useReferencesTableContext } from "../ReferenceManager/references/reference_table/context/ReferencesTableContext";
 
 const AnnotationLayer = dynamic(
   () => import("~/components/Comment/modules/annotation/AnnotationLayer")
@@ -122,6 +123,7 @@ const DocumentViewer = ({
     visibilityPreferenceForViewingComments,
     setVisibilityPreferenceForViewingComments,
   ] = useState<VisibilityPreferenceForViewingComments>(defaultPrivacyFilter);
+  const { setOpenedTabs, openedTabs } = useReferencesTableContext();
 
   const { activeProject } = useReferenceActiveProjectContext();
 
@@ -345,6 +347,14 @@ const DocumentViewer = ({
             attachment: URL.createObjectURL(acceptedFiles[0]),
           });
         setUploadingPdf(false);
+        const newOpenedTabs = openedTabs.map((tab) => {
+          if (referenceItemDatum.id === tab.id) {
+            tab.attachment = URL.createObjectURL(acceptedFiles[0]);
+          }
+          return tab;
+        });
+
+        setOpenedTabs(newOpenedTabs);
       },
     });
   };

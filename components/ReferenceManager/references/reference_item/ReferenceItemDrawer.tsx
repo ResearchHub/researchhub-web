@@ -220,9 +220,8 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
         {hasAttachment ? (
           <div
             style={{
-              height: "20%",
-              maxHeight: "20%",
-              marginBottom: "440px",
+              height: 600,
+              marginBottom: "32px",
             }}
           >
             <iframe
