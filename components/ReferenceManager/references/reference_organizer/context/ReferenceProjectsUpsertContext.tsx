@@ -59,6 +59,7 @@ export function ReferenceProjectsUpsertContextProvider({ children }) {
   const [projectValue, setProjectValue] = useState<ProjectValue>(
     DEFAULT_PROJECT_VALUES
   );
+
   const [projectsFetchTime, setProjectsFetchTime] = useState<number>(
     Date.now()
   );
