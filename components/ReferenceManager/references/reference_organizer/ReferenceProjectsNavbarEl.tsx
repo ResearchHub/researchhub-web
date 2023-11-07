@@ -16,6 +16,7 @@ import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
 import { faFolder, faFolders } from "@fortawesome/pro-solid-svg-icons";
 import { navContext } from "~/components/contexts/NavigationContext";
 import { useReferencesTableContext } from "../reference_table/context/ReferencesTableContext";
+import { faFolderPlus } from "@fortawesome/pro-regular-svg-icons";
 
 type Props = {
   active: boolean;
@@ -177,7 +178,22 @@ export default function ReferenceProjectsNavbarEl({
           {projectItemElement}
         </ALink>
       )}
-      {/* {shouldShowOptions && isCurrentUserAdmin && (
+      <div>
+      <div>
+        <FontAwesomeIcon
+          icon={faFolderPlus}
+          style={{ marginLeft: 4, fontSize: 16, width: 16 }}
+          color={"#AAA8B4"}
+          onClick={(e) => {
+            alert('yo')
+            e.stopPropagation();
+            e.preventDefault()
+
+            setIsProjectUpsertModalOpen(true)
+          }}          
+        />
+      </div>
+      {shouldShowOptions && isCurrentUserAdmin && (
         <ReferenceProjectNavbarElOption
           isCurrentUserAdmin={isCurrentUserAdmin}
           projectID={projectID}
@@ -212,7 +228,8 @@ export default function ReferenceProjectsNavbarEl({
           }}
           setShouldShowOptions={setShouldShowOptions}
         />
-      )} */}
+      )}
+      </div>
     </Box>
   );
 }
