@@ -6,6 +6,7 @@ import { ID, NullableString } from "~/config/types/root_types";
 export type ReferenceSchemaValueSet = {
   attachment: File | null;
   schema: any;
+  signedUrl?: string;
   required: string[];
 };
 
@@ -24,6 +25,7 @@ export const DEFAULT_REF_SCHEMA_SET: ReferenceSchemaValueSet = {
   attachment: null,
   schema: {},
   required: [],
+  signedUrl: "",
 };
 
 export const DEFAULT_UPLOAD_DRAWER_CONTEXT_VALUE: ReferenceUploadDrawerContextType =
