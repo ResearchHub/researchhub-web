@@ -179,56 +179,55 @@ export default function ReferenceProjectsNavbarEl({
         </ALink>
       )}
       <div>
-      <div>
-        <FontAwesomeIcon
-          icon={faFolderPlus}
-          style={{ marginLeft: 4, fontSize: 16, width: 16 }}
-          color={"#AAA8B4"}
-          onClick={(e) => {
-            alert('yo')
-            e.stopPropagation();
-            e.preventDefault()
-
-            setIsProjectUpsertModalOpen(true)
-          }}          
-        />
-      </div>
-      {shouldShowOptions && isCurrentUserAdmin && (
-        <ReferenceProjectNavbarElOption
-          isCurrentUserAdmin={isCurrentUserAdmin}
-          projectID={projectID}
-          projectName={projectName}
-          setIsDeleteModalOpen={setIsDeleteModalOpen}
-          onSelectAddNewReference={(event: SyntheticEvent): void => {
-            event.preventDefault();
-            setProjectIDRefUploader(projectID);
-            setIsUploadDrawerOpen(true);
-          }}
-          onSelectCreateSubProject={(event: SyntheticEvent): void => {
-            event.preventDefault();
-            setProjectIDRefUploader(null);
-            setIsUploadDrawerOpen(false);
-            setProjectUpsertPurpose("create_sub_project");
-            setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID });
-            setIsProjectUpsertModalOpen(true);
-          }}
-          onSelectEditProject={(event: SyntheticEvent): void => {
-            event.preventDefault();
-            setProjectIDRefUploader(null);
-            setIsUploadDrawerOpen(false);
-            setProjectUpsertPurpose("update");
-            setProjectUpsertValue({
-              ...DEFAULT_PROJECT_VALUES,
-              collaborators,
-              projectID,
-              projectName,
-              isPublic,
-            });
-            setIsProjectUpsertModalOpen(true);
-          }}
-          setShouldShowOptions={setShouldShowOptions}
-        />
-      )}
+        <div>
+          <FontAwesomeIcon
+            icon={faFolderPlus}
+            style={{ marginLeft: 4, fontSize: 16, width: 16 }}
+            color={"#AAA8B4"}
+            onClick={(e) => {
+              e.stopPropagation();
+              setProjectUpsertPurpose("create_sub_project");
+              setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID });
+              setIsProjectUpsertModalOpen(true);
+            }}
+          />
+        </div>
+        {shouldShowOptions && isCurrentUserAdmin && (
+          <ReferenceProjectNavbarElOption
+            isCurrentUserAdmin={isCurrentUserAdmin}
+            projectID={projectID}
+            projectName={projectName}
+            setIsDeleteModalOpen={setIsDeleteModalOpen}
+            onSelectAddNewReference={(event: SyntheticEvent): void => {
+              event.preventDefault();
+              setProjectIDRefUploader(projectID);
+              setIsUploadDrawerOpen(true);
+            }}
+            onSelectCreateSubProject={(event: SyntheticEvent): void => {
+              event.preventDefault();
+              setProjectIDRefUploader(null);
+              setIsUploadDrawerOpen(false);
+              setProjectUpsertPurpose("create_sub_project");
+              setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID });
+              setIsProjectUpsertModalOpen(true);
+            }}
+            onSelectEditProject={(event: SyntheticEvent): void => {
+              event.preventDefault();
+              setProjectIDRefUploader(null);
+              setIsUploadDrawerOpen(false);
+              setProjectUpsertPurpose("update");
+              setProjectUpsertValue({
+                ...DEFAULT_PROJECT_VALUES,
+                collaborators,
+                projectID,
+                projectName,
+                isPublic,
+              });
+              setIsProjectUpsertModalOpen(true);
+            }}
+            setShouldShowOptions={setShouldShowOptions}
+          />
+        )}
       </div>
     </Box>
   );

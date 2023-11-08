@@ -104,8 +104,10 @@ export default function BasicTogglableNavbarLeft({
   openOrgSettingsModal,
   currentOrgProjects,
 }: Props) {
-  const { setIsModalOpen: setIsProjectsUpsertModalOpen } =
-    useReferenceProjectUpsertContext();
+  const {
+    setIsModalOpen: setIsProjectsUpsertModalOpen,
+    setUpsertPurpose: setProjectUpsertPurpose,
+  } = useReferenceProjectUpsertContext();
   const currentOrg = getCurrentUserCurrentOrg();
   const router = useRouter();
   // const [childrenOpenMap, setChildrenOpenMap] = useState({});
@@ -204,6 +206,7 @@ export default function BasicTogglableNavbarLeft({
           }}
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();
+            setProjectUpsertPurpose("create_sub_project");
             setIsProjectsUpsertModalOpen(true);
           }}
         >

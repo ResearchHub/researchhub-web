@@ -45,6 +45,7 @@ export default function ReferenceProjectsUpsertModal({
     resetContext,
     setProjectValue,
     upsertPurpose,
+    redirectAfterUpsert,
   } = useReferenceProjectUpsertContext();
 
   const { resetProjectsFetchTime, setActiveProject, flattenCollaborators } =
@@ -68,6 +69,7 @@ export default function ReferenceProjectsUpsertModal({
 
   const handleSubmit = () => {
     const { collaborators, isPublic, projectID, projectName } = projectValue;
+
     setIsLoading(true);
     const formattedPayload = {
       project: upsertPurpose === "update" ? projectID : undefined,
@@ -102,6 +104,10 @@ export default function ReferenceProjectsUpsertModal({
         onUpsertSuccess && onUpsertSuccess(result);
         handleCloseModal();
         setIsLoading(false);
+
+        if (!redirectAfterUpsert) {
+          return;
+        }
 
         if (!router.query.slug) {
           setReferenceTableRowData([]);

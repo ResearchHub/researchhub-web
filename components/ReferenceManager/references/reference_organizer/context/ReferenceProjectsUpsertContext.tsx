@@ -22,6 +22,8 @@ export type ReferenceProjectsUpsertContextValueType = {
   setProjectValue: (value: ProjectValue) => void;
   setUpsertPurpose: (value: UpsertPurpose) => void;
   upsertPurpose: UpsertPurpose;
+  redirectAfterUpsert: boolean;
+  setRedirectAfterUpsert: (value: boolean) => void;
 };
 export const DEFAULT_PROJECT_VALUES: ProjectValue = {
   children: [],
@@ -41,6 +43,8 @@ export const DEFAULT_REFERENCE_PROJECT_UPSERT_CONTEXT_VALUE: ReferenceProjectsUp
     setProjectValue: silentEmptyFnc,
     setUpsertPurpose: silentEmptyFnc,
     upsertPurpose: "create",
+    redirectAfterUpsert: false,
+    setRedirectAfterUpsert: silentEmptyFnc,
   };
 
 export const ReferencesTabContext: Context<ReferenceProjectsUpsertContextValueType> =
@@ -55,6 +59,7 @@ export const useReferenceProjectUpsertContext =
 
 export function ReferenceProjectsUpsertContextProvider({ children }) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [redirectAfterUpsert, setRedirectAfterUpsert] = useState<boolean>(true);
   const [upsertPurpose, setUpsertPurpose] = useState<UpsertPurpose>("create");
   const [projectValue, setProjectValue] = useState<ProjectValue>(
     DEFAULT_PROJECT_VALUES
@@ -75,10 +80,12 @@ export function ReferenceProjectsUpsertContextProvider({ children }) {
         isModalOpen,
         projectsFetchTime,
         projectValue,
+        redirectAfterUpsert,
         resetContext,
         setIsModalOpen,
         setProjectValue,
         setUpsertPurpose,
+        setRedirectAfterUpsert,
         upsertPurpose,
       }}
     >

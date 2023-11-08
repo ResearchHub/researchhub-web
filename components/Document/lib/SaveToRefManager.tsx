@@ -38,6 +38,7 @@ import {
 } from "~/components/ReferenceManager/references/reference_organizer/context/ReferenceProjectsUpsertContext";
 import ReferenceProjectsUpsertModal from "~/components/ReferenceManager/references/reference_organizer/ReferenceProjectsUpsertModal";
 import { useDispatch } from "react-redux";
+import { silentEmptyFnc } from "~/config/utils/nullchecks";
 
 interface Props {
   contentId: ID;
@@ -88,7 +89,12 @@ const SaveToRefManager = ({ contentId, contentType }: Props) => {
     setIsModalOpen: setIsProjectUpsertModalOpen,
     setProjectValue: setProjectUpsertValue,
     setUpsertPurpose: setProjectUpsertPurpose,
+    setRedirectAfterUpsert,
   } = useReferenceProjectUpsertContext();
+
+  useEffect(() => {
+    setRedirectAfterUpsert(false);
+  }, []);
 
   useEffect(() => {
     if (selectedOrg) {
@@ -113,10 +119,28 @@ const SaveToRefManager = ({ contentId, contentType }: Props) => {
       setCurrentOrg(orgs[0]);
     }
   }, [orgs]);
-
+  console.log("orgProjects", orgProjects);
   return (
     <>
-      <ReferenceProjectsUpsertModal onUpsertSuccess={() => alert(1)} />
+      <ReferenceProjectsUpsertModal
+        onUpsertSuccess={(project) => {
+          // if (project.parent) {
+          //   orgProjects.find
+          // }
+
+          fetchReferenceOrgProjects({
+            onError: () => {
+              silentEmptyFnc();
+            },
+            onSuccess: (payload): void => {
+              setOrgProjects(payload ?? []);
+            },
+            payload: {
+              organization: selectedOrg.id,
+            },
+          });
+        }}
+      />
       <div className={css(styles.wrapper)}>
         <IconButton variant="round" onClick={() => setIsOpen(!isOpen)}>
           {isSaved ? (
@@ -247,6 +271,7 @@ const SaveToRefManager = ({ contentId, contentType }: Props) => {
                       className={css(styles.select)}
                       onClick={(event): void => {
                         event.preventDefault();
+                        setProjectUpsertPurpose("create");
                         setIsProjectUpsertModalOpen(true);
                       }}
                     >
