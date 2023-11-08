@@ -164,7 +164,9 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                 {isPaper(doc) && (
                   <ReferenceProjectsUpsertContextProvider>
                     <SaveToRefManager
+                      contentType={"paper"}
                       contentId={doc.unifiedDocument.document?.id}
+                      unifiedDocumentId={doc.unifiedDocument.id}
                     />
                   </ReferenceProjectsUpsertContextProvider>
                 )}

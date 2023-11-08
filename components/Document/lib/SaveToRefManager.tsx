@@ -18,7 +18,7 @@ import { StyleSheet, css } from "aphrodite";
 import { fetchReferenceOrgProjects } from "~/components/ReferenceManager/references/reference_organizer/api/fetchReferenceOrgProjects";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import colors from "~/config/themes/colors";
-import { ID } from "~/config/types/root_types";
+import { ID, RhDocumentType } from "~/config/types/root_types";
 import API, { generateApiUrl, buildQueryString } from "~/config/api";
 import Helpers from "~/config/api/helpers";
 import Button from "~/components/Form/Button";
@@ -42,7 +42,8 @@ import { silentEmptyFnc } from "~/config/utils/nullchecks";
 
 interface Props {
   contentId: ID;
-  contentType: ContentInstance;
+  contentType: RhDocumentType;
+  unifiedDocumentId: ID;
 }
 
 const saveToRefManagerApi = ({ paperId, orgId }) => {
@@ -62,7 +63,29 @@ const saveToRefManagerApi = ({ paperId, orgId }) => {
     });
 };
 
-const SaveToRefManager = ({ contentId, contentType }: Props) => {
+const isDocAlreadySaved = ({ orgId, unifiedDocumentId }) => {
+  const url = generateApiUrl(
+    `citation_entry/${unifiedDocumentId}/check_paper_in_reference_manager`
+  );
+
+  return fetch(
+    url,
+    API.GET_CONFIG(
+      undefined,
+      orgId ? { "x-organization-id": orgId } : undefined
+    )
+  )
+    .then((res): any => Helpers.parseJSON(res))
+    .catch((error) => {
+      console.log("error", error);
+    });
+};
+
+const SaveToRefManager = ({
+  contentId,
+  contentType,
+  unifiedDocumentId,
+}: Props) => {
   const dispatch = useDispatch();
   const [orgProjects, setOrgProjects] = useState([]);
   const [isSaved, setIsSaved] = useState(false);
@@ -84,6 +107,23 @@ const SaveToRefManager = ({ contentId, contentType }: Props) => {
     ),
   });
   const { orgs, setCurrentOrg } = useOrgs();
+
+  useEffect(() => {
+    (async () => {
+      if (selectedOrg) {
+        const res = await isDocAlreadySaved({
+          orgId: selectedOrg.id,
+          unifiedDocumentId,
+        });
+        if (res.detail === true) {
+          setIsSaved(true);
+        } else {
+          setIsSaved(false);
+        }
+        console.log("isDocAlreadySav2ed", res);
+      }
+    })();
+  }, [selectedOrg]);
 
   const {
     setIsModalOpen: setIsProjectUpsertModalOpen,
