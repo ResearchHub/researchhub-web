@@ -62,7 +62,7 @@ export async function getServerSideProps(ctx) {
       calloutOpen,
     },
     redirect: {
-      destination: `/reference-manager/${org.slug}/?org_refs=true`,
+      destination: `/reference-manager/${org.slug}/my-library`,
       permanent: false,
     },
   };
