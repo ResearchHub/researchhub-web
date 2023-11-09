@@ -87,7 +87,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
           ...referenceItemDatum?.fields,
           author: referenceItemDatum?.fields?.author
             .map((creator): string => {
-              return `${creator.given} ${creator.family}`;
+              return `${creator.given || ""} ${creator.family || ""}`.trim();
             })
             .join(", "),
         } ?? {}
