@@ -110,33 +110,9 @@ export default function BasicTogglableNavbarLeft({
   } = useReferenceProjectUpsertContext();
   const currentOrg = getCurrentUserCurrentOrg();
   const router = useRouter();
-  // const [childrenOpenMap, setChildrenOpenMap] = useState({});
   const { setActiveProject } = useReferenceActiveProjectContext();
   const { setActiveTab } = useReferencesTableContext();
-
-  // useEffect(() => {
-  //   const idsOpen = window.localStorage.getItem("projectIdsOpenv2") || "{}";
-  //   const childrenOpenMap = JSON.parse(idsOpen);
-  //   setChildrenOpenMap(childrenOpenMap);
-  // }, []);
-
-  // const addChildrenOpen = ({ key, value }) => {
-  //   const map = { ...childrenOpenMap };
-  //   map[key] = value;
-  //   setChildrenOpenMap(map);
-  // };
-
   const currentOrgSlug = currentOrg?.slug ?? null;
-  // const refProjectsNavbarEls = currentOrgProjects?.map((referenceProject) => {
-  //   return renderNestedReferenceProjectsNavbarEl({
-  //     currentOrgSlug: nullthrows(currentOrgSlug, "Org must be present"),
-  //     referenceProject,
-  //     addChildrenOpen,
-  //     childrenOpenMap,
-  //     setIsDeleteModalOpen,
-  //     slug: `${encodeURIComponent(referenceProject.slug)}`,
-  //   });
-  // });
 
   return (
     <ContentWrapper width={navWidth} isOpen={isOpen} setIsOpen={setIsOpen}>
