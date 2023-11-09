@@ -51,9 +51,6 @@ export default function HomeRightSidebar(): ReactElement {
           onExit={(): void => setShouldLimitNumCards(false)}
         />
         <HomeSidebarBountiesSection shouldLimitNumCards={shouldLimitNumCards} />
-        <HomeSidebarFeaturedDocsSection
-          shouldLimitNumCards={shouldLimitNumCards}
-        />
       </ColumnContainer>
     </div>
   );

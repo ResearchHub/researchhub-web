@@ -16,7 +16,7 @@ import Link from "next/link";
 import ReactPlaceholder from "react-placeholder/lib";
 import { parseUser } from "~/config/types/root_types";
 
-const TEMP_BOUNTY_DISPLAY_CUT_OFF = 4;
+const TEMP_BOUNTY_DISPLAY_CUT_OFF = 5;
 
 type PaginationInfo = { isFetching: boolean; page?: number };
 const useEffectFetchOpenBounties = ({
