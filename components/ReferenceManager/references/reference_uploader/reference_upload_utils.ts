@@ -27,7 +27,11 @@ export function useEffectOnReferenceTypeChange({
           for (const key in schema) {
             schema[key] = prevRefSchemaValueSet?.schema[key] ?? "";
           }
-          setReferenceSchemaValueSet({ schema, required });
+          setReferenceSchemaValueSet({
+            schema,
+            required,
+            signedUrl: prevRefSchemaValueSet.signedUrl,
+          });
         },
       });
     }
@@ -51,10 +55,14 @@ export function parseDoiSearchResultOntoValueSet({
     landing_page_url,
     source,
     abstract,
+    pdf_url,
+    custom,
+    signed_pdf_url,
   } = doiMetaData ?? {};
   const formattedTitle = title ?? display_name ?? "";
   const schemaSet = {
     attachment: referenceSchemaValueSet.attachment,
+    signedUrl: signed_pdf_url,
     schema: {
       ...referenceSchemaValueSet.schema,
       access_date: moment().format("MM-DD-YYYY"),
@@ -66,13 +74,17 @@ export function parseDoiSearchResultOntoValueSet({
       DOI: doi,
       title: formattedTitle,
       ISSN: issn.join(", "),
+      pdf_url: pdf_url,
       URL: landing_page_url,
+      signed_pdf_url,
       abstract,
       source: source,
+      custom: custom,
       publication_title: formattedTitle,
     },
     required: referenceSchemaValueSet.required,
   };
+
   setReferenceSchemaValueSet(schemaSet);
 }
 
@@ -134,12 +146,15 @@ export const handleSubmit = ({
   const payload = toFormData(fields);
 
   const attachment = referenceSchemaValueSet.attachment;
+
   if (!isEmpty(attachment)) {
     // @ts-ignore unnecessary type checking
     payload.append("attachment", attachment);
   }
   createReferenceCitation({
-    onError: (error) => alert(error),
+    onError: (error) => {
+      console.log(error);
+    },
     onSuccess: (res) => {
       addSingleReference(res);
       resetComponentState();

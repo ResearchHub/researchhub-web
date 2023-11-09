@@ -11,6 +11,7 @@ type ContextType = {
   setCurrentOrg: null | ((org: Org) => void);
   fetchAndSetUserOrgs: null | (() => void);
   refetchOrgs: () => void;
+  setOrgs: (orgs: Org[]) => void;
 };
 
 type Org = {
@@ -23,6 +24,7 @@ const OrganizationContext = createContext<ContextType>({
   orgs: [],
   setCurrentOrg: () => null,
   currentOrg: {},
+  setOrgs: () => null,
   fetchAndSetUserOrgs: null,
   refetchOrgs: () => null,
 });
@@ -71,6 +73,7 @@ export const OrganizationContextProvider = ({ children, user }) => {
     <OrganizationContext.Provider
       value={{
         orgs,
+        setOrgs,
         currentOrg,
         setCurrentOrg,
         fetchAndSetUserOrgs,

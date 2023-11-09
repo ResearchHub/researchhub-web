@@ -6,14 +6,17 @@ import Dropzone from "react-dropzone";
 import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
 import Typography from "@mui/material/Typography";
 import UploadFileOutlinedIcon from "@mui/icons-material/UploadFileOutlined";
+import { convertHttpToHttps } from "~/config/utils/routing";
 
 type Props = {
   selectedFile: File | null;
+  fileURL: string;
   onFileSelect: (file: File | null) => void;
 };
 
 export default function ReferenceUploadAttachments({
   selectedFile,
+  fileURL,
   onFileSelect,
 }: Props): ReactElement {
   const { name: fileName } = selectedFile ?? {};
@@ -38,7 +41,20 @@ export default function ReferenceUploadAttachments({
         {"Attachment (pdf)"}
       </Typography>
       <Box>
-        {!isEmpty(selectedFile) ? (
+        {!isEmpty(fileURL) ? (
+          <div
+            style={{
+              height: 500,
+              marginBottom: "32px",
+            }}
+          >
+            <iframe
+              height={"100%"}
+              src={convertHttpToHttps(fileURL)}
+              width={"100%"}
+            />
+          </div>
+        ) : !isEmpty(selectedFile) ? (
           <div
             style={{
               alignItems: "center",

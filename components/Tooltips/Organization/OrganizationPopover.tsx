@@ -76,7 +76,7 @@ export default function OrganizationPopover({
                 <Link
                   href={{
                     pathname: isReferenceManager
-                      ? `/reference-manager/${org.slug}/`
+                      ? `/reference-manager/${org.slug}/my-library`
                       : `/${org.slug}/notebook/`,
                   }}
                   key={org.id.toString()}

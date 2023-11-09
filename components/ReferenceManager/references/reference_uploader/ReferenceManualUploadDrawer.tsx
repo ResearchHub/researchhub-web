@@ -117,6 +117,9 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
             required: referenceSchemaValueSet.required,
           });
         };
+        if (schemaField === "pdf_url" || schemaField === "custom") {
+          return null;
+        }
         if (schemaField === "author") {
           return (
             <ReferenceItemFieldCreatorTagInput
@@ -229,7 +232,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
               }}
             />
             <ReferenceUploadAttachments
-              onFileSelect={(attachment: File | null): void =>
+              onFileSelect={(attachment: File | null): void => {
                 setReferenceSchemaValueSet({
                   attachment,
                   schema: {
@@ -239,8 +242,9 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
                       : referenceSchemaValueSet.schema.title,
                   },
                   required: referenceSchemaValueSet.required,
-                })
-              }
+                });
+              }}
+              fileURL={referenceSchemaValueSet.signedUrl}
               selectedFile={referenceSchemaValueSet.attachment}
             />
           </Box>

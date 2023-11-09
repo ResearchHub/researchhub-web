@@ -59,7 +59,7 @@ const ManageOrgModal = ({ org, closeModal, isOpen = false, onOrgChange }) => {
       closeModal={closeModal}
       isOpen={isOpen}
       title={"Settings & Members"}
-      zIndex={99999}
+      zIndex={10}
     />
   );
 };

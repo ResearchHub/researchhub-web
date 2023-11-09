@@ -19,6 +19,7 @@ const labelMap = {
   URL: "URL",
   ISSN: "ISSN",
   "journal-name": "Journal Name",
+  pdf_url: "PDF URL",
 };
 
 export const resolveFieldKeyLabels = (str: string): string => {
