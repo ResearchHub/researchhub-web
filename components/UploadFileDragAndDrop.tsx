@@ -3,13 +3,23 @@ import { useState } from "react";
 import Dropzone from "react-dropzone";
 import colors from "~/config/themes/colors";
 
+type Props = {
+  handleFileDrop: (acceptedFiles: File[]) => void;
+  accept: string;
+  children?: React.ReactNode;
+  extraInstructions?: React.ReactNode;
+  beforeImageInstructions?: React.ReactNode;
+  fileTypeString?: string;
+};
+
 function UploadFileDragAndDrop({
   handleFileDrop,
   accept,
   children,
   extraInstructions,
   beforeImageInstructions,
-}) {
+  fileTypeString = "PDF",
+}: Props) {
   const [isFileDragged, setIsFileDragged] = useState(false);
 
   return (
@@ -42,7 +52,7 @@ function UploadFileDragAndDrop({
                   <div className={css(styles.instructions)}>
                     {"Drag & drop \n"}
                     <span className={css(styles.subtext)}>
-                      {"your PDF here, or "}
+                      {`your ${fileTypeString || "files"} here, or `}
                       <span className={css(styles.browse)} id={"browse"}>
                         {"browse"}
                       </span>

@@ -1,19 +1,18 @@
-import {
-  MouseEvent,
-  ReactElement,
-  ReactNode,
-  SyntheticEvent,
-  useState,
-} from "react";
+import React, { MouseEvent, ReactElement, ReactNode, useState } from "react";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import type { MenuItemProps } from "@mui/material/MenuItem";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
+import colors from "~/config/themes/colors";
+import { StyleSheet, css } from "aphrodite";
 
 type DropdownMenuItemProps = {
   itemLabel: ReactNode;
-  onClick: (event: SyntheticEvent) => void;
-} & MenuItemProps;
+  onClick?: (event: MouseEvent) => void;
+  subMenuItems?: DropdownMenuItemProps[];
+} & Omit<MenuItemProps, "onClick">;
 
 type ComponentProps = {
   disabled?: boolean;
@@ -28,40 +27,115 @@ export default function DropdownMenu({
   menuLabel,
   size,
 }: ComponentProps): ReactElement {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const [mainAnchorEl, setMainAnchorEl] = useState<null | HTMLElement>(null);
+  const [subMenuAnchorEl, setSubMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [currentSubMenu, setCurrentSubMenu] = useState<null | ReactNode>(null);
+
   const handleClose = () => {
-    setAnchorEl(null);
+    setMainAnchorEl(null);
+    setSubMenuAnchorEl(null);
+    setCurrentSubMenu(null);
   };
 
-  const menuItems = menuItemProps.map(
-    (itemProps: DropdownMenuItemProps, index: number) => {
-      const { itemLabel, onClick } = itemProps;
+  const handleSubmenuOpen = (
+    event: MouseEvent<HTMLElement>,
+    itemLabel: ReactNode,
+    closeIfAlreadyOpen = false
+  ) => {
+    // Prevent the main menu from closing when opening a submenu
+    event.preventDefault();
+    const currentlyOpen = currentSubMenu === itemLabel;
 
-      return (
-        <MenuItem
-          key={`dropdown-menu-item-${itemLabel}-${index}`}
-          onClick={(event: SyntheticEvent): void => {
-            onClick(event);
-            handleClose();
-          }}
-        >
-          {itemLabel}
-        </MenuItem>
-      );
+    if (closeIfAlreadyOpen && currentlyOpen) {
+      handleSubmenuClose();
+      return;
     }
-  );
+    setSubMenuAnchorEl(event.currentTarget);
+    setCurrentSubMenu(itemLabel);
+  };
+
+  const handleSubmenuClose = () => {
+    setSubMenuAnchorEl(null);
+    setCurrentSubMenu(null);
+  };
+
+  const renderMenuItem = (item: DropdownMenuItemProps, index: number) => {
+    const isSubMenu = Boolean(item.subMenuItems?.length);
+    const isOpen = currentSubMenu === item.itemLabel;
+
+    return (
+      <MenuItem
+        key={`dropdown-menu-item-${item.itemLabel}-${index}`}
+        onClick={(event: MouseEvent) => {
+          if (!isSubMenu && item.onClick) {
+            item.onClick(event);
+          }
+
+          if (isSubMenu) {
+            handleSubmenuOpen(event, item.itemLabel, true);
+          } else {
+            handleClose();
+          }
+        }}
+        onMouseEnter={(event: MouseEvent) => {
+          if (isSubMenu) {
+            handleSubmenuOpen(event, item.itemLabel);
+          }
+        }}
+        selected={isOpen}
+        sx={{
+          // make selected color the same as hover color
+          "&.Mui-selected": {
+            backgroundColor: "rgba(0, 0, 0, 0.04)",
+          },
+        }}
+      >
+        {item.itemLabel}
+        {isSubMenu && (
+          <div className={css(styles.rightArrow)}>
+            <FontAwesomeIcon
+              icon={faChevronRight}
+              style={{ color: colors.BLACK() }}
+            />
+          </div>
+        )}
+        {/* Render submenu if it exists */}
+        {isSubMenu && (
+          <Menu
+            anchorEl={subMenuAnchorEl}
+            open={isOpen}
+            onClose={handleSubmenuClose}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            PaperProps={{
+              onMouseLeave: handleSubmenuClose, // Close submenu on mouse leave
+            }}
+          >
+            {item.subMenuItems?.map(renderMenuItem)}
+          </Menu>
+        )}
+      </MenuItem>
+    );
+  };
 
   return (
     <div>
       <Button
-        aria-expanded={open ? "true" : undefined}
+        aria-expanded={mainAnchorEl ? "true" : undefined}
         autoCapitalize=""
         onClick={(event: MouseEvent<HTMLElement>): void => {
           if (disabled) {
             return;
           }
-          setAnchorEl(event.currentTarget);
+          setMainAnchorEl(event.currentTarget);
+          setSubMenuAnchorEl(null);
+          setCurrentSubMenu(null);
         }}
         size={size}
         sx={{
@@ -73,20 +147,28 @@ export default function DropdownMenu({
         {menuLabel}
       </Button>
       <Menu
-        anchorEl={anchorEl}
+        anchorEl={mainAnchorEl}
+        open={Boolean(mainAnchorEl)}
+        onClose={handleClose}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "left",
         }}
-        onClose={handleClose}
-        open={open}
         transformOrigin={{
           vertical: "top",
           horizontal: "left",
         }}
       >
-        {menuItems}
+        {menuItemProps.map(renderMenuItem)}
       </Menu>
     </div>
   );
 }
+
+const styles = StyleSheet.create({
+  rightArrow: {
+    paddingLeft: 16,
+    fontSize: 12,
+    transform: "translateY(1px)",
+  },
+});

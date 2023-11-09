@@ -1,8 +1,12 @@
 import { GridColDef } from "@mui/x-data-grid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowTurnUp, faFolder } from "@fortawesome/pro-solid-svg-icons";
-import { faFileLines } from "@fortawesome/pro-regular-svg-icons";
+import {
+  faFileExclamation,
+  faFileLines,
+} from "@fortawesome/pro-regular-svg-icons";
 import dayjs from "dayjs";
+import colors from "~/config/themes/colors";
 
 export const columnsFormat: GridColDef[] = [
   { field: "id", headerName: "", width: 0 },
@@ -30,7 +34,7 @@ export const columnsFormat: GridColDef[] = [
             {cell.value}
           </div>
         );
-      } else {
+      } else if (cell.row?.attachment || cell.row?.raw_data?.attachment) {
         return (
           <div
             style={{
@@ -44,6 +48,25 @@ export const columnsFormat: GridColDef[] = [
               icon={faFileLines}
               style={{ marginRight: 13, fontSize: 19, width: 16 }}
               color={idString.includes("parent") ? "#7C7989" : "#AAA8B4"}
+            />
+            {cell.value}
+          </div>
+        );
+      } else {
+        // doesn't have an attachment
+        return (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              whiteSpace: "pre",
+              overflow: "auto",
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faFileExclamation}
+              style={{ marginRight: 13, fontSize: 19, width: 16 }}
+              color={colors.ORANGE()}
             />
             {cell.value}
           </div>

@@ -27,7 +27,7 @@ const getPresignedUrl = async (fileName, organizationID, projectID) => {
   return await resp.json();
 };
 
-export default async function postUploadFiles({
+export default async function postUploadPDFFiles({
   acceptedFiles,
   activeProjectID,
   currentUser,
