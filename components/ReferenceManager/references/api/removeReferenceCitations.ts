@@ -7,16 +7,18 @@ type Args = {
   onError: (error: Error) => void;
   onSuccess: (response: any) => void;
   payload: { citation_entry_ids: ID[] };
+  orgId: ID;
 };
 
 export const removeReferenceCitations = ({
   onError,
   onSuccess,
   payload,
+  orgId,
 }: Args): void => {
   fetch(
     buildApiUri({ apiPath: `citation_entry/remove` }),
-    API.POST_CONFIG(payload)
+    API.POST_CONFIG(payload, undefined, { "x-organization-id": orgId })
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)

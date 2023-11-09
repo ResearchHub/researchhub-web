@@ -1,6 +1,7 @@
 import { isEmpty } from "~/config/utils/nullchecks";
 import ReferenceProjectsNavbarEl from "./ReferenceProjectsNavbarEl";
 import { useRouter } from "next/router";
+import { ID } from "~/config/types/root_types";
 
 type Args = {
   addChildrenOpen: ({ key, value }) => void;
@@ -10,7 +11,11 @@ type Args = {
   depth?: number;
   referenceProject: any;
   slug: string;
+  selectedProjectIds?: ID[];
   handleClick?: Function;
+  handleSelectProject?: Function;
+  allowSelection?: boolean;
+  allowManage?: boolean;
   setIsDeleteModalOpen: () => void;
 };
 
@@ -24,7 +29,11 @@ export function renderNestedReferenceProjectsNavbarEl({
   setIsDeleteModalOpen,
   setActiveTab,
   slug,
+  handleSelectProject,
   handleClick,
+  allowManage,
+  allowSelection,
+  selectedProjectIds,
 }: Args) {
   const router = useRouter();
   const hasChildren = !isEmpty(referenceProject.children);
@@ -39,7 +48,11 @@ export function renderNestedReferenceProjectsNavbarEl({
         key={`ref-project-${referenceProject?.id}`}
         active={isActive}
         handleClick={handleClick}
+        selectedProjectIds={selectedProjectIds}
+        handleSelectProject={handleSelectProject}
+        allowSelection={allowSelection}
         orgSlug={currentOrgSlug}
+        allowManage={allowManage}
         projectID={referenceProject?.id}
         projectName={referenceProject?.project_name}
         isCurrentUserAdmin={referenceProject?.current_user_is_admin ?? false}
@@ -64,7 +77,11 @@ export function renderNestedReferenceProjectsNavbarEl({
               currentOrgSlug,
               referenceProject: childReferenceProject,
               child: true,
+              handleSelectProject,
+              allowManage,
               handleClick,
+              allowSelection,
+              selectedProjectIds,
               depth: depth + 1,
               addChildrenOpen,
               childrenOpenMap,

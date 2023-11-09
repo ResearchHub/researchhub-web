@@ -17,7 +17,7 @@ import { faFolder, faFolders } from "@fortawesome/pro-solid-svg-icons";
 import { navContext } from "~/components/contexts/NavigationContext";
 import { useReferencesTableContext } from "../reference_table/context/ReferencesTableContext";
 import { faFolderPlus } from "@fortawesome/pro-regular-svg-icons";
-
+import CheckBox from "~/components/Form/CheckBox";
 type Props = {
   active: boolean;
   addChildrenOpen: ({ key, value }) => void;
@@ -28,12 +28,16 @@ type Props = {
   projectID: ID;
   projectName: string;
   child: boolean;
+  allowManage: boolean;
   depth: number;
   referenceProject: any;
   setActiveTab: (tab) => void;
   isOpen: boolean;
   slug: string;
+  selectedProjectIds?: ID[];
   handleClick?: Function;
+  handleSelectProject?: Function;
+  allowSelection?: boolean;
   setIsDeleteModalOpen: () => void;
 };
 
@@ -51,6 +55,10 @@ export default function ReferenceProjectsNavbarEl({
   projectName,
   slug,
   handleClick,
+  selectedProjectIds,
+  handleSelectProject,
+  allowSelection = false,
+  allowManage = false,
   setIsDeleteModalOpen,
 }: Props): ReactElement {
   const {
@@ -71,7 +79,12 @@ export default function ReferenceProjectsNavbarEl({
 
   const projectItemElement = (
     <Box
-      sx={{ width: "100%", minWidth: "100%" }}
+      sx={{
+        width: "100%",
+        minWidth: "100%",
+        display: "flex",
+        alignItems: "center",
+      }}
       onMouseDown={(event: SyntheticEvent): void => {
         event.preventDefault();
         setIsUploadDrawerOpen(false);
@@ -81,6 +94,23 @@ export default function ReferenceProjectsNavbarEl({
         }
       }}
     >
+      {allowSelection && (
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            handleSelectProject!({ id: projectID, name: projectName, slug });
+          }}
+        >
+          {/* @ts-ignore */}
+          <CheckBox
+            active={selectedProjectIds!.includes(projectID)}
+            isSquare={true}
+            small={true}
+          />
+        </div>
+      )}
+
       <div style={{ display: "flex", alignItems: "center" }}>
         {/* <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} /> */}
         <FontAwesomeIcon
@@ -156,7 +186,10 @@ export default function ReferenceProjectsNavbarEl({
         justifyContent: "space-between",
         maxHeight: 50,
         px: 2.5,
-        background: active || fileDraggedOver ? colors.GREY(0.2) : "",
+        background:
+          active || shouldShowOptions || fileDraggedOver
+            ? colors.GREY(0.2)
+            : "",
         margin: "8px",
         marginBottom: "0px",
         marginTop: "0px",
@@ -167,7 +200,7 @@ export default function ReferenceProjectsNavbarEl({
       }}
     >
       {handleClick ? (
-        <div onClick={() => handleClick({ projectID, projectName })}>
+        <div onClick={() => handleClick({ projectID, projectName, slug })}>
           {projectItemElement}
         </div>
       ) : (
@@ -178,21 +211,8 @@ export default function ReferenceProjectsNavbarEl({
           {projectItemElement}
         </ALink>
       )}
-      <div>
-        <div>
-          <FontAwesomeIcon
-            icon={faFolderPlus}
-            style={{ marginLeft: 4, fontSize: 16, width: 16 }}
-            color={"#AAA8B4"}
-            onClick={(e) => {
-              e.stopPropagation();
-              setProjectUpsertPurpose("create_sub_project");
-              setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID });
-              setIsProjectUpsertModalOpen(true);
-            }}
-          />
-        </div>
-        {shouldShowOptions && isCurrentUserAdmin && (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {shouldShowOptions && isCurrentUserAdmin && allowManage && (
           <ReferenceProjectNavbarElOption
             isCurrentUserAdmin={isCurrentUserAdmin}
             projectID={projectID}
@@ -226,6 +246,19 @@ export default function ReferenceProjectsNavbarEl({
               setIsProjectUpsertModalOpen(true);
             }}
             setShouldShowOptions={setShouldShowOptions}
+          />
+        )}
+        {shouldShowOptions && (
+          <FontAwesomeIcon
+            icon={faFolderPlus}
+            style={{ marginLeft: 4, fontSize: 16, width: 16, height: 16 }}
+            color={"#AAA8B4"}
+            onClick={(e) => {
+              e.stopPropagation();
+              setProjectUpsertPurpose("create_sub_project");
+              setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID });
+              setIsProjectUpsertModalOpen(true);
+            }}
           />
         )}
       </div>

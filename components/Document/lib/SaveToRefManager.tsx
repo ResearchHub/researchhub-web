@@ -38,7 +38,30 @@ import {
 } from "~/components/ReferenceManager/references/reference_organizer/context/ReferenceProjectsUpsertContext";
 import ReferenceProjectsUpsertModal from "~/components/ReferenceManager/references/reference_organizer/ReferenceProjectsUpsertModal";
 import { useDispatch } from "react-redux";
-import { silentEmptyFnc } from "~/config/utils/nullchecks";
+import { emptyFncWithMsg, silentEmptyFnc } from "~/config/utils/nullchecks";
+import { removeReferenceCitations } from "~/components/ReferenceManager/references/api/removeReferenceCitations";
+
+interface Project {
+  id: number;
+  children: Project[];
+}
+
+function getFlatListOfProjectIds(projects: Project[]): number[] {
+  const ids: number[] = [];
+
+  function extractIds(projects: Project[]) {
+    for (const project of projects) {
+      ids.push(project.id);
+      if (project.children.length) {
+        extractIds(project.children);
+      }
+    }
+  }
+
+  extractIds(projects);
+
+  return ids;
+}
 
 interface Props {
   contentId: ID;
@@ -46,13 +69,13 @@ interface Props {
   unifiedDocumentId: ID;
 }
 
-const saveToRefManagerApi = ({ paperId, orgId }) => {
+const saveToRefManagerApi = ({ paperId, orgId, projectId }) => {
   const url = generateApiUrl(`citation_entry/${paperId}/add_paper_as_citation`);
 
   return fetch(
     url,
     API.POST_CONFIG(
-      {},
+      { project_id: projectId },
       undefined,
       orgId ? { "x-organization-id": orgId } : undefined
     )
@@ -63,9 +86,20 @@ const saveToRefManagerApi = ({ paperId, orgId }) => {
     });
 };
 
-const isDocAlreadySaved = ({ orgId, unifiedDocumentId }) => {
+interface AlreadySavedProps {
+  unifiedDocumentId: ID;
+  orgId: ID;
+  projectIds: ID[];
+}
+
+const checkWhichProjectsDocIsSavedApi = ({
+  orgId,
+  unifiedDocumentId,
+  projectIds,
+}: AlreadySavedProps) => {
   const url = generateApiUrl(
-    `citation_entry/${unifiedDocumentId}/check_paper_in_reference_manager`
+    `citation_entry/${unifiedDocumentId}/check_paper_in_reference_manager`,
+    `?project_ids=${projectIds.join(",")}`
   );
 
   return fetch(
@@ -86,44 +120,29 @@ const SaveToRefManager = ({
   contentType,
   unifiedDocumentId,
 }: Props) => {
-  const dispatch = useDispatch();
   const [orgProjects, setOrgProjects] = useState([]);
-  const [isSaved, setIsSaved] = useState(false);
+  const [isFetchingProjects, setIsFetchingProjects] = useState(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isOrgSelectorOpen, setIsOrgSelectorOpen] = useState<boolean>(false);
-  const [isProjectExplorerOpen, setIsProjectExplorerOpen] =
-    useState<boolean>(false);
-  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [selectedOrg, setSelectedOrg] = useState<any>(null);
-  const [selectedProject, setSelectedProject] = useState<{
-    label: string;
-    id: ID | null;
-    icon: any;
-  }>({
-    label: "All References",
-    id: null,
-    icon: (
-      <FontAwesomeIcon icon={faUser} style={{ marginRight: 5, fontSize: 16 }} />
-    ),
-  });
+  const [projectCitationMap, setProjectCitationMap] = useState<{
+    [key: string]: Array<string>;
+  }>({});
   const { orgs, setCurrentOrg } = useOrgs();
 
   useEffect(() => {
-    (async () => {
-      if (selectedOrg) {
-        const res = await isDocAlreadySaved({
+    if (!isFetchingProjects && selectedOrg && orgProjects.length > 0) {
+      const flatList = getFlatListOfProjectIds(orgProjects);
+      (async () => {
+        const res = await checkWhichProjectsDocIsSavedApi({
           orgId: selectedOrg.id,
           unifiedDocumentId,
+          projectIds: flatList,
         });
-        if (res.detail === true) {
-          setIsSaved(true);
-        } else {
-          setIsSaved(false);
-        }
-        console.log("isDocAlreadySav2ed", res);
-      }
-    })();
-  }, [selectedOrg]);
+        setProjectCitationMap(res);
+      })();
+    }
+  }, [selectedOrg, orgProjects, isFetchingProjects]);
 
   const {
     setIsModalOpen: setIsProjectUpsertModalOpen,
@@ -138,12 +157,16 @@ const SaveToRefManager = ({
 
   useEffect(() => {
     if (selectedOrg) {
+      setIsFetchingProjects(true);
+      setProjectCitationMap({});
       fetchReferenceOrgProjects({
         onError: () => {
           alert("Failed to fetch projects");
+          setIsFetchingProjects(false);
         },
         onSuccess: (payload): void => {
           setOrgProjects(payload ?? []);
+          setIsFetchingProjects(false);
         },
         payload: {
           organization: selectedOrg.id,
@@ -159,7 +182,14 @@ const SaveToRefManager = ({
       setCurrentOrg(orgs[0]);
     }
   }, [orgs]);
-  console.log("orgProjects", orgProjects);
+
+  const isSaved = Object.values(projectCitationMap).find(
+    (citations) => citations.length > 0
+  );
+  const savedInProjectIds = Object.keys(projectCitationMap)
+    .filter((projectId) => projectCitationMap[projectId].length > 0)
+    .map((projectId) => parseInt(projectId));
+
   return (
     <>
       <ReferenceProjectsUpsertModal
@@ -181,6 +211,7 @@ const SaveToRefManager = ({
           });
         }}
       />
+
       <div className={css(styles.wrapper)}>
         <IconButton variant="round" onClick={() => setIsOpen(!isOpen)}>
           {isSaved ? (
@@ -204,7 +235,6 @@ const SaveToRefManager = ({
             <div
               className={css(styles.dropdown)}
               onClick={() => {
-                setIsProjectExplorerOpen(false);
                 setIsOrgSelectorOpen(!isOrgSelectorOpen);
               }}
             >
@@ -233,16 +263,6 @@ const SaveToRefManager = ({
                           onClick={() => {
                             setSelectedOrg(org);
                             setIsOrgSelectorOpen(false);
-                            setSelectedProject({
-                              label: "All References",
-                              id: null,
-                              icon: (
-                                <FontAwesomeIcon
-                                  icon={faUser}
-                                  style={{ marginRight: 5, fontSize: 16 }}
-                                />
-                              ),
-                            });
                           }}
                         >
                           <OrgAvatar size={24} fontSize={12} org={org} />
@@ -254,163 +274,70 @@ const SaveToRefManager = ({
                 </div>
               )}
             </div>
-            <div
-              className={css(styles.dropdown)}
-              onClick={() => {
-                setIsProjectExplorerOpen(!isProjectExplorerOpen);
-                setIsOrgSelectorOpen(false);
-              }}
-            >
-              <div className={css(styles.dropdownValue)}>
-                {selectedProject.icon}
-                {selectedProject.label}
-              </div>
-              <div className={css(styles.dropdownDownIcon)}>
-                <FontAwesomeIcon
-                  icon={faAngleDown}
-                  color={colors.MEDIUM_GREY2()}
+            <div className={css(styles.projects)}>
+              <div className={css(styles.explorer)}>
+                <div className={css(styles.divider)}></div>
+                <div
+                  style={{
+                    color: colors.MEDIUM_GREY2(),
+                    fontSize: 14,
+                    fontWeight: 500,
+                    padding: "10px 16px",
+                  }}
+                >
+                  Folders
+                </div>
+                <div
+                  className={css(styles.select)}
+                  onClick={(event): void => {
+                    event.preventDefault();
+                    setProjectUpsertPurpose("create");
+                    setIsProjectUpsertModalOpen(true);
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faPlus}
+                    style={{ marginRight: 5, fontSize: 16 }}
+                  />
+                  Create a new folder
+                </div>
+                <div className={css(styles.divider)}></div>
+                <ProjectExplorer
+                  currentOrg={selectedOrg}
+                  currentOrgProjects={orgProjects}
+                  allowSelection={true}
+                  selectedProjectIds={savedInProjectIds}
+                  handleSelectProject={(project) => {
+                    if (savedInProjectIds.includes(project.id)) {
+                      const referenceIds = projectCitationMap[project.id];
+
+                      removeReferenceCitations({
+                        onError: emptyFncWithMsg,
+                        orgId: selectedOrg!.id,
+                        onSuccess: (): void => {
+                          setProjectCitationMap({
+                            ...projectCitationMap,
+                            [project.id]: [],
+                          });
+                        },
+                        payload: {
+                          citation_entry_ids: referenceIds,
+                        },
+                      });
+                    } else {
+                      saveToRefManagerApi({
+                        projectId: project.id,
+                        paperId: contentId,
+                        orgId: selectedOrg?.id,
+                      }).then((res: any) => {
+                        projectCitationMap[project.id] = [res.id];
+                        setProjectCitationMap({ ...projectCitationMap });
+                      });
+                    }
+                  }}
                 />
               </div>
-              {isProjectExplorerOpen && (
-                <div className={css(styles.dropdownContent)}>
-                  <div className={css(styles.explorer)}>
-                    <div
-                      className={css(styles.select)}
-                      onClick={() => {
-                        setSelectedProject({
-                          label: "All References",
-                          id: null,
-                          icon: (
-                            <FontAwesomeIcon
-                              icon={faUser}
-                              style={{ marginRight: 5, fontSize: 16 }}
-                            />
-                          ),
-                        });
-                        setIsProjectExplorerOpen(false);
-                      }}
-                    >
-                      <FontAwesomeIcon
-                        icon={faUser}
-                        style={{ marginRight: 5, fontSize: 16 }}
-                      />
-                      All References
-                    </div>
-                    <div className={css(styles.divider)}></div>
-                    <div
-                      style={{
-                        color: colors.MEDIUM_GREY2(),
-                        fontSize: 14,
-                        fontWeight: 500,
-                        padding: "10px 16px",
-                      }}
-                    >
-                      Folders
-                    </div>
-                    <div
-                      className={css(styles.select)}
-                      onClick={(event): void => {
-                        event.preventDefault();
-                        setProjectUpsertPurpose("create");
-                        setIsProjectUpsertModalOpen(true);
-                      }}
-                    >
-                      <FontAwesomeIcon
-                        icon={faPlus}
-                        style={{ marginRight: 5, fontSize: 16 }}
-                      />
-                      Create a new folder
-                    </div>
-                    <div className={css(styles.divider)}></div>
-                    <ProjectExplorer
-                      currentOrg={selectedOrg}
-                      currentOrgProjects={orgProjects}
-                      handleClick={({ projectName, projectID }) => {
-                        setSelectedProject({
-                          label: projectName,
-                          id: projectID,
-                          icon: (
-                            <FontAwesomeIcon
-                              icon={faFolder}
-                              style={{ marginRight: 5, fontSize: 16 }}
-                              color={"#AAA8B4"}
-                            />
-                          ),
-                        });
-                        setIsProjectExplorerOpen(false);
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
             </div>
-            {isSaved && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  columnGap: "5px",
-                  justifyContent: "flex-end",
-                }}
-              >
-                {/* <FontAwesomeIcon icon={faCheckCircle} style={{ marginRight: 5, fontSize: 16 }} /> */}
-                {/* <span>Saved </span> */}
-                <Button
-                  variant="text"
-                  size="small"
-                  customButtonStyle={styles.removeButton}
-                  customLabelStyle={styles.removeButtonLabel}
-                >
-                  Remove
-                </Button>
-                <Button
-                  size="small"
-                  customButtonStyle={styles.viewButton}
-                  customLabelStyle={styles.viewButtonLabel}
-                  onClick={() =>
-                    (window.location.href =
-                      "http://localhost:3000/reference-manager/kobe-attiass-notebook/neuromodulators/type-1-modulators")
-                  }
-                >
-                  {/* <FontAwesomeIcon icon={faEye} style={{ marginRight: 5, fontSize: 16 }} /> */}
-                  View
-                  {/* <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: 5, fontSize: 16 }} /> */}
-                </Button>
-              </div>
-            )}
-            {!isSaved && (
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button
-                  disabled={isSaving}
-                  customButtonStyle={styles.saveButton}
-                  onClick={() => {
-                    // setIsSaving(true);
-                    setIsSaved(true);
-                    setIsOpen(false);
-                    saveToRefManagerApi({
-                      paperId: contentId,
-                      orgId: selectedOrg?.id,
-                    }).then(() => {
-                      // setIsSaving(false);
-                      setIsSaved(true);
-                    });
-                  }}
-                  size="small"
-                >
-                  {!isSaving ? (
-                    <>Save</>
-                  ) : (
-                    <ClipLoader
-                      sizeUnit={"px"}
-                      size={16}
-                      css={{ marginTop: 6 }}
-                      color={"white"}
-                      loading={true}
-                    />
-                  )}
-                </Button>
-              </div>
-            )}
           </div>
         )}
       </div>

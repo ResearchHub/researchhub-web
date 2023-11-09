@@ -227,7 +227,11 @@ export default function BasicTogglableNavbarLeft({
             {"Create a new folder"}
           </Typography>
         </ListItemButton>
-        <ProjectExplorer currentOrgProjects={currentOrgProjects} />
+        <ProjectExplorer
+          currentOrgProjects={currentOrgProjects}
+          currentOrg={currentOrg}
+          allowManage={true}
+        />
       </List>
     </ContentWrapper>
   );
