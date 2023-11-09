@@ -393,6 +393,7 @@ function ReferencesContainer({
     return (
       <Box
         sx={{
+          height: "100%",
           padding: {
             xs: "15px",
             sm: "28px",
@@ -450,10 +451,8 @@ function ReferencesContainer({
                   );
                 })}
               </Box>
-            ) : isOnOrgTab ? (
-              "Organization References"
             ) : (
-              `My References`
+              "My Library"
             )}
           </Typography>
           <input
@@ -506,7 +505,10 @@ function ReferencesContainer({
           </div>
         </div>
 
-        <Box className="ReferencesContainerMain" sx={{ height: "100%" }}>
+        <Box
+          className="ReferencesContainerMain"
+          sx={{ height: "calc(100% - 30px)" }}
+        >
           <Box
             className="ReferencesContainerTitleSection"
             sx={{ marginBottom: "32px" }}

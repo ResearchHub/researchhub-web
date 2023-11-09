@@ -56,6 +56,7 @@ export function parseDoiSearchResultOntoValueSet({
     source,
     abstract,
     pdf_url,
+    custom,
     signed_pdf_url,
   } = doiMetaData ?? {};
   const formattedTitle = title ?? display_name ?? "";
@@ -78,6 +79,7 @@ export function parseDoiSearchResultOntoValueSet({
       signed_pdf_url,
       abstract,
       source: source,
+      custom: custom,
       publication_title: formattedTitle,
     },
     required: referenceSchemaValueSet.required,

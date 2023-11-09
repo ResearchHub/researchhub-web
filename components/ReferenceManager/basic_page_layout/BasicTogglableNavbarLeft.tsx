@@ -162,45 +162,6 @@ export default function BasicTogglableNavbarLeft({
         </Box>
       </Box>
       <Divider />
-      <List sx={{ background: "#FAFAFC", color: "rgba(36, 31, 58, 1)" }}>
-        <BasicTogglableNavbarButton
-          icon={
-            <FontAwesomeIcon
-              icon={faUser}
-              style={{ marginLeft: 2, marginRight: 10, color: "#7C7989" }}
-            />
-          }
-          onClick={() => {
-            // setReferenceTableRowData([]);
-            setActiveProject(null);
-          }}
-          isActive={
-            isEmpty(router.query?.org_refs) && isEmpty(router.query?.slug)
-          }
-          key="my-references"
-          label="My References"
-          link={`/reference-manager/${currentOrgSlug}?my_refs=true`}
-        />
-        <BasicTogglableNavbarButton
-          isActive={
-            isEmpty(router.query?.slug) && !isEmpty(router.query?.org_refs)
-          }
-          onClick={() => {
-            // setReferenceTableRowData([]);
-            setActiveProject(null);
-          }}
-          icon={
-            <FontAwesomeIcon
-              icon={faSitemap}
-              style={{ marginRight: 8, color: "#7C7989" }}
-            />
-          }
-          key="public-references"
-          label="Org References"
-          link={`/reference-manager/${currentOrgSlug}?org_refs=true`}
-        />
-      </List>
-      <Divider />
       <List
         sx={{
           background: "#FAFAFC",

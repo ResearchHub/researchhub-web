@@ -17,6 +17,7 @@ import colors, { formColors } from "~/config/themes/colors";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 
 import { captureEvent } from "~/config/utils/events";
+import { useOrgs } from "../contexts/OrganizationContext";
 
 const STEPS = {
   ORG_NAME: 1,
@@ -36,6 +37,8 @@ const NewOrgModal = ({
   const [flowStep, setFlowStep] = useState(STEPS.ORG_NAME);
   const [org, setOrg] = useState(null);
   const [isAvatarUploadOpen, setIsAvatarUploadOpen] = useState(false);
+
+  const { orgs, setOrgs, setCurrentOrg } = useOrgs();
 
   const handleCloseModal = () => {
     setFlowStep(STEPS.ORG_NAME);
@@ -59,8 +62,9 @@ const NewOrgModal = ({
   };
 
   const goToOrg = () => {
+    setCurrentOrg(org);
     if (router.asPath.includes("reference-manager")) {
-      router.push(`/reference-manager/${org.slug}?my_refs=true`);
+      router.push(`/reference-manager/${org.slug}/my-library`);
     } else {
       router.push(`/${org.slug}/notebook`);
     }
@@ -88,6 +92,7 @@ const NewOrgModal = ({
       if (response.ok) {
         const _org = await Helpers.parseJSON(response);
         setOrg(_org);
+        setOrgs([_org, ...orgs]);
 
         onOrgChange(_org, mode);
         setFlowStep(STEPS.ORG_INVITE);
@@ -98,6 +103,7 @@ const NewOrgModal = ({
         throw new Error("Org creation error");
       }
     } catch (error) {
+      console.log(error);
       setMessage("Failed to create org");
       showMessage({ show: true, error: true });
       captureEvent({
