@@ -52,9 +52,13 @@ export async function getServerSideProps(ctx) {
   const orgId = cookies["current-org-id"];
   let org = orgResponse[0];
   if (orgId) {
-    org = orgResponse.find((org) => {
+    const foundOrg = orgResponse.find((org) => {
       return org.id === parseInt(orgId, 10);
     });
+
+    if (foundOrg) {
+      org = foundOrg;
+    }
   }
 
   return {

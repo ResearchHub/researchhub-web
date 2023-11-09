@@ -117,7 +117,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
             required: referenceSchemaValueSet.required,
           });
         };
-        if (schemaField === "pdf_url") {
+        if (schemaField === "pdf_url" || schemaField === "custom") {
           return null;
         }
         if (schemaField === "author") {
