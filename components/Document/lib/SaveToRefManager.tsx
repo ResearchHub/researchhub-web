@@ -2,6 +2,7 @@ import {
   faAngleDown,
   faBookmark,
   faSitemap,
+  faFolderPlus,
   faUser,
 } from "@fortawesome/pro-light-svg-icons";
 import {
@@ -28,7 +29,6 @@ import {
   faArrowRight,
   faEye,
   faMinus,
-  faPlus,
 } from "@fortawesome/pro-regular-svg-icons";
 import { ClipLoader } from "react-spinners";
 import OrgAvatar from "~/components/Org/OrgAvatar";
@@ -194,10 +194,6 @@ const SaveToRefManager = ({
     <>
       <ReferenceProjectsUpsertModal
         onUpsertSuccess={(project) => {
-          // if (project.parent) {
-          //   orgProjects.find
-          // }
-
           fetchReferenceOrgProjects({
             onError: () => {
               silentEmptyFnc();
@@ -218,13 +214,15 @@ const SaveToRefManager = ({
             <>
               <FontAwesomeIcon
                 icon={solidBookmark}
-                style={{ marginRight: 3, color: colors.NEW_GREEN() }}
+                style={{ marginRight: 3, color: colors.MEDIUM_GREY2() }}
               />
               <span>Saved</span>
             </>
           ) : (
             <>
-              <FontAwesomeIcon icon={faBookmark} style={{ marginRight: 3 }} />
+              <div>
+                <FontAwesomeIcon icon={faBookmark} style={{ marginRight: 3 }} />
+              </div>
               <span>Save</span>
             </>
           )}
@@ -259,7 +257,7 @@ const SaveToRefManager = ({
                     {orgs.map((org) => {
                       return (
                         <div
-                          className={css(styles.select)}
+                          className={css(styles.orgSelect)}
                           onClick={() => {
                             setSelectedOrg(org);
                             setIsOrgSelectorOpen(false);
@@ -276,19 +274,19 @@ const SaveToRefManager = ({
             </div>
             <div className={css(styles.projects)}>
               <div className={css(styles.explorer)}>
-                <div className={css(styles.divider)}></div>
                 <div
                   style={{
                     color: colors.MEDIUM_GREY2(),
                     fontSize: 14,
                     fontWeight: 500,
-                    padding: "10px 16px",
+                    padding: "10px 16px 10px 2px",
                   }}
                 >
                   Folders
                 </div>
+                <div className={css(styles.divider)}></div>
                 <div
-                  className={css(styles.select)}
+                  className={css(styles.newFolder)}
                   onClick={(event): void => {
                     event.preventDefault();
                     setProjectUpsertPurpose("create");
@@ -296,46 +294,52 @@ const SaveToRefManager = ({
                   }}
                 >
                   <FontAwesomeIcon
-                    icon={faPlus}
-                    style={{ marginRight: 5, fontSize: 16 }}
+                    icon={faFolderPlus}
+                    style={{
+                      marginRight: 10,
+                      fontSize: 22,
+                      fontWeight: 500,
+                      color: colors.NEW_BLUE(),
+                    }}
                   />
                   Create a new folder
                 </div>
-                <div className={css(styles.divider)}></div>
-                <ProjectExplorer
-                  currentOrg={selectedOrg}
-                  currentOrgProjects={orgProjects}
-                  allowSelection={true}
-                  selectedProjectIds={savedInProjectIds}
-                  handleSelectProject={(project) => {
-                    if (savedInProjectIds.includes(project.id)) {
-                      const referenceIds = projectCitationMap[project.id];
+                <div className={css(styles.explorerWrapper)}>
+                  <ProjectExplorer
+                    currentOrg={selectedOrg}
+                    currentOrgProjects={orgProjects}
+                    allowSelection={true}
+                    selectedProjectIds={savedInProjectIds}
+                    handleSelectProject={(project) => {
+                      if (savedInProjectIds.includes(project.id)) {
+                        const referenceIds = projectCitationMap[project.id];
 
-                      removeReferenceCitations({
-                        onError: emptyFncWithMsg,
-                        orgId: selectedOrg!.id,
-                        onSuccess: (): void => {
-                          setProjectCitationMap({
-                            ...projectCitationMap,
-                            [project.id]: [],
-                          });
-                        },
-                        payload: {
-                          citation_entry_ids: referenceIds,
-                        },
-                      });
-                    } else {
-                      saveToRefManagerApi({
-                        projectId: project.id,
-                        paperId: contentId,
-                        orgId: selectedOrg?.id,
-                      }).then((res: any) => {
-                        projectCitationMap[project.id] = [res.id];
-                        setProjectCitationMap({ ...projectCitationMap });
-                      });
-                    }
-                  }}
-                />
+                        removeReferenceCitations({
+                          onError: emptyFncWithMsg,
+                          orgId: selectedOrg!.id,
+                          onSuccess: (): void => {
+                            setProjectCitationMap({
+                              ...projectCitationMap,
+                              [project.id]: [],
+                            });
+                          },
+                          payload: {
+                            citation_entry_ids: referenceIds,
+                          },
+                        });
+                      } else {
+                        saveToRefManagerApi({
+                          projectId: project.id,
+                          paperId: contentId,
+                          orgId: selectedOrg?.id,
+                        }).then((res: any) => {
+                          projectCitationMap[project.id] = [res.id];
+                          setProjectCitationMap({ ...projectCitationMap });
+                        });
+                      }
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -349,6 +353,8 @@ const styles = StyleSheet.create({
   savedTriggerBtn: {
     borderColor: colors.NEW_GREEN(),
   },
+  projects: {},
+  explorerWrapper: {},
   saveButton: {
     height: 30,
     width: 50,
@@ -366,9 +372,7 @@ const styles = StyleSheet.create({
   },
   removeButton: {
     height: 30,
-
     color: colors.MEDIUM_GREY2(),
-    // border: `1px solid ${colors.MEDIUM_GREY2()}`,
     hover: {
       color: colors.MEDIUM_GREY2(),
     },
@@ -431,22 +435,38 @@ const styles = StyleSheet.create({
     boxShadow: "rgba(129, 148, 167, 0.2) 0px 3px 10px 0px",
     width: "100%",
     background: "white",
-    // border: `1px solid rgb(222, 222, 222)`,
     borderRadius: 4,
     marginTop: 2,
     left: 0,
     border: `1px solid rgb(222, 222, 222)`,
     top: 30,
   },
-  explorer: {},
-  select: {
+  explorer: {
+    overflowY: "scroll",
+    maxHeight: 300,
+  },
+  newFolder: {
+    marginTop: 8,
     fontSize: 14,
-    padding: "10px 16px",
+    padding: "8px 10px",
     display: "flex",
     alignItems: "center",
+    borderRadius: 4,
+    cursor: "pointer",
+    color: colors.NEW_BLUE(),
+    ":hover": {
+      background: colors.NEW_BLUE(0.1),
+    },
+  },
+  orgSelect: {
+    fontSize: 14,
+    padding: "8px 10px",
+    display: "flex",
+    alignItems: "center",
+    borderRadius: 4,
     cursor: "pointer",
     ":hover": {
-      background: "#F0F0F7",
+      background: colors.GREY(0.2),
     },
   },
   main: {

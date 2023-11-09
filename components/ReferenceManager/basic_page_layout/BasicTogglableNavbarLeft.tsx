@@ -170,6 +170,8 @@ export default function BasicTogglableNavbarLeft({
           display: "flex",
           flexDirection: "column",
           paddingBottom: "16px",
+          marginLeft: "8px",
+          marginRight: "8px",
         }}
       >
         <ListItem
