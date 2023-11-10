@@ -39,6 +39,7 @@ import {
   ReferenceProjectsUpsertContextProvider,
   useReferenceProjectUpsertContext,
 } from "~/components/ReferenceManager/references/reference_organizer/context/ReferenceProjectsUpsertContext";
+import DocumentPageTutorial from "./lib/DocumentPageTutorial";
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
 );
@@ -89,6 +90,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
 
   return (
     <div ref={headerWrapperRef} className={css(styles.headerRoot)}>
+      <DocumentPageTutorial />
       <div
         className={css(
           styles.stickyHeader,
@@ -138,29 +140,6 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               <div
                 className={css(styles.actionWrapper, styles.largeScreenActions)}
               >
-                {/* {isPaper(doc) && currentUser && metadata && (
-                  <PaperMetadataModal
-                    paper={doc as Paper}
-                    metadata={metadata}
-                    onUpdate={(updatedFields) => {
-                      const updated = { ...doc, ...updatedFields };
-                      documentContext.updateDocument(updated);
-                      documentContext.updateMetadata({
-                        ...metadata,
-                        ...updatedFields,
-                      });
-                      revalidateDocument();
-                    }}
-                  >
-                    <IconButton variant="round">
-                      <FontAwesomeIcon
-                        icon={faPen}
-                        style={{ marginRight: 3 }}
-                      />
-                      <span>Edit</span>
-                    </IconButton>
-                  </PaperMetadataModal>
-                )} */}
                 {isPaper(doc) && (
                   <ReferenceProjectsUpsertContextProvider>
                     <SaveToRefManager

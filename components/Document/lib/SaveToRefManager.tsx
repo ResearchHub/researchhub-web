@@ -1,10 +1,15 @@
 import {
   faAngleDown,
-  faBookmark,
   faSitemap,
   faFolderPlus,
   faUser,
 } from "@fortawesome/pro-light-svg-icons";
+import {
+  faBookmark,
+  faArrowRight,
+  faEye,
+  faMinus,
+} from "@fortawesome/pro-regular-svg-icons";
 import {
   faFolder,
   faBookmark as solidBookmark,
@@ -12,7 +17,7 @@ import {
   faCheckCircle,
 } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import IconButton from "~/components/Icons/IconButton";
 import ProjectExplorer from "~/components/ReferenceManager/lib/ProjectExplorer";
 import { StyleSheet, css } from "aphrodite";
@@ -25,11 +30,6 @@ import Helpers from "~/config/api/helpers";
 import Button from "~/components/Form/Button";
 import { GenericDocument, ContentInstance } from "./types";
 import ALink from "~/components/ALink";
-import {
-  faArrowRight,
-  faEye,
-  faMinus,
-} from "@fortawesome/pro-regular-svg-icons";
 import { ClipLoader } from "react-spinners";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 import {
@@ -40,6 +40,8 @@ import ReferenceProjectsUpsertModal from "~/components/ReferenceManager/referenc
 import { useDispatch } from "react-redux";
 import { emptyFncWithMsg, silentEmptyFnc } from "~/config/utils/nullchecks";
 import { removeReferenceCitations } from "~/components/ReferenceManager/references/api/removeReferenceCitations";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
+import { useEffectHandleClick } from "~/config/utils/clickEvent";
 
 interface Project {
   id: number;
@@ -129,6 +131,7 @@ const SaveToRefManager = ({
     [key: string]: Array<string>;
   }>({});
   const { orgs, setCurrentOrg } = useOrgs();
+  const tooltipRef = useRef(null);
 
   useEffect(() => {
     if (!isFetchingProjects && selectedOrg && orgProjects.length > 0) {
@@ -183,6 +186,14 @@ const SaveToRefManager = ({
     }
   }, [orgs]);
 
+  useEffectHandleClick({
+    ref: tooltipRef,
+    exclude: [`.trigger-for-save-to-ref-manager`],
+    onOutsideClick: () => {
+      setIsOpen(false);
+    },
+  });
+
   const isSaved = Object.values(projectCitationMap).find(
     (citations) => citations.length > 0
   );
@@ -209,26 +220,41 @@ const SaveToRefManager = ({
       />
 
       <div className={css(styles.wrapper)}>
-        <IconButton variant="round" onClick={() => setIsOpen(!isOpen)}>
-          {isSaved ? (
-            <>
-              <FontAwesomeIcon
-                icon={solidBookmark}
-                style={{ marginRight: 3, color: colors.MEDIUM_GREY2() }}
-              />
-              <span>Saved</span>
-            </>
-          ) : (
-            <>
-              <div>
-                <FontAwesomeIcon icon={faBookmark} style={{ marginRight: 3 }} />
-              </div>
-              <span>Save</span>
-            </>
-          )}
-        </IconButton>
+        <div id="save-to-ref-manager">
+          <PermissionNotificationWrapper
+            modalMessage="edit document"
+            permissionKey="UpdatePaper"
+            loginRequired={true}
+            onClick={() => setIsOpen(!isOpen)}
+            hideRipples={true}
+          >
+            <div className="trigger-for-save-to-ref-manager">
+              <IconButton variant="round">
+                {isSaved ? (
+                  <>
+                    <FontAwesomeIcon
+                      icon={solidBookmark}
+                      style={{ marginRight: 3, color: colors.MEDIUM_GREY2() }}
+                    />
+                    <span>Saved</span>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <FontAwesomeIcon
+                        icon={faBookmark}
+                        style={{ marginRight: 3 }}
+                      />
+                    </div>
+                    <span>Save</span>
+                  </>
+                )}
+              </IconButton>
+            </div>
+          </PermissionNotificationWrapper>
+        </div>
         {isOpen && (
-          <div className={css(styles.main)}>
+          <div className={css(styles.main) + " save-ref-open"} ref={tooltipRef}>
             <div className={css(styles.title)}>Save to reference manager:</div>
             <div
               className={css(styles.dropdown)}
@@ -393,7 +419,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: "5px 10px",
     fontSize: 14,
-    height: 36,
+    height: 42,
     display: "flex",
     width: "100%",
     position: "relative",
@@ -439,7 +465,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     left: 0,
     border: `1px solid rgb(222, 222, 222)`,
-    top: 30,
+    top: 36,
   },
   explorer: {
     overflowY: "scroll",
