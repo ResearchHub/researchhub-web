@@ -36,50 +36,54 @@ export default function ReferenceCollaboratorsSection({
     });
   };
 
-  const inviteeEls = collaborators.map((targetInvitee: LookupSuggestedUser) => {
-    return (
-      <div
-        style={{
-          alignItems: "center",
-          display: "flex",
-          justifyContent: "space-between",
-          width: "100%",
-        }}
-        key={`RefUserInviteSection-Invitee-${targetInvitee.id}`}
-      >
-        <span style={{ marginLeft: -12, width: "92%" }}>
-          <ReferenceItemRhUserLookupInputTag
-            user={targetInvitee}
-            showRoleDrop
-            onUserRoleChange={(role): void => {
-              setCollaborators(
-                collaborators.map(
-                  (collaborator: LookupSuggestedUser): LookupSuggestedUser => {
-                    if (collaborator.id === targetInvitee.id) {
-                      return { ...collaborator, role };
+  const inviteeEls = collaborators?.map(
+    (targetInvitee: LookupSuggestedUser) => {
+      return (
+        <div
+          style={{
+            alignItems: "center",
+            display: "flex",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+          key={`RefUserInviteSection-Invitee-${targetInvitee.id}`}
+        >
+          <span style={{ marginLeft: -12, width: "92%" }}>
+            <ReferenceItemRhUserLookupInputTag
+              user={targetInvitee}
+              showRoleDrop
+              onUserRoleChange={(role): void => {
+                setCollaborators(
+                  collaborators.map(
+                    (
+                      collaborator: LookupSuggestedUser
+                    ): LookupSuggestedUser => {
+                      if (collaborator.id === targetInvitee.id) {
+                        return { ...collaborator, role };
+                      }
+                      return collaborator;
                     }
-                    return collaborator;
-                  }
+                  )
+                );
+              }}
+            />
+          </span>
+          <ClearIcon
+            onClick={(event: SyntheticEvent): void => {
+              event.preventDefault();
+              setCollaborators(
+                collaborators.filter(
+                  (invitee: LookupSuggestedUser): boolean =>
+                    targetInvitee.id !== invitee.id
                 )
               );
             }}
+            sx={{ cursor: "pointer" }}
           />
-        </span>
-        <ClearIcon
-          onClick={(event: SyntheticEvent): void => {
-            event.preventDefault();
-            setCollaborators(
-              collaborators.filter(
-                (invitee: LookupSuggestedUser): boolean =>
-                  targetInvitee.id !== invitee.id
-              )
-            );
-          }}
-          sx={{ cursor: "pointer" }}
-        />
-      </div>
-    );
-  });
+        </div>
+      );
+    }
+  );
 
   return (
     <Box

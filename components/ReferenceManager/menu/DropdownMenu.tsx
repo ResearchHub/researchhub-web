@@ -12,6 +12,7 @@ type DropdownMenuItemProps = {
   itemLabel: ReactNode;
   onClick?: (event: MouseEvent) => void;
   subMenuItems?: DropdownMenuItemProps[];
+  itemDescription?: string;
 } & Omit<MenuItemProps, "onClick">;
 
 type ComponentProps = {
@@ -28,7 +29,9 @@ export default function DropdownMenu({
   size,
 }: ComponentProps): ReactElement {
   const [mainAnchorEl, setMainAnchorEl] = useState<null | HTMLElement>(null);
-  const [subMenuAnchorEl, setSubMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [subMenuAnchorEl, setSubMenuAnchorEl] = useState<null | HTMLElement>(
+    null
+  );
   const [currentSubMenu, setCurrentSubMenu] = useState<null | ReactNode>(null);
 
   const handleClose = () => {
@@ -84,6 +87,7 @@ export default function DropdownMenu({
         }}
         selected={isOpen}
         sx={{
+          display: item.itemDescription ? "block" : "flex",
           // make selected color the same as hover color
           "&.Mui-selected": {
             backgroundColor: "rgba(0, 0, 0, 0.04)",
@@ -91,6 +95,12 @@ export default function DropdownMenu({
         }}
       >
         {item.itemLabel}
+        {item.itemDescription && (
+          <div style={{ opacity: 0.5, fontSize: 14 }}>
+            {item.itemDescription}
+          </div>
+        )}
+
         {isSubMenu && (
           <div className={css(styles.rightArrow)}>
             <FontAwesomeIcon

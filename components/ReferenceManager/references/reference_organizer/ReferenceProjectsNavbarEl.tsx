@@ -50,6 +50,7 @@ export default function ReferenceProjectsNavbarEl({
   isCurrentUserAdmin,
   isOpen,
   isPublic,
+  referenceProject,
   orgSlug,
   projectID,
   projectName,
@@ -112,7 +113,10 @@ export default function ReferenceProjectsNavbarEl({
         </div>
       )}
 
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div
+        style={{ display: "flex", alignItems: "center", width: "100%" }}
+        className={"reference-item-inner"}
+      >
         {/* <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} /> */}
         <FontAwesomeIcon
           icon={isOpen ? faAngleDown : faAngleRight}
@@ -160,10 +164,14 @@ export default function ReferenceProjectsNavbarEl({
     </Box>
   );
 
+  const canEdit =
+    referenceProject?.status === "full_access" ||
+    referenceProject?.current_user_is_admin;
+
   return (
     <Box
       onMouseEnter={(): void => {
-        setShouldShowOptions(true);
+        setShouldShowOptions(canEdit);
       }}
       onMouseLeave={(): void => {
         setShouldShowOptions(false);
@@ -300,7 +308,7 @@ const styles = StyleSheet.create({
     },
   },
   linkOverride: {
-    width: "calc(100% - 20px)",
+    width: "calc(100%)",
   },
   arrowIcon: {
     fontSize: 16,
