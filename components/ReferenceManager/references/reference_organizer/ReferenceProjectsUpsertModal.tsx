@@ -71,13 +71,15 @@ export default function ReferenceProjectsUpsertModal({
   };
 
   const handleSubmit = () => {
-    const { collaborators, isPublic, projectID, projectName } = projectValue;
+    const { collaborators, isPublic, projectID, projectName, status } =
+      projectValue;
 
     setIsLoading(true);
     const formattedPayload = {
       ...projectValue,
       project: upsertPurpose === "update" ? projectID : undefined,
       parent: upsertPurpose === "create_sub_project" ? projectID : undefined,
+      status,
       // collaborators: {
       //   editors: filterNull(
       //     collaborators?.map((collaborator): ID => {

@@ -31,7 +31,7 @@ export const DEFAULT_PROJECT_VALUES: ProjectValue = {
   isPublic: true,
   projectID: undefined,
   projectName: undefined,
-  status: "",
+  status: "full_access",
 };
 export const DEFAULT_REFERENCE_PROJECT_UPSERT_CONTEXT_VALUE: ReferenceProjectsUpsertContextValueType =
   {
