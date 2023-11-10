@@ -142,7 +142,7 @@ export default function ReferenceProjectsUpsertModal({
   };
 
   const modalTitle =
-    upsertPurpose === "update" ? "Update folder" : "Create folder";
+    upsertPurpose === "update" ? "Update Folder" : "Create Folder";
 
   let permissionLabel = "Full Access";
   let permissionDescription = "Users can add and remove references";

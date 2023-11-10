@@ -42,6 +42,7 @@ export function renderNestedReferenceProjectsNavbarEl({
   return (
     <div
       style={{ display: "flex", flexDirection: "column" }}
+      className={"ref-project-wrap"}
       key={`ref-project-${referenceProject?.id}-wrap`}
     >
       <ReferenceProjectsNavbarEl

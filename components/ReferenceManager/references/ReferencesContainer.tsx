@@ -641,7 +641,7 @@ function ReferencesContainer({
                         fontSize="18px"
                         style={{ marginRight: 8 }}
                       />
-                      Create folder
+                      Create Folder
                     </div>
                   </Button>
                   {selectedRows.length > 0 && (

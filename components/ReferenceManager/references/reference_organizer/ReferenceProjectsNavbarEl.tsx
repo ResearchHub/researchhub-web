@@ -113,7 +113,10 @@ export default function ReferenceProjectsNavbarEl({
         </div>
       )}
 
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div
+        style={{ display: "flex", alignItems: "center", width: "100%" }}
+        className={"reference-item-inner"}
+      >
         {/* <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} /> */}
         <FontAwesomeIcon
           icon={isOpen ? faAngleDown : faAngleRight}
@@ -305,7 +308,7 @@ const styles = StyleSheet.create({
     },
   },
   linkOverride: {
-    width: "calc(100% - 20px)",
+    width: "calc(100%)",
   },
   arrowIcon: {
     fontSize: 16,
