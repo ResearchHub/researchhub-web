@@ -50,6 +50,7 @@ export default function ReferenceProjectsNavbarEl({
   isCurrentUserAdmin,
   isOpen,
   isPublic,
+  referenceProject,
   orgSlug,
   projectID,
   projectName,
@@ -160,10 +161,14 @@ export default function ReferenceProjectsNavbarEl({
     </Box>
   );
 
+  const canEdit =
+    referenceProject?.status === "full_access" ||
+    referenceProject?.current_user_is_admin;
+
   return (
     <Box
       onMouseEnter={(): void => {
-        setShouldShowOptions(true);
+        setShouldShowOptions(canEdit);
       }}
       onMouseLeave={(): void => {
         setShouldShowOptions(false);

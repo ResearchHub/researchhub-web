@@ -8,6 +8,7 @@ import MenuList from "@mui/material/MenuList";
 import { faTrashCan } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/pro-regular-svg-icons";
+import { useReferenceActiveProjectContext } from "../reference_organizer/context/ReferenceActiveProjectContext";
 
 interface Props {
   refId: ID;
@@ -20,6 +21,8 @@ const ReferenceItemOptsDropdown = ({
   handleDelete,
   handleMetadataAction,
 }: Props) => {
+  const { activeProject } = useReferenceActiveProjectContext();
+
   const _handleDelete = (e) => {
     handleDelete(refId);
   };
@@ -28,6 +31,14 @@ const ReferenceItemOptsDropdown = ({
     e.stopPropagation();
     originalOnClick(e);
   };
+
+  const canEdit =
+    activeProject?.status === "full_access" ||
+    activeProject?.current_user_is_admin;
+
+  if (!canEdit) {
+    return null;
+  }
 
   return (
     <PopupState variant="popover" popupId={`dropdown-for-${refId}`}>

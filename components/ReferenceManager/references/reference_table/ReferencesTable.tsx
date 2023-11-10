@@ -261,6 +261,10 @@ export default function ReferencesTable({
 
   const loadingRows = new Array(4).fill(null).map((_) => formatLoading({}));
 
+  const canEdit =
+    activeProject?.status === "full_access" ||
+    activeProject?.current_user_is_admin;
+
   return (
     <DroppableZone
       accept=".pdf"
@@ -366,7 +370,7 @@ export default function ReferencesTable({
                               </IconButton>
                             </Tooltip>
                           )}
-                          {!hasTouchCapability && (
+                          {!hasTouchCapability && canEdit && (
                             <Tooltip title="Edit Metadata" placement="top">
                               <IconButton
                                 aria-label="Edit Metadata"
