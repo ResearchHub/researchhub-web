@@ -37,16 +37,16 @@ export default async function postUploadLibrary({
     });
 
     formData.append("type", type);
-    if (orgID) {
-      formData.append("organization_id", orgID.toString());
-    }
     if (activeProjectID) {
       formData.append("project_id", activeProjectID.toString());
     }
     formData.append("creator_id", currentUser?.id);
 
     const url = generateApiUrl("citation_entry/upload_library");
-    const response = await fetch(url, API.POST_FILE_CONFIG(formData));
+    const response = await fetch(
+      url,
+      API.POST_FILE_CONFIG(formData, null, { "x-organization-id": orgID })
+    );
 
     if (!response.ok) {
       throw new Error(
