@@ -32,11 +32,13 @@ const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 type ComponentProps = {
   onCloseModal?: (event?: SyntheticEvent) => void;
   onUpsertSuccess?: (result) => void;
+  redirectAfterUpsert?: boolean;
 };
 
 export default function ReferenceProjectsUpsertModal({
   onCloseModal,
   onUpsertSuccess,
+  redirectAfterUpsert = true,
 }: ComponentProps): ReactElement {
   const currentOrg = getCurrentUserCurrentOrg();
   const {
@@ -68,6 +70,7 @@ export default function ReferenceProjectsUpsertModal({
 
   const handleSubmit = () => {
     const { collaborators, isPublic, projectID, projectName } = projectValue;
+
     setIsLoading(true);
     const formattedPayload = {
       project: upsertPurpose === "update" ? projectID : undefined,
@@ -102,6 +105,10 @@ export default function ReferenceProjectsUpsertModal({
         onUpsertSuccess && onUpsertSuccess(result);
         handleCloseModal();
         setIsLoading(false);
+
+        if (!redirectAfterUpsert) {
+          return;
+        }
 
         if (!router.query.slug) {
           setReferenceTableRowData([]);
@@ -138,6 +145,7 @@ export default function ReferenceProjectsUpsertModal({
     <BaseModal
       children={
         <div
+          className="upsert-project-modal"
           style={{
             display: "flex",
             flexDirection: "column",

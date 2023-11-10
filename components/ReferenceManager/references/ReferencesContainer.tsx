@@ -360,6 +360,7 @@ function ReferencesContainer({
     const referenceIds = _rowIds.filter((id) => !String(id).includes("folder"));
 
     removeReferenceCitations({
+      orgId: currentOrg!.id,
       onError: emptyFncWithMsg,
       onSuccess: (): void => {
         // setReferencesFetchTime(Date.now());

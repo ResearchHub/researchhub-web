@@ -12,30 +12,27 @@ type PostNewFeatureNotifiedArgs = {
   featureName: string;
 };
 
-	
-type DissmissStatus = "unchecked" | "checked" | "checking"
-
+type DissmissStatus = "unchecked" | "checked" | "checking";
 
 export function useDismissableFeature({
   auth,
   featureName,
 }: UseEffectNewFeatureArgs): {
-  isDismissed: boolean,
-  dismissFeature: Function,
-  dismissStatus: DissmissStatus
+  isDismissed: boolean;
+  dismissFeature: Function;
+  dismissStatus: DissmissStatus;
 } {
   const [isDismissed, setIsDismissed] = useState<boolean>(false);
   const [status, setStatus] = useState<DissmissStatus>("unchecked");
+
   const dismissFeature = () => {
     setIsDismissed(true);
-    _dismissFeatureAPI({ auth, featureName })
-  }
+    _dismissFeatureAPI({ auth, featureName });
+  };
   useEffect((): void => {
-
     if (!auth.authChecked) {
       return;
-    }
-    else if (status === "checked" || status === "checking") {
+    } else if (status === "checked" || status === "checking") {
       return;
     }
 
@@ -55,13 +52,13 @@ export function useDismissableFeature({
         .catch((error: Error): void => setIsDismissed(true))
         .finally(() => {
           setStatus("checked");
-        })
+        });
     } else {
       const localStorageValue =
         window?.localStorage?.getItem(
           `feature_${featureName.toLocaleLowerCase()}_dismissed`
         ) ?? "false";
-      setIsDismissed(localStorageValue === "true")
+      setIsDismissed(localStorageValue === "true");
       setStatus("checked");
     }
   }, [auth, auth?.isLoggedIn]);

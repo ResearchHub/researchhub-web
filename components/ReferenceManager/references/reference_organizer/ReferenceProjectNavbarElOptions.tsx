@@ -9,7 +9,7 @@ import { ID } from "~/config/types/root_types";
 import { Box, Typography } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import QuickModal from "../../menu/QuickModal";
 import { removeReferenceProject } from "./api/removeReferenceProject";
 import { useRouter } from "next/router";
@@ -61,7 +61,7 @@ export default function ReferenceProjectNavbarElOption({
           marginLeft: "auto",
         }}
       >
-        <MoreVertIcon fontSize="small" />
+        <MoreHorizIcon fontSize="small" />
       </span>
       <Menu
         autoFocus={false}
