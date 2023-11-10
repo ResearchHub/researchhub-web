@@ -193,6 +193,15 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                     <span>Tip</span>
                   </IconButton>
                 </PermissionNotificationWrapper>
+                {isPaper(doc) && (
+                  <ReferenceProjectsUpsertContextProvider>
+                    <SaveToRefManager
+                      contentType={"paper"}
+                      contentId={doc.unifiedDocument.document?.id}
+                      unifiedDocumentId={doc.unifiedDocument.id}
+                    />
+                  </ReferenceProjectsUpsertContextProvider>
+                )}
                 <DocumentOptions document={doc} metadata={metadata} />
               </div>
             </div>

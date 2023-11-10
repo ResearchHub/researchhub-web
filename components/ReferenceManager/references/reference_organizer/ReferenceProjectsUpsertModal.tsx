@@ -32,11 +32,13 @@ const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 type ComponentProps = {
   onCloseModal?: (event?: SyntheticEvent) => void;
   onUpsertSuccess?: (result) => void;
+  redirectAfterUpsert?: boolean;
 };
 
 export default function ReferenceProjectsUpsertModal({
   onCloseModal,
   onUpsertSuccess,
+  redirectAfterUpsert = true,
 }: ComponentProps): ReactElement {
   const currentOrg = getCurrentUserCurrentOrg();
   const {
@@ -45,7 +47,6 @@ export default function ReferenceProjectsUpsertModal({
     resetContext,
     setProjectValue,
     upsertPurpose,
-    redirectAfterUpsert,
   } = useReferenceProjectUpsertContext();
 
   const { resetProjectsFetchTime, setActiveProject, flattenCollaborators } =
@@ -144,6 +145,7 @@ export default function ReferenceProjectsUpsertModal({
     <BaseModal
       children={
         <div
+          className="upsert-project-modal"
           style={{
             display: "flex",
             flexDirection: "column",

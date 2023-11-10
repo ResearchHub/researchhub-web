@@ -216,7 +216,7 @@ export default function ReferenceProjectsNavbarEl({
         style={{ display: "flex", alignItems: "center" }}
         className={css(styles.options)}
       >
-        {shouldShowOptions && isCurrentUserAdmin && allowManage && (
+        {/* {shouldShowOptions && isCurrentUserAdmin && allowManage && (
           <div className={css(styles.moreOptionsIcon)}>
             <ReferenceProjectNavbarElOption
               isCurrentUserAdmin={isCurrentUserAdmin}
@@ -253,7 +253,7 @@ export default function ReferenceProjectsNavbarEl({
               setShouldShowOptions={setShouldShowOptions}
             />
           </div>
-        )}
+        )} */}
         {shouldShowOptions && (
           <FontAwesomeIcon
             icon={faFolderPlus}

@@ -151,12 +151,7 @@ const SaveToRefManager = ({
     setIsModalOpen: setIsProjectUpsertModalOpen,
     setProjectValue: setProjectUpsertValue,
     setUpsertPurpose: setProjectUpsertPurpose,
-    setRedirectAfterUpsert,
   } = useReferenceProjectUpsertContext();
-
-  useEffect(() => {
-    setRedirectAfterUpsert(false);
-  }, []);
 
   useEffect(() => {
     if (selectedOrg) {
@@ -188,7 +183,7 @@ const SaveToRefManager = ({
 
   useEffectHandleClick({
     ref: tooltipRef,
-    exclude: [`.trigger-for-save-to-ref-manager`],
+    exclude: [`.trigger-for-save-to-ref-manager`, ".upsert-project-modal"],
     onOutsideClick: () => {
       setIsOpen(false);
     },
@@ -204,6 +199,7 @@ const SaveToRefManager = ({
   return (
     <>
       <ReferenceProjectsUpsertModal
+        redirectAfterUpsert={false}
         onUpsertSuccess={(project) => {
           fetchReferenceOrgProjects({
             onError: () => {
@@ -332,6 +328,7 @@ const SaveToRefManager = ({
                 </div>
                 <div className={css(styles.explorerWrapper)}>
                   <ProjectExplorer
+                    handleClick={() => null}
                     currentOrg={selectedOrg}
                     currentOrgProjects={orgProjects}
                     allowSelection={true}
