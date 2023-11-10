@@ -11,6 +11,9 @@ import {
   faTrashCan,
   faEllipsis,
   faTimes,
+  faPencilAlt,
+  faPencilSquare,
+  faPenToSquare,
 } from "@fortawesome/pro-light-svg-icons";
 
 import {
@@ -387,6 +390,7 @@ function ReferencesContainer({
   };
 
   const renderReferencesContainer = () => {
+    console.log(activeProject);
     return (
       <Box
         sx={{
@@ -447,6 +451,22 @@ function ReferencesContainer({
                     </div>
                   );
                 })}
+                {activeProject?.parent_names?.names &&
+                  (activeProject.status === "full_access" ||
+                    activeProject?.current_user_is_admin) && (
+                    <Button
+                      variant="outlined"
+                      fontSize="small"
+                      size="small"
+                      customButtonStyle={styles.shareButton}
+                      onClick={onUpdateFolderClick}
+                    >
+                      <FontAwesomeIcon icon={faPenToSquare} />
+                      {/* <Typography variant="h6" fontSize={"16px"}>
+                  {"Update folder"}
+                </Typography> */}
+                    </Button>
+                  )}
               </Box>
             ) : (
               "My Library"
@@ -491,7 +511,7 @@ function ReferencesContainer({
             }}
           />
 
-          <div
+          {/* <div
             style={{
               marginLeft: "auto",
               display: "flex",
@@ -511,23 +531,7 @@ function ReferencesContainer({
                 )}
               />
             )}
-            {/* TODO: Temporarily commenting until we time to implement folder permissions */}
-            {/* {!isOnOrgTab && (
-                  <Button
-                    variant="outlined"
-                    fontSize="small"
-                    size="small"
-                    customButtonStyle={styles.shareButton}
-                    onClick={
-                      onUpdateFolderClick
-                    }
-                  >
-                    <Typography variant="h6" fontSize={"16px"}>
-                      {"Update folder"}
-                    </Typography>
-                  </Button>
-                )} */}
-          </div>
+          </div> */}
         </div>
 
         <Box
@@ -980,7 +984,6 @@ function ReferencesContainer({
 
 const styles = StyleSheet.create({
   shareButton: {
-    marginLeft: 16,
     color: colors.BLACK(),
     border: "none",
     background: "unset",

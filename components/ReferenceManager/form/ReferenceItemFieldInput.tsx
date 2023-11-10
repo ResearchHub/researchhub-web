@@ -50,7 +50,7 @@ export default function ReferenceItemFieldInput({
         width="100%"
       >
         {label}
-        {required ? <span style={{ color: colors.BLUE() }}>{"*"}</span> : null}
+        {/* {required ? <span style={{ color: colors.BLUE() }}>{"*"}</span> : null} */}
       </Typography>
       <OutlinedInput
         disabled={Boolean(disabled)}
