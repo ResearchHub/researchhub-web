@@ -1,4 +1,4 @@
-import { Box, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import {
   DEFAULT_PROJECT_VALUES,
   ProjectValue,
@@ -14,7 +14,6 @@ import {
 } from "@fortawesome/pro-light-svg-icons";
 
 import {
-  Fragment,
   useState,
   ReactNode,
   useEffect,
@@ -33,26 +32,21 @@ import { removeReferenceCitations } from "./api/removeReferenceCitations";
 import { StyleSheet, css } from "aphrodite";
 import { toast } from "react-toastify";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
-import { useReferenceTabContext } from "./reference_item/context/ReferenceItemDrawerContext";
 import { useReferenceUploadDrawerContext } from "./reference_uploader/context/ReferenceUploadDrawerContext";
 import { useRouter } from "next/router";
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
-  LEFT_MIN_NAV_WIDTH,
 } from "../basic_page_layout/BasicTogglableNavbarLeft";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { pluralize } from "~/config/utils/misc";
 import { removeReferenceProject } from "./reference_organizer/api/removeReferenceProject";
 import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import colors from "~/config/themes/colors";
 import DropdownMenu from "../menu/DropdownMenu";
-import DroppableZone from "~/components/DroppableZone";
-import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import Link from "next/link";
 import ManageOrgModal from "~/components/Org/ManageOrgModal";
-import postUploadFiles from "./api/postUploadFiles";
+import postUploadPDFFiles from "./api/postUploadPDFFiles";
 import QuickModal from "../menu/QuickModal";
 import ReactTooltip from "react-tooltip";
 import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
@@ -73,7 +67,7 @@ import ReferenceProjectsUpsertModal from "../references/reference_organizer/Refe
 import RefManagerCallouts from "../onboarding/RefManagerCallouts";
 import { storeToCookie } from "~/config/utils/storeToCookie";
 import DocumentViewer from "~/components/Document/DocumentViewer";
-import { calcLength } from "framer-motion";
+import ReferenceImportLibraryModal from "./reference_import_library_modal/ReferenceImportLibraryModal";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -124,6 +118,7 @@ function ReferencesContainer({
   const [isOrgModalOpen, setIsOrgModalOpen] = useState<boolean>(false);
   const [selectedRows, setSelectedRows] = useState<GridRowId[]>([]);
   const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
+  const [isImportLibModalOpen, setIsImportLibModalOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [calloutIsOpen, setCalloutIsOpen] = useState<boolean>(
     calloutOpen === undefined || calloutOpen === null
@@ -159,7 +154,7 @@ function ReferencesContainer({
     );
   }, [calloutOpen]);
 
-  const onFileDrop = (acceptedFiles: File[] | any[]): void => {
+  const onPDFFileDrop = (acceptedFiles: File[] | any[]): void => {
     const preload: Array<PreloadRow> = [];
     setLoading(true);
     acceptedFiles.map(() => {
@@ -172,7 +167,7 @@ function ReferencesContainer({
     });
 
     setCreatedReferences(preload);
-    postUploadFiles({
+    postUploadPDFFiles({
       acceptedFiles,
       activeProjectID: activeProject?.projectID ?? undefined,
       currentUser: nullthrows(currentUser),
@@ -192,6 +187,7 @@ function ReferencesContainer({
 
   const {
     setReferenceTableRowData,
+    setReferencesContextLoading,
     referenceTableRowData,
     openedTabs,
     activeTab,
@@ -456,6 +452,7 @@ function ReferencesContainer({
               "My Library"
             )}
           </Typography>
+          {/* Input for PDF Files */}
           <input
             ref={inputRef}
             type="file"
@@ -463,7 +460,34 @@ function ReferencesContainer({
             multiple
             style={{ display: "none" }}
             onChange={(event) => {
-              onFileDrop(Array.from(event?.target?.files ?? []));
+              onPDFFileDrop(Array.from(event?.target?.files ?? []));
+            }}
+          />
+          {/* Modal for importing reference library */}
+          <ReferenceImportLibraryModal
+            isOpen={isImportLibModalOpen}
+            onClose={({ success }) => {
+              setIsImportLibModalOpen(false);
+              if (success) {
+                // refetch
+                setReferencesContextLoading(true);
+                setReferenceTableRowData([]);
+                fetchCurrentUserReferenceCitations({
+                  onSuccess: (payload: any) => {
+                    setReferenceTableRowData(payload);
+                    setReferencesContextLoading(false);
+                  },
+                  onError: () => {
+                    emptyFncWithMsg("Failed to fetch references");
+                    setReferencesContextLoading(false);
+                  },
+                  organizationID: currentOrg?.id,
+                  // @ts-ignore
+                  projectID: activeProject?.projectID,
+                  projectSlug: router.query.slug?.slice(-1)[0],
+                  getCurrentUserCitation: !isEmpty(router.query?.my_refs),
+                });
+              }
             }}
           />
 
@@ -541,6 +565,17 @@ function ReferencesContainer({
                       // @ts-ignore unnecessary never handling
                       nullthrows(inputRef?.current).click(),
                   },
+                  {
+                    itemLabel: "Import Library",
+                    subMenuItems: [
+                      {
+                        itemLabel: "BibTeX (.bib)",
+                        onClick: (): void => {
+                          setIsImportLibModalOpen(true);
+                        },
+                      },
+                    ],
+                  },
                 ]}
                 menuLabel={
                   <Button
@@ -555,7 +590,7 @@ function ReferencesContainer({
                         fontSize="18px"
                         style={{ marginRight: 8 }}
                       />
-                      {"Add reference"}
+                      {"Add references"}
                     </div>
                   </Button>
                 }
@@ -711,7 +746,7 @@ function ReferencesContainer({
             selectedRows={selectedRows}
             createdReferences={createdReferences}
             rowSelectionModel={selectedRows}
-            handleFileDrop={onFileDrop}
+            handleFileDrop={onPDFFileDrop}
             handleClearSelection={handleClearSelection}
             handleRowSelection={handleRowSelection}
             handleDelete={(refId: GridRowId) => {
@@ -937,7 +972,6 @@ function ReferencesContainer({
           newestOnTop
           containerId={"reference-toast"}
           position="top-center"
-          autoClose={5000}
           progressStyle={{ background: colors.NEW_BLUE() }}
         ></ToastContainer> */}
     </>
