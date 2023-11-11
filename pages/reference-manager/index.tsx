@@ -50,6 +50,11 @@ export async function getServerSideProps(ctx) {
   const url = generateApiUrl(`organization/0/get_user_organizations`);
   const orgResponse = await fetchUserOrgs({ url }, authToken);
   const orgId = cookies["current-org-id"];
+  const folderSlug =
+    cookies["current-org-id"] === cookies["current-folder-org"] &&
+    cookies["current-folder-slug"]
+      ? cookies["current-folder-slug"]
+      : "my-library";
   let org = orgResponse[0];
   if (orgId) {
     const foundOrg = orgResponse.find((org) => {
@@ -66,7 +71,7 @@ export async function getServerSideProps(ctx) {
       calloutOpen,
     },
     redirect: {
-      destination: `/reference-manager/${org.slug}/my-library`,
+      destination: `/reference-manager/${org.slug}/${folderSlug}`,
       permanent: false,
     },
   };

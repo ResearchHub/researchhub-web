@@ -13,6 +13,8 @@ export type ProjectValue = {
   projectID: ID;
   projectName: NullableString;
   status: string;
+  slug: string;
+  organization: ID;
 };
 export type ReferenceProjectsUpsertContextValueType = {
   isModalOpen: boolean;

@@ -11,6 +11,7 @@ import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
 import { ProjectValue } from "./ReferenceProjectsUpsertContext";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useRouter } from "next/router";
+import { storeToCookieAndLocalStorage } from "~/config/utils/storeToCookieOrLocalStorage";
 
 export type ReferenceActiveProjectContextValueType = {
   activeProject: ProjectValue | null;
@@ -136,6 +137,19 @@ export function ReferenceActiveProjectContextProvider({ children }) {
       findAndSetActiveProjects(currentOrgProjects);
     }
   }, [activeSlugName, orgID, projectsFetchTime]);
+
+  useEffect(() => {
+    if (activeProject) {
+      storeToCookieAndLocalStorage({
+        key: "current-folder-slug",
+        value: activeProject?.slug,
+      });
+      storeToCookieAndLocalStorage({
+        key: "current-folder-org",
+        value: activeProject?.organization,
+      });
+    }
+  }, [activeProject]);
 
   return (
     <ReferenceActiveProjectContext.Provider
