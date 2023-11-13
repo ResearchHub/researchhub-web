@@ -1,0 +1,190 @@
+/* Floating text format toolbar */
+
+.floating-text-format-popup {
+  display: flex;
+  background: #fff;
+  padding: 4px;
+  vertical-align: middle;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  opacity: 0;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  transition: opacity 0.5s;
+  height: 35px;
+  will-change: transform;
+}
+
+.floating-text-format-popup button.popup-item {
+  border: 0;
+  display: flex;
+  background: none;
+  border-radius: 10px;
+  padding: 8px;
+  cursor: pointer;
+  vertical-align: middle;
+  align-items: center;
+}
+
+.floating-text-format-popup button.popup-item:disabled {
+  cursor: not-allowed;
+}
+
+.floating-text-format-popup button.popup-item.spaced {
+  margin-right: 2px;
+}
+
+.floating-text-format-popup button.popup-item i.format {
+  display: flex;
+  width: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.floating-text-format-popup button.popup-item:disabled i.format {
+  opacity: 0.2;
+}
+
+.floating-text-format-popup button.popup-item.active {
+  background-color: rgba(223, 232, 250, 0.3);
+}
+
+.floating-text-format-popup button.popup-item.active i {
+  opacity: 1;
+}
+
+.floating-text-format-popup .popup-item:hover:not([disabled]) {
+  background-color: #eee;
+}
+
+.floating-text-format-popup select.popup-item {
+  border: 0;
+  display: flex;
+  background: none;
+  border-radius: 10px;
+  padding: 8px;
+  vertical-align: middle;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 70px;
+  font-size: 14px;
+  color: #777;
+  text-overflow: ellipsis;
+}
+
+.floating-text-format-popup select.code-language {
+  text-transform: capitalize;
+  width: 130px;
+}
+
+.floating-text-format-popup .popup-item .text {
+  display: flex;
+  line-height: 20px;
+  vertical-align: middle;
+  font-size: 14px;
+  color: #777;
+  text-overflow: ellipsis;
+  width: 70px;
+  overflow: hidden;
+  height: 20px;
+  text-align: left;
+}
+
+.floating-text-format-popup .popup-item .icon {
+  display: flex;
+  width: 20px;
+  height: 20px;
+  user-select: none;
+  margin-right: 8px;
+  line-height: 16px;
+  background-size: contain;
+}
+
+.floating-text-format-popup i.chevron-down {
+  margin-top: 3px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  user-select: none;
+}
+
+.floating-text-format-popup i.chevron-down.inside {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  margin-left: -25px;
+  margin-top: 11px;
+  margin-right: 10px;
+  pointer-events: none;
+}
+
+.floating-text-format-popup .divider {
+  width: 1px;
+  background-color: #eee;
+  margin: 0 4px;
+}
+
+@media (max-width: 1024px) {
+  .floating-text-format-popup button.insert-comment {
+    display: none;
+  }
+}
+
+/* Page Break Styles */
+
+[type="page-break"] {
+  position: relative;
+  display: block;
+  width: calc(100% + var(--editor-input-padding, 28px) * 2);
+  overflow: unset;
+  margin-left: calc(var(--editor-input-padding, 28px) * -1);
+  margin-top: var(--editor-input-padding, 28px);
+  margin-bottom: var(--editor-input-padding, 28px);
+
+  border: none;
+  border-top: 1px dashed var(--editor-color-secondary, #eeeeee);
+  border-bottom: 1px dashed var(--editor-color-secondary, #eeeeee);
+  background-color: var(--editor-color-secondary, #eeeeee);
+}
+
+[type="page-break"]::before {
+  content: "";
+
+  position: absolute;
+  top: 50%;
+  left: calc(var(--editor-input-padding, 28px) + 12px);
+  transform: translateY(-50%);
+  opacity: 0.5;
+
+  background-size: cover;
+  background-image: url(/src/images/icons/scissors.svg);
+  width: 16px;
+  height: 16px;
+}
+
+[type="page-break"]::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  display: block;
+  padding: 2px 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+
+  content: "PAGE BREAK";
+  font-size: 12px;
+  color: #000;
+  font-weight: 600;
+}
+
+.selected[type="page-break"] {
+  border-color: var(--editor-color-primary, #4766cb);
+}
+
+.selected[type="page-break"]::before {
+  opacity: 1;
+}
