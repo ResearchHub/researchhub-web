@@ -3,27 +3,28 @@ import { $getRoot, $getSelection } from "lexical";
 
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
-import {AutoFocusPlugin} from '@lexical/react/LexicalAutoFocusPlugin';
-import {CheckListPlugin} from '@lexical/react/LexicalCheckListPlugin';
-import {ClearEditorPlugin} from '@lexical/react/LexicalClearEditorPlugin';
-import {TabIndentationPlugin} from '@lexical/react/LexicalTabIndentationPlugin';
-import {TablePlugin} from '@lexical/react/LexicalTablePlugin';
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
+import { ClearEditorPlugin } from "@lexical/react/LexicalClearEditorPlugin";
+import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
+import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
-import {HorizontalRulePlugin} from '@lexical/react/LexicalHorizontalRulePlugin';
-import {ListPlugin} from '@lexical/react/LexicalListPlugin';
+import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import API from "~/config/api";
 import AutoSavePlugin from "./plugins/AutoSavePlugin";
-import MarkdownShortcutPlugin from './plugins/MarkdownShortcutPlugin';
+import MarkdownShortcutPlugin from "./plugins/MarkdownShortcutPlugin";
 import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
 import TabFocusPlugin from "./plugins/TabFocusPlugin";
 import FloatingTextFormatToolbarPlugin from "./plugins/FloatingTextFormatToolbarPlugin";
-import AutoLinkPlugin from './plugins/AutoLinkPlugin';
+import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import EditorNodes from "./nodes/EditorNodes";
 import LinkPlugin from "./plugins/LinkPlugin";
+import ComponentPickerMenuPlugin from "./plugins/ComponentPickerPlugin";
 
 import Loader from "~/components/Loader/Loader";
 import NotebookHeader from "~/components/Notebook/NotebookHeader";
@@ -49,11 +50,6 @@ import Cookies from "js-cookie";
 import BasicEditorTheme from "./themes/BasicEditorTheme";
 import { Tab } from "@mui/material";
 
-
-
-
-
-
 // When the editor changes, you can get notified via the
 // LexicalOnChangePlugin!
 // function onChange(editorState) {
@@ -76,7 +72,8 @@ function onError(error) {
   console.error(error);
 }
 
-function Editor({ ELNLoading,
+function Editor({
+  ELNLoading,
   currentNote,
   currentOrganization,
   handleEditorInput,
@@ -88,10 +85,13 @@ function Editor({ ELNLoading,
   setMessage,
   showMessage,
   user,
-  userOrgs,}) {
+  userOrgs,
+}) {
   const initialConfig = {
     namespace: "NoteBook-" + currentNote.id,
-    editorState: currentNote.latest_version?.src ? currentNote.latest_version.src : null,
+    editorState: currentNote.latest_version?.src
+      ? currentNote.latest_version.src
+      : null,
     nodes: [...EditorNodes],
     theme: BasicEditorTheme,
     onError,
@@ -103,7 +103,7 @@ function Editor({ ELNLoading,
   const [presenceListElement, setPresenceListElement] = useState(null);
   const [editorInstance, setEditorInstance] = useState(null);
 
-  console.log(currentNote.latest_version)
+  console.log(currentNote.latest_version);
 
   const onRefChange = useCallback((node) => {
     if (node !== null) {
@@ -141,61 +141,60 @@ function Editor({ ELNLoading,
 
   return (
     <div className={css(styles.container)}>
-    <NotebookHeader
-      currentNote={currentNote}
-      currentOrganization={currentOrganization}
-      getEditorContent={getEditorContent}
-      isOrgMember={isOrgMember}
-      notePerms={notePerms}
-      onRefChange={onRefChange}
-      redirectToNote={redirectToNote}
-      refetchNotePerms={refetchNotePerms}
-      userOrgs={userOrgs}
-    />
-    <LexicalComposer initialConfig={initialConfig}>
-<div className={css(styles.editorContainer)}>
-<AutoFocusPlugin />
-        <ClearEditorPlugin />
-        <ListPlugin />
-            <CheckListPlugin />
-                <div className={css(styles.editorInner)}>
-            
-          
-      <RichTextPlugin
-        contentEditable={
-          <div className={css(styles.editorScroller)}>
-            <div
-              className={css(styles.editor)}
-            >
-      
-                <ContentEditable className={css(styles.contentEditable)} />
-            
-     
-            </div>
-          </div>
-        }
-        placeholder={<div>Start writing...</div>}
-        ErrorBoundary={LexicalErrorBoundary}
-      
+      <NotebookHeader
+        currentNote={currentNote}
+        currentOrganization={currentOrganization}
+        getEditorContent={getEditorContent}
+        isOrgMember={isOrgMember}
+        notePerms={notePerms}
+        onRefChange={onRefChange}
+        redirectToNote={redirectToNote}
+        refetchNotePerms={refetchNotePerms}
+        userOrgs={userOrgs}
       />
-      
-      <AutoSavePlugin parsedNoteTitle={parsedNoteTitle} currentNote={currentNote}/>
-      <MarkdownShortcutPlugin/>
-      {/* <OnChangePlugin onChange={onChange} /> */}
-      <HistoryPlugin />
+      <LexicalComposer initialConfig={initialConfig}>
+        <div className={css(styles.editorContainer)}>
+          <input
+            className={css(styles.titleInput)}
+            contentEditable="true"
+            placeholder="Untitled"
+            value={currentNote.title}
+          ></input>
+          <AutoFocusPlugin />
+          <ClearEditorPlugin />
+          <ListPlugin />
+          <CheckListPlugin />
+          <div className={css(styles.editorInner)}>
+            <RichTextPlugin
+              contentEditable={
+                <div className={css(styles.editorScroller)}>
+                  <div className={css(styles.editor)}>
+                    <ContentEditable className={css(styles.contentEditable)} />
+                  </div>
+                </div>
+              }
+              placeholder={<div>Start writing...</div>}
+              ErrorBoundary={LexicalErrorBoundary}
+            />
+
+            <AutoSavePlugin
+              parsedNoteTitle={parsedNoteTitle}
+              currentNote={currentNote}
+            />
+            <ComponentPickerMenuPlugin/>
+            <MarkdownShortcutPlugin />
+            {/* <OnChangePlugin onChange={onChange} /> */}
+            <HistoryPlugin />
             <TabIndentationPlugin />
-            <FloatingTextFormatToolbarPlugin/>
-            <LinkPlugin/>
-            <AutoLinkPlugin/>
-      <TabFocusPlugin />
-      <ListMaxIndentLevelPlugin maxDepth={7} />
-
-
-      </div>
-            </div>
-    </LexicalComposer>
+            <FloatingTextFormatToolbarPlugin />
+            <LinkPlugin />
+            <AutoLinkPlugin />
+            <TabFocusPlugin />
+            <ListMaxIndentLevelPlugin maxDepth={7} />
+          </div>
+        </div>
+      </LexicalComposer>
     </div>
-
   );
 }
 
@@ -237,24 +236,32 @@ const styles = StyleSheet.create({
     zIndex: -1,
     height: "auto",
   },
-editorInner: {
-  height: "100%",
-  width: "100%",
-  minHeight: "calc(100vh - 80px)",
-},
-editorScroller: {
-  width: "100%",
-  border: 0,
-  display: "flex",
-  position: "relative",
-  outline: 0,
-  zIndex: 0,
-  resize: "vertical",
-},
-contentEditable: {
-  outline: "none",
-  // backgroundColor: "black",
-}
+  editorInner: {
+    height: "100%",
+    width: "100%",
+    minHeight: "calc(100vh - 80px)",
+  },
+  editorScroller: {
+    width: "100%",
+    border: 0,
+    display: "flex",
+    position: "relative",
+    outline: 0,
+    zIndex: 0,
+    resize: "vertical",
+  },
+  contentEditable: {
+    outline: "none",
+    marginLeft: 10,
+  },
+  titleInput: {
+    display: "flex",
+    width: "100%",
+    fontSize: "2rem",
+    outline: "none",
+    border: "none",
+    marginBottom: 20,
+  },
 });
 
 export default Editor;
