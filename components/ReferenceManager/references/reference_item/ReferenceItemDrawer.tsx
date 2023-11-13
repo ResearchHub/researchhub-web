@@ -38,6 +38,7 @@ import ReferenceItemFieldCreatorTagInput from "../../form/ReferenceItemFieldCrea
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import dayjs from "dayjs";
 import { useReferencesTableContext } from "../reference_table/context/ReferencesTableContext";
+import ReferenceItemFieldAttachment from "../../form/ReferenceItemFieldAttachment";
 
 type Props = {};
 
@@ -73,7 +74,9 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
     referenceItemDatum?.fields ?? {}
   );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const hasAttachment = !isEmpty(referenceItemDatum?.attachment);
+  const [attachmentURL, setAttachmentURL] = useState<string | null>(
+    referenceItemDatum?.attachment ?? null
+  );
   const { setReferenceTableRowData, referenceTableRowData } =
     useReferencesTableContext();
 
@@ -92,6 +95,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
             .join(", "),
         } ?? {}
       );
+      setAttachmentURL(referenceItemDatum?.attachment ?? null);
     }
   }, [referenceItemDatum?.id, isDrawerOpen]);
 
@@ -217,20 +221,41 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
           </Typography>
         </Stack>
         {tabInputItems}
-        {hasAttachment ? (
-          <div
-            style={{
-              height: 600,
-              marginBottom: "32px",
-            }}
-          >
-            <iframe
-              height={"100%"}
-              src={convertHttpToHttps(referenceItemDatum?.attachment)}
-              width={"100%"}
-            />
-          </div>
-        ) : null}
+        <ReferenceItemFieldAttachment
+          attachmentURL={attachmentURL}
+          onRemoveAttachment={() => {
+            updateReferenceCitation({
+              payload: {
+                fields: {
+                  // use existing reference fields (since we don't want to update them in this request)
+                  ...referenceItemDatum?.fields,
+                  author: referenceItemDatum?.fields.author ?? [],
+                  // set fields.attachment to null
+                  attachment: null,
+                },
+                // set attachment to null
+                attachment: null,
+                citation_id,
+                citation_type,
+                organization: currentOrg?.id,
+              },
+              onSuccess: (res) => {
+                const newReferenceTableRowData = [...referenceTableRowData].map(
+                  (reference) => {
+                    if (reference.id === referenceItemDatum.id) {
+                      return res;
+                    } else {
+                      return reference;
+                    }
+                  }
+                );
+                setReferenceTableRowData(newReferenceTableRowData);
+                setAttachmentURL(null);
+              },
+              onError: emptyFncWithMsg,
+            });
+          }}
+        />
       </Box>
       <Box
         display="flex"
@@ -273,7 +298,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
                   },
                   citation_id,
                   citation_type,
-                  organization: currentOrg.id,
+                  organization: currentOrg?.id,
                 },
                 onSuccess: (res) => {
                   const newReferenceTableRowData = [
