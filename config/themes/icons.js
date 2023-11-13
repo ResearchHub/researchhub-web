@@ -17,6 +17,9 @@ import {
   faCircleExclamation,
   faH2,
   faQuestionCircle,
+  faSuperscript,
+  faSubscript,
+  faStrikethrough,
 } from "@fortawesome/pro-solid-svg-icons";
 import colors, { iconColors } from "~/config/themes/colors";
 import { StyleSheet, css } from "aphrodite";
@@ -71,6 +74,9 @@ export const textEditorIcons = {
   numberedList: <FontAwesomeIcon icon={faListOl}></FontAwesomeIcon>,
   quote: <FontAwesomeIcon icon={faQuoteRight}></FontAwesomeIcon>,
   underline: <FontAwesomeIcon icon={faUnderline}></FontAwesomeIcon>,
+  superscript: <FontAwesomeIcon icon={faSuperscript}></FontAwesomeIcon>,
+  subscript: <FontAwesomeIcon icon={faSubscript}></FontAwesomeIcon>,
+  strikethrough: <FontAwesomeIcon icon={faStrikethrough}></FontAwesomeIcon>,
   video: <FontAwesomeIcon icon={faVideoPlus}></FontAwesomeIcon>,
 };
 
