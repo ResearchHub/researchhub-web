@@ -25,6 +25,7 @@ import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import EditorNodes from "./nodes/EditorNodes";
 import LinkPlugin from "./plugins/LinkPlugin";
 import ComponentPickerMenuPlugin from "./plugins/ComponentPickerPlugin";
+import PageBreakPlugin from "./plugins/PageBreakPlugin";
 
 import Loader from "~/components/Loader/Loader";
 import NotebookHeader from "~/components/Notebook/NotebookHeader";
@@ -164,6 +165,7 @@ function Editor({
           <ClearEditorPlugin />
           <ListPlugin />
           <CheckListPlugin />
+          <PageBreakPlugin/>
           <div className={css(styles.editorInner)}>
             <RichTextPlugin
               contentEditable={
