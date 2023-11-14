@@ -13,7 +13,6 @@ import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import API from "~/config/api";
 import AutoSavePlugin from "./plugins/AutoSavePlugin";
@@ -26,6 +25,9 @@ import EditorNodes from "./nodes/EditorNodes";
 import LinkPlugin from "./plugins/LinkPlugin";
 import ComponentPickerMenuPlugin from "./plugins/ComponentPickerPlugin";
 import PageBreakPlugin from "./plugins/PageBreakPlugin";
+import ImagesPlugin from "./plugins/ImagesPlugin";
+import DragDropPastePlugin from "./plugins/DragDropPastePlugin";
+import VideoPlugin from "./plugins/VideoPlugin";
 
 import Loader from "~/components/Loader/Loader";
 import NotebookHeader from "~/components/Notebook/NotebookHeader";
@@ -104,7 +106,6 @@ function Editor({
   const [presenceListElement, setPresenceListElement] = useState(null);
   const [editorInstance, setEditorInstance] = useState(null);
 
-  console.log(currentNote.latest_version);
 
   const onRefChange = useCallback((node) => {
     if (node !== null) {
@@ -153,6 +154,7 @@ function Editor({
         refetchNotePerms={refetchNotePerms}
         userOrgs={userOrgs}
       />
+      <div className="editor-shell">
       <LexicalComposer initialConfig={initialConfig}>
         <div className={css(styles.editorContainer)}>
           <input
@@ -166,6 +168,8 @@ function Editor({
           <ListPlugin />
           <CheckListPlugin />
           <PageBreakPlugin/>
+          <DragDropPastePlugin/>
+          <HorizontalRulePlugin/>
           <div className={css(styles.editorInner)}>
             <RichTextPlugin
               contentEditable={
@@ -185,6 +189,8 @@ function Editor({
             />
             <ComponentPickerMenuPlugin/>
             <MarkdownShortcutPlugin />
+            <ImagesPlugin />
+            <VideoPlugin/>
             {/* <OnChangePlugin onChange={onChange} /> */}
             <HistoryPlugin />
             <TabIndentationPlugin />
@@ -196,6 +202,7 @@ function Editor({
           </div>
         </div>
       </LexicalComposer>
+      </div>
     </div>
   );
 }
