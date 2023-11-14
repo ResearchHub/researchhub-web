@@ -29,13 +29,13 @@ import * as ReactDOM from "react-dom";
 
 import { textEditorIcons } from "~/config/themes/icons";
 
-// import useModal from "../../hooks/useModal";
+import useModal from "../../hooks/useModal";
 // import catTypingGif from "../../images/cat-typing.gif";
 // import { EmbedConfigs } from "../AutoEmbedPlugin";
 // import { INSERT_COLLAPSIBLE_COMMAND } from "../CollapsiblePlugin";
 // import { InsertEquationDialog } from "../EquationsPlugin";
 // import { INSERT_EXCALIDRAW_COMMAND } from "../ExcalidrawPlugin";
-// import { INSERT_IMAGE_COMMAND, InsertImageDialog } from "../ImagesPlugin";
+import { INSERT_IMAGE_COMMAND, InsertImageDialog } from "../ImagesPlugin";
 // import InsertLayoutDialog from "../LayoutPlugin/InsertLayoutDialog";
 import { INSERT_PAGE_BREAK } from "../PageBreakPlugin";
 // import { InsertPollDialog } from "../PollPlugin";
@@ -137,10 +137,9 @@ function getDynamicOptions(editor: LexicalEditor, queryString: string) {
   return options;
 }
 
-// type ShowModal = ReturnType<typeof useModal>[1];
+type ShowModal = ReturnType<typeof useModal>[1];
 
-// function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
-function getBaseOptions(editor: LexicalEditor) {
+function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
   return [
     new ComponentPickerOption("Paragraph", {
       icon: <i className="icon"> {textEditorIcons.paragraph} </i>,
@@ -283,14 +282,14 @@ function getBaseOptions(editor: LexicalEditor) {
     //       src: catTypingGif,
     //     }),
     // }),
-    // new ComponentPickerOption("Image", {
-    //   icon: <i className="icon image" />,
-    //   keywords: ["image", "photo", "picture", "file"],
-    //   onSelect: () =>
-    //     showModal("Insert Image", (onClose) => (
-    //       <InsertImageDialog activeEditor={editor} onClose={onClose} />
-    //     )),
-    // }),
+    new ComponentPickerOption("Image", {
+      icon: <i className="icon">{textEditorIcons.image}</i>,
+      keywords: ["image", "photo", "picture", "file"],
+      onSelect: () =>
+        showModal("Insert Image", (onClose) => (
+          <InsertImageDialog activeEditor={editor} onClose={onClose} />
+        )),
+    }),
     // new ComponentPickerOption("Collapsible", {
     //   icon: <i className="icon caret-right" />,
     //   keywords: ["collapse", "collapsible", "toggle"],
@@ -329,7 +328,7 @@ function getBaseOptions(editor: LexicalEditor) {
 
 export default function ComponentPickerMenuPlugin(): JSX.Element {
   const [editor] = useLexicalComposerContext();
-  // const [modal, showModal] = useModal();
+  const [modal, showModal] = useModal();
   const [queryString, setQueryString] = useState<string | null>(null);
 
   const checkForTriggerMatch = useBasicTypeaheadTriggerMatch("/", {
@@ -337,8 +336,7 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
   });
 
   const options = useMemo(() => {
-    // const baseOptions = getBaseOptions(editor, showModal);
-    const baseOptions = getBaseOptions(editor);
+    const baseOptions = getBaseOptions(editor, showModal);
 
     if (!queryString) {
       return baseOptions;
@@ -354,9 +352,7 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
           option.keywords.some((keyword) => regex.test(keyword))
       ),
     ];
-  }, [editor, queryString]);
-  // }, [editor, queryString, showModal] );
-
+  }, [editor, queryString, showModal]);
 
   const onSelectOption = useCallback(
     (
@@ -376,7 +372,7 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
 
   return (
     <>
-      {/* {modal} */}
+      {modal}
       <LexicalTypeaheadMenuPlugin<ComponentPickerOption>
         onQueryChange={setQueryString}
         onSelectOption={onSelectOption}
