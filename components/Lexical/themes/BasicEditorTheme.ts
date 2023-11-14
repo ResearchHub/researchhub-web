@@ -50,6 +50,7 @@ const theme: EditorThemeClasses = {
     h6: "BasicEditorTheme__h6",
   },
   image: "editor-image",
+  video: "editor-video",
   indent: "BasicEditorTheme__indent",
   inlineImage: "inline-editor-image",
   layoutContainer: "BasicEditorTheme__layoutContaner",

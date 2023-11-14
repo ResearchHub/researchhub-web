@@ -23,55 +23,47 @@ import * as React from "react";
 import { CAN_USE_DOM } from "../../utils/canUseDOM";
 
 import {
-  $createImageNode,
-  $isImageNode,
-  ImageNode,
-  ImagePayload,
-} from "../../nodes/ImageNode";
+  $createVideoNode,
+  $isVideoNode,
+  VideoNode,
+  VideoPayload,
+} from "../../nodes/VideoNode";
 import Button from "../../ui/Button";
 import { DialogActions, DialogButtonsList } from "../../ui/Dialog";
 import FileInput from "../../ui/FileInput";
 import TextInput from "../../ui/TextInput";
 
-export type InsertImagePayload = Readonly<ImagePayload>;
+export type InsertVideoPayload = Readonly<VideoPayload>;
 
 const getDOMSelection = (targetWindow: Window | null): Selection | null =>
   CAN_USE_DOM ? (targetWindow || window).getSelection() : null;
 
-export const INSERT_IMAGE_COMMAND: LexicalCommand<InsertImagePayload> =
-  createCommand("INSERT_IMAGE_COMMAND");
+export const INSERT_VIDEO_COMMAND: LexicalCommand<InsertVideoPayload> =
+  createCommand("INSERT_VIDEO_COMMAND");
 
-export function InsertImageUriDialogBody({
+export function InsertVideoUriDialogBody({
   onClick,
 }: {
-  onClick: (payload: InsertImagePayload) => void;
+  onClick: (payload: InsertVideoPayload) => void;
 }) {
   const [src, setSrc] = useState("");
-  const [altText, setAltText] = useState("");
 
   const isDisabled = src === "";
 
   return (
     <>
       <TextInput
-        label="Image URL"
+        label="Video URL"
         placeholder="i.e. https://source.unsplash.com/random"
         onChange={setSrc}
         value={src}
-        data-test-id="image-modal-url-input"
-      />
-      <TextInput
-        label="Alt Text"
-        placeholder="Random unsplash image"
-        onChange={setAltText}
-        value={altText}
-        data-test-id="image-modal-alt-text-input"
+        data-test-id="video-modal-url-input"
       />
       <DialogActions>
         <Button
-          data-test-id="image-modal-confirm-btn"
+          data-test-id="video-modal-confirm-btn"
           disabled={isDisabled}
-          onClick={() => onClick({ altText, src })}
+          onClick={() => onClick({ src })}
         >
           Confirm
         </Button>
@@ -80,17 +72,16 @@ export function InsertImageUriDialogBody({
   );
 }
 
-export function InsertImageUploadedDialogBody({
+export function InsertVideoUploadedDialogBody({
   onClick,
 }: {
-  onClick: (payload: InsertImagePayload) => void;
+  onClick: (payload: InsertVideoPayload) => void;
 }) {
   const [src, setSrc] = useState("");
-  const [altText, setAltText] = useState("");
 
   const isDisabled = src === "";
 
-  const loadImage = (files: FileList | null) => {
+  const loadVideo = (files: FileList | null) => {
     const reader = new FileReader();
     reader.onload = function () {
       if (typeof reader.result === "string") {
@@ -106,23 +97,16 @@ export function InsertImageUploadedDialogBody({
   return (
     <>
       <FileInput
-        label="Image Upload"
-        onChange={loadImage}
-        accept="image/*"
-        data-test-id="image-modal-file-upload"
-      />
-      <TextInput
-        label="Alt Text"
-        placeholder="Descriptive alternative text"
-        onChange={setAltText}
-        value={altText}
-        data-test-id="image-modal-alt-text-input"
+        label="Video Upload"
+        onChange={loadVideo}
+        accept="video/*"
+        data-test-id="video-modal-file-upload"
       />
       <DialogActions>
         <Button
-          data-test-id="image-modal-file-upload-btn"
+          data-test-id="video-modal-file-upload-btn"
           disabled={isDisabled}
-          onClick={() => onClick({ altText, src })}
+          onClick={() => onClick({ src })}
         >
           Confirm
         </Button>
@@ -131,7 +115,7 @@ export function InsertImageUploadedDialogBody({
   );
 }
 
-export function InsertImageDialog({
+export function InsertVideoDialog({
   activeEditor,
   onClose,
 }: {
@@ -152,8 +136,8 @@ export function InsertImageDialog({
     };
   }, [activeEditor]);
 
-  const onClick = (payload: InsertImagePayload) => {
-    activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
+  const onClick = (payload: InsertVideoPayload) => {
+    activeEditor.dispatchCommand(INSERT_VIDEO_COMMAND, payload);
     onClose();
   };
 
@@ -162,26 +146,26 @@ export function InsertImageDialog({
       {!mode && (
         <DialogButtonsList>
           <Button
-            data-test-id="image-modal-option-url"
+            data-test-id="video-modal-option-url"
             onClick={() => setMode("url")}
           >
             URL
           </Button>
           <Button
-            data-test-id="image-modal-option-file"
+            data-test-id="video-modal-option-file"
             onClick={() => setMode("file")}
           >
             File
           </Button>
         </DialogButtonsList>
       )}
-      {mode === "url" && <InsertImageUriDialogBody onClick={onClick} />}
-      {mode === "file" && <InsertImageUploadedDialogBody onClick={onClick} />}
+      {mode === "url" && <InsertVideoUriDialogBody onClick={onClick} />}
+      {mode === "file" && <InsertVideoUploadedDialogBody onClick={onClick} />}
     </>
   );
 }
 
-export default function ImagesPlugin({
+export default function VideosPlugin({
   captionsEnabled,
 }: {
   captionsEnabled?: boolean;
@@ -189,18 +173,19 @@ export default function ImagesPlugin({
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    if (!editor.hasNodes([ImageNode])) {
-      throw new Error("ImagesPlugin: ImageNode not registered on editor");
+    if (!editor.hasNodes([VideoNode])) {
+      throw new Error("VideosPlugin: VideoNode not registered on editor");
     }
 
     return mergeRegister(
-      editor.registerCommand<InsertImagePayload>(
-        INSERT_IMAGE_COMMAND,
+      editor.registerCommand<InsertVideoPayload>(
+        INSERT_VIDEO_COMMAND,
         (payload) => {
-          const imageNode = $createImageNode(payload);
-          $insertNodes([imageNode]);
-          if ($isRootOrShadowRoot(imageNode.getParentOrThrow())) {
-            $wrapNodeInElement(imageNode, $createParagraphNode).selectEnd();
+          const videoNode = $createVideoNode(payload);
+          console.log("Video Node insert klappt");
+          $insertNodes([videoNode]);
+          if ($isRootOrShadowRoot(videoNode.getParentOrThrow())) {
+            $wrapNodeInElement(videoNode, $createParagraphNode).selectEnd();
           }
 
           return true;
@@ -234,13 +219,13 @@ export default function ImagesPlugin({
   return null;
 }
 
-const TRANSPARENT_IMAGE =
-  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-const img = document.createElement("img");
-img.src = TRANSPARENT_IMAGE;
+const TRANSPARENT_VIDEO =
+  "data:video/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+const video = document.createElement("video");
+video.src = TRANSPARENT_VIDEO;
 
 function onDragStart(event: DragEvent): boolean {
-  const node = getImageNodeInSelection();
+  const node = getVideoNodeInSelection();
   if (!node) {
     return false;
   }
@@ -249,7 +234,7 @@ function onDragStart(event: DragEvent): boolean {
     return false;
   }
   dataTransfer.setData("text/plain", "_");
-  dataTransfer.setDragImage(img, 0, 0);
+  dataTransfer.setDragVideo(video, 0, 0);
   dataTransfer.setData(
     "application/x-lexical-drag",
     JSON.stringify({
@@ -263,7 +248,7 @@ function onDragStart(event: DragEvent): boolean {
         src: node.__src,
         width: node.__width,
       },
-      type: "image",
+      type: "video",
     })
   );
 
@@ -271,27 +256,27 @@ function onDragStart(event: DragEvent): boolean {
 }
 
 function onDragover(event: DragEvent): boolean {
-  const node = getImageNodeInSelection();
+  const node = getVideoNodeInSelection();
   if (!node) {
     return false;
   }
-  if (!canDropImage(event)) {
+  if (!canDropVideo(event)) {
     event.preventDefault();
   }
   return true;
 }
 
 function onDrop(event: DragEvent, editor: LexicalEditor): boolean {
-  const node = getImageNodeInSelection();
+  const node = getVideoNodeInSelection();
   if (!node) {
     return false;
   }
-  const data = getDragImageData(event);
+  const data = getDragVideoData(event);
   if (!data) {
     return false;
   }
   event.preventDefault();
-  if (canDropImage(event)) {
+  if (canDropVideo(event)) {
     const range = getDragSelection(event);
     node.remove();
     const rangeSelection = $createRangeSelection();
@@ -299,28 +284,28 @@ function onDrop(event: DragEvent, editor: LexicalEditor): boolean {
       rangeSelection.applyDOMRange(range);
     }
     $setSelection(rangeSelection);
-    editor.dispatchCommand(INSERT_IMAGE_COMMAND, data);
+    editor.dispatchCommand(INSERT_VIDEO_COMMAND, data);
   }
   return true;
 }
 
-function getImageNodeInSelection(): ImageNode | null {
+function getVideoNodeInSelection(): VideoNode | null {
   const selection = $getSelection();
   if (!$isNodeSelection(selection)) {
     return null;
   }
   const nodes = selection.getNodes();
   const node = nodes[0];
-  return $isImageNode(node) ? node : null;
+  return $isVideoNode(node) ? node : null;
 }
 
-function getDragImageData(event: DragEvent): null | InsertImagePayload {
+function getDragVideoData(event: DragEvent): null | InsertVideoPayload {
   const dragData = event.dataTransfer?.getData("application/x-lexical-drag");
   if (!dragData) {
     return null;
   }
   const { type, data } = JSON.parse(dragData);
-  if (type !== "image") {
+  if (type !== "video") {
     return null;
   }
 
@@ -334,12 +319,12 @@ declare global {
   }
 }
 
-function canDropImage(event: DragEvent): boolean {
+function canDropVideo(event: DragEvent): boolean {
   const target = event.target;
   return !!(
     target &&
     target instanceof HTMLElement &&
-    !target.closest("code, span.editor-image") &&
+    !target.closest("code, span.editor-video") &&
     target.parentElement &&
     target.parentElement.closest("div.ContentEditable__root")
   );

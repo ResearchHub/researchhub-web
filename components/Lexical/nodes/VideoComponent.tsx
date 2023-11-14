@@ -1,0 +1,499 @@
+import type {
+  GridSelection,
+  LexicalCommand,
+  LexicalEditor,
+  NodeKey,
+  NodeSelection,
+  RangeSelection,
+} from "lexical";
+
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import { useCollaborationContext } from "@lexical/react/LexicalCollaborationContext";
+import { CollaborationPlugin } from "@lexical/react/LexicalCollaborationPlugin";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
+import { HashtagPlugin } from "@lexical/react/LexicalHashtagPlugin";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { LexicalNestedComposer } from "@lexical/react/LexicalNestedComposer";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { useLexicalNodeSelection } from "@lexical/react/useLexicalNodeSelection";
+import { mergeRegister } from "@lexical/utils";
+import {
+  $getNodeByKey,
+  $getSelection,
+  $isNodeSelection,
+  $isRangeSelection,
+  $setSelection,
+  CLICK_COMMAND,
+  COMMAND_PRIORITY_LOW,
+  createCommand,
+  DRAGSTART_COMMAND,
+  KEY_BACKSPACE_COMMAND,
+  KEY_DELETE_COMMAND,
+  KEY_ENTER_COMMAND,
+  KEY_ESCAPE_COMMAND,
+  SELECTION_CHANGE_COMMAND,
+} from "lexical";
+import * as React from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+
+// import { createWebsocketProvider } from "../collaboration";
+// import { useSettings } from "../context/SettingsContext";
+// import { useSharedHistoryContext } from "../context/SharedHistoryContext";
+// import EmojisPlugin from "../plugins/EmojisPlugin";
+// import KeywordsPlugin from "../plugins/KeywordsPlugin";
+import LinkPlugin from "../plugins/LinkPlugin";
+// import MentionsPlugin from "../plugins/MentionsPlugin";
+// import TreeViewPlugin from "../plugins/TreeViewPlugin";
+import ContentEditable from "../ui/ContentEditable";
+import ImageResizer from "../ui/ImageResizer";
+import Placeholder from "../ui/Placeholder";
+import { $isVideoNode } from "./VideoNode";
+import API from "~/config/api";
+import { AUTH_TOKEN } from "~/config/constants";
+import Cookies from "js-cookie";
+
+const videoCache = new Set();
+
+export const RIGHT_CLICK_VIDEO_COMMAND: LexicalCommand<MouseEvent> =
+  createCommand("RIGHT_CLICK_VIDEO_COMMAND");
+
+function useSuspenseVideo(src: string) {
+  if (!videoCache.has(src)) {
+    throw new Promise((resolve) => {
+      const video = new Video();
+      video.src = src;
+    video.onload = () => {
+       videoCache.add(src);
+        resolve(null);
+      };
+    });
+  }
+}
+
+function LazyVideo({
+  className,
+  videoRef,
+  src,
+  width,
+  height,
+  maxWidth,
+}: {
+  className: string | null;
+  height: "inherit" | number;
+  videoRef: { current: null | HTMLVideoElement };
+  maxWidth: number;
+  src: string;
+  width: "inherit" | number;
+}): JSX.Element {
+  useSuspenseVideo(src);
+  return (
+    <video
+      className={className || undefined}
+      src={src}
+      ref={videoRef}
+      style={{
+        height,
+        maxWidth,
+        width,
+      }}
+      draggable="false"
+    />
+  );
+}
+
+export default function VideoComponent({
+  src,
+  nodeKey,
+  width,
+  height,
+  maxWidth,
+  resizable,
+  showCaption,
+  caption,
+  captionsEnabled,
+}: {
+  caption: LexicalEditor;
+  height: "inherit" | number;
+  maxWidth: number;
+  nodeKey: NodeKey;
+  resizable: boolean;
+  showCaption: boolean;
+  src: string;
+  width: "inherit" | number;
+  captionsEnabled: boolean;
+}): JSX.Element {
+  const videoRef = useRef<null | HTMLVideoElement>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const [isSelected, setSelected, clearSelection] =
+    useLexicalNodeSelection(nodeKey);
+  const [isResizing, setIsResizing] = useState<boolean>(false);
+  const { isCollabActive } = useCollaborationContext();
+  const [editor] = useLexicalComposerContext();
+  const [selection, setSelection] = useState<
+    RangeSelection | NodeSelection | GridSelection | null
+  >(null);
+  const activeEditorRef = useRef<LexicalEditor | null>(null);
+
+  // TODO: Handle deleting file from bucket
+  const onDelete = useCallback(
+    (payload: KeyboardEvent) => {
+      if (isSelected && $isNodeSelection($getSelection())) {
+        const event: KeyboardEvent = payload;
+        event.preventDefault();
+        const node = $getNodeByKey(nodeKey);
+        if ($isVideoNode(node)) {
+          node.remove();
+        }
+      }
+      return false;
+    },
+    [isSelected, nodeKey]
+  );
+
+  const onEnter = useCallback(
+    (event: KeyboardEvent) => {
+      const latestSelection = $getSelection();
+      const buttonElem = buttonRef.current;
+      if (
+        isSelected &&
+        $isNodeSelection(latestSelection) &&
+        latestSelection.getNodes().length === 1
+      ) {
+        if (showCaption) {
+          // Move focus into nested editor
+          $setSelection(null);
+          event.preventDefault();
+          caption.focus();
+          return true;
+        } else if (
+          buttonElem !== null &&
+          buttonElem !== document.activeElement
+        ) {
+          event.preventDefault();
+          buttonElem.focus();
+          return true;
+        }
+      }
+      return false;
+    },
+    [caption, isSelected, showCaption]
+  );
+
+  const onEscape = useCallback(
+    (event: KeyboardEvent) => {
+      if (
+        activeEditorRef.current === caption ||
+        buttonRef.current === event.target
+      ) {
+        $setSelection(null);
+        editor.update(() => {
+          setSelected(true);
+          const parentRootElement = editor.getRootElement();
+          if (parentRootElement !== null) {
+            parentRootElement.focus();
+          }
+        });
+        return true;
+      }
+      return false;
+    },
+    [caption, editor, setSelected]
+  );
+
+  const onClick = useCallback(
+    (payload: MouseEvent) => {
+      const event = payload;
+
+      if (isResizing) {
+        return true;
+      }
+      if (event.target === videoRef.current) {
+        if (event.shiftKey) {
+          setSelected(!isSelected);
+        } else {
+          clearSelection();
+          setSelected(true);
+        }
+        return true;
+      }
+
+      return false;
+    },
+    [isResizing, isSelected, setSelected, clearSelection]
+  );
+
+  const onRightClick = useCallback(
+    (event: MouseEvent): void => {
+      editor.getEditorState().read(() => {
+        const latestSelection = $getSelection();
+        const domElement = event.target as HTMLElement;
+        if (
+          domElement.tagName === "IMG" &&
+          $isRangeSelection(latestSelection) &&
+          latestSelection.getNodes().length === 1
+        ) {
+          editor.dispatchCommand(
+            RIGHT_CLICK_VIDEO_COMMAND,
+            event as MouseEvent
+          );
+        }
+      });
+    },
+    [editor]
+  );
+
+  useEffect(() => {
+    let isMounted = true;
+    const rootElement = editor.getRootElement();
+    const unregister = mergeRegister(
+      editor.registerUpdateListener(({ editorState }) => {
+        if (isMounted) {
+          setSelection(editorState.read(() => $getSelection()));
+        }
+      }),
+      editor.registerCommand(
+        SELECTION_CHANGE_COMMAND,
+        (_, activeEditor) => {
+          activeEditorRef.current = activeEditor;
+          return false;
+        },
+        COMMAND_PRIORITY_LOW
+      ),
+      editor.registerCommand<MouseEvent>(
+        CLICK_COMMAND,
+        onClick,
+        COMMAND_PRIORITY_LOW
+      ),
+      editor.registerCommand<MouseEvent>(
+        RIGHT_CLICK_VIDEO_COMMAND,
+        onClick,
+        COMMAND_PRIORITY_LOW
+      ),
+      editor.registerCommand(
+        DRAGSTART_COMMAND,
+        (event) => {
+          if (event.target === videoRef.current) {
+            // TODO This is just a temporary workaround for FF to behave like other browsers.
+            // Ideally, this handles drag & drop too (and all browsers).
+            event.preventDefault();
+            return true;
+          }
+          return false;
+        },
+        COMMAND_PRIORITY_LOW
+      ),
+      editor.registerCommand(
+        KEY_DELETE_COMMAND,
+        onDelete,
+        COMMAND_PRIORITY_LOW
+      ),
+      editor.registerCommand(
+        KEY_BACKSPACE_COMMAND,
+        onDelete,
+        COMMAND_PRIORITY_LOW
+      ),
+      editor.registerCommand(KEY_ENTER_COMMAND, onEnter, COMMAND_PRIORITY_LOW),
+      editor.registerCommand(KEY_ESCAPE_COMMAND, onEscape, COMMAND_PRIORITY_LOW)
+    );
+
+    rootElement?.addEventListener("contextmenu", onRightClick);
+
+    return () => {
+      isMounted = false;
+      unregister();
+      rootElement?.removeEventListener("contextmenu", onRightClick);
+    };
+  }, [
+    clearSelection,
+    editor,
+    isResizing,
+    isSelected,
+    nodeKey,
+    onDelete,
+    onEnter,
+    onEscape,
+    onClick,
+    onRightClick,
+    setSelected,
+  ]);
+
+  const setShowCaption = () => {
+    editor.update(() => {
+      const node = $getNodeByKey(nodeKey);
+      if ($isVideoNode(node)) {
+        node.setShowCaption(true);
+      }
+    });
+  };
+
+  const onResizeEnd = (
+    nextWidth: "inherit" | number,
+    nextHeight: "inherit" | number
+  ) => {
+    // Delay hiding the resize bars for click case
+    setTimeout(() => {
+      setIsResizing(false);
+    }, 200);
+
+    editor.update(() => {
+      const node = $getNodeByKey(nodeKey);
+      if ($isVideoNode(node)) {
+        node.setWidthAndHeight(nextWidth, nextHeight);
+      }
+    });
+  };
+
+  const onResizeStart = () => {
+    setIsResizing(true);
+  };
+
+  // const { historyState } = useSharedHistoryContext();
+  // const {
+  //   settings: { showNestedEditorTreeView },
+  // } = useSettings();
+  const draggable = isSelected && $isNodeSelection(selection) && !isResizing;
+  const isFocused = isSelected || isResizing;
+  useUploadVideoToBucket(src, nodeKey, editor);
+
+  return (
+    <Suspense fallback={null}>
+      <>
+        <div draggable={draggable}>
+          <LazyVideo
+            className={
+              isFocused
+                ? `focused ${$isNodeSelection(selection) ? "draggable" : ""}`
+                : null
+            }
+            src={src}
+            videoRef={videoRef}
+            width={200}
+            height={200}
+            maxWidth={maxWidth}
+          />
+        </div>
+        {showCaption && (
+          <div className="image-caption-container">
+            <LexicalNestedComposer initialEditor={caption}>
+              <AutoFocusPlugin />
+              {/* <MentionsPlugin /> */}
+              <LinkPlugin />
+              {/* <EmojisPlugin /> */}
+              <HashtagPlugin />
+              {/* <HistoryPlugin externalHistoryState={historyState} /> */}
+              {/* <KeywordsPlugin />
+                {isCollabActive ? (
+                  <CollaborationPlugin
+                    id={caption.getKey()}
+                    providerFactory={createWebsocketProvider}
+                    shouldBootstrap={true}
+                  />
+                ) : (
+                  <HistoryPlugin externalHistoryState={historyState} />
+                )} */}
+              <RichTextPlugin
+                contentEditable={
+                  <ContentEditable className="ImageNode__contentEditable" />
+                }
+                placeholder={
+                  <Placeholder className="ImageNode__placeholder">
+                    Enter a caption...
+                  </Placeholder>
+                }
+                ErrorBoundary={LexicalErrorBoundary}
+              />
+              {/* {showNestedEditorTreeView === true ? <TreeViewPlugin /> : null} */}
+            </LexicalNestedComposer>
+          </div>
+        )}
+        {resizable && $isNodeSelection(selection) && isFocused && (
+          <ImageResizer
+            showCaption={showCaption}
+            setShowCaption={setShowCaption}
+            editor={editor}
+            buttonRef={buttonRef}
+            imageRef={videoRef}
+            maxWidth={maxWidth}
+            onResizeStart={onResizeStart}
+            onResizeEnd={onResizeEnd}
+            captionsEnabled={captionsEnabled}
+          />
+        )}
+      </>
+    </Suspense>
+  );
+}
+
+const useUploadVideoToBucket = (
+  src: string,
+  nodeKey: string,
+  editor: LexicalEditor
+) => {
+  const [updatedPath, setUpdatedPath] = useState<string>();
+
+  // Function to convert data URL to Blob
+  const dataURLtoBlob = (dataURL: string) => {
+    const [mime, base64Data] = dataURL.split(";base64,");
+    const byteCharacters = atob(base64Data);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return new Blob([byteArray], { type: mime.split(":")[1] });
+  };
+
+  // Function to upload file
+  const uploadFile = async (file: Blob) => {
+    const formData = new FormData();
+    formData.append("upload", file);
+    try {
+      const response = await fetch(API.SAVE_IMAGE, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization:
+            "Token " +
+            (typeof window !== "undefined" ? Cookies.get(AUTH_TOKEN) : ""),
+        },
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        return data.url;
+      } else {
+        // Handle response error
+        console.error("Upload failed:", data);
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
+  // Saving image to bucket
+  useEffect(() => {
+    if (src?.startsWith("data:")) {
+      const blob = dataURLtoBlob(src);
+      uploadFile(blob).then((filePath) => {
+        if (filePath) {
+          setUpdatedPath(filePath);
+        }
+      });
+    }
+  }, [src]);
+
+  // Update src node in LexicalEditor
+  useEffect(() => {
+    if (updatedPath) {
+      editor.update(() => {
+        const node = $getNodeByKey(nodeKey);
+        if ($isVideoNode(node)) {
+          node.setSrc(updatedPath);
+        }
+      });
+    }
+  }, [updatedPath, editor, nodeKey]);
+
+  return { updatedPath };
+};

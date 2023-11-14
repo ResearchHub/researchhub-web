@@ -11,6 +11,7 @@ import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { PageBreakNode } from "./PageBreakNode";
 import { ImageNode } from "./ImageNode";
+import { VideoNode } from "./VideoNode";
 
 const EditorNodes: Array<Klass<LexicalNode>> = [
   HeadingNode,
@@ -30,6 +31,7 @@ const EditorNodes: Array<Klass<LexicalNode>> = [
   LinkNode,
   PageBreakNode,
   ImageNode,
+  VideoNode,
 ];
 
 export default EditorNodes;
