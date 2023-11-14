@@ -1,3 +1,250 @@
+/* Editor Shell */
+
+.editor-shell {
+  margin: 20px auto;
+  border-radius: 2px;
+  max-width: 1100px;
+  color: #000;
+  position: relative;
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+.editor-shell .editor-container {
+  background: #fff;
+  position: relative;
+  display: block;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.editor-shell .editor-container.tree-view {
+  border-radius: 0;
+}
+
+.editor-shell .editor-container.plain-text {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.editor-shell span.editor-image {
+  cursor: default;
+  display: inline-block;
+  position: relative;
+  user-select: none;
+}
+
+.editor-shell .editor-image img {
+  max-width: 100%;
+  cursor: default;
+}
+
+.editor-shell .editor-image img.focused {
+  outline: 2px solid rgb(60, 132, 244);
+  user-select: none;
+}
+
+.editor-shell .editor-image img.focused.draggable {
+  cursor: grab;
+}
+
+.editor-shell .editor-image img.focused.draggable:active {
+  cursor: grabbing;
+}
+
+.editor-shell .editor-image .image-caption-container .tree-view-output {
+  margin: 0;
+  border-radius: 0;
+}
+
+.editor-shell .editor-image .image-caption-container {
+  display: block;
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid #fff;
+  background-color: rgba(255, 255, 255, 0.9);
+  min-width: 100px;
+  color: #000;
+  overflow: hidden;
+}
+
+.editor-shell .editor-image .image-caption-button {
+  display: block;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  width: 30%;
+  padding: 10px;
+  margin: 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  min-width: 100px;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+}
+
+.editor-shell .editor-image .image-caption-button:hover {
+  background-color: rgba(60, 132, 244, 0.5);
+}
+
+.editor-shell .editor-image .image-edit-button {
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  /* background-image: url(/src/images/icons/pencil-fill.svg); */
+  background-size: 16px;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 35px;
+  height: 35px;
+  vertical-align: -0.25em;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.editor-shell .editor-image .image-edit-button:hover {
+  background-color: rgba(60, 132, 244, 0.1);
+}
+
+.editor-shell .editor-image .image-resizer {
+  display: block;
+  width: 7px;
+  height: 7px;
+  position: absolute;
+  background-color: rgb(60, 132, 244);
+  border: 1px solid #fff;
+}
+
+.editor-shell .editor-image .image-resizer.image-resizer-n {
+  top: -6px;
+  left: 48%;
+  cursor: n-resize;
+}
+
+.editor-shell .editor-image .image-resizer.image-resizer-ne {
+  top: -6px;
+  right: -6px;
+  cursor: ne-resize;
+}
+
+.editor-shell .editor-image .image-resizer.image-resizer-e {
+  bottom: 48%;
+  right: -6px;
+  cursor: e-resize;
+}
+
+.editor-shell .editor-image .image-resizer.image-resizer-se {
+  bottom: -2px;
+  right: -6px;
+  cursor: nwse-resize;
+}
+
+.editor-shell .editor-image .image-resizer.image-resizer-s {
+  bottom: -2px;
+  left: 48%;
+  cursor: s-resize;
+}
+
+.editor-shell .editor-image .image-resizer.image-resizer-sw {
+  bottom: -2px;
+  left: -6px;
+  cursor: sw-resize;
+}
+
+.editor-shell .editor-image .image-resizer.image-resizer-w {
+  bottom: 48%;
+  left: -6px;
+  cursor: w-resize;
+}
+
+.editor-shell .editor-image .image-resizer.image-resizer-nw {
+  top: -6px;
+  left: -6px;
+  cursor: nw-resize;
+}
+
+.editor-shell span.inline-editor-image {
+  cursor: default;
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+}
+
+.editor-shell .inline-editor-image img {
+  max-width: 100%;
+  cursor: default;
+}
+
+.editor-shell .inline-editor-image img.focused {
+  outline: 2px solid rgb(60, 132, 244);
+}
+
+.editor-shell .inline-editor-image img.focused.draggable {
+  cursor: grab;
+}
+
+.editor-shell .inline-editor-image img.focused.draggable:active {
+  cursor: grabbing;
+}
+
+.editor-shell .inline-editor-image .image-caption-container .tree-view-output {
+  margin: 0;
+  border-radius: 0;
+}
+
+.editor-shell .inline-editor-image.position-full {
+  margin: 1em 0 1em 0;
+}
+
+.editor-shell .inline-editor-image.position-left {
+  float: left;
+  width: 50%;
+  margin: 1em 1em 0 0;
+}
+
+.editor-shell .inline-editor-image.position-right {
+  float: right;
+  width: 50%;
+  margin: 1em 0 0 1em;
+}
+
+.editor-shell .inline-editor-image .image-edit-button {
+  display: block;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 6px 8px;
+  margin: 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  min-width: 60px;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+}
+
+.editor-shell .inline-editor-image .image-edit-button:hover {
+  background-color: rgba(60, 132, 244, 0.5);
+}
+
+.editor-shell .inline-editor-image .image-caption-container {
+  display: block;
+  background-color: #f4f4f4;
+  min-width: 100%;
+  color: #000;
+  overflow: hidden;
+}
+
 /* Floating text format toolbar */
 
 .floating-text-format-popup {
@@ -159,7 +406,7 @@
   opacity: 0.5;
 
   background-size: cover;
-  background-image: url(/src/images/icons/scissors.svg);
+  /* background-image: url(/src/images/icons/scissors.svg); */
   width: 16px;
   height: 16px;
 }
@@ -284,4 +531,433 @@
 
 .component-picker-menu {
   width: 200px;
+}
+
+/* Image Node */
+
+.ImageNode__contentEditable {
+  min-height: 20px;
+  border: 0px;
+  resize: none;
+  cursor: text;
+  caret-color: rgb(5, 5, 5);
+  display: block;
+  position: relative;
+  outline: 0px;
+  padding: 10px;
+  user-select: text;
+  font-size: 12px;
+  width: calc(100% - 20px);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.ImageNode__placeholder {
+  font-size: 12px;
+  color: #888;
+  overflow: hidden;
+  position: absolute;
+  text-overflow: ellipsis;
+  top: 10px;
+  left: 10px;
+  user-select: none;
+  white-space: nowrap;
+  display: inline-block;
+  pointer-events: none;
+}
+
+.image-control-wrapper--resizing {
+  touch-action: none;
+}
+
+/* Inline Image Node */
+
+.InlineImageNode__contentEditable {
+  min-height: 20px;
+  border: 0px;
+  resize: none;
+  cursor: text;
+  caret-color: rgb(5, 5, 5);
+  display: block;
+  position: relative;
+  tab-size: 1;
+  outline: 0px;
+  padding: 10px;
+  user-select: text;
+  font-size: 14px;
+  line-height: 1.4em;
+  width: calc(100% - 20px);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.InlineImageNode__placeholder {
+  font-size: 12px;
+  color: #888;
+  overflow: hidden;
+  position: absolute;
+  text-overflow: ellipsis;
+  bottom: 10px;
+  left: 10px;
+  user-select: none;
+  white-space: nowrap;
+  display: inline-block;
+  pointer-events: none;
+}
+
+/* Lexical Button */
+
+.Button__root {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border: 0px;
+  background-color: #eee;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.Button__root:hover {
+  background-color: #ddd;
+}
+.Button__small {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 13px;
+}
+.Button__disabled {
+  cursor: not-allowed;
+}
+.Button__disabled:hover {
+  background-color: #eee;
+}
+
+/* Checkbox */
+
+[type="checkbox"]:checked,
+[type="checkbox"]:not(:checked) {
+  position: absolute;
+  left: -9999px;
+}
+
+[type="checkbox"]:checked + label,
+[type="checkbox"]:not(:checked) + label {
+  position: relative;
+  padding-right: 55px;
+  cursor: pointer;
+  line-height: 20px;
+  display: inline-block;
+  color: #666;
+}
+
+[type="checkbox"]:checked + label:before,
+[type="checkbox"]:not(:checked) + label:before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #666;
+  background: #fff;
+}
+
+[type="checkbox"]:checked + label:after,
+[type="checkbox"]:not(:checked) + label:after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: #222222;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+[type="checkbox"]:not(:checked) + label:after {
+  opacity: 0;
+  -webkit-transform: scale(0);
+  transform: scale(0);
+}
+
+[type="checkbox"]:checked + label:after {
+  opacity: 1;
+  -webkit-transform: scale(1);
+  transform: scale(1);
+}
+
+/* Dialog */
+
+.DialogActions {
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  margin-top: 20px;
+}
+
+.DialogButtonsList {
+  display: flex;
+  flex-direction: column;
+  justify-content: right;
+  margin-top: 20px;
+}
+
+.DialogButtonsList button {
+  margin-bottom: 20px;
+}
+
+/* Equation Editor */
+
+.EquationEditor_inlineEditor {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  outline: 0;
+  color: #8421a2;
+  background-color: inherit;
+  resize: none;
+}
+
+.EquationEditor_blockEditor {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  outline: 0;
+  color: #8421a2;
+  background-color: inherit;
+  resize: none;
+  width: 100%;
+}
+
+.EquationEditor_inputBackground {
+  background-color: #eee;
+}
+
+.EquationEditor_dollarSign {
+  text-align: left;
+  color: #b0b0b0;
+}
+
+/* Lexical Input */
+
+.Input__wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.Input__label {
+  display: flex;
+  flex: 1;
+  color: #666;
+}
+.Input__input {
+  display: flex;
+  flex: 2;
+  border: 1px solid #999;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  min-width: 0;
+}
+
+/* Katex Equation Alterer */
+
+.KatexEquationAlterer_defaultRow {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.KatexEquationAlterer_dialogActions {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  margin-top: 20px;
+  margin-bottom: 0;
+  justify-content: right;
+}
+
+.KatexEquationAlterer_centerRow {
+  display: flex;
+  flex-direction: "row";
+  margin-top: 10px;
+  margin-bottom: 10px;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.KatexEquationAlterer_textArea {
+  width: 100%;
+  resize: none;
+  padding: 7px;
+}
+
+/* Modal */
+
+.Modal__overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  flex-direction: column;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background-color: rgba(40, 40, 40, 0.6);
+  flex-grow: 0px;
+  flex-shrink: 1px;
+  z-index: 100;
+}
+.Modal__modal {
+  padding: 20px;
+  min-height: 100px;
+  min-width: 300px;
+  display: flex;
+  flex-grow: 0px;
+  background-color: #fff;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 0 20px 0 #444;
+  border-radius: 10px;
+}
+.Modal__title {
+  color: #444;
+  margin: 0px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+}
+.Modal__closeButton {
+  border: 0px;
+  position: absolute;
+  right: 20px;
+  border-radius: 20px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #eee;
+}
+.Modal__closeButton:hover {
+  background-color: #ddd;
+}
+.Modal__content {
+  padding-top: 20px;
+}
+
+/* Placeholder */
+
+.Placeholder__root {
+  font-size: 15px;
+  color: #999;
+  overflow: hidden;
+  position: absolute;
+  text-overflow: ellipsis;
+  top: 8px;
+  left: 28px;
+  right: 28px;
+  user-select: none;
+  white-space: nowrap;
+  display: inline-block;
+  pointer-events: none;
+}
+@media (max-width: 1025px) {
+  .Placeholder__root {
+    left: 8px;
+  }
+}
+
+/* Select */
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 0 1em 0 0;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: inherit;
+  line-height: inherit;
+
+  z-index: 1;
+  outline: none;
+}
+
+:root {
+  --select-border: #393939;
+  --select-focus: #101484;
+  --select-arrow: var(--select-border);
+}
+
+.select {
+  min-width: 160px;
+  max-width: 290px;
+  border: 1px solid var(--select-border);
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
+  font-size: 1rem;
+  cursor: pointer;
+  line-height: 1.4;
+  background: linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
+}
+
+/* Floating Link Editor */
+
+.link-editor {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  max-width: 400px;
+  width: 100%;
+  opacity: 0;
+  background-color: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 0 0 8px 8px;
+  transition: opacity 0.5s;
+  will-change: transform;
+}
+
+.link-editor .button {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0 2px;
+}
+
+.link-editor .button.hovered {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background-color: #eee;
+}
+
+.link-editor .button i,
+.actions i {
+  background-size: contain;
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  vertical-align: -0.25em;
 }
