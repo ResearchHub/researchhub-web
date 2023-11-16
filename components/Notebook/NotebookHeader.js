@@ -81,6 +81,10 @@ const styles = StyleSheet.create({
     margin: "auto 30px 0px auto",
     paddingTop: 10,
     userSelect: "none",
+
+    "@media only screen and (max-width: 767px)": {
+      margin: "16px 30px",
+    },
   },
   noteHeaderOpts: {
     alignItems: "center",

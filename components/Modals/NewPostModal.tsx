@@ -162,6 +162,8 @@ function NewPostModal({
 
   const handleContinue = (event?: SyntheticEvent): void => {
     event && event.preventDefault();
+    closeModal(event);
+
     if (modalSelectedItemIndex === 0) {
       setButtonValues({
         ...DEFAULT_POST_BUTTON_VALUES,
@@ -171,8 +173,6 @@ function NewPostModal({
       setBodyType("paperWizard");
     } else if ([1, 2].includes(modalSelectedItemIndex)) {
       return;
-    } else {
-      closeModal(event);
     }
   };
 
@@ -243,6 +243,10 @@ function NewPostModal({
                       href={
                         modalOptionItems[modalSelectedItemIndex]?.route ?? ""
                       }
+                      onClick={() => {
+                        debugger;
+                        closeModal();
+                      }}
                       legacyBehavior
                     >
                       <div className={css(styles.buttonLabel)}>Continue</div>
@@ -303,7 +307,7 @@ const styles = StyleSheet.create({
       top: "none",
     },
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      minHeight: "100vh",
+      minHeight: "calc(100vh + 68px)",
       top: -68,
       width: "100%",
     },
@@ -332,7 +336,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       alignItems: "flex-start",
       overflowY: "hidden",
-      padding: "40px 8px",
+      padding: "40px 16px",
     },
   },
   form: {
