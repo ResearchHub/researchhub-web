@@ -190,8 +190,12 @@ const VerificationFormSelectProviderStep = ({
   );
 
   const isAlreadyVerified = currentUser?.authorProfile?.isVerified;
-  const isLinkedInVerified = Boolean(isAlreadyVerified && currentUser?.authorProfile?.linkedIn?.linkedInId);
-  const isOrcidVerified = Boolean(isAlreadyVerified && currentUser?.authorProfile?.orcid?.orcidId);
+  const isLinkedInVerified = Boolean(
+    isAlreadyVerified && currentUser?.authorProfile?.linkedIn?.linkedInId
+  );
+  const isOrcidVerified = Boolean(
+    isAlreadyVerified && currentUser?.authorProfile?.orcid?.orcidId
+  );
   return (
     <div>
       <div className={css(formStyles.title)}>Become a Verified Author</div>
@@ -436,9 +440,9 @@ const VerificationFormSelectProfileStep = ({
   );
 
   useEffect(() => {
-    (async () => {
+    setIsLoadingProfiles(true);
+    const fetchProfiles = async () => {
       try {
-        setIsLoadingProfiles(true);
         const response = await fetchOpenAlexProfiles({
           requestType,
           name: nameRef.current,
@@ -459,7 +463,10 @@ const VerificationFormSelectProfileStep = ({
       } finally {
         setIsLoadingProfiles(false);
       }
-    })();
+    };
+    setTimeout(() => {
+      fetchProfiles();
+    }, 1000);
   }, [currentPage]);
 
   const noResults = !isLoadingProfiles && profileOptions.length === 0;
