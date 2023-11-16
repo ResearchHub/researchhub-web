@@ -34,7 +34,7 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
       value: (
         <>
           {document.authors.length > 0 ? (
-            <AuthorList authors={document.authors} />
+            <AuthorList authors={document.authors} doc={document}/>
           ) : (
             <span>Not available</span>
           )}

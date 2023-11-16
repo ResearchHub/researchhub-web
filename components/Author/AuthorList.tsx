@@ -3,24 +3,81 @@ import ALink from "../ALink";
 import { AuthorProfile } from "~/config/types/root_types";
 import colors from "~/config/themes/colors";
 import { StyleSheet, css } from "aphrodite";
+import GenericMenu from "../shared/GenericMenu";
+import IconButton from "../Icons/IconButton";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBan, faArrowRight } from "@fortawesome/pro-light-svg-icons";
+import { useRouter } from "next/router";
+import { Helpers } from "@quantfive/js-web-config";
+import api, { generateApiUrl } from "../../config/api";
 
 interface Props {
   authors: Array<AuthorProfile>;
+  doc?: any;
   moreAuthorsBtnStyle?: any;
 }
 
-const Author = ({ author }: { author: AuthorProfile }) => {
+function updateAuthors({
+  doc,
+  author,
+  onSuccess
+}) {
+  const url = generateApiUrl(
+    `paper/${doc.id}/update_paper_authors`,
+  );
+  const data = {
+    remove: [author.id]
+  }
+
+  return fetch(url, api.PATCH_CONFIG(data))
+    .then(Helpers.checkStatus)
+    .then((res) => {
+      onSuccess();
+      return res;
+    });
+}
+
+const Author = ({ author, authorOptionsSelect }: { author: AuthorProfile, authorOptionsSelect: Function }) => {
+    const currentUser = getCurrentUser();
+    const authorOptions = [
+    {
+      value: "PROFILE",
+      disableHover: true,
+      disableStyle: true,
+      icon: <FontAwesomeIcon icon={faArrowRight} />,
+      label: "Go to Profile",
+    },
+    ...(currentUser.moderator || currentUser.author_profile?.id == author.id ? [{
+      value: "REMOVE",
+      disableHover: true,
+      disableStyle: true,
+      icon: <FontAwesomeIcon icon={faBan} />,
+      label: "Remove Author",
+    }] : []
+    ),
+  ];
+
   return (
     <span
       className={css(styles.author)}
       key={author.firstName + author.lastName + "_author"}
     >
       {author.id ? (
-        <span>
-          <ALink href={`/user/${author.id}/overview`}>
+        <GenericMenu
+          softHide={true}
+          options={authorOptions}
+          width={150}
+          onSelect={(selected) => {
+            authorOptionsSelect(selected.value, author);
+          }}
+          direction="top"
+          id="document-comment-menu"
+        >
+          <span>
             {author.firstName} {author.lastName}
-          </ALink>
-        </span>
+          </span>
+        </GenericMenu>
       ) : (
         <span>
           {author.firstName} {author.lastName}
@@ -30,22 +87,37 @@ const Author = ({ author }: { author: AuthorProfile }) => {
   );
 };
 
-const AuthorList = ({ authors, moreAuthorsBtnStyle }: Props) => {
+const AuthorList = ({ authors, doc, moreAuthorsBtnStyle }: Props) => {
+  const onAuthorOptionsSelect = (value, author) => {
+    if (value == "PROFILE") {
+      router.push(
+        `/user/${author.id}/overview`
+      );
+    } else if (value == "REMOVE") {
+      const onSuccess = (): void => {
+        router.reload();
+      };
+      updateAuthors({doc, author, onSuccess});
+    };
+  };
+
   const [showSecondaryAuthors, setShowSecondaryAuthors] = useState(false);
+  const router = useRouter();
 
   // If authors list is greater than this, we want to hide "secondary" authors
   const minLengthReqToHide = 4;
 
   let primaryAuthors: Array<ReactElement<"div">> = [];
+  console.log(authors);
   primaryAuthors = authors
     .slice(0, 2)
-    .map((author) => <Author author={author} />);
+    .map((author) => <Author author={author} authorOptionsSelect={onAuthorOptionsSelect} />);
 
   let secondaryAuthors: Array<ReactElement<"div">> = [];
   if (authors.length >= minLengthReqToHide) {
     secondaryAuthors = authors
       .slice(2, authors.length - 1)
-      .map((author) => <Author author={author} />);
+      .map((author) => <Author author={author} authorOptionsSelect={onAuthorOptionsSelect} />);
   }
 
   const primaryAuthorElems = primaryAuthors.map((author, idx) => {
@@ -66,7 +138,7 @@ const AuthorList = ({ authors, moreAuthorsBtnStyle }: Props) => {
     </>
   ));
   const lastAuthor =
-    authors.length > 2 ? <Author author={authors[authors.length - 1]} /> : null;
+    authors.length > 2 ? <Author author={authors[authors.length - 1]} authorOptionsSelect={onAuthorOptionsSelect} /> : null;
 
   return (
     <div className={css(styles.authorsContainer)}>
@@ -125,6 +197,7 @@ const styles = StyleSheet.create({
     },
   },
   author: {
+    display: "inline-flex",
     marginLeft: 5,
     ":first-child": {
       marginLeft: 0,
