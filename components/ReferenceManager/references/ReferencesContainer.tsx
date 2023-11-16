@@ -121,6 +121,7 @@ function ReferencesContainer({
   const [isOrgModalOpen, setIsOrgModalOpen] = useState<boolean>(false);
   const [selectedRows, setSelectedRows] = useState<GridRowId[]>([]);
   const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
+  const [droppedBibTeXFiles, setDroppedBibTeXFiles] = useState<File[]>([]);
   const [isImportLibModalOpen, setIsImportLibModalOpen] =
     useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -161,6 +162,34 @@ function ReferencesContainer({
   const canEdit =
     activeProject?.status === "full_access" ||
     activeProject?.current_user_is_admin;
+
+  const onGenericFileDrop = (acceptedFiles: File[] | any[]): void => {
+    if (acceptedFiles.length < 1) {
+      return;
+    }
+
+    // if they're PDFs, call `onPDFFileDrop`
+    const isPDF = acceptedFiles.some(
+      (file) =>
+        file.type === "application/pdf" ||
+        file.type === "application/x-pdf" ||
+        file.name.endsWith(".pdf")
+    );
+    if (isPDF) {
+      onPDFFileDrop(acceptedFiles);
+      return;
+    }
+
+    // otherwise if there's .bib, open the import modal
+    const isBib = acceptedFiles.some((file) => file.name.endsWith(".bib"));
+    if (isBib) {
+      const bibFiles = acceptedFiles.filter((file) =>
+        file.name.endsWith(".bib")
+      );
+      setDroppedBibTeXFiles(bibFiles);
+      setIsImportLibModalOpen(true);
+    }
+  };
 
   const onPDFFileDrop = (acceptedFiles: File[] | any[]): void => {
     if (!canEdit) {
@@ -505,6 +534,7 @@ function ReferencesContainer({
           {/* Modal for importing reference library */}
           <ReferenceImportLibraryModal
             isOpen={isImportLibModalOpen}
+            droppedBibTeXFiles={droppedBibTeXFiles}
             onClose={({ success }) => {
               setIsImportLibModalOpen(false);
               if (success) {
@@ -779,7 +809,7 @@ function ReferencesContainer({
             selectedRows={selectedRows}
             createdReferences={createdReferences}
             rowSelectionModel={selectedRows}
-            handleFileDrop={onPDFFileDrop}
+            handleFileDrop={onGenericFileDrop}
             handleClearSelection={handleClearSelection}
             handleRowSelection={handleRowSelection}
             handleDelete={(refId: GridRowId) => {

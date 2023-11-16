@@ -267,7 +267,7 @@ export default function ReferencesTable({
 
   return (
     <DroppableZone
-      accept=".pdf"
+      accept=".pdf,.bib"
       fullWidth={true}
       handleFileDrop={handleFileDrop}
       multiple
@@ -298,7 +298,8 @@ export default function ReferencesTable({
             noRowsLabel: (
               <UploadFileDragAndDrop
                 children={""}
-                accept={".pdf"}
+                accept={".pdf,.bib"}
+                fileTypeString="PDF or BibTeX files"
                 handleFileDrop={
                   formattedReferenceRows.length === 0
                     ? handleFileDrop

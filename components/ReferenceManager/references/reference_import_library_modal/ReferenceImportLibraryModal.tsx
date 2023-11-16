@@ -20,11 +20,13 @@ import SuccessPage from "./pages/SuccessPage";
 
 export type Props = {
   isOpen: boolean;
+  droppedBibTeXFiles?: File[];
   onClose?: ({ success }: { success: boolean }) => void;
 };
 
 const ReferenceImportLibraryModal = ({
   isOpen,
+  droppedBibTeXFiles = [],
   onClose,
 }: Props): ReactElement => {
   const currentUser = useSelector((state: RootState) => state.auth?.user);
@@ -46,6 +48,13 @@ const ReferenceImportLibraryModal = ({
     setPage("INTRO");
     setFilenames([]);
   }, [isOpen]);
+
+  useEffect(() => {
+    // if the user has already dropped BibTeX files, skip to upload step.
+    if (droppedBibTeXFiles.length > 0) {
+      onBibTeXFileDrop(droppedBibTeXFiles);
+    }
+  }, [droppedBibTeXFiles]);
 
   const onBibTeXFileDrop = (acceptedFiles: File[] | any[]): void => {
     if (acceptedFiles.length < 1) {
