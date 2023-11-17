@@ -280,6 +280,16 @@ class WithdrawalModal extends Component {
     //   return;
     // }
 
+    if (this.props.auth.user.probable_spammer) {
+      showMessage({ show: false });
+      setMessage(
+        "We've detected suspicious activity on your account. Please contact us to resolve your issues."
+      );
+      showMessage({ show: true, error: true });
+
+      return;
+    }
+
     if (amount < transactionFee) {
       showMessage({ show: false });
       setMessage(`Withdrawal amount must be at least ${transactionFee} RSC`);
@@ -289,7 +299,7 @@ class WithdrawalModal extends Component {
 
     if (amount > userBalance) {
       showMessage({ show: false });
-      setMessage("Not enough coins in balance");
+      setMessage("Not enough RSC in balance");
       showMessage({ show: true, error: true });
       return;
     }
