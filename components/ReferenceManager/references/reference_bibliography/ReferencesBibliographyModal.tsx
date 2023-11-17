@@ -8,6 +8,7 @@ import Cite from "citation-js";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import QuickModal from "../../menu/QuickModal";
 import { ReferenceTableRowDataType } from "../reference_table/utils/formatReferenceRowData";
+import { StyleSheet, css } from "aphrodite";
 
 type Props = {
   isOpen: boolean;
@@ -126,12 +127,14 @@ export default function ReferencesBibliographyModal({
       primaryButtonConfig={{
         label:
           copyButtonStatus === null ? (
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div className={css(styles.copyButton)}>
               <ContentCopyIcon sx={{ marginRight: "8px" }} fontSize="small" />
               {"Copy"}
             </div>
           ) : (
-            <CheckIcon fontSize="small" />
+            <div className={css(styles.copyButton)}>
+              <CheckIcon fontSize="small" />
+            </div>
           ),
       }}
       onPrimaryButtonClick={onCopyClick}
@@ -139,3 +142,13 @@ export default function ReferencesBibliographyModal({
     />
   );
 }
+
+const styles = StyleSheet.create({
+  copyButton: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: "28px",
+    minWidth: "70px",
+  },
+});
