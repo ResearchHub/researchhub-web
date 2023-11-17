@@ -162,7 +162,6 @@ function NewPostModal({
 
   const handleContinue = (event?: SyntheticEvent): void => {
     event && event.preventDefault();
-    closeModal(event);
 
     if (modalSelectedItemIndex === 0) {
       setButtonValues({
@@ -171,8 +170,10 @@ function NewPostModal({
         wizardBodyType: "url_or_doi_upload",
       });
       setBodyType("paperWizard");
-    } else if ([1, 2].includes(modalSelectedItemIndex)) {
+    } else if ([1].includes(modalSelectedItemIndex)) {
       return;
+    } else {
+      closeModal(event);
     }
   };
 
@@ -244,7 +245,6 @@ function NewPostModal({
                         modalOptionItems[modalSelectedItemIndex]?.route ?? ""
                       }
                       onClick={() => {
-                        debugger;
                         closeModal();
                       }}
                       legacyBehavior
