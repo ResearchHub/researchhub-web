@@ -102,7 +102,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
       onError: (_err: Error): void => setIsSubmitting(false),
       onSuccess: (response: any): void => {
         const { id, slug } = response ?? {};
-        router.push(`/post/${id}/${slug}`);
+        router.push(`/question/${id}/${slug}`);
         onExit();
       },
     });
