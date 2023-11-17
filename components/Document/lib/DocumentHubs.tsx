@@ -31,7 +31,7 @@ const DocumentHubs = ({
         <div
           key={index}
           className={css(
-            index === 0 || !hideOnSmallerResolution
+            index === 0 || index === 1 || !hideOnSmallerResolution
               ? [styles.wrapper, styles.primaryHub]
               : [styles.wrapper, styles.secondaryHub]
           )}

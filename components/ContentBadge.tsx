@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
   },
   row: {
     display: "flex",
-    aliggItems: "center",
+    alignItems: "center",
   },
   keepPositionAbsolute: {
     position: "absolute",

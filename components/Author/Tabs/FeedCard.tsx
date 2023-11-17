@@ -375,6 +375,13 @@ function FeedCard({
                       </div>
                     )}
                   </div>
+                  <div className={css(styles.metadataContainer, styles.mobile)}>
+                    <DocumentHubs
+                      hubs={parsedHubs}
+                      withShowMore={false}
+                      hideOnSmallerResolution={true}
+                    />
+                  </div>
                   <div
                     className={css(
                       styles.metadataContainer,
@@ -445,11 +452,13 @@ function FeedCard({
                           }
                         />
                       )}
-                      <DocumentHubs
-                        hubs={parsedHubs}
-                        withShowMore={false}
-                        hideOnSmallerResolution={true}
-                      />
+                      <div className={css(styles.desktop)}>
+                        <DocumentHubs
+                          hubs={parsedHubs}
+                          withShowMore={false}
+                          hideOnSmallerResolution={true}
+                        />
+                      </div>
                     </div>
 
                     <div
@@ -643,6 +652,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     gap: 10,
+    flexWrap: "wrap",
     // flexWrap: "wrap",
     marginTop: 10,
   },
