@@ -9,6 +9,8 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import QuickModal from "../../menu/QuickModal";
 import { ReferenceTableRowDataType } from "../reference_table/utils/formatReferenceRowData";
 import { StyleSheet, css } from "aphrodite";
+import colors from "~/config/themes/colors";
+import { formatBibliography } from "./export";
 
 type Props = {
   isOpen: boolean;
@@ -36,49 +38,26 @@ export default function ReferencesBibliographyModal({
       setFormattedBibliography([]);
     } else {
       const selectedIDSet = new Set(selectedReferenceIDs);
-      const selectedItems = referenceTableRowData
-        .filter((rowData: ReferenceTableRowDataType): boolean =>
+      const selectedItems = referenceTableRowData.filter(
+        (rowData: ReferenceTableRowDataType): boolean =>
           selectedIDSet.has(rowData.id)
-        )
-        .map((selected) => {
-          const fields = selected.fields ?? {};
-          const result = {
-            ...fields,
-            year: fields?.date?.split("-")[2],
-            author: fields.author.map((creator): { name: string } => {
-              return { name: creator.given + " " + creator.family };
-            }),
-            identifier: [{ type: "doi", id: fields.DOI ?? fields.doi }],
-            journal: { name: fields.journal_abbreviation },
-          };
-          delete result.date;
-          delete result.access_date;
-          return result;
-        });
-
-      setFormattedBibliography(
-        selectedItems.map((item): string => {
-          cite.set(item);
-          return cite.format("bibliography", {
-            format: "text",
-            template: "apa",
-          });
-        })
       );
+
+      const formatted = formatBibliography(selectedItems, "APA");
+
+      setFormattedBibliography(formatted);
     }
   }, [selectedReferenceIDs]);
 
-  const bibliographyList = formattedBibliography.map(
-    (biblio: NullableString, elIndex: number) => (
-      <Typography
-        key={elIndex}
-        variant="subtitle2"
-        sx={{ marginBottom: "16px" }}
-      >
-        {biblio}
-      </Typography>
-    )
-  );
+  const bibliographyContent = useMemo(() => {
+    return formattedBibliography.map(
+      (biblio: NullableString, elIndex: number) => (
+        <div key={elIndex} className={css([styles.biblioItem])}>
+          {biblio?.trim()}
+        </div>
+      )
+    );
+  }, [formattedBibliography]);
 
   const onCopyClick = (): void => {
     navigator.clipboard
@@ -97,6 +76,7 @@ export default function ReferencesBibliographyModal({
   return (
     <QuickModal
       isOpen={isOpen}
+      modalWidth="500px"
       modalContent={
         <Box sx={{ marginBottom: "16px" }}>
           <Box
@@ -104,22 +84,16 @@ export default function ReferencesBibliographyModal({
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              marginBottom: "38px",
+              marginBottom: "24px",
             }}
           >
             <Typography id="modal-modal-title" variant="h6">
               {"Bibliography (APA)"}
             </Typography>
           </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            {bibliographyList}
-          </Box>
+          <div className={css(styles.bibliographyContainer)}>
+            {bibliographyContent}
+          </div>
         </Box>
       }
       onClose={onClose}
@@ -144,6 +118,26 @@ export default function ReferencesBibliographyModal({
 }
 
 const styles = StyleSheet.create({
+  bibliographyContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
+    maxHeight: 296,
+    overflowY: "scroll",
+    padding: 16,
+    border: `1px solid ${colors.GREY_BORDER}`,
+    borderRadius: 4,
+    marginBottom: 16,
+  },
+  biblioItem: {
+    margin: 0,
+    fontSize: 14,
+    fontWeight: 400,
+    fontFamily: "Roboto",
+    lineHeight: 1.6,
+    whiteSpace: "pre-wrap",
+    wordWrap: "break-word",
+  },
   copyButton: {
     display: "flex",
     alignItems: "center",

@@ -44,6 +44,40 @@ export function filterNull(arr: Array<any>): Array<any> {
   return arr.filter((el: any): boolean => el != null);
 }
 
+export function filterNullOrUndefinedKeys(
+  obj: any,
+  {
+    filterEmptyString,
+    filterEmptyArray,
+    filterEmptyObject,
+  }: {
+    filterEmptyString?: boolean;
+    filterEmptyArray?: boolean;
+    filterEmptyObject?: boolean;
+  } = {
+    filterEmptyString: false,
+    filterEmptyArray: false,
+    filterEmptyObject: false,
+  }
+): any {
+  return Object.keys(obj).reduce((acc: any, key: string): any => {
+    if (
+      isNullOrUndefined(obj[key]) ||
+      (filterEmptyString && obj[key] === "") ||
+      (filterEmptyArray && Array.isArray(obj[key]) && obj[key].length === 0) ||
+      (filterEmptyObject &&
+        typeof obj[key] === "object" &&
+        Object.keys(obj[key]).length === 0)
+    ) {
+      return acc;
+    }
+    return {
+      ...acc,
+      [key]: obj[key],
+    };
+  }, {});
+}
+
 export function doesNotExist(value) {
   if (value === undefined || value === null) {
     return true;
