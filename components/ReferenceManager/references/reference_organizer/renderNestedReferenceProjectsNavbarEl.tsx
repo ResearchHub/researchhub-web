@@ -17,6 +17,7 @@ type Args = {
   allowSelection?: boolean;
   allowManage?: boolean;
   setIsDeleteModalOpen: () => void;
+  setActiveTab?: (tab) => void;
 };
 
 export function renderNestedReferenceProjectsNavbarEl({

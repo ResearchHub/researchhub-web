@@ -31,7 +31,6 @@ type Props = {
   allowManage: boolean;
   depth: number;
   referenceProject: any;
-  setActiveTab: (tab) => void;
   isOpen: boolean;
   slug: string;
   selectedProjectIds?: ID[];
@@ -66,6 +65,7 @@ export default function ReferenceProjectsNavbarEl({
     setIsDrawerOpen: setIsUploadDrawerOpen,
     setProjectID: setProjectIDRefUploader,
   } = useReferenceUploadDrawerContext();
+
   const {
     setIsModalOpen: setIsProjectUpsertModalOpen,
     setProjectValue: setProjectUpsertValue,
@@ -74,7 +74,7 @@ export default function ReferenceProjectsNavbarEl({
   const [shouldShowOptions, setShouldShowOptions] = useState<boolean>(false);
   const [fileDraggedOver, setFileDraggedOver] = useState<boolean>(false);
 
-  const { rowDropped } = useReferencesTableContext();
+  const { rowDropped, setActiveTab } = useReferencesTableContext();
   const { isRefManagerDisplayedAsDrawer, setIsRefManagerSidebarOpen } =
     navContext();
 
@@ -216,6 +216,9 @@ export default function ReferenceProjectsNavbarEl({
         <ALink
           href={`/reference-manager/${orgSlug}/${slug}`}
           overrideStyle={styles.linkOverride}
+          onClick={() => {
+            setActiveTab && setActiveTab("all-references");
+          }}
         >
           {projectItemElement}
         </ALink>
