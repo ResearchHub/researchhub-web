@@ -149,7 +149,6 @@ export default function PaperPageAbstractSection({
                       /* NOTE: Manually overriding legacy "abstract" field since it's being used as a preview text in home feed
                       All proceeding updates make changes to abstract_src */
                       id: paper.id,
-                      hubs: paper?.hubs.map((hub) => hub.id),
                       abstract_src: abstractSrc,
                       abstract: htmlStringToPlainString(abstractSrc, 2000),
                       abstract_src_type: "CK_EDITOR",
