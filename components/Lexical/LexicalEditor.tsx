@@ -19,15 +19,15 @@ import AutoSavePlugin from "./plugins/AutoSavePlugin";
 import MarkdownShortcutPlugin from "./plugins/MarkdownShortcutPlugin";
 import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
 import TabFocusPlugin from "./plugins/TabFocusPlugin";
-import FloatingTextFormatToolbarPlugin from "./plugins/FloatingTextFormatToolbarPlugin";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import EditorNodes from "./nodes/EditorNodes";
 import LinkPlugin from "./plugins/LinkPlugin";
-import ComponentPickerMenuPlugin from "./plugins/ComponentPickerPlugin";
 import PageBreakPlugin from "./plugins/PageBreakPlugin";
 import ImagesPlugin from "./plugins/ImagesPlugin";
 import DragDropPastePlugin from "./plugins/DragDropPastePlugin";
 import VideoPlugin from "./plugins/VideoPlugin";
+
+import dynamic from "next/dynamic";
 
 import Loader from "~/components/Loader/Loader";
 import NotebookHeader from "~/components/Notebook/NotebookHeader";
@@ -74,6 +74,27 @@ import { Tab } from "@mui/material";
 function onError(error) {
   console.error(error);
 }
+
+// dynamic imports to improve initial loading speed
+
+const FloatingComponentPickerTriggerPlugin = dynamic(
+  () => import("./plugins/FloatingComponentPickerTriggerPlugin"),
+  {
+    ssr: false,
+  }
+)
+
+const FloatingTextFormatToolbarPlugin = dynamic(
+  () => import("./plugins/FloatingTextFormatToolbarPlugin"),
+  {
+    ssr: false,
+  }
+)
+
+const ComponentPickerMenuPlugin = dynamic(
+() => import("./plugins/ComponentPickerPlugin"),
+{ssr: false}
+)
 
 function Editor({
   ELNLoading,
@@ -191,6 +212,7 @@ function Editor({
             <MarkdownShortcutPlugin />
             <ImagesPlugin />
             <VideoPlugin/>
+            <FloatingComponentPickerTriggerPlugin />
             {/* <OnChangePlugin onChange={onChange} /> */}
             <HistoryPlugin />
             <TabIndentationPlugin />
