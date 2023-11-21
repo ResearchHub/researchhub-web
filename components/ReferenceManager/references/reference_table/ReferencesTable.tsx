@@ -36,15 +36,17 @@ import colors from "~/config/themes/colors";
 import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 import DroppableZone from "~/components/DroppableZone";
 import DocumentViewer from "~/components/Document/DocumentViewer";
-import { ID } from "~/config/types/root_types";
+import { ID, generatePageURLForUnifiedDocument, parseUnifiedDocument } from "~/config/types/root_types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle, faBookOpen } from "@fortawesome/pro-regular-svg-icons";
+import {
+  faInfoCircle,
+  faArrowUpRightFromSquare,
+} from "@fortawesome/pro-regular-svg-icons";
 import { IconButton, Tooltip } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Stack from "@mui/material/Stack";
 import OpenWithOutlinedIcon from "@mui/icons-material/OpenWithOutlined";
 import ReferenceItemOptsDropdown from "../reference_item/ReferenceItemOptsDropdown";
-import { faFolderOpen } from "@fortawesome/pro-solid-svg-icons";
 import { useHasTouchCapability } from "~/config/utils/device";
 
 type Props = {
@@ -371,6 +373,38 @@ export default function ReferencesTable({
                               </IconButton>
                             </Tooltip>
                           )}
+                          {!hasTouchCapability &&
+                            hoveredRow.related_unified_doc && (
+                              <Tooltip title="Open Public Page" placement="top">
+                                <IconButton
+                                  aria-label="Open Public Page"
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    // open page in new tab
+                                    const url =
+                                      generatePageURLForUnifiedDocument(
+                                        parseUnifiedDocument(
+                                          hoveredRow.related_unified_doc
+                                        )
+                                      );
+                                    window.open(url, "_blank");
+                                  }}
+                                  sx={{
+                                    padding: 1,
+                                    fontSize: "22px",
+                                    "&:hover": {
+                                      background:
+                                        "rgba(25, 118, 210, 0.04) !important",
+                                    },
+                                  }}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faArrowUpRightFromSquare}
+                                    fontSize={18}
+                                  />
+                                </IconButton>
+                              </Tooltip>
+                          )}
                           {!hasTouchCapability && canEdit && (
                             <Tooltip title="Edit Metadata" placement="top">
                               <IconButton
@@ -406,6 +440,20 @@ export default function ReferencesTable({
                         handleMetadataAction={(event) =>
                           handleMetadataAction({ event, row: hoveredRow })
                         }
+                        handleOpenPublicPage={(event) => {
+                          event.stopPropagation();
+                          if (!hoveredRow || !hoveredRow.related_unified_doc) {
+                            return;
+                          }
+                          // open page in new tab
+                          const url = generatePageURLForUnifiedDocument(
+                            parseUnifiedDocument(hoveredRow.related_unified_doc)
+                          );
+                          window.open(url, "_blank");
+                        }}
+                        hasPublicPage={Boolean(
+                          hoveredRow && hoveredRow.related_unified_doc
+                        )}
                       />
                     </Stack>
                   </div>

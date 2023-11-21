@@ -109,9 +109,9 @@ export const columnsFormat: GridColDef[] = [
     sortable: false,
     disableColumnMenu: true,
     flex: 1,
-    minWidth: 150,
+    minWidth: 180,
     headerAlign: "right",
-    width: 150,
+    width: 180,
     align: "right",
     renderCell: (cell) => {
       return <div style={{ textAlign: "right" }}>{cell.row.actions}</div>;
