@@ -443,6 +443,7 @@
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   position: fixed;
+  padding: 8px;
 }
 
 .typeahead-popover ul {
@@ -1103,4 +1104,33 @@ select {
   top: -6px;
   left: -6px;
   cursor: nw-resize;
+}
+
+/* Floating Component Picker Plugin*/
+
+.floating-component-picker-trigger {
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out; /* Adjusted transition */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.floating-component-picker-trigger-button {
+  display: inline-flex;
+  background-color: transparent;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease-in-out;
+  cursor: pointer;
+  color: rgba(144, 144, 144);
+}
+
+.floating-component-picker-trigger-button:hover {
+  background-color: rgba(243, 243, 243);
 }
