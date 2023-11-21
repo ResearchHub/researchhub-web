@@ -54,7 +54,6 @@ import QuickModal from "../menu/QuickModal";
 import ReactTooltip from "react-tooltip";
 import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
 import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
-import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 import ReferencesTable, { PreloadRow } from "./reference_table/ReferencesTable";
 import withWebSocket from "~/components/withWebSocket";
 import FormInput from "~/components/Form/FormInput";
@@ -71,6 +70,9 @@ import RefManagerCallouts from "../onboarding/RefManagerCallouts";
 import { storeToCookie } from "~/config/utils/storeToCookie";
 import DocumentViewer from "~/components/Document/DocumentViewer";
 import ReferenceImportLibraryModal from "./reference_import_library_modal/ReferenceImportLibraryModal";
+import ExportReferencesModal from "./reference_bibliography/ExportReferencesModal";
+import { downloadBibliography, formatBibliography } from "./reference_bibliography/export";
+import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -228,6 +230,18 @@ function ReferencesContainer({
       },
       orgID: nullthrows(currentOrg).id,
     });
+  };
+
+  /**
+   * Format and download the references into a file
+   */
+  const onExportReferences = (format: "BibTeX" | "RIS"): void => {
+    const selected = referenceTableRowData.filter((row) =>
+      selectedRows.includes(row.id!)
+    );
+    const formatted = formatBibliography(selected, format);
+
+    downloadBibliography(formatted, format);
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -438,7 +452,6 @@ function ReferencesContainer({
   };
 
   const renderReferencesContainer = () => {
-    console.log(activeProject);
     return (
       <Box
         sx={{
@@ -678,23 +691,53 @@ function ReferencesContainer({
                     <>
                       <div className={css(styles.divider)}> </div>
                       <Box sx={{ display: { xs: "none", md: "block" } }}>
-                        <Button
-                          variant="outlined"
-                          size="med"
-                          customButtonStyle={[styles.button, styles.secondary]}
-                          onClick={() => setIsBibModalOpen(true)}
-                        >
-                          <div
-                            style={{ display: "flex", alignItems: "center" }}
-                          >
-                            <FontAwesomeIcon
-                              icon={faFileExport}
-                              fontSize="18px"
-                              style={{ marginRight: 8 }}
-                            />
-                            Export
-                          </div>
-                        </Button>
+                        <DropdownMenu
+                          menuItemProps={[
+                            {
+                              itemLabel: "Bibliography (APA)",
+                              onClick: (): void => {
+                                setIsBibModalOpen(true);
+                              },
+                            },
+                            {
+                              itemLabel: "BibTeX (.bib)",
+                              onClick: (): void => {
+                                onExportReferences("BibTeX");
+                              },
+                            },
+                            {
+                              itemLabel: "RIS (.ris)",
+                              onClick: (): void => {
+                                onExportReferences("RIS");
+                              },
+                            },
+                          ]}
+                          menuLabel={
+                            <Button
+                              variant="outlined"
+                              size="med"
+                              customButtonStyle={[
+                                styles.button,
+                                styles.secondary,
+                              ]}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faFileExport}
+                                  fontSize="18px"
+                                  style={{ marginRight: 8 }}
+                                />
+                                Export
+                              </div>
+                            </Button>
+                          }
+                          size={"small"}
+                        />
                       </Box>
                       <Box sx={{ display: { xs: "none", md: "block" } }}>
                         <Button
@@ -735,9 +778,26 @@ function ReferencesContainer({
                                   Export
                                 </div>
                               ),
-                              onClick: (): void => {
-                                setIsBibModalOpen(true);
-                              },
+                              subMenuItems: [
+                                {
+                                  itemLabel: "Bibliography (APA)",
+                                  onClick: (): void => {
+                                    setIsBibModalOpen(true);
+                                  },
+                                },
+                                {
+                                  itemLabel: "BibTeX (.bib)",
+                                  onClick: (): void => {
+                                    onExportReferences("BibTeX");
+                                  },
+                                },
+                                {
+                                  itemLabel: "RIS (.ris)",
+                                  onClick: (): void => {
+                                    onExportReferences("RIS");
+                                  },
+                                },
+                              ],
                             },
                             {
                               itemLabel: (

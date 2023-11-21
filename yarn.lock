@@ -121,6 +121,15 @@
     "@citation-js/name" "^0.4.2"
     moo "^0.5.1"
 
+"@citation-js/plugin-bibtex@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@citation-js/plugin-bibtex/-/plugin-bibtex-0.7.2.tgz#0b87d86a0a0f9365aa690b7ab9d0383dd5f24605"
+  integrity sha512-QkgPfYbs1dierenxKWzIlPV7450Jci8bvZbcpjO3HQTfTaj15SV2C2AaeKhUotXZmTjm49AJQWHZtrNh+7YWjg==
+  dependencies:
+    "@citation-js/date" "^0.5.0"
+    "@citation-js/name" "^0.4.2"
+    moo "^0.5.1"
+
 "@citation-js/plugin-csl@0.6.8", "@citation-js/plugin-csl@^0.6.8":
   version "0.6.8"
   resolved "https://registry.yarnpkg.com/@citation-js/plugin-csl/-/plugin-csl-0.6.8.tgz#351454848e10113619546dd2eaf1124ac714ec26"
@@ -140,6 +149,14 @@
   version "0.6.8"
   resolved "https://registry.yarnpkg.com/@citation-js/plugin-ris/-/plugin-ris-0.6.8.tgz#a32de155dfa1fd4704b159937364db14a4c44a2c"
   integrity sha512-pDHdOjdrn25riXEwF3XK1fcU2o5/lxV2vbK+CxiFCiV2C2bRtNJRBN/97xIkHBWuqI5mr8ts93b3ijHvp3576Q==
+  dependencies:
+    "@citation-js/date" "^0.5.0"
+    "@citation-js/name" "^0.4.2"
+
+"@citation-js/plugin-ris@^0.7.4":
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/@citation-js/plugin-ris/-/plugin-ris-0.7.4.tgz#b2c013ccc51a4a5f657ab1101bc07b54335a8438"
+  integrity sha512-8tqZPPiQ0XggHZCEvZSF4ssAi14xDzJo16hnE4xIuL/+Xk8WSbohscHaeroZLYpzkIZa+Qzq3o8r0g50H2hXTg==
   dependencies:
     "@citation-js/date" "^0.5.0"
     "@citation-js/name" "^0.4.2"
