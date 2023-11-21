@@ -14,9 +14,6 @@ import { setFloatingElemPositionForBlockToolbar } from "./utils";
 import { mergeRegister } from "@lexical/utils";
 import * as React from "react";
 
-// import { INSERT_HORIZONTAL_DIVIDER_COMMAND } from "../../../nodes/HorizontalDividerNode";
-// import { INSERT_IMAGE_COMMAND } from "../../ImagePlugin";
-
 import AddIcon from "@mui/icons-material/Add";
 
 type FloatingBlockToolbarProps = {
