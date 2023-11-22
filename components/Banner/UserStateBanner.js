@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
   bannerContainer: {
     width: "100%",
     minWidth: "100%",
-    minHeight: 60,
     maxHeight: 120,
     color: "#FFF",
     display: "flex",
@@ -131,7 +130,6 @@ const styles = StyleSheet.create({
   },
   pending: {
     backgroundColor: colors.YELLOW(),
-    minHeight: 70,
   },
   suspended: {
     backgroundColor: colors.RED(),
@@ -143,7 +141,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    padding: "0 25px",
+    padding: "16px 25px",
   },
   content: {
     fontSize: 16,
