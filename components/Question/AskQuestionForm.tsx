@@ -17,7 +17,6 @@ import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
 import HubSelect from "../Hubs/HubSelect";
 
-
 const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 
 type FormFields = {
@@ -36,7 +35,7 @@ const MIN_TITLE_LENGTH = 10;
 const MAX_TITLE_LENGTH = 250;
 
 function validateFormField(fieldID: string, value: any): boolean {
-  let result: boolean = true;
+  const result = true;
   switch (fieldID) {
     case "title":
       return (
@@ -118,7 +117,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
   };
 
   return (
-    (<form
+    <form
       autoComplete={"off"}
       className={css(styles.askQuestionForm)}
       id="askQuestionForm"
@@ -173,7 +172,8 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         onChange={(hubs) => {
           handleOnChangeFields("hubs", hubs);
         }}
-      />      
+        menuPlacement="top"
+      />
       <div className={css(styles.buttonsContainer)}>
         <Button
           customButtonStyle={styles.buttonStyle}
@@ -182,7 +182,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
           type="submit"
         />
       </div>
-    </form>)
+    </form>
   );
 }
 
