@@ -5,26 +5,42 @@ import IconButton from "~/components/Icons/IconButton";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 
-
-export const HubBadge = ({ name, size }: { name: string, size?: string }) => {
+export const HubBadge = ({ name, size }: { name: string; size?: string }) => {
   return (
-    <IconButton variant="round" overrideStyle={[styles.hubBtn, styles[`hubBtn--${size}`]]}>
+    <IconButton
+      variant="round"
+      overrideStyle={[styles.hubBtn, styles[`hubBtn--${size}`]]}
+    >
       <span className={css(styles.text)}>{toTitleCase(name)}</span>
     </IconButton>
-  )
-}
-
-const HubTag = ({ hub }: { hub: Hub }) => {
-  return (
-    <Link
-      key={`/hubs/${hub.slug ?? ""}-index`}
-      href={`/hubs/${hub.slug}`}
-      className={css(styles.noUnderline)}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <HubBadge name={hub.name} />
-    </Link>
   );
+};
+
+const HubTag = ({
+  hub,
+  preventLinkClick = false,
+}: {
+  hub: Hub;
+  preventLinkClick?: boolean;
+}) => {
+  if (preventLinkClick) {
+    return (
+      <div className={css(styles.noUnderline)}>
+        <HubBadge name={hub.name} />
+      </div>
+    );
+  } else {
+    return (
+      <Link
+        key={`/hubs/${hub.slug ?? ""}-index`}
+        href={`/hubs/${hub.slug}`}
+        className={css(styles.noUnderline)}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <HubBadge name={hub.name} />
+      </Link>
+    );
+  }
 };
 
 const styles = StyleSheet.create({

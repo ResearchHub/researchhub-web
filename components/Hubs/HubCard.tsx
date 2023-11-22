@@ -42,6 +42,33 @@ const HubCard = ({
   const description = truncateText(hub.description, numberCharactersToShow);
 
   const [hoverEditIcon, setHoverEditIcon] = useState(false);
+  const hubCardContent = (
+    <>
+      <HubTag hub={hub} preventLinkClick={preventLinkClick} />
+      <div className={css(styles.description, descriptionStyle)}>
+        {description}
+      </div>
+      <div className={css(styles.metadata, metadataStyle)}>
+        <div className={css(styles.dataPoint)}>
+          {/* @ts-ignore */}
+          <PaperIcon height={13} width={14} />
+          <span>
+            {numPapers === "1" ? `${numPapers} Paper` : `${numPapers} Papers`}
+          </span>
+        </div>
+        {showCommentCount && (
+          <div className={css(styles.dataPoint)}>
+            <FontAwesomeIcon icon={faComments} />
+            <span>
+              {numComments === "1"
+                ? `${numComments} Discussion`
+                : `${numComments} Discussions`}
+            </span>
+          </div>
+        )}
+      </div>
+    </>
+  );
 
   return (
     <div className={css(styles.hubCard, cardStyle)}>
@@ -60,39 +87,13 @@ const HubCard = ({
           <FontAwesomeIcon icon={faPenToSquare} />
         </div>
       )}
-      <Link
-        href={`/hubs/${hub.slug}`}
-        style={{ textDecoration: "none" }}
-        onClick={(e) => {
-          if (preventLinkClick) {
-            e.preventDefault();
-          }
-        }}
-      >
-        <HubTag hub={hub} />
-        <div className={css(styles.description, descriptionStyle)}>
-          {description}
-        </div>
-        <div className={css(styles.metadata, metadataStyle)}>
-          <div className={css(styles.dataPoint)}>
-            {/* @ts-ignore */}
-            <PaperIcon height={13} width={14} />
-            <span>
-              {numPapers === 1 ? `${numPapers} Paper` : `${numPapers} Papers`}
-            </span>
-          </div>
-          {showCommentCount && (
-            <div className={css(styles.dataPoint)}>
-              <FontAwesomeIcon icon={faComments} />
-              <span>
-                {numComments === 1
-                  ? `${numComments} Discussion`
-                  : `${numComments} Discussions`}
-              </span>
-            </div>
-          )}
-        </div>
-      </Link>
+      {preventLinkClick ? (
+        <div>{hubCardContent}</div>
+      ) : (
+        <Link href={`/hubs/${hub.slug}`} style={{ textDecoration: "none" }}>
+          {hubCardContent}
+        </Link>
+      )}
     </div>
   );
 };

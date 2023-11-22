@@ -12,6 +12,7 @@ import colors from "~/config/themes/colors";
 interface Props {
   selectedHubs?: Hub[];
   onChange: Function;
+  menuPlacement?: "auto" | "top" | "bottom";
 }
 
 const selectDropdownStyles = {
@@ -73,7 +74,11 @@ const CustomOption: React.FC<any> = (props) => {
   );
 };
 
-const HubSelect = ({ selectedHubs = [], onChange }: Props) => {
+const HubSelect = ({
+  selectedHubs = [],
+  onChange,
+  menuPlacement = "auto",
+}: Props) => {
   const [suggestedHubs, setSuggestedHubs] = useState<HubSuggestion[]>([]);
 
   const handleHubInputChange = async (value) => {
@@ -127,6 +132,7 @@ const HubSelect = ({ selectedHubs = [], onChange }: Props) => {
         options={suggestedHubs}
         placeholder="Search Hubs"
         value={formattedSelectedHubs}
+        menuPlacement={menuPlacement}
       />
     </div>
   );
