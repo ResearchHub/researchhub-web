@@ -6,6 +6,7 @@ type OpenAlexResponse = {
   count: number;
   perPage: number;
   results: any[];
+  error: any;
 };
 
 export const fetchOpenAlexProfiles = async ({
@@ -31,12 +32,20 @@ export const fetchOpenAlexProfiles = async ({
           count: parsed ? 1 : 0,
           perPage: 1,
           results: [parsed],
+          error: res.ok ? null : {
+            status: res.status,
+            statusText: res.statusText,
+          }
         };
       } else {
         return {
           count: parsed.meta.count,
           perPage: parsed.meta.per_page,
           results: parsed.results,
+          error: res?.ok ? null : {
+            status: res.status,
+            statusText: res.statusText,
+          }          
         };
       }
     })
