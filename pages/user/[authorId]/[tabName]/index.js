@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faFacebookF,
-  faTwitter,
+  faXTwitter,
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
 import {
@@ -88,7 +88,7 @@ const SECTIONS = {
   description: "description",
   facebook: "facebook",
   linkedin: "linkedin",
-  twitter: "twitter",
+  twitter: "x / twitter",
   picture: "picture",
 };
 
@@ -104,7 +104,7 @@ function AuthorPage(props) {
   // User External Links
   const [editFacebook, setEditFacebook] = useState(false);
   const [editLinkedin, setEditLinkedin] = useState(false);
-  const [editTwitter, setEditTwitter] = useState(false);
+  const [editXTwitter, setEditXTwitter] = useState(false);
 
   // User Profile Update
   const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
@@ -144,7 +144,7 @@ function AuthorPage(props) {
 
   const facebookRef = useRef();
   const linkedinRef = useRef();
-  const twitterRef = useRef();
+  const xTwitterRef = useRef();
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
@@ -336,8 +336,8 @@ function AuthorPage(props) {
     if (facebookRef.current && !facebookRef.current.contains(e.target)) {
       setEditFacebook(false);
     }
-    if (twitterRef.current && !twitterRef.current.contains(e.target)) {
-      setEditTwitter(false);
+    if (xTwitterRef.current && !xTwitterRef.current.contains(e.target)) {
+      setEditXTwitter(false);
     }
     if (linkedinRef.current && !linkedinRef.current.contains(e.target)) {
       setEditLinkedin(false);
@@ -485,7 +485,7 @@ function AuthorPage(props) {
 
     setEditFacebook(false);
     setEditLinkedin(false);
-    setEditTwitter(false);
+    setEditXTwitter(false);
 
     await dispatch(
       AuthorActions.saveAuthorChanges({ changes, authorId: author.id })
@@ -694,13 +694,13 @@ function AuthorPage(props) {
     },
     {
       link: safeGuardURL(author.twitter),
-      icon: <FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>,
-      nodeRef: twitterRef,
-      dataTip: "Set Twitter Profile",
-      onClick: () => setEditTwitter(true),
-      renderDropdown: () => editTwitter && renderSocialEdit(SECTIONS.twitter),
-      customStyles: styles.twitter,
-      isEditing: editTwitter,
+      icon: <FontAwesomeIcon icon={faXTwitter}></FontAwesomeIcon>,
+      nodeRef: xTwitterRef,
+      dataTip: "Set X / Twitter Profile",
+      onClick: () => setEditXTwitter(true),
+      renderDropdown: () => editXTwitter && renderSocialEdit(SECTIONS.twitter),
+      customStyles: styles.xTwitter,
+      isEditing: editXTwitter,
     },
     {
       link: safeGuardURL(author.facebook),
@@ -1438,8 +1438,8 @@ const styles = StyleSheet.create({
   linkedin: {
     background: "#0077B5",
   },
-  twitter: {
-    background: "#38A1F3",
+  xTwitter: {
+    background: "black",
   },
   facebook: {
     background: "#3B5998",

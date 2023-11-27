@@ -71,7 +71,7 @@ import {
   faMedium,
   faReddit,
   faSlack,
-  faTwitter,
+  faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import {
   faArrowToBottom,
@@ -344,7 +344,7 @@ library.add(
   faTimesCircle,
   faTrashAlt,
   faTrophy,
-  faTwitter,
+  faXTwitter,
   faUnderline,
   faUndo,
   faUp,

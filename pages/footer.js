@@ -1,9 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
-import { faReddit } from "@fortawesome/free-brands-svg-icons";
-import { faTwitter } from "@fortawesome/free-brands-svg-icons";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import { faMedium } from "@fortawesome/free-brands-svg-icons";
+import {
+  faGithub,
+  faReddit,
+  faXTwitter,
+  faDiscord,
+  faMedium,
+} from "@fortawesome/free-brands-svg-icons";
 import { Component } from "react";
 
 // NPM Modules
@@ -105,12 +107,12 @@ class Footer extends Component {
             <a
               target="_blank"
               className={css(styles.link)}
-              href="https://twitter.com/researchhub"
+              href="https://x.com/researchhub"
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
                 <span className={css(styles.logo)}>
-                  {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
+                  {<FontAwesomeIcon icon={faXTwitter}></FontAwesomeIcon>}
                 </span>
               </div>
             </a>
