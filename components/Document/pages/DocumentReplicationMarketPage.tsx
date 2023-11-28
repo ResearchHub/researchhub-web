@@ -21,12 +21,14 @@ import PredictionMarketVoteFeed from "~/components/PredictionMarket/PredictionMa
 import { useSelector } from "react-redux";
 import { RootState } from "~/redux";
 import { parseUser } from "~/config/types/root_types";
-import { isEmpty } from "~/config/utils/nullchecks";
+import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
 import { COMMENT_TYPES, parseComment } from "~/components/Comment/lib/types";
 import CommentFeed from "~/components/Comment/CommentFeed";
 import getCommentFilterByTab from "../lib/getCommentFilterByTab";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
+import { fetchVotes } from "~/components/PredictionMarket/api/votes";
+import { VoteTreeContext } from "~/components/PredictionMarket/lib/contexts";
 
 interface Args {
   documentData?: any;
@@ -65,8 +67,8 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
     documentMetadata?.predictionMarket
   );
   const [votes, setVotes] = useState<PredictionMarketVote[]>([]);
+  const [isFetchingVotes, setIsFetchingVotes] = useState<boolean>(false);
   const [commentCount, setCommentCount] = useState<number>(0);
-  const [formRefreshKey, setFormRefreshKey] = useState<number>(0); // refresh key for the vote form
 
   // figure out if the current user is an author of the paper
   const currentUser = useSelector((state: RootState) =>
@@ -107,6 +109,41 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
   useEffect(() => {
     setMarket(documentMetadata.predictionMarket);
   }, [documentMetadata]);
+
+  useEffect(() => {
+    if (documentMetadata?.predictionMarket?.id) {
+      handleFetchVotes();
+    }
+  }, [documentMetadata?.predictionMarket?.id]);
+
+  const handleFetchVotes = async () => {
+    if (
+      isNullOrUndefined(documentMetadata.predictionMarket?.id) ||
+      isEmpty(documentMetadata.predictionMarket?.id)
+    ) {
+      return;
+    }
+
+    setIsFetchingVotes(true);
+    try {
+      const { votes } = await fetchVotes({
+        predictionMarketId: documentMetadata.predictionMarket?.id,
+        sort: "-CREATED_DATE",
+      });
+
+      if (votes) {
+        setVotes(votes);
+      }
+    } catch (error) {
+      captureEvent({
+        error,
+        msg: "Failed to fetch votes",
+        data: { document },
+      });
+    } finally {
+      setIsFetchingVotes(false);
+    }
+  };
 
   // Update the local state when a vote is created
   const handleVoteCreated = (vote: PredictionMarketVote) => {
@@ -151,6 +188,10 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
     prevVote: PredictionMarketVote
   ) => {
     if (market) {
+      // if the votes are the same, don't update
+      if (newVote.vote === prevVote.vote) {
+        return;
+      }
       const newMarket = {
         ...market,
         votes: {
@@ -194,12 +235,6 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
         ...documentMetadata,
         predictionMarket: newMarket,
       });
-
-      if (vote.createdBy.id === currentUser?.id) {
-        // if the vote was created by the current user, we need to refresh the vote form
-        // so that it doesn't have the user's "previos vote" cached.
-        setFormRefreshKey(formRefreshKey + 1);
-      }
     }
     revalidateDocument();
   };
@@ -221,78 +256,84 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
         errorCode={errorCode}
         metadata={documentMetadata}
       >
-        <div
-          className={css(styles.bodyContentWrapper)}
-          style={{ maxWidth: viewerWidth }}
+        <VoteTreeContext.Provider
+          value={{
+            onRemove: handleVoteRemoved,
+          }}
         >
-          <div className={css(styles.card)}>
-            {market.votes.total > 0 && (
-              <PredictionMarketSummary summary={market} />
+          <div
+            className={css(styles.bodyContentWrapper)}
+            style={{ maxWidth: viewerWidth }}
+          >
+            <div className={css(styles.card)}>
+              {market.votes.total > 0 && (
+                <PredictionMarketSummary summary={market} />
+              )}
+              <PredictionMarketVoteForm
+                paperId={document.id}
+                predictionMarket={market}
+                onVoteCreated={handleVoteCreated}
+                onVoteUpdated={handleVoteUpdated}
+                isCurrentUserAuthor={isCurrentUserAuthor}
+                allVotes={votes}
+                isFetching={isFetchingVotes}
+              />
+            </div>
+
+            <div className={css(styles.tabsHeader)}>
+              <HorizontalTabBar
+                tabs={[
+                  {
+                    label: "Comments",
+                    value: "COMMENTS",
+                    isSelected: tab === "COMMENTS",
+                    pillContent: commentCount > 0 ? commentCount : undefined,
+                  },
+                  {
+                    label: "Votes",
+                    value: "VOTES",
+                    isSelected: tab === "VOTES",
+                    pillContent:
+                      market.votes.total > 0 ? market.votes.total : undefined,
+                  },
+                ]}
+                onClick={(tab) => setTab(tab.value as "COMMENTS" | "VOTES")}
+                tabStyle={styles.tab}
+              />
+            </div>
+
+            {tab === "VOTES" && (
+              <PredictionMarketVoteFeed
+                votes={votes}
+                isFetching={isFetchingVotes}
+              />
             )}
-            <PredictionMarketVoteForm
-              paperId={document.id}
-              predictionMarket={market}
-              onVoteCreated={handleVoteCreated}
-              onVoteUpdated={handleVoteUpdated}
-              isCurrentUserAuthor={isCurrentUserAuthor}
-              refreshKey={formRefreshKey}
-            />
+            {tab === "COMMENTS" && (
+              <CommentFeed
+                document={document}
+                showFilters={false}
+                initialFilter={getCommentFilterByTab(tabName)}
+                editorType={COMMENT_TYPES.REPLICABILITY_COMMENT}
+                allowBounty={false}
+                allowCommentTypeSelection={false}
+                // The primary reason for these callbacks is to "optimistically" update the metadata on the page and refresh the cache.
+                // Not every use case is taken into account since many scenarios are uncommon. For those, a page refresh will be required.
+                onCommentCreate={() => {
+                  revalidateDocument();
+                  setCommentCount(commentCount + 1);
+                }}
+                onCommentUpdate={() => {
+                  revalidateDocument();
+                }}
+                onCommentRemove={() => {
+                  revalidateDocument();
+                  setCommentCount(commentCount - 1);
+                }}
+                totalCommentCount={0}
+              />
+            )}
           </div>
-
-          <div className={css(styles.tabsHeader)}>
-            <HorizontalTabBar
-              tabs={[
-                {
-                  label: "Comments",
-                  value: "COMMENTS",
-                  isSelected: tab === "COMMENTS",
-                  pillContent: commentCount > 0 ? commentCount : undefined,
-                },
-                {
-                  label: "Votes",
-                  value: "VOTES",
-                  isSelected: tab === "VOTES",
-                  pillContent:
-                    market.votes.total > 0 ? market.votes.total : undefined,
-                },
-              ]}
-              onClick={(tab) => setTab(tab.value as "COMMENTS" | "VOTES")}
-              tabStyle={styles.tab}
-            />
-          </div>
-
-          {tab === "VOTES" && (
-            <PredictionMarketVoteFeed
-              marketId={market.id}
-              includeVotes={votes}
-              onVoteRemove={handleVoteRemoved}
-            />
-          )}
-          {tab === "COMMENTS" && (
-            <CommentFeed
-              document={document}
-              showFilters={false}
-              initialFilter={getCommentFilterByTab(tabName)}
-              editorType={COMMENT_TYPES.REPLICABILITY_COMMENT}
-              allowBounty={false}
-              allowCommentTypeSelection={false}
-              // The primary reason for these callbacks is to "optimistically" update the metadata on the page and refresh the cache.
-              // Not every use case is taken into account since many scenarios are uncommon. For those, a page refresh will be required.
-              onCommentCreate={() => {
-                revalidateDocument();
-                setCommentCount(commentCount + 1);
-              }}
-              onCommentUpdate={() => {
-                revalidateDocument();
-              }}
-              onCommentRemove={() => {
-                revalidateDocument();
-                setCommentCount(commentCount - 1);
-              }}
-              totalCommentCount={0}
-            />
-          )}
-        </div>
+        </VoteTreeContext.Provider>
       </DocumentPageLayout>
     </DocumentContext.Provider>
   );

@@ -4,7 +4,7 @@ import Button from "../Form/Button";
 import colors from "../../config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/pro-regular-svg-icons";
-import { createVote, fetchVotesForUser } from "./api/votes";
+import { createVote } from "./api/votes";
 import { ID, parseUser } from "~/config/types/root_types";
 import { PredictionMarketDetails, PredictionMarketVote } from "./lib/types";
 import { ReactElement, useEffect, useState } from "react";
@@ -23,7 +23,9 @@ export type PredictionMarketVoteFormProps = {
   onVoteCreated?: (v: PredictionMarketVote) => void;
   onVoteUpdated?: (v: PredictionMarketVote, prev: PredictionMarketVote) => void;
   isCurrentUserAuthor?: boolean;
-  refreshKey?: number;
+
+  isFetching?: boolean;
+  allVotes?: PredictionMarketVote[];
 };
 
 const PredictionMarketVoteForm = ({
@@ -32,52 +34,28 @@ const PredictionMarketVoteForm = ({
   onVoteCreated,
   onVoteUpdated,
   isCurrentUserAuthor = false,
-  refreshKey = 0,
+  isFetching = false,
+  allVotes = [],
 }: PredictionMarketVoteFormProps): ReactElement => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [vote, setVote] = useState<"YES" | "NO" | null>(null);
   const [prevVote, setPrevVote] = useState<PredictionMarketVote | null>(null);
-  const [isFetching, setIsFetching] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
 
-  const handleFetchUserPrevVote = async () => {
-    if (!currentUser) {
-      setIsFetching(false);
-      return;
-    }
-
-    setIsFetching(true);
-    try {
-      const { votes } = await fetchVotesForUser({
-        predictionMarketId: predictionMarket?.id,
-      });
-
-      if (votes && votes.length > 0) {
-        // there should only be one vote per user per market
-        setVote(votes[0].vote);
-        setPrevVote(votes[0]);
-      } else {
-        setVote(null);
-        setPrevVote(null);
-      }
-    } catch (error) {
-      captureEvent({
-        error,
-        msg: "Failed to fetch vote for user.",
-        data: { document },
-      });
-    } finally {
-      setIsFetching(false);
-    }
-  };
-
   useEffect(() => {
-    handleFetchUserPrevVote();
-  }, [refreshKey]);
+    const vote = allVotes.find((v) => v.createdBy.id === currentUser?.id);
+    if (vote) {
+      setPrevVote(vote);
+      setVote(vote.vote);
+    } else {
+      setPrevVote(null);
+      setVote(null);
+    }
+  }, [allVotes]);
 
   const handleSubmit = async (vote: "YES" | "NO") => {
     if (vote === null || vote === prevVote?.vote) {
@@ -93,9 +71,9 @@ const PredictionMarketVoteForm = ({
         vote,
       });
 
-      setVote(vote);
-
       if (v !== undefined) {
+        setVote(v.vote);
+
         setSubmitError(null);
         if (prevVote) {
           onVoteUpdated?.(v, prevVote);
@@ -130,7 +108,7 @@ const PredictionMarketVoteForm = ({
       />
       <div className={css(styles.header)}>
         <div className={css(styles.title)}>
-          Do you think this paper will replicate?
+          Do you think this paper is replicable?
         </div>
         <div
           data-tip="Do you think an independent researcher/lab can produce results that confirm the conclusion(s) of the paper."
@@ -150,7 +128,7 @@ const PredictionMarketVoteForm = ({
         </div>
       )}
       {submitError && <div className={css(styles.error)}>{submitError}</div>}
-      {!isCurrentUserAuthor && isFetching && (
+      {!isCurrentUserAuthor && (isFetching || !predictionMarket) && (
         <div className={css(styles.buttons)}>
           <RectShape
             color={colors.PLACEHOLDER_CARD_BACKGROUND}
@@ -273,7 +251,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.PASTEL_GREEN(),
     border: "none",
     ":hover": {
-      backgroundColor: colors.PASTEL_GREEN(0.9),
+      opacity: 0.8,
     },
   },
   greenButtonUnselected: {
@@ -288,7 +266,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.PASTEL_RED(),
     border: "none",
     ":hover": {
-      backgroundColor: colors.PASTEL_RED(0.9),
+      opacity: 0.8,
     },
   },
   redButtonUnselected: {

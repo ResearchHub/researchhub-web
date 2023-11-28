@@ -1,84 +1,20 @@
-import { Fragment, ReactElement, useEffect, useMemo, useState } from "react";
+import { Fragment, ReactElement, useMemo } from "react";
 import PredictionMarketVoteItem from "./PredictionMarketVoteItem";
 import { PredictionMarketVote } from "./lib/types";
-import { ID } from "~/config/types/root_types";
-import { fetchVotes } from "./api/votes";
 import { StyleSheet, css } from "aphrodite";
 import CommentPlaceholder from "../Comment/CommentPlaceholder";
-import { captureEvent } from "~/config/utils/events";
 import colors from "~/config/themes/colors";
-import { SortOptionValue } from "./lib/options";
 import { breakpoints } from "~/config/themes/screen";
-import { VoteTreeContext } from "./lib/contexts";
 
 export type PredictionMarketVoteFeedProps = {
-  marketId: ID;
-  // votes that we want to include, that haven't been fetched yet.
-  // we use this to update the UI when a user submits a vote
-  includeVotes?: PredictionMarketVote[];
-
-  onVoteRemove: (vote: PredictionMarketVote) => void;
+  votes: PredictionMarketVote[];
+  isFetching: boolean;
 };
 
 const PredictionMarketVoteFeed = ({
-  marketId,
-  includeVotes = [],
-  onVoteRemove,
+  isFetching,
+  votes,
 }: PredictionMarketVoteFeedProps): ReactElement => {
-  const [votes, setVotes] = useState<PredictionMarketVote[]>([]);
-  const [isFetching, setIsFetching] = useState<boolean>(false);
-
-  const handleFetch = async ({
-    sort = "CREATED_DATE",
-  }: {
-    sort?: SortOptionValue;
-  }) => {
-    setIsFetching(true);
-    try {
-      const { votes } = await fetchVotes({
-        predictionMarketId: marketId,
-        sort: sort ? `-${sort}` : undefined,
-      });
-
-      if (votes) {
-        setVotes(votes);
-      }
-    } catch (error) {
-      captureEvent({
-        error,
-        msg: "Failed to fetch votes",
-        data: { document },
-      });
-    } finally {
-      setIsFetching(false);
-    }
-  };
-
-  useEffect(() => {
-    handleFetch({});
-  }, []);
-
-  const handleRemoveVote = (vote: PredictionMarketVote) => {
-    const newVotes = votes.filter((v) => v.id !== vote.id);
-    setVotes(newVotes);
-    onVoteRemove(vote);
-  };
-
-  useEffect(() => {
-    // add `includeVotes` to the votes list if they are not already there
-    const newVotes = [...votes];
-    includeVotes.forEach((vote) => {
-      if (!votes.find((v) => v.id === vote.id)) {
-        newVotes.push(vote);
-      } else {
-        // if the vote is already there, update it
-        const index = newVotes.findIndex((v) => v.id === vote.id);
-        newVotes[index] = vote;
-      }
-    });
-    setVotes(newVotes);
-  }, [includeVotes]);
-
   const yesVotes = useMemo(
     () => votes.filter((vote) => vote.vote === "YES"),
     [votes]
@@ -89,11 +25,7 @@ const PredictionMarketVoteFeed = ({
   );
 
   return (
-    <VoteTreeContext.Provider
-      value={{
-        onRemove: handleRemoveVote,
-      }}
-    >
+    <>
       {isFetching && (
         <div className={css(styles.placeholderWrapper)}>
           <CommentPlaceholder />
@@ -130,7 +62,7 @@ const PredictionMarketVoteFeed = ({
       {!isFetching && votes.length === 0 && (
         <div className={css(styles.emptyStateWrapper)}>No votes yet.</div>
       )}
-    </VoteTreeContext.Provider>
+    </>
   );
 };
 

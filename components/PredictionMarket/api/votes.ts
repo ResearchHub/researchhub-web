@@ -3,6 +3,7 @@ import API, { buildQueryString, generateApiUrl } from "~/config/api";
 import { ID } from "~/config/types/root_types";
 import { captureEvent } from "~/config/utils/events";
 import { PredictionMarketVote, parsePredictionMarketVote } from "../lib/types";
+import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 
 export const createVote = async ({
   predictionMarketId,
@@ -17,6 +18,13 @@ export const createVote = async ({
 }): Promise<{
   vote?: PredictionMarketVote;
 }> => {
+  if (
+    (isNullOrUndefined(predictionMarketId) || isEmpty(predictionMarketId)) &&
+    (isNullOrUndefined(paperId) || isEmpty(paperId))
+  ) {
+    throw Error("Must provide either predictionMarketId or paperId");
+  }
+
   try {
     const url = generateApiUrl("prediction_market_vote");
 
@@ -55,6 +63,10 @@ export const fetchVotes = async ({
 }): Promise<{
   votes?: PredictionMarketVote[];
 }> => {
+  if (isNullOrUndefined(predictionMarketId) || isEmpty(predictionMarketId)) {
+    return { votes: [] };
+  }
+
   try {
     const query = {
       ...(sort && { ordering: sort.toLowerCase() }),
@@ -73,38 +85,6 @@ export const fetchVotes = async ({
   } catch (err) {
     captureEvent({
       msg: "Error fetching votes",
-      data: { predictionMarketId },
-    });
-
-    throw Error(err as any);
-  }
-};
-
-export const fetchVotesForUser = async ({
-  predictionMarketId,
-}: {
-  predictionMarketId: ID;
-}): Promise<{
-  votes?: PredictionMarketVote[];
-}> => {
-  try {
-    const query = {
-      prediction_market_id: predictionMarketId,
-      is_user_vote: true,
-    };
-    const baseFetchUrl = generateApiUrl("prediction_market_vote");
-    const url = baseFetchUrl + buildQueryString(query);
-
-    const response = await fetch(url, API.GET_CONFIG()).then((res): any =>
-      Helpers.parseJSON(res)
-    );
-
-    return {
-      votes: response.results.map(parsePredictionMarketVote),
-    };
-  } catch (err) {
-    captureEvent({
-      msg: "Error fetching votes for user",
       data: { predictionMarketId },
     });
 
