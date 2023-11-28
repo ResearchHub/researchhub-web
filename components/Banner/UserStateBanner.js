@@ -71,7 +71,10 @@ const UserStateBanner = ({ is_suspended, probable_spammer }) => {
           <span style={{ maxWidth: 600 }}>
             We’ve noticed suspicious activity from this account. If you believe
             this to be a mistake, please contact us at{" "}
-            <a style={{ color: "#fff" }} href="mailto:hello@researchhub.com">
+            <a
+              style={{ color: "#fff" }}
+              href="mailto:verification@researchhub.com"
+            >
               verification@researchhub.com
             </a>{" "}
             so we can investigate.
@@ -83,7 +86,10 @@ const UserStateBanner = ({ is_suspended, probable_spammer }) => {
         <Fragment>
           <span style={{ maxWidth: 600 }}>
             If you believe this to be a mistake, please contact us at{" "}
-            <a style={{ color: "#fff" }} href="mailto:hello@researchhub.com">
+            <a
+              style={{ color: "#fff" }}
+              href="mailto:verification@researchhub.com"
+            >
               verification@researchhub.com
             </a>{" "}
             so we can investigate.
