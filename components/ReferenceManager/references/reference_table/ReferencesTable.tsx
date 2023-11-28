@@ -38,7 +38,7 @@ import DroppableZone from "~/components/DroppableZone";
 import DocumentViewer from "~/components/Document/DocumentViewer";
 import { ID, parseUnifiedDocument } from "~/config/types/root_types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle, faGlobe } from "@fortawesome/pro-regular-svg-icons";
+import { faInfoCircle } from "@fortawesome/pro-regular-svg-icons";
 import { IconButton, Tooltip } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Stack from "@mui/material/Stack";
@@ -393,9 +393,14 @@ export default function ReferencesTable({
                                     },
                                   }}
                                 >
-                                  <FontAwesomeIcon
-                                    icon={faGlobe}
-                                    fontSize={20}
+                                  <img
+                                    src="/static/beaker-gray.svg"
+                                    width="24px"
+                                    height="24px"
+                                    alt="ResearchHub Icon"
+                                    style={{
+                                      transform: "translateY(-2px)",
+                                    }}
                                   />
                                 </IconButton>
                               </Tooltip>

@@ -6,11 +6,7 @@ import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import { IconButton, ListItemIcon, ListItemText } from "@mui/material";
 import MenuList from "@mui/material/MenuList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faInfoCircle,
-  faGlobe,
-  faTrashCan,
-} from "@fortawesome/pro-regular-svg-icons";
+import { faInfoCircle, faTrashCan } from "@fortawesome/pro-regular-svg-icons";
 import { useReferenceActiveProjectContext } from "../reference_organizer/context/ReferenceActiveProjectContext";
 
 interface Props {
@@ -88,7 +84,15 @@ const ReferenceItemOptsDropdown = ({
                     sx={{ columnGap: 0 }}
                   >
                     <ListItemIcon>
-                      <FontAwesomeIcon icon={faGlobe} fontSize={20} />
+                      <img
+                        src="/static/beaker-gray.svg"
+                        width="24px"
+                        height="24px"
+                        alt="ResearchHub Icon"
+                        style={{
+                          transform: "translate(-1.5px, -1.5px)",
+                        }}
+                      />
                     </ListItemIcon>
                     <ListItemText>Open Public Page</ListItemText>
                   </MenuItem>
