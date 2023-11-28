@@ -26,7 +26,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { faDown, faUp } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { voteWidgetIcons } from "~/config/themes/icons";
-import { faTwitter, faXTwitter } from "@fortawesome/free-brands-svg-icons";
+import { faXTwitter } from "@fortawesome/free-brands-svg-icons";
 import IconButton from "./Icons/IconButton";
 
 const VoteWidget = (props) => {

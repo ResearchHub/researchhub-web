@@ -1,7 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMedium } from "@fortawesome/free-brands-svg-icons";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import {
+  faMedium,
+  faDiscord,
+  faXTwitter,
+} from "@fortawesome/free-brands-svg-icons";
 import { AuthActions } from "~/redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -115,11 +117,11 @@ function RootLeftSidebarSlider({
             style={{ marginLeft: "-4px !important" }}
           >
             <ALink
-              href="https://twitter.com/researchhub"
+              href="https://x.com/researchhub"
               overrideStyle={styles.leftSidebarSliderFooterIcon}
               target="__blank"
             >
-              {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
+              {<FontAwesomeIcon icon={faXTwitter}></FontAwesomeIcon>}
             </ALink>
             <ALink
               href="https://discord.com/invite/ZcCYgcnUp5"

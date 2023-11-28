@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
-import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { faXTwitter } from "@fortawesome/free-brands-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { useState, useRef, useEffect } from "react";
 import colors from "~/config/themes/colors";
@@ -13,9 +13,9 @@ type Args = {
 const ShareDropdown = ({ handleClick, children }: Args) => {
   const options = [
     {
-      label: "Twitter",
+      label: "X / Twitter",
       value: "twitter",
-      icon: <FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>,
+      icon: <FontAwesomeIcon icon={faXTwitter}></FontAwesomeIcon>,
     },
     {
       label: "LinkedIn",
