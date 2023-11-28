@@ -228,28 +228,6 @@ export const parseOrganization = (raw: any): Organization => {
   };
 };
 
-export const generatePageURLForUnifiedDocument = (
-  unifiedDocument: UnifiedDocument
-): string => {
-  const { document, documentType } = unifiedDocument;
-  if (!document) {
-    return "";
-  }
-  // only "paper", "page" and "question" have a valid route on our site
-  if (
-    documentType !== "paper" &&
-    documentType !== "post" &&
-    documentType !== "question"
-  ) {
-    return "";
-  }
-  const { slug, id } = document;
-  if (!slug) {
-    return `/${documentType}/${id}`;
-  }
-  return `/${documentType}/${id}/${slug}`;
-};
-
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   if (typeof raw !== "object") {
     return raw;

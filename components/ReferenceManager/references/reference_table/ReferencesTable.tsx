@@ -36,18 +36,16 @@ import colors from "~/config/themes/colors";
 import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 import DroppableZone from "~/components/DroppableZone";
 import DocumentViewer from "~/components/Document/DocumentViewer";
-import { ID, generatePageURLForUnifiedDocument, parseUnifiedDocument } from "~/config/types/root_types";
+import { ID, parseUnifiedDocument } from "~/config/types/root_types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faInfoCircle,
-  faGlobe,
-} from "@fortawesome/pro-regular-svg-icons";
+import { faInfoCircle, faGlobe } from "@fortawesome/pro-regular-svg-icons";
 import { IconButton, Tooltip } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Stack from "@mui/material/Stack";
 import OpenWithOutlinedIcon from "@mui/icons-material/OpenWithOutlined";
 import ReferenceItemOptsDropdown from "../reference_item/ReferenceItemOptsDropdown";
 import { useHasTouchCapability } from "~/config/utils/device";
+import { getUrlToUniDoc } from "~/config/utils/routing";
 
 type Props = {
   createdReferences: any[];
@@ -381,12 +379,9 @@ export default function ReferencesTable({
                                   onClick={(event) => {
                                     event.stopPropagation();
                                     // open page in new tab
-                                    const url =
-                                      generatePageURLForUnifiedDocument(
-                                        parseUnifiedDocument(
-                                          hoveredRow.related_unified_doc
-                                        )
-                                      );
+                                    const url = getUrlToUniDoc(
+                                      hoveredRow.related_unified_doc
+                                    );
                                     window.open(url, "_blank");
                                   }}
                                   sx={{
@@ -446,8 +441,8 @@ export default function ReferencesTable({
                             return;
                           }
                           // open page in new tab
-                          const url = generatePageURLForUnifiedDocument(
-                            parseUnifiedDocument(hoveredRow.related_unified_doc)
+                          const url = getUrlToUniDoc(
+                            hoveredRow.related_unified_doc
                           );
                           window.open(url, "_blank");
                         }}
