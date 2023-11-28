@@ -15,8 +15,10 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { doesNotExist } from "~/config/utils/nullchecks";
+import useCacheControl from "~/config/hooks/useCacheControl";
 
 const ModeratorDeleteButton = (props) => {
+  const { revalidateAuthorProfile } = useCacheControl();
   const alert = useAlert();
   const {
     containerStyle,
@@ -246,6 +248,8 @@ const ModeratorDeleteButton = (props) => {
             replyID: replyId,
             threadID: threadId,
           });
+
+        revalidateAuthorProfile(authorId);
       })
       .catch((err) => {
         let message = "Something went wrong";
@@ -271,6 +275,7 @@ const ModeratorDeleteButton = (props) => {
           updateUser({ ...res });
         }
         showSucessMessage("User Successfully Reinstated.");
+        revalidateAuthorProfile(authorId);
       })
       .catch((err) => {
         let message = "Something went wrong";
