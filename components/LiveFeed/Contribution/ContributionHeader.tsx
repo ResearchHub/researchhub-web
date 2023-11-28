@@ -22,12 +22,22 @@ import { formatBountyAmount } from "~/config/types/bounty";
 import { truncateText } from "~/config/utils/string";
 import { COMMENT_TYPES } from "~/components/Comment/lib/types";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
-
+import GenericMenu from "~/components/shared/GenericMenu";
+import {
+  faEllipsis,
+  faArrowDownToBracket,
+} from "@fortawesome/pro-regular-svg-icons";
+import IconButton from "~/components/Icons/IconButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
+import { flagGrmContent } from "~/components/Flag/api/postGrmFlag";
+import { faPen, faFlag, faBan } from "@fortawesome/pro-light-svg-icons";
 type Args = {
   entry: Contribution;
+  context: "live-feed" | "flagging-dashboard";
 };
 
-const ContributionHeader = ({ entry }: Args) => {
+const ContributionHeader = ({ entry, context }: Args) => {
   const { contentType } = entry;
   let { item, hubs } = entry;
   const { createdBy, createdDate } = item;
@@ -168,6 +178,7 @@ const ContributionHeader = ({ entry }: Args) => {
     actionLabel = <>{` posted a ${item?.unifiedDocument?.documentType}`}</>;
   }
 
+  console.log("content_type", entry.contentType.name);
   return (
     <div className={css(styles.header)}>
       <div className={css(styles.avatarWrapper)}>
@@ -199,7 +210,6 @@ const ContributionHeader = ({ entry }: Args) => {
             {createdBy.authorProfile.isVerified && (
               <VerifiedBadge height={18} width={18} />
             )}
-
             {actionLabel}
             {/* @ts-ignore */}
             {unifiedDocument && (
@@ -210,20 +220,117 @@ const ContributionHeader = ({ entry }: Args) => {
                 >
                   {truncateText(unifiedDocument?.document?.title, 100)}
                 </ALink>
+
+                {/* <div className={css(styles.secondaryText, styles.date)}>
+                  {timeSince(item.createdDate)}
+                </div>               */}
               </span>
             )}
           </div>
         </div>
-        <div className={css(styles.secondaryText, styles.date)}>
-          {/* {" •  "} */}
-          {timeSince(item.createdDate)}
-        </div>
+        {context === "live-feed" && (
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+            }}
+          >
+            <GenericMenu
+              softHide={true}
+              options={[
+                {
+                  preventDefault: true,
+                  value: "flag",
+                  html: (
+                    <FlagButtonV2
+                      modalHeaderText="Flag Content"
+                      errorMsgText="Failed to flag"
+                      successMsgText="Content flagged"
+                      primaryButtonLabel="Flag"
+                      subHeaderText="I am flagging this content because of:"
+                      onSubmit={(
+                        flagReason,
+                        renderErrorMsg,
+                        renderSuccessMsg
+                      ) => {
+                        let args: any = {
+                          flagReason,
+                          onError: renderErrorMsg,
+                          onSuccess: renderSuccessMsg,
+                        };
+
+                        let item = entry.item;
+                        const unifiedDocument: UnifiedDocument =
+                          // @ts-ignore
+                          item.unifiedDocument;
+
+                        if (entry.contentType.name === "comment") {
+                          item = item as CommentContributionItem;
+                          args = {
+                            commentPayload: {
+                              commentID: item.id,
+                              commentType: "comment",
+                            },
+                            ...args,
+                          };
+                        }
+
+                        if (
+                          ["paper", "post", "hypothesis", "question"].includes(
+                            unifiedDocument.documentType
+                          )
+                        ) {
+                          args = {
+                            contentType: unifiedDocument.documentType,
+                            // @ts-ignore
+                            contentID: unifiedDocument.document.id,
+                            ...args,
+                          };
+                        } else {
+                          console.error(
+                            `${entry.contentType.name} Not supported for flagging`
+                          );
+                          return false;
+                        }
+
+                        flagGrmContent(args);
+                      }}
+                    >
+                      <div style={{ display: "flex", width: "100%" }}>
+                        <div style={{ width: 30, boxSizing: "border-box" }}>
+                          <FontAwesomeIcon icon={faFlag} />
+                        </div>
+                        <div>Flag content</div>
+                      </div>
+                    </FlagButtonV2>
+                  ),
+                },
+              ]}
+              width={200}
+              id="header-more-options"
+              direction="bottom-right"
+            >
+              <IconButton overrideStyle={styles.moreOptionsBtn} variant="round">
+                <FontAwesomeIcon fontSize={22} icon={faEllipsis} />
+              </IconButton>
+            </GenericMenu>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 const styles = StyleSheet.create({
+  moreOptionsBtn: {
+    border: "none",
+    color: colors.BLACK(0.6),
+    ":hover": {
+      background: colors.NEW_BLUE(0.1),
+      color: colors.NEW_BLUE(1),
+      transition: "0.3s",
+    },
+  },
   header: {
     display: "flex",
     justifyContent: "flex-start",
