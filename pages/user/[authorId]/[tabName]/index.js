@@ -957,10 +957,10 @@ function AuthorPage(props) {
       vocab="https://schema.org/"
       typeof="Person"
     >
-      {author?.status && (
+      {author?.suspended_status && (
         <UserStateBanner
-          probable_spammer={author.status?.probable_spammer}
-          is_suspended={author.status?.is_suspended}
+          probable_spammer={author.suspended_status?.probable_spammer}
+          is_suspended={author.suspended_status?.is_suspended}
         />
       )}
       <Head
