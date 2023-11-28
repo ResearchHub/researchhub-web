@@ -950,7 +950,7 @@ function AuthorPage(props) {
       </Link>
     );
   });
-  console.log("author.status", author.status);
+
   return (
     <div
       className={css(styles.profilePageRoot)}
