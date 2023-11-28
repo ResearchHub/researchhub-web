@@ -8,7 +8,7 @@ import MenuList from "@mui/material/MenuList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faInfoCircle,
-  faArrowUpRightFromSquare,
+  faGlobe,
   faTrashCan,
 } from "@fortawesome/pro-regular-svg-icons";
 import { useReferenceActiveProjectContext } from "../reference_organizer/context/ReferenceActiveProjectContext";
@@ -87,11 +87,8 @@ const ReferenceItemOptsDropdown = ({
                     onClick={handleOpenPublicPage}
                     sx={{ columnGap: 0 }}
                   >
-                    <ListItemIcon sx={{ transform: "translateX(2px)" }}>
-                      <FontAwesomeIcon
-                        icon={faArrowUpRightFromSquare}
-                        fontSize={17}
-                      />
+                    <ListItemIcon>
+                      <FontAwesomeIcon icon={faGlobe} fontSize={20} />
                     </ListItemIcon>
                     <ListItemText>Open Public Page</ListItemText>
                   </MenuItem>

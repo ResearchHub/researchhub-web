@@ -40,7 +40,7 @@ import { ID, generatePageURLForUnifiedDocument, parseUnifiedDocument } from "~/c
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faInfoCircle,
-  faArrowUpRightFromSquare,
+  faGlobe,
 } from "@fortawesome/pro-regular-svg-icons";
 import { IconButton, Tooltip } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -399,8 +399,8 @@ export default function ReferencesTable({
                                   }}
                                 >
                                   <FontAwesomeIcon
-                                    icon={faArrowUpRightFromSquare}
-                                    fontSize={18}
+                                    icon={faGlobe}
+                                    fontSize={20}
                                   />
                                 </IconButton>
                               </Tooltip>
