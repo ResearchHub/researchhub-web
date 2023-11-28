@@ -9,7 +9,7 @@ import { BannerActions } from "~/redux/banner";
 
 import colors from "~/config/themes/colors";
 
-const UserStateBanner = (props) => {
+const UserStateBanner = ({ is_suspended, probable_spammer }) => {
   const [showBanner, setShowBanner] = useState(false);
   useEffect(() => {
     determineBanner();
@@ -17,60 +17,47 @@ const UserStateBanner = (props) => {
 
   useEffect(() => {
     determineBanner();
-  }, [
-    props.auth.isLoggedIn,
-    props.user.id,
-    props.user.is_suspended,
-    props.user.probable_spammer,
-  ]);
+  }, [is_suspended, probable_spammer]);
 
   const determineBanner = () => {
-    const { user } = props.auth;
-
-    if (props.auth.isLoggedIn) {
-      if (user.is_suspended || user.probable_spammer) {
-        return setShowBanner(true);
-      }
+    if (is_suspended || probable_spammer) {
+      return setShowBanner(true);
     }
     return setShowBanner(false);
   };
 
   const getRootStyle = () => {
-    const { user } = props.auth;
-
     let classNames = [styles.bannerContainer];
 
     if (!showBanner) {
       classNames.push(styles.closeBanner);
     }
-    if (user.probable_spammer) {
+    if (probable_spammer) {
       classNames.push(styles.pending);
     }
-    if (user.is_suspended) {
+    if (is_suspended) {
       classNames.push(styles.suspended);
     }
     return classNames;
   };
 
   const formatHeader = () => {
-    const { user } = props.auth;
-
-    if (user.is_suspended) {
+    if (is_suspended) {
       return (
         <Fragment>
           <span className={css(styles.icon)}>
             {<FontAwesomeIcon icon={faExclamationTriangle}></FontAwesomeIcon>}
           </span>
-          Your account has been suspended.
+          This account has been suspended.
         </Fragment>
       );
-    } else if (user.probable_spammer) {
+    } else if (probable_spammer) {
       return (
         <Fragment>
           <span className={css(styles.icon)}>
             {<FontAwesomeIcon icon={faExclamationTriangle}></FontAwesomeIcon>}
           </span>
-          Your account is under review.
+          This account is under review.
         </Fragment>
       );
     }
@@ -78,16 +65,26 @@ const UserStateBanner = (props) => {
   };
 
   const formatDescription = () => {
-    const { user } = props.auth;
-
-    if (user.probable_spammer) {
+    if (probable_spammer) {
       return (
         <Fragment>
           <span style={{ maxWidth: 600 }}>
-            We’ve noticed suspicious activity from your account. If you believe
+            We’ve noticed suspicious activity from this account. If you believe
             this to be a mistake, please contact us at{" "}
             <a style={{ color: "#fff" }} href="mailto:hello@researchhub.com">
-              hello@researchhub.com
+              verification@researchhub.com
+            </a>{" "}
+            so we can investigate.
+          </span>
+        </Fragment>
+      );
+    } else if (is_suspended) {
+      return (
+        <Fragment>
+          <span style={{ maxWidth: 600 }}>
+            If you believe this to be a mistake, please contact us at{" "}
+            <a style={{ color: "#fff" }} href="mailto:hello@researchhub.com">
+              verification@researchhub.com
             </a>{" "}
             so we can investigate.
           </span>
@@ -121,7 +118,7 @@ const styles = StyleSheet.create({
     userSelect: "none",
     position: "relative",
     whiteSpace: "pre-wrap",
-    zIndex: 2,
+    zIndex: 25,
     boxShadow: "rgba(0, 0, 0, 0.16) 0px 4px 41px -24px",
     borderBottom: "rgb(151,151,151, .2) 1px solid",
     "@media only screen and (max-width: 415px)": {
@@ -135,7 +132,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.RED(),
     position: "sticky",
     top: 65,
-    zIndex: 3,
   },
   contentContainer: {
     display: "flex",
@@ -209,11 +205,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-  user: state.auth.user,
-  banners: state.banners,
-});
+const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = {
   removeBanner: BannerActions.removeBanner,

@@ -144,6 +144,7 @@ const Navbar = (props) => {
     </Fragment>
   );
 
+  const isProfilePage = router.pathname === "/user/[authorId]/[tabName]";
   return (
     <Fragment>
       <DndModal />
@@ -229,7 +230,16 @@ const Navbar = (props) => {
           )}
         </div>
       </div>
-      <UserStateBanner />
+      {/* 
+        On profile page, we show <UserStateBanner /> based on the profile of the user.
+        We do not want to show this on that page to avoid showing the banner twice.
+      */}
+      {user && !isProfilePage && (
+        <UserStateBanner
+          probable_spammer={user.probable_spammer}
+          is_suspended={user.is_suspended}
+        />
+      )}
     </Fragment>
   );
 };

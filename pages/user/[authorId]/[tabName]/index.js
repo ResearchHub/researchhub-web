@@ -75,6 +75,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { captureEvent } from "~/config/utils/events";
 import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
+import UserStateBanner from "~/components/Banner/UserStateBanner";
 
 const AUTHOR_USER_STATUS = {
   EXISTS: "EXISTS",
@@ -949,13 +950,19 @@ function AuthorPage(props) {
       </Link>
     );
   });
-
+  console.log("author.status", author.status);
   return (
     <div
       className={css(styles.profilePageRoot)}
       vocab="https://schema.org/"
       typeof="Person"
     >
+      {author?.status && (
+        <UserStateBanner
+          probable_spammer={author.status?.probable_spammer}
+          is_suspended={author.status?.is_suspended}
+        />
+      )}
       <Head
         title={`${name} on ResearchHub`}
         description={`View contributions by ${name} on ResearchHub`}
