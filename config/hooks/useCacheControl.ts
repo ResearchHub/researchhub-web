@@ -17,6 +17,25 @@ const useCacheControl = () => {
     );
   };
 
+  const revalidateAuthorProfile = (authorId) => {
+    const basePath = `/user/${authorId}`;
+
+    const pathsToRevalidate = [
+      basePath + "/overview",
+      basePath + "/bounties",
+      basePath + "/discussions",
+      basePath + "/submissions",
+      basePath + "/authored-papers",
+      basePath + "/rsc",
+    ];
+
+    // Next.js doesn't have a way to revalidate multiple paths at once
+    // So we need to loops through each path
+    pathsToRevalidate.forEach((path) => {
+      revalidatePath(path);
+    });
+  };
+
   const revalidateDocument = (
     path = router.asPath,
     revalidateNested = true
@@ -43,7 +62,12 @@ const useCacheControl = () => {
     });
   };
 
-  return { revalidateCurrentPath, revalidatePath, revalidateDocument };
+  return {
+    revalidateCurrentPath,
+    revalidatePath,
+    revalidateDocument,
+    revalidateAuthorProfile,
+  };
 };
 
 export default useCacheControl;
