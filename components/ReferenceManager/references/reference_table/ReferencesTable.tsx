@@ -90,7 +90,6 @@ export default function ReferencesTable({
     useState<boolean>(true);
 
   const [showDroppableOverlay, setShowDroppableOverlay] = useState(false);
-  const [isViewerOpen, setIsViewerOpen] = useState<boolean>(false);
   const [rowHovered, setRowHovered] = useState<null | ID>(null);
   const { currentOrg } = useOrgs();
   const hasTouchCapability = useHasTouchCapability();
@@ -99,30 +98,6 @@ export default function ReferencesTable({
   const router = useRouter();
   const apiRef = useGridApiRef();
   const dropzoneId = "dropzone";
-
-  // useEffect(() => {
-  //   const dragEventHandler = (e) => {
-  //     const insideTable = e.target.role === "cell";
-  //     const insideDropzone = e.target.id === dropzoneId;
-  //     console.log(e);
-  //     console.log(insideTable);
-  //     console.log(insideDropzone);
-  //     if (!insideDropzone) {
-  //       if (!insideTable) {
-  //         e.preventDefault();
-  //         e.dataTransfer.effectAllowed = "none";
-  //         e.dataTransfer.dropEffect = "none";
-  //       }
-  //     }
-  //   };
-
-  //   // window.addEventListener("dragenter", dragEventHandler, false)
-  //   // window.addEventListener("dragover", dragEventHandler, false)
-  //   // window.addEventListener("drop", dragEventHandler, false)
-  //   ["dragenter", "dragover", "drop"].forEach((ev) =>
-  //     window.addEventListener(ev, dragEventHandler, false)
-  //   );
-  // }, []);
 
   const openFolder = ({ row, event }) => {
     let url = `/reference-manager/${
@@ -291,9 +266,6 @@ export default function ReferencesTable({
         onDragOver={() => {
           setShowDroppableOverlay(true);
         }}
-        // onDragEnter={() => {
-        //   setShowDroppableOverlay(true);
-        // }}
         onDragLeave={() => {
           setShowDroppableOverlay(false);
         }}
@@ -508,7 +480,7 @@ export default function ReferencesTable({
               return (
                 <GridRow
                   {...row}
-                  draggable={false}
+                  draggable={true}
                   style={{
                     background:
                       rowDraggedOver === row.row.id && colors.NEW_BLUE(1),
