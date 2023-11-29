@@ -165,10 +165,6 @@ const ContributionHeader = ({ entry, context }: Args) => {
             ) : (
               <>{` commented`}</>
             )}
-
-            {unifiedDocument && (
-              <span className={css(styles.secondaryText)}>{` on `}</span>
-            )}
           </>
         )}
       </>
@@ -211,20 +207,25 @@ const ContributionHeader = ({ entry, context }: Args) => {
               <VerifiedBadge height={18} width={18} />
             )}
             {actionLabel}
+            <span className={css(styles.dot)}>•</span>
+            {
+              <div className={css(styles.secondaryText, styles.date)}>
+                {timeSince(item.createdDate)}
+              </div>
+            }
             {/* @ts-ignore */}
             {unifiedDocument && (
-              <span className={css(styles.unifiedDocument)}>
-                <ALink
-                  overrideStyle={styles.link}
-                  href={getUrlToUniDoc(unifiedDocument)}
-                >
-                  {truncateText(unifiedDocument?.document?.title, 100)}
-                </ALink>
-
-                {/* <div className={css(styles.secondaryText, styles.date)}>
-                  {timeSince(item.createdDate)}
-                </div>               */}
-              </span>
+              <>
+                <span className={css(styles.dot)}>•</span>
+                <span className={css(styles.unifiedDocument)}>
+                  <ALink
+                    overrideStyle={styles.link}
+                    href={getUrlToUniDoc(unifiedDocument)}
+                  >
+                    {truncateText(unifiedDocument?.document?.title, 100)}
+                  </ALink>
+                </span>
+              </>
             )}
           </div>
         </div>
@@ -331,6 +332,11 @@ const styles = StyleSheet.create({
       transition: "0.3s",
     },
   },
+  dot: {
+    fontSize: 16,
+    marginLeft: 3,
+    marginRight: 3,
+  },
   header: {
     display: "flex",
     justifyContent: "flex-start",
@@ -354,7 +360,7 @@ const styles = StyleSheet.create({
   metadataWrapper: {
     display: "flex",
     width: "100%",
-    alignItems: "flex-start",
+    alignItems: "center",
 
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
@@ -396,7 +402,6 @@ const styles = StyleSheet.create({
   date: {
     display: "flex",
     alignItems: "flex-start",
-    marginLeft: 16,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginLeft: 0,
       fontSize: 14,
