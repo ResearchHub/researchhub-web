@@ -71,7 +71,10 @@ import { storeToCookie } from "~/config/utils/storeToCookie";
 import DocumentViewer from "~/components/Document/DocumentViewer";
 import ReferenceImportLibraryModal from "./reference_import_library_modal/ReferenceImportLibraryModal";
 import ExportReferencesModal from "./reference_bibliography/ExportReferencesModal";
-import { downloadBibliography, formatBibliography } from "./reference_bibliography/export";
+import {
+  downloadBibliography,
+  formatBibliography,
+} from "./reference_bibliography/export";
 import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 
 interface Props {
@@ -572,28 +575,6 @@ function ReferencesContainer({
               }
             }}
           />
-
-          {/* <div
-            style={{
-              marginLeft: "auto",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            {activeProject?.flattenedCollaborators && (
-              <AuthorFacePile
-                horizontal
-                margin={-10}
-                imgSize={40}
-                authorProfiles={activeProject?.flattenedCollaborators.map(
-                  (collaborator) => {
-                    collaborator.authorProfile.user = collaborator;
-                    return collaborator.authorProfile;
-                  }
-                )}
-              />
-            )}
-          </div> */}
         </div>
 
         <Box
@@ -1074,7 +1055,6 @@ function ReferencesContainer({
             renderReferencesContainer()
           )}
         </Box>
-        {/* </DroppableZone> */}
         <ReactTooltip effect="solid" id="button-tooltips" />
       </Box>
       <div>

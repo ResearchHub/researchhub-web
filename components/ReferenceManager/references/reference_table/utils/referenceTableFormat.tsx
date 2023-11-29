@@ -25,6 +25,9 @@ export const columnsFormat: GridColDef[] = [
               whiteSpace: "pre",
               overflow: "auto",
             }}
+            onDrop={() => {
+              console.log("DROPPED");
+            }}
           >
             <FontAwesomeIcon
               icon={idString.includes("parent") ? faArrowTurnUp : faFolder}
@@ -42,6 +45,9 @@ export const columnsFormat: GridColDef[] = [
               alignItems: "center",
               whiteSpace: "pre",
               overflow: "auto",
+            }}
+            onDrop={() => {
+              console.log("DROPPED");
             }}
           >
             <FontAwesomeIcon
@@ -61,6 +67,9 @@ export const columnsFormat: GridColDef[] = [
               alignItems: "center",
               whiteSpace: "pre",
               overflow: "auto",
+            }}
+            onDrop={() => {
+              console.log("DROPPED");
             }}
           >
             <FontAwesomeIcon

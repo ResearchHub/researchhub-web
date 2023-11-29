@@ -106,7 +106,7 @@
     "react-confetti": "4.0.1",
     "react-dates": "^21.8.0",
     "react-dom": "^18.2.0",
-    "react-dropzone": "^10.1.9",
+    "react-dropzone": "^14.2.3",
     "react-ga": "^2.7.0",
     "react-google-charts": "^3.0.15",
     "react-google-login": "^5.0.5",
