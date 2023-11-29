@@ -277,7 +277,7 @@ const ContributionHeader = ({ entry, context }: Args) => {
                         }
 
                         if (
-                          ["paper", "post", "hypothesis", "question"].includes(
+                          ["paper", "post", "question"].includes(
                             unifiedDocument.documentType
                           )
                         ) {
