@@ -75,7 +75,7 @@ const ContributionHeader = ({ entry, context }: Args) => {
         <>
           {` contributed `}
           {badge}
-          {` to a bounty on `}
+          {` to a bounty`}
         </>
       );
     } else {
@@ -83,7 +83,7 @@ const ContributionHeader = ({ entry, context }: Args) => {
         <>
           {` opened `}
           {badge}
-          {` bounty on `}
+          {` bounty`}
         </>
       );
     }
@@ -101,7 +101,7 @@ const ContributionHeader = ({ entry, context }: Args) => {
           {badge}
           {" by "}
           <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
-          {` for their comment on `}
+          {` for their comment`}
         </>
       );
     } else {
@@ -121,7 +121,7 @@ const ContributionHeader = ({ entry, context }: Args) => {
             }
           />{" "}
           {badge}
-          {" for their "}
+          {" for their"}
           <ALink
             overrideStyle={styles.link}
             href={getUrlToUniDoc(item.source.unifiedDocument)}
@@ -147,7 +147,7 @@ const ContributionHeader = ({ entry, context }: Args) => {
           <>
             {item.parent ? (
               <div style={{ display: "flex", alignItems: "flex-start" }}>
-                {` replied to `}
+                {` replied`}
                 <UserTooltip
                   createdBy={item.parent.createdBy}
                   overrideTargetStyle={styles.userTooltip}
