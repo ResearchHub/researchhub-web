@@ -31,6 +31,7 @@ import { defaultStyles } from "~/config/themes/styles";
 import { openExternalLink, convertHttpToHttps } from "~/config/utils/routing";
 import { postUpdatePaperAbstract } from "../abstract/api/postUpdatePaperAbstract";
 import { useRouter } from "next/router";
+import ALink from "~/components/ALink";
 
 function PaperTab(props) {
   const {
@@ -55,7 +56,7 @@ function PaperTab(props) {
   const [loading, toggleLoading] = useState(false);
   const [paperFile, setPaperFile] = useState({});
   const containerRef = useRef();
-
+  console.log("paper", paper);
   useEffect(() => {
     setFile(paper.file || paper.pdf_url);
     setPaperUrl(paper.url);
@@ -162,7 +163,20 @@ function PaperTab(props) {
         </div>
       );
     } else if (paper.oa_status && paper.oa_status === "closed") {
-      return null;
+      return (
+        <div>
+          <div className={css(styles.titleContainer)}>
+            <h2>Paper PDF</h2>
+          </div>
+          <p>
+            This paper's license is marked as closed access and cannot be viewed
+            on ResearchHub.{" "}
+            <ALink target="_blank" theme="solidPrimary" href={paper.url}>
+              Visit the paper's external site.
+            </ALink>
+          </p>
+        </div>
+      );
     } else {
       if (showDnd) {
         return (

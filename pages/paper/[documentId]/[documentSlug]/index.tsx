@@ -101,7 +101,7 @@ const DocumentIndexPage: NextPage<Args> = ({
           ref={wrapperRef}
         >
           <div className={css(styles.bodyWrapper)}>
-            {pdfUrl ? (
+            {false ? (
               <div className={css(styles.viewerWrapper)}>
                 {process.browser && (
                   <DocumentViewer
@@ -137,7 +137,7 @@ const DocumentIndexPage: NextPage<Args> = ({
             )}
           </div>
 
-          {!pdfUrl && (
+          {true && (
             <div className={css(styles.uploadPdfWrapper)}>
               <UploadPDF
                 paper={document.raw}
