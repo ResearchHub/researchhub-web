@@ -39,6 +39,7 @@ export function getDocumentCard({
         <FeedCard
           {...targetDoc}
           document={targetDoc}
+          documentFilter={uniDoc.document_filter}
           formattedDocType={formattedDocType}
           formattedDocLabel={formattedDocLabel}
           index={arrIndex}

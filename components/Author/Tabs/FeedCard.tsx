@@ -131,6 +131,7 @@ function FeedCard({
   first_preview,
   type,
   document,
+  documentFilter,
   formattedDocLabel,
   formattedDocType,
   handleClick,
@@ -272,15 +273,8 @@ function FeedCard({
   const user = uploaded_by || created_by;
   const cardTitle = getTitle();
   const cardBody = getBody();
-  let bountyAmount = 0;
-  let hasActiveBounty = false;
-  bounties &&
-    bounties.forEach((bounty) => {
-      bountyAmount += bounty.amount;
-      if (!bounty.isExpiredOrClosed) {
-        hasActiveBounty = true;
-      }
-    });
+  let bountyAmount = documentFilter.bounty_total_amount;
+  let hasActiveBounty = documentFilter.bounty_open;
 
   return (
     <div
