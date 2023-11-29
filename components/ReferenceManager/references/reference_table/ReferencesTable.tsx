@@ -25,9 +25,6 @@ import {
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
-import { fetchReferenceOrgProjects } from "../reference_organizer/api/fetchReferenceOrgProjects";
-import { updateReferenceCitation } from "../api/updateReferenceCitation";
-import { upsertReferenceProject } from "../reference_organizer/api/upsertReferenceProject";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useReferenceActiveProjectContext } from "../reference_organizer/context/ReferenceActiveProjectContext";
 import { useReferencesTableContext } from "./context/ReferencesTableContext";

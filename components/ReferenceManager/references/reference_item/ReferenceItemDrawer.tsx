@@ -225,6 +225,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
           attachmentURL={attachmentURL}
           onRemoveAttachment={() => {
             updateReferenceCitation({
+              orgId: currentOrg?.id,
               payload: {
                 fields: {
                   // use existing reference fields (since we don't want to update them in this request)
@@ -281,6 +282,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
               event.preventDefault();
               setIsSubmitting(true);
               updateReferenceCitation({
+                orgId: currentOrg?.id,
                 payload: {
                   // TODO: calvinhlee - create utily functions to format these
                   fields: {

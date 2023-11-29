@@ -122,6 +122,7 @@ export function ReferencesTableContextProvider({ children }) {
     });
     setReferenceTableRowData(newReferenceData);
     updateReferenceCitation({
+      orgId: currentOrg?.id,
       payload: {
         citation_id: rowDragged,
         // TODO: calvinhlee - create utily functions to format these
