@@ -174,7 +174,6 @@ const ContributionHeader = ({ entry, context }: Args) => {
     actionLabel = <>{` posted a ${item?.unifiedDocument?.documentType}`}</>;
   }
 
-  console.log("content_type", entry.contentType.name);
   return (
     <div className={css(styles.header)}>
       <div className={css(styles.avatarWrapper)}>

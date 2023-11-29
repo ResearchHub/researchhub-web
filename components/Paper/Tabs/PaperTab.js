@@ -56,7 +56,6 @@ function PaperTab(props) {
   const [loading, toggleLoading] = useState(false);
   const [paperFile, setPaperFile] = useState({});
   const containerRef = useRef();
-  console.log("paper", paper);
   useEffect(() => {
     setFile(paper.file || paper.pdf_url);
     setPaperUrl(paper.url);
