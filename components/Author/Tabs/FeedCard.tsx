@@ -70,7 +70,6 @@ const DocumentViewer = dynamic(
 
 export type FeedCardProps = {
   abstract: string;
-  boost_amount: number;
   bounties: Bounty[];
   created_by: any;
   document: any;
@@ -121,7 +120,6 @@ const documentIcons = {
 
 function FeedCard({
   abstract,
-  boost_amount: boostAmount,
   bounties,
   created_by,
   created_date,
