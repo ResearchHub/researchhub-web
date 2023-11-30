@@ -1106,35 +1106,6 @@ select {
   cursor: nw-resize;
 }
 
-/* Floating Component Picker Plugin*/
-
-.floating-component-picker-trigger {
-  position: absolute;
-  z-index: 10;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out; /* Adjusted transition */
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.floating-component-picker-trigger-button {
-  display: inline-flex;
-  background-color: transparent;
-  border: none;
-  border-radius: 4px;
-  transition: background-color 0.3s ease-in-out;
-  cursor: pointer;
-  color: rgba(144, 144, 144);
-}
-
-.floating-component-picker-trigger-button:hover {
-  background-color: rgba(243, 243, 243);
-}
-
 /* Table Cell Resizer */
 
 .TableCellResizer__resizer {
@@ -1277,11 +1248,87 @@ i.chevron-down {
   display: inline-block;
   height: 8px;
   width: 8px;
-  background-image: url(/chevron-down.svg);
+  background-image: url(../../../static/icons/chevron-down.svg);
 }
 
 .chevron-down {
   display: inline-block;
   height: 8px;
   width: 8px;
+}
+
+/* Floating Component Picker Plugin*/
+
+.floating-component-picker-trigger {
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out; /* Adjusted transition */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.floating-component-picker-trigger-button {
+  display: inline-flex;
+  background-color: transparent;
+  border: none;
+  padding: 2px 1px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease-in-out;
+  cursor: pointer;
+  color: rgba(144, 144, 144);
+}
+
+.floating-component-picker-trigger .icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.3;
+  /* background-image: url(../../../static/icons/plus.svg); */
+}
+
+.floating-component-picker-trigger-button:hover {
+  background-color: rgba(243, 243, 243);
+}
+
+/* Draggable Block Plugin */
+
+.draggable-block-menu {
+  border-radius: 4px;
+  padding: 2px 1px;
+  cursor: grab;
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+
+.draggable-block-menu .icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.3;
+  background-image: url(../../../static/icons/draggable-block-menu.svg);
+}
+
+.draggable-block-menu:active {
+  cursor: grabbing;
+}
+
+.draggable-block-menu:hover {
+  background-color: rgba(243, 243, 243);
+}
+
+.draggable-block-target-line {
+  pointer-events: none;
+  background: #3971ff;
+  height: 4px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  will-change: transform;
 }
