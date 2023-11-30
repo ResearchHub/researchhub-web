@@ -112,7 +112,12 @@ function FloatingBlockToolbarComponent({
   return (
     <div className="floating-component-picker-trigger" ref={toolbarRef}>
       <button className={"floating-component-picker-trigger-button"}>
-        <AddIcon onClick={insertBackSlash} />
+        {/* <div className="icon"> */}
+        <AddIcon
+          sx={{ height: 20, width: 20, fontSize: "small" }}
+          onClick={insertBackSlash}
+        />
+        {/* </div> */}
       </button>
     </div>
   );
