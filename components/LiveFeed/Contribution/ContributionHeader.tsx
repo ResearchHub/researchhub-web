@@ -223,7 +223,7 @@ const ContributionHeader = ({ entry, context }: Args) => {
                     overrideStyle={styles.link}
                     href={getUrlToUniDoc(unifiedDocument)}
                   >
-                    {truncateText(unifiedDocument?.document?.title, 75)}
+                    {truncateText(unifiedDocument?.document?.title, 50)}
                   </ALink>
                 </span>
               </>
