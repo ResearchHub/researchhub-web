@@ -97,6 +97,7 @@ export const fetchSingleCommentAPI = async ({
   documentType,
   documentId,
   parentComment,
+  ascending = false,
   childOffset = 0,
   sort = sortOpts[0].value,
 }: {
@@ -104,6 +105,7 @@ export const fetchSingleCommentAPI = async ({
   documentType: RhDocumentType;
   documentId: ID;
   parentComment?: Comment;
+  ascending?: boolean;
   childOffset: number;
   sort?: string | null;
 }): Promise<Comment> => {
@@ -111,7 +113,7 @@ export const fetchSingleCommentAPI = async ({
     ...(sort && { ordering: sort }),
     child_count: apiConfig.feed.repliesPageSize,
     child_offset: childOffset,
-    ascending: "FALSE",
+    ascending: ascending ? "TRUE" : "FALSE",
   };
 
   const baseFetchUrl = generateApiUrl(

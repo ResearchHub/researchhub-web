@@ -102,6 +102,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
         sort: commentTreeState.sort,
         childOffset: comment.children.length,
         parentComment: comment.parent,
+        ascending: true,
       });
 
       commentTreeState.onFetchMore({
