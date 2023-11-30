@@ -10,6 +10,9 @@ import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { ClearEditorPlugin } from "@lexical/react/LexicalClearEditorPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
+import useLexicalEditable from "@lexical/react/useLexicalEditable";
+import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
+import TableCellNodes from "./nodes/TableCellNodes";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
@@ -26,6 +29,12 @@ import PageBreakPlugin from "./plugins/PageBreakPlugin";
 import ImagesPlugin from "./plugins/ImagesPlugin";
 import DragDropPastePlugin from "./plugins/DragDropPastePlugin";
 import VideoPlugin from "./plugins/VideoPlugin";
+import TableCellActionMenuPlugin from "./plugins/TableActionMenuPlugin";
+import TableCellResizer from "./plugins/TableCellResizer";
+import { TablePlugin as NewTablePlugin } from "./plugins/TablePlugin";
+import { TableContext } from "./plugins/TablePlugin";
+import { CAN_USE_DOM } from "./utils/canUseDOM";
+import DraggableBlockPlugin from "./plugins/DraggableBlockPlugin";
 
 import dynamic from "next/dynamic";
 
@@ -51,7 +60,9 @@ import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 import Cookies from "js-cookie";
 import BasicEditorTheme from "./themes/BasicEditorTheme";
-import { Tab } from "@mui/material";
+import { Tab, TableCell } from "@mui/material";
+import { lightGreen } from "@mui/material/colors";
+import TableActionMenuPlugin from "./plugins/TableActionMenuPlugin";
 
 // When the editor changes, you can get notified via the
 // LexicalOnChangePlugin!
@@ -82,19 +93,19 @@ const FloatingComponentPickerTriggerPlugin = dynamic(
   {
     ssr: false,
   }
-)
+);
 
 const FloatingTextFormatToolbarPlugin = dynamic(
   () => import("./plugins/FloatingTextFormatToolbarPlugin"),
   {
     ssr: false,
   }
-)
+);
 
 const ComponentPickerMenuPlugin = dynamic(
-() => import("./plugins/ComponentPickerPlugin"),
-{ssr: false}
-)
+  () => import("./plugins/ComponentPickerPlugin"),
+  { ssr: false }
+);
 
 function Editor({
   ELNLoading,
@@ -121,12 +132,31 @@ function Editor({
     onError,
   };
 
+  const cellEditorConfig = {
+    namespace: "TableCell",
+    nodes: [...TableCellNodes],
+    onError: (error: Error) => {
+      throw error;
+    },
+    theme: BasicEditorTheme,
+  };
+
   const router = useRouter();
   const { orgSlug } = router.query;
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
   const [editorInstance, setEditorInstance] = useState(null);
+  const [floatingAnchorElem, setFloatingAnchorElem] =
+    useState<HTMLDivElement | null>(null);
+  const [isSmallWidthViewport, setIsSmallWidthViewport] =
+    useState<boolean>(false);
+  // const isEditable = useLexicalEditable();
 
+  const onRef = (_floatingAnchorElem: HTMLDivElement) => {
+    if (_floatingAnchorElem !== null) {
+      setFloatingAnchorElem(_floatingAnchorElem);
+    }
+  };
 
   const onRefChange = useCallback((node) => {
     if (node !== null) {
@@ -154,6 +184,23 @@ function Editor({
     };
   }, [parsedNoteTitle]);
 
+  useEffect(() => {
+    const updateViewPortWidth = () => {
+      const isNextSmallWidthViewport =
+        CAN_USE_DOM && window.matchMedia("(max-width: 1025px)").matches;
+
+      if (isNextSmallWidthViewport !== isSmallWidthViewport) {
+        setIsSmallWidthViewport(isNextSmallWidthViewport);
+      }
+    };
+    updateViewPortWidth();
+    window.addEventListener("resize", updateViewPortWidth);
+
+    return () => {
+      window.removeEventListener("resize", updateViewPortWidth);
+    };
+  }, [isSmallWidthViewport]);
+
   const getEditorContent = () => {
     return {
       full_src: "alio",
@@ -163,6 +210,7 @@ function Editor({
   };
 
   return (
+    
     <div className={css(styles.container)}>
       <NotebookHeader
         currentNote={currentNote}
@@ -176,54 +224,96 @@ function Editor({
         userOrgs={userOrgs}
       />
       <div className="editor-shell">
-      <LexicalComposer initialConfig={initialConfig}>
-        <div className={css(styles.editorContainer)}>
-          <input
-            className={css(styles.titleInput)}
-            contentEditable="true"
-            placeholder="Untitled"
-            value={currentNote.title}
-          ></input>
-          <AutoFocusPlugin />
-          <ClearEditorPlugin />
-          <ListPlugin />
-          <CheckListPlugin />
-          <PageBreakPlugin/>
-          <DragDropPastePlugin/>
-          <HorizontalRulePlugin/>
-          <div className={css(styles.editorInner)}>
-            <RichTextPlugin
-              contentEditable={
-                <div className={css(styles.editorScroller)}>
-                  <div className={css(styles.editor)}>
-                    <ContentEditable className={css(styles.contentEditable)} />
-                  </div>
-                </div>
-              }
-              placeholder={<div>Start writing...</div>}
-              ErrorBoundary={LexicalErrorBoundary}
-            />
+        <input
+          className={css(styles.titleInput)}
+          contentEditable="true"
+          placeholder="Untitled"
+          value={currentNote.title}
+        ></input>
+        <LexicalComposer initialConfig={initialConfig}>
+          <TableContext>
+            <div className={css(styles.editorContainer)}>
+              <AutoFocusPlugin />
+              <ClearEditorPlugin />
+              <ListPlugin />
+              <CheckListPlugin />
+              <ComponentPickerMenuPlugin />
+              <LexicalClickableLinkPlugin />
+              <PageBreakPlugin />
+              <DragDropPastePlugin />
+              <HorizontalRulePlugin />
+              <div className={css(styles.editorInner)}>
+                <RichTextPlugin
+                  contentEditable={
+                    <div className={css(styles.editorScroller)}>
+                      <div className={css(styles.editor)} ref={onRef}>
+                        <ContentEditable
+                          className={css(styles.contentEditable)}
+                        />
+                      </div>
+                    </div>
+                  }
+                  placeholder={<div>Start writing...</div>}
+                  ErrorBoundary={LexicalErrorBoundary}
+                />
 
-            <AutoSavePlugin
-              parsedNoteTitle={parsedNoteTitle}
-              currentNote={currentNote}
-            />
-            <ComponentPickerMenuPlugin/>
-            <MarkdownShortcutPlugin />
-            <ImagesPlugin />
-            <VideoPlugin/>
-            <FloatingComponentPickerTriggerPlugin />
-            {/* <OnChangePlugin onChange={onChange} /> */}
-            <HistoryPlugin />
-            <TabIndentationPlugin />
-            <FloatingTextFormatToolbarPlugin />
-            <LinkPlugin />
-            <AutoLinkPlugin />
-            <TabFocusPlugin />
-            <ListMaxIndentLevelPlugin maxDepth={7} />
-          </div>
-        </div>
-      </LexicalComposer>
+                <AutoSavePlugin
+                  parsedNoteTitle={parsedNoteTitle}
+                  currentNote={currentNote}
+                />
+                <MarkdownShortcutPlugin />
+                <ImagesPlugin />
+                <TablePlugin />
+                <TableCellResizer />
+                <NewTablePlugin cellEditorConfig={cellEditorConfig}>
+                  <AutoFocusPlugin />
+                  <RichTextPlugin
+                    contentEditable={
+                      <ContentEditable className="TableNode__contentEditable" />
+                    }
+                    placeholder={null}
+                    ErrorBoundary={LexicalErrorBoundary}
+                  />
+                  <HistoryPlugin />
+                  <ImagesPlugin captionsEnabled={false} />
+                  <LinkPlugin />
+                  <LexicalClickableLinkPlugin />
+                  <FloatingTextFormatToolbarPlugin />
+                </NewTablePlugin>
+                <VideoPlugin />
+                <FloatingComponentPickerTriggerPlugin />
+                {/* <OnChangePlugin onChange={onChange} /> */}
+                <HistoryPlugin />
+                <TabIndentationPlugin />
+                <LinkPlugin />
+
+                <LexicalClickableLinkPlugin />
+                <AutoLinkPlugin />
+                <TabFocusPlugin />
+                <ListMaxIndentLevelPlugin maxDepth={7} />
+                {floatingAnchorElem && !isSmallWidthViewport && (
+                  <>
+                    <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+                    {/* <CodeActionMenuPlugin anchorElem={floatingAnchorElem} /> */}
+                    <TableCellActionMenuPlugin
+                      anchorElem={floatingAnchorElem}
+                      cellMerge={true}
+                    />
+
+                    <FloatingTextFormatToolbarPlugin
+                      anchorElem={floatingAnchorElem}
+                    />
+                    {/* <FloatingLinkEditorPlugin
+                  anchorElem={floatingAnchorElem}
+                  isLinkEditMode={isLinkEditMode}
+                  setIsLinkEditMode={setIsLinkEditMode}
+                /> */}
+                  </>
+                )}
+              </div>
+            </div>
+          </TableContext>
+        </LexicalComposer>
       </div>
     </div>
   );
@@ -232,9 +322,9 @@ function Editor({
 const styles = StyleSheet.create({
   container: {
     height: "calc(100vh - 80px)",
-    marginLeft: "max(min(16%, 300px), 160px)",
-    marginRight: "max(min(16%, 300px), 160px)",
-    overflow: "auto",
+    marginLeft: "max(min(16%, 300px), 120px)",
+    marginRight: "max(min(16%, 300px), 120px)",
+    overflow: "visible",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       marginLeft: 0,
@@ -242,7 +332,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       height: "calc(100vh - 66px)",
     },
-    // backgroundColor: "black",
+
   },
   loader: {
     position: "absolute",
@@ -265,7 +355,8 @@ const styles = StyleSheet.create({
     position: "relative",
     resize: "vertical",
     zIndex: -1,
-    height: "auto",
+ 
+    minHeight: "calc(100vh - 80px)",
   },
   editorInner: {
     height: "100%",
@@ -284,9 +375,9 @@ const styles = StyleSheet.create({
   contentEditable: {
     outline: "none",
     marginLeft: 10,
+    minHeight: "70vh",
   },
   titleInput: {
-    display: "flex",
     width: "100%",
     fontSize: "2rem",
     outline: "none",
