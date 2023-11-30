@@ -12,6 +12,7 @@ import LoginModal from "~/components/Login/LoginModal";
 import ReferencesContainer from "~/components/ReferenceManager/references/ReferencesContainer";
 import { ReferenceActiveProjectContextProvider } from "./reference_organizer/context/ReferenceActiveProjectContext";
 import { useRouter } from "next/router";
+import ReferenceManagerIntroModal from "../lib/ReferenceManagerIntroModal";
 
 type Props = {
   authChecked?: boolean;
@@ -43,11 +44,14 @@ function ReferencesRoot({
                 ></HeadComponent>
                 {isLoggedIn || !authChecked ? (
                   // @ts-ignore - faulty legacy connect hook
-                  <ReferencesContainer
-                    wsUrl={wsUrl}
-                    wsAuth
-                    calloutOpen={calloutOpen}
-                  />
+                  <>
+                    <ReferenceManagerIntroModal />
+                    <ReferencesContainer
+                      wsUrl={wsUrl}
+                      wsAuth
+                      calloutOpen={calloutOpen}
+                    />
+                  </>
                 ) : (
                   <LoginModal
                     title="Log in or sign up to continue"
