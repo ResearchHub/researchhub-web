@@ -164,9 +164,6 @@ function PaperTab(props) {
     } else if (paper.oa_status && paper.oa_status === "closed") {
       return (
         <div>
-          <div className={css(styles.titleContainer)}>
-            <h2>Paper PDF</h2>
-          </div>
           <p>
             This paper's license is marked as closed access and cannot be viewed
             on ResearchHub.{" "}
