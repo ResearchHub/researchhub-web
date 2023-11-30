@@ -32,6 +32,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
 import { flagGrmContent } from "~/components/Flag/api/postGrmFlag";
 import { faPen, faFlag, faBan } from "@fortawesome/pro-light-svg-icons";
+
 type Args = {
   entry: Contribution;
   context: "live-feed" | "flagging-dashboard";
@@ -41,7 +42,7 @@ const ContributionHeader = ({ entry, context }: Args) => {
   const { contentType } = entry;
   let { item, hubs } = entry;
   const { createdBy, createdDate } = item;
-
+  console.log("entry", entry);
   let contentBadgeLabel: ReactNode | string;
   let actionLabel = <>{` posted `}</>;
   let unifiedDocument: UnifiedDocument;
@@ -174,6 +175,7 @@ const ContributionHeader = ({ entry, context }: Args) => {
     actionLabel = <>{` posted a ${item?.unifiedDocument?.documentType}`}</>;
   }
 
+  const moreOptionsId = `header-more-options-${entry?.contentType?.name}-${entry?.item?.id}`;
   return (
     <div className={css(styles.header)}>
       <div className={css(styles.avatarWrapper)}>
@@ -221,107 +223,110 @@ const ContributionHeader = ({ entry, context }: Args) => {
                     overrideStyle={styles.link}
                     href={getUrlToUniDoc(unifiedDocument)}
                   >
-                    {truncateText(unifiedDocument?.document?.title, 100)}
+                    {truncateText(unifiedDocument?.document?.title, 75)}
                   </ALink>
                 </span>
               </>
             )}
           </div>
         </div>
-        {context === "live-feed" && (
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-            }}
-          >
-            <GenericMenu
-              softHide={true}
-              options={[
-                {
-                  preventDefault: true,
-                  value: "flag",
-                  html: (
-                    <FlagButtonV2
-                      modalHeaderText="Flag Content"
-                      errorMsgText="Failed to flag"
-                      successMsgText="Content flagged"
-                      primaryButtonLabel="Flag"
-                      subHeaderText="I am flagging this content because of:"
-                      onSubmit={(
-                        flagReason,
-                        renderErrorMsg,
-                        renderSuccessMsg
-                      ) => {
-                        let args: any = {
-                          flagReason,
-                          onError: renderErrorMsg,
-                          onSuccess: renderSuccessMsg,
-                        };
-
-                        let item = entry.item;
-                        const unifiedDocument: UnifiedDocument =
-                          // @ts-ignore
-                          item.unifiedDocument;
-
-                        if (entry.contentType.name === "comment") {
-                          item = item as CommentContributionItem;
-                          args = {
-                            commentPayload: {
-                              commentID: item.id,
-                              commentType: "comment",
-                            },
-                            ...args,
-                          };
-                        }
-
-                        if (
-                          ["paper", "post", "question"].includes(
-                            unifiedDocument.documentType
-                          )
-                        ) {
-                          args = {
-                            contentType: unifiedDocument.documentType,
-                            // @ts-ignore
-                            contentID: unifiedDocument.document.id,
-                            ...args,
-                          };
-                        } else {
-                          console.error(
-                            `${entry.contentType.name} Not supported for flagging`
-                          );
-                          return false;
-                        }
-
-                        flagGrmContent(args);
-                      }}
-                    >
-                      <div style={{ display: "flex", width: "100%" }}>
-                        <div style={{ width: 30, boxSizing: "border-box" }}>
-                          <FontAwesomeIcon icon={faFlag} />
-                        </div>
-                        <div>Flag content</div>
-                      </div>
-                    </FlagButtonV2>
-                  ),
-                },
-              ]}
-              width={200}
-              id="header-more-options"
-              direction="bottom-right"
-            >
-              <IconButton overrideStyle={styles.moreOptionsBtn} variant="round">
-                <FontAwesomeIcon fontSize={22} icon={faEllipsis} />
-              </IconButton>
-            </GenericMenu>
-          </div>
-        )}
       </div>
+      {context === "live-feed" && (
+        <div
+          className={css(styles.moreOptionsBtnWrapper)}
+          onClick={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <GenericMenu
+            softHide={true}
+            options={[
+              {
+                preventDefault: true,
+                value: "flag",
+                html: (
+                  <FlagButtonV2
+                    modalHeaderText="Flag Content"
+                    errorMsgText="Failed to flag"
+                    successMsgText="Content flagged"
+                    primaryButtonLabel="Flag"
+                    subHeaderText="I am flagging this content because of:"
+                    onSubmit={(
+                      flagReason,
+                      renderErrorMsg,
+                      renderSuccessMsg
+                    ) => {
+                      let args: any = {
+                        flagReason,
+                        onError: renderErrorMsg,
+                        onSuccess: renderSuccessMsg,
+                      };
+
+                      let item = entry.item;
+                      const unifiedDocument: UnifiedDocument =
+                        // @ts-ignore
+                        item.unifiedDocument;
+
+                      if (entry.contentType.name === "comment") {
+                        item = item as CommentContributionItem;
+                        args = {
+                          commentPayload: {
+                            commentID: item.id,
+                            commentType: "comment",
+                          },
+                          ...args,
+                        };
+                      }
+
+                      if (
+                        ["paper", "post", "question"].includes(
+                          unifiedDocument.documentType
+                        )
+                      ) {
+                        args = {
+                          contentType: unifiedDocument.documentType,
+                          // @ts-ignore
+                          contentID: unifiedDocument.document.id,
+                          ...args,
+                        };
+                      } else {
+                        console.error(
+                          `${entry.contentType.name} Not supported for flagging`
+                        );
+                        return false;
+                      }
+
+                      flagGrmContent(args);
+                    }}
+                  >
+                    <div style={{ display: "flex", width: "100%" }}>
+                      <div style={{ width: 30, boxSizing: "border-box" }}>
+                        <FontAwesomeIcon icon={faFlag} />
+                      </div>
+                      <div>Flag content</div>
+                    </div>
+                  </FlagButtonV2>
+                ),
+              },
+            ]}
+            width={200}
+            id={moreOptionsId}
+            direction="bottom-right"
+          >
+            <IconButton overrideStyle={styles.moreOptionsBtn} variant="round">
+              <FontAwesomeIcon fontSize={22} icon={faEllipsis} />
+            </IconButton>
+          </GenericMenu>
+        </div>
+      )}
     </div>
   );
 };
 
 const styles = StyleSheet.create({
+  moreOptionsBtnWrapper: {
+    marginLeft: "auto",
+  },
   moreOptionsBtn: {
     border: "none",
     color: colors.BLACK(0.6),
@@ -382,7 +387,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.6),
     display: "flex",
     flexWrap: "wrap",
-    flex: 1,
+    // flex: 1,
     lineHeight: "1.5em",
     whiteSpace: "pre-wrap",
   },

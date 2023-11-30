@@ -97,6 +97,7 @@ function FlagButtonV2({
         permissionKey="UpdatePaper"
         loginRequired={true}
         hideRipples={true}
+        styling={customModalStyle.permissionWrapper}
       >
         {children ? (
           <div style={{ width: "100%" }}>{children}</div>
@@ -154,6 +155,9 @@ function FlagButtonV2({
 }
 
 const customModalStyle = StyleSheet.create({
+  permissionWrapper: {
+    width: "100%",
+  },
   closeButton: {
     height: 12,
     width: 12,
