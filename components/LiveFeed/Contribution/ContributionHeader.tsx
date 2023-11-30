@@ -270,11 +270,12 @@ const ContributionHeader = ({ entry, context }: Args) => {
                       if (entry.contentType.name === "comment") {
                         item = item as CommentContributionItem;
                         args = {
+                          ...args,
+                          contentType: unifiedDocument.documentType,
                           commentPayload: {
                             commentID: item.id,
                             commentType: "comment",
                           },
-                          ...args,
                         };
                       }
 
