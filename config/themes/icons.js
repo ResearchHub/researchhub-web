@@ -32,6 +32,7 @@ import {
   faAlignCenter,
   faAlignRight,
   faAlignJustify,
+  faTable,
 } from "@fortawesome/pro-solid-svg-icons";
 import colors, { iconColors } from "~/config/themes/colors";
 import { StyleSheet, css } from "aphrodite";
@@ -102,6 +103,7 @@ export const textEditorIcons = {
   alignCenter: <FontAwesomeIcon icon={faAlignCenter}></FontAwesomeIcon>,
   alignRight: <FontAwesomeIcon icon={faAlignRight}></FontAwesomeIcon>,
   alignJustify: <FontAwesomeIcon icon={faAlignJustify}></FontAwesomeIcon>,
+  table: <FontAwesomeIcon icon={faTable}></FontAwesomeIcon>,
 };
 
 export const WarningIcon = (props) => {
