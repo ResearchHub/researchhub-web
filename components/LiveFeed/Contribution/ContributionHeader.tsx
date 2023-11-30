@@ -42,7 +42,7 @@ const ContributionHeader = ({ entry, context }: Args) => {
   const { contentType } = entry;
   let { item, hubs } = entry;
   const { createdBy, createdDate } = item;
-  console.log("entry", entry);
+  
   let contentBadgeLabel: ReactNode | string;
   let actionLabel = <>{` posted `}</>;
   let unifiedDocument: UnifiedDocument;
