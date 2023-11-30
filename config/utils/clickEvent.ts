@@ -25,6 +25,7 @@ export function isOutsideClick({
   if (!_el) return;
 
   const isWithin = _el.contains(clickedEl);
+
   const clickOnExcluded = exclude.reduce(
     (prev, selector) =>
       Boolean(

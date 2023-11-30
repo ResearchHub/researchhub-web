@@ -23,11 +23,13 @@ type Args = {
   actions: Array<any>;
   setHubsDropdownOpenForKey?: Function;
   hubsDropdownOpenForKey?: string;
+  context: "live-feed" | "flagging-dashboard";
 };
 
 const ContributionEntry = ({
   entry,
   actions,
+  context,
   setHubsDropdownOpenForKey,
   hubsDropdownOpenForKey,
 }: Args) => {
@@ -156,7 +158,7 @@ const ContributionEntry = ({
   return (
     <>
       <div className={css(styles.entryContent)}>
-        <ContributionHeader entry={entry} />
+        <ContributionHeader context={context} entry={entry} />
         <div className={css(styles.highlightedContentContainer)}>
           <div className={css(styles.highlightedContent)}>
             {title && (

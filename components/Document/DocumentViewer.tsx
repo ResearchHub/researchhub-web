@@ -68,8 +68,8 @@ type Props = {
   isPost?: boolean;
   expandedOnlyMode?: boolean;
   setReferenceItemDatum?: (datum) => void;
-  referenceItemDatum: any;
-  documentViewerClass: any;
+  referenceItemDatum?: any;
+  documentViewerClass?: any;
 };
 
 const DocumentViewer = ({

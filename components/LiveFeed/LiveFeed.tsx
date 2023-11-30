@@ -77,6 +77,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
               key={`entry-${idx}`}
               entry={result}
               actions={[]}
+              context="live-feed"
               // Kobe: Let's expose flagging in the live feed when the UI is ready and supports
               // actions.
 
