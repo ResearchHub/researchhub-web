@@ -3,7 +3,6 @@ import ReactTooltip from "react-tooltip";
 import Button from "../Form/Button";
 import colors from "../../config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleInfo } from "@fortawesome/pro-regular-svg-icons";
 import { createVote } from "./api/votes";
 import { ID, parseUser } from "~/config/types/root_types";
 import { PredictionMarketDetails, PredictionMarketVote } from "./lib/types";
@@ -114,16 +113,9 @@ const PredictionMarketVoteForm = ({
         <div className={css(styles.title)}>
           Do you think this paper is replicable?
         </div>
-        <div
-          data-tip="Do you think an independent researcher/lab can produce results that confirm the conclusion(s) of the paper."
-          data-for="link-tooltip"
-          className={css(styles.tooltipIcon)}
-        >
-          <FontAwesomeIcon
-            icon={faCircleInfo}
-            color={colors.MEDIUM_GREY2(1)}
-            fontSize={12}
-          />
+        <div className={css(styles.subtitle)}>
+          Can an independent researcher/lab produce results that confirm the
+          conclusion(s) of the paper?
         </div>
       </div>
       {isCurrentUserAuthor && (
@@ -223,14 +215,20 @@ const styles = StyleSheet.create({
   },
   header: {
     display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "column",
+    alignItems: "flex-start",
     marginBottom: 16,
   },
   title: {
     fontSize: 14,
     fontWeight: 500,
-    paddingRight: 6,
+    paddingBottom: 6,
+  },
+  subtitle: {
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: 1.4,
+    color: colors.MEDIUM_GREY2(1),
   },
   cantVoteText: {
     fontSize: 14,
