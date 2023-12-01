@@ -8,7 +8,6 @@ import { ReferenceUploadDrawerContextProvider } from "./reference_uploader/conte
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import HeadComponent from "~/components/Head";
 import killswitch from "~/config/killswitch/killswitch";
-import LoginModal from "~/components/Login/LoginModal";
 import ReferencesContainer from "~/components/ReferenceManager/references/ReferencesContainer";
 import { ReferenceActiveProjectContextProvider } from "./reference_organizer/context/ReferenceActiveProjectContext";
 import { useRouter } from "next/router";
@@ -29,6 +28,11 @@ function ReferencesRoot({
 }: Props): ReactElement {
   const router = useRouter();
   const wsUrl = currentUserID ? WS_ROUTES.CITATION_ENTRY(currentUserID) : "";
+
+  if (!isLoggedIn && authChecked) {
+    // /login?redirect=/reference-manager
+    router.push("/login?redirect=/reference-manager");
+  }
 
   if (!killswitch("reference-manager")) {
     return <Fragment />;
@@ -52,19 +56,7 @@ function ReferencesRoot({
                       calloutOpen={calloutOpen}
                     />
                   </>
-                ) : (
-                  <LoginModal
-                    title="Log in or sign up to continue"
-                    isOpen={true}
-                    handleClose={undefined}
-                    loginCallback={() => {
-                      // redirect to /reference-manager,
-                      // since it'll auto-redirect to /reference-manager/{org-slug}/my-library
-                      router.push("/reference-manager");
-                    }}
-                    persistent={undefined}
-                  />
-                )}
+                ) : null}
               </ReferencesTableContextProvider>
             </ReferenceProjectsUpsertContextProvider>
           </ReferenceActiveProjectContextProvider>

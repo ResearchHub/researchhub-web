@@ -16,6 +16,7 @@ import { NextPage } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import Button from "~/components/Form/Button";
 import CollapsibleCard from "~/components/Form/CollapsibleCard";
 import HeadComponent from "~/components/Head";
@@ -23,9 +24,12 @@ import IconButton from "~/components/Icons/IconButton";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
+import { RootState } from "~/redux";
 
 const ProductReferenceManager: NextPage = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const auth = useSelector((state: RootState) => state.auth);
+  const isLoggedIn = auth.authChecked && auth.isLoggedIn;
 
   const handleFaqClick = (index: number) => {
     if (openFaq === index) {
@@ -60,7 +64,9 @@ const ProductReferenceManager: NextPage = () => {
               label="Log In"
               customButtonStyle={styles.loginBtn}
               isLink={{
-                href: "/reference-manager",
+                href: isLoggedIn
+                  ? "/reference-manager"
+                  : "/login?redirect=/reference-manager",
               }}
             ></Button>
             {!isMobileScreen && (
@@ -107,7 +113,9 @@ const ProductReferenceManager: NextPage = () => {
                 label="Get Started"
                 customButtonStyle={styles.heroButton}
                 isLink={{
-                  href: "/reference-manager",
+                  href: isLoggedIn
+                    ? "/reference-manager"
+                    : "/login?redirect=/reference-manager",
                 }}
               />
               {/* <Button
@@ -240,7 +248,7 @@ const ProductReferenceManager: NextPage = () => {
           className={css(
             styles.section,
             styles.exploreSection,
-            styles.exploreSection2,
+            styles.exploreSection2
           )}
         >
           <div className={css(styles.exploreImageSection)}>
@@ -405,7 +413,9 @@ const ProductReferenceManager: NextPage = () => {
                 label="Get Started"
                 customButtonStyle={styles.heroButton}
                 isLink={{
-                  href: "/reference-manager",
+                  href: isLoggedIn
+                    ? "/reference-manager"
+                    : "/login?redirect=/reference-manager",
                 }}
               />
               {/* <Button
