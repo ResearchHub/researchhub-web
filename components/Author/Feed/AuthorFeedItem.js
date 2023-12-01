@@ -138,6 +138,24 @@ const AuthorFeedItem = ({
           />
         </span>
       );
+    } else if (
+      itemType === "CONTRIBUTION" &&
+      item.contribution_type === "REPLICATION_VOTE"
+    ) {
+      const vote = item.source.vote;
+      actionText = `voted on replicability`;
+      if (vote !== null && vote !== undefined) {
+        actionText = (
+          <span>
+            voted&nbsp;
+            <span
+              style={{ color: vote === "YES" ? colors.GREEN() : colors.RED() }}
+            >
+              {vote}
+            </span>
+          </span>
+        );
+      }
     } else if (itemType === "AUTHORED_PAPER") {
       actionText = "authored paper";
     }

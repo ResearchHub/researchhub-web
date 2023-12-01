@@ -1305,6 +1305,7 @@ const routes = (BASE_URL) => {
         );
       }
     },
+
     buildPaperChainUrl: buildPaperChainUrl,
     BASE_URL,
   };
