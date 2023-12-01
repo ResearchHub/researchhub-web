@@ -272,7 +272,7 @@ export function setFloatingElemPositionForEquationEditor(
   floatingElem.style.opacity = "1";
 }
 
-const BLOCK_TOLLBAR_HORIZONTAL_OFFSET = 20 + 32; // offset + width of the block toolbar
+const BLOCK_TOLLBAR_HORIZONTAL_OFFSET = 20 + 22;
 
 export function setFloatingElemPositionForBlockToolbar(
   targetRect: DOMRect | null,
