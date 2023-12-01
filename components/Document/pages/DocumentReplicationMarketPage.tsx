@@ -49,7 +49,7 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(
     config.width
   );
-  const [tab, setTab] = useState<"COMMENTS" | "VOTES">("COMMENTS");
+  const [tab, setTab] = useState<"COMMENTS" | "VOTES">("VOTES");
   const { revalidateDocument } = useCacheControl();
 
   const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({
@@ -284,17 +284,17 @@ const DocumentReplicationMarketPage: NextPage<Args> = ({
               <HorizontalTabBar
                 tabs={[
                   {
-                    label: "Comments",
-                    value: "COMMENTS",
-                    isSelected: tab === "COMMENTS",
-                    pillContent: commentCount > 0 ? commentCount : undefined,
-                  },
-                  {
                     label: "Votes",
                     value: "VOTES",
                     isSelected: tab === "VOTES",
                     pillContent:
                       market.votes.total > 0 ? market.votes.total : undefined,
+                  },
+                  {
+                    label: "Comments",
+                    value: "COMMENTS",
+                    isSelected: tab === "COMMENTS",
+                    pillContent: commentCount > 0 ? commentCount : undefined,
                   },
                 ]}
                 onClick={(tab) => setTab(tab.value as "COMMENTS" | "VOTES")}
