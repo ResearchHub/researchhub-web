@@ -9,7 +9,7 @@ const LoginPage: NextPage = () => {
 
   const loginCallback = () => {
     if (hasRedirect) {
-      router.push(router.query.redirect as string)
+      router.push(router.query.redirect as string);
     };
   }
 
