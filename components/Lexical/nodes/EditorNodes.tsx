@@ -13,6 +13,7 @@ import { ImageNode } from "./ImageNode";
 import { VideoNode } from "./VideoNode";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { TableNode as NewTableNode } from "./TableNode";
+import { EquationNode } from "./EquationNode";
 
 const EditorNodes: Array<Klass<LexicalNode>> = [
   HeadingNode,
@@ -34,6 +35,7 @@ const EditorNodes: Array<Klass<LexicalNode>> = [
   ImageNode,
   VideoNode,
   NewTableNode,
+  EquationNode,
 ];
 
 export default EditorNodes;
