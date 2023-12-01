@@ -33,14 +33,14 @@ import useModal from "../../hooks/useModal";
 // import catTypingGif from "../../images/cat-typing.gif";
 // import { EmbedConfigs } from "../AutoEmbedPlugin";
 // import { INSERT_COLLAPSIBLE_COMMAND } from "../CollapsiblePlugin";
-// import { InsertEquationDialog } from "../EquationsPlugin";
+import { InsertEquationDialog } from "../EquationsPlugin";
 // import { INSERT_EXCALIDRAW_COMMAND } from "../ExcalidrawPlugin";
 import { InsertImageDialog } from "../ImagesPlugin";
 import { InsertVideoDialog } from "../VideoPlugin";
 // import InsertLayoutDialog from "../LayoutPlugin/InsertLayoutDialog";
 import { INSERT_PAGE_BREAK } from "../PageBreakPlugin";
 // import { InsertPollDialog } from "../PollPlugin";
-// import { InsertNewTableDialog, InsertTableDialog } from "../TablePlugin";
+import { InsertNewTableDialog, InsertTableDialog } from "../TablePlugin";
 
 class ComponentPickerOption extends MenuOption {
   // What shows up in the editor
@@ -175,14 +175,14 @@ function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
     //       <InsertTableDialog activeEditor={editor} onClose={onClose} />
     //     )),
     // }),
-    // new ComponentPickerOption("Table (Experimental)", {
-    //   icon: <i className="icon table" />,
-    //   keywords: ["table", "grid", "spreadsheet", "rows", "columns"],
-    //   onSelect: () =>
-    //     showModal("Insert Table", (onClose) => (
-    //       <InsertNewTableDialog activeEditor={editor} onClose={onClose} />
-    //     )),
-    // }),
+    new ComponentPickerOption("Table", {
+      icon: <i className="icon"> {textEditorIcons.table}</i>,
+      keywords: ["table", "grid", "spreadsheet", "rows", "columns"],
+      onSelect: () =>
+        showModal("Insert Table", (onClose) => (
+          <InsertNewTableDialog activeEditor={editor} onClose={onClose} />
+        )),
+    }),
     new ComponentPickerOption("Numbered List", {
       icon: <i className="icon">{textEditorIcons.numberedList}</i>,
       keywords: ["numbered list", "ordered list", "ol"],
@@ -243,37 +243,14 @@ function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
       keywords: ["page break", "divider"],
       onSelect: () => editor.dispatchCommand(INSERT_PAGE_BREAK, undefined),
     }),
-    // new ComponentPickerOption("Excalidraw", {
-    //   icon: <i className="icon diagram-2" />,
-    //   keywords: ["excalidraw", "diagram", "drawing"],
-    //   onSelect: () =>
-    //     editor.dispatchCommand(INSERT_EXCALIDRAW_COMMAND, undefined),
-    // }),
-    // new ComponentPickerOption("Poll", {
-    //   icon: <i className="icon poll" />,
-    //   keywords: ["poll", "vote"],
-    //   onSelect: () =>
-    //     showModal("Insert Poll", (onClose) => (
-    //       <InsertPollDialog activeEditor={editor} onClose={onClose} />
-    //     )),
-    // }),
-    // ...EmbedConfigs.map(
-    //   (embedConfig) =>
-    //     new ComponentPickerOption(`Embed ${embedConfig.contentName}`, {
-    //       icon: embedConfig.icon,
-    //       keywords: [...embedConfig.keywords, "embed"],
-    //       onSelect: () =>
-    //         editor.dispatchCommand(INSERT_EMBED_COMMAND, embedConfig.type),
-    //     })
-    // ),
-    // new ComponentPickerOption("Equation", {
-    //   icon: <i className="icon equation" />,
-    //   keywords: ["equation", "latex", "math"],
-    //   onSelect: () =>
-    //     showModal("Insert Equation", (onClose) => (
-    //       <InsertEquationDialog activeEditor={editor} onClose={onClose} />
-    //     )),
-    // }),
+    new ComponentPickerOption("Equation", {
+      icon: <i className="icon">{textEditorIcons.equation}</i>,
+      keywords: ["equation", "latex", "math"],
+      onSelect: () =>
+        showModal("Insert Equation", (onClose) => (
+          <InsertEquationDialog activeEditor={editor} onClose={onClose} />
+        )),
+    }),
     new ComponentPickerOption("Image", {
       icon: <i className="icon">{textEditorIcons.image}</i>,
       keywords: ["image", "photo", "picture", "file"],
@@ -290,20 +267,6 @@ function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
           <InsertVideoDialog activeEditor={editor} onClose={onClose} />
         )),
     }),
-    // new ComponentPickerOption("Collapsible", {
-    //   icon: <i className="icon caret-right" />,
-    //   keywords: ["collapse", "collapsible", "toggle"],
-    //   onSelect: () =>
-    //     editor.dispatchCommand(INSERT_COLLAPSIBLE_COMMAND, undefined),
-    // }),
-    // new ComponentPickerOption("Columns Layout", {
-    //   icon: <i className="icon columns" />,
-    //   keywords: ["columns", "layout", "grid"],
-    //   onSelect: () =>
-    //     showModal("Insert Columns Layout", (onClose) => (
-    //       <InsertLayoutDialog activeEditor={editor} onClose={onClose} />
-    //     )),
-    // }),
     ...(["left", "center", "right", "justify"] as const).map(
       (alignment) =>
         new ComponentPickerOption(`Align ${alignment}`, {
