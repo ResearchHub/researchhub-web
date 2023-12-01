@@ -284,7 +284,7 @@ const VerificationFormSelectProviderStep = ({
           </OrcidConnectButton>
         </div>
 
-        <div
+        {/* <div
           className={css(
             formStyles.option,
             isLinkedInVerified && formStyles.optionVerified
@@ -343,7 +343,7 @@ const VerificationFormSelectProviderStep = ({
               )}
             </div>
           </LinkedInButton>
-        </div>
+        </div> */}
       </div>
       <div className={css(formStyles.whyVerifyWrapper)}>
         <div className={css(formStyles.whyVerify)}>
