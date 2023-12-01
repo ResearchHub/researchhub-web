@@ -45,7 +45,6 @@ const ReferenceManagerIntroModal = (): ReactElement => {
         isOpen={isOpen}
         modalStyle={styles.modalStyle}
         zIndex={1000001}
-        modalContentStyle={styles.modalContentStyle}
         removeDefault
       >
         <div className={css(styles.container)}>
@@ -94,15 +93,13 @@ const styles = StyleSheet.create({
       width: 500,
     },
   },
-  modalContentStyle: {
-    padding: 40,
-    paddingBottom: 25,
-  },
   container: {
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
-    width: "100%",
+    width: "calc(100% - 50px)",
+    padding: 25,
+    paddingBottom: 25,
   },
 
   header: {
@@ -113,7 +110,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerImage: {
-    width: 180,
+    width: 200,
     marginBottom: 32,
   },
   title: {
