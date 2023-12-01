@@ -47,7 +47,11 @@ const PredictionMarketVoteForm = ({
   );
 
   useEffect(() => {
-    const vote = allVotes.find((v) => v.createdBy.id === currentUser?.id);
+    const vote = allVotes.find(
+      (v) =>
+        v.createdBy.id === currentUser?.id ||
+        v.createdBy.authorProfile?.id === currentUser?.authorProfile?.id
+    );
     if (vote) {
       setPrevVote(vote);
       setVote(vote.vote);
@@ -55,7 +59,7 @@ const PredictionMarketVoteForm = ({
       setPrevVote(null);
       setVote(null);
     }
-  }, [allVotes]);
+  }, [allVotes, currentUser]);
 
   const handleSubmit = async (vote: "YES" | "NO") => {
     if (vote === null || vote === prevVote?.vote) {
