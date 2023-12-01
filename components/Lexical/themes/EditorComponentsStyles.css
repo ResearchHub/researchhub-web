@@ -249,19 +249,19 @@
 
 .floating-text-format-popup {
   display: flex;
-  background: #fff;
-  padding: 4px;
+  background: var(--light-background, #fff);
+  padding: 2px;
   vertical-align: middle;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 10;
+  z-index: 1000;
   opacity: 0;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
-  transition: opacity 0.5s;
-  height: 35px;
-  will-change: transform;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  transition: opacity 0.3s, transform 0.3s;
+  height: auto;
+  will-change: opacity, transform;
 }
 
 .floating-text-format-popup button.popup-item {
@@ -295,7 +295,7 @@
 }
 
 .floating-text-format-popup button.popup-item.active {
-  background-color: rgba(223, 232, 250, 0.3);
+  background-color: rgba(57, 113, 255, 0.2);
 }
 
 .floating-text-format-popup button.popup-item.active i {
@@ -1280,7 +1280,7 @@ i.chevron-down {
   border-radius: 4px;
   transition: background-color 0.3s ease-in-out;
   cursor: pointer;
-  color: rgba(144, 144, 144);
+  color: rgba(144, 144, 144, 0.5);
 }
 
 .floating-component-picker-trigger .icon {
