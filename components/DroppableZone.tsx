@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     border: 0,
     outline: `dotted ${colors.BLUE()}`,
-    zIndex: 999999,
+    zIndex: 9,
     ":hover": {
       borderStyle: "solid",
     },
