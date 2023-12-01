@@ -157,13 +157,8 @@ export const getLeftSidebarItemAttrs = ({
       ),
       isActive: pathname.includes("reference-manager"),
       isMinimized,
-      href: "/reference-manager",
-      onClick: (event: SyntheticEvent): void => {
-        if (!isLoggedIn) {
-          event.preventDefault();
-          openLoginModal(true, "Please Sign in with Google to continue.");
-        }
-      },
+      // if user isn't logged in, go to the product page
+      href: isLoggedIn ? "/reference-manager" : "/product/reference-manager",
     },
   ]);
 };
