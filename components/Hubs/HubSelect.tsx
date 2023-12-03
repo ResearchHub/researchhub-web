@@ -32,6 +32,7 @@ type HubSelectProps = {
   count: number;
   handleAddHub?: Function;
   handleClick?: (event) => void;
+  withPagination?: boolean;
 };
 
 const HubSelect = ({
@@ -39,6 +40,7 @@ const HubSelect = ({
   handleAddHub,
   handleClick,
   count,
+  withPagination = true,
 }: HubSelectProps) => {
   const router = useRouter();
   const sortOpts = [
@@ -235,7 +237,7 @@ const HubSelect = ({
         We only show the first 25 search results (as of now), so pagination is not needed.
         -> Permalink to 25 limit: https://github.com/ResearchHub/researchhub-backend/blob/e214e56b51ca707ae2d748830e298410f385b299/src/search/views/hub_suggester.py#L41
         */}
-      {query.length <= 0 && (
+      {withPagination && query.length <= 0 && (
         <div className={css(styles.pagination)}>
           <Pagination
             count={Math.ceil(count / 40)}

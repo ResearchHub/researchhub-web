@@ -307,7 +307,7 @@ const CommentActions = ({ comment, toggleReply, onBountyAdd }: Args) => {
               icon={faLinkSimple}
               style={{ transform: "rotate(-45deg)" }}
             />
-            <span className={css(styles.actionText)}>Copy link</span>
+            <span className={css(styles.actionText)}>Link</span>
           </IconButton>
         </div>
         {comment.bounties[0] && comment.bounties[0]?.status === "OPEN" && (

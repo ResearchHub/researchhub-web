@@ -20,6 +20,7 @@ export type Tab = {
   isSelected?: boolean;
   icon?: React.ReactNode;
   selectedIcon?: React.ReactNode;
+  hoverIcon?: React.ReactNode;
   pillContent?: React.ReactNode | string;
   showNewFeatureIndicator?: boolean;
 };
@@ -71,6 +72,8 @@ const HorizontalTabBar = ({
       showNewFeatureIndicator,
     } = tab;
     const tabType = href ? "link" : "div";
+
+    const [isHovered, setIsHovered] = useState(false);
 
     const props = {
       key: value,

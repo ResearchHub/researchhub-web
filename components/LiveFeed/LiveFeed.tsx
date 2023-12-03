@@ -68,6 +68,7 @@ const HubSelectModal = ({
         <HubSelect
           count={1}
           hubs={hubs}
+          withPagination={false}
           handleClick={(hub) => {
             handleSelect(hub);
           }}
@@ -137,81 +138,59 @@ export const tabs: Array<Tab> = [
         width={14}
       />
     ),
+    hoverIcon: (
+      <ResearchCoinIcon
+        version={4}
+        color={colors.NEW_BLUE(1.0)}
+        height={14}
+        width={14}
+      />
+    ),
     label: "Bounties",
-    value: "bounties",
+    value: "bounty",
   },
   {
     icon: <FontAwesomeIcon icon={faStar} />,
     label: "Peer Reviews",
-    value: "reviews",
+    value: "review",
   },
   {
     icon: <PaperIcon height={14} width={14} onClick={undefined} />,
     label: "Articles",
-    value: "articles",
+    value: "article",
   },
 ];
 
-export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
+export default function LiveFeed(): ReactElement<"div"> {
   const router = useRouter();
-  const [appliedFilters, setAppliedFilters] = useState<ApiFilters>({
-    hubId: hub?.id as ID,
-    contentType: "all",
-  });
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [isLoadingPage, setIsLoadingPage] = useState<boolean>(true);
-
   const [results, setResults] = useState<Array<Contribution>>([]);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    const _appliedFilters: ApiFilters = {
-      // Defaults
-      hubId: null,
-      contentType: "all",
-    };
-    const availableContentTypes = tabs.map((t) => t.value);
-
-    const hasContentTypeFilter =
-      router.query?.contentType &&
-      availableContentTypes.includes(router.query.contentType as string);
-    _appliedFilters.contentType = hasContentTypeFilter
-      ? (router.query.contentType as string)
-      : "all";
-    _appliedFilters.hubId = router.query?.hubId
-      ? (router.query.hubId as string)
-      : null;
-
-    setAppliedFilters(_appliedFilters);
-    loadResults(_appliedFilters, null);
+    loadResults();
   }, [router.query]);
 
-  // useEffect(() => {
-  //   let appliedFilters = { hubId: null };
-  //   if (hub?.id) {
-  //     appliedFilters = { hubId: hub.id };
-  //   }
-  //   setAppliedFilters(appliedFilters);
-  //   loadResults(appliedFilters, null);
-  // }, [hub, isHomePage]);
-
-  const loadResults = (filters: ApiFilters, url = null) => {
-    if (!url) {
+  const loadResults = () => {
+    if (!nextResultsUrl) {
       setIsLoadingPage(true);
     } else {
       setIsLoadingMore(true);
     }
 
+    const appliedFilters = getAppliedUrlFilters();
+
     fetchContributionsAPI({
-      pageUrl: url,
-      filters,
+      pageUrl: nextResultsUrl,
+      filters: appliedFilters,
       onSuccess: (response: any) => {
         const incomingResults = response.results.map((r) => {
           return parseContribution(r);
         });
 
-        if (url) {
+        if (nextResultsUrl) {
           setResults([...results, ...incomingResults]);
         } else {
           setResults(incomingResults);
@@ -246,6 +225,27 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
     })
     .filter((r) => r !== null);
 
+  const getAppliedUrlFilters = () => {
+    const appliedFilters: ApiFilters = {
+      // Defaults
+      hubId: null,
+      contentType: "all",
+    };
+    const availableContentTypes = tabs.map((t) => t.value);
+
+    const hasContentTypeFilter =
+      router.query?.contentType &&
+      availableContentTypes.includes(router.query.contentType as string);
+    appliedFilters.contentType = hasContentTypeFilter
+      ? (router.query.contentType as string)
+      : "all";
+    appliedFilters.hubId = router.query?.hubId
+      ? (router.query.hubId as string)
+      : null;
+
+    return appliedFilters;
+  };
+
   const resultCards = entries.map((entry, idx) => {
     return (
       <Link
@@ -270,13 +270,16 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
       <HubSelectModal
         isModalOpen={isModalOpen}
         handleModalClose={() => setIsModalOpen(false)}
-        handleSelect={(hubs) => {
-          if (hubs?.length > 0) {
-            const hub = hubs[0];
-            setIsModalOpen(false);
-            setAppliedFilters({ hubId: hub.id });
-            router.push(`/live?hubId=${hub.id}`, undefined, { shallow: true });
-          }
+        handleSelect={(hub) => {
+          setIsModalOpen(false);
+          router.push(
+            {
+              pathname: `/live`,
+              query: { ...router.query, ...(hub.id ? { hubId: hub.id } : {}) },
+            },
+            undefined,
+            { shallow: true }
+          );
         }}
       />
       <div
@@ -286,17 +289,39 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
           justifyContent: "space-between",
         }}
       >
-        <HorizontalTabBar tabs={tabs} variant="text" tabStyle={styles.tab} />
+        <HorizontalTabBar
+          tabs={tabs}
+          variant="text"
+          tabStyle={styles.tab}
+          onClick={(selectedTab) => {
+            router.push(
+              {
+                pathname: `/live`,
+                query: { ...router.query, contentType: selectedTab.value },
+              },
+              undefined,
+              { shallow: true }
+            );
+          }}
+        />
         <div
           className={css(
             styles.tab,
             styles.hubsFilter,
-            Boolean(appliedFilters.hubId) && styles.hubFilterSelected
+            Boolean(router.query?.hubId) && styles.hubFilterSelected
           )}
           onClick={() => {
-            if (appliedFilters.hubId) {
-              setAppliedFilters({ hubId: null });
-              router.push(`/live`, undefined, { shallow: true });
+            if (router.query?.hubId) {
+              const query = { ...router.query, hubId: undefined };
+              delete query.hubId;
+              router.push(
+                {
+                  pathname: `/live`,
+                  query,
+                },
+                undefined,
+                { shallow: true }
+              );
             } else {
               setIsModalOpen(true);
             }
@@ -304,7 +329,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
         >
           <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>
           Hubs
-          {appliedFilters.hubId && (
+          {router.query?.hubId && (
             <div
               style={{
                 background: "rgb(233 233 233)",
@@ -340,7 +365,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
             <LoadMoreButton
               onClick={() => {
                 setIsLoadingMore(true);
-                loadResults(appliedFilters, nextResultsUrl);
+                loadResults();
               }}
               // @ts-ignore
               isLoadingMore={isLoadingMore}

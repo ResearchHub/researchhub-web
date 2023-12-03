@@ -24,7 +24,7 @@ interface Props {
   numberCharactersToShow?: number;
   openEditHubModal: (boolean: boolean, hub) => void;
   canEdit?: boolean;
-  handleClick?: (event) => void;
+  handleClick?: (hub) => void;
 }
 
 const HubCard = ({
@@ -90,7 +90,7 @@ const HubCard = ({
         </div>
       )}
       {handleClick ? (
-        <div onClick={handleClick}>{hubCardContent}</div>
+        <div onClick={() => handleClick(hub)}>{hubCardContent}</div>
       ) : preventLinkClick ? (
         <div>{hubCardContent}</div>
       ) : (
