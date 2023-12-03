@@ -29,6 +29,7 @@ interface Props {
   onClick?: Function;
   containerStyle?: any;
   tabStyle?: any;
+  variant: "underline" | "text";
 }
 
 const HorizontalTabBar = ({
@@ -36,6 +37,7 @@ const HorizontalTabBar = ({
   onClick,
   containerStyle,
   tabStyle,
+  variant,
 }: Props) => {
   const tabContainerEl = useRef<HTMLDivElement>(null);
   const [showRightArrow, setShowRightArrow] = useState(false);
@@ -74,7 +76,14 @@ const HorizontalTabBar = ({
       key: value,
       className: css(
         styles.tab,
-        isSelected ? styles.tabSelected : styles.tabNotSelected,
+        isSelected &&
+          variant === "underline" &&
+          styles.underlineVariantSelected,
+        !isSelected &&
+          variant === "underline" &&
+          styles.underlineVariantNotSelected,
+        isSelected && variant === "text" && styles.textVariantSelected,
+        !isSelected && variant === "text" && styles.textVariantNotSelected,
         tabStyle
       ),
       ...(href && { href }),
@@ -215,15 +224,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     columnGap: "8px",
   },
-  tabNotSelected: {
+  underlineVariant: {
+    borderBottom: `solid 3px ${colors.GREY()}`,
     ":hover": {
-      color: colors.MEDIUM_GREY(),
       borderBottom: `solid 3px ${colors.GREY()}`,
       transition: "all 0.2s ease-in-out",
     },
   },
-  tabSelected: {
-    color: colors.NEW_BLUE(),
+  underlineVariantSelected: {
     borderBottom: "solid 3px",
     borderColor: colors.NEW_BLUE(),
   },

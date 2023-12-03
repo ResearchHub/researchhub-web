@@ -24,12 +24,14 @@ interface Props {
   numberCharactersToShow?: number;
   openEditHubModal: (boolean: boolean, hub) => void;
   canEdit?: boolean;
+  handleClick?: (event) => void;
 }
 
 const HubCard = ({
   hub,
   cardStyle,
   descriptionStyle,
+  handleClick,
   metadataStyle,
   preventLinkClick,
   canEdit,
@@ -87,7 +89,9 @@ const HubCard = ({
           <FontAwesomeIcon icon={faPenToSquare} />
         </div>
       )}
-      {preventLinkClick ? (
+      {handleClick ? (
+        <div onClick={handleClick}>{hubCardContent}</div>
+      ) : preventLinkClick ? (
         <div>{hubCardContent}</div>
       ) : (
         <Link href={`/hubs/${hub.slug}`} style={{ textDecoration: "none" }}>

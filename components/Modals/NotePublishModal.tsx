@@ -18,7 +18,7 @@ import { useRouter } from "next/router";
 import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinnerThird } from "@fortawesome/pro-duotone-svg-icons";
-import HubSelect from "../Hubs/HubSelect";
+import HubSelectDropdown from "../Hubs/HubSelectDropdown";
 
 type FormFields = {
   authors: any[];
@@ -31,7 +31,7 @@ type FormError = {
 };
 
 function validateFormField(fieldID: string, value: any): boolean {
-  let result: boolean = true;
+  const result = true;
   switch (fieldID) {
     case "authors":
     case "hubs":
@@ -195,7 +195,7 @@ function NotePublishModal({
           /* @ts-ignore */
           const { id, slug } = response;
           if (checkBoxDOI) {
-            let param = {
+            const param = {
               balance: currentUser.balance - CROSSREF_DOI_RSC_FEE,
             };
             updateUser(param);
@@ -324,7 +324,7 @@ function NotePublishModal({
             placeholder="Add authors"
             required
           />
-          <HubSelect
+          <HubSelectDropdown
             selectedHubs={mutableFormFields.hubs}
             onChange={(hubs) => {
               handleOnChangeFields("hubs", hubs);

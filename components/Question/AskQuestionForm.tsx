@@ -15,7 +15,7 @@ import colors from "../../config/themes/colors";
 import dynamic from "next/dynamic";
 import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
-import HubSelect from "../Hubs/HubSelect";
+import HubSelectDropdown from "../Hubs/HubSelectDropdown";
 
 const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 
@@ -167,7 +167,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         containerStyle={styles.editor}
         required
       />
-      <HubSelect
+      <HubSelectDropdown
         selectedHubs={mutableFormFields.hubs}
         onChange={(hubs) => {
           handleOnChangeFields("hubs", hubs);

@@ -91,8 +91,6 @@ const Navbar = (props) => {
       </div>
       {` Reference Manager`}
     </div>
-  ) : pathname.includes("live") ? (
-    "Live Activity"
   ) : isPaper ? (
     <div className={css(styles.backBtnWrapper)}>
       <BackBtn label={"Paper"} href="/" />

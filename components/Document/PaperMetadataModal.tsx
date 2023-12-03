@@ -7,7 +7,7 @@ import PaperPageAbstractSection from "../Paper/abstract/PaperPageAbstractSection
 import { MessageActions } from "~/redux/message";
 import { useDispatch } from "react-redux";
 import PaperMetadataForm from "./PaperMetadataForm";
-import HubSelect from "../Hubs/HubSelect";
+import HubSelect from "../Hubs/HubSelectDropdown";
 import Button from "../Form/Button";
 import { Hub, parseHub } from "~/config/types/hub";
 import updatePaperMetadataAPI from "./api/updatePaperMetadataAPI";
