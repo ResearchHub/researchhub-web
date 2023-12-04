@@ -33,6 +33,7 @@ type HubSelectProps = {
   handleAddHub?: Function;
   handleClick?: (event) => void;
   withPagination?: boolean;
+  maxCardsPerRow?: number;
 };
 
 const HubSelect = ({
@@ -41,6 +42,7 @@ const HubSelect = ({
   handleClick,
   count,
   withPagination = true,
+  maxCardsPerRow,
 }: HubSelectProps) => {
   const router = useRouter();
   const sortOpts = [
@@ -60,8 +62,8 @@ const HubSelect = ({
   const [query, setQuery] = useState("");
   const { width: winWidth, height: winHeight } = useWindow();
   const [noSuggestionsFound, setNoSuggestionsFound] = useState(false);
-
-  const firstLoadRef = useRef(true);
+  const cardWidth =
+    maxCardsPerRow && maxCardsPerRow > 0 ? "calc(50% - 15px)" : "auto";
 
   const setQueryParam = ({ param, value }) => {
     // Destructure the current pathname and query
@@ -219,7 +221,11 @@ const HubSelect = ({
           customPlaceholder={<HubsPlaceholder />}
         >
           {hubsToRender.map((h) => (
-            <div className={css(styles.hubCardWrapper)} key={h.id}>
+            <div
+              className={css(!maxCardsPerRow && styles.hubCardWrapper)}
+              style={{ width: cardWidth }}
+              key={h.id}
+            >
               <HubCard
                 descriptionStyle={styles.hubCardDescription}
                 hub={h}
@@ -287,8 +293,7 @@ const HubsPlaceholder = () => {
 
 const styles = StyleSheet.create({
   hubCardWrapper: {
-    //   width: "calc(25% - 15px)",
-    width: "calc(50% - 15px)",
+    width: "calc(25% - 15px)",
     [`@media only screen and (max-width: 1340px)`]: {
       width: "calc(33% - 15px)",
     },
@@ -307,18 +312,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: 500,
-    textOverflow: "ellipsis",
-    marginBottom: 0,
-  },
-  titleContainer: {
-    alignItems: "center",
-    display: "flex",
-    width: "100%",
-    marginBottom: 15,
   },
   createHubButton: {
     marginLeft: "auto",
@@ -341,12 +334,6 @@ const styles = StyleSheet.create({
   hubCardDescription: {
     fontSize: 14,
     lineHeight: "18px",
-  },
-  description: {
-    fontSize: 15,
-    marginBottom: 15,
-    maxWidth: 790,
-    lineHeight: "22px",
   },
   sortTrigger: {
     display: "flex",
@@ -378,16 +365,6 @@ const styles = StyleSheet.create({
     height: 30,
     outline: "none",
     fontSize: 14,
-  },
-  container: {
-    width: "100%",
-    maxWidth: 1340,
-    margin: "0 auto",
-    marginTop: 40,
-    paddingLeft: 25,
-    paddingRight: 25,
-    boxSizing: "border-box",
-    marginBottom: 40,
   },
   cardsWrapper: {
     borderTop: `1px solid #E9EAEF`,

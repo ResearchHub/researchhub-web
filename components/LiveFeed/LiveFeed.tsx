@@ -90,6 +90,7 @@ const HubSelectModal = ({
           count={1}
           hubs={hubs}
           withPagination={false}
+          maxCardsPerRow={2}
           handleClick={(hub) => {
             handleSelect(hub);
           }}
@@ -102,6 +103,10 @@ const HubSelectModal = ({
 const styles1 = StyleSheet.create({
   formWrapper: {
     width: 540,
+    paddingLeft: 25,
+    paddingRight: 25,
+    marginTop: 25,
+    boxSizing: "border-box",
     height: "100%",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
@@ -118,6 +123,7 @@ const styles1 = StyleSheet.create({
   modalContentStyle: {
     position: "relative",
     minHeight: 560,
+    overflowX: "hidden",
     padding: "50px 25px ",
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       height: "100%",

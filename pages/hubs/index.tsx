@@ -34,7 +34,7 @@ const HubsPage: NextPage<Props> = ({
   const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
 
   return (
-    <div>
+    <div className={css(styles.container)}>
       <div className={css(styles.titleContainer)}>
         <h1 className={css(styles.title) + " clamp2"}>Hubs</h1>
         {(isModerator || isHubEditor) && (
@@ -67,6 +67,16 @@ const HubsPage: NextPage<Props> = ({
 };
 
 const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    maxWidth: 1340,
+    margin: "0 auto",
+    marginTop: 40,
+    paddingLeft: 25,
+    paddingRight: 25,
+    boxSizing: "border-box",
+    marginBottom: 40,
+  },
   title: {
     fontSize: 30,
     fontWeight: 500,
