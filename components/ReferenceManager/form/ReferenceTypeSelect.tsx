@@ -35,7 +35,6 @@ export default function ReferenceTypeSelect({
       onError: emptyFncWithMsg,
       onSuccess: (result: string[]): void => {
         setReferenceTypes(result);
-        onChange(result[0]);
         setIsfetching(false);
       },
     });
@@ -48,12 +47,7 @@ export default function ReferenceTypeSelect({
   /* For some instances, value is forcibly given an arbitrary string from parent 
      to override select. We need to sanity check this.*/
   const sanityCheckAndGetValue = (): string => {
-    if (referenceTypesSet.has(value)) {
-      return value;
-    } else {
-      onChange("JOURNAL_ARTICLE");
-      return "JOURNAL_ARTICLE";
-    }
+    return value;
   };
   const sanityCheckedSelectedRefType = useMemo(
     (): string => sanityCheckAndGetValue(),

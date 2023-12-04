@@ -133,6 +133,10 @@ export const handleSubmit = ({
       ...referenceSchemaValueSet.schema,
       author: formattedCreators,
       issued: formattedCSLDate,
+      custom: {
+        ...referenceSchemaValueSet.custom,
+        attachment: referenceSchemaValueSet.signedUrl,
+      },
     },
     citation_type: selectedReferenceType,
     doi: referenceSchemaValueSet.schema.DOI,
