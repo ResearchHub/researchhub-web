@@ -1,42 +1,24 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFlag,
-  faComments,
-  faStar,
-  faCircleCheck,
-  faGrid2,
-} from "@fortawesome/pro-solid-svg-icons";
+import { faComments, faStar, faGrid2 } from "@fortawesome/pro-solid-svg-icons";
 import fetchContributionsAPI, { ApiFilters } from "./api/fetchContributionsAPI";
 import {
-  CommentContributionItem,
   Contribution,
   getContributionUrl,
   parseContribution,
 } from "~/config/types/contribution";
 import { css, StyleSheet } from "aphrodite";
-import { ID, UnifiedDocument } from "~/config/types/root_types";
 import { ReactElement, useState, useEffect } from "react";
 import colors from "~/config/themes/colors";
-import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
-
 import LoadMoreButton from "../LoadMoreButton";
 import ContributionEntry from "./Contribution/ContributionEntry";
-import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 import Link from "next/link";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import HorizontalTabBar, { Tab } from "~/components/HorizontalTabBar";
 import { PaperIcon } from "~/config/themes/icons";
 import { faGlobe, faX } from "@fortawesome/pro-regular-svg-icons";
-
-import BaseModal from "../Modals/BaseModal";
-// import { css, StyleSheet } from "aphrodite";
-// import VerificationForm from "./VerificationForm";
-import { breakpoints } from "~/config/themes/screen";
-import { Hub } from "~/config/types/hub";
 import { useRouter } from "next/router";
-import { getHubs } from "~/components/Hubs/api/fetchHubs";
-import HubSelect from "../Hubs/HubSelect";
+import HubSelectModal from "../Hubs/HubSelectModal";
 
 const getAppliedUrlFiltersForLiveFeed = (router) => {
   const appliedFilters: ApiFilters = {
@@ -58,83 +40,6 @@ const getAppliedUrlFiltersForLiveFeed = (router) => {
 
   return appliedFilters;
 };
-
-const HubSelectModal = ({
-  isModalOpen = true,
-  handleModalClose,
-  handleSelect,
-}) => {
-  const [hubs, setHubs] = useState<Array<Hub>>([]);
-
-  useEffect(() => {
-    (async () => {
-      // @ts-ignore
-      const { hubs, count } = await getHubs({});
-      setHubs(hubs);
-    })();
-  }, []);
-
-  return (
-    <BaseModal
-      offset={"0px"}
-      isOpen={isModalOpen}
-      hideClose={false}
-      title={"Filter by Hub"}
-      closeModal={handleModalClose}
-      zIndex={12}
-      modalStyle={styles1.modalStyle}
-      modalContentStyle={styles1.modalContentStyle}
-    >
-      <div className={css(styles1.formWrapper)}>
-        <HubSelect
-          count={1}
-          hubs={hubs}
-          withPagination={false}
-          maxCardsPerRow={2}
-          handleClick={(hub) => {
-            handleSelect(hub);
-          }}
-        />
-      </div>
-    </BaseModal>
-  );
-};
-
-const styles1 = StyleSheet.create({
-  formWrapper: {
-    width: 540,
-    paddingLeft: 25,
-    paddingRight: 25,
-    marginTop: 25,
-    boxSizing: "border-box",
-    height: "100%",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      width: "100%",
-    },
-    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      width: "90%",
-    },
-  },
-  modalStyle: {
-    width: "540px",
-    maxHeight: 600,
-  },
-  modalTitleStyleOverride: {},
-  modalContentStyle: {
-    position: "relative",
-    minHeight: 560,
-    overflowX: "hidden",
-    padding: "50px 25px ",
-    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      height: "100%",
-    },
-  },
-  prevActionWrapper: {
-    position: "absolute",
-    top: 12,
-    left: 10,
-  },
-});
 
 const tabs: Array<Tab> = [
   {
