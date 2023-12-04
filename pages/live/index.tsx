@@ -11,7 +11,7 @@ import HeadComponent from "~/components/Head";
 
 const Index: NextPage = (props) => {
   return (
-    <div style={{ background: colors.LIGHT_GRAY_BACKGROUND(1.0) }}>
+    <div>
       <HeadComponent
         title={"ResearchHub | Live Activity"}
         description={"Discuss and Discover the latest research on ResearchHub"}

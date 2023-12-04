@@ -38,6 +38,27 @@ import { useRouter } from "next/router";
 import { getHubs } from "~/components/Hubs/api/fetchHubs";
 import HubSelect from "../Hubs/HubSelect";
 
+const getAppliedUrlFiltersForLiveFeed = (router) => {
+  const appliedFilters: ApiFilters = {
+    // Defaults
+    hubId: null,
+    contentType: "all",
+  };
+  const availableContentTypes = tabs.map((t) => t.value);
+
+  const hasContentTypeFilter =
+    router.query?.contentType &&
+    availableContentTypes.includes(router.query.contentType as string);
+  appliedFilters.contentType = hasContentTypeFilter
+    ? (router.query.contentType as string)
+    : "all";
+  appliedFilters.hubId = router.query?.hubId
+    ? (router.query.hubId as string)
+    : null;
+
+  return appliedFilters;
+};
+
 const HubSelectModal = ({
   isModalOpen = true,
   handleModalClose,
@@ -109,7 +130,7 @@ const styles1 = StyleSheet.create({
   },
 });
 
-export const tabs: Array<Tab> = [
+const tabs: Array<Tab> = [
   {
     icon: <FontAwesomeIcon icon={faGlobe} />,
     label: "All",
@@ -161,6 +182,17 @@ export const tabs: Array<Tab> = [
   },
 ];
 
+const getTabsForLiveFeed = (filters: ApiFilters) => {
+  const _tabs = tabs.map((tab) => {
+    return {
+      ...tab,
+      isSelected: tab.value === filters.contentType,
+    };
+  });
+
+  return _tabs;
+};
+
 export default function LiveFeed(): ReactElement<"div"> {
   const router = useRouter();
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
@@ -168,6 +200,8 @@ export default function LiveFeed(): ReactElement<"div"> {
   const [results, setResults] = useState<Array<Contribution>>([]);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const appliedUrlFilters = getAppliedUrlFiltersForLiveFeed(router);
+  const tabs = getTabsForLiveFeed(appliedUrlFilters);
 
   useEffect(() => {
     loadResults();
@@ -180,11 +214,9 @@ export default function LiveFeed(): ReactElement<"div"> {
       setIsLoadingMore(true);
     }
 
-    const appliedFilters = getAppliedUrlFilters();
-
     fetchContributionsAPI({
       pageUrl: nextResultsUrl,
-      filters: appliedFilters,
+      filters: appliedUrlFilters,
       onSuccess: (response: any) => {
         const incomingResults = response.results.map((r) => {
           return parseContribution(r);
@@ -224,27 +256,6 @@ export default function LiveFeed(): ReactElement<"div"> {
       }
     })
     .filter((r) => r !== null);
-
-  const getAppliedUrlFilters = () => {
-    const appliedFilters: ApiFilters = {
-      // Defaults
-      hubId: null,
-      contentType: "all",
-    };
-    const availableContentTypes = tabs.map((t) => t.value);
-
-    const hasContentTypeFilter =
-      router.query?.contentType &&
-      availableContentTypes.includes(router.query.contentType as string);
-    appliedFilters.contentType = hasContentTypeFilter
-      ? (router.query.contentType as string)
-      : "all";
-    appliedFilters.hubId = router.query?.hubId
-      ? (router.query.hubId as string)
-      : null;
-
-    return appliedFilters;
-  };
 
   const resultCards = entries.map((entry, idx) => {
     return (
