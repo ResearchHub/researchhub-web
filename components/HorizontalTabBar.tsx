@@ -38,10 +38,11 @@ const HorizontalTabBar = ({
   onClick,
   containerStyle,
   tabStyle,
-  variant,
+  variant = "underline",
 }: Props) => {
   const tabContainerEl = useRef<HTMLDivElement>(null);
   const [showRightArrow, setShowRightArrow] = useState(false);
+  const [hoveredTab, setHoveredTab] = useState<any>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,8 +73,6 @@ const HorizontalTabBar = ({
       showNewFeatureIndicator,
     } = tab;
     const tabType = href ? "link" : "div";
-
-    const [isHovered, setIsHovered] = useState(false);
 
     const props = {
       key: value,
@@ -227,15 +226,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     columnGap: "8px",
   },
-  underlineVariant: {
-    borderBottom: `solid 3px ${colors.GREY()}`,
-    ":hover": {
-      borderBottom: `solid 3px ${colors.GREY()}`,
-      transition: "all 0.2s ease-in-out",
-    },
-  },
   underlineVariantSelected: {
     borderBottom: "solid 3px",
+    color: colors.NEW_BLUE(),
     borderColor: colors.NEW_BLUE(),
   },
 
