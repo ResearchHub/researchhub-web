@@ -45,13 +45,13 @@ const tabs: Array<Tab> = [
   {
     icon: <FontAwesomeIcon icon={faGlobe} />,
     label: "All",
-    value: "all",
+    value: "ALL",
     isSelected: true,
   },
   {
     icon: <FontAwesomeIcon icon={faComments} />,
     label: "Conversation",
-    value: "conversation",
+    value: "CONVERSATION",
   },
   {
     icon: (
@@ -79,17 +79,17 @@ const tabs: Array<Tab> = [
       />
     ),
     label: "Bounties",
-    value: "bounty",
+    value: "BOUNTY",
   },
   {
     icon: <FontAwesomeIcon icon={faStar} />,
     label: "Peer Reviews",
-    value: "review",
+    value: "REVIEW",
   },
   {
     icon: <PaperIcon height={14} width={14} onClick={undefined} />,
     label: "Articles",
-    value: "article",
+    value: "ARTICLE",
   },
 ];
 

@@ -118,11 +118,12 @@ const routes = (BASE_URL) => {
     INCLUDE_IN_FEED: ({ unifiedDocumentId }) => {
       return `${BASE_URL}researchhub_unified_document/${unifiedDocumentId}/include_in_feed/`;
     },
-    CONTRIBUTIONS: ({ hubId }) => {
+    CONTRIBUTIONS: ({ hubId, contentType }) => {
       return (
         BASE_URL +
         "contribution/latest_contributions/?" +
-        (hubId ? `hubs=${hubId}` : "")
+        (hubId ? `hubs=${hubId}&` : "") +
+        (contentType ? `contribution_type=${contentType}` : "")
       );
     },
     DISMISS_FLAGGED_CONTENT: () => {
