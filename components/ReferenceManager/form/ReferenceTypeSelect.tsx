@@ -16,6 +16,7 @@ type Props = {
   placeholder?: string;
   required?: boolean;
   value?: any;
+  fireOnChangeOnLoad?: boolean;
 };
 
 export default function ReferenceTypeSelect({
@@ -24,6 +25,7 @@ export default function ReferenceTypeSelect({
   required = false,
   placeholder,
   value = "",
+  fireOnChangeOnLoad,
   onChange,
 }: Props): ReactElement {
   const [isFetching, setIsfetching] = useState<boolean>(false);
@@ -36,6 +38,7 @@ export default function ReferenceTypeSelect({
       onSuccess: (result: string[]): void => {
         setReferenceTypes(result);
         setIsfetching(false);
+        fireOnChangeOnLoad && onChange(result[0]);
       },
     });
   }, [setReferenceTypes, setIsfetching]);
