@@ -140,15 +140,14 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               <div
                 className={css(styles.actionWrapper, styles.largeScreenActions)}
               >
-                {isPaper(doc) && (
-                  <ReferenceProjectsUpsertContextProvider>
-                    <SaveToRefManager
-                      contentType={"paper"}
-                      contentId={doc.unifiedDocument.document?.id}
-                      unifiedDocumentId={doc.unifiedDocument.id}
-                    />
-                  </ReferenceProjectsUpsertContextProvider>
-                )}
+                <ReferenceProjectsUpsertContextProvider>
+                  <SaveToRefManager
+                    contentType={"paper"}
+                    doc={doc}
+                    contentId={doc.unifiedDocument.document?.id}
+                    unifiedDocumentId={doc.unifiedDocument.id}
+                  />
+                </ReferenceProjectsUpsertContextProvider>
                 <PermissionNotificationWrapper
                   modalMessage="edit document"
                   permissionKey="UpdatePaper"
@@ -193,15 +192,14 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                     <span>Tip</span>
                   </IconButton>
                 </PermissionNotificationWrapper>
-                {isPaper(doc) && (
-                  <ReferenceProjectsUpsertContextProvider>
-                    <SaveToRefManager
-                      contentType={"paper"}
-                      contentId={doc.unifiedDocument.document?.id}
-                      unifiedDocumentId={doc.unifiedDocument.id}
-                    />
-                  </ReferenceProjectsUpsertContextProvider>
-                )}
+                <ReferenceProjectsUpsertContextProvider>
+                  <SaveToRefManager
+                    contentType={"paper"}
+                    doc={doc}
+                    contentId={doc.unifiedDocument.document?.id}
+                    unifiedDocumentId={doc.unifiedDocument.id}
+                  />
+                </ReferenceProjectsUpsertContextProvider>
                 <DocumentOptions document={doc} metadata={metadata} />
               </div>
             </div>
