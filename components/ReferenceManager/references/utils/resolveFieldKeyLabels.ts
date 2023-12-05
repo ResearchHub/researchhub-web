@@ -34,12 +34,14 @@ export const sortSchemaFieldKeys = (fieldKeys: string[]): string[] => {
   const keySet = new Set(fieldKeys);
   const subResult: string[] = [];
   // logical ordering
+  keySet.has("type") && subResult.push("type");
   keySet.has("title") && subResult.push("title");
   keySet.has("DOI") && subResult.push("DOI");
   keySet.has("author") && subResult.push("author");
   keySet.has("abstract") && subResult.push("abstract");
   keySet.has("publication_title") && subResult.push("publication_title");
   keySet.delete("author");
+  keySet.delete("type");
   keySet.delete("abstract");
   keySet.delete("title");
   keySet.delete("publication_title");
