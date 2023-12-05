@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import { faTimes, faPlus } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { createQuestion } from "./api/createQuestion";
@@ -16,9 +16,7 @@ import dynamic from "next/dynamic";
 import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
 import HubSelect from "../Hubs/HubSelect";
-import { Switch } from "@mui/material";
-import { BountyInput } from "../Bounty/BountyModal";
-
+import BountyInput from "../Bounty/BountyInput";
 const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 
 type FormFields = {
@@ -122,6 +120,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
   };
 
   const handleBountyInputChange = ({ hasError, errorMsg, value }) => {
+    console.log("value", value);
     setBountyOffered(value);
     setBountyError(errorMsg);
   };
@@ -189,32 +188,46 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
       </div>
       <div className={css(styles.researchcoinContainer)}>
         <div
-          className={css(styles.label, styles.rscLabel)}
-          onClick={() => setWithBounty(!withBounty)}
+          style={{
+            display: "flex",
+            marginLeft: "auto",
+            width: "100%",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
-          ResearchCoin Bounty
-          <Switch
-            sx={{
-              "& .MuiSwitch-switchBase": {
-                "&.Mui-checked": {
-                  color: colors.NEW_BLUE(),
-                },
-                "&.Mui-checked + .MuiSwitch-track": {
-                  backgroundColor: colors.NEW_BLUE(),
-                },
-              },
-            }}
-            onChange={(event) => {
-              setWithBounty(event.target.checked);
-            }}
-          />
+          <div>
+            <div className={css(styles.label, styles.rscLabel)}>
+              ResearchCoin Bounty
+            </div>
+            <p style={{ fontSize: 16 }}>
+              Incentivize the community to answer your question by adding RSC.
+            </p>
+          </div>
+          {withBounty ? (
+            <div onClick={() => setWithBounty(false)}>
+              <Button size="small" customButtonStyle={styles.removeBountyBtn}>
+                <FontAwesomeIcon icon={faPlus} style={{ marginRight: 4 }} />
+                Remove Bounty
+              </Button>
+            </div>
+          ) : (
+            <div onClick={() => setWithBounty(true)}>
+              <Button size="small" customButtonStyle={styles.addBountyBtn}>
+                <FontAwesomeIcon icon={faPlus} style={{ marginRight: 4 }} />
+                Add Bounty
+              </Button>
+            </div>
+          )}
         </div>
-        <p style={{ fontSize: 16 }}>
-          Incentivize the community to answer your question by adding RSC.
-        </p>
         {withBounty && (
           <>
-            <div style={{ border: `1px solid rgb(232, 232, 242)` }}>
+            <div
+              style={{
+                border: `1px solid rgb(232, 232, 242)`,
+                borderRadius: "4px",
+              }}
+            >
               <BountyInput handleBountyInputChange={handleBountyInputChange} />
             </div>
           </>
@@ -231,7 +244,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         )}
         <Button
           customButtonStyle={styles.buttonStyle}
-          disabled={isSubmitting}
+          disabled={isSubmitting || (withBounty && bountyError)}
           label="Ask Question"
           type="submit"
         />
@@ -247,6 +260,16 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps)(AskQuestionForm);
 
 const styles = StyleSheet.create({
+  addBountyBtn: {
+    border: `1px solid ${colors.ORANGE_LIGHT2(1.0)}`,
+    color: colors.ORANGE_LIGHT2(1.0),
+    background: "white",
+  },
+  removeBountyBtn: {
+    border: `1px solid ${colors.RED(1.0)}`,
+    color: colors.RED(1.0),
+    background: "white",
+  },
   hubsContainer: {
     marginTop: 10,
     marginBottom: 10,
@@ -260,13 +283,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  researchcoinContainer: {},
+  researchcoinContainer: {
+    marginBottom: 20,
+  },
   rscLabel: {
     cursor: "pointer",
     display: "flex",
     justifyContent: "space-between",
     fontWeight: 500,
-    marginBottom: 10,
+    marginBottom: 6,
     color: "#232038",
   },
   askQuestionForm: {
