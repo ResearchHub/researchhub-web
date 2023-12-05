@@ -61,10 +61,10 @@ export const RIGHT_CLICK_VIDEO_COMMAND: LexicalCommand<MouseEvent> =
 function useSuspenseVideo(src: string) {
   if (!videoCache.has(src)) {
     throw new Promise((resolve) => {
-      const video = new Video();
+      const video = new HTMLVideoElement();
       video.src = src;
-    video.onload = () => {
-       videoCache.add(src);
+      video.onload = () => {
+        videoCache.add(src);
         resolve(null);
       };
     });
