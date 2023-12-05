@@ -43,6 +43,10 @@ export const tabs: Array<Tab> = [
     icon: <FontAwesomeIcon icon={faCircleCheck} />,
     label: "Replicability",
     value: "replicability",
+    // let's show this until 2024 (~30 days since launch)
+    // after that it'll programmatically be hidden.
+    // if you're seeing this and it's 2024, please remove this code.
+    showNewFeatureIndicator: new Date() < new Date("2024-01-01"),
   },
 ];
 

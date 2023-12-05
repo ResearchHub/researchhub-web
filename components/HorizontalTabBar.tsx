@@ -11,6 +11,7 @@ import {
 } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
+import { faFire } from "@fortawesome/pro-solid-svg-icons";
 
 export type Tab = {
   label: string;
@@ -20,6 +21,7 @@ export type Tab = {
   icon?: React.ReactNode;
   selectedIcon?: React.ReactNode;
   pillContent?: React.ReactNode | string;
+  showNewFeatureIndicator?: boolean;
 };
 
 interface Props {
@@ -56,8 +58,16 @@ const HorizontalTabBar = ({
   }, [tabContainerEl]);
 
   const renderTab = (tab: Tab, index) => {
-    const { isSelected, value, label, icon, selectedIcon, pillContent, href } =
-      tab;
+    const {
+      isSelected,
+      value,
+      label,
+      icon,
+      selectedIcon,
+      pillContent,
+      href,
+      showNewFeatureIndicator,
+    } = tab;
     const tabType = href ? "link" : "div";
 
     const props = {
@@ -76,8 +86,16 @@ const HorizontalTabBar = ({
         <div className={css(styles.tabContentWrapper)}>
           {isSelected && selectedIcon ? selectedIcon : icon}
           {label}
-          {pillContent !== undefined && (
+          {!showNewFeatureIndicator && pillContent !== undefined && (
             <div className={css(styles.pillContent)}>{pillContent}</div>
+          )}
+          {showNewFeatureIndicator && (
+            <span className={css(styles.new)}>
+              <span className={css(styles.fireIcon)}>
+                {<FontAwesomeIcon icon={faFire}></FontAwesomeIcon>}
+              </span>
+              <span className={css(styles.newText)}>New</span>
+            </span>
           )}
         </div>
       </_WrapperElement>
@@ -208,6 +226,25 @@ const styles = StyleSheet.create({
     color: colors.NEW_BLUE(),
     borderBottom: "solid 3px",
     borderColor: colors.NEW_BLUE(),
+  },
+
+  // new feature indicator
+  new: {
+    display: "flex",
+    alignItems: "center",
+    background: colors.NEW_BLUE(0.1),
+    borderRadius: "5px",
+    padding: "4px 6px",
+  },
+  newText: {
+    fontWeight: 500,
+    fontSize: 14,
+    color: colors.NEW_BLUE(0.9),
+  },
+  fireIcon: {
+    fontSize: 14,
+    marginRight: 5,
+    color: colors.NEW_BLUE(0.9),
   },
 });
 
