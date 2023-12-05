@@ -13,6 +13,7 @@ interface Props {
   selectedHubs?: Hub[];
   onChange: Function;
   labelStyle?: any;
+  required?: boolean;
   menuPlacement?: "auto" | "top" | "bottom";
 }
 
@@ -80,6 +81,7 @@ const HubSelect = ({
   onChange,
   menuPlacement = "auto",
   labelStyle,
+  required,
 }: Props) => {
   const [suggestedHubs, setSuggestedHubs] = useState<HubSuggestion[]>([]);
 
@@ -108,6 +110,7 @@ const HubSelect = ({
         isMulti
         label="Hubs"
         labelStyle={labelStyle}
+        required={required}
         reactStyles={{}}
         inputStyle={formStyles.inputStyle}
         reactSelect={{ styles: selectDropdownStyles }}

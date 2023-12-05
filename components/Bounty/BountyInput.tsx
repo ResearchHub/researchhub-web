@@ -45,55 +45,72 @@ const BountyInput = ({
   const [offeredAmount, setOfferedAmount] = useState<number>(
     parseFloat(BOUNTY_DEFAULT_AMOUNT + "")
   );
-  const [hasMinRscAlert, setHasMinRscAlert] = useState(false);
-  const [hasMaxRscAlert, setHasMaxRscAlert] = useState(false);
   const [bountyType, setBountyType] = useState<COMMENT_TYPES | null>(null);
   const { rscToUSDDisplay } = useExchangeRate();
 
+  // Validate on mount
   useEffect((): void => {
-    setHasMinRscAlert(
-      currentUserBalance <= MIN_RSC_REQUIRED ||
-        offeredAmount <= MIN_RSC_REQUIRED ||
-        currentUserBalance < offeredAmount
-    );
-  }, [currentUserBalance, offeredAmount]);
+    const { errorMsg, hasMaxRscError, hasMinRscError } = validate({
+      offeredAmount,
+    });
+
+    handleBountyInputChange({
+      hasError: hasMinRscError || hasMaxRscError,
+      errorMsg,
+      value: offeredAmount,
+    });
+  }, [currentUserBalance]);
+
+  const validate = ({
+    offeredAmount,
+  }): {
+    hasMinRscError: boolean;
+    hasMaxRscError: boolean;
+    errorMsg: string;
+  } => {
+    let _errorMsg: any = false;
+    let _hasMinRscError = false;
+    let _hasMaxRscError = false;
+    const _offeredAmount = offeredAmount ? parseInt(offeredAmount) : 0;
+    if (_offeredAmount < MIN_RSC_REQUIRED) {
+      _hasMinRscError = true;
+      _hasMaxRscError = false;
+      _errorMsg = `Minimum bounty must be greater than ${MIN_RSC_REQUIRED} RSC`;
+    } else if (_offeredAmount > MAX_RSC_REQUIRED) {
+      _hasMinRscError = false;
+      _hasMaxRscError = true;
+      _errorMsg = "Bounty amount cannot exceed 1,000,000 RSC";
+    } else if (_offeredAmount > currentUserBalance) {
+      _hasMinRscError = true;
+      _hasMaxRscError = false;
+      _errorMsg = `Your RSC balance is below offered amount of ${numeral(
+        _offeredAmount
+      ).format("0[,]0")}`;
+    } else {
+      _hasMinRscError = false;
+      _hasMaxRscError = false;
+    }
+
+    return {
+      hasMaxRscError: _hasMaxRscError,
+      hasMinRscError: _hasMinRscError,
+      errorMsg: _errorMsg,
+    };
+  };
 
   const _handleBountyInputChange = (event) => {
     const _offeredAmount = event?.target?.value
       ? parseInt(event.target.value)
       : 0;
+    const { errorMsg, hasMaxRscError, hasMinRscError } = validate({
+      offeredAmount: _offeredAmount,
+    });
+
     setOfferedAmount(_offeredAmount);
-    if (_offeredAmount < MIN_RSC_REQUIRED) {
-      setHasMinRscAlert(true);
-      setHasMaxRscAlert(false);
-    } else if (_offeredAmount > MAX_RSC_REQUIRED) {
-      setHasMaxRscAlert(true);
-      setHasMinRscAlert(false);
-    } else {
-      setHasMinRscAlert(false);
-      setHasMaxRscAlert(false);
-    }
-
-    let errorMsg: any = false;
-    if (hasMaxRscAlert) {
-      errorMsg = "Bounty amount cannot exceed 1,000,000 RSC";
-    } else if (hasMinRscAlert && currentUserBalance < _offeredAmount) {
-      errorMsg =
-        currentUserBalance < _offeredAmount
-          ? `Your RSC balance is below offered amount of ${numeral(
-              _offeredAmount
-            ).format("0[,]0")}`
-          : `Minimum bounty must be greater than ${MIN_RSC_REQUIRED} RSC`;
-    } else {
-      errorMsg = false;
-    }
-
-    console.log("error", errorMsg);
-
     handleBountyInputChange({
-      hasError: hasMinRscAlert || hasMaxRscAlert,
+      hasError: hasMinRscError || hasMaxRscError,
       errorMsg,
-      value: event.target.value,
+      value: _offeredAmount,
     });
   };
 

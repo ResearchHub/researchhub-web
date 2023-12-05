@@ -80,6 +80,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
   const onFormSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
     if (Object.values(formErrors).some((el: boolean): boolean => el)) {
+      console.log("formErrors", formErrors);
       setShouldDisplayError(true);
       return;
     } else {
@@ -93,6 +94,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         created_by: user.id,
         document_type: "QUESTION",
         editors: null,
+        amount: withBounty ? bountyOffered : null,
         full_src: mutableFormFields.text,
         hubs: mutableFormFields.hubs.map((hub) => hub.id),
         is_public: true,
@@ -120,7 +122,6 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
   };
 
   const handleBountyInputChange = ({ hasError, errorMsg, value }) => {
-    console.log("value", value);
     setBountyOffered(value);
     setBountyError(errorMsg);
   };
@@ -180,6 +181,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         <HubSelect
           selectedHubs={mutableFormFields.hubs}
           labelStyle={styles.label}
+          required
           onChange={(hubs) => {
             handleOnChangeFields("hubs", hubs);
           }}
