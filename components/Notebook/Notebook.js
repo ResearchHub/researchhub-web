@@ -25,6 +25,13 @@ const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
 });
 
+const LexicalEditor = dynamic(
+  () => import("~/components/Lexical/LexicalEditor"),
+  {
+    ssr: false,
+  }
+);
+
 const Notebook = ({ auth, user, wsResponse }) => {
   const router = useRouter();
   const { orgSlug, noteId } = router.query;
@@ -400,7 +407,21 @@ const Notebook = ({ auth, user, wsResponse }) => {
         titles={titles}
       />
       {currentNote && (
-        <ELNEditor
+        // <ELNEditor
+        // ELNLoading={ELNLoading}
+        // currentNote={currentNote}
+        // currentOrganization={currentOrganization}
+        // handleEditorInput={handleEditorInput}
+        // isOrgMember={_isOrgMember}
+        // notePerms={currentNotePerms?.list || []}
+        // redirectToNote={redirectToNote}
+        // refetchNotePerms={fetchAndSetCurrentNotePermissions}
+        // refetchTemplates={fetchAndSetOrgTemplates}
+        // setELNLoading={setELNLoading}
+        // user={user}
+        // userOrgs={organizations}
+        // />
+        <LexicalEditor
           ELNLoading={ELNLoading}
           currentNote={currentNote}
           currentOrganization={currentOrganization}
