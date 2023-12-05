@@ -1,5 +1,7 @@
 import "./stylesheets/App.css";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import "~/components/Lexical/themes/BasicEditorTheme.css";
+import "~/components/Lexical/themes/EditorComponentsStyles.css";
 import "~/components/CKEditor/CKEditor.css";
 import "~/components/EditorsDashboard/stylesheets/date.css";
 import "~/components/Modals/Stylesheets/Dnd.css";
