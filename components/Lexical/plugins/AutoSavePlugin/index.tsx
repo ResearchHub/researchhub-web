@@ -28,9 +28,7 @@ const saveDocument = async ({
     );
 
     if (noteResponse.ok) {
-   
       const contentParams = {
-        // full_src: editorState.read(() => $getRoot().getTextContent()),
         full_src: JSON.stringify(editorState.toJSON()),
         plain_text: "",
         note: noteId,
