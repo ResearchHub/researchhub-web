@@ -1,4 +1,4 @@
-import { css, StyleSheet } from "aphrodite";
+import { StyleSheet } from "aphrodite";
 
 export const customModalStyle = StyleSheet.create({
   closeButton: {
@@ -11,7 +11,7 @@ export const customModalStyle = StyleSheet.create({
     cursor: "pointer",
   },
   modalStyle: {
-    maxHeight: "400px",
+    // maxHeight: "400px",
     width: "625px",
     "@media only screen and (max-width: 767px)": {
       width: "100%",
@@ -20,6 +20,6 @@ export const customModalStyle = StyleSheet.create({
   modalContentStyle: {
     overflowY: "visible",
     overflow: "visible",
-    padding: "60px 40px"
+    padding: "60px 40px",
   },
 });

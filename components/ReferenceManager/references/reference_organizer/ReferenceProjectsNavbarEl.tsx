@@ -31,7 +31,6 @@ type Props = {
   allowManage: boolean;
   depth: number;
   referenceProject: any;
-  setActiveTab: (tab) => void;
   isOpen: boolean;
   slug: string;
   selectedProjectIds?: ID[];
@@ -50,6 +49,7 @@ export default function ReferenceProjectsNavbarEl({
   isCurrentUserAdmin,
   isOpen,
   isPublic,
+  referenceProject,
   orgSlug,
   projectID,
   projectName,
@@ -65,6 +65,7 @@ export default function ReferenceProjectsNavbarEl({
     setIsDrawerOpen: setIsUploadDrawerOpen,
     setProjectID: setProjectIDRefUploader,
   } = useReferenceUploadDrawerContext();
+
   const {
     setIsModalOpen: setIsProjectUpsertModalOpen,
     setProjectValue: setProjectUpsertValue,
@@ -73,7 +74,7 @@ export default function ReferenceProjectsNavbarEl({
   const [shouldShowOptions, setShouldShowOptions] = useState<boolean>(false);
   const [fileDraggedOver, setFileDraggedOver] = useState<boolean>(false);
 
-  const { rowDropped } = useReferencesTableContext();
+  const { rowDropped, setActiveTab } = useReferencesTableContext();
   const { isRefManagerDisplayedAsDrawer, setIsRefManagerSidebarOpen } =
     navContext();
 
@@ -112,7 +113,10 @@ export default function ReferenceProjectsNavbarEl({
         </div>
       )}
 
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div
+        style={{ display: "flex", alignItems: "center", width: "100%" }}
+        className={"reference-item-inner"}
+      >
         {/* <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} /> */}
         <FontAwesomeIcon
           icon={isOpen ? faAngleDown : faAngleRight}
@@ -160,10 +164,14 @@ export default function ReferenceProjectsNavbarEl({
     </Box>
   );
 
+  const canEdit =
+    referenceProject?.status === "full_access" ||
+    referenceProject?.current_user_is_admin;
+
   return (
     <Box
       onMouseEnter={(): void => {
-        setShouldShowOptions(true);
+        setShouldShowOptions(canEdit);
       }}
       onMouseLeave={(): void => {
         setShouldShowOptions(false);
@@ -208,6 +216,9 @@ export default function ReferenceProjectsNavbarEl({
         <ALink
           href={`/reference-manager/${orgSlug}/${slug}`}
           overrideStyle={styles.linkOverride}
+          onClick={() => {
+            setActiveTab && setActiveTab("all-references");
+          }}
         >
           {projectItemElement}
         </ALink>
@@ -300,7 +311,7 @@ const styles = StyleSheet.create({
     },
   },
   linkOverride: {
-    width: "calc(100% - 20px)",
+    width: "calc(100%)",
   },
   arrowIcon: {
     fontSize: 16,

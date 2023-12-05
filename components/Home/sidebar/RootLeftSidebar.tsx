@@ -10,7 +10,7 @@ import {
 import {
   faMedium,
   faDiscord,
-  faTwitter,
+  faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import { faChartSimple } from "@fortawesome/pro-regular-svg-icons";
 import { faBook } from "@fortawesome/pro-duotone-svg-icons";
@@ -157,13 +157,8 @@ export const getLeftSidebarItemAttrs = ({
       ),
       isActive: pathname.includes("reference-manager"),
       isMinimized,
-      href: "/reference-manager",
-      onClick: (event: SyntheticEvent): void => {
-        if (!isLoggedIn) {
-          event.preventDefault();
-          openLoginModal(true, "Please Sign in with Google to continue.");
-        }
-      },
+      // if user isn't logged in, go to the product page
+      href: isLoggedIn ? "/reference-manager" : "/product/reference-manager",
     },
   ]);
 };
@@ -447,11 +442,11 @@ function RootLeftSidebar({
           <div className={css(styles.footer)}>
             <div className={formattedFooterItemsButtonRow}>
               <ALink
-                href="https://twitter.com/researchhub"
+                href="https://x.com/researchhub"
                 overrideStyle={styles.leftSidebarFooterIcon}
                 target="__blank"
               >
-                {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
+                {<FontAwesomeIcon icon={faXTwitter}></FontAwesomeIcon>}
               </ALink>
               <ALink
                 href="https://discord.com/invite/ZcCYgcnUp5"

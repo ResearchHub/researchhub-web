@@ -199,7 +199,7 @@ export const textLength = ({ quillOps = [] }: { quillOps: Array<any> }) => {
 
 export const imageLength = ({ quillOps = [] }: { quillOps: Array<any> }) => {
   return quillOps.reduce(
-    (length: number, op: any) => length + (op.insert.image ? 1 : 0),
+    (length: number, op: any) => length + (op?.insert?.image ? 1 : 0),
     0
   );
 };

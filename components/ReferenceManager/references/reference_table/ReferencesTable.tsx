@@ -1,4 +1,3 @@
-import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState, useRef } from "react";
 import {
   DataGrid,
@@ -18,16 +17,12 @@ import {
 } from "./utils/formatReferenceRowData";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import {
-  isNullOrUndefined,
   nullthrows,
   emptyFncWithMsg,
   isEmpty,
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
-import { fetchReferenceOrgProjects } from "../reference_organizer/api/fetchReferenceOrgProjects";
-import { updateReferenceCitation } from "../api/updateReferenceCitation";
-import { upsertReferenceProject } from "../reference_organizer/api/upsertReferenceProject";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useReferenceActiveProjectContext } from "../reference_organizer/context/ReferenceActiveProjectContext";
 import { useReferencesTableContext } from "./context/ReferencesTableContext";
@@ -35,17 +30,16 @@ import { useReferenceTabContext } from "../reference_item/context/ReferenceItemD
 import colors from "~/config/themes/colors";
 import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 import DroppableZone from "~/components/DroppableZone";
-import DocumentViewer from "~/components/Document/DocumentViewer";
 import { ID } from "~/config/types/root_types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle, faBookOpen } from "@fortawesome/pro-regular-svg-icons";
+import { faInfoCircle } from "@fortawesome/pro-regular-svg-icons";
 import { IconButton, Tooltip } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Stack from "@mui/material/Stack";
 import OpenWithOutlinedIcon from "@mui/icons-material/OpenWithOutlined";
 import ReferenceItemOptsDropdown from "../reference_item/ReferenceItemOptsDropdown";
-import { faFolderOpen } from "@fortawesome/pro-solid-svg-icons";
 import { useHasTouchCapability } from "~/config/utils/device";
+import { getUrlToUniDoc } from "~/config/utils/routing";
+import { StyleSheet, css } from "aphrodite";
 
 type Props = {
   createdReferences: any[];
@@ -95,7 +89,7 @@ export default function ReferencesTable({
   const [isFetchingReferences, setIsFetchingReferences] =
     useState<boolean>(true);
 
-  const [isViewerOpen, setIsViewerOpen] = useState<boolean>(false);
+  const [showDroppableOverlay, setShowDroppableOverlay] = useState(false);
   const [rowHovered, setRowHovered] = useState<null | ID>(null);
   const { currentOrg } = useOrgs();
   const hasTouchCapability = useHasTouchCapability();
@@ -103,6 +97,7 @@ export default function ReferencesTable({
 
   const router = useRouter();
   const apiRef = useGridApiRef();
+  const dropzoneId = "dropzone";
 
   const openFolder = ({ row, event }) => {
     let url = `/reference-manager/${
@@ -261,15 +256,40 @@ export default function ReferencesTable({
 
   const loadingRows = new Array(4).fill(null).map((_) => formatLoading({}));
 
+  const canEdit =
+    activeProject?.status === "full_access" ||
+    activeProject?.current_user_is_admin;
+
   return (
-    <DroppableZone
-      accept=".pdf"
-      fullWidth={true}
-      handleFileDrop={handleFileDrop}
-      multiple
-      noClick
-    >
-      <div style={{ width: "100%" }}>
+    <div style={{ width: "100%", position: "relative" }}>
+      <div
+        onDragOver={() => {
+          setShowDroppableOverlay(true);
+        }}
+        onDragLeave={() => {
+          setShowDroppableOverlay(false);
+        }}
+        style={{ width: "100%", height: "100%", position: "relative" }}
+        className={css(showDroppableOverlay && styles.onDroppableOverlay)}
+      >
+        {showDroppableOverlay && (
+          <div className={css(styles.droppableOverlay)}>
+            <DroppableZone
+              accept=".pdf,.bib"
+              fullWidth={true}
+              handleFileDrop={(acceptedFiles) => {
+                handleFileDrop(acceptedFiles);
+                setShowDroppableOverlay(false);
+              }}
+              multiple
+              noClick
+              id={dropzoneId}
+            >
+              <div style={{ width: "100%", height: "100%" }}></div>
+            </DroppableZone>
+          </div>
+        )}
+
         <DataGrid
           apiRef={apiRef}
           autoHeight
@@ -287,14 +307,17 @@ export default function ReferencesTable({
           hideFooter
           ref={tableRef}
           className={
-            formattedReferenceRows.length === 0 ? "empty-data-grid" : ""
+            formattedReferenceRows.length === 0
+              ? "empty-data-grid"
+              : "full-data-grid"
           }
           localeText={{
             // @ts-ignore MUI has typed this to be string. But elements seem to work
             noRowsLabel: (
               <UploadFileDragAndDrop
                 children={""}
-                accept={".pdf"}
+                accept={".pdf,.bib"}
+                fileTypeString="PDF or BibTeX files"
                 handleFileDrop={
                   formattedReferenceRows.length === 0
                     ? handleFileDrop
@@ -366,7 +389,41 @@ export default function ReferencesTable({
                               </IconButton>
                             </Tooltip>
                           )}
-                          {!hasTouchCapability && (
+                          {!hasTouchCapability &&
+                            hoveredRow.related_unified_doc && (
+                              <Tooltip title="Open Public Page" placement="top">
+                                <IconButton
+                                  aria-label="Open Public Page"
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    // open page in new tab
+                                    const url = getUrlToUniDoc(
+                                      hoveredRow.related_unified_doc
+                                    );
+                                    window.open(url, "_blank");
+                                  }}
+                                  sx={{
+                                    padding: 1,
+                                    fontSize: "22px",
+                                    "&:hover": {
+                                      background:
+                                        "rgba(25, 118, 210, 0.04) !important",
+                                    },
+                                  }}
+                                >
+                                  <img
+                                    src="/static/beaker-gray.svg"
+                                    width="24px"
+                                    height="24px"
+                                    alt="ResearchHub Icon"
+                                    style={{
+                                      transform: "translateY(-2px)",
+                                    }}
+                                  />
+                                </IconButton>
+                              </Tooltip>
+                            )}
+                          {!hasTouchCapability && canEdit && (
                             <Tooltip title="Edit Metadata" placement="top">
                               <IconButton
                                 aria-label="Edit Metadata"
@@ -401,6 +458,20 @@ export default function ReferencesTable({
                         handleMetadataAction={(event) =>
                           handleMetadataAction({ event, row: hoveredRow })
                         }
+                        handleOpenPublicPage={(event) => {
+                          event.stopPropagation();
+                          if (!hoveredRow || !hoveredRow.related_unified_doc) {
+                            return;
+                          }
+                          // open page in new tab
+                          const url = getUrlToUniDoc(
+                            hoveredRow.related_unified_doc
+                          );
+                          window.open(url, "_blank");
+                        }}
+                        hasPublicPage={Boolean(
+                          hoveredRow && hoveredRow.related_unified_doc
+                        )}
                       />
                     </Stack>
                   </div>
@@ -424,7 +495,9 @@ export default function ReferencesTable({
                   onDrag={() => {
                     setRowDragged(row.row.id);
                   }}
-                  onDrop={() => rowType === "FOLDER" && rowDropped(row.row)}
+                  onDrop={(e) => {
+                    rowType === "FOLDER" && rowDropped(row.row);
+                  }}
                   onMouseEnter={() => {
                     setRowHovered(row.row.id);
                   }}
@@ -466,6 +539,18 @@ export default function ReferencesTable({
           }}
         />
       </div>
-    </DroppableZone>
+    </div>
   );
 }
+
+const styles = StyleSheet.create({
+  droppableOverlay: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    zIndex: 9,
+  },
+  onDroppableOverlay: {
+    backgroundColor: "#F7F7FB",
+  },
+});

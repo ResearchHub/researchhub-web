@@ -4,7 +4,7 @@ import {
   filterNull,
   nullthrows,
 } from "~/config/utils/nullchecks";
-import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { ID } from "~/config/types/root_types";
 import {
   ReactElement,
@@ -26,6 +26,7 @@ import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinnerThird } from "@fortawesome/pro-light-svg-icons";
 import { useReferencesTableContext } from "../reference_table/context/ReferencesTableContext";
+import OrgAvatar from "~/components/Org/OrgAvatar";
 
 const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
@@ -40,7 +41,7 @@ export default function ReferenceProjectsUpsertModal({
   onUpsertSuccess,
   redirectAfterUpsert = true,
 }: ComponentProps): ReactElement {
-  const currentOrg = getCurrentUserCurrentOrg();
+  // const currentOrg = getCurrentUserCurrentOrg();
   const {
     isModalOpen,
     projectValue,
@@ -48,6 +49,7 @@ export default function ReferenceProjectsUpsertModal({
     setProjectValue,
     upsertPurpose,
   } = useReferenceProjectUpsertContext();
+  const { currentOrg } = useOrgs();
 
   const { resetProjectsFetchTime, setActiveProject, flattenCollaborators } =
     useReferenceActiveProjectContext();
@@ -69,28 +71,31 @@ export default function ReferenceProjectsUpsertModal({
   };
 
   const handleSubmit = () => {
-    const { collaborators, isPublic, projectID, projectName } = projectValue;
+    const { collaborators, isPublic, projectID, projectName, status } =
+      projectValue;
 
     setIsLoading(true);
     const formattedPayload = {
+      ...projectValue,
       project: upsertPurpose === "update" ? projectID : undefined,
       parent: upsertPurpose === "create_sub_project" ? projectID : undefined,
-      collaborators: {
-        editors: filterNull(
-          collaborators.map((collaborator): ID => {
-            if (collaborator.role === "EDITOR") {
-              return collaborator.id;
-            }
-          })
-        ),
-        viewers: filterNull(
-          collaborators.map((collaborator): ID => {
-            if (collaborator.role !== "EDITOR") {
-              return collaborator.id;
-            }
-          })
-        ),
-      },
+      status,
+      // collaborators: {
+      //   editors: filterNull(
+      //     collaborators?.map((collaborator): ID => {
+      //       if (collaborator.role === "EDITOR") {
+      //         return collaborator.id;
+      //       }
+      //     })
+      //   ),
+      //   viewers: filterNull(
+      //     collaborators?.map((collaborator): ID => {
+      //       if (collaborator.role !== "EDITOR") {
+      //         return collaborator.id;
+      //       }
+      //     })
+      //   ),
+      // },
       is_public: isPublic,
       organization: currentOrg?.id,
       project_name: nullthrows(
@@ -139,7 +144,32 @@ export default function ReferenceProjectsUpsertModal({
   };
 
   const modalTitle =
-    upsertPurpose === "update" ? "Update folder" : "Create folder";
+    upsertPurpose === "update" ? "Update Folder" : "Create Folder";
+
+  let permissionLabel = "Full Access";
+  let permissionDescription = "Users can add and remove references";
+  switch (projectValue.status) {
+    case "full_access":
+      permissionLabel = "Full Access";
+      permissionDescription = "Users can add and remove references";
+      break;
+    // case "edit":
+    //   permissionLabel = "Can Edit";
+    //   permissionDescription = "Users can edit but not share";
+    //   break;
+    case "view":
+      permissionLabel = "Can View";
+      permissionDescription =
+        "Users can only view but not add or remove references";
+      break;
+    case "no_access":
+      permissionLabel = "No Access";
+      permissionDescription = "Only you have access";
+      break;
+    default:
+      permissionLabel = "Full Access";
+      permissionDescription = "Users can add and remove references";
+  }
 
   return (
     <BaseModal
@@ -163,49 +193,74 @@ export default function ReferenceProjectsUpsertModal({
             required
             value={projectValue.projectName}
           />
+          <Typography
+            color="rgba(36, 31, 58, 1)"
+            fontSize="14px"
+            fontWeight={600}
+            lineHeight="22px"
+            letterSpacing={0}
+            marginBottom={"8px"}
+            sx={{ background: "transparent" }}
+          >
+            {`Access`}
+          </Typography>
           <div
             style={{
               alignItems: "center",
               display: "flex",
               height: "100%",
-              justifyContent: "space-betweent",
               marginBottom: "16px",
               width: "100%",
             }}
           >
-            <Typography
-              color="rgba(36, 31, 58, 1)"
-              fontSize="14px"
-              fontWeight={600}
-              lineHeight="22px"
-              letterSpacing={0}
-              mb="4px"
-              sx={{ background: "transparent" }}
-              width="100%"
-            >
-              {"Folder access "}
-              <span style={{ color: colors.BLUE() }}>{"*"}</span>
-            </Typography>
+            <OrgAvatar org={currentOrg} />
+            <div style={{ marginRight: "auto" }}>
+              <Typography
+                color="rgba(36, 31, 58, 1)"
+                fontSize="14px"
+                fontWeight={500}
+                lineHeight="22px"
+                letterSpacing={0}
+                sx={{ background: "transparent" }}
+                marginLeft="8px"
+              >
+                {`Everyone at ${currentOrg?.name}`}
+              </Typography>
+            </div>
             <DropdownMenu
               menuItemProps={[
                 {
-                  itemLabel: "Everyone in org",
+                  itemLabel: "Full Access",
+                  itemDescription: "Users can add and remove references",
                   onClick: (event: SyntheticEvent): void => {
-                    setProjectValue({ ...projectValue, isPublic: true });
+                    setProjectValue({ ...projectValue, status: "full_access" });
+                  },
+                },
+                // {
+                //   itemLabel: "Can Edit",
+                //   itemDescription: "Users can edit but not share",
+                //   onClick: (event: SyntheticEvent): void => {
+                //     setProjectValue({ ...projectValue, status: "edit" });
+                //   },
+                // },
+                {
+                  itemLabel: "Can View",
+                  itemDescription: "Users can only view but not edit",
+                  onClick: (event: SyntheticEvent): void => {
+                    setProjectValue({ ...projectValue, status: "view" });
                   },
                 },
                 {
-                  itemLabel: "Collaborators only",
+                  itemLabel: "No Access",
+                  itemDescription: "Only you have access",
                   onClick: (event: SyntheticEvent): void => {
-                    setProjectValue({ ...projectValue, isPublic: false });
+                    setProjectValue({ ...projectValue, status: "no_access" });
                   },
                 },
               ]}
               menuLabel={
                 <div style={{ width: "100%", minWidth: 120, padding: 8 }}>
-                  {projectValue.isPublic
-                    ? "Everyone in org"
-                    : "Collaborators only"}
+                  {permissionLabel}
                 </div>
               }
               size={"small"}
@@ -219,9 +274,9 @@ export default function ReferenceProjectsUpsertModal({
             }}
             required
           /> */}
-          <ReferenceCollaboratorsSection
+          {/* <ReferenceCollaboratorsSection
             label={"Invite collaborators (optional)"}
-          />
+          /> */}
           <div
             style={{
               display: "flex",

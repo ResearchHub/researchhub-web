@@ -15,6 +15,8 @@ const CommentEmptyState = ({ forSection, documentType, height }: Args) => {
         <div>{`This ${documentType} has not been reviewed yet.`}</div>
       ) : forSection === "BOUNTY" ? (
         <div>{`This ${documentType} has no bounties.`}</div>
+      ) : forSection === "REPLICABILITY_COMMENT" ? (
+        <div>{`This ${documentType} has no comments on replicability yet.`}</div>
       ) : (
         <div>
           <div className={css(styles.bigText)}>Start the discussion.</div>

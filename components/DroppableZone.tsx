@@ -9,6 +9,7 @@ type Props = {
   multiple?: boolean;
   children?: ReactElement;
   noClick?: boolean;
+  id?: string;
   handleFileDrop: (acceptedFiles: any[]) => void;
 };
 
@@ -19,6 +20,7 @@ function DroppableZone({
   handleFileDrop,
   multiple,
   noClick,
+  id,
 }: Props) {
   const [isFileDragged, setIsFileDragged] = useState(false);
 
@@ -43,7 +45,7 @@ function DroppableZone({
             fullWidth && styles.fullWidth
           )}
         >
-          <div {...getRootProps()} className={css(styles.dropzone)}>
+          <div {...getRootProps()} className={css(styles.dropzone)} id={id}>
             <input {...getInputProps()} required={true} />
             <>{children}</>
           </div>
@@ -55,11 +57,10 @@ function DroppableZone({
 
 const styles = StyleSheet.create({
   dragged: {
-    backgroundColor: "#F7F7FB",
+    backgroundColor: "transparent",
     border: 0,
     outline: `dotted ${colors.BLUE()}`,
-    zIndex: 999999,
-    // border: `1px dashed ${colors.BLUE()}`,
+    zIndex: 9,
     ":hover": {
       borderStyle: "solid",
     },
@@ -81,10 +82,10 @@ const styles = StyleSheet.create({
     width: "calc(100% - 240px)",
     cursor: "default",
     borderRadius: 3,
-    height: "calc(100% - 80px)",
+    height: "100%",
     outline: "none",
-    marginRight: 4,
-    marginBottom: 4,
+    zIndex: 9999,
+    minHeight: 500,
   },
   fullWidth: {
     width: "100%",

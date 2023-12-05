@@ -240,6 +240,7 @@ class WithdrawalModal extends Component {
         this.setState({ userBalance: res.user.balance });
       })
       .catch((err) => {
+        console.log(err);
         //Todo: handle error
       });
   };
@@ -273,12 +274,17 @@ class WithdrawalModal extends Component {
     const { buttonEnabled, amount, transactionFee, userBalance, ethAccount } =
       this.state;
 
-    // if (!buttonEnabled) {
-    //   showMessage({ show: false });
-    //   setMessage("Please agree to the ResearchHub ToS.");
-    //   showMessage({ show: true, error: true });
-    //   return;
-    // }
+    console.log(this.props.auth.user);
+
+    if (this.props.auth.user.probable_spammer) {
+      showMessage({ show: false });
+      setMessage(
+        "We've detected suspicious activity on your account. Please contact us to resolve your issues."
+      );
+      showMessage({ show: true, error: true });
+
+      return;
+    }
 
     if (amount < transactionFee) {
       showMessage({ show: false });
@@ -289,7 +295,7 @@ class WithdrawalModal extends Component {
 
     if (amount > userBalance) {
       showMessage({ show: false });
-      setMessage("Not enough coins in balance");
+      setMessage("Not enough RSC in balance");
       showMessage({ show: true, error: true });
       return;
     }

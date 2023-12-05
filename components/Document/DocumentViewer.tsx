@@ -68,8 +68,8 @@ type Props = {
   isPost?: boolean;
   expandedOnlyMode?: boolean;
   setReferenceItemDatum?: (datum) => void;
-  referenceItemDatum: any;
-  documentViewerClass: any;
+  referenceItemDatum?: any;
+  documentViewerClass?: any;
 };
 
 const DocumentViewer = ({
@@ -330,10 +330,11 @@ const DocumentViewer = ({
     setUploadingPdf(true);
 
     updateReferenceCitationFile({
+      orgId: currentOrg?.id,
       payload: {
         // TODO: calvinhlee - create utily functions to format these
         citation_id: referenceItemDatum.id,
-        organization: currentOrg.id,
+        organization: currentOrg?.id,
         attachment: acceptedFiles[0],
       },
       onError: (e): void => {

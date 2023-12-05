@@ -17,6 +17,7 @@ type Args = {
   allowSelection?: boolean;
   allowManage?: boolean;
   setIsDeleteModalOpen: () => void;
+  setActiveTab?: (tab) => void;
 };
 
 export function renderNestedReferenceProjectsNavbarEl({
@@ -42,6 +43,7 @@ export function renderNestedReferenceProjectsNavbarEl({
   return (
     <div
       style={{ display: "flex", flexDirection: "column" }}
+      className={"ref-project-wrap"}
       key={`ref-project-${referenceProject?.id}-wrap`}
     >
       <ReferenceProjectsNavbarEl

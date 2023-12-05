@@ -43,6 +43,7 @@ const VerificationForm = ({ onStepSelect }: VerificationFormProps) => {
   const [step, setStep] = useState<
     "PROVIDER_STEP" | "PROFILE_STEP" | "SUCCESS_STEP" | "ERROR_STEP"
   >("PROVIDER_STEP");
+  const [error, setError] = useState<any | null>(null);
 
   const [providerDataResponse, setProviderDataResponse] = useState<any | null>(
     null
@@ -65,7 +66,10 @@ const VerificationForm = ({ onStepSelect }: VerificationFormProps) => {
       {step === "PROFILE_STEP" && providerDataResponse && (
         <VerificationFormSelectProfileStep
           onPrevClick={() => setStep("PROVIDER_STEP")}
-          onError={() => setStep("ERROR_STEP")}
+          onError={(error) => {
+            setStep("ERROR_STEP");
+            setError(error);
+          }}
           providerDataResponse={providerDataResponse}
           onVerificationComplete={() => {
             setStep("SUCCESS_STEP");
@@ -74,6 +78,7 @@ const VerificationForm = ({ onStepSelect }: VerificationFormProps) => {
       )}
       {step === "ERROR_STEP" && (
         <VerificationFormErrorStep
+          error={error}
           onPrevClick={() => setStep("PROVIDER_STEP")}
         />
       )}
@@ -134,7 +139,7 @@ const VerificationFormSuccessStep = ({}) => {
   );
 };
 
-const VerificationFormErrorStep = ({ onPrevClick }) => {
+const VerificationFormErrorStep = ({ onPrevClick, error }) => {
   return (
     <div
       style={{
@@ -156,8 +161,18 @@ const VerificationFormErrorStep = ({ onPrevClick }) => {
           lineHeight: "26px",
         }}
       >
-        An error occurred while verifying your authorship. Please try a
-        different verification method.
+        {error?.status === 404 ? (
+          <>
+            Your Orcid profile was not found. Please ensure that your Orcid
+            profile has at least one paper associated with it. Orcid may take a
+            few days to accurately reflect changes.
+          </>
+        ) : (
+          <>
+            An error occurred while verifying your authorship. Please try a
+            different verification method.
+          </>
+        )}
       </div>
       <div
         style={{
@@ -190,8 +205,12 @@ const VerificationFormSelectProviderStep = ({
   );
 
   const isAlreadyVerified = currentUser?.authorProfile?.isVerified;
-  const isLinkedInVerified = Boolean(isAlreadyVerified && currentUser?.authorProfile?.linkedIn?.linkedInId);
-  const isOrcidVerified = Boolean(isAlreadyVerified && currentUser?.authorProfile?.orcid?.orcidId);
+  const isLinkedInVerified = Boolean(
+    isAlreadyVerified && currentUser?.authorProfile?.linkedIn?.linkedInId
+  );
+  const isOrcidVerified = Boolean(
+    isAlreadyVerified && currentUser?.authorProfile?.orcid?.orcidId
+  );
   return (
     <div>
       <div className={css(formStyles.title)}>Become a Verified Author</div>
@@ -265,7 +284,7 @@ const VerificationFormSelectProviderStep = ({
           </OrcidConnectButton>
         </div>
 
-        <div
+        {/* <div
           className={css(
             formStyles.option,
             isLinkedInVerified && formStyles.optionVerified
@@ -324,7 +343,7 @@ const VerificationFormSelectProviderStep = ({
               )}
             </div>
           </LinkedInButton>
-        </div>
+        </div> */}
       </div>
       <div className={css(formStyles.whyVerifyWrapper)}>
         <div className={css(formStyles.whyVerify)}>
@@ -362,7 +381,7 @@ const VerificationFormSelectProviderStep = ({
 
 interface ProfileStepProps {
   onPrevClick: () => void;
-  onError: () => void;
+  onError: (error) => void;
   onVerificationComplete: () => void;
   providerDataResponse: any;
 }
@@ -411,7 +430,7 @@ const VerificationFormSelectProfileStep = ({
       });
       onVerificationComplete();
     } catch (error) {
-      onError();
+      onError(error);
       captureEvent({
         data: {
           openAlexProfileId: selectedProfileIds,
@@ -436,14 +455,19 @@ const VerificationFormSelectProfileStep = ({
   );
 
   useEffect(() => {
-    (async () => {
+    setIsLoadingProfiles(true);
+    const fetchProfiles = async () => {
       try {
-        setIsLoadingProfiles(true);
         const response = await fetchOpenAlexProfiles({
           requestType,
           name: nameRef.current,
           pageNumber: currentPage.num,
         });
+
+        if (response.error) {
+          return onError(response.error);
+        }
+
         const profiles = response.results.map((p) => parseOpenAlexProfile(p));
 
         setProfileOptions(profiles);
@@ -455,11 +479,14 @@ const VerificationFormSelectProfileStep = ({
       } catch (error) {
         // This error is mostly okay and does not need to be captured since it implies
         // the user could not be found in OpenAlex.
-        onError();
+        onError(error);
       } finally {
         setIsLoadingProfiles(false);
       }
-    })();
+    };
+    setTimeout(() => {
+      fetchProfiles();
+    }, 1000);
   }, [currentPage]);
 
   const noResults = !isLoadingProfiles && profileOptions.length === 0;

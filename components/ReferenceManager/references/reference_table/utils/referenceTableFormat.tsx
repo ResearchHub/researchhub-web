@@ -7,6 +7,14 @@ import {
 } from "@fortawesome/pro-regular-svg-icons";
 import dayjs from "dayjs";
 import colors from "~/config/themes/colors";
+import { StyleSheet, css } from "aphrodite";
+
+const styles = StyleSheet.create({
+  titleContainer: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
+});
 
 export const columnsFormat: GridColDef[] = [
   { field: "id", headerName: "", width: 0 },
@@ -18,14 +26,7 @@ export const columnsFormat: GridColDef[] = [
       const idString = cell.row.id.toString();
       if (idString.includes("folder") && cell.value) {
         return (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              whiteSpace: "pre",
-              overflow: "auto",
-            }}
-          >
+          <div className={css(styles.titleContainer)} title={cell.value}>
             <FontAwesomeIcon
               icon={idString.includes("parent") ? faArrowTurnUp : faFolder}
               style={{ marginRight: 13, fontSize: 16, width: 16 }}
@@ -36,14 +37,7 @@ export const columnsFormat: GridColDef[] = [
         );
       } else if (cell.row?.attachment || cell.row?.raw_data?.attachment) {
         return (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              whiteSpace: "pre",
-              overflow: "auto",
-            }}
-          >
+          <div className={css(styles.titleContainer)} title={cell.value}>
             <FontAwesomeIcon
               icon={faFileLines}
               style={{ marginRight: 13, fontSize: 19, width: 16 }}
@@ -55,14 +49,7 @@ export const columnsFormat: GridColDef[] = [
       } else {
         // doesn't have an attachment
         return (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              whiteSpace: "pre",
-              overflow: "auto",
-            }}
-          >
+          <div className={css(styles.titleContainer)} title={cell.value}>
             <FontAwesomeIcon
               icon={faFileExclamation}
               style={{ marginRight: 13, fontSize: 19, width: 16 }}
@@ -109,9 +96,9 @@ export const columnsFormat: GridColDef[] = [
     sortable: false,
     disableColumnMenu: true,
     flex: 1,
-    minWidth: 150,
+    minWidth: 180,
     headerAlign: "right",
-    width: 150,
+    width: 180,
     align: "right",
     renderCell: (cell) => {
       return <div style={{ textAlign: "right" }}>{cell.row.actions}</div>;

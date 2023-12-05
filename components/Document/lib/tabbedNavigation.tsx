@@ -1,11 +1,12 @@
 import { NextRouter } from "next/router";
 import { PaperIcon, QuestionIcon } from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComments, faStar } from "@fortawesome/pro-solid-svg-icons";
+import { faComments, faStar, faCircleCheck } from "@fortawesome/pro-solid-svg-icons";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import { Tab } from "~/components/HorizontalTabBar";
 import colors from "~/config/themes/colors";
 import { DocumentMetadata, GenericDocument, isPaper, isPost } from "./types";
+import predMarketUtils from "~/components/PredictionMarket/lib/util";
 
 export const tabs: Array<Tab> = [
   {
@@ -38,6 +39,11 @@ export const tabs: Array<Tab> = [
     label: "Peer Reviews",
     value: "reviews",
   },
+  {
+    icon: <FontAwesomeIcon icon={faCircleCheck} />,
+    label: "Replicability",
+    value: "replicability",
+  },
 ];
 
 export const getTabs = ({
@@ -55,6 +61,10 @@ export const getTabs = ({
 
   if (isPost(document) && document.postType === "question") {
     _tabs = _tabs.filter((tab) => tab.value !== "reviews" && tab.value !== "conversation");
+  }
+  if (!isPaper(document)) {
+    // we only have replication prediction markets on papers
+    _tabs = _tabs.filter((tab) => tab.value !== "replicability");
   }
 
   _tabs = withDocTypeTab({ tabs: _tabs, document });
@@ -136,6 +146,14 @@ const withPillContent = ({
       finalTabs.push({
         ...tab,
         pillContent: metadata.reviewSummary.count || undefined,
+      });
+    } else if (tab.value === "replicability") {
+      const pcnt = predMarketUtils.computeProbability(
+        metadata.predictionMarket?.votes
+      );
+      finalTabs.push({
+        ...tab,
+        pillContent: pcnt !== undefined ? `${pcnt.toFixed(0)}%` : undefined,
       });
     }
   }

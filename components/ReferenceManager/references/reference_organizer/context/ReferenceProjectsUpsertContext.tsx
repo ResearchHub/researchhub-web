@@ -12,6 +12,9 @@ export type ProjectValue = {
   isPublic: boolean;
   projectID: ID;
   projectName: NullableString;
+  status: string;
+  slug: string;
+  organization: ID;
 };
 export type ReferenceProjectsUpsertContextValueType = {
   isModalOpen: boolean;
@@ -30,6 +33,7 @@ export const DEFAULT_PROJECT_VALUES: ProjectValue = {
   isPublic: true,
   projectID: undefined,
   projectName: undefined,
+  status: "full_access",
 };
 export const DEFAULT_REFERENCE_PROJECT_UPSERT_CONTEXT_VALUE: ReferenceProjectsUpsertContextValueType =
   {

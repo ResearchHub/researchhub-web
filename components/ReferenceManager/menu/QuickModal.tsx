@@ -1,18 +1,13 @@
-import { Box, Button, Modal } from "@mui/material";
+import { Box, Modal } from "@mui/material";
+import { StyleSheet } from "aphrodite";
 import { Fragment, ReactElement, ReactNode } from "react";
+import Button from "~/components/Form/Button";
+import colors from "~/config/themes/colors";
 
 type ButtonConfig = {
-  color?:
-    | "inherit"
-    | "primary"
-    | "secondary"
-    | "success"
-    | "error"
-    | "info"
-    | "warning";
   label?: ReactNode;
   remove?: boolean;
-  size?: "small" | "medium" | "large";
+  size?: "small" | "med" | "large";
   variant?: "text" | "outlined" | "contained";
 };
 
@@ -61,14 +56,15 @@ export default function QuickModal({
             display: "flex",
             justifyContent: "flex-end",
             alignItems: "center",
+            gap: "16px",
           }}
         >
           {!secondaryButtonConfig?.remove && (
             <Button
               variant="text"
-              color="info"
               {...secondaryButtonConfig}
-              sx={{ marginRight: "16px" }}
+              label={null}
+              customLabelStyle={secondaryButtonStyles.button}
               onClick={onSecondaryButtonClick}
             >
               {secondaryButtonConfig?.label ?? "Cancel"}
@@ -77,6 +73,7 @@ export default function QuickModal({
           <Button
             variant="contained"
             {...primaryButtonConfig}
+            label={null}
             onClick={onPrimaryButtonClick}
           >
             {primaryButtonConfig?.label ?? "Confirm"}
@@ -86,3 +83,9 @@ export default function QuickModal({
     </Modal>
   );
 }
+
+const secondaryButtonStyles = StyleSheet.create({
+  button: {
+    color: colors.NEW_BLUE(),
+  },
+});

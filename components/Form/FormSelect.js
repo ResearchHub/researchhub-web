@@ -93,6 +93,7 @@ class FormSelect extends Component {
       selectComponents,
       reactSelect,
       minHeight,
+      menuPlacement,
     } = this.props;
 
     let configuredComponents = {
@@ -217,6 +218,7 @@ class FormSelect extends Component {
           defaultValue={defaultValue}
           isClearable={isClearable}
           isDisabled={isDisabled}
+          menuPlacement={menuPlacement ? menuPlacement : "auto"}
           isMulti={isMulti}
           isSearchable={isSearchable === null ? true : isSearchable}
           maxMenuHeight={maxMenuHeight && maxMenuHeight}

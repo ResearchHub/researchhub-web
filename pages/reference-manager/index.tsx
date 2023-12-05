@@ -48,27 +48,50 @@ export async function getServerSideProps(ctx) {
   //   };
   // }
   const url = generateApiUrl(`organization/0/get_user_organizations`);
-  const orgResponse = await fetchUserOrgs({ url }, authToken);
-  const orgId = cookies["current-org-id"];
-  let org = orgResponse[0];
-  if (orgId) {
-    const foundOrg = orgResponse.find((org) => {
-      return org.id === parseInt(orgId, 10);
-    });
+  let org: any = null;
+  let folderSlug = "my-library";
+  try {
+    const orgResponse = await fetchUserOrgs({ url }, authToken);
+    const orgId = cookies["current-org-id"];
+    folderSlug =
+      cookies["current-org-id"] === cookies["current-folder-org"] &&
+      cookies["current-folder-slug"]
+        ? cookies["current-folder-slug"]
+        : "my-library";
+    org = orgResponse[0];
+    if (orgId) {
+      const foundOrg = orgResponse.find((org) => {
+        return org.id === parseInt(orgId, 10);
+      });
 
-    if (foundOrg) {
-      org = foundOrg;
+      if (foundOrg) {
+        org = foundOrg;
+      }
     }
+  } catch (error) {
+    // it's probably failing because the user is not logged in
+    // so we can just ignore this error
+    // since we will redirect to the login page in `ReferencesRoot`
   }
 
   return {
     props: {
       calloutOpen,
     },
-    redirect: {
-      destination: `/reference-manager/${org.slug}/my-library`,
-      permanent: false,
-    },
+    redirect:
+      org && org.slug
+        ? {
+            destination: `/reference-manager/${org.slug}/${folderSlug}`,
+            permanent: false,
+          }
+        : {
+            // we need a non-null `redirect` prop.
+            // the /login doesn't really do anything, but it's descriptive to the user
+            // since if !org || !org.slug, then the user is not logged in so the login modal will show.
+            // and just /reference-manager will do an infinite redirect loop
+            destination: `/reference-manager/login`,
+            permanent: false,
+          },
   };
 }
 

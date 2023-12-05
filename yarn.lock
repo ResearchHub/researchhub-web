@@ -121,6 +121,15 @@
     "@citation-js/name" "^0.4.2"
     moo "^0.5.1"
 
+"@citation-js/plugin-bibtex@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@citation-js/plugin-bibtex/-/plugin-bibtex-0.7.2.tgz#0b87d86a0a0f9365aa690b7ab9d0383dd5f24605"
+  integrity sha512-QkgPfYbs1dierenxKWzIlPV7450Jci8bvZbcpjO3HQTfTaj15SV2C2AaeKhUotXZmTjm49AJQWHZtrNh+7YWjg==
+  dependencies:
+    "@citation-js/date" "^0.5.0"
+    "@citation-js/name" "^0.4.2"
+    moo "^0.5.1"
+
 "@citation-js/plugin-csl@0.6.8", "@citation-js/plugin-csl@^0.6.8":
   version "0.6.8"
   resolved "https://registry.yarnpkg.com/@citation-js/plugin-csl/-/plugin-csl-0.6.8.tgz#351454848e10113619546dd2eaf1124ac714ec26"
@@ -140,6 +149,14 @@
   version "0.6.8"
   resolved "https://registry.yarnpkg.com/@citation-js/plugin-ris/-/plugin-ris-0.6.8.tgz#a32de155dfa1fd4704b159937364db14a4c44a2c"
   integrity sha512-pDHdOjdrn25riXEwF3XK1fcU2o5/lxV2vbK+CxiFCiV2C2bRtNJRBN/97xIkHBWuqI5mr8ts93b3ijHvp3576Q==
+  dependencies:
+    "@citation-js/date" "^0.5.0"
+    "@citation-js/name" "^0.4.2"
+
+"@citation-js/plugin-ris@^0.7.4":
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/@citation-js/plugin-ris/-/plugin-ris-0.7.4.tgz#b2c013ccc51a4a5f657ab1101bc07b54335a8438"
+  integrity sha512-8tqZPPiQ0XggHZCEvZSF4ssAi14xDzJo16hnE4xIuL/+Xk8WSbohscHaeroZLYpzkIZa+Qzq3o8r0g50H2hXTg==
   dependencies:
     "@citation-js/date" "^0.5.0"
     "@citation-js/name" "^0.4.2"
@@ -3648,7 +3665,7 @@ atomic-sleep@^1.0.0:
   resolved "https://registry.yarnpkg.com/atomic-sleep/-/atomic-sleep-1.0.0.tgz#eb85b77a601fc932cfe432c5acd364a9e2c9075b"
   integrity sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==
 
-attr-accept@^2.0.0:
+attr-accept@^2.0.0, attr-accept@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/attr-accept/-/attr-accept-2.2.2.tgz#646613809660110749e92f2c10833b70968d929b"
   integrity sha512-7prDjvt9HmqiZ0cl5CRjtS84sEyhsHP2coDkaZKRKVfCDo9s7iw7ChVmar78Gu9pC4SoR/28wFu/G5JJhTnqEg==
@@ -6053,6 +6070,13 @@ file-selector@^0.1.12:
   integrity sha512-kCWw3+Aai8Uox+5tHCNgMFaUdgidxvMnLWO6fM5sZ0hA2wlHP5/DHGF0ECe84BiB95qdJbKNEJhWKVDvMN+JDQ==
   dependencies:
     tslib "^2.0.1"
+
+file-selector@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/file-selector/-/file-selector-0.6.0.tgz#fa0a8d9007b829504db4d07dd4de0310b65287dc"
+  integrity sha512-QlZ5yJC0VxHxQQsQhXvBaC7VRJ2uaxTf+Tfpu4Z/OcVQJVpZO+DGU0rkoVW5ce2SccxugvpBJoMvUs59iILYdw==
+  dependencies:
+    tslib "^2.4.0"
 
 file-uri-to-path@1.0.0:
   version "1.0.0"
@@ -9404,7 +9428,7 @@ react-dom@^18.2.0:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
 
-react-dropzone@^10.1.0, react-dropzone@^10.1.9:
+react-dropzone@^10.1.0:
   version "10.2.2"
   resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-10.2.2.tgz#67b4db7459589a42c3b891a82eaf9ade7650b815"
   integrity sha512-U5EKckXVt6IrEyhMMsgmHQiWTGLudhajPPG77KFSvgsMqNEHSyGpqWvOMc5+DhEah/vH4E1n+J5weBNLd5VtyA==
@@ -9419,6 +9443,15 @@ react-error-boundary@^3.1.4:
   integrity sha512-uM9uPzZJTF6wRQORmSrvOIgt4lJ9MC1sNgEOj2XGsDTRE4kmpWxg7ENK9EWNKJRMAOY9z0MuF4yIfl6gp4sotA==
   dependencies:
     "@babel/runtime" "^7.12.5"
+
+react-dropzone@^14.2.3:
+  version "14.2.3"
+  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-14.2.3.tgz#0acab68308fda2d54d1273a1e626264e13d4e84b"
+  integrity sha512-O3om8I+PkFKbxCukfIR3QAGftYXDZfOE2N1mr/7qebQJHs7U+/RSL/9xomJNpRg9kM5h9soQSdf0Gc7OHF5Fug==
+  dependencies:
+    attr-accept "^2.2.2"
+    file-selector "^0.6.0"
+    prop-types "^15.8.1"
 
 react-ga@^2.7.0:
   version "2.7.0"

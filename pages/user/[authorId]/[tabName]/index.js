@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faFacebookF,
-  faTwitter,
+  faXTwitter,
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
 import {
@@ -75,6 +75,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { captureEvent } from "~/config/utils/events";
 import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
+import UserStateBanner from "~/components/Banner/UserStateBanner";
 
 const AUTHOR_USER_STATUS = {
   EXISTS: "EXISTS",
@@ -88,7 +89,7 @@ const SECTIONS = {
   description: "description",
   facebook: "facebook",
   linkedin: "linkedin",
-  twitter: "twitter",
+  twitter: "x / twitter",
   picture: "picture",
 };
 
@@ -104,7 +105,7 @@ function AuthorPage(props) {
   // User External Links
   const [editFacebook, setEditFacebook] = useState(false);
   const [editLinkedin, setEditLinkedin] = useState(false);
-  const [editTwitter, setEditTwitter] = useState(false);
+  const [editXTwitter, setEditXTwitter] = useState(false);
 
   // User Profile Update
   const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
@@ -144,7 +145,7 @@ function AuthorPage(props) {
 
   const facebookRef = useRef();
   const linkedinRef = useRef();
-  const twitterRef = useRef();
+  const xTwitterRef = useRef();
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
@@ -189,6 +190,11 @@ function AuthorPage(props) {
           href: "authored-papers",
           label: "Authored Papers",
           value: "authored-papers",
+        },
+        {
+          href: "replication-votes",
+          label: "Replication Votes",
+          value: "replication-votes",
         },
       ];
 
@@ -336,8 +342,8 @@ function AuthorPage(props) {
     if (facebookRef.current && !facebookRef.current.contains(e.target)) {
       setEditFacebook(false);
     }
-    if (twitterRef.current && !twitterRef.current.contains(e.target)) {
-      setEditTwitter(false);
+    if (xTwitterRef.current && !xTwitterRef.current.contains(e.target)) {
+      setEditXTwitter(false);
     }
     if (linkedinRef.current && !linkedinRef.current.contains(e.target)) {
       setEditLinkedin(false);
@@ -424,6 +430,18 @@ function AuthorPage(props) {
           isFetchingAuthor={fetching}
         />
       </div>
+      <div
+        className={css(
+          tabName === "replication-votes" ? styles.reveal : styles.hidden
+        )}
+      >
+        <AuthorActivityFeed
+          isVisible={tabName === "replication-votes"}
+          author={author}
+          contributionType="replication_vote"
+          isFetchingAuthor={fetching}
+        />
+      </div>
       {allowEdit && (
         <div className={css(tabName === "rsc" ? styles.reveal : styles.hidden)}>
           <UserTransactions fetching={fetching} />
@@ -485,7 +503,7 @@ function AuthorPage(props) {
 
     setEditFacebook(false);
     setEditLinkedin(false);
-    setEditTwitter(false);
+    setEditXTwitter(false);
 
     await dispatch(
       AuthorActions.saveAuthorChanges({ changes, authorId: author.id })
@@ -694,13 +712,13 @@ function AuthorPage(props) {
     },
     {
       link: safeGuardURL(author.twitter),
-      icon: <FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>,
-      nodeRef: twitterRef,
-      dataTip: "Set Twitter Profile",
-      onClick: () => setEditTwitter(true),
-      renderDropdown: () => editTwitter && renderSocialEdit(SECTIONS.twitter),
-      customStyles: styles.twitter,
-      isEditing: editTwitter,
+      icon: <FontAwesomeIcon icon={faXTwitter}></FontAwesomeIcon>,
+      nodeRef: xTwitterRef,
+      dataTip: "Set X / Twitter Profile",
+      onClick: () => setEditXTwitter(true),
+      renderDropdown: () => editXTwitter && renderSocialEdit(SECTIONS.twitter),
+      customStyles: styles.xTwitter,
+      isEditing: editXTwitter,
     },
     {
       link: safeGuardURL(author.facebook),
@@ -956,6 +974,12 @@ function AuthorPage(props) {
       vocab="https://schema.org/"
       typeof="Person"
     >
+      {author?.suspended_status && (
+        <UserStateBanner
+          probable_spammer={author.suspended_status?.probable_spammer}
+          is_suspended={author.suspended_status?.is_suspended}
+        />
+      )}
       <Head
         title={`${name} on ResearchHub`}
         description={`View contributions by ${name} on ResearchHub`}
@@ -1438,8 +1462,8 @@ const styles = StyleSheet.create({
   linkedin: {
     background: "#0077B5",
   },
-  twitter: {
-    background: "#38A1F3",
+  xTwitter: {
+    background: "black",
   },
   facebook: {
     background: "#3B5998",

@@ -166,9 +166,13 @@ const MyApp = ({
   };
 
   const withSidebar =
-    router.pathname !== "/viewer" && router.pathname !== "/linkedin-login";
+    router.pathname !== "/viewer" &&
+    router.pathname !== "/linkedin-login" &&
+    !router.pathname.startsWith("/product");
   const withNavbar =
-    router.pathname !== "/viewer" && router.pathname !== "/linkedin-login";
+    router.pathname !== "/viewer" &&
+    router.pathname !== "/linkedin-login" &&
+    !router.pathname.startsWith("/product");
 
   return (
     <Provider store={store}>

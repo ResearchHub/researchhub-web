@@ -480,3 +480,10 @@ input[type="number"] {
 .rh-post video {
   width: 100%;
 }
+
+/* horizontal line */
+hr {
+  border: 0;
+  height: 1px;
+  background: #e5e7eb;
+}

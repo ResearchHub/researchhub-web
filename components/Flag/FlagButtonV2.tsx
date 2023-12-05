@@ -13,6 +13,7 @@ import ResearchHubRadioChoices, {
 import BaseModal from "../Modals/BaseModal";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
+import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 
 type Props = {
   buttonText?: string;
@@ -90,28 +91,26 @@ function FlagButtonV2({
 
   return (
     <Fragment>
-      {children ? (
-        <div
-          style={{ width: "100%" }}
-          onClick={(event): void => {
-            setIsModalOpen(true);
-          }}
-        >
-          {children}
-        </div>
-      ) : (
-        <div
-          onClick={(event): void => {
-            setIsModalOpen(true);
-          }}
-          className={css(styles.flagIcon, flagIconOverride)}
-        >
-          {iconOverride || <FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
-          {buttonText && (
-            <span className={css(buttonTextStyle)}>{buttonText}</span>
-          )}
-        </div>
-      )}
+      <PermissionNotificationWrapper
+        modalMessage="edit document"
+        onClick={() => setIsModalOpen(true)}
+        permissionKey="UpdatePaper"
+        loginRequired={true}
+        hideRipples={true}
+        styling={customModalStyle.permissionWrapper}
+      >
+        {children ? (
+          <div style={{ width: "100%" }}>{children}</div>
+        ) : (
+          <div className={css(styles.flagIcon, flagIconOverride)}>
+            {iconOverride || <FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
+            {buttonText && (
+              <span className={css(buttonTextStyle)}>{buttonText}</span>
+            )}
+          </div>
+        )}
+      </PermissionNotificationWrapper>
+
       <BaseModal
         children={
           <div className={css(customModalStyle.modalBody)}>
@@ -156,6 +155,9 @@ function FlagButtonV2({
 }
 
 const customModalStyle = StyleSheet.create({
+  permissionWrapper: {
+    width: "100%",
+  },
   closeButton: {
     height: 12,
     width: 12,

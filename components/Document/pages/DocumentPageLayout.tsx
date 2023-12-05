@@ -57,11 +57,7 @@ const DocumentPageLayout = ({
 
   const pdfUrl = document.formats.find((f) => f.type === "pdf")?.url;
   return (
-    <div
-      className={css(
-        styles.pageWrapper
-      )}
-    >
+    <div className={css(styles.pageWrapper)}>
       <HeadComponent {...openGraphData.meta} graph={openGraphData.graph}>
         <meta
           name="viewport"

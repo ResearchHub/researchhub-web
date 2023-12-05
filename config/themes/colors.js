@@ -1,5 +1,6 @@
 const colors = {
   BLACK: (opacity = 1) => `rgba(36, 31, 58, ${opacity})`,
+  WHITE: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
   BLACK_TEXT: (opacity = 1) => `rgba(64, 64, 64, ${opacity})`,
   BLUE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`,
   DARK_GREEN: (opacity = 1) => `rgba(61, 143, 88, ${opacity})`,
@@ -13,6 +14,7 @@ const colors = {
   ERROR_BACKGROUND: (opacity = 1) => `rgba(255, 83, 83, ${opacity})`,
   GREEN: (opacity = 1) => `rgba(100, 196, 143, ${opacity})`,
   GREEN: (opacity = 1) => `rgba(30, 207, 49, ${opacity})`,
+  PASTEL_GREEN: (opacity = 1) => `rgba(115, 205, 158, ${opacity})`,
   GREY_BORDER: "#EBEBEB",
   GREY_ICY_BLUE_HUE: "rgba(249, 249, 252, 1)",
   GREY_LINE: (opacity = 1) => `rgba(232, 232, 239, ${opacity})`,
@@ -49,6 +51,7 @@ const colors = {
   PURPLE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`,
   RED: (opacity = 1) => `rgba(255, 45, 45, ${opacity})`,
   RED_DARK: (opacity = 1) => `rgba(219, 57, 76, ${opacity})`,
+  PASTEL_RED: (opacity = 1) => `rgba(255, 118, 118, ${opacity})`,
   STANDARD_BOX_SHADOW: "rgba(185, 185, 185, 0.25)",
   TEXT_DARKER_GREY: "#241F3A",
   TEXT_GREY: (opacity = 1) => `rgba(128, 126, 134, ${opacity})`,

@@ -11,6 +11,9 @@ import {
   faTrashCan,
   faEllipsis,
   faTimes,
+  faPencilAlt,
+  faPencilSquare,
+  faPenToSquare,
 } from "@fortawesome/pro-light-svg-icons";
 
 import {
@@ -51,7 +54,6 @@ import QuickModal from "../menu/QuickModal";
 import ReactTooltip from "react-tooltip";
 import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
 import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
-import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 import ReferencesTable, { PreloadRow } from "./reference_table/ReferencesTable";
 import withWebSocket from "~/components/withWebSocket";
 import FormInput from "~/components/Form/FormInput";
@@ -68,6 +70,12 @@ import RefManagerCallouts from "../onboarding/RefManagerCallouts";
 import { storeToCookie } from "~/config/utils/storeToCookie";
 import DocumentViewer from "~/components/Document/DocumentViewer";
 import ReferenceImportLibraryModal from "./reference_import_library_modal/ReferenceImportLibraryModal";
+import ExportReferencesModal from "./reference_bibliography/ExportReferencesModal";
+import {
+  downloadBibliography,
+  formatBibliography,
+} from "./reference_bibliography/export";
+import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -118,7 +126,9 @@ function ReferencesContainer({
   const [isOrgModalOpen, setIsOrgModalOpen] = useState<boolean>(false);
   const [selectedRows, setSelectedRows] = useState<GridRowId[]>([]);
   const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
-  const [isImportLibModalOpen, setIsImportLibModalOpen] = useState<boolean>(false);
+  const [droppedBibTeXFiles, setDroppedBibTeXFiles] = useState<File[]>([]);
+  const [isImportLibModalOpen, setIsImportLibModalOpen] =
+    useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [calloutIsOpen, setCalloutIsOpen] = useState<boolean>(
     calloutOpen === undefined || calloutOpen === null
@@ -154,7 +164,53 @@ function ReferencesContainer({
     );
   }, [calloutOpen]);
 
+  const canEdit =
+    activeProject?.status === "full_access" ||
+    activeProject?.current_user_is_admin;
+
+  const onGenericFileDrop = (acceptedFiles: File[] | any[]): void => {
+    if (acceptedFiles.length < 1) {
+      return;
+    }
+
+    // if they're PDFs, call `onPDFFileDrop`
+    const isPDF = acceptedFiles.some(
+      (file) =>
+        file.type === "application/pdf" ||
+        file.type === "application/x-pdf" ||
+        file.name.endsWith(".pdf")
+    );
+    if (isPDF) {
+      onPDFFileDrop(acceptedFiles);
+      return;
+    }
+
+    // otherwise if there's .bib, open the import modal
+    const isBib = acceptedFiles.some((file) => file.name.endsWith(".bib"));
+    if (isBib) {
+      const bibFiles = acceptedFiles.filter((file) =>
+        file.name.endsWith(".bib")
+      );
+      setDroppedBibTeXFiles(bibFiles);
+      setIsImportLibModalOpen(true);
+    }
+  };
+
   const onPDFFileDrop = (acceptedFiles: File[] | any[]): void => {
+    if (!canEdit) {
+      toast(
+        <div style={{ fontSize: 16, textAlign: "left" }}>
+          You are not allowed to add references in this folder.
+        </div>,
+        {
+          position: "top-center",
+          autoClose: 5000,
+          progressStyle: { background: colors.NEW_BLUE() },
+          hideProgressBar: false,
+        }
+      );
+      return null;
+    }
     const preload: Array<PreloadRow> = [];
     setLoading(true);
     acceptedFiles.map(() => {
@@ -177,6 +233,18 @@ function ReferencesContainer({
       },
       orgID: nullthrows(currentOrg).id,
     });
+  };
+
+  /**
+   * Format and download the references into a file
+   */
+  const onExportReferences = (format: "BibTeX" | "RIS"): void => {
+    const selected = referenceTableRowData.filter((row) =>
+      selectedRows.includes(row.id!)
+    );
+    const formatted = formatBibliography(selected, format);
+
+    downloadBibliography(formatted, format);
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -447,6 +515,22 @@ function ReferencesContainer({
                     </div>
                   );
                 })}
+                {activeProject?.parent_names?.names &&
+                  (activeProject.status === "full_access" ||
+                    activeProject?.current_user_is_admin) && (
+                    <Button
+                      variant="outlined"
+                      fontSize="small"
+                      size="small"
+                      customButtonStyle={styles.shareButton}
+                      onClick={onUpdateFolderClick}
+                    >
+                      <FontAwesomeIcon icon={faPenToSquare} />
+                      {/* <Typography variant="h6" fontSize={"16px"}>
+                  {"Update folder"}
+                </Typography> */}
+                    </Button>
+                  )}
               </Box>
             ) : (
               "My Library"
@@ -466,6 +550,7 @@ function ReferencesContainer({
           {/* Modal for importing reference library */}
           <ReferenceImportLibraryModal
             isOpen={isImportLibModalOpen}
+            droppedBibTeXFiles={droppedBibTeXFiles}
             onClose={({ success }) => {
               setIsImportLibModalOpen(false);
               if (success) {
@@ -490,44 +575,6 @@ function ReferencesContainer({
               }
             }}
           />
-
-          <div
-            style={{
-              marginLeft: "auto",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            {activeProject?.flattenedCollaborators && (
-              <AuthorFacePile
-                horizontal
-                margin={-10}
-                imgSize={40}
-                authorProfiles={activeProject?.flattenedCollaborators.map(
-                  (collaborator) => {
-                    collaborator.authorProfile.user = collaborator;
-                    return collaborator.authorProfile;
-                  }
-                )}
-              />
-            )}
-            {/* TODO: Temporarily commenting until we time to implement folder permissions */}
-            {/* {!isOnOrgTab && (
-                  <Button
-                    variant="outlined"
-                    fontSize="small"
-                    size="small"
-                    customButtonStyle={styles.shareButton}
-                    onClick={
-                      onUpdateFolderClick
-                    }
-                  >
-                    <Typography variant="h6" fontSize={"16px"}>
-                      {"Update folder"}
-                    </Typography>
-                  </Button>
-                )} */}
-          </div>
         </div>
 
         <Box
@@ -548,182 +595,239 @@ function ReferencesContainer({
                 ...(isSearchInputFullWidth && { flexWrap: "wrap" }),
               }}
             >
-              <DropdownMenu
-                menuItemProps={[
-                  {
-                    itemLabel: "DOI or URL",
-                    onClick: (): void => {
-                      setProjectIDForUploadDrawer(
-                        activeProject?.projectID ?? null
-                      );
-                      setIsRefUploadDrawerOpen(true);
-                    },
-                  },
-                  {
-                    itemLabel: "Upload PDF(s)",
-                    onClick: (): void =>
-                      // @ts-ignore unnecessary never handling
-                      nullthrows(inputRef?.current).click(),
-                  },
-                  {
-                    itemLabel: "Import Library",
-                    subMenuItems: [
+              {canEdit && (
+                <>
+                  <DropdownMenu
+                    menuItemProps={[
                       {
-                        itemLabel: "BibTeX (.bib)",
+                        itemLabel: "DOI or URL",
                         onClick: (): void => {
-                          setIsImportLibModalOpen(true);
+                          setProjectIDForUploadDrawer(
+                            activeProject?.projectID ?? null
+                          );
+                          setIsRefUploadDrawerOpen(true);
                         },
                       },
-                    ],
-                  },
-                ]}
-                menuLabel={
+                      {
+                        itemLabel: "Upload PDF(s)",
+                        onClick: (): void =>
+                          // @ts-ignore unnecessary never handling
+                          nullthrows(inputRef?.current).click(),
+                      },
+                      {
+                        itemLabel: "Import Library",
+                        subMenuItems: [
+                          {
+                            itemLabel: "BibTeX (.bib)",
+                            onClick: (): void => {
+                              setIsImportLibModalOpen(true);
+                            },
+                          },
+                        ],
+                      },
+                    ]}
+                    menuLabel={
+                      <Button
+                        variant="contained"
+                        size="med"
+                        customButtonStyle={styles.button}
+                      >
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <FontAwesomeIcon
+                            icon={faPlus}
+                            color="#fff"
+                            fontSize="18px"
+                            style={{ marginRight: 8 }}
+                          />
+                          {"Add References"}
+                        </div>
+                      </Button>
+                    }
+                    size={"small"}
+                  />
                   <Button
-                    variant="contained"
+                    variant="outlined"
                     size="med"
-                    customButtonStyle={styles.button}
+                    customButtonStyle={[styles.button, styles.secondary]}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setProjectUpsertPurpose("create_sub_project");
+                      setProjectUpsertValue({
+                        ...DEFAULT_PROJECT_VALUES,
+                        projectID: activeProject?.projectID,
+                      });
+                      setIsProjectUpsertModalOpen(true);
+                    }}
                   >
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <FontAwesomeIcon
-                        icon={faPlus}
-                        color="#fff"
+                        icon={faFolderPlus}
                         fontSize="18px"
                         style={{ marginRight: 8 }}
                       />
-                      {"Add references"}
+                      Create Folder
                     </div>
                   </Button>
-                }
-                size={"small"}
-              />
-
-              <Button
-                variant="outlined"
-                size="med"
-                customButtonStyle={[styles.button, styles.secondary]}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setProjectUpsertPurpose("create_sub_project");
-                  setProjectUpsertValue({
-                    ...DEFAULT_PROJECT_VALUES,
-                    projectID: activeProject?.projectID,
-                  });
-                  setIsProjectUpsertModalOpen(true);
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <FontAwesomeIcon
-                    icon={faFolderPlus}
-                    fontSize="18px"
-                    style={{ marginRight: 8 }}
-                  />
-                  Create folder
-                </div>
-              </Button>
-              {selectedRows.length > 0 && (
-                <>
-                  <div className={css(styles.divider)}> </div>
-                  <Box sx={{ display: { xs: "none", md: "block" } }}>
-                    <Button
-                      variant="outlined"
-                      size="med"
-                      customButtonStyle={[styles.button, styles.secondary]}
-                      onClick={() => setIsBibModalOpen(true)}
-                    >
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <FontAwesomeIcon
-                          icon={faFileExport}
-                          fontSize="18px"
-                          style={{ marginRight: 8 }}
-                        />
-                        Export
-                      </div>
-                    </Button>
-                  </Box>
-                  <Box sx={{ display: { xs: "none", md: "block" } }}>
-                    <Button
-                      variant="outlined"
-                      size="med"
-                      customButtonStyle={[styles.button, styles.secondary]}
-                      onClick={(event) => setIsRemoveRefModalOpen(true)}
-                    >
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <FontAwesomeIcon
-                          icon={faTrashCan}
-                          fontSize="18px"
-                          style={{ marginRight: 8 }}
-                        />
-                        Delete
-                      </div>
-                    </Button>
-                  </Box>
-
-                  <Box sx={{ display: { xs: "block", md: "none" } }}>
-                    <DropdownMenu
-                      menuItemProps={[
-                        {
-                          itemLabel: (
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                              }}
+                  {selectedRows.length > 0 && (
+                    <>
+                      <div className={css(styles.divider)}> </div>
+                      <Box sx={{ display: { xs: "none", md: "block" } }}>
+                        <DropdownMenu
+                          menuItemProps={[
+                            {
+                              itemLabel: "Bibliography (APA)",
+                              onClick: (): void => {
+                                setIsBibModalOpen(true);
+                              },
+                            },
+                            {
+                              itemLabel: "BibTeX (.bib)",
+                              onClick: (): void => {
+                                onExportReferences("BibTeX");
+                              },
+                            },
+                            {
+                              itemLabel: "RIS (.ris)",
+                              onClick: (): void => {
+                                onExportReferences("RIS");
+                              },
+                            },
+                          ]}
+                          menuLabel={
+                            <Button
+                              variant="outlined"
+                              size="med"
+                              customButtonStyle={[
+                                styles.button,
+                                styles.secondary,
+                              ]}
                             >
-                              <FontAwesomeIcon
-                                icon={faFileExport}
-                                fontSize="18px"
-                                style={{ marginRight: 8 }}
-                              />
-                              Export
-                            </div>
-                          ),
-                          onClick: (): void => {
-                            setIsBibModalOpen(true);
-                          },
-                        },
-                        {
-                          itemLabel: (
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                              }}
-                            >
-                              <FontAwesomeIcon
-                                icon={faTrashCan}
-                                fontSize="18px"
-                                style={{ marginRight: 8 }}
-                              />
-                              Delete
-                            </div>
-                          ),
-                          onClick: (): void => {
-                            setIsRemoveRefModalOpen(true);
-                          },
-                        },
-                      ]}
-                      menuLabel={
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faFileExport}
+                                  fontSize="18px"
+                                  style={{ marginRight: 8 }}
+                                />
+                                Export
+                              </div>
+                            </Button>
+                          }
+                          size={"small"}
+                        />
+                      </Box>
+                      <Box sx={{ display: { xs: "none", md: "block" } }}>
                         <Button
                           variant="outlined"
                           size="med"
                           customButtonStyle={[styles.button, styles.secondary]}
+                          onClick={(event) => setIsRemoveRefModalOpen(true)}
                         >
                           <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                            }}
+                            style={{ display: "flex", alignItems: "center" }}
                           >
                             <FontAwesomeIcon
-                              icon={faEllipsis}
-                              fontSize="28px"
+                              icon={faTrashCan}
+                              fontSize="18px"
+                              style={{ marginRight: 8 }}
                             />
+                            Delete
                           </div>
                         </Button>
-                      }
-                      size={"small"}
-                    />
-                  </Box>
+                      </Box>
+
+                      <Box sx={{ display: { xs: "block", md: "none" } }}>
+                        <DropdownMenu
+                          menuItemProps={[
+                            {
+                              itemLabel: (
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faFileExport}
+                                    fontSize="18px"
+                                    style={{ marginRight: 8 }}
+                                  />
+                                  Export
+                                </div>
+                              ),
+                              subMenuItems: [
+                                {
+                                  itemLabel: "Bibliography (APA)",
+                                  onClick: (): void => {
+                                    setIsBibModalOpen(true);
+                                  },
+                                },
+                                {
+                                  itemLabel: "BibTeX (.bib)",
+                                  onClick: (): void => {
+                                    onExportReferences("BibTeX");
+                                  },
+                                },
+                                {
+                                  itemLabel: "RIS (.ris)",
+                                  onClick: (): void => {
+                                    onExportReferences("RIS");
+                                  },
+                                },
+                              ],
+                            },
+                            {
+                              itemLabel: (
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faTrashCan}
+                                    fontSize="18px"
+                                    style={{ marginRight: 8 }}
+                                  />
+                                  Delete
+                                </div>
+                              ),
+                              onClick: (): void => {
+                                setIsRemoveRefModalOpen(true);
+                              },
+                            },
+                          ]}
+                          menuLabel={
+                            <Button
+                              variant="outlined"
+                              size="med"
+                              customButtonStyle={[
+                                styles.button,
+                                styles.secondary,
+                              ]}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faEllipsis}
+                                  fontSize="28px"
+                                />
+                              </div>
+                            </Button>
+                          }
+                          size={"small"}
+                        />
+                      </Box>
+                    </>
+                  )}
                 </>
               )}
 
@@ -746,7 +850,7 @@ function ReferencesContainer({
             selectedRows={selectedRows}
             createdReferences={createdReferences}
             rowSelectionModel={selectedRows}
-            handleFileDrop={onPDFFileDrop}
+            handleFileDrop={onGenericFileDrop}
             handleClearSelection={handleClearSelection}
             handleRowSelection={handleRowSelection}
             handleDelete={(refId: GridRowId) => {
@@ -951,7 +1055,6 @@ function ReferencesContainer({
             renderReferencesContainer()
           )}
         </Box>
-        {/* </DroppableZone> */}
         <ReactTooltip effect="solid" id="button-tooltips" />
       </Box>
       <div>
@@ -980,7 +1083,6 @@ function ReferencesContainer({
 
 const styles = StyleSheet.create({
   shareButton: {
-    marginLeft: 16,
     color: colors.BLACK(),
     border: "none",
     background: "unset",

@@ -156,7 +156,7 @@ const routes = (BASE_URL) => {
         if (commentType === "thread") {
           return `${BASE_URL}${contentType}/${contentID}/discussion/${threadID}/flag/`;
         } else if (commentType === "comment") {
-          return `${BASE_URL}${contentType}/${contentID}/discussion/${threadID}/comment/${commentID}/flag/`;
+          return `${BASE_URL}${contentType}/${contentID}/comments/${commentID}/flag/`;
         } else {
           return `${BASE_URL}${contentType}/${contentID}/discussion/${threadID}/comment/${commentID}/reply/${replyID}/flag/`;
         }
@@ -1305,6 +1305,7 @@ const routes = (BASE_URL) => {
         );
       }
     },
+
     buildPaperChainUrl: buildPaperChainUrl,
     BASE_URL,
   };

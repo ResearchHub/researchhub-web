@@ -32,6 +32,7 @@ export default function RefManagerCallouts({
         bottom: 16,
         right: 16,
         maxWidth: 300,
+        zIndex: 10,
       }}
     >
       <FontAwesomeIcon

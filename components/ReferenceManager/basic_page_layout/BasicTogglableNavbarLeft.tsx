@@ -1,19 +1,9 @@
 import { Box } from "@mui/system";
-import {
-  isEmpty,
-  isNullOrUndefined,
-  nullthrows,
-} from "~/config/utils/nullchecks";
 import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
-import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_organizer/renderNestedReferenceProjectsNavbarEl";
-import { SyntheticEvent, useContext, useEffect, useState } from "react";
+import { SyntheticEvent } from "react";
 import { Theme } from "@mui/material/styles";
-import {
-  ProjectValue,
-  useReferenceProjectUpsertContext,
-} from "../references/reference_organizer/context/ReferenceProjectsUpsertContext";
+import { useReferenceProjectUpsertContext } from "../references/reference_organizer/context/ReferenceProjectsUpsertContext";
 import { useRouter } from "next/router";
-import BasicTogglableNavbarButton from "./BasicTogglableNavbarButton";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -23,11 +13,8 @@ import Typography from "@mui/material/Typography";
 import colors from "~/config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/pro-light-svg-icons";
-import { faSitemap, faUser } from "@fortawesome/pro-regular-svg-icons";
 import { useReferenceActiveProjectContext } from "../references/reference_organizer/context/ReferenceActiveProjectContext";
 import Drawer from "@mui/material/Drawer";
-import useWindow from "~/config/hooks/useWindow";
-import { breakpoints } from "~/config/themes/screen";
 import { StyleSheet, css } from "aphrodite";
 import { faCog } from "@fortawesome/pro-solid-svg-icons";
 import { navContext } from "~/components/contexts/NavigationContext";
@@ -109,10 +96,6 @@ export default function BasicTogglableNavbarLeft({
     setUpsertPurpose: setProjectUpsertPurpose,
   } = useReferenceProjectUpsertContext();
   const currentOrg = getCurrentUserCurrentOrg();
-  const router = useRouter();
-  const { setActiveProject } = useReferenceActiveProjectContext();
-  const { setActiveTab } = useReferencesTableContext();
-  const currentOrgSlug = currentOrg?.slug ?? null;
 
   return (
     <ContentWrapper width={navWidth} isOpen={isOpen} setIsOpen={setIsOpen}>
