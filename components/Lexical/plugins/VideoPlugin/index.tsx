@@ -122,7 +122,7 @@ export function InsertVideoDialog({
   activeEditor: LexicalEditor;
   onClose: () => void;
 }): JSX.Element {
-  const [mode, setMode] = useState<null | "url" | "file">(null);
+  const [mode, setMode] = useState<null | "file">(null);
   const hasModifier = useRef(false);
 
   useEffect(() => {
@@ -143,24 +143,8 @@ export function InsertVideoDialog({
 
   return (
     <>
-      {!mode && (
-        <DialogButtonsList>
-          <Button
-            data-test-id="video-modal-option-url"
-            onClick={() => setMode("url")}
-          >
-            URL
-          </Button>
-          <Button
-            data-test-id="video-modal-option-file"
-            onClick={() => setMode("file")}
-          >
-            File
-          </Button>
-        </DialogButtonsList>
-      )}
-      {mode === "url" && <InsertVideoUriDialogBody onClick={onClick} />}
-      {mode === "file" && <InsertVideoUploadedDialogBody onClick={onClick} />}
+      {" "}
+      <InsertVideoUploadedDialogBody onClick={onClick} />{" "}
     </>
   );
 }
