@@ -298,13 +298,13 @@ const styles = StyleSheet.create({
   },
   modalStyle: {
     maxHeight: "95vh",
-    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      maxHeight: "100vh",
-      top: "none",
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      width: "90vw",
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       maxHeight: "100vh",
       top: "none",
+      width: "90vw",
     },
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       minHeight: "calc(100vh + 68px)",
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
     },
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       alignItems: "flex-start",
-      overflowY: "hidden",
+      overflowY: "scroll",
       padding: "40px 16px",
     },
   },

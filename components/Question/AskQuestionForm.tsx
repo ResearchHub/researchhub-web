@@ -189,15 +189,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         />
       </div>
       <div className={css(styles.researchcoinContainer)}>
-        <div
-          style={{
-            display: "flex",
-            marginLeft: "auto",
-            width: "100%",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        <div className={css(styles.researchcoinTitle)}>
           <div>
             <div className={css(styles.label, styles.rscLabel)}>
               ResearchCoin Bounty
@@ -287,6 +279,17 @@ const styles = StyleSheet.create({
   },
   researchcoinContainer: {
     marginBottom: 20,
+  },
+  researchcoinTitle: {
+    display: "flex",
+    marginLeft: "auto",
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: "center",    
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      display: "block",
+      marginBottom: 15,
+    }
   },
   rscLabel: {
     cursor: "pointer",
@@ -386,12 +389,12 @@ const styles = StyleSheet.create({
     },
   },
   editor: {
-    width: "721px",
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      width: "80vw",
+    width: "100%",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      // width: "80vw",
     },
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      width: "86vw",
+      // width: "86vw",
     },
   },
   supportText: {
