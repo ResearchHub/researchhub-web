@@ -18,6 +18,7 @@ import ContributionEntry from "./Contribution/ContributionEntry";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 import Link from "next/link";
+import BountyWizard from "../Bounty/BountyWizard";
 
 export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
   const [appliedFilters, setAppliedFilters] = useState<ApiFilters>({

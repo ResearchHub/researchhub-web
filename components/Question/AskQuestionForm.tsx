@@ -16,6 +16,8 @@ import dynamic from "next/dynamic";
 import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
 import HubSelect from "../Hubs/HubSelect";
+import { Switch } from "@mui/material";
+import { BountyInput } from "../Bounty/BountyModal";
 
 const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 
@@ -71,6 +73,9 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
   const [suggestedHubs, setSuggestedHubs] = useState([]);
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [withBounty, setWithBounty] = useState<boolean>(false);
+  const [bountyOffered, setBountyOffered] = useState<number>(0);
+  const [bountyError, setBountyError] = useState<any>(null);
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
@@ -114,6 +119,11 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
       [fieldID]: !validateFormField(fieldID, value),
     });
     setShouldDisplayError(false);
+  };
+
+  const handleBountyInputChange = ({ hasError, errorMsg, value }) => {
+    setBountyOffered(value);
+    setBountyError(errorMsg);
   };
 
   return (
@@ -167,14 +177,58 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         containerStyle={styles.editor}
         required
       />
-      <HubSelect
-        selectedHubs={mutableFormFields.hubs}
-        onChange={(hubs) => {
-          handleOnChangeFields("hubs", hubs);
-        }}
-        menuPlacement="top"
-      />
-      <div className={css(styles.buttonsContainer)}>
+      <div className={css(styles.hubsContainer)}>
+        <HubSelect
+          selectedHubs={mutableFormFields.hubs}
+          labelStyle={styles.label}
+          onChange={(hubs) => {
+            handleOnChangeFields("hubs", hubs);
+          }}
+          menuPlacement="top"
+        />
+      </div>
+      <div className={css(styles.researchcoinContainer)}>
+        <div
+          className={css(styles.label, styles.rscLabel)}
+          onClick={() => setWithBounty(!withBounty)}
+        >
+          ResearchCoin Bounty
+          <Switch
+            sx={{
+              "& .MuiSwitch-switchBase": {
+                "&.Mui-checked": {
+                  color: colors.NEW_BLUE(),
+                },
+                "&.Mui-checked + .MuiSwitch-track": {
+                  backgroundColor: colors.NEW_BLUE(),
+                },
+              },
+            }}
+            onChange={(event) => {
+              setWithBounty(event.target.checked);
+            }}
+          />
+        </div>
+        <p style={{ fontSize: 16 }}>
+          Incentivize the community to answer your question by adding RSC.
+        </p>
+        {withBounty && (
+          <>
+            <div style={{ border: `1px solid rgb(232, 232, 242)` }}>
+              <BountyInput handleBountyInputChange={handleBountyInputChange} />
+            </div>
+          </>
+        )}
+      </div>
+      <div
+        className={css(
+          styles.buttonsContainer,
+          withBounty && bountyError && styles.buttonRowWithErrorText
+        )}
+      >
+        {withBounty && bountyError && (
+          <div className={css(styles.errorText)}>{bountyError}</div>
+        )}
         <Button
           customButtonStyle={styles.buttonStyle}
           disabled={isSubmitting}
@@ -193,6 +247,28 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps)(AskQuestionForm);
 
 const styles = StyleSheet.create({
+  hubsContainer: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  errorText: {
+    color: colors.RED(),
+    fontSize: 14,
+    textAlign: "left",
+  },
+  buttonRowWithErrorText: {
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  researchcoinContainer: {},
+  rscLabel: {
+    cursor: "pointer",
+    display: "flex",
+    justifyContent: "space-between",
+    fontWeight: 500,
+    marginBottom: 10,
+    color: "#232038",
+  },
   askQuestionForm: {
     display: "flex",
     flexDirection: "column",
@@ -263,15 +339,13 @@ const styles = StyleSheet.create({
     marginBottom: "35px",
   },
   label: {
+    height: 19,
     fontWeight: 500,
-    fontSize: "19px",
+    fontSize: "18px",
     lineHeight: "21px",
   },
   error: {
     border: `1px solid ${colors.RED(1)}`,
-  },
-  errorText: {
-    marginTop: "5px",
   },
   dropDown: {
     zIndex: 999,

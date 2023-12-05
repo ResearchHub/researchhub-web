@@ -12,6 +12,7 @@ import colors from "~/config/themes/colors";
 interface Props {
   selectedHubs?: Hub[];
   onChange: Function;
+  labelStyle?: any;
   menuPlacement?: "auto" | "top" | "bottom";
 }
 
@@ -78,6 +79,7 @@ const HubSelect = ({
   selectedHubs = [],
   onChange,
   menuPlacement = "auto",
+  labelStyle,
 }: Props) => {
   const [suggestedHubs, setSuggestedHubs] = useState<HubSuggestion[]>([]);
 
@@ -105,6 +107,7 @@ const HubSelect = ({
         id="hubs"
         isMulti
         label="Hubs"
+        labelStyle={labelStyle}
         reactStyles={{}}
         inputStyle={formStyles.inputStyle}
         reactSelect={{ styles: selectDropdownStyles }}

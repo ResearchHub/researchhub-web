@@ -9,7 +9,7 @@ import {
   MIN_RSC_REQUIRED,
 } from "./config/constants";
 import { captureEvent } from "@sentry/browser";
-import { connect, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { MessageActions } from "~/redux/message";
 import { ReactElement, useState, useEffect } from "react";
@@ -31,31 +31,274 @@ import { ID, parseUser } from "~/config/types/root_types";
 import FormSelect from "../Form/FormSelect";
 import { COMMENT_TYPES, COMMENT_TYPE_OPTIONS } from "../Comment/lib/types";
 
-type Props = {
-  isOpen: boolean;
-  withPreview: boolean;
-  closeModal: Function;
+interface BountyInputProps {
   originalBounty?: Bounty;
-  handleBountyAdded: Function;
-  addBtnLabel?: string;
-  relatedItemId?: ID;
-  relatedItemContentType?: string;
-  showMessage: Function;
-  setMessage: Function;
+  handleBountyInputChange: ({ hasError, errorMsg, value }) => void;
+  withTypeSelection?: boolean;
+}
+
+export const BountyInput = ({
+  handleBountyInputChange,
+  withTypeSelection = false,
+  originalBounty,
+}: BountyInputProps) => {
+  useEffect(() => {
+    ReactTooltip.rebuild();
+  });
+
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
+  const currentUserBalance = currentUser?.balance ?? 0;
+
+  const [offeredAmount, setOfferedAmount] = useState<number>(
+    parseFloat(BOUNTY_DEFAULT_AMOUNT + "")
+  );
+  const [hasMinRscAlert, setHasMinRscAlert] = useState(false);
+  const [hasMaxRscAlert, setHasMaxRscAlert] = useState(false);
+  const [bountyType, setBountyType] = useState<COMMENT_TYPES | null>(null);
+  const { rscToUSDDisplay } = useExchangeRate();
+
+  useEffect((): void => {
+    setHasMinRscAlert(
+      currentUserBalance <= MIN_RSC_REQUIRED ||
+        offeredAmount <= MIN_RSC_REQUIRED ||
+        currentUserBalance < offeredAmount
+    );
+  }, [currentUserBalance, offeredAmount]);
+
+  const _getErrorMsg = () => {
+    if (hasMaxRscAlert) {
+      return "Bounty amount cannot exceed 1,000,000 RSC";
+    } else if (hasMinRscAlert && currentUserBalance < offeredAmount) {
+      return currentUserBalance < offeredAmount
+        ? `Your RSC balance is below offered amount of ${numeral(
+            offeredAmount
+          ).format("0[,]0")}`
+        : `Minimum bounty must be greater than ${MIN_RSC_REQUIRED} RSC`;
+    } else {
+      return false;
+    }
+  };
+
+  const _handleBountyInputChange = (event) => {
+    setOfferedAmount(event?.target?.value ? parseInt(event.target.value) : 0);
+    if (event.target.value < MIN_RSC_REQUIRED) {
+      setHasMinRscAlert(true);
+      setHasMaxRscAlert(false);
+    } else if (event.target.value > MAX_RSC_REQUIRED) {
+      setHasMaxRscAlert(true);
+      setHasMinRscAlert(false);
+    } else {
+      setHasMinRscAlert(false);
+      setHasMaxRscAlert(false);
+    }
+
+    handleBountyInputChange({
+      hasError: hasMinRscAlert || hasMaxRscAlert,
+      errorMsg: _getErrorMsg(),
+      value: event.target.value,
+    });
+  };
+
+  const calcResearchHubAmount = ({ offeredAmount }) => {
+    return parseFloat(
+      ((BOUNTY_RH_PERCENTAGE / 100) * offeredAmount).toFixed(10)
+    );
+  };
+
+  const calcTotalAmount = ({ offeredAmount }) => {
+    return (
+      parseFloat(offeredAmount + "") + calcResearchHubAmount({ offeredAmount })
+    );
+  };
+
+  const researchHubAmount = calcResearchHubAmount({ offeredAmount });
+  const totalAmount = calcTotalAmount({ offeredAmount });
+
+  return (
+    <div className={css(styles.bountyInputContainer)}>
+      <ReactTooltip
+        id="commission"
+        effect="solid"
+        className={css(bountyTooltip.tooltipContainer)}
+        delayShow={150}
+      >
+        <div className={css(bountyTooltip.bodyContainer)}>
+          <div className={css(bountyTooltip.desc)}>
+            <div>
+              • 2% of bounty amount will be used to support the ResearchHub
+              Community
+            </div>
+            <div>• 7% of bounty amount will be paid to ResearchHub Inc</div>
+          </div>
+        </div>
+      </ReactTooltip>
+      <ReactTooltip
+        id="net"
+        effect="solid"
+        className={css(
+          bountyTooltip.tooltipContainer,
+          bountyTooltip.tooltipContainerSmall
+        )}
+        delayShow={150}
+      >
+        <div className={css(bountyTooltip.bodyContainer)}>
+          <div className={css(bountyTooltip.desc)}>Amount including fees</div>
+        </div>
+      </ReactTooltip>
+
+      <div className={css(styles.rootContainer)}>
+        <div className={css(styles.values)}>
+          <div className={css(styles.offeringLine)}>
+            {withTypeSelection && (
+              <>
+                <div className={css(styles.lineItemText, styles.offeringText)}>
+                  What type of bounty do you want to create?
+                </div>
+                <div className={css(styles.bountyTypes)}>
+                  {COMMENT_TYPE_OPTIONS.map(({ value, label, icon }, index) => {
+                    return (
+                      <div
+                        className={css(
+                          styles.bountyTypeBadge,
+                          value === bountyType && styles.bountyBadgeActive
+                        )}
+                        onClick={() => setBountyType(value)}
+                      >
+                        <span className={css(styles.bountyTypeIcon)}>
+                          {icon}
+                        </span>
+                        {label}
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+
+            <div className={css(styles.lineItem, styles.offeringLine)}>
+              <div className={css(styles.lineItemText, styles.offeringText)}>
+                I am offering
+              </div>
+              <div className={css(styles.lineItemValue, styles.offeringValue)}>
+                <span className={css(styles.valueNumber, styles.valueInInput)}>
+                  <input
+                    className={css(styles.input)}
+                    type="number"
+                    onChange={_handleBountyInputChange}
+                    value={offeredAmount + ""}
+                    pattern="\d*"
+                  />
+                </span>
+                <span className={css(styles.rscText)}>RSC</span>
+              </div>
+            </div>
+
+            <div className={css(styles.lineItem, styles.platformFeeLine)}>
+              <div className={css(styles.lineItemText)}>
+                Platform Fee ({BOUNTY_RH_PERCENTAGE}%){` `}
+                <span
+                  className={css(styles.tooltipIcon)}
+                  data-tip={""}
+                  data-for="commission"
+                >
+                  {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
+                </span>
+              </div>
+              <div className={css(styles.lineItemValue)}>
+                <span className={css(styles.valueNumber)}>
+                  <span>+ {researchHubAmount.toLocaleString()}</span>
+                </span>
+                <span className={css(styles.rscText)}>RSC</span>
+              </div>
+            </div>
+
+            <div className={css(styles.lineItem, styles.netAmountLine)}>
+              <ReactTooltip effect="solid" />
+              <div className={css(styles.lineItemText)}>
+                Total
+                <span
+                  className={css(styles.tooltipIcon)}
+                  data-tip={""}
+                  data-for="net"
+                >
+                  {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
+                </span>
+              </div>
+              <div className={css(styles.lineItemValue, styles.netAmountValue)}>
+                <span className={css(styles.valueNumber)}>
+                  <span>{totalAmount.toLocaleString()}</span>
+                  <ResearchCoinIcon
+                    overrideStyle={styles.rscIcon}
+                    width={20}
+                    height={20}
+                  />
+                </span>
+                <span className={css(styles.rscText)}>RSC</span>
+              </div>
+            </div>
+            <div className={css(styles.usdValue)}>
+              ≈ {rscToUSDDisplay(totalAmount)}{" "}
+              <span style={{ marginLeft: 22 }}>USD</span>
+            </div>
+          </div>
+        </div>
+        <div className={css(infoSectionStyles.bountyInfo)}>
+          {originalBounty && (
+            <div className={css(infoSectionStyles.infoRow)}>
+              <span className={css(infoSectionStyles.infoIcon)}>
+                {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
+              </span>{" "}
+              The bounty creator will be able to award the full bounty amount
+              including your contribution to a solution they pick.
+            </div>
+          )}
+          {!originalBounty && (
+            <div className={css(infoSectionStyles.infoRow)}>
+              <span className={css(infoSectionStyles.infoIcon)}>
+                {<FontAwesomeIcon icon={faClock}></FontAwesomeIcon>}
+              </span>{" "}
+              <span className={css(infoSectionStyles.infoText)}>
+                The Bounty will end in 30 days or as soon as you award a
+                solution
+              </span>
+            </div>
+          )}
+          {!originalBounty && (
+            <div className={css(infoSectionStyles.infoRow)}>
+              <span className={css(infoSectionStyles.infoIcon)}>
+                {<FontAwesomeIcon icon={faUndo}></FontAwesomeIcon>}
+              </span>{" "}
+              If no solution satisfies your request, the full bounty amount
+              (excluding platform fee) will be refunded to you
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
-function BountyModal({
-  isOpen,
-  withPreview,
-  closeModal,
-  handleBountyAdded,
-  showMessage,
-  setMessage,
-  relatedItemId,
+interface AddBountyFormProps {
+  withPreview?: boolean;
+  originalBounty?: Bounty;
+  handleBountyAdded: Function;
+  relatedItemId?: ID;
+  relatedItemContentType?: string;
+  withTypeSelection?: boolean;
+}
+
+export const AddBountyForm = ({
+  withPreview = false,
   originalBounty,
+  handleBountyAdded,
+  relatedItemId,
   relatedItemContentType,
-  addBtnLabel = "Add Bounty",
-}: Props): ReactElement {
+  withTypeSelection,
+}: AddBountyFormProps) => {
+  const { setMessage, showMessage } = MessageActions;
+  const dispatch = useDispatch();
   useEffect(() => {
     ReactTooltip.rebuild();
   });
@@ -84,7 +327,6 @@ function BountyModal({
   }, [currentUserBalance, offeredAmount]);
 
   const handleClose = () => {
-    closeModal();
     setSuccess(false);
     setBountyType(null);
     setOfferedAmount(BOUNTY_DEFAULT_AMOUNT);
@@ -135,9 +377,12 @@ function BountyModal({
   };
 
   const handleAddBounty = () => {
-    if (!bountyType) {
-      setMessage("Please select a bounty type before adding a bounty");
-      showMessage({ show: true, error: true });
+    if (!bountyType && withTypeSelection) {
+      dispatch(
+        setMessage("Please select a bounty type before adding a bounty")
+      );
+      // @ts-ignore
+      dispatch(showMessage({ show: true, error: true }));
       return;
     }
     if (!(hasMinRscAlert || hasMaxRscAlert)) {
@@ -149,7 +394,6 @@ function BountyModal({
             bounty_type: bountyType,
           })
         );
-        closeModal();
       } else {
         Bounty.createAPI({
           bountyAmount: offeredAmount,
@@ -165,8 +409,9 @@ function BountyModal({
           .catch((error) => {
             console.log("error", error);
             captureEvent(error);
-            setMessage("Failed to create bounty");
-            showMessage({ show: true, error: true });
+            dispatch(setMessage("Failed to create bounty"));
+            // @ts-ignore
+            dispatch(showMessage({ show: true, error: true }));
           });
       }
     }
@@ -176,6 +421,257 @@ function BountyModal({
   const researchHubAmount = calcResearchHubAmount({ offeredAmount });
   const totalAmount = calcTotalAmount({ offeredAmount });
   return (
+    <div>
+      {success ? (
+        <BountySuccessScreen originalBounty={originalBounty} />
+      ) : (
+        <>
+          <ReactTooltip
+            id="commission"
+            effect="solid"
+            className={css(bountyTooltip.tooltipContainer)}
+            delayShow={150}
+          >
+            <div className={css(bountyTooltip.bodyContainer)}>
+              <div className={css(bountyTooltip.desc)}>
+                <div>
+                  • 2% of bounty amount will be used to support the ResearchHub
+                  Community
+                </div>
+                <div>• 7% of bounty amount will be paid to ResearchHub Inc</div>
+              </div>
+            </div>
+          </ReactTooltip>
+          <ReactTooltip
+            id="net"
+            effect="solid"
+            className={css(
+              bountyTooltip.tooltipContainer,
+              bountyTooltip.tooltipContainerSmall
+            )}
+            delayShow={150}
+          >
+            <div className={css(bountyTooltip.bodyContainer)}>
+              <div className={css(bountyTooltip.desc)}>
+                Amount including fees
+              </div>
+            </div>
+          </ReactTooltip>
+
+          <div className={css(styles.rootContainer)}>
+            <div className={css(styles.values)}>
+              <div className={css(styles.offeringLine)}>
+                {withTypeSelection && (
+                  <>
+                    <div
+                      className={css(styles.lineItemText, styles.offeringText)}
+                    >
+                      What type of bounty do you want to create?
+                    </div>
+                    <div className={css(styles.bountyTypes)}>
+                      {COMMENT_TYPE_OPTIONS.map(
+                        ({ value, label, icon }, index) => {
+                          return (
+                            <div
+                              className={css(
+                                styles.bountyTypeBadge,
+                                value === bountyType && styles.bountyBadgeActive
+                              )}
+                              onClick={() => setBountyType(value)}
+                            >
+                              <span className={css(styles.bountyTypeIcon)}>
+                                {icon}
+                              </span>
+                              {label}
+                            </div>
+                          );
+                        }
+                      )}
+                    </div>
+                  </>
+                )}
+
+                <div className={css(styles.lineItem, styles.offeringLine)}>
+                  <div
+                    className={css(styles.lineItemText, styles.offeringText)}
+                  >
+                    I am offering
+                  </div>
+                  <div
+                    className={css(styles.lineItemValue, styles.offeringValue)}
+                  >
+                    <span
+                      className={css(styles.valueNumber, styles.valueInInput)}
+                    >
+                      <input
+                        className={css(styles.input)}
+                        type="number"
+                        onChange={handleBountyInputChange}
+                        value={offeredAmount + ""}
+                        pattern="\d*"
+                      />
+                    </span>
+                    <span className={css(styles.rscText)}>RSC</span>
+                  </div>
+                </div>
+
+                <div className={css(styles.lineItem, styles.platformFeeLine)}>
+                  <div className={css(styles.lineItemText)}>
+                    Platform Fee ({BOUNTY_RH_PERCENTAGE}%){` `}
+                    <span
+                      className={css(styles.tooltipIcon)}
+                      data-tip={""}
+                      data-for="commission"
+                    >
+                      {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
+                    </span>
+                  </div>
+                  <div className={css(styles.lineItemValue)}>
+                    <span className={css(styles.valueNumber)}>
+                      <span>+ {researchHubAmount.toLocaleString()}</span>
+                    </span>
+                    <span className={css(styles.rscText)}>RSC</span>
+                  </div>
+                </div>
+
+                <div className={css(styles.lineItem, styles.netAmountLine)}>
+                  <ReactTooltip effect="solid" />
+                  <div className={css(styles.lineItemText)}>
+                    Total
+                    <span
+                      className={css(styles.tooltipIcon)}
+                      data-tip={""}
+                      data-for="net"
+                    >
+                      {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
+                    </span>
+                  </div>
+                  <div
+                    className={css(styles.lineItemValue, styles.netAmountValue)}
+                  >
+                    <span className={css(styles.valueNumber)}>
+                      <span>{totalAmount.toLocaleString()}</span>
+                      <ResearchCoinIcon
+                        overrideStyle={styles.rscIcon}
+                        width={20}
+                        height={20}
+                      />
+                    </span>
+                    <span className={css(styles.rscText)}>RSC</span>
+                  </div>
+                </div>
+                <div className={css(styles.usdValue)}>
+                  ≈ {rscToUSDDisplay(totalAmount)}{" "}
+                  <span style={{ marginLeft: 22 }}>USD</span>
+                </div>
+              </div>
+            </div>
+            <div className={css(infoSectionStyles.bountyInfo)}>
+              {originalBounty && (
+                <div className={css(infoSectionStyles.infoRow)}>
+                  <span className={css(infoSectionStyles.infoIcon)}>
+                    {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
+                  </span>{" "}
+                  The bounty creator will be able to award the full bounty
+                  amount including your contribution to a solution they pick.
+                </div>
+              )}
+              {!originalBounty && (
+                <div className={css(infoSectionStyles.infoRow)}>
+                  <span className={css(infoSectionStyles.infoIcon)}>
+                    {<FontAwesomeIcon icon={faClock}></FontAwesomeIcon>}
+                  </span>{" "}
+                  <span className={css(infoSectionStyles.infoText)}>
+                    The Bounty will end in 30 days or as soon as you award a
+                    solution
+                  </span>
+                </div>
+              )}
+              {!originalBounty && (
+                <div className={css(infoSectionStyles.infoRow)}>
+                  <span className={css(infoSectionStyles.infoIcon)}>
+                    {<FontAwesomeIcon icon={faUndo}></FontAwesomeIcon>}
+                  </span>{" "}
+                  If no solution satisfies your request, the full bounty amount
+                  (excluding platform fee) will be refunded to you
+                </div>
+              )}
+            </div>
+
+            <div className={css(styles.addBountyContainer)}>
+              <div
+                className={css(
+                  styles.buttonRow,
+                  showAlertNextToBtn && styles.buttonRowWithText
+                )}
+              >
+                {hasMinRscAlert ? (
+                  <div className={css(alertStyles.alert, alertStyles.rscAlert)}>
+                    {currentUserBalance < offeredAmount
+                      ? `Your RSC balance is below offered amount ${numeral(
+                          offeredAmount
+                        ).format("0[,]0")}`
+                      : `Minimum bounty must be greater than ${MIN_RSC_REQUIRED} RSC`}
+                  </div>
+                ) : hasMaxRscAlert ? (
+                  <div className={css(alertStyles.alert, alertStyles.rscAlert)}>
+                    Bounty amount cannot exceed 1,000,000 RSC
+                  </div>
+                ) : withPreview ? (
+                  <div
+                    className={css(alertStyles.alert, alertStyles.previewAlert)}
+                  >
+                    You will have a chance to review and cancel before bounty is
+                    created
+                  </div>
+                ) : null}
+                <div className={css(styles.addBtnContainer)}>
+                  <Button
+                    label={originalBounty ? "Contribute" : "Add bounty"}
+                    customButtonStyle={styles.addButton}
+                    customLabelStyle={styles.addButtonLabel}
+                    size={`small`}
+                    disabled={hasMaxRscAlert || hasMinRscAlert}
+                    onClick={handleAddBounty}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+type Props = {
+  isOpen: boolean;
+  withPreview: boolean;
+  closeModal: Function;
+  originalBounty?: Bounty;
+  handleBountyAdded: Function;
+  addBtnLabel?: string;
+  relatedItemId?: ID;
+  relatedItemContentType?: string;
+  handleClose: Function;
+};
+
+function BountyModal({
+  isOpen,
+  withPreview,
+  closeModal,
+  handleClose,
+  handleBountyAdded,
+  relatedItemId,
+  originalBounty,
+  relatedItemContentType,
+  addBtnLabel = "Add Bounty",
+}: Props): ReactElement {
+  useEffect(() => {
+    ReactTooltip.rebuild();
+  });
+
+  return (
     <BaseModal
       closeModal={handleClose}
       isOpen={isOpen}
@@ -183,253 +679,19 @@ function BountyModal({
       zIndex={1000001}
       modalContentStyle={styles.modalContentStyle}
       title={
-        success ? null : (
-          <span className={css(styles.modalTitle)}>
-            {" "}
-            {originalBounty ? "Contribute to" : "Add"} Bounty{" "}
-          </span>
-        )
+        <span className={css(styles.modalTitle)}>
+          {" "}
+          {originalBounty ? "Contribute to" : "Add"} Bounty{" "}
+        </span>
       }
     >
-      <>
-        {success ? (
-          <BountySuccessScreen originalBounty={originalBounty} />
-        ) : (
-          <>
-            <ReactTooltip
-              id="commission"
-              effect="solid"
-              className={css(bountyTooltip.tooltipContainer)}
-              delayShow={150}
-            >
-              <div className={css(bountyTooltip.bodyContainer)}>
-                <div className={css(bountyTooltip.desc)}>
-                  <div>
-                    • 2% of bounty amount will be used to support the
-                    ResearchHub Community
-                  </div>
-                  <div>
-                    • 7% of bounty amount will be paid to ResearchHub Inc
-                  </div>
-                </div>
-              </div>
-            </ReactTooltip>
-            <ReactTooltip
-              id="net"
-              effect="solid"
-              className={css(
-                bountyTooltip.tooltipContainer,
-                bountyTooltip.tooltipContainerSmall
-              )}
-              delayShow={150}
-            >
-              <div className={css(bountyTooltip.bodyContainer)}>
-                <div className={css(bountyTooltip.desc)}>
-                  Amount including fees
-                </div>
-              </div>
-            </ReactTooltip>
-
-            <div className={css(styles.rootContainer)}>
-              <div className={css(styles.values)}>
-                <div className={css(styles.offeringLine)}>
-                  <div
-                    className={css(styles.lineItemText, styles.offeringText)}
-                  >
-                    What type of bounty do you want to create?
-                  </div>
-                  <div className={css(styles.bountyTypes)}>
-                    {COMMENT_TYPE_OPTIONS.map(
-                      ({ value, label, icon }, index) => {
-                        return (
-                          <div
-                            className={css(
-                              styles.bountyTypeBadge,
-                              value === bountyType && styles.bountyBadgeActive
-                            )}
-                            onClick={() => setBountyType(value)}
-                          >
-                            <span className={css(styles.bountyTypeIcon)}>
-                              {icon}
-                            </span>
-                            {label}
-                          </div>
-                        );
-                      }
-                    )}
-                  </div>
-
-                  <div className={css(styles.lineItem, styles.offeringLine)}>
-                    <div
-                      className={css(styles.lineItemText, styles.offeringText)}
-                    >
-                      I am offering
-                    </div>
-                    <div
-                      className={css(
-                        styles.lineItemValue,
-                        styles.offeringValue
-                      )}
-                    >
-                      <span
-                        className={css(styles.valueNumber, styles.valueInInput)}
-                      >
-                        <input
-                          className={css(styles.input)}
-                          type="number"
-                          onChange={handleBountyInputChange}
-                          value={offeredAmount + ""}
-                          pattern="\d*"
-                        />
-                      </span>
-                      <span className={css(styles.rscText)}>RSC</span>
-                    </div>
-                  </div>
-
-                  <div className={css(styles.lineItem, styles.platformFeeLine)}>
-                    <div className={css(styles.lineItemText)}>
-                      Platform Fee ({BOUNTY_RH_PERCENTAGE}%){` `}
-                      <span
-                        className={css(styles.tooltipIcon)}
-                        data-tip={""}
-                        data-for="commission"
-                      >
-                        {
-                          <FontAwesomeIcon
-                            icon={faInfoCircle}
-                          ></FontAwesomeIcon>
-                        }
-                      </span>
-                    </div>
-                    <div className={css(styles.lineItemValue)}>
-                      <span className={css(styles.valueNumber)}>
-                        <span>+ {researchHubAmount.toLocaleString()}</span>
-                      </span>
-                      <span className={css(styles.rscText)}>RSC</span>
-                    </div>
-                  </div>
-
-                  <div className={css(styles.lineItem, styles.netAmountLine)}>
-                    <ReactTooltip effect="solid" />
-                    <div className={css(styles.lineItemText)}>
-                      Total
-                      <span
-                        className={css(styles.tooltipIcon)}
-                        data-tip={""}
-                        data-for="net"
-                      >
-                        {
-                          <FontAwesomeIcon
-                            icon={faInfoCircle}
-                          ></FontAwesomeIcon>
-                        }
-                      </span>
-                    </div>
-                    <div
-                      className={css(
-                        styles.lineItemValue,
-                        styles.netAmountValue
-                      )}
-                    >
-                      <span className={css(styles.valueNumber)}>
-                        <span>{totalAmount.toLocaleString()}</span>
-                        <ResearchCoinIcon
-                          overrideStyle={styles.rscIcon}
-                          width={20}
-                          height={20}
-                        />
-                      </span>
-                      <span className={css(styles.rscText)}>RSC</span>
-                    </div>
-                  </div>
-                  <div className={css(styles.usdValue)}>
-                    ≈ {rscToUSDDisplay(totalAmount)}{" "}
-                    <span style={{ marginLeft: 22 }}>USD</span>
-                  </div>
-                </div>
-              </div>
-              <div className={css(infoSectionStyles.bountyInfo)}>
-                {originalBounty && (
-                  <div className={css(infoSectionStyles.infoRow)}>
-                    <span className={css(infoSectionStyles.infoIcon)}>
-                      {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
-                    </span>{" "}
-                    The bounty creator will be able to award the full bounty
-                    amount including your contribution to a solution they pick.
-                  </div>
-                )}
-                {!originalBounty && (
-                  <div className={css(infoSectionStyles.infoRow)}>
-                    <span className={css(infoSectionStyles.infoIcon)}>
-                      {<FontAwesomeIcon icon={faClock}></FontAwesomeIcon>}
-                    </span>{" "}
-                    <span className={css(infoSectionStyles.infoText)}>
-                      The Bounty will end in 30 days or as soon as you award a
-                      solution
-                    </span>
-                  </div>
-                )}
-                {!originalBounty && (
-                  <div className={css(infoSectionStyles.infoRow)}>
-                    <span className={css(infoSectionStyles.infoIcon)}>
-                      {<FontAwesomeIcon icon={faUndo}></FontAwesomeIcon>}
-                    </span>{" "}
-                    If no solution satisfies your request, the full bounty
-                    amount (excluding platform fee) will be refunded to you
-                  </div>
-                )}
-              </div>
-
-              <div className={css(styles.addBountyContainer)}>
-                <div
-                  className={css(
-                    styles.buttonRow,
-                    showAlertNextToBtn && styles.buttonRowWithText
-                  )}
-                >
-                  {hasMinRscAlert ? (
-                    <div
-                      className={css(alertStyles.alert, alertStyles.rscAlert)}
-                    >
-                      {currentUserBalance < offeredAmount
-                        ? `Your RSC balance is below offered amount ${numeral(
-                            offeredAmount
-                          ).format("0[,]0")}`
-                        : `Minimum bounty must be greater than ${MIN_RSC_REQUIRED} RSC`}
-                    </div>
-                  ) : hasMaxRscAlert ? (
-                    <div
-                      className={css(alertStyles.alert, alertStyles.rscAlert)}
-                    >
-                      Bounty amount cannot exceed 1,000,000 RSC
-                    </div>
-                  ) : withPreview ? (
-                    <div
-                      className={css(
-                        alertStyles.alert,
-                        alertStyles.previewAlert
-                      )}
-                    >
-                      You will have a chance to review and cancel before bounty
-                      is created
-                    </div>
-                  ) : null}
-                  <div className={css(styles.addBtnContainer)}>
-                    <Button
-                      label={originalBounty ? "Contribute" : "Add bounty"}
-                      customButtonStyle={styles.addButton}
-                      customLabelStyle={styles.addButtonLabel}
-                      size={`small`}
-                      disabled={hasMaxRscAlert || hasMinRscAlert}
-                      onClick={handleAddBounty}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-      </>
+      <AddBountyForm
+        withPreview={withPreview}
+        originalBounty={originalBounty}
+        handleBountyAdded={handleBountyAdded}
+        relatedItemId={relatedItemId}
+        relatedItemContentType={relatedItemContentType}
+      />
     </BaseModal>
   );
 }
@@ -476,13 +738,12 @@ const infoSectionStyles = StyleSheet.create({
     color: colors.DARKER_GREY(),
     paddingTop: 15,
     paddingBottom: 15,
-    marginBottom: 25,
   },
   infoRow: {
     marginBottom: 10,
     display: "flex",
-    paddingRight: 30,
-    paddingLeft: 30,
+    paddingRight: 15,
+    paddingLeft: 15,
     paddingBottom: 12,
     fontSize: 14,
     lineHeight: "20px",
@@ -504,6 +765,7 @@ const infoSectionStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
+  bountyInputContainer: {},
   rootContainer: {
     fontSize: 18,
     width: "100%",
@@ -632,7 +894,7 @@ const styles = StyleSheet.create({
   },
   values: {
     marginBottom: 25,
-    padding: 30,
+    padding: 20,
     paddingBottom: 0,
   },
   lineItem: {
