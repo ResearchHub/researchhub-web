@@ -43,8 +43,6 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 // import EmojisPlugin from "../plugins/EmojisPlugin";
 // import KeywordsPlugin from "../plugins/KeywordsPlugin";
 import LinkPlugin from "../plugins/LinkPlugin";
-// import MentionsPlugin from "../plugins/MentionsPlugin";
-// import TreeViewPlugin from "../plugins/TreeViewPlugin";
 import ContentEditable from "../ui/ContentEditable";
 import ImageResizer from "../ui/ImageResizer";
 import Placeholder from "../ui/Placeholder";
