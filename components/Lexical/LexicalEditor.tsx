@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { $getRoot, $getSelection } from "lexical";
+import * as React from "react";
 
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -9,7 +10,6 @@ import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { ClearEditorPlugin } from "@lexical/react/LexicalClearEditorPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
-import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
 import useLexicalEditable from "@lexical/react/useLexicalEditable";
 import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
 import TableCellNodes from "./nodes/TableCellNodes";
@@ -35,6 +35,7 @@ import { TablePlugin as NewTablePlugin } from "./plugins/TablePlugin";
 import { TableContext } from "./plugins/TablePlugin";
 import { CAN_USE_DOM } from "./utils/canUseDOM";
 import DraggableBlockPlugin from "./plugins/DraggableBlockPlugin";
+import editorRootState from "./utils/editorRootState"; 
 
 import dynamic from "next/dynamic";
 
@@ -66,13 +67,13 @@ import TableActionMenuPlugin from "./plugins/TableActionMenuPlugin";
 
 // When the editor changes, you can get notified via the
 // LexicalOnChangePlugin!
-// function onChange(editorState) {
-//   editorState.read(() => {
-//     // Read the contents of the EditorState here.
-//     const root = $getRoot();
-//     const selection = $getSelection();
-//   });
-// }
+function onChange(editorState) {
+  editorState.read(() => {
+    // Read the contents of the EditorState here.
+    const root = $getRoot();
+    const selection = $getSelection();
+  });
+}
 
 // Lexical React plugins are React components, which makes them
 // highly composable. Furthermore, you can lazy load plugins if
@@ -107,7 +108,15 @@ const ComponentPickerMenuPlugin = dynamic(
   { ssr: false }
 );
 
-function Editor({
+const EquationsPlugins = dynamic(() => import("./plugins/EquationsPlugin"), {
+  ssr: false,
+});
+
+const value =
+'{"root":{"children":[{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1}],"direction":null,"format":"","indent":0,"type":"root","version":1}}';
+
+
+const LexicalEditor = ({
   ELNLoading,
   currentNote,
   currentOrganization,
@@ -121,12 +130,11 @@ function Editor({
   showMessage,
   user,
   userOrgs,
-}) {
+}) => {
   const initialConfig = {
     namespace: "NoteBook-" + currentNote.id,
-    editorState: currentNote.latest_version?.src
-      ? currentNote.latest_version.src
-      : null,
+    editorState: currentNote.latest_version?.src != undefined ? currentNote.latest_version.src
+      : value,
     nodes: [...EditorNodes],
     theme: BasicEditorTheme,
     onError,
@@ -166,23 +174,21 @@ function Editor({
   const currentUserAccess = getUserNoteAccess({ user, notePerms, userOrgs });
   const noteIdLength = `${currentNote.id}`.length;
   const channelId = `${orgSlug?.slice(0, 59 - noteIdLength)}-${currentNote.id}`;
+  const [title, setTitle] = useState(
+    unescapeHtmlString(currentNote.title ? currentNote.title : "Untitled")
+  );
 
   const parsedNoteTitle = unescapeHtmlString(
     currentNote.title ? currentNote.title : "Untitled"
   );
 
-  useEffect(() => {
-    if (process.browser) {
-      document.title =
-        isEmpty(parsedNoteTitle) || parsedNoteTitle === "Untitled"
-          ? "ResearchHub | Notebook"
-          : parsedNoteTitle;
-    }
-
-    return () => {
-      document.title = "ResearchHub";
+  const getEditorContent = () => {
+    return {
+      full_src: currentNote.latest_version?.src,
+      editorInstance,
+      title: parsedNoteTitle,
     };
-  }, [parsedNoteTitle]);
+  };
 
   useEffect(() => {
     const updateViewPortWidth = () => {
@@ -201,16 +207,7 @@ function Editor({
     };
   }, [isSmallWidthViewport]);
 
-  const getEditorContent = () => {
-    return {
-      full_src: "alio",
-      editorInstance,
-      title: parsedNoteTitle,
-    };
-  };
-
   return (
-    
     <div className={css(styles.container)}>
       <NotebookHeader
         currentNote={currentNote}
@@ -226,10 +223,10 @@ function Editor({
       <div className="editor-shell">
         <input
           className={css(styles.titleInput)}
-          contentEditable="true"
           placeholder="Untitled"
-          value={currentNote.title}
-        ></input>
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
         <LexicalComposer initialConfig={initialConfig}>
           <TableContext>
             <div className={css(styles.editorContainer)}>
@@ -253,17 +250,16 @@ function Editor({
                       </div>
                     </div>
                   }
-                  placeholder={<div>Start writing...</div>}
+                  placeholder={null}
                   ErrorBoundary={LexicalErrorBoundary}
                 />
 
                 <AutoSavePlugin
-                  parsedNoteTitle={parsedNoteTitle}
+                  parsedNoteTitle={title}
                   currentNote={currentNote}
                 />
                 <MarkdownShortcutPlugin />
                 <ImagesPlugin />
-                <TablePlugin />
                 <TableCellResizer />
                 <NewTablePlugin cellEditorConfig={cellEditorConfig}>
                   <AutoFocusPlugin />
@@ -282,10 +278,11 @@ function Editor({
                 </NewTablePlugin>
                 <VideoPlugin />
                 <FloatingComponentPickerTriggerPlugin />
-                {/* <OnChangePlugin onChange={onChange} /> */}
+                <OnChangePlugin onChange={() => handleEditorInput(editorInstance) } />
                 <HistoryPlugin />
                 <TabIndentationPlugin />
                 <LinkPlugin />
+                <EquationsPlugins />
 
                 <LexicalClickableLinkPlugin />
                 <AutoLinkPlugin />
@@ -317,22 +314,24 @@ function Editor({
       </div>
     </div>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     height: "calc(100vh - 80px)",
-    marginLeft: "max(min(16%, 300px), 120px)",
-    marginRight: "max(min(16%, 300px), 120px)",
-    overflow: "visible",
-    width: "100%",
+    overflow: "auto",
+    margin: "0 auto",
+    width: "calc(100% - 320px)",
+    maxWidth: "1200px",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      marginLeft: 0,
+      width: "calc(100% - 40px)",
+      margin: "0 20px",
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       height: "calc(100vh - 66px)",
+      width: "calc(100% - 20px)",
+      margin: "0 10px",
     },
-
   },
   loader: {
     position: "absolute",
@@ -355,13 +354,11 @@ const styles = StyleSheet.create({
     position: "relative",
     resize: "vertical",
     zIndex: -1,
- 
-    minHeight: "calc(100vh - 80px)",
   },
   editorInner: {
     height: "100%",
     width: "100%",
-    minHeight: "calc(100vh - 80px)",
+    position: "relative",
   },
   editorScroller: {
     width: "100%",
@@ -386,4 +383,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Editor;
+export default React.memo(LexicalEditor);
