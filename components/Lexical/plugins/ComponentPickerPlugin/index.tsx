@@ -30,16 +30,10 @@ import * as ReactDOM from "react-dom";
 import { textEditorIcons } from "~/config/themes/icons";
 
 import useModal from "../../hooks/useModal";
-// import catTypingGif from "../../images/cat-typing.gif";
-// import { EmbedConfigs } from "../AutoEmbedPlugin";
-// import { INSERT_COLLAPSIBLE_COMMAND } from "../CollapsiblePlugin";
 import { InsertEquationDialog } from "../EquationsPlugin";
-// import { INSERT_EXCALIDRAW_COMMAND } from "../ExcalidrawPlugin";
 import { InsertImageDialog } from "../ImagesPlugin";
 import { InsertVideoDialog } from "../VideoPlugin";
-// import InsertLayoutDialog from "../LayoutPlugin/InsertLayoutDialog";
 import { INSERT_PAGE_BREAK } from "../PageBreakPlugin";
-// import { InsertPollDialog } from "../PollPlugin";
 import { InsertNewTableDialog, InsertTableDialog } from "../TablePlugin";
 
 class ComponentPickerOption extends MenuOption {
@@ -167,14 +161,6 @@ function getBaseOptions(editor: LexicalEditor, showModal: ShowModal) {
             }),
         })
     ),
-    // new ComponentPickerOption("Table", {
-    //   icon: <i className="icon table" />,
-    //   keywords: ["table", "grid", "spreadsheet", "rows", "columns"],
-    //   onSelect: () =>
-    //     showModal("Insert Table", (onClose) => (
-    //       <InsertTableDialog activeEditor={editor} onClose={onClose} />
-    //     )),
-    // }),
     new ComponentPickerOption("Table", {
       icon: <i className="icon"> {textEditorIcons.table}</i>,
       keywords: ["table", "grid", "spreadsheet", "rows", "columns"],
