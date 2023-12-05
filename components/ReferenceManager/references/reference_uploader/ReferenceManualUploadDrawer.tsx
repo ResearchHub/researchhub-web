@@ -71,7 +71,6 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
     setIsDrawerOpen(false);
     setProjectID(null);
     setSelectedReferenceType("");
-    debugger;
   }, [isDrawerOpen]);
 
   useEffectOnReferenceTypeChange({
