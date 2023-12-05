@@ -271,8 +271,8 @@ function FeedCard({
   const user = uploaded_by || created_by;
   const cardTitle = getTitle();
   const cardBody = getBody();
-  let bountyAmount = documentFilter.bounty_total_amount;
-  let hasActiveBounty = documentFilter.bounty_open;
+  let bountyAmount = documentFilter?.bounty_total_amount;
+  let hasActiveBounty = documentFilter?.bounty_open;
 
   return (
     <div
