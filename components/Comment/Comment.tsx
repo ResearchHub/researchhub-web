@@ -549,7 +549,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     display: "flex",
     justifyContent: "space-between",
-    paddingTop: `10px`,
+    // paddingTop: `10px`,
   },
   privacyBadgeWrapper: {
     marginLeft: "auto",

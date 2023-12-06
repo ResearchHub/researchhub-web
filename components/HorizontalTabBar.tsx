@@ -20,6 +20,7 @@ export type Tab = {
   isSelected?: boolean;
   icon?: React.ReactNode;
   selectedIcon?: React.ReactNode;
+  hoverIcon?: React.ReactNode;
   pillContent?: React.ReactNode | string;
   showNewFeatureIndicator?: boolean;
 };
@@ -29,6 +30,7 @@ interface Props {
   onClick?: Function;
   containerStyle?: any;
   tabStyle?: any;
+  variant: "underline" | "text";
 }
 
 const HorizontalTabBar = ({
@@ -36,9 +38,11 @@ const HorizontalTabBar = ({
   onClick,
   containerStyle,
   tabStyle,
+  variant = "underline",
 }: Props) => {
   const tabContainerEl = useRef<HTMLDivElement>(null);
   const [showRightArrow, setShowRightArrow] = useState(false);
+  const [hoveredTab, setHoveredTab] = useState<any>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -74,7 +78,14 @@ const HorizontalTabBar = ({
       key: value,
       className: css(
         styles.tab,
-        isSelected ? styles.tabSelected : styles.tabNotSelected,
+        isSelected &&
+          variant === "underline" &&
+          styles.underlineVariantSelected,
+        !isSelected &&
+          variant === "underline" &&
+          styles.underlineVariantNotSelected,
+        isSelected && variant === "text" && styles.textVariantSelected,
+        !isSelected && variant === "text" && styles.textVariantNotSelected,
         tabStyle
       ),
       ...(href && { href }),
@@ -215,18 +226,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     columnGap: "8px",
   },
-  tabNotSelected: {
+  underlineVariantSelected: {
+    borderBottom: "solid 3px",
+    color: colors.NEW_BLUE(),
+    borderColor: colors.NEW_BLUE(),
+  },
+  underlineVariantNotSelected: {
+    ":active": {
+      color: `solid 3px ${colors.GREY()}`,
+    },
     ":hover": {
-      color: colors.MEDIUM_GREY(),
       borderBottom: `solid 3px ${colors.GREY()}`,
       transition: "all 0.2s ease-in-out",
     },
-  },
-  tabSelected: {
+  },    
+  textVariantSelected: {
     color: colors.NEW_BLUE(),
-    borderBottom: "solid 3px",
-    borderColor: colors.NEW_BLUE(),
   },
+  textVariantNotSelected: {
+    ":hover": {
+      color: colors.NEW_BLUE(),
+    },
+  },
+
 
   // new feature indicator
   new: {

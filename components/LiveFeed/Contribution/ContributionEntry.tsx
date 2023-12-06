@@ -17,6 +17,9 @@ import colors from "~/config/themes/colors";
 import CommentReadOnly from "~/components/Comment/CommentReadOnly";
 import { contextConfig } from "~/components/Comment/lib/config";
 import ContributionHeader from "../Contribution/ContributionHeader";
+import HubTag from "~/components/Hubs/HubTag";
+import { parseHub } from "~/config/types/hub";
+import DocumentHubs from "~/components/Document/lib/DocumentHubs";
 
 type Args = {
   entry: Contribution;
@@ -33,7 +36,7 @@ const ContributionEntry = ({
   setHubsDropdownOpenForKey,
   hubsDropdownOpenForKey,
 }: Args) => {
-  const { contentType } = entry;
+  const { contentType, hubs } = entry;
   let { item } = entry;
   let showActions = true;
 
@@ -155,6 +158,8 @@ const ContributionEntry = ({
     return null;
   }
 
+  const parsedHubs = hubs.map((h) => parseHub(h));
+
   return (
     <>
       <div className={css(styles.entryContent)}>
@@ -172,6 +177,16 @@ const ContributionEntry = ({
               </div>
             )}
           </div>
+
+          {context === "live-feed" && (
+            <div className={css(styles.hubsContainer)}>
+              <DocumentHubs
+                hubs={parsedHubs}
+                withShowMore={false}
+                hideOnSmallerResolution={true}
+              />
+            </div>
+          )}
           {actions.length > 0 && (
             <div className={css(styles.actions)}>
               {actions.map(
@@ -200,6 +215,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: "20px",
     width: "100%",
+  },
+  hubsContainer: {
+    marginTop: 10,
   },
   hubLink: {
     color: colors.DARKER_GREY(),
