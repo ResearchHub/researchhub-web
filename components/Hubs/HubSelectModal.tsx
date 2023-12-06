@@ -63,7 +63,7 @@ const HubSelectModal = ({
 
 const styles = StyleSheet.create({
   formWrapper: {
-    width: 540,
+    width: 650,
     paddingLeft: 25,
     paddingRight: 25,
     marginTop: 25,
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     },
   },
   modalStyle: {
-    width: "540px",
+    width: "650px",
     maxHeight: 600,
   },
   modalTitleStyleOverride: {},
