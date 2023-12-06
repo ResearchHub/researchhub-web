@@ -2,19 +2,25 @@ import { GetStaticProps, NextPage } from "next";
 import { getHubs } from "~/components/Hubs/api/fetchHubs";
 import { StyleSheet, css } from "aphrodite";
 import Error from "next/error";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { ModalActions } from "~/redux/modals";
 import HubSelect from "~/components/Hubs/HubSelect";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import Button from "~/components/Form/Button";
 import { breakpoints } from "~/config/themes/screen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-regular-svg-icons";
+import AddHubModal from "~/components/Modals/AddHubModal";
+import { useState } from "react";
+import { Hub } from "~/config/types/hub";
+import { RootState } from "~/redux";
+import { isEmpty } from "~/config/utils/nullchecks";
+import { parseUser } from "~/config/types/root_types";
 
 type Props = {
   hubs: any[];
   errorCode?: number;
   count: number;
-  handleAddHub: Function;
+  openAddHubModal: Function;
   handleClick?: (event) => void;
   maxPerRow?: number;
 };
@@ -22,16 +28,24 @@ type Props = {
 const HubsPage: NextPage<Props> = ({
   hubs,
   errorCode,
-  handleAddHub,
+  openAddHubModal,
   count,
 }) => {
   if (errorCode) {
     return <Error statusCode={errorCode} />;
   }
 
-  const currentUser = getCurrentUser();
-  const isModerator = Boolean(currentUser?.moderator);
-  const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
+
+  const isModerator = currentUser?.moderator;
+  const isHubEditor = currentUser?.editorOf && currentUser?.editorOf.length > 0;
+  const [_hubs, _setHubs] = useState<Hub[]>(hubs);
+
+  const addHub = (newHub) => {
+    _setHubs([newHub, ..._hubs]);
+  };
 
   return (
     <div className={css(styles.container)}>
@@ -51,7 +65,7 @@ const HubsPage: NextPage<Props> = ({
               </div>
             }
             onClick={() => {
-              handleAddHub && handleAddHub(true);
+              openAddHubModal && openAddHubModal(true);
             }}
             isWhite
           />
@@ -61,7 +75,8 @@ const HubsPage: NextPage<Props> = ({
         Hubs are collections of papers that are related to a specific topic. Use
         this page to explore hubs.
       </div>
-      <HubSelect count={count} hubs={hubs} handleAddHub={handleAddHub} />
+      <HubSelect count={count} hubs={_hubs} canEdit={isModerator || isHubEditor} />
+      <AddHubModal addHub={addHub} />
     </div>
   );
 };

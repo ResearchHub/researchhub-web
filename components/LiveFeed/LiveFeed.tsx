@@ -407,9 +407,13 @@ const styles = StyleSheet.create({
   },
   pageWrapper: {
     maxWidth: 800,
+    width: 800,
     marginLeft: "auto",
     marginRight: "auto",
     paddingTop: 25,
+    [`@media only screen and (max-width: 800px)`]: {
+      width: "auto",
+    },    
   },
   result: {
     display: "flex",

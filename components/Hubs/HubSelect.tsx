@@ -1,4 +1,3 @@
-import { GetStaticProps, NextPage } from "next";
 import { getHubs } from "~/components/Hubs/api/fetchHubs";
 import { Hub, parseHub } from "~/config/types/hub";
 import { StyleSheet, css } from "aphrodite";
@@ -9,16 +8,9 @@ import Menu, { MenuOption } from "~/components/shared/GenericMenu";
 import { use, useEffect, useRef, useState } from "react";
 import { fetchHubSuggestions } from "~/components/SearchSuggestion/lib/api";
 import debounce from "lodash/debounce";
-import Error from "next/error";
 import useWindow from "~/config/hooks/useWindow";
 import { breakpoints } from "~/config/themes/screen";
 import { HubSuggestion } from "~/components/SearchSuggestion/lib/types";
-import Button from "~/components/Form/Button";
-import { faPlus } from "@fortawesome/pro-regular-svg-icons";
-import { connect } from "react-redux";
-import { ModalActions } from "~/redux/modals";
-import AddHubModal from "~/components/Modals/AddHubModal";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import EditHubModal from "~/components/Modals/EditHubModal";
 import Pagination from "~/components/shared/Pagination";
 import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
@@ -30,21 +22,21 @@ type HubSelectProps = {
   hubs: any[];
   errorCode?: number;
   count: number;
-  handleAddHub?: Function;
   handleClick?: (event) => void;
   withPagination?: boolean;
   maxCardsPerRow?: number;
   selectedHub?: Hub;
+  canEdit?: boolean;
 };
 
 const HubSelect = ({
   hubs,
-  handleAddHub,
   handleClick,
   count,
   withPagination = true,
   maxCardsPerRow,
   selectedHub,
+  canEdit
 }: HubSelectProps) => {
   const router = useRouter();
   const sortOpts = [
@@ -167,14 +159,7 @@ const HubSelect = ({
     });
   }
 
-  const currentUser = getCurrentUser();
-  const isModerator = Boolean(currentUser?.moderator);
-  const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
   const isMobileScreen = getIsOnMobileScreenSize();
-
-  const addHub = (newHub) => {
-    setParsedHubs([...parsedHubs, parseHub(newHub)]);
-  };
 
   const editHub = (newHub) => {
     const newParsedHub = parseHub(newHub);
@@ -191,7 +176,6 @@ const HubSelect = ({
 
   return (
     <div className={css(styles.container)}>
-      <AddHubModal addHub={addHub} />
       <EditHubModal editHub={editHub} />
       <div className={css(styles.searchAndFilters)}>
         <div className={css(styles.search)}>
@@ -247,7 +231,7 @@ const HubSelect = ({
                 hub={h}
                 handleClick={handleClick}
                 showCommentCount={showCommentCount}
-                canEdit={isModerator || isHubEditor}
+                canEdit={canEdit}
               />
             </div>
           ))}
