@@ -65,7 +65,7 @@ const HubSelect = ({
   const { width: winWidth, height: winHeight } = useWindow();
   const [noSuggestionsFound, setNoSuggestionsFound] = useState(false);
   const cardWidth =
-    maxCardsPerRow && maxCardsPerRow > 0 ? "calc(50% - 15px)" : "auto";
+    maxCardsPerRow && maxCardsPerRow > 0 ? `calc(${100/maxCardsPerRow}% - 15px)` : "auto";
 
   const setQueryParam = ({ param, value }) => {
     // Destructure the current pathname and query
@@ -233,7 +233,7 @@ const HubSelect = ({
         {/* @ts-ignore */}
         <ReactPlaceholder
           ready={!loading}
-          customPlaceholder={<HubsPlaceholder />}
+          customPlaceholder={<HubsPlaceholder maxCardsPerRow={maxCardsPerRow} />}
         >
           {hubsToRender.map((h) => (
             <div
@@ -287,7 +287,10 @@ const HubSelect = ({
   );
 };
 
-const HubsPlaceholder = () => {
+const HubsPlaceholder = ({ maxCardsPerRow }) => {
+  const cardWidth =
+    maxCardsPerRow && maxCardsPerRow > 0 ? `calc(${100/maxCardsPerRow}% - 15px)` : "100%";
+
   const numPlaceholder = new Array(12).fill(null);
   return (
     <div
@@ -297,8 +300,8 @@ const HubsPlaceholder = () => {
         return (
           <RectShape
             color="#efefef"
-            className={css(styles.hubCardWrapper)}
-            style={{ width: "100%", height: 220, marginRight: 0 }}
+            className={css(!maxCardsPerRow && styles.hubCardWrapper)}
+            style={{ width: cardWidth, height: 220, marginRight: 0 }}
             key={index}
           />
         );
