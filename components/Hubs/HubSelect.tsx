@@ -34,6 +34,7 @@ type HubSelectProps = {
   handleClick?: (event) => void;
   withPagination?: boolean;
   maxCardsPerRow?: number;
+  selectedHub?: Hub;
 };
 
 const HubSelect = ({
@@ -43,6 +44,7 @@ const HubSelect = ({
   count,
   withPagination = true,
   maxCardsPerRow,
+  selectedHub,
 }: HubSelectProps) => {
   const router = useRouter();
   const sortOpts = [
@@ -150,8 +152,21 @@ const HubSelect = ({
   }, [sort]);
 
   const debouncedSetQuery = debounce(setQuery, 500);
-  const hubsToRender =
+  let hubsToRender =
     query.length > 0 ? suggestions.map((s) => s.hub) : parsedHubs;
+
+  if (selectedHub && !query.length) {
+    hubsToRender.unshift(selectedHub);
+
+    // remove duplicates
+    const seen = new Set();
+    hubsToRender = hubsToRender.filter((el) => {
+      const duplicate = seen.has(el.id);
+      seen.add(el.id);
+      return !duplicate;
+    });
+  }
+
   const currentUser = getCurrentUser();
   const isModerator = Boolean(currentUser?.moderator);
   const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
@@ -227,6 +242,7 @@ const HubSelect = ({
               key={h.id}
             >
               <HubCard
+                isSelected={h.id === selectedHub?.id}
                 descriptionStyle={styles.hubCardDescription}
                 hub={h}
                 handleClick={handleClick}
@@ -292,6 +308,7 @@ const HubsPlaceholder = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {},
   hubCardWrapper: {
     width: "calc(25% - 15px)",
     [`@media only screen and (max-width: 1340px)`]: {

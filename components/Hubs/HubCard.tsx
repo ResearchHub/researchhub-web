@@ -8,7 +8,7 @@ import colors from "~/config/themes/colors";
 import Link from "next/link";
 import { truncateText } from "~/config/utils/string";
 import { formatNumber } from "~/config/utils/number";
-import { faPenToSquare } from "@fortawesome/pro-light-svg-icons";
+import { faCheckCircle, faPenToSquare } from "@fortawesome/pro-light-svg-icons";
 import { useState } from "react";
 import EditHubModal from "../Modals/EditHubModal";
 import { ModalActions } from "~/redux/modals";
@@ -21,6 +21,7 @@ interface Props {
   metadataStyle?: any;
   preventLinkClick?: boolean;
   showCommentCount?: boolean;
+  isSelected?: boolean;
   numberCharactersToShow?: number;
   openEditHubModal: (boolean: boolean, hub) => void;
   canEdit?: boolean;
@@ -37,6 +38,7 @@ const HubCard = ({
   canEdit,
   openEditHubModal,
   showCommentCount = true,
+  isSelected = false,
   numberCharactersToShow = 150,
 }: Props) => {
   const numPapers = formatNumber(hub.numDocs || 0);
@@ -73,7 +75,15 @@ const HubCard = ({
   );
 
   return (
-    <div className={css(styles.hubCard, cardStyle)}>
+    <div
+      className={css(styles.hubCard, cardStyle, isSelected && styles.selected)}
+    >
+      {isSelected && (
+        <FontAwesomeIcon
+          className={css(styles.selectedCheck)}
+          icon={faCheckCircle}
+        />
+      )}
       {!!canEdit && (
         <div
           className={css(
@@ -117,6 +127,20 @@ const styles = StyleSheet.create({
       transition: "0.2s",
       cursor: "pointer",
     },
+  },
+  selected: {
+    background: colors.NEW_BLUE(0.1),
+    ":hover": {
+      background: colors.NEW_BLUE(0.1),
+    },
+  },
+  selectedCheck: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    padding: 8,
+    fontSize: 24,
+    color: colors.NEW_BLUE(1),
   },
   description: {
     marginTop: 20,

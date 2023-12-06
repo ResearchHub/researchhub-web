@@ -19,6 +19,11 @@ import { PaperIcon } from "~/config/themes/icons";
 import { faGlobe, faX } from "@fortawesome/pro-regular-svg-icons";
 import { useRouter } from "next/router";
 import HubSelectModal from "../Hubs/HubSelectModal";
+import fetchHubDetailsAPI from "../Hubs/api/fetcHubDetails";
+import { Hub, parseHub } from "~/config/types/hub";
+import { faAngleRight } from "@fortawesome/pro-light-svg-icons";
+import { truncateText } from "~/config/utils/string";
+import { breakpoints } from "~/config/themes/screen";
 
 const getAppliedUrlFiltersForLiveFeed = (router) => {
   const appliedFilters: ApiFilters = {
@@ -110,6 +115,9 @@ export default function LiveFeed(): ReactElement<"div"> {
   const [isLoadingPage, setIsLoadingPage] = useState<boolean>(true);
   const [results, setResults] = useState<Array<Contribution>>([]);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
+  const [liveFeedForHub, setLiveFeedForHub] = useState<undefined | Hub>(
+    undefined
+  );
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const appliedUrlFilters = getAppliedUrlFiltersForLiveFeed(router);
   const tabs = getTabsForLiveFeed(appliedUrlFilters);
@@ -117,6 +125,20 @@ export default function LiveFeed(): ReactElement<"div"> {
   useEffect(() => {
     loadResults({});
   }, [router.query]);
+
+  useEffect(() => {
+    if (appliedUrlFilters.hubId) {
+      (async () => {
+        const hub = await fetchHubDetailsAPI({
+          hubId: appliedUrlFilters.hubId,
+        });
+        if (hub) {
+          const parsedHub = parseHub(hub);
+          setLiveFeedForHub(parsedHub);
+        }
+      })();
+    }
+  }, [appliedUrlFilters.hubId]);
 
   const loadResults = ({ nextResultsUrl }: { nextResultsUrl?: string }) => {
     if (!nextResultsUrl) {
@@ -184,20 +206,57 @@ export default function LiveFeed(): ReactElement<"div"> {
   return (
     <div className={css(styles.pageWrapper) + " live-feed"}>
       <div className={css(styles.titleContainer)}>
-        <h1 className={css(styles.title) + " clamp2"}>Live Feed</h1>
+        <h1 className={css(styles.title) + " clamp2"}>
+          Live Feed
+          {liveFeedForHub && (
+            <>
+              <FontAwesomeIcon
+                fontSize={24}
+                style={{ marginLeft: 10 }}
+                icon={faAngleRight}
+              />{" "}
+              <div className={css(styles.hubName)}>{liveFeedForHub?.name}</div>
+            </>
+          )}
+        </h1>
+      </div>
+      <div className={css(styles.titleContainerForSmallScreens)}>
+        <h1 className={css(styles.title) + " clamp2"}>
+          {liveFeedForHub ? `${liveFeedForHub?.name} Feed` : `Live Feed`}
+        </h1>
       </div>
       <div className={css(styles.description)}>
-        Stream of real-time activity on ResearchHub.
+        Stream of real-time activity on{" "}
+        {liveFeedForHub ? (
+          <>
+            the{" "}
+            <span className={css(styles.hubName)}>{liveFeedForHub.name}</span>{" "}
+            hub
+          </>
+        ) : (
+          "ResearchHub"
+        )}
+        .
       </div>
       <HubSelectModal
+        selectedHub={liveFeedForHub}
         isModalOpen={isModalOpen}
         handleModalClose={() => setIsModalOpen(false)}
         handleSelect={(hub) => {
+          const query = {
+            ...router.query,
+            ...(hub?.id ? { hubId: hub.id } : {}),
+          };
+          if (!hub) {
+            delete query.hubId;
+            setLiveFeedForHub(undefined);
+          }
+
           setIsModalOpen(false);
           router.push(
             {
               pathname: `/live`,
-              query: { ...router.query, ...(hub.id ? { hubId: hub.id } : {}) },
+              query,
             },
             undefined,
             { shallow: true }
@@ -238,20 +297,7 @@ export default function LiveFeed(): ReactElement<"div"> {
             Boolean(router.query?.hubId) && styles.hubFilterSelected
           )}
           onClick={() => {
-            if (router.query?.hubId) {
-              const query = { ...router.query, hubId: undefined };
-              delete query.hubId;
-              router.push(
-                {
-                  pathname: `/live`,
-                  query,
-                },
-                undefined,
-                { shallow: true }
-              );
-            } else {
-              setIsModalOpen(true);
-            }
+            setIsModalOpen(true);
           }}
         >
           <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>
@@ -259,14 +305,14 @@ export default function LiveFeed(): ReactElement<"div"> {
           {router.query?.hubId && (
             <div
               style={{
-                background: "rgb(233 233 233)",
+                background: colors.NEW_BLUE(0.1),
                 borderRadius: "5px",
                 padding: "2px 10px",
-                color: colors.BLACK(1.0),
+                color: colors.NEW_BLUE(1.0),
                 fontSize: 12,
               }}
             >
-              <FontAwesomeIcon icon={faX}></FontAwesomeIcon>
+              1
             </div>
           )}
         </div>
@@ -305,6 +351,10 @@ export default function LiveFeed(): ReactElement<"div"> {
 }
 
 const styles = StyleSheet.create({
+  hubName: {
+    textTransform: "capitalize",
+    display: "inline-block",
+  },
   description: {
     fontSize: 15,
     marginBottom: 15,
@@ -312,16 +362,26 @@ const styles = StyleSheet.create({
     lineHeight: "22px",
   },
   title: {
-    fontSize: 30,
     fontWeight: 500,
     textOverflow: "ellipsis",
     marginBottom: 0,
+    textTransform: "capitalize",
   },
   titleContainer: {
     alignItems: "center",
     display: "flex",
     width: "100%",
     marginBottom: 15,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
+  },
+  titleContainerForSmallScreens: {
+    marginBottom: 15,
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
   },
   tab: {
     fontSize: 14,
@@ -341,16 +401,15 @@ const styles = StyleSheet.create({
       color: colors.NEW_BLUE(1),
       cursor: "pointer",
     },
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      display: "none",
+    },
   },
   pageWrapper: {
     maxWidth: 800,
-    width: 800,
     marginLeft: "auto",
     marginRight: "auto",
     paddingTop: 25,
-    [`@media only screen and (max-width: 800px)`]: {
-      width: "100%",
-    },
   },
   result: {
     display: "flex",
