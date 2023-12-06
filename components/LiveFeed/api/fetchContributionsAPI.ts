@@ -9,7 +9,7 @@ export type ApiFilters = {
 };
 
 type Args = {
-  pageUrl: string | null;
+  pageUrl: string | null | undefined;
   onError?: Function;
   onSuccess: Function;
   filters: ApiFilters;

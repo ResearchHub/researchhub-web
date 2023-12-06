@@ -115,10 +115,10 @@ export default function LiveFeed(): ReactElement<"div"> {
   const tabs = getTabsForLiveFeed(appliedUrlFilters);
 
   useEffect(() => {
-    loadResults();
+    loadResults({});
   }, [router.query]);
 
-  const loadResults = () => {
+  const loadResults = ({ nextResultsUrl }: { nextResultsUrl?: string }) => {
     if (!nextResultsUrl) {
       setIsLoadingPage(true);
     } else {
@@ -292,7 +292,7 @@ export default function LiveFeed(): ReactElement<"div"> {
             <LoadMoreButton
               onClick={() => {
                 setIsLoadingMore(true);
-                loadResults();
+                loadResults({ nextResultsUrl });
               }}
               // @ts-ignore
               isLoadingMore={isLoadingMore}
