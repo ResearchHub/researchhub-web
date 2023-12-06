@@ -11,6 +11,7 @@ interface Props {
   handleModalClose: Function;
   handleSelect: Function;
   selectedHub?: Hub;
+  preventLinkClick?: boolean;
 }
 
 const HubSelectModal = ({
@@ -18,6 +19,7 @@ const HubSelectModal = ({
   handleModalClose,
   handleSelect,
   selectedHub,
+  preventLinkClick = false,
 }: Props) => {
   const [hubs, setHubs] = useState<Array<Hub>>([]);
   const [count, setCount] = useState<number>(0);
@@ -47,6 +49,7 @@ const HubSelectModal = ({
           hubs={hubs}
           selectedHub={selectedHub}
           withPagination={false}
+          preventLinkClick={preventLinkClick}
           maxCardsPerRow={2}
           handleClick={(hub) => {
             if (hub.id === selectedHub?.id) {

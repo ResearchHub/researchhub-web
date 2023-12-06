@@ -94,6 +94,7 @@ class FormSelect extends Component {
       reactSelect,
       minHeight,
       menuPlacement,
+      handleClick,
     } = this.props;
 
     let configuredComponents = {
@@ -197,6 +198,7 @@ class FormSelect extends Component {
 
     return (
       <div
+        onClick={(e) => handleClick && handleClick(e)}
         className={css(styles.inputContainer, containerStyle && containerStyle)}
         id={id && id}
         ref={ref}

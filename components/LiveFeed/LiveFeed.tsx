@@ -226,19 +226,20 @@ export default function LiveFeed(): ReactElement<"div"> {
         </h1>
       </div>
       <div className={css(styles.description)}>
-        Stream of real-time activity on{" "}
+        Stream of real-time activity{" "}
         {liveFeedForHub ? (
           <>
-            the{" "}
+            in the{" "}
             <span className={css(styles.hubName)}>{liveFeedForHub.name}</span>{" "}
             hub
           </>
         ) : (
-          "ResearchHub"
+          "on ResearchHub"
         )}
         .
       </div>
       <HubSelectModal
+        preventLinkClick={true}
         selectedHub={liveFeedForHub}
         isModalOpen={isModalOpen}
         handleModalClose={() => setIsModalOpen(false)}
@@ -413,7 +414,7 @@ const styles = StyleSheet.create({
     paddingTop: 25,
     [`@media only screen and (max-width: 800px)`]: {
       width: "auto",
-    },    
+    },
   },
   result: {
     display: "flex",
