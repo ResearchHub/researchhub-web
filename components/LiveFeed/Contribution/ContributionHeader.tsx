@@ -16,7 +16,7 @@ import RSCTooltip from "~/components/Tooltips/RSC/RSCTooltip";
 import UserTooltip from "~/components/Tooltips/User/UserTooltip";
 import CommentAvatars from "~/components/Comment/CommentAvatars";
 import { timeSince } from "~/config/utils/dates";
-import { UnifiedDocument } from "~/config/types/root_types";
+import { parseUser, UnifiedDocument } from "~/config/types/root_types";
 import ContentBadge from "~/components/ContentBadge";
 import { formatBountyAmount } from "~/config/types/bounty";
 import { truncateText } from "~/config/utils/string";
@@ -31,8 +31,16 @@ import IconButton from "~/components/Icons/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
 import { flagGrmContent } from "~/components/Flag/api/postGrmFlag";
-import { faPen, faFlag, faBan } from "@fortawesome/pro-light-svg-icons";
-
+import {
+  faPen,
+  faFlag,
+  faBan,
+  faUserSlash,
+} from "@fortawesome/pro-light-svg-icons";
+import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
+import { useSelector, useDispatch } from "react-redux";
+import { isEmpty } from "~/config/utils/nullchecks";
+import { RootState } from "~/redux";
 type Args = {
   entry: Contribution;
   context: "live-feed" | "flagging-dashboard";
@@ -42,7 +50,10 @@ const ContributionHeader = ({ entry, context }: Args) => {
   const { contentType } = entry;
   let { item, hubs } = entry;
   const { createdBy, createdDate } = item;
-  
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
+
   let contentBadgeLabel: ReactNode | string;
   let actionLabel = <>{` posted `}</>;
   let unifiedDocument: UnifiedDocument;
@@ -309,6 +320,33 @@ const ContributionHeader = ({ entry, context }: Args) => {
                   </FlagButtonV2>
                 ),
               },
+              ...(currentUser && currentUser.moderator
+                ? [
+                    {
+                      preventDefault: true,
+                      value: "ban-user",
+                      html: (
+                        <ModeratorDeleteButton
+                          actionType="user"
+                          isModerator={true}
+                          containerStyle={styles.moderatorButton}
+                          icon={
+                            <FontAwesomeIcon
+                              icon={faUserSlash}
+                            ></FontAwesomeIcon>
+                          }
+                          iconStyle={styles.moderatorIcon}
+                          labelStyle={styles.moderatorLabel}
+                          label="Ban User"
+                          metaData={{
+                            authorId: entry.item?.createdBy?.authorProfile?.id,
+                            isSuspended: false,
+                          }}
+                        />
+                      ),
+                    },
+                  ]
+                : []),
             ]}
             width={200}
             id={moreOptionsId}
@@ -327,6 +365,15 @@ const ContributionHeader = ({ entry, context }: Args) => {
 const styles = StyleSheet.create({
   moreOptionsBtnWrapper: {
     marginLeft: "auto",
+  },
+  moderatorButton: {
+    width: "100%",
+  },
+  moderatorLabel: {
+    color: colors.RED(),
+  },
+  moderatorIcon: {
+    width: 30,
   },
   moreOptionsBtn: {
     border: "none",

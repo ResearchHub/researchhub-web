@@ -159,7 +159,7 @@ const ContributionEntry = ({
   }
 
   const parsedHubs = hubs.map((h) => parseHub(h));
-  console.log("parsedHubs", parsedHubs);
+
   return (
     <>
       <div className={css(styles.entryContent)}>

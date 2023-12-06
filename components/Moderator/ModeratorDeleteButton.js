@@ -42,7 +42,8 @@ const ModeratorDeleteButton = (props) => {
   const iconClass = [styles.icon, iconStyle && iconStyle];
   const labelClass = [styles.label, labelStyle && labelStyle];
 
-  const performAction = () => {
+  const performAction = (event) => {
+    event.preventDefault();
     let type = props.actionType;
     let text;
 
