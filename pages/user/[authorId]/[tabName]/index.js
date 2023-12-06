@@ -191,11 +191,14 @@ function AuthorPage(props) {
           label: "Authored Papers",
           value: "authored-papers",
         },
-        {
-          href: "replication-votes",
-          label: "Replication Votes",
-          value: "replication-votes",
-        },
+        // Disabled replicability since we were seeing a lot of spammy votes
+        // and thought that it'd be a net-negative to have this on the platform.
+        // Want to consider more quality/higher-value implementation before re-launching.
+        // {
+        //   href: "replication-votes",
+        //   label: "Replication Votes",
+        //   value: "replication-votes",
+        // },
       ];
 
       if (allowEdit) {
