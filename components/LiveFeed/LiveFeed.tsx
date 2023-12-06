@@ -24,7 +24,7 @@ const getAppliedUrlFiltersForLiveFeed = (router) => {
   const appliedFilters: ApiFilters = {
     // Defaults
     hubId: null,
-    contentType: "all",
+    contentType: "ALL",
   };
   const availableContentTypes = tabs.map((t) => t.value);
 
@@ -33,7 +33,7 @@ const getAppliedUrlFiltersForLiveFeed = (router) => {
     availableContentTypes.includes(router.query.contentType as string);
   appliedFilters.contentType = hasContentTypeFilter
     ? (router.query.contentType as string)
-    : "all";
+    : "ALL";
   appliedFilters.hubId = router.query?.hubId
     ? (router.query.hubId as string)
     : null;
@@ -216,10 +216,15 @@ export default function LiveFeed(): ReactElement<"div"> {
           variant="text"
           tabStyle={styles.tab}
           onClick={(selectedTab) => {
+            const query = { ...router.query, contentType: selectedTab.value };
+            if (query.contentType === "ALL") {
+              delete query.contentType;
+            }
+
             router.push(
               {
                 pathname: `/live`,
-                query: { ...router.query, contentType: selectedTab.value },
+                query,
               },
               undefined,
               { shallow: true }
