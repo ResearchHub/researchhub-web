@@ -39,6 +39,7 @@ import { useOrgs } from "~/components/contexts/OrganizationContext";
 import dayjs from "dayjs";
 import { useReferencesTableContext } from "../reference_table/context/ReferencesTableContext";
 import ReferenceItemFieldAttachment from "../../form/ReferenceItemFieldAttachment";
+import ReferenceTypeSelect from "../../form/ReferenceTypeSelect";
 
 type Props = {};
 
@@ -68,7 +69,9 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
     referenceItemDatum,
     setIsDrawerOpen,
     setReferencesFetchTime,
+    setReferenceItemDatum,
   } = useReferenceTabContext();
+
   const { citation_type, id: citation_id } = referenceItemDatum ?? {};
   const [localReferenceFields, setLocalReferenceFields] = useState(
     referenceItemDatum?.fields ?? {}
@@ -99,8 +102,12 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
     }
   }, [referenceItemDatum?.id, isDrawerOpen]);
 
+  const sortedSchemaKeys = sortSchemaFieldKeys(
+    Object.keys(localReferenceFields)
+  );
+
   const tabInputItems = filterNull(
-    sortSchemaFieldKeys(Object.keys(localReferenceFields)).map(
+    sortedSchemaKeys.map(
       (field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
         let issued;
         const label = resolveFieldKeyLabels(field_key),
@@ -114,6 +121,31 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
               : localReferenceFields[field_key],
           isRequired = false;
         // isRequired = requiredFieldsSet.has(field_key);
+        if (field_key === "type") {
+          return (
+            <ReferenceTypeSelect
+              formID="ref-type"
+              key="ref-type"
+              label="Reference type"
+              onChange={(val) => {
+                const newReferenceFields = { ...localReferenceFields };
+                newReferenceFields["type"] = val;
+                setLocalReferenceFields(newReferenceFields);
+                const newReferenceItemDatum = {
+                  ...referenceItemDatum,
+                  citation_type: val,
+                  fields: newReferenceFields,
+                };
+                setReferenceItemDatum(newReferenceItemDatum);
+              }}
+              required
+              value={referenceItemDatum.citation_type}
+            />
+          );
+        }
+        if (field_key === "pdf_url" || field_key === "custom") {
+          return null;
+        }
 
         if (field_key === "author") {
           return (
@@ -122,10 +154,16 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
               key={`reference-item-tab-input-${field_key}`}
               label={label}
               onChange={(newValue: string[]): void => {
-                setLocalReferenceFields({
+                const updatedFields = {
                   ...localReferenceFields,
                   [field_key]: newValue.join(", "),
-                });
+                };
+                setLocalReferenceFields(updatedFields);
+                const newReferenceItemDatum = {
+                  ...referenceItemDatum,
+                  fields: updatedFields,
+                };
+                setReferenceItemDatum(newReferenceItemDatum);
               }}
               placeholder={label}
               required={isRequired}
@@ -140,10 +178,16 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
               label={label}
               multiline={field_key === "abstract"}
               onChange={(newValue: string): void => {
-                setLocalReferenceFields({
+                const updatedFields = {
                   ...localReferenceFields,
                   [field_key]: newValue,
-                });
+                };
+                setLocalReferenceFields(updatedFields);
+                const newReferenceItemDatum = {
+                  ...referenceItemDatum,
+                  fields: updatedFields,
+                };
+                setReferenceItemDatum(newReferenceItemDatum);
               }}
               placeholder={label}
               required={isRequired}

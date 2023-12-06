@@ -18,6 +18,8 @@ import { getOrgUserCount } from "./utils/orgHelper";
 import Loader from "~/components/Loader/Loader";
 import DropdownButton from "~/components/Form/DropdownButton";
 import { captureEvent } from "~/config/utils/events";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinnerThird } from "@fortawesome/pro-light-svg-icons";
 
 const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
   const dropdownOpts = [
@@ -265,17 +267,22 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
             type="email"
             onKeyDown={handleKeyDown}
           />
-          {isInviteInProgress ? (
-            <div className={css(styles.loaderWrapper)}>
-              <Loader key={"loader"} loading={true} size={25} color={"white"} />
-            </div>
-          ) : (
-            <Button
-              type="submit"
-              customButtonStyle={styles.button}
-              label="Invite"
-            />
-          )}
+          <Button
+            type="submit"
+            customButtonStyle={styles.button}
+            label={
+              isInviteInProgress ? (
+                <FontAwesomeIcon
+                  size={25}
+                  icon={faSpinnerThird}
+                  spin
+                  color={"white"}
+                />
+              ) : (
+                "Invite"
+              )
+            }
+          />
         </form>
       )}
       <div>

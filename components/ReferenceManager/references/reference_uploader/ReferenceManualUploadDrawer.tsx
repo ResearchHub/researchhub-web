@@ -71,11 +71,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
     setIsDrawerOpen(false);
     setProjectID(null);
     setSelectedReferenceType("");
-  }, [
-    referenceSchemaValueSet,
-    referenceSchemaValueSet.schema,
-    referenceSchemaValueSet.required,
-  ]);
+  }, [isDrawerOpen]);
 
   useEffectOnReferenceTypeChange({
     prevRefSchemaValueSet: referenceSchemaValueSet,
@@ -97,6 +93,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
       formID="ref-type"
       key="ref-type"
       label="Reference type"
+      fireOnChangeOnLoad
       onChange={setSelectedReferenceType}
       required
       value={selectedReferenceType}
@@ -117,7 +114,12 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
             required: referenceSchemaValueSet.required,
           });
         };
-        if (schemaField === "pdf_url" || schemaField === "custom") {
+        console.log(schemaField);
+        if (
+          schemaField === "pdf_url" ||
+          schemaField === "custom" ||
+          schemaField === "signed_pdf_url"
+        ) {
           return null;
         }
         if (schemaField === "author") {
@@ -220,10 +222,10 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
           <Box sx={{ borderBottom: `1px solid #E9EAEF` }} mb="14px">
             <ReferenceDoiSearchInput
               onSearchSuccess={(doiMetaData: any): void => {
-                setSelectedReferenceType(
-                  // ReferenceTypeSelect will sanity check for us
-                  doiMetaData?.type.replace("-", "_")?.toUpperCase()
-                );
+                // setSelectedReferenceType(
+                //   // ReferenceTypeSelect will sanity check for us
+                //   doiMetaData?.type.replace("-", "_")?.toUpperCase()
+                // );
                 parseDoiSearchResultOntoValueSet({
                   doiMetaData,
                   setReferenceSchemaValueSet,
