@@ -44,7 +44,7 @@ const AuthorFeedItem = ({
             index={itemIndex}
             key={key}
             paper={doc}
-            documentFilter={item.unified_document.document_filter}
+            documentFilter={item.unified_document?.document_filter}
             singleCard
             user_vote={doc?.user_vote}
             voteCallback={paperVoteCallback}

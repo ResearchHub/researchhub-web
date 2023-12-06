@@ -231,6 +231,24 @@ const styles = StyleSheet.create({
     color: colors.NEW_BLUE(),
     borderColor: colors.NEW_BLUE(),
   },
+  underlineVariantNotSelected: {
+    ":active": {
+      color: `solid 3px ${colors.GREY()}`,
+    },
+    ":hover": {
+      borderBottom: `solid 3px ${colors.GREY()}`,
+      transition: "all 0.2s ease-in-out",
+    },
+  },    
+  textVariantSelected: {
+    color: colors.NEW_BLUE(),
+  },
+  textVariantNotSelected: {
+    ":hover": {
+      color: colors.NEW_BLUE(),
+    },
+  },
+
 
   // new feature indicator
   new: {
