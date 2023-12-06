@@ -4,7 +4,6 @@ import config from "~/components/Document/lib/config";
 import {
   DocumentMetadata,
   GenericDocument,
-  DocumentType,
   isPaper,
   isPost,
 } from "../lib/types";
@@ -19,9 +18,6 @@ import { useState } from "react";
 
 interface Args {
   document: GenericDocument;
-  errorCode?: number;
-  documentType: DocumentType;
-  tabName?: string;
   children?: any;
   metadata: DocumentMetadata;
   isExpanded?: boolean;
@@ -31,14 +27,7 @@ const toPlaintext = (text) => {
   return removeMd(text).replace(/&nbsp;/g, " ");
 };
 
-const DocumentPageLayout = ({
-  document,
-  metadata,
-  documentType,
-  tabName,
-  children,
-  errorCode,
-}: Args) => {
+const DocumentPageLayout = ({ document, metadata, children }: Args) => {
   const router = useRouter();
   let openGraphData: OpenGraphData = { meta: {}, graph: [] };
   try {
@@ -55,7 +44,6 @@ const DocumentPageLayout = ({
     console.log("Error building open graph data", e);
   }
 
-  const pdfUrl = document.formats.find((f) => f.type === "pdf")?.url;
   return (
     <div className={css(styles.pageWrapper)}>
       <HeadComponent {...openGraphData.meta} graph={openGraphData.graph}>

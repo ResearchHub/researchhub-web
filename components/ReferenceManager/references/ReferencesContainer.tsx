@@ -44,7 +44,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { removeReferenceProject } from "./reference_organizer/api/removeReferenceProject";
 import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
-import AuthorFacePile from "~/components/shared/AuthorFacePile";
+import config from "~/components/Document/lib/config";
 import colors from "~/config/themes/colors";
 import DropdownMenu from "../menu/DropdownMenu";
 import Link from "next/link";
@@ -76,6 +76,16 @@ import {
   formatBibliography,
 } from "./reference_bibliography/export";
 import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
+import fetchPostFromS3 from "~/components/Document/api/fetchPostFromS3";
+import { isPost } from "~/components/Document/lib/types";
+import {
+  useDocument,
+  useDocumentMetadata,
+} from "~/components/Document/lib/useHooks";
+import { fetchDocumentByType } from "~/components/Document/lib/fetchDocumentByType";
+import fetchDocumentMetadata from "~/components/Document/api/fetchDocumentMetadata";
+import DocumentPlaceholder from "~/components/Document/lib/Placeholders/DocumentPlaceholder";
+import DocumentPageLayout from "~/components/Document/pages/DocumentPageLayout";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -86,6 +96,92 @@ interface Props {
 }
 
 const WRAP_SEARCHBAR_AT_WIDTH = 700;
+
+function DocumentContainer({ tab, shouldDisplay }) {
+  const [postHtml, setPostHtml] = useState(null);
+  const [isReady, setIsReady] = useState(false);
+  const [metadata, setMetadata] = useState(false);
+  const [documentData, setDocumentData] = useState(false);
+  const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({
+    rawMetadata: metadata,
+    unifiedDocumentId: documentData?.unified_document?.id,
+  });
+  const [documentType, setDocumentType] = useState("paper");
+
+  const [document, setDocument] = useDocument({
+    rawDocumentData: documentData,
+    documentType,
+  }) as [Post | null, Function];
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (tab.attachment.includes("uploads/post_discussion")) {
+          const documentType = "post";
+          setDocumentType(documentType);
+          const documentId = tab.related_unified_doc_id;
+          const _documentData = await fetchDocumentByType({
+            documentType,
+            documentId,
+          });
+          const _metadata = await fetchDocumentMetadata({
+            unifiedDocId: _documentData?.unified_document.id,
+          });
+          const postHtml = await fetchPostFromS3({
+            s3Url: tab.attachment,
+          });
+          setMetadata(_metadata);
+          setDocumentData(_documentData);
+          setPostHtml(postHtml);
+          setIsReady(true);
+        } else {
+          setIsReady(true);
+        }
+      } catch (error) {
+        console.log("Error fetching post. Error: ", error);
+        setIsReady(true);
+      }
+    })();
+  }, [tab]);
+
+  if (!isReady) {
+    return (
+      <div className={css(styles.loadingWrapper)}>
+        <DocumentPlaceholder />
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <DocumentPageLayout
+        document={document}
+        // errorCode={errorCode}
+        metadata={documentMetadata}
+        documentType={"post"}
+      >
+        <DocumentViewer
+          pdfUrl={tab.attachment}
+          postHtml={postHtml}
+          documentViewerClass={[
+            styles.documentViewerClass,
+            shouldDisplay && styles.display,
+          ]}
+          referenceItemDatum={tab}
+          citationInstance={{ id: tab.id, type: "citationentry" }}
+          documentInstance={
+            tab.related_unified_doc
+              ? {
+                  id: tab.related_unified_doc?.documents?.id,
+                  type: "paper",
+                }
+              : undefined
+          }
+        />
+      </DocumentPageLayout>
+    </div>
+  );
+}
 
 // TODO: @lightninglu10 - fix TS.
 function ReferencesContainer({
@@ -1031,22 +1127,9 @@ function ReferencesContainer({
                 ? renderReferencesContainer()
                 : openedTabs.map((tab, index) => {
                     return (
-                      <DocumentViewer
-                        pdfUrl={tab.attachment}
-                        documentViewerClass={[
-                          styles.documentViewerClass,
-                          openTabIndex === index && styles.display,
-                        ]}
-                        referenceItemDatum={tab}
-                        citationInstance={{ id: tab.id, type: "citationentry" }}
-                        documentInstance={
-                          tab.related_unified_doc
-                            ? {
-                                id: tab.related_unified_doc?.documents?.id,
-                                type: "paper",
-                              }
-                            : undefined
-                        }
+                      <DocumentContainer
+                        tab={tab}
+                        shouldDisplay={openTabIndex === index}
                       />
                     );
                   })}
@@ -1082,6 +1165,11 @@ function ReferencesContainer({
 }
 
 const styles = StyleSheet.create({
+  loadingWrapper: {
+    background: "white",
+    maxWidth: config.width,
+    margin: "75px auto 0 auto",
+  },
   shareButton: {
     color: colors.BLACK(),
     border: "none",
@@ -1169,8 +1257,8 @@ const styles = StyleSheet.create({
     },
   },
   documentViewerClass: {
-    overflow: "auto",
-    height: "calc(100vh - 45px - 68px)",
+    // overflow: "auto",
+    minHeight: "calc(100vh - 45px - 68px)",
     display: "flex",
     justifyContent: "center",
     display: "none",

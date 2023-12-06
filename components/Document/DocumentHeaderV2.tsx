@@ -144,8 +144,8 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                   <SaveToRefManager
                     contentType={"paper"}
                     doc={doc}
-                    contentId={doc.unifiedDocument.document?.id}
-                    unifiedDocumentId={doc.unifiedDocument.id}
+                    contentId={doc?.unifiedDocument?.document?.id}
+                    unifiedDocumentId={doc?.unifiedDocument?.id}
                   />
                 </ReferenceProjectsUpsertContextProvider>
                 <PermissionNotificationWrapper
