@@ -9,7 +9,6 @@ import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { ClearEditorPlugin } from "@lexical/react/LexicalClearEditorPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
-import useLexicalEditable from "@lexical/react/useLexicalEditable";
 import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
 import TableCellNodes from "./nodes/TableCellNodes";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
@@ -34,9 +33,8 @@ import { TablePlugin as NewTablePlugin } from "./plugins/TablePlugin";
 import { TableContext } from "./plugins/TablePlugin";
 import { CAN_USE_DOM } from "./utils/canUseDOM";
 import DraggableBlockPlugin from "./plugins/DraggableBlockPlugin";
-import editorRootState from "./utils/editorRootState"; 
-
-import ConvertCKEditorStatePlugin from "./plugins/ConvertCKEditorStatePlugin";
+import editorRootState from "./utils/editorRootState";
+import { $generateNodesFromDOM } from "@lexical/html";
 
 import dynamic from "next/dynamic";
 
@@ -65,7 +63,6 @@ import BasicEditorTheme from "./themes/BasicEditorTheme";
 import { Tab, TableCell } from "@mui/material";
 import { lightGreen } from "@mui/material/colors";
 import TableActionMenuPlugin from "./plugins/TableActionMenuPlugin";
-
 
 function onError(error) {
   console.error(error);
@@ -114,15 +111,22 @@ const LexicalEditorComponent = ({
   user,
   userOrgs,
 }) => {
-
-  function isHTML(str) {
-    const doc = new DOMParser().parseFromString(str, "text/html");
-    return Array.from(doc.body.childNodes).some(node => node.nodeType === 1);
-  }
+  const src = currentNote.latest_version?.src;
 
   const initialConfig = {
     namespace: "NoteBook-" + currentNote.id,
-    editorState: currentNote.latest_version?.src && !isHTML(currentNote.latest_version?.src) ? currentNote.latest_version?.src : emptyEditorJSON,
+    editorState: currentNote.latest_version?.src
+      ? currentNote.latest_version?.src.slice(0, 10).includes("root")
+        ? currentNote.latest_version?.src
+        : (editor) => {
+            editor.update(() => {
+              const parser = new DOMParser();
+              const dom = parser.parseFromString(src, "text/html");
+              const nodes = $generateNodesFromDOM(editor, dom);
+              $insertNodes(nodes);
+            });
+          }
+      : emptyEditorJSON,
     nodes: [...EditorNodes],
     theme: BasicEditorTheme,
     onError,
@@ -219,14 +223,12 @@ const LexicalEditorComponent = ({
               <ListPlugin />
               <CheckListPlugin />
               <ComponentPickerMenuPlugin />
-              <ConvertCKEditorStatePlugin CKEditorState={currentNote.latest_version?.src} />
               <LexicalClickableLinkPlugin />
               <PageBreakPlugin />
               <DragDropPastePlugin />
               <HorizontalRulePlugin />
               <div className={css(styles.editorInner)}>
                 <RichTextPlugin
-              
                   contentEditable={
                     <div className={css(styles.editorScroller)}>
                       <div className={css(styles.editor)} ref={onRef}>
