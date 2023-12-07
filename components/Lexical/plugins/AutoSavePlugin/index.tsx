@@ -13,11 +13,11 @@ const saveDocument = async ({
   noteId,
   onSaveSuccess,
   onSaveFail,
-  parsedNoteTitle,
+  currentNoteTitle,
 }) => {
   try {
     const noteParams = {
-      title: parsedNoteTitle,
+      title: currentNoteTitle,
     };
 
     let contentResponse;
@@ -58,11 +58,11 @@ const saveDocument = async ({
  * AutoSavePlugin is a React component that adds autosave functionality to a Lexical editor.
  * It uses the debounce method from lodash to limit the frequency of autosave operations.
  *
- * @param {string} parsedNoteTitle - The parsed title of the note.
+ * @param {string} currentNoteTitle - The parsed title of the note.
  * @param {object} currentNote - The current note object.
  * @returns {JSX.Element} - The AutoSavePlugin component.
  */
-function AutoSavePlugin({ parsedNoteTitle, currentNote }) {
+function AutoSavePlugin({ currentNoteTitle, currentNote }) {
   // Get the editor instance from the Lexical context
   const [editor] = useLexicalComposerContext();
 
@@ -79,16 +79,16 @@ function AutoSavePlugin({ parsedNoteTitle, currentNote }) {
         editorState: editorState,
         noteId: currentNote.id,
         onSaveSuccess: () => {
-          console.log("success");
+          console.log("success", editorState);
         },
         onSaveFail: (response) => {
           console.log(response);
         },
-        parsedNoteTitle: parsedNoteTitle,
+        currentNoteTitle: currentNoteTitle,
       });
     },
 
-    [currentNote.id, parsedNoteTitle, editor]
+    [currentNote.id, currentNoteTitle, editor]
   );
 
   /**
