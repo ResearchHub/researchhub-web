@@ -35,7 +35,8 @@ import { TableContext } from "./plugins/TablePlugin";
 import { CAN_USE_DOM } from "./utils/canUseDOM";
 import DraggableBlockPlugin from "./plugins/DraggableBlockPlugin";
 import editorRootState from "./utils/editorRootState"; 
-import {$generateNodesFromDOM} from '@lexical/html';
+
+import ConvertCKEditorStatePlugin from "./plugins/ConvertCKEditorStatePlugin";
 
 import dynamic from "next/dynamic";
 
@@ -121,7 +122,7 @@ const LexicalEditorComponent = ({
 
   const initialConfig = {
     namespace: "NoteBook-" + currentNote.id,
-    editorState: currentNote.latest_version?.src ? currentNote.latest_version?.src : emptyEditorJSON,
+    editorState: currentNote.latest_version?.src && !isHTML(currentNote.latest_version?.src) ? currentNote.latest_version?.src : emptyEditorJSON,
     nodes: [...EditorNodes],
     theme: BasicEditorTheme,
     onError,
@@ -218,6 +219,7 @@ const LexicalEditorComponent = ({
               <ListPlugin />
               <CheckListPlugin />
               <ComponentPickerMenuPlugin />
+              <ConvertCKEditorStatePlugin CKEditorState={currentNote.latest_version?.src} />
               <LexicalClickableLinkPlugin />
               <PageBreakPlugin />
               <DragDropPastePlugin />
