@@ -368,17 +368,9 @@ const Notebook = ({ auth, user, wsResponse }) => {
     return orgs.find((org) => org.slug === orgSlug);
   };
 
-  const handleEditorInput = (editor) => {
-    const updatedTitles = {};
-    for (const noteId in titles) {
-      updatedTitles[noteId] =
-        String(noteId) === String(currentNote.id)
-          ? editor.plugins
-              .get("Title")
-              .getTitle()
-              .replace(/&nbsp;/g, " ") || "Untitled"
-          : titles[noteId];
-    }
+  const handleEditorInput = (title) => {
+    const updatedTitles = { ...titles };
+    updatedTitles[String(currentNote.id)] = title;
     setTitles(updatedTitles);
   };
 
