@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { $getRoot, $getSelection } from "lexical";
+import { $getRoot, $getSelection, $insertNodes, LexicalEditor } from "lexical";
 import * as React from "react";
-
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
@@ -36,6 +35,7 @@ import { TableContext } from "./plugins/TablePlugin";
 import { CAN_USE_DOM } from "./utils/canUseDOM";
 import DraggableBlockPlugin from "./plugins/DraggableBlockPlugin";
 import editorRootState from "./utils/editorRootState"; 
+import {$generateNodesFromDOM} from '@lexical/html';
 
 import dynamic from "next/dynamic";
 
@@ -65,24 +65,7 @@ import { Tab, TableCell } from "@mui/material";
 import { lightGreen } from "@mui/material/colors";
 import TableActionMenuPlugin from "./plugins/TableActionMenuPlugin";
 
-// When the editor changes, you can get notified via the
-// LexicalOnChangePlugin!
-function onChange(editorState) {
-  editorState.read(() => {
-    // Read the contents of the EditorState here.
-    const root = $getRoot();
-    const selection = $getSelection();
-  });
-}
 
-// Lexical React plugins are React components, which makes them
-// highly composable. Furthermore, you can lazy load plugins if
-// desired, so you don't pay the cost for plugins until you
-// actually use them.
-
-// Catch any errors that occur during Lexical updates and log them
-// or throw them as needed. If you don't throw them, Lexical will
-// try to recover gracefully without losing user data.
 function onError(error) {
   console.error(error);
 }
@@ -112,11 +95,10 @@ const EquationsPlugins = dynamic(() => import("./plugins/EquationsPlugin"), {
   ssr: false,
 });
 
-const value =
-'{"root":{"children":[{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1}],"direction":null,"format":"","indent":0,"type":"root","version":1}}';
+const emptyEditorJSON =
+  '{"root":{"children":[{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1}],"direction":null,"format":"","indent":0,"type":"root","version":1}}';
 
-
-const LexicalEditor = ({
+const LexicalEditorComponent = ({
   ELNLoading,
   currentNote,
   currentOrganization,
@@ -131,10 +113,15 @@ const LexicalEditor = ({
   user,
   userOrgs,
 }) => {
+
+  function isHTML(str) {
+    const doc = new DOMParser().parseFromString(str, "text/html");
+    return Array.from(doc.body.childNodes).some(node => node.nodeType === 1);
+  }
+
   const initialConfig = {
     namespace: "NoteBook-" + currentNote.id,
-    editorState: currentNote.latest_version?.src != undefined ? currentNote.latest_version.src
-      : value,
+    editorState: currentNote.latest_version?.src ? currentNote.latest_version?.src : emptyEditorJSON,
     nodes: [...EditorNodes],
     theme: BasicEditorTheme,
     onError,
@@ -178,15 +165,11 @@ const LexicalEditor = ({
     unescapeHtmlString(currentNote.title ? currentNote.title : "Untitled")
   );
 
-  const parsedNoteTitle = unescapeHtmlString(
-    currentNote.title ? currentNote.title : "Untitled"
-  );
-
   const getEditorContent = () => {
     return {
       full_src: currentNote.latest_version?.src,
       editorInstance,
-      title: parsedNoteTitle,
+      title: title,
     };
   };
 
@@ -241,6 +224,7 @@ const LexicalEditor = ({
               <HorizontalRulePlugin />
               <div className={css(styles.editorInner)}>
                 <RichTextPlugin
+              
                   contentEditable={
                     <div className={css(styles.editorScroller)}>
                       <div className={css(styles.editor)} ref={onRef}>
@@ -253,9 +237,8 @@ const LexicalEditor = ({
                   placeholder={null}
                   ErrorBoundary={LexicalErrorBoundary}
                 />
-
                 <AutoSavePlugin
-                  parsedNoteTitle={title}
+                  currentNoteTitle={title}
                   currentNote={currentNote}
                 />
                 <MarkdownShortcutPlugin />
@@ -278,12 +261,11 @@ const LexicalEditor = ({
                 </NewTablePlugin>
                 <VideoPlugin />
                 <FloatingComponentPickerTriggerPlugin />
-                <OnChangePlugin onChange={() => handleEditorInput(editorInstance) } />
+                <OnChangePlugin onChange={() => handleEditorInput(title)} />
                 <HistoryPlugin />
                 <TabIndentationPlugin />
                 <LinkPlugin />
                 <EquationsPlugins />
-
                 <LexicalClickableLinkPlugin />
                 <AutoLinkPlugin />
                 <TabFocusPlugin />
@@ -291,7 +273,6 @@ const LexicalEditor = ({
                 {floatingAnchorElem && !isSmallWidthViewport && (
                   <>
                     <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
-                    {/* <CodeActionMenuPlugin anchorElem={floatingAnchorElem} /> */}
                     <TableCellActionMenuPlugin
                       anchorElem={floatingAnchorElem}
                       cellMerge={true}
@@ -300,11 +281,6 @@ const LexicalEditor = ({
                     <FloatingTextFormatToolbarPlugin
                       anchorElem={floatingAnchorElem}
                     />
-                    {/* <FloatingLinkEditorPlugin
-                  anchorElem={floatingAnchorElem}
-                  isLinkEditMode={isLinkEditMode}
-                  setIsLinkEditMode={setIsLinkEditMode}
-                /> */}
                   </>
                 )}
               </div>
@@ -383,4 +359,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(LexicalEditor);
+export default React.memo(LexicalEditorComponent);
