@@ -51,6 +51,8 @@ const Notebook = ({ auth, user, wsResponse }) => {
   const [error, setError] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
+  console.log("Notebook.js:", currentNote);
+
   const orgsFetched = useRef();
 
   useEffect(() => {
@@ -368,10 +370,23 @@ const Notebook = ({ auth, user, wsResponse }) => {
     return orgs.find((org) => org.slug === orgSlug);
   };
 
-  const handleEditorInput = (title) => {
+  const handleEditorInput1 = (title) => {
     const updatedTitles = { ...titles };
     updatedTitles[String(currentNote.id)] = title;
     setTitles(updatedTitles);
+  };
+
+  const handleEditorInput2 = (editor) => {
+    const updatedTitles = {};
+    for (const noteId in titles) {
+      updatedTitles[noteId] =
+        String(noteId) === String(currentNote.id)
+          ? editor.plugins
+              .get("Title")
+              .getTitle()
+              .replace(/&nbsp;/g, " ") || "Untitled"
+          : titles[noteId];
+    }
   };
 
   if (error) {
@@ -399,34 +414,36 @@ const Notebook = ({ auth, user, wsResponse }) => {
         titles={titles}
       />
       {currentNote && (
-        // <ELNEditor
-        // ELNLoading={ELNLoading}
-        // currentNote={currentNote}
-        // currentOrganization={currentOrganization}
-        // handleEditorInput={handleEditorInput}
-        // isOrgMember={_isOrgMember}
-        // notePerms={currentNotePerms?.list || []}
-        // redirectToNote={redirectToNote}
-        // refetchNotePerms={fetchAndSetCurrentNotePermissions}
-        // refetchTemplates={fetchAndSetOrgTemplates}
-        // setELNLoading={setELNLoading}
-        // user={user}
-        // userOrgs={organizations}
-        // />
-        <LexicalEditor
-          ELNLoading={ELNLoading}
-          currentNote={currentNote}
-          currentOrganization={currentOrganization}
-          handleEditorInput={handleEditorInput}
-          isOrgMember={_isOrgMember}
-          notePerms={currentNotePerms?.list || []}
-          redirectToNote={redirectToNote}
-          refetchNotePerms={fetchAndSetCurrentNotePermissions}
-          refetchTemplates={fetchAndSetOrgTemplates}
-          setELNLoading={setELNLoading}
-          user={user}
-          userOrgs={organizations}
-        />
+        <>
+          <ELNEditor
+            ELNLoading={ELNLoading}
+            currentNote={currentNote}
+            currentOrganization={currentOrganization}
+            handleEditorInput={handleEditorInput2}
+            isOrgMember={_isOrgMember}
+            notePerms={currentNotePerms?.list || []}
+            redirectToNote={redirectToNote}
+            refetchNotePerms={fetchAndSetCurrentNotePermissions}
+            refetchTemplates={fetchAndSetOrgTemplates}
+            setELNLoading={setELNLoading}
+            user={user}
+            userOrgs={organizations}
+          />
+          <LexicalEditor
+            ELNLoading={ELNLoading}
+            currentNote={currentNote}
+            currentOrganization={currentOrganization}
+            handleEditorInput={handleEditorInput1}
+            isOrgMember={_isOrgMember}
+            notePerms={currentNotePerms?.list || []}
+            redirectToNote={redirectToNote}
+            refetchNotePerms={fetchAndSetCurrentNotePermissions}
+            refetchTemplates={fetchAndSetOrgTemplates}
+            setELNLoading={setELNLoading}
+            user={user}
+            userOrgs={organizations}
+          />
+        </>
       )}
     </div>
   );
