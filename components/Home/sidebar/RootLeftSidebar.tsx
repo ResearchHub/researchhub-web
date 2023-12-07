@@ -119,7 +119,7 @@ export const getLeftSidebarItemAttrs = ({
     // },
     {
       icon: <FontAwesomeIcon icon={faBook}></FontAwesomeIcon>,
-      label: "Notebook",
+      label: "Lab Notebook",
       isMinimized,
       isActive: pathname.includes("notebook"),
       href: `/notebook`,
@@ -273,7 +273,7 @@ function RootLeftSidebar({
       ind: number
     ): ReactElement<typeof RootLeftSidebarItem> => (
       <>
-        {attrs.label === "Notebook" && !isMinimized && (
+        {attrs.label === "Lab Notebook" && !isMinimized && (
           <div className={css(styles.subheader)}>Tools</div>
         )}
         <RootLeftSidebarItem key={`${attrs.label}-${ind}`} {...attrs} />
