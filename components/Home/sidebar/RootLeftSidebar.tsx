@@ -46,6 +46,7 @@ import RhTextTag from "~/components/shared/RhTextTag";
 import VerificationModal from "~/components/Verification/VerificationModal";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import NewPostButton from "~/components/NewPostButton";
+import NewPostModal from "~/components/Modals/NewPostModal";
 
 type Props = {
   openLoginModal: any;
@@ -402,6 +403,7 @@ function RootLeftSidebar({
                 isMinimized={isMinimized}
               />
             </div>
+            <NewPostModal />
             {leftSidebarItems}
           </div>
         </div>
@@ -572,7 +574,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     position: "sticky",
     top: 0,
-    height: "100vh",
+    minHeight: "100vh",
     width: "100%",
   },
   leftSidebarItemsContainer: {
@@ -610,9 +612,6 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.NEW_BLUE(1),
     },
-    [`@media only screen and (max-height: ${breakpoints.medium.str})`]: {
-      fontSize: 15,
-    },
   },
   leftSidebarFooterTxtItemMin: {
     fontSize: 14,
@@ -622,7 +621,7 @@ const styles = StyleSheet.create({
   leftSidebarFooterItemsTop: {
     display: "flex",
     flexDirection: "column",
-    paddingTop: 12,
+    paddingTop: 10,
   },
   leftSidebarFooterItemsBottomRow: {
     alignItems: "center",
@@ -630,9 +629,6 @@ const styles = StyleSheet.create({
     padding: "8px 30px",
     justifyContent: "flex-start",
     width: "100%",
-    [`@media only screen and (max-height: ${breakpoints.medium.str})`]: {
-      padding: "6px 30px",
-    },
   },
   leftSidebarFooterItemsBottomRowMin: { display: "none" },
   referralProgramItem: {
@@ -649,10 +645,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginRight: 20,
     display: "block",
-    [`@media only screen and (max-height: ${breakpoints.medium.str})`]: {
-      fontSize: 16,
-      marginRight: 16,
-    },
   },
   leftSidebarFooterBotItem: {
     color: colors.TEXT_GREY(1),
@@ -724,22 +716,18 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
     textTransform: "uppercase",
     color: colors.LIGHT_GREY_TEXT,
-    padding: "16px 30px 12px",
-    [`@media only screen and (max-height: ${breakpoints.medium.str})`]: {
-      padding: "16px 30px 8px",
-      marginTop: 12,
-    },
+    padding: "16px 30px 10px",
   },
   newPostButtonContainer: {
     display: "flex",
     justifyContent: "center",
-    margin: "0 auto 12px",
+    margin: "0 auto 18px",
     width: "calc(100% - 52px)",
   },
   newPostButtonContainerMin: {
     display: "flex",
     justifyContent: "center",
-    margin: "0 auto 12px",
+    margin: "0 auto 20px",
     width: "calc(100% - 26px)",
   },
   newPostButtonCustom: {

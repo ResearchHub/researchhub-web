@@ -77,7 +77,9 @@ function RootLeftSidebarSlider({
       </div>
       <NewPostModal />
       {isLoggedIn ? (
-        <NewPostButton customButtonStyle={styles.newPostButtonCustom} />
+        <div className={css(styles.newPostButtonContainer)}>
+          <NewPostButton customButtonStyle={styles.newPostButtonCustom} />
+        </div>
       ) : (
         <div className={css(styles.loginButtonWrap)}>
           <Login>
@@ -237,7 +239,7 @@ const styles = StyleSheet.create({
   },
   leftSidebarSliderFooterTxtItem: {
     color: colors.TEXT_GREY(1),
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 400,
     textDecoration: "none",
     margin: "0 0 16px",
@@ -281,17 +283,20 @@ const styles = StyleSheet.create({
     display: "block",
   },
   mediumIconOverride: { fontSize: 18, marginTop: "-4px" },
+  newPostButtonContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: 16,
+  },
   newPostButtonCustom: {
-    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      height: 40,
-      width: "100%",
-      marginBottom: 12,
-    },
+    height: 40,
+    width: "100%",
   },
   loginButtonWrap: {
     width: "100%",
     display: "flex",
-    marginBottom: 12,
+    marginBottom: 16,
   },
   loginButton: {
     height: "unset",
