@@ -10,6 +10,30 @@ import { isDevEnv } from "~/config/utils/env";
 
 const animatedComponents = makeAnimated();
 
+// This is a seldom used control. It should only be used
+// in cases where you do not want click events on your Select Control.
+// e.g. Showing a modal onClick instead of the default dropdown.
+// You will need to define your click event in a wrapper component.
+export const CustomSelectControlWithoutClickEvents = ({
+  children,
+  ...props
+}) => {
+  return (
+    <components.Control
+      {...props}
+      onTouchEnd={() => null}
+      onClick={() => null}
+      innerProps={{
+        ...props.innerProps,
+        onTouchEnd: () => null,
+        onClick: () => null,
+      }}
+    >
+      {children}
+    </components.Control>
+  );
+};
+
 // Will display count of selected options instead
 // of listing each individual option label.
 // Format: {label} {selectedCount}
@@ -94,7 +118,6 @@ class FormSelect extends Component {
       reactSelect,
       minHeight,
       menuPlacement,
-      handleClick,
     } = this.props;
 
     let configuredComponents = {
@@ -198,7 +221,6 @@ class FormSelect extends Component {
 
     return (
       <div
-        onClick={(e) => handleClick && handleClick(e)}
         className={css(styles.inputContainer, containerStyle && containerStyle)}
         id={id && id}
         ref={ref}

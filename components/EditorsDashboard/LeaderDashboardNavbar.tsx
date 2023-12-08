@@ -4,7 +4,9 @@ import { ID } from "~/config/types/root_types";
 import { ReactElement, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
-import FormSelect from "../Form/FormSelect";
+import FormSelect, {
+  CustomSelectControlWithoutClickEvents,
+} from "~/components/Form/FormSelect";
 import {
   faLongArrowAltDown,
   faLongArrowAltUp,
@@ -121,6 +123,7 @@ export default function LeaderDashboardNavbar({
   return (
     <div className={css(styles.LeaderDashboardNavbar)}>
       <HubSelectModal
+        preventLinkClick={true}
         selectedHub={currentSelectedHub}
         isModalOpen={isHubsModalOpen}
         handleModalClose={() => setIsHubsModalOpen(false)}
@@ -132,27 +135,43 @@ export default function LeaderDashboardNavbar({
       <div className={css(styles.header)}>{headerLabel}</div>
 
       <div className={css(styles.navButtons)}>
-        <FormSelect
-          containerStyle={[styles.dropdown, styles.hubsFilter]}
-          inputStyle={INPUT_STYLE}
-          handleClick={(e) => setIsHubsModalOpen(true)}
-          options={[]}
-          value={{
-            value: "desc",
-            label: currentSelectedHub ? (
-              <div style={{ display: "flex", columnGap: "5px" }}>
-                {currentSelectedHub.name}
-              </div>
-            ) : (
-              <div style={{ display: "flex", columnGap: "5px" }}>
-                <span style={marginStyle}>
-                  {<FontAwesomeIcon icon={faGrid2} />}{" "}
-                </span>
-                {"Hubs"}
-              </div>
-            ),
-          }}
-        />
+        <div onClick={(e) => setIsHubsModalOpen(true)}>
+          <FormSelect
+            selectComponents={{
+              Control: CustomSelectControlWithoutClickEvents,
+            }}
+            containerStyle={[styles.dropdown, styles.hubsFilter]}
+            inputStyle={INPUT_STYLE}
+            options={[]}
+            value={{
+              value: "hubs",
+              label: currentSelectedHub ? (
+                <div
+                  style={{
+                    display: "flex",
+                    columnGap: "5px",
+                    alignItems: "center",
+                  }}
+                >
+                  {currentSelectedHub.name}
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    columnGap: "5px",
+                    alignItems: "center",
+                  }}
+                >
+                  <span style={{ marginTop: 1 }}>
+                    {<FontAwesomeIcon icon={faGrid2} />}{" "}
+                  </span>
+                  <span>{"Hubs"}</span>
+                </div>
+              ),
+            }}
+          />
+        </div>
 
         <DateRangePicker
           startDate={currentTimeframe.startDate} // momentPropTypes.momentObj or null,
