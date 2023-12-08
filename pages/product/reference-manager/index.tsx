@@ -92,7 +92,7 @@ const ProductReferenceManager: NextPage = () => {
           <div className={css(styles.heroLeft)}>
             <div className={css(styles.heroTag)}>ResearchHub References</div>
             <h1 className={css(styles.heroTitle)}>
-              Scientific collaboration, simplified.
+              A Reference Manager Built for Labs
             </h1>
             <div className={css(styles.heroDescription)}>
               A free, open-source reference manager that helps scientific teams
@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     backgroundColor: colors.NEW_BLUE(),
-    paddingBottom: 200,
+    paddingBottom: 180,
     [`@media only screen and (max-width: ${breakpoints.xlarge.str}) and (min-width: ${breakpoints.desktop.str})`]:
       {
         paddingBottom: 120,
@@ -615,10 +615,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   heroTitle: {
-    fontSize: 56,
+    fontSize: 48,
     marginBottom: 24,
-    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-      fontSize: 48,
+    [`@media only screen and (max-width: ${breakpoints.xlarge.str})`]: {
+      fontSize: 46,
     },
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       marginBottom: 20,
@@ -661,7 +661,7 @@ const styles = StyleSheet.create({
     },
   },
   heroImageSection: {
-    flex: 2,
+    flex: 1.9,
     zIndex: 2,
     display: "flex",
     justifyContent: "center",
