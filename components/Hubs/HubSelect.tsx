@@ -27,6 +27,7 @@ type HubSelectProps = {
   maxCardsPerRow?: number;
   selectedHub?: Hub;
   canEdit?: boolean;
+  preventLinkClick?: boolean;
 };
 
 const HubSelect = ({
@@ -36,7 +37,8 @@ const HubSelect = ({
   withPagination = true,
   maxCardsPerRow,
   selectedHub,
-  canEdit
+  canEdit,
+  preventLinkClick = false,
 }: HubSelectProps) => {
   const router = useRouter();
   const sortOpts = [
@@ -57,7 +59,9 @@ const HubSelect = ({
   const { width: winWidth, height: winHeight } = useWindow();
   const [noSuggestionsFound, setNoSuggestionsFound] = useState(false);
   const cardWidth =
-    maxCardsPerRow && maxCardsPerRow > 0 ? `calc(${100/maxCardsPerRow}% - 15px)` : "auto";
+    maxCardsPerRow && maxCardsPerRow > 0
+      ? `calc(${100 / maxCardsPerRow}% - 15px)`
+      : "auto";
 
   const setQueryParam = ({ param, value }) => {
     // Destructure the current pathname and query
@@ -217,7 +221,9 @@ const HubSelect = ({
         {/* @ts-ignore */}
         <ReactPlaceholder
           ready={!loading}
-          customPlaceholder={<HubsPlaceholder maxCardsPerRow={maxCardsPerRow} />}
+          customPlaceholder={
+            <HubsPlaceholder maxCardsPerRow={maxCardsPerRow} />
+          }
         >
           {hubsToRender.map((h) => (
             <div
@@ -232,6 +238,7 @@ const HubSelect = ({
                 handleClick={handleClick}
                 showCommentCount={showCommentCount}
                 canEdit={canEdit}
+                preventLinkClick={preventLinkClick}
               />
             </div>
           ))}
@@ -273,7 +280,9 @@ const HubSelect = ({
 
 const HubsPlaceholder = ({ maxCardsPerRow }) => {
   const cardWidth =
-    maxCardsPerRow && maxCardsPerRow > 0 ? `calc(${100/maxCardsPerRow}% - 15px)` : "100%";
+    maxCardsPerRow && maxCardsPerRow > 0
+      ? `calc(${100 / maxCardsPerRow}% - 15px)`
+      : "100%";
 
   const numPlaceholder = new Array(12).fill(null);
   return (

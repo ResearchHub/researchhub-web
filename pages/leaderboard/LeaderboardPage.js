@@ -5,6 +5,7 @@ import {
   faBookOpen,
   faUserEdit,
   faUser,
+  faGrid2,
 } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 import { connect } from "react-redux";
@@ -23,7 +24,9 @@ import colors from "~/config/themes/colors";
 
 // Components
 import ContentPage from "../../components/ContentPage/ContentPage";
-import FormSelect from "~/components/Form/FormSelect";
+import FormSelect, {
+  CustomSelectControlWithoutClickEvents,
+} from "~/components/Form/FormSelect";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
 import LeaderboardFeedPlaceholder from "../../components/Placeholders/LeaderboardFeedPlaceholder";
 import LeaderboardUser from "../../components/Leaderboard/LeaderboardUser";
@@ -35,6 +38,7 @@ import SideColumn from "~/components/Home/SideColumn";
 import { HubActions } from "../../redux/hub";
 import EditorsDashboard from "~/components/EditorsDashboard/EditorsDashboard";
 import HubLeaderDashboard from "~/components/HubLeaderDashboard/HubLeaderDashboard";
+import HubSelectModal from "~/components/Hubs/HubSelectModal";
 
 const filterOptions = [
   {
@@ -102,6 +106,7 @@ class Index extends Component {
       page: 1,
       next: null,
       type: null,
+      isHubsModalOpen: false,
     };
 
     Router.events.on("routeChangeComplete", (url) => {
@@ -644,44 +649,115 @@ class Index extends Component {
             )}
           >
             <div className={css(mainFeedStyles.row, mainFeedStyles.inputs)}>
-              <FormSelect
-                options={this.state.byOptions}
-                value={this.state.by}
-                containerStyle={mainFeedStyles.dropDownLeft}
-                indicatorSeparator={{
-                  display: "none",
+              <HubSelectModal
+                preventLinkClick={true}
+                isModalOpen={this.state.isHubsModalOpen}
+                handleModalClose={() => {
+                  this.setState({
+                    isHubsModalOpen: false,
+                  });
                 }}
-                inputStyle={{
-                  fontWeight: 500,
-                  minHeight: "unset",
-                  backgroundColor: "#FFF",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-                menu={{
-                  fontSize: 16,
-                }}
-                onChange={(id, option) => {
-                  if (option.disableScope) {
-                    this.setState({
-                      disableScope: true,
-                    });
-                  } else {
-                    this.setState({
-                      disableScope: false,
-                    });
-                  }
-                  this.onFilterSelect(option, id);
+                handleSelect={(hub) => {
+                  this.onFilterSelect(
+                    {
+                      value: hub.id,
+                      label: hub.name,
+                      slug: hub.slug,
+                    },
+                    "hub_id"
+                  );
+
+                  this.setState({
+                    isHubsModalOpen: false,
+                  });
                 }}
               />
-              {this.state.type === "papers" && (
+              <div
+                onClick={(e) => {
+                  this.setState({
+                    isHubsModalOpen: true,
+                  });
+                }}
+                style={{ width: "100%" }}
+              >
                 <FormSelect
-                  options={createdOptions}
-                  value={this.state.createdByOptions}
-                  containerStyle={[
-                    mainFeedStyles.dropDownLeft,
-                    mainFeedStyles.dropdownCreatedBy,
-                  ]}
+                  selectComponents={{
+                    Control: CustomSelectControlWithoutClickEvents,
+                  }}
+                  containerStyle={[mainFeedStyles.dropDownLeft]}
+                  onTouchEnd={(e) => {
+                    this.setState({
+                      isHubsModalOpen: true,
+                    });
+                  }}
+                  options={[]}
+                  indicatorSeparator={{
+                    display: "none",
+                  }}
+                  inputStyle={{
+                    fontWeight: 500,
+                    minHeight: "unset",
+                    backgroundColor: "#FFF",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                  value={{
+                    value: "hubs",
+                    label: this.state.by ? (
+                      <div
+                        style={{
+                          display: "flex",
+                          columnGap: "5px",
+                          alignItems: "center",
+                        }}
+                      >
+                        {this.state.by.label}
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          display: "flex",
+                          columnGap: "5px",
+                          alignItems: "center",
+                        }}
+                      >
+                        <span style={{ marginTop: 1 }}>
+                          {<FontAwesomeIcon icon={faGrid2} />}{" "}
+                        </span>
+                        <span>{"Hubs"}</span>
+                      </div>
+                    ),
+                  }}
+                />
+              </div>
+              {this.state.type === "papers" && (
+                <div style={{ width: "100%" }}>
+                  <FormSelect
+                    options={createdOptions}
+                    value={this.state.createdByOptions}
+                    containerStyle={[
+                      mainFeedStyles.dropDownLeft,
+                      mainFeedStyles.dropdownCreatedBy,
+                    ]}
+                    inputStyle={{
+                      fontWeight: 500,
+                      minHeight: "unset",
+                      backgroundColor: "#FFF",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                    onChange={(id, option) => {
+                      this.onCreatedByChange(option, id);
+                    }}
+                    isSearchable={false}
+                  />
+                </div>
+              )}
+              <div style={{ width: "100%" }}>
+                <FormSelect
+                  options={filterOptions}
+                  value={this.state.filterBy}
+                  containerStyle={mainFeedStyles.dropDownLeft}
                   inputStyle={{
                     fontWeight: 500,
                     minHeight: "unset",
@@ -690,36 +766,20 @@ class Index extends Component {
                     justifyContent: "space-between",
                   }}
                   onChange={(id, option) => {
-                    this.onCreatedByChange(option, id);
+                    if (option.disableScope) {
+                      this.setState({
+                        disableScope: true,
+                      });
+                    } else {
+                      this.setState({
+                        disableScope: false,
+                      });
+                    }
+                    this.onTimeframeChange(option, id);
                   }}
                   isSearchable={false}
                 />
-              )}
-              <FormSelect
-                options={filterOptions}
-                value={this.state.filterBy}
-                containerStyle={mainFeedStyles.dropDownLeft}
-                inputStyle={{
-                  fontWeight: 500,
-                  minHeight: "unset",
-                  backgroundColor: "#FFF",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-                onChange={(id, option) => {
-                  if (option.disableScope) {
-                    this.setState({
-                      disableScope: true,
-                    });
-                  } else {
-                    this.setState({
-                      disableScope: false,
-                    });
-                  }
-                  this.onTimeframeChange(option, id);
-                }}
-                isSearchable={false}
-              />
+              </div>
             </div>
           </div>
         </div>
