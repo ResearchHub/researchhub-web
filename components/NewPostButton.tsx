@@ -20,15 +20,18 @@ import colors from "~/config/themes/colors";
 import { useRouter } from "next/router";
 import { createNewNote } from "~/config/fetch";
 import { NOTE_GROUPS } from "./Notebook/config/notebookConstants";
+import { breakpoints } from "~/config/themes/screen";
 
 export type NewPostButtonProps = {
   customButtonStyle?: object;
   onClick?: (e: SyntheticEvent) => void;
+  isMinimized?: boolean;
 };
 
 export default function NewPostButton({
   customButtonStyle,
   onClick,
+  isMinimized,
 }: NewPostButtonProps) {
   const { values: buttonValues, setValues: setButtonValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
@@ -131,8 +134,8 @@ export default function NewPostButton({
               borderRadius: 4,
               boxShadow: `3px 2px 12px ${colors.STANDARD_BOX_SHADOW}`,
               position: "fixed",
-              right: 28,
-              top: 64,
+              left: isMinimized ? 12 : 26,
+              top: 124,
             }}
           >
             {popoverOptionCards}
@@ -147,11 +150,10 @@ export default function NewPostButton({
               // isLink prop does not allow onClick to trigger on link click
               <div className={css(styles.newPostLabel)}>
                 <FontAwesomeIcon
-                  style={{ marginRight: 8 }}
                   // @ts-ignore icon prop works with FontAwesome
                   icon={faPlus}
                 />
-                <span>{"New"}</span>
+                {!isMinimized && <span>{"New"}</span>}
               </div>
             }
             onClick={() => onClick && onClick()}
@@ -169,6 +171,7 @@ const styles = StyleSheet.create({
     display: "flex",
     fontSize: 18,
     fontWeight: 500,
+    gap: 8,
   },
   rippleClass: {
     width: "100%",

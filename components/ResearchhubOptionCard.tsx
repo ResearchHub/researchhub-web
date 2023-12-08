@@ -4,6 +4,7 @@ import { ReactElement } from "react";
 import { StyleSheet, css } from "aphrodite";
 import CheckBox from "./Form/CheckBox";
 import TabNewFeature from "~/components/NewFeature/TabNewFeature";
+import { breakpoints } from "~/config/themes/screen";
 
 export type ResearchhubOptionCardProps = {
   description: string;
@@ -40,6 +41,7 @@ export default function ResearchhubOptionCard({
         </div>
       )}
       <div className={css(styles.mediaContainer)}>
+        <div className={css(styles.mediaImgBox)}>{icon}</div>
         <div className={css(styles.mediaContent)}>
           <div className={css(styles.mediaHeader)}>
             {header}
@@ -47,7 +49,6 @@ export default function ResearchhubOptionCard({
           </div>
           <div className={css(styles.mediaDescription)}> {description} </div>
         </div>
-        <div className={css(styles.mediaImgBox)}>{icon}</div>
       </div>
     </div>
   );
@@ -58,6 +59,10 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignSelf: "stretch",
+    gap: 25,
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      flexDirection: "row-reverse",
+    },
   },
   mediaContent: {
     display: "flex",
@@ -95,7 +100,6 @@ const styles = StyleSheet.create({
     height: "75px",
     borderRadius: "8px",
     backgroundColor: "#eee",
-    marginLeft: "25px",
   },
   mediaImg: {},
   largeListItem: {
@@ -119,7 +123,7 @@ const styles = StyleSheet.create({
     borderRadius: "4px",
     backgroundColor: "#FFF",
     border: "none",
-    padding: "20px 20px 20px 36px",
+    padding: 20,
     ":hover": {
       background: genericCardColors.BACKGROUND,
     },
