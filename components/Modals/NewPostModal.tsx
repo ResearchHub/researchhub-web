@@ -77,13 +77,6 @@ export const getModalOptionItems = ({
     ),
     description:
       "Ask a science related question. Add a bounty to incentivize quality submissions.",
-    onClick: (): void => {
-      setButtonValues({
-        ...DEFAULT_POST_BUTTON_VALUES,
-        isOpen: true,
-        isQuestionType: true,
-      });
-    },
     icon: (
       <QuestionIcon
         color={`#aeaeae`}
@@ -98,16 +91,6 @@ export const getModalOptionItems = ({
     header: "Publish a Post",
     description:
       "All posts must be academic in nature. Ideas, theories, and questions to the community are all welcome.",
-    onClick: async () => {
-      /* @ts-ignore */
-      const note: any = await createNewNote({
-        orgSlug: currentUser.organization_slug,
-        grouping: NOTE_GROUPS.WORKSPACE,
-      });
-      router.push(
-        `/${currentUser.organization_slug}/notebook/${note?.id ?? ""}`
-      );
-    },
     icon: (
       <PostIcon
         height={40}
@@ -129,7 +112,6 @@ function NewPostModal({
   const { isOpen, isQuestionType, wizardBodyType, type } = buttonValues;
 
   // TODO: calvinhlee - reorganize these context values to better represent currently available post-types
-  const [modalSelectedItemIndex, setModalSelectedItemIndex] = useState(0);
   const [bodyType, setBodyType] = useState<NullableString>(
     isQuestionType ? "question" : Boolean(wizardBodyType) ? "paperWizard" : type
   );
@@ -156,25 +138,37 @@ function NewPostModal({
 
   const closeModal = (event?: SyntheticEvent): void => {
     event?.preventDefault();
-    setModalSelectedItemIndex(0);
     setBodyType(null);
     setButtonValues({ ...DEFAULT_POST_BUTTON_VALUES });
   };
 
-  const handleContinue = (event?: SyntheticEvent): void => {
-    event && event.preventDefault();
-
-    if (modalSelectedItemIndex === 0) {
+  const handleSelection = async (option) => {
+    if (option.key === "paper_upload") {
       setButtonValues({
         ...DEFAULT_POST_BUTTON_VALUES,
         isOpen: true,
         wizardBodyType: "url_or_doi_upload",
       });
       setBodyType("paperWizard");
-    } else if ([1].includes(modalSelectedItemIndex)) {
-      return;
+    } else if (option.key === "question") {
+      setButtonValues({
+        ...DEFAULT_POST_BUTTON_VALUES,
+        isOpen: true,
+        isQuestionType: true,
+      });
+      setBodyType("question");
+    } else if (option.key === "eln") {
+      // @ts-ignore
+      const note: any = await createNewNote({
+        orgSlug: currentUser.organization_slug,
+        grouping: NOTE_GROUPS.WORKSPACE,
+      });
+      router.push(
+        `/${currentUser.organization_slug}/notebook/${note?.id ?? ""}`
+      );
+      closeModal();
     } else {
-      closeModal(event);
+      closeModal();
     }
   };
 
@@ -185,11 +179,7 @@ function NewPostModal({
       icon={option.icon}
       key={index}
       newFeature={option.newFeature}
-      onSelect={(e: SyntheticEvent) => {
-        e.preventDefault();
-        // @ts-ignore
-        modalOptionItems[index].onClick && modalOptionItems[index].onClick();
-      }}
+      onSelect={(event) => handleSelection(option)}
     />
   ));
 
