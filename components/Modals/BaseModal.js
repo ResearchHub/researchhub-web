@@ -94,11 +94,7 @@ class BaseModal extends Component {
     return {
       overlay: {
         position: "fixed",
-        top: this.props.offset
-          ? this.props.offset
-          : this.state.mobileView
-          ? 66
-          : 0,
+        top: this.props.offset || 0,
         left: 0,
         right: 0,
         bottom: 0,

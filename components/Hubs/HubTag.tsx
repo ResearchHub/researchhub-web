@@ -18,14 +18,16 @@ export const HubBadge = ({ name, size }: { name: string; size?: string }) => {
 
 const HubTag = ({
   hub,
+  overrideStyle,
   preventLinkClick = false,
 }: {
   hub: Hub;
   preventLinkClick?: boolean;
+  overrideStyle?: any;
 }) => {
   if (preventLinkClick) {
     return (
-      <div className={css(styles.noUnderline)}>
+      <div className={css(styles.noUnderline, overrideStyle)}>
         <HubBadge name={hub.name} />
       </div>
     );
@@ -34,7 +36,7 @@ const HubTag = ({
       <Link
         key={`/hubs/${hub.slug ?? ""}-index`}
         href={`/hubs/${hub.slug}`}
-        className={css(styles.noUnderline)}
+        className={css(styles.noUnderline, overrideStyle)}
         onClick={(e) => e.stopPropagation()}
       >
         <HubBadge name={hub.name} />

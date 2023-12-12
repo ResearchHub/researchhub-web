@@ -38,6 +38,8 @@ import AskQuestionForm from "~/components/Question/AskQuestionForm";
 import colors from "~/config/themes/colors";
 import BountyWizard from "../Bounty/BountyWizard";
 import { breakpoints } from "~/config/themes/screen";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faX } from "@fortawesome/pro-regular-svg-icons";
 
 export type NewPostModalProps = {
   currentUser: any;
@@ -54,9 +56,8 @@ export const getModalOptionItems = ({
 }) => [
   {
     key: "paper_upload",
-    header: "Upload a Paper",
-    description:
-      "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly.",
+    header: "Share a Paper",
+    description: "Share a paper with the community via a link or DOI.",
     icon: (
       <PaperIcon
         height={40}
@@ -76,13 +77,6 @@ export const getModalOptionItems = ({
     ),
     description:
       "Ask a science related question. Add a bounty to incentivize quality submissions.",
-    onClick: (): void => {
-      setButtonValues({
-        ...DEFAULT_POST_BUTTON_VALUES,
-        isOpen: true,
-        isQuestionType: true,
-      });
-    },
     icon: (
       <QuestionIcon
         color={`#aeaeae`}
@@ -97,16 +91,6 @@ export const getModalOptionItems = ({
     header: "Publish a Post",
     description:
       "All posts must be academic in nature. Ideas, theories, and questions to the community are all welcome.",
-    onClick: async () => {
-      /* @ts-ignore */
-      const note: any = await createNewNote({
-        orgSlug: currentUser.organization_slug,
-        grouping: NOTE_GROUPS.WORKSPACE,
-      });
-      router.push(
-        `/${currentUser.organization_slug}/notebook/${note?.id ?? ""}`
-      );
-    },
     icon: (
       <PostIcon
         height={40}
@@ -128,7 +112,6 @@ function NewPostModal({
   const { isOpen, isQuestionType, wizardBodyType, type } = buttonValues;
 
   // TODO: calvinhlee - reorganize these context values to better represent currently available post-types
-  const [modalSelectedItemIndex, setModalSelectedItemIndex] = useState(0);
   const [bodyType, setBodyType] = useState<NullableString>(
     isQuestionType ? "question" : Boolean(wizardBodyType) ? "paperWizard" : type
   );
@@ -155,25 +138,37 @@ function NewPostModal({
 
   const closeModal = (event?: SyntheticEvent): void => {
     event?.preventDefault();
-    setModalSelectedItemIndex(0);
     setBodyType(null);
     setButtonValues({ ...DEFAULT_POST_BUTTON_VALUES });
   };
 
-  const handleContinue = (event?: SyntheticEvent): void => {
-    event && event.preventDefault();
-
-    if (modalSelectedItemIndex === 0) {
+  const handleSelection = async (option) => {
+    if (option.key === "paper_upload") {
       setButtonValues({
         ...DEFAULT_POST_BUTTON_VALUES,
         isOpen: true,
         wizardBodyType: "url_or_doi_upload",
       });
       setBodyType("paperWizard");
-    } else if ([1].includes(modalSelectedItemIndex)) {
-      return;
+    } else if (option.key === "question") {
+      setButtonValues({
+        ...DEFAULT_POST_BUTTON_VALUES,
+        isOpen: true,
+        isQuestionType: true,
+      });
+      setBodyType("question");
+    } else if (option.key === "eln") {
+      // @ts-ignore
+      const note: any = await createNewNote({
+        orgSlug: currentUser.organization_slug,
+        grouping: NOTE_GROUPS.WORKSPACE,
+      });
+      router.push(
+        `/${currentUser.organization_slug}/notebook/${note?.id ?? ""}`
+      );
+      closeModal();
     } else {
-      closeModal(event);
+      closeModal();
     }
   };
 
@@ -182,14 +177,9 @@ function NewPostModal({
       description={option.description}
       header={option.header}
       icon={option.icon}
-      isActive={index === modalSelectedItemIndex}
-      isCheckboxSquare={false}
       key={index}
       newFeature={option.newFeature}
-      onSelect={(e: SyntheticEvent) => {
-        e.preventDefault();
-        setModalSelectedItemIndex(index);
-      }}
+      onSelect={(event) => handleSelection(option)}
     />
   ));
 
@@ -208,54 +198,16 @@ function NewPostModal({
           </div>
         ) : (
           <div className={css(styles.rootContainer)} key="upload-type-selector">
-            <img
-              alt="Close Button"
-              className={css(styles.closeButton)}
-              draggable={false}
+            <FontAwesomeIcon
+              icon={faX}
               onClick={closeModal}
-              src={"/static/icons/close.png"}
+              className={css(styles.closeButton)}
             />
             <div className={css(styles.titleContainer)}>
-              <div className={css(styles.title)}>{"Select your post type"}</div>
+              <div className={css(styles.title)}>{"Select post type"}</div>
             </div>
             <div className={css(styles.postOptionslist)}>
               {modalOptionCards}
-            </div>
-            <div style={{ margin: "0 auto" }}>
-              <Button
-                customButtonStyle={styles.buttonCustomStyle}
-                customLabelStyle={styles.buttonLabel}
-                label={
-                  modalOptionItems[modalSelectedItemIndex]?.onClick ? (
-                    <div
-                      onClick={
-                        modalOptionItems[modalSelectedItemIndex]?.onClick
-                      }
-                      className={css(styles.buttonLabel)}
-                    >
-                      Continue
-                    </div>
-                  ) : isNullOrUndefined(
-                      modalOptionItems[modalSelectedItemIndex]?.route
-                    ) ? (
-                    <div className={css(styles.buttonLabel)}>Continue</div>
-                  ) : (
-                    <Link
-                      href={
-                        modalOptionItems[modalSelectedItemIndex]?.route ?? ""
-                      }
-                      onClick={() => {
-                        closeModal();
-                      }}
-                      legacyBehavior
-                    >
-                      <div className={css(styles.buttonLabel)}>Continue</div>
-                    </Link>
-                  )
-                }
-                onClick={handleContinue}
-                rippleClass={styles.rippleClass}
-              />
             </div>
           </div>
         )
@@ -288,7 +240,6 @@ const styles = StyleSheet.create({
     flex: "0 0 auto",
     flexDirection: "column",
     justifyContent: "flex-start",
-    margin: 32,
     maxHeight: "100%",
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       maxHeight: "600px",
@@ -307,8 +258,9 @@ const styles = StyleSheet.create({
       top: "none",
     },
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      minHeight: "calc(100vh + 68px)",
-      top: -68,
+      // minHeight: "calc(100vh + 68px)",
+      // top: 0,
+      height: "100vh",
       width: "100%",
     },
   },
@@ -331,11 +283,12 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      overflowY: "auto",
+      // overflowY: "auto",
+      paddingTop: 40,
     },
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      alignItems: "flex-start",
-      overflowY: "hidden",
+      alignItems: "justify-content",
+      // overflowY: "hidden",
       padding: "40px 16px",
     },
   },
@@ -356,13 +309,13 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   closeButton: {
-    height: "12px",
-    width: "12px",
     position: "absolute",
     top: "6px",
     right: "0px",
     padding: "16px",
     cursor: "pointer",
+    fontSize: 16,
+    color: colors.BLACK(0.5),
   },
   titleContainer: {
     alignItems: "center",
@@ -372,6 +325,20 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginLeft: "unset",
     textAlign: "center",
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      alignItems: "center",
+      textAlign: "left",
+      borderBottom: `1px solid ${colors.GREY_BORDER}`,
+      display: "flex",
+      fontSize: 26,
+      fontWeight: 500,
+      justifyContent: "space-between",
+      paddingBottom: 8,
+      paddingTop: 0,
+      position: "relative",
+      width: "100%",
+      marginBottom: 20,
+    },
   },
   title: {
     fontWeight: 500,
@@ -385,7 +352,10 @@ const styles = StyleSheet.create({
   },
   modalContentStyle: {
     position: "static",
-    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      width: 600,
+    },
+    [`@media only screen and (max-width: 660px)`]: {
       // position: "fixed",
       // top: 0,
       width: "100%",
