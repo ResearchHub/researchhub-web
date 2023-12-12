@@ -8,11 +8,13 @@ import { fetchHubSuggestions } from "../SearchSuggestion/lib/api";
 import { HubSuggestion } from "../SearchSuggestion/lib/types";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
+import HubTag from "./HubTag";
 
 interface Props {
   selectedHubs?: Hub[];
   onChange: Function;
   menuPlacement?: "auto" | "top" | "bottom";
+  required?: boolean;
 }
 
 const selectDropdownStyles = {
@@ -31,7 +33,7 @@ const selectDropdownStyles = {
     color: colors.NEW_BLUE(),
   },
   option: {
-    width: "calc(33% - 10px)",
+    width: "auto",
     boxSizing: "border-box",
     textAlign: "center",
     backgroundColor: "unset",
@@ -41,9 +43,6 @@ const selectDropdownStyles = {
     ":nth-child(3n+1)": {
       paddingLeft: 5,
     },
-    ":nth-child(3n)": {
-      width: "33%",
-    },
     ":hover": {
       backgroundColor: "unset",
     },
@@ -52,13 +51,14 @@ const selectDropdownStyles = {
     display: "flex",
     flexWrap: "wrap",
     columnGap: "10px",
+    padding: "7px 7px 0 7px",
   },
   valueContainer: {
     padding: "7px 7px 7px 4px",
   },
 };
 
-const CustomOption: React.FC<any> = (props) => {
+const HubCardOption: React.FC<any> = (props) => {
   return (
     <components.Option {...props}>
       <HubCard
@@ -74,10 +74,23 @@ const CustomOption: React.FC<any> = (props) => {
   );
 };
 
+const TagOnlyOption: React.FC<any> = (props) => {
+  return (
+    <components.Option {...props}>
+      <HubTag
+        overrideStyle={formStyles.tagStyle}
+        hub={props.data.hub}
+        preventLinkClick={true}
+      />
+    </components.Option>
+  );
+};
+
 const HubSelectDropdown = ({
   selectedHubs = [],
   onChange,
   menuPlacement = "auto",
+  required = false,
 }: Props) => {
   const [suggestedHubs, setSuggestedHubs] = useState<HubSuggestion[]>([]);
 
@@ -105,6 +118,7 @@ const HubSelectDropdown = ({
         id="hubs"
         isMulti
         label="Hubs"
+        required={required}
         reactStyles={{}}
         inputStyle={formStyles.inputStyle}
         reactSelect={{ styles: selectDropdownStyles }}
@@ -122,7 +136,7 @@ const HubSelectDropdown = ({
           onChange(newHubs);
         }}
         selectComponents={{
-          Option: CustomOption,
+          Option: TagOnlyOption,
           IndicatorsContainer: () => null,
         }}
         menu={{
@@ -147,6 +161,9 @@ const formStyles = StyleSheet.create({
     padding: 8,
     paddingBottom: 0,
     height: "auto",
+  },
+  tagStyle: {
+    fontSize: 13,
   },
   hubDescriptionStyle: {
     height: 70,

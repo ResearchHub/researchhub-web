@@ -85,11 +85,11 @@ export default function SimpleEditor(props) {
                   editor.isReadOnly = true;
                 } else {
                   editor.editing.view.change((writer) => {
-                    writer.setStyle(
-                      "min-height",
-                      "200px",
-                      editor.editing.view.document.getRoot()
-                    );
+                    // writer.setStyle(
+                    //   "min-height",
+                    //   "200px",
+                    //   editor.editing.view.document.getRoot()
+                    // );
                   });
                 }
 

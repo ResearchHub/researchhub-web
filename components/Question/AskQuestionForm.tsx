@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import { faX } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { createQuestion } from "./api/createQuestion";
@@ -135,7 +135,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
           {"Submission Guidelines"}
         </a>
         <span className={css(styles.close)} onClick={onExit}>
-          {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
+          {<FontAwesomeIcon icon={faX}></FontAwesomeIcon>}
         </span>
       </div>
       <FormInput
@@ -149,8 +149,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         errorStyle={styles.errorText}
         id="title"
         inputStyle={shouldDisplayError && formErrors.title && styles.error}
-        label={"Question"}
-        labelStyle={styles.label}
+        label={"Title"}
         onChange={handleOnChangeFields}
         required
       />
@@ -162,20 +161,20 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         placeholder={
           "Include all the information someone would need to answer your question. Be specific about what you need."
         }
-        labelStyle={styles.label}
         onChange={handleOnChangeFields}
         containerStyle={styles.editor}
         required
       />
       <HubSelectDropdown
         selectedHubs={mutableFormFields.hubs}
+        required
         onChange={(hubs) => {
           handleOnChangeFields("hubs", hubs);
         }}
-        menuPlacement="top"
       />
       <div className={css(styles.buttonsContainer)}>
         <Button
+          fullWidth
           customButtonStyle={styles.buttonStyle}
           disabled={isSubmitting}
           label="Ask Question"
@@ -198,29 +197,15 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     boxSizing: "border-box",
     background: "#FFFFFF",
-    "@media only screen and (min-width: 1024px)": {
-      minWidth: 720,
-    },
-    "@media only screen and (max-width: 1209px)": {
-      paddingLeft: "5vw",
-      paddingRight: "5vw",
-    },
-    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      width: "100%",
-    },
   },
   close: {
-    cursor: "pointer",
-    fontSize: 18,
     position: "absolute",
-    right: 0,
-    top: -12,
-    opacity: 0.6,
-    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      fontSize: 20,
-      top: -32,
-      right: -14,
-    },
+    padding: "16px",
+    cursor: "pointer",
+    fontSize: 16,
+    color: colors.BLACK(0.5),
+    top: -32,
+    right: -14,
   },
   header: {
     alignItems: "center",
@@ -234,16 +219,17 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      fontSize: 18,
+      fontSize: 22,
     },
   },
   buttonsContainer: {
-    width: "auto",
+    width: 200,
     display: "flex",
     justifyContent: "flex-end",
     marginTop: "30px",
+    marginLeft: "auto",
     "@media only screen and (max-width: 767px)": {
-      width: "auto",
+      width: "100%",
       justifyContent: "center",
     },
   },
@@ -262,11 +248,6 @@ const styles = StyleSheet.create({
     height: "55px",
     marginBottom: "35px",
   },
-  label: {
-    fontWeight: 500,
-    fontSize: "19px",
-    lineHeight: "21px",
-  },
   error: {
     border: `1px solid ${colors.RED(1)}`,
   },
@@ -277,12 +258,7 @@ const styles = StyleSheet.create({
     zIndex: 999,
   },
   buttonStyle: {
-    width: "160px",
     height: "50px",
-    "@media only screen and (max-width: 415px)": {
-      width: "160px",
-      height: "50px",
-    },
   },
   editor: {
     width: "721px",
