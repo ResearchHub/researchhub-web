@@ -67,7 +67,17 @@ export const getTabs = ({
   let _tabs = tabs;
 
   if (isPost(document) && document.postType === "question") {
-    _tabs = _tabs.filter((tab) => tab.value !== "reviews" && tab.value !== "conversation");
+    _tabs = _tabs.filter(
+      (tab) => tab.value !== "reviews" && tab.value !== "conversation"
+    );
+  }
+  if (isPost(document) && document.postType === "preregistration") {
+    _tabs = _tabs.filter(
+      (tab) =>
+        tab.value !== "reviews" &&
+        tab.value !== "replicability" &&
+        tab.value !== "bounties"
+    );
   }
   if (!isPaper(document)) {
     // we only have replication prediction markets on papers

@@ -95,6 +95,10 @@ const TransactionCard = (props) => {
       title = `Bounty #${transaction.source.id}: ${transaction.source.status}`;
     } else if (transaction.readable_content_type === "bountyfee") {
       title = "ResearchHub Platform Fee";
+    } else if (transaction.readable_content_type === "purchase") {
+      title = transaction.source?.purchase_type
+        ?.replaceAll("_", " ")
+        .toLocaleLowerCase();
     }
 
     return title;

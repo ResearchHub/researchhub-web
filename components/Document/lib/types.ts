@@ -129,7 +129,7 @@ export type Paper = GenericDocument & {
 };
 
 export type Post = GenericDocument & {
-  postType?: "publication" | "question";
+  postType?: "publication" | "question" | "preregistration";
   note?: Note;
   srcUrl: string;
   postHtml: TrustedHTML;
@@ -221,6 +221,13 @@ export const parsePaper = (raw: any): Paper => {
 
 export const parsePost = (raw: any): Post => {
   const commonAttributes = parseGenericDocument(raw);
+  let postType = "publication";
+  if (raw?.unified_document?.document_type === "QUESTION") {
+    postType = "question";
+  } else if (raw?.unified_document?.document_type === "PREREGISTRATION") {
+    postType = "preregistration";
+  }
+
   const parsed: Post = {
     ...commonAttributes,
     authors: (raw.authors || []).map((a: any) => parseAuthorProfile(a)),
@@ -228,10 +235,7 @@ export const parsePost = (raw: any): Post => {
     apiDocumentType: "researchhubpost",
     srcUrl: raw.post_src,
     postHtml: raw.postHtml || "",
-    postType:
-      raw?.unified_document?.document_type === "QUESTION"
-        ? "question"
-        : "publication",
+    postType: postType as any,
   };
 
   if (raw.note) {

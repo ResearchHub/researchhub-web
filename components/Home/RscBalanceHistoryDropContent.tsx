@@ -53,6 +53,10 @@ function RscBalanceHistoryDropContentCard({
       title = `Bounty #${withdrawal.source.id}: ${withdrawal.source.status}`;
     } else if (withdrawal.readable_content_type === "bountyfee") {
       title = "ResearchHub Platform Fee";
+    } else if (withdrawal.readable_content_type === "purchase") {
+      title = withdrawal.source?.purchase_type
+        ?.replaceAll("_", " ")
+        .toLocaleLowerCase();
     }
     return toTitleCase(title);
   };
