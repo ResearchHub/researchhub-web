@@ -382,7 +382,7 @@ class HubPage extends Component {
                         color: "white",
                       }}
                     >
-                      Crowdfunding on ResearchHub
+                      Get your experiment funded on ResearchHub
                     </div>
                     <div
                       style={{
@@ -392,8 +392,7 @@ class HubPage extends Component {
                         lineHeight: 1.4,
                       }}
                     >
-                      Submit your preregistration in order to be eligible for
-                      crowdfunding
+                      Submit a preregistration to be eligible for crowdfunding
                     </div>
                     <div
                       style={{
@@ -408,7 +407,7 @@ class HubPage extends Component {
                         textAlign: "center",
                       }}
                     >
-                      Preregister Your Experiment
+                      Apply for Funding
                     </div>
                     <div
                       style={{

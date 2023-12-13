@@ -76,13 +76,13 @@ export default function HomeRightSidebar(): ReactElement {
                 <RHLogo withText white />
                 <div
                   style={{
-                    fontSize: 30,
+                    fontSize: 29,
                     fontWeight: 600,
                     marginTop: 16,
                     color: "white",
                   }}
                 >
-                  Crowdfunding on ResearchHub
+                  Get your experiment funded on ResearchHub
                 </div>
                 <div
                   style={{
@@ -92,8 +92,7 @@ export default function HomeRightSidebar(): ReactElement {
                     lineHeight: 1.4,
                   }}
                 >
-                  Submit your preregistration in order to be eligible for
-                  crowdfunding
+                  Submit a preregistration to be eligible for crowdfunding
                 </div>
                 <div
                   style={{
@@ -108,7 +107,7 @@ export default function HomeRightSidebar(): ReactElement {
                     textAlign: "center",
                   }}
                 >
-                  Preregister Your Experiment
+                  Apply for Funding
                 </div>
                 <div
                   style={{
@@ -126,7 +125,6 @@ export default function HomeRightSidebar(): ReactElement {
           }
           contentStyleOverride={{
             margin: 16,
-            marginTop: 0,
           }}
           exitButton={
             <div style={{ fontSize: 18, color: "white" }}>
