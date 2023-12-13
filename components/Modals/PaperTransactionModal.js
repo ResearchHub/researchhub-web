@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle, faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
-import { faInfoCircle } from "@fortawesome/pro-duotone-svg-icons";
+import { faInfoCircle } from "@fortawesome/pro-light-svg-icons";
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -11,6 +11,7 @@ import { keccak256, sha3_256 } from "js-sha3";
 import miniToken from "./Artifacts/mini-me-token";
 import contractAbi from "./Artifacts/contract-abi";
 import { ethers } from "ethers";
+import numeral from "numeral";
 import * as Sentry from "@sentry/browser";
 
 // Component
@@ -37,12 +38,25 @@ import {
   onPasteNumInput,
   formatBalance,
 } from "~/config/utils/form";
-import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isEmpty,
+  isNullOrUndefined,
+} from "~/config/utils/nullchecks";
 
 // Constants
-import { ContentTypes, ChainStatus } from "./constants/SupportContent";
+import {
+  ContentTypes,
+  ChainStatus,
+  SUPPORT_MIN_RSC_REQUIRED,
+  SUPPORT_MAX_RSC_REQUIRED,
+  SUPPORT_DEFAULT_AMOUNT,
+  SUPPORT_RH_PERCENTAGE,
+} from "./constants/SupportContent";
 import { getEtherscanLink } from "~/config/utils/crypto";
 import { parsePurchase } from "~/config/types/purchase";
+import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
+import { withExchangeRate } from "../contexts/ExchangeRateContext";
 const RinkebyRSCContractAddress = "0xD101dCC414F310268c37eEb4cD376CcFA507F571";
 const RinkebyAppPurchaseContractAddress =
   "0x9483992e2b67fd45683d9147b63734c7a9a7eb82";
@@ -51,7 +65,7 @@ class PaperTransactionModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      value: 50,
+      value: SUPPORT_DEFAULT_AMOUNT,
       error: false,
       nextScreen: true,
       offChain: true,
@@ -616,6 +630,25 @@ class PaperTransactionModal extends Component {
     );
   };
 
+  calcResearchHubAmount = ({ offeredAmount }) => {
+    if (offeredAmount === 0) {
+      return 0;
+    }
+    return parseFloat(
+      ((SUPPORT_RH_PERCENTAGE / 100) * offeredAmount).toFixed(10)
+    );
+  };
+
+  calcTotalAmount = ({ offeredAmount }) => {
+    if (isNullOrUndefined(offeredAmount) || isEmpty(offeredAmount)) {
+      return 0;
+    }
+    return (
+      parseFloat(offeredAmount + "") +
+      this.calcResearchHubAmount({ offeredAmount })
+    );
+  };
+
   renderContent = (isPaper) => {
     const { user } = this.props;
     const {
@@ -631,7 +664,15 @@ class PaperTransactionModal extends Component {
       transactionHash,
     } = this.state;
 
-    const hasMinRscError = this.state.value < 1;
+    const researchHubAmount = this.calcResearchHubAmount({
+      offeredAmount: this.state.value,
+    });
+    const totalAmount = this.calcTotalAmount({
+      offeredAmount: this.state.value,
+    });
+    const hasMinRscError =
+      this.state.value < 10 || (user && user.balance < totalAmount);
+    const hasMaxRscError = this.state.value > SUPPORT_MAX_RSC_REQUIRED;
 
     if (finish) {
       return (
@@ -685,55 +726,152 @@ class PaperTransactionModal extends Component {
     } else if (nextScreen && offChain) {
       return (
         <div className={css(styles.content, transition && styles.transition)}>
-          {/* {this.renderToggleContainer(css(styles.toggleContainer))} */}
-          <div className={css(styles.row, styles.numbers, styles.borderBottom)}>
-            <div className={css(styles.column, styles.left)}>
-              <div className={css(styles.title)}>Balance</div>
-              <div className={css(styles.subtitle)}>
-                Your current balance on ResearchHub
+          <ReactTooltip
+            id="commission"
+            effect="solid"
+            className={css(bountyTooltip.tooltipContainer)}
+            delayShow={150}
+          >
+            <div className={css(bountyTooltip.bodyContainer)}>
+              <div className={css(bountyTooltip.desc)}>
+                <div>
+                  • 2% of bounty amount will be used to support the ResearchHub
+                  Community
+                </div>
+                <div>• 7% of bounty amount will be paid to ResearchHub Inc</div>
               </div>
             </div>
-            <div className={css(styles.column, styles.right)}>
-              <div className={css(styles.userBalance)}>
-                {formatBalance(user && user.balance)}
+          </ReactTooltip>
+          <ReactTooltip
+            id="net"
+            effect="solid"
+            className={css(
+              bountyTooltip.tooltipContainer,
+              bountyTooltip.tooltipContainerSmall
+            )}
+            delayShow={150}
+          >
+            <div className={css(bountyTooltip.bodyContainer)}>
+              <div className={css(bountyTooltip.desc)}>
+                Amount including fees
+              </div>
+            </div>
+          </ReactTooltip>
+          {/* {this.renderToggleContainer(css(styles.toggleContainer))} */}
+          <div
+            className={css(
+              styles.lineItem,
+              styles.borderBottom,
+              styles.balanceLine
+            )}
+          >
+            <div className={css(styles.lineItemText, styles.balanceText)}>
+              Current Balance
+            </div>
+            <div className={css(styles.lineItemValue, styles.balanceValue)}>
+              <span className={css(styles.valueNumber)}>
+                <span>{formatBalance(Math.floor(user && user.balance))}</span>
                 <img
                   src={"/static/icons/coin-filled.png"}
                   draggable={false}
                   className={css(styles.coinIcon)}
                   alt="RSC Coin"
                 />
-              </div>
+              </span>
             </div>
           </div>
-          <div className={css(styles.row, styles.numbers)}>
-            <div className={css(styles.column, styles.left)}>
-              <div className={css(styles.title)}>{"Amount"}</div>
-              {hasMinRscError ? (
-                <div className={css(styles.errorMsg)}>Enter at least 1 RSC</div>
-              ) : (
-                <div className={css(styles.subtitle)}>
-                  {"Amount of RSC you wish to support"}
-                </div>
-              )}
+          <div className={css(styles.lineItem, styles.offeringLine)}>
+            <div className={css(styles.lineItemText, styles.offeringText)}>
+              I am tipping
             </div>
-            <div className={css(styles.column, styles.right)}>
-              <input
-                type="number"
-                className={css(styles.input, this.state.error && styles.error)}
-                value={this.state.value}
-                onChange={this.handleInput}
-                min={"0"}
-                max={user && user.balance}
-                onKeyDown={onKeyDownNumInput}
-                onPaste={onPasteNumInput}
-              />
+            <div className={css(styles.lineItemValue, styles.offeringValue)}>
+              <span className={css(styles.valueNumber, styles.valueInInput)}>
+                <input
+                  className={css(
+                    styles.input,
+                    this.state.error && styles.error
+                  )}
+                  type="number"
+                  min={"0"}
+                  max={user && user.balance}
+                  value={this.state.value}
+                  onChange={this.handleInput}
+                  pattern="\d*"
+                  onKeyDown={onKeyDownNumInput}
+                  onPaste={onPasteNumInput}
+                />
+              </span>
+              <span className={css(styles.rscText)}>RSC</span>
             </div>
+          </div>
+
+          <div className={css(styles.lineItem, styles.platformFeeLine)}>
+            <div className={css(styles.lineItemText)}>
+              Platform Fee ({SUPPORT_RH_PERCENTAGE}%){` `}
+              <span
+                className={css(styles.tooltipIcon)}
+                data-tip={""}
+                data-for="commission"
+              >
+                {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
+              </span>
+            </div>
+            <div className={css(styles.lineItemValue)}>
+              <span className={css(styles.valueNumber)}>
+                <span>+ {researchHubAmount.toLocaleString()}</span>
+              </span>
+              <span className={css(styles.rscText)}>RSC</span>
+            </div>
+          </div>
+
+          <div className={css(styles.lineItem, styles.netAmountLine)}>
+            <ReactTooltip effect="solid" />
+            <div className={css(styles.lineItemText)}>
+              Total
+              <span
+                className={css(styles.tooltipIcon)}
+                data-tip={""}
+                data-for="net"
+              >
+                {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
+              </span>
+            </div>
+            <div className={css(styles.lineItemValue, styles.netAmountValue)}>
+              <span className={css(styles.valueNumber)}>
+                <span>{totalAmount.toLocaleString()}</span>
+                <ResearchCoinIcon
+                  overrideStyle={styles.rscIcon}
+                  width={20}
+                  height={20}
+                />
+              </span>
+              <span className={css(styles.rscText)}>RSC</span>
+            </div>
+          </div>
+          <div className={css(styles.usdValue)}>
+            ≈ {this.props.rscToUSDDisplay(totalAmount)}{" "}
+            <span style={{ marginLeft: 22 }}>USD</span>
           </div>
           <div className={css(styles.buttonRow)}>
+            {hasMinRscError ? (
+              <div className={css(alertStyles.alert, alertStyles.rscAlert)}>
+                {user && user.balance < totalAmount
+                  ? `Your RSC balance is below ${numeral(totalAmount).format(
+                      "0[,]0[.]00"
+                    )}`
+                  : `Minimum tip is ${SUPPORT_MIN_RSC_REQUIRED} RSC`}
+              </div>
+            ) : hasMaxRscError ? (
+              <div className={css(alertStyles.alert, alertStyles.rscAlert)}>
+                Tip amount cannot exceed 100,000 RSC
+              </div>
+            ) : (
+              <div />
+            )}
             <Button
               label="Confirm"
               onClick={this.confirmTransaction}
-              disabled={hasMinRscError}
+              disabled={hasMinRscError || hasMaxRscError}
             />
           </div>
         </div>
@@ -859,6 +997,8 @@ class PaperTransactionModal extends Component {
       <BaseModal
         isOpen={modals.openPaperTransactionModal}
         closeModal={this.closeModal}
+        modalStyle={styles.modalStyle}
+        modalContentStyle={styles.modalContentStyle}
         title={`Tip Authors`}
       >
         {this.renderContent(isPaper)}
@@ -867,15 +1007,68 @@ class PaperTransactionModal extends Component {
   }
 }
 
+const alertStyles = StyleSheet.create({
+  alert: {
+    fontSize: 14,
+    textAlign: "left",
+    color: colors.DARKER_GREY(),
+  },
+  rscAlert: {
+    color: colors.RED(),
+  },
+  previewAlert: {},
+});
+
+const bountyTooltip = StyleSheet.create({
+  tooltipContainer: {
+    textAlign: "left",
+    width: 300,
+    padding: 12,
+  },
+  tooltipContainerSmall: {
+    width: "auto",
+  },
+  bodyContainer: {},
+  title: {
+    textAlign: "center",
+    color: "white",
+    fontWeight: 500,
+    marginBottom: 8,
+  },
+  desc: {
+    fontSize: 13,
+    lineHeight: "20px",
+  },
+});
+
 const styles = StyleSheet.create({
+  modalStyle: {
+    maxWidth: 500,
+
+    "@media only screen and (min-width: 768px)": {
+      width: 500,
+    },
+  },
+  modalContentStyle: {
+    padding: 40,
+    maxWidth: 550,
+    "@media only screen and (max-width: 767px)": {
+      padding: 40,
+      minWidth: "unset",
+      width: "100%",
+    },
+    "@media only screen and (max-width: 415px)": {
+      padding: 40,
+      paddingTop: 50,
+    },
+  },
   content: {
-    width: 420,
+    width: "100%",
     opacity: 1,
     transition: "all ease-in-out 0.2s",
     position: "relative",
     paddingTop: 40,
     "@media only screen and (max-width: 557px)": {
-      width: "100%",
       boxSizing: "border-box",
     },
   },
@@ -918,6 +1111,7 @@ const styles = StyleSheet.create({
     borderBottom: ".1rem dotted #e7e6e4",
     marginTop: 0,
     paddingTop: 0,
+    paddingBottom: 12,
   },
   border: {
     borderBottom: ".1rem dotted #e7e6e4",
@@ -971,16 +1165,18 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   input: {
-    height: 55,
-    width: 100,
-    fontSize: 16,
-    fontWeight: "bold",
-    padding: "5px 5px 5px 10px",
-    boxSizing: "border-box",
-    color: colors.BLACK(0.9),
-    background: "#FBFBFD",
-    border: "1px solid #E8E8F2",
+    width: 80,
+    marginRight: "-8px",
+    textAlign: "right",
+    padding: "5px 7px",
     borderRadius: 2,
+    border: `1px solid rgb(229 229 230)`,
+    background: "#FBFBFD",
+    fontSize: 16,
+    [`[type="number"]`]: {
+      "-webkit-appearance": "none",
+      margin: 0,
+    },
   },
   error: {
     borderColor: "red",
@@ -1040,7 +1236,7 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     marginTop: 30,
   },
@@ -1161,6 +1357,88 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.RED(),
   },
+
+  lineItem: {
+    display: "flex",
+    fontSize: 16,
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 16,
+    width: "100%",
+  },
+  lineItemValue: {
+    display: "flex",
+    width: 150,
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  lineItemText: {
+    display: "flex",
+    alignItems: "center",
+    fontSize: 18,
+  },
+  balanceLine: {
+    paddingBottom: 20,
+  },
+  balanceText: {
+    // fontWeight: 500,
+    color: colors.DARKER_GREY(),
+  },
+  balanceValue: {
+    alignItems: "center",
+    color: colors.DARKER_GREY(),
+  },
+  offeringLine: {
+    // marginBottom: 7,
+  },
+  offeringText: {
+    fontWeight: 500,
+  },
+  offeringValue: {
+    alignItems: "center",
+  },
+  valueNumber: {
+    width: 100,
+    textAlign: "right",
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+    justifyContent: "flex-end",
+  },
+  valueInInput: {
+    paddingRight: 0,
+  },
+  platformFeeLine: {
+    color: colors.DARKER_GREY(),
+    marginBottom: 20,
+  },
+  netAmountLine: {
+    paddingTop: 16,
+    borderTop: `2px solid rgb(229 229 230)`,
+    fontWeight: 500,
+    marginBottom: 0,
+  },
+  netAmountValue: {
+    fontWeight: 500,
+  },
+  usdValue: {
+    fontSize: 12,
+    textAlign: "right",
+    marginTop: 8,
+    color: colors.LIGHT_GREY_TEXT,
+  },
+  tooltipIcon: {
+    fontSize: 16,
+    color: colors.DARKER_GREY(),
+    marginLeft: 5,
+    cursor: "pointer",
+  },
+  rscText: {
+    fontWeight: 500,
+    marginLeft: 16,
+    display: "block",
+    color: colors.BLACK(),
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -1180,4 +1458,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withAlert()(PaperTransactionModal));
+)(withAlert()(withExchangeRate(PaperTransactionModal)));

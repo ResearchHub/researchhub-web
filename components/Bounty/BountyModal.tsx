@@ -437,7 +437,7 @@ function BountyModal({
 const bountyTooltip = StyleSheet.create({
   tooltipContainer: {
     textAlign: "left",
-    width: 450,
+    width: 300,
     padding: 12,
   },
   tooltipContainerSmall: {
