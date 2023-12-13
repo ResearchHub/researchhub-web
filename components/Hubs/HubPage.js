@@ -11,7 +11,10 @@ import { getEducationalCarouselElements } from "~/components/shared/carousel/pre
 import { getFragmentParameterByName } from "~/config/utils/parsers";
 import { Helpers } from "@quantfive/js-web-config";
 import { HubActions } from "~/redux/hub";
-import { INFO_TAB_EXIT_KEY } from "~/components/Banner/constants/exitable_banner_keys";
+import {
+  INFO_TAB_EXIT_KEY,
+  PREREG_FUNDING_EXIT_KEY,
+} from "~/components/Banner/constants/exitable_banner_keys";
 import { MessageActions } from "~/redux/message";
 import { silentEmptyFnc } from "~/config/utils/nullchecks";
 import { StyleSheet, css } from "aphrodite";
@@ -27,6 +30,8 @@ import Router from "next/router";
 import SubscribeButton from "../Home/SubscribeButton";
 import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedContainer";
 import { parseUser } from "~/config/types/root_types";
+import Link from "next/link";
+import RHLogo from "../Home/RHLogo";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -350,7 +355,89 @@ class HubPage extends Component {
       <div className={css(styles.rhHomeContainer)}>
         <div className={css(styles.homeContentContainer, styles.column)}>
           <div className={css(styles.mobileInfoTab)}>
+            {/* TODO: Remove after preregistrations close */}
             <ExitableBanner
+              bannerKey={PREREG_FUNDING_EXIT_KEY}
+              content={
+                <Link
+                  target="_blank"
+                  href="https://forms.gle/QYuEa6YyDeGxSNxh9"
+                  style={{ textDecoration: "none" }}
+                >
+                  <div
+                    style={{
+                      background:
+                        "linear-gradient(149deg, #B5499D 20.48%, #5735A3 71.51%)",
+                      padding: 14,
+                      boxSizing: "border-box",
+                      borderRadius: 4,
+                    }}
+                  >
+                    <RHLogo withText white />
+                    <div
+                      style={{
+                        fontSize: 30,
+                        fontWeight: 600,
+                        marginTop: 16,
+                        color: "white",
+                      }}
+                    >
+                      Crowdfunding on ResearchHub
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 14,
+                        marginTop: 8,
+                        color: "white",
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      Submit your preregistration in order to be eligible for
+                      crowdfunding
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 24,
+                        background: "#FFCD33",
+                        color: "#593F94",
+                        fontWeight: 500,
+                        padding: "11px 0px",
+                        width: "100%",
+                        display: "inline-block",
+                        borderRadius: 4,
+                        textAlign: "center",
+                      }}
+                    >
+                      Preregister Your Experiment
+                    </div>
+                    <div
+                      style={{
+                        color: "#FFCD33",
+                        fontSize: 12,
+                        marginTop: 12,
+                        fontWeight: 400,
+                        paddingBottom: 4,
+                      }}
+                    >
+                      Submissions close on January 15
+                    </div>
+                  </div>
+                </Link>
+              }
+              contentStyleOverride={{
+                margin: 16,
+              }}
+              exitButton={
+                <div style={{ fontSize: 20, color: "white", padding: 8 }}>
+                  {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
+                </div>
+              }
+              exitButtonPositionOverride={{
+                top: "20px !important",
+                right: "24px !important",
+              }}
+            />
+            {/* <ExitableBanner
               bannerKey={INFO_TAB_EXIT_KEY}
               content={<RhCarousel rhCarouselItems={carouselElements} />}
               contentStyleOverride={{
@@ -372,7 +459,7 @@ class HubPage extends Component {
                 right: "24px !important",
               }}
               onExit={silentEmptyFnc}
-            />
+            /> */}
           </div>
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}
