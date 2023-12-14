@@ -9,7 +9,6 @@ import { MessageActions } from "~/redux/message";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import Button from "../Form/Button";
-import SimplePostEditor from "../Form/SimplePostEditor";
 
 import BountyWizardRSCForm from "./BountyWizardRSCForm";
 import { useRouter } from "next/router";
@@ -162,7 +161,7 @@ function BountyWizard({ onSuccess }: Props): ReactElement {
         );
       case 2:
         return (<>
-          <SimplePostEditor
+          {/* <SimplePostEditor
             documentType="BOUNTY"
             bountyType={active}
             title={TITLES[active]}
@@ -184,7 +183,7 @@ function BountyWizard({ onSuccess }: Props): ReactElement {
             }
             label={"Bounty Title"}
             buttonLabel={"Next"}
-          />
+          /> */}
         </>);
       case 3:
         return (

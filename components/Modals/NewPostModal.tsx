@@ -2,7 +2,6 @@ import { connect } from "react-redux";
 import { createNewNote } from "~/config/fetch";
 import {
   filterNull,
-  isNullOrUndefined,
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import { MessageActions } from "~/redux/message";
@@ -10,7 +9,6 @@ import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 import {
   PostIcon,
   PaperIcon,
-  HypothesisIcon,
   QuestionIcon,
 } from "~/config/themes/icons";
 import {
@@ -25,21 +23,20 @@ import { NextRouter, useRouter } from "next/router";
 import {
   DEFAULT_POST_BUTTON_VALUES,
   NewPostButtonContext,
+  NewPostButtonContextType,
   NewPostButtonContextValues,
 } from "~/components/contexts/NewPostButtonContext";
 import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
 import BaseModal from "./BaseModal";
-import Button from "../Form/Button";
-import Link from "next/link";
 import Modal from "react-modal";
 import PaperUploadWizardContainer from "../Paper/UploadWizard/PaperUploadWizardContainer";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import AskQuestionForm from "~/components/Question/AskQuestionForm";
 import colors from "~/config/themes/colors";
-import BountyWizard from "../Bounty/BountyWizard";
 import { breakpoints } from "~/config/themes/screen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/pro-regular-svg-icons";
+import { NullableString } from "~/config/types/root_types";
 
 export type NewPostModalProps = {
   currentUser: any;
@@ -186,11 +183,9 @@ function NewPostModal({
   return (
     <BaseModal
       children={
-        bodyType === "bounty" ? (
-          <BountyWizard onSuccess={closeModal} />
-        ) : bodyType === "question" ? (
+        bodyType === "question" ? (
           <div className={css(styles.rootContainer)} key="question-wizard">
-            <AskQuestionForm documentType="question" onExit={closeModal} />
+            <AskQuestionForm onExit={closeModal} />
           </div>
         ) : bodyType === "paperWizard" ? (
           <div className={css(styles.rootContainer)} key="paper-wizard">
@@ -353,11 +348,9 @@ const styles = StyleSheet.create({
   modalContentStyle: {
     position: "static",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      width: 600,
+      width: 660,
     },
     [`@media only screen and (max-width: 660px)`]: {
-      // position: "fixed",
-      // top: 0,
       width: "100%",
     },
   },

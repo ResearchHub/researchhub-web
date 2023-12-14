@@ -12,8 +12,8 @@ type DocumentContext = {
   updateMetadata: Function;
   editDocument?: Function;
   updateDocument: Function;
-  preferences: DocumentPreferences;
-  setPreference: Function;
+  preferences?: DocumentPreferences;
+  setPreference?: Function;
 };
 
 export const DocumentContext = createContext<DocumentContext>({

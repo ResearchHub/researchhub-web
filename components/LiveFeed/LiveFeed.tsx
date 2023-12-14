@@ -91,11 +91,6 @@ const tabs: Array<Tab> = [
     label: "Peer Reviews",
     value: "REVIEW",
   },
-  {
-    icon: <PaperIcon height={14} width={14} onClick={undefined} />,
-    label: "Articles",
-    value: "ARTICLE",
-  },
 ];
 
 const getTabsForLiveFeed = (filters: ApiFilters) => {

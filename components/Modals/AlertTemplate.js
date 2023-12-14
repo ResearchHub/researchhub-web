@@ -4,6 +4,9 @@ import { modalStyles } from "~/config/themes/styles";
 import Ripples from "react-ripples";
 
 const AlertTemplate = ({ style, options, message, close }) => {
+  const withCancel =
+    options.withCancel !== undefined ? options.withCancel : true;
+
   function closeAlert() {
     close();
   }
@@ -16,7 +19,7 @@ const AlertTemplate = ({ style, options, message, close }) => {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundColor: "rgba(0, 0, 0, 0.1)",
         zIndex: "1000005",
         borderRadius: 5,
       },
@@ -36,12 +39,14 @@ const AlertTemplate = ({ style, options, message, close }) => {
       <div className={css(styles.alertContainer)}>
         <p className={css(styles.text)}>{message.text}</p>
         <div className={css(styles.buttonRow)}>
-          <Ripples
-            className={css(styles.button, styles.border)}
-            onClick={closeAlert}
-          >
-            <div className={css(styles.left)}>Cancel</div>
-          </Ripples>
+          {withCancel && (
+            <Ripples
+              className={css(styles.button, styles.border)}
+              onClick={closeAlert}
+            >
+              <div className={css(styles.left)}>Cancel</div>
+            </Ripples>
+          )}
           <Ripples
             className={css(styles.button)}
             onClick={() => {
