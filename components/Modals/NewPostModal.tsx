@@ -190,7 +190,7 @@ function NewPostModal({
           <BountyWizard onSuccess={closeModal} />
         ) : bodyType === "question" ? (
           <div className={css(styles.rootContainer)} key="question-wizard">
-            <AskQuestionForm documentType="question" onExit={closeModal} />
+            <AskQuestionForm onExit={closeModal} />
           </div>
         ) : bodyType === "paperWizard" ? (
           <div className={css(styles.rootContainer)} key="paper-wizard">
@@ -353,11 +353,9 @@ const styles = StyleSheet.create({
   modalContentStyle: {
     position: "static",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      width: 600,
+      width: 660,
     },
     [`@media only screen and (max-width: 660px)`]: {
-      // position: "fixed",
-      // top: 0,
       width: "100%",
     },
   },

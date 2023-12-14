@@ -30,7 +30,7 @@ interface Props {
   onClick?: Function;
   containerStyle?: any;
   tabStyle?: any;
-  variant: "underline" | "text";
+  variant?: "underline" | "text";
 }
 
 const HorizontalTabBar = ({
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
       borderBottom: `solid 3px ${colors.GREY()}`,
       transition: "all 0.2s ease-in-out",
     },
-  },    
+  },
   textVariantSelected: {
     color: colors.NEW_BLUE(),
   },
@@ -248,7 +248,6 @@ const styles = StyleSheet.create({
       color: colors.NEW_BLUE(),
     },
   },
-
 
   // new feature indicator
   new: {

@@ -75,7 +75,6 @@ const DocumentCommentsPage: NextPage<Args> = ({
     return <Error statusCode={500} />;
   }
 
-  const displayCommentsFeed = false;
   const commentCount = 0;
 
   return (

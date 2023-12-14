@@ -34,6 +34,7 @@ import CommentFeed from "~/components/Comment/CommentFeed";
 import { COMMENT_TYPES, parseComment } from "~/components/Comment/lib/types";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import colors from "~/config/themes/colors";
+import EditPostModal from "./EditPostModal";
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
 );
@@ -70,11 +71,9 @@ const DocumentPostPageType: NextPage<Args> = ({
   postHtml = "",
   errorCode,
 }) => {
-
   const { revalidateDocument } = useCacheControl();
   const documentType = "post";
-  const isQuestion = documentData?.document_type === "QUESTION" ? "question" : "post";
-
+  const isQuestion = documentData?.document_type === "QUESTION" ? true : false;
 
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -121,7 +120,17 @@ const DocumentPostPageType: NextPage<Args> = ({
           metadata: documentMetadata,
           documentType,
           preferences: docPreferences,
-          updateDocument: () => null,
+          updateDocument: (doc) => {
+            setDocument(doc);
+            setPostHtml(doc.postHtml);
+
+            setDocumentMetadata({
+              ...documentMetadata,
+              hubs: doc.hubs,
+            });
+
+            revalidateDocument();
+          },
           updateMetadata: setDocumentMetadata,
           setPreference: ({ key, value }) =>
             setDocPreferences({ ...docPreferences, [key]: value }),
@@ -139,6 +148,11 @@ const DocumentPostPageType: NextPage<Args> = ({
           },
         }}
       >
+        <EditPostModal
+          post={document}
+          isOpen={isEditing}
+          handleClose={() => setIsEditing(false)}
+        />
         <DocumentPageLayout
           document={document}
           errorCode={errorCode}
@@ -150,59 +164,29 @@ const DocumentPostPageType: NextPage<Args> = ({
               className={css(styles.bodyWrapper)}
               style={{ maxWidth: viewerWidth, margin: "0 auto" }}
             >
-              {isEditing ? (
-                <div className={css(styles.editor)}>
-                  <DynamicCKEditor
-                    editing
-                    id="editPostBody"
-                    initialData={_postHtml}
-                    noTitle={true}
-                    onChange={(id, editorData) => setPostHtml(editorData)}
-                    readOnly={false}
-                  />
-
-                  <div className={css(styles.editButtonRow)}>
-                    <Button
-                      isWhite
-                      variant={"text"}
-                      label={"Cancel"}
-                      onClick={(): void => setIsEditing(false)}
-                      size={"small"}
-                    />
-                    <Button
-                      variant={"contained"}
-                      label={"Save"}
-                      onClick={(): void => {
-                        savePostApi({ id: document.id, postHtml: _postHtml });
-                        setIsEditing(false);
-                      }}
-                      size={"small"}
-                    />
-                  </div>
-                </div>
-              ) : (
-                <DocumentViewer
-                  isPost={true}
-                  // @ts-ignore
-                  postHtml={_postHtml}
-                  documentInstance={{
-                    id: document.id,
-                    type: "researchhubpost",
-                  }}
-                  document={document}
-                  metadata={documentMetadata}
-                  viewerWidth={config.width}
-                  onZoom={(zoom: ZoomAction) => {
-                    if (!zoom.isExpanded) {
-                      setViewerWidth(zoom.newWidth);
-                    }
-                  }}
-                />
-              )}
+              <DocumentViewer
+                isPost={true}
+                // @ts-ignore
+                postHtml={_postHtml}
+                documentInstance={{
+                  id: document.id,
+                  type: "researchhubpost",
+                }}
+                document={document}
+                metadata={documentMetadata}
+                viewerWidth={config.width}
+                allowAnnotations={!isQuestion}
+                withControls={!isQuestion}
+                onZoom={(zoom: ZoomAction) => {
+                  if (!zoom.isExpanded) {
+                    setViewerWidth(zoom.newWidth);
+                  }
+                }}
+              />
             </div>
             <div style={{ maxWidth: viewerWidth, margin: "20px auto 0 auto" }}>
               <div className={css(styles.subheader)}>
-                {isQuestion === "question" ? "Answers" : "Discussion"}
+                {isQuestion ? "Answers" : "Discussion"}
               </div>
               <CommentFeed
                 document={document}
