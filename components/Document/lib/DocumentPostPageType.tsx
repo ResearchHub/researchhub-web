@@ -45,7 +45,7 @@ const DocumentPostPageType: NextPage<Args> = ({
 }) => {
   const { revalidateDocument } = useCacheControl();
   const documentType = "post";
-  const isQuestion = documentData?.document_type === "QUESTION" ? true : false;
+  const isQuestion = documentData?.document_type === "QUESTION";
 
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);

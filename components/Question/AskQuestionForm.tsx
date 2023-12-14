@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
-import { connect, useSelector } from "react-redux";
+import { connect } from "react-redux";
 import { formGenericStyles } from "../Paper/Upload/styles/formGenericStyles";
 import { StyleSheet, css } from "aphrodite";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
@@ -12,12 +12,11 @@ import dynamic from "next/dynamic";
 import FormInput from "../Form/FormInput";
 import HubSelectDropdown from "../Hubs/HubSelectDropdown";
 import { Post } from "../Document/lib/types";
-import { ID, parseUser } from "~/config/types/root_types";
-import { RootState } from "~/redux";
-import { isEmpty } from "~/config/utils/nullchecks";
+import { ID } from "~/config/types/root_types";
 import { DocumentContext } from "../Document/lib/DocumentContext";
 import { parseHub } from "~/config/types/hub";
 import { createOrUpdatePostApi } from "../Document/api/createOrUpdatePostApi";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
 
 const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 
@@ -51,14 +50,6 @@ function validateFormField(fieldID: string, value: any): boolean {
       return result;
   }
 }
-
-const useCurrentUser = () => {
-  const currentUser = useSelector((state: RootState) =>
-    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
-  );
-
-  return currentUser;
-};
 
 export type AskQuestionFormProps = {
   onExit: (event?: SyntheticEvent) => void;

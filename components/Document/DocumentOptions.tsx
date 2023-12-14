@@ -65,6 +65,39 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
   const isModerator = Boolean(currentUser?.moderator);
   const isHubEditor = Boolean(currentUser?.authorProfile?.isHubEditor);
 
+
+  const handleRemoveContent = () => {
+    alert.show({
+      // @ts-ignore
+      text: (
+        <div>
+          {`Permanently delete this ${doc.unifiedDocument.documentType}? This cannot be undone.`}
+        </div>
+      ),
+      buttonText: "Yes",
+      onClick: async () => {
+        censorDocument({
+          unifiedDocumentId: doc.unifiedDocument.id,
+          onSuccess: () => {
+            alert.show({
+              // @ts-ignore
+              text: (
+                <div>
+                  {`This ${doc.unifiedDocument.documentType} has been deleted.`}
+                </div>
+              ),
+              buttonText: "OK",
+              onClick: () => {
+                window.location.reload();
+              },
+            });
+          },
+          onError: () => {},
+        });
+      },
+    });
+  }    
+
   const options: Array<MenuOption> = [
     ...(isPaper(doc) && currentUser
       ? [
@@ -117,37 +150,7 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
             group: "Document",
             icon: <FontAwesomeIcon icon={faTrashAlt} />,
             value: "remove-content",
-            onClick: async () => {
-              alert.show({
-                // @ts-ignore
-                text: (
-                  <div>
-                    {`Permanently delete this ${doc.unifiedDocument.documentType}? This cannot be undone.`}
-                  </div>
-                ),
-                buttonText: "Yes",
-                onClick: async () => {
-                  censorDocument({
-                    unifiedDocumentId: doc.unifiedDocument.id,
-                    onSuccess: () => {
-                      alert.show({
-                        // @ts-ignore
-                        text: (
-                          <div>
-                            {`This ${doc.unifiedDocument.documentType} has been deleted.`}
-                          </div>
-                        ),
-                        buttonText: "OK",
-                        onClick: () => {
-                          window.location.reload();
-                        },
-                      });
-                    },
-                    onError: () => {},
-                  });
-                },
-              });
-            },
+            onClick: handleRemoveContent,
           },
         ]
       : []),
