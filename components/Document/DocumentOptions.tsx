@@ -80,6 +80,7 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
         censorDocument({
           unifiedDocumentId: doc.unifiedDocument.id,
           onSuccess: () => {
+            revalidateDocument();
             alert.show(
               {
                 // @ts-ignore
