@@ -1,15 +1,15 @@
 import BaseModal from "~/components/Modals/BaseModal";
-import { GenericDocument, Post } from "../lib/types";
-import { css, StyleSheet } from "aphrodite";
+import { Post } from "./types";
+import { StyleSheet } from "aphrodite";
 import AskQuestionForm from "~/components/Question/AskQuestionForm";
 
 interface Props {
-  post: GenericDocument;
+  post: Post;
   isOpen: boolean;
   handleClose: () => void;
 }
 
-const EditPostModal = ({ post, handleClose, isOpen }: Props) => {
+const EditQuestionModal = ({ post, handleClose, isOpen }: Props) => {
   return (
     <div>
       <BaseModal
@@ -23,10 +23,8 @@ const EditPostModal = ({ post, handleClose, isOpen }: Props) => {
         title={false}
       >
         <AskQuestionForm
-          title={""}
           onExit={handleClose}
           post={post}
-          user={null}
         />
       </BaseModal>
     </div>
@@ -39,4 +37,4 @@ const styles = StyleSheet.create({
   modalContentStyle: {},
 });
 
-export default EditPostModal;
+export default EditQuestionModal;

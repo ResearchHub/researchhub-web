@@ -90,7 +90,7 @@ const logEmpEvent = ({
   }
 };
 
-export const createOrUpdatePost = ({
+export const createOrUpdatePostApi = ({
   payload,
   currentUser,
   onSuccess,

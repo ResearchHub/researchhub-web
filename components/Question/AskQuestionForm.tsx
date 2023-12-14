@@ -2,27 +2,22 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect, useSelector } from "react-redux";
-import { createOrUpdatePost } from "./api/createQuestion";
-import { firstImageFromHtml } from "~/config/utils/getFirstImageOfHtml";
 import { formGenericStyles } from "../Paper/Upload/styles/formGenericStyles";
-import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdown";
 import { StyleSheet, css } from "aphrodite";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
-import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
 import Button from "../Form/Button";
 import colors from "../../config/themes/colors";
 import dynamic from "next/dynamic";
 import FormInput from "../Form/FormInput";
-import FormSelect from "../Form/FormSelect";
 import HubSelectDropdown from "../Hubs/HubSelectDropdown";
 import { Post } from "../Document/lib/types";
 import { ID, parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
 import { isEmpty } from "~/config/utils/nullchecks";
-import useCacheControl from "~/config/hooks/useCacheControl";
 import { DocumentContext } from "../Document/lib/DocumentContext";
 import { parseHub } from "~/config/types/hub";
+import { createOrUpdatePostApi } from "../Document/api/createOrUpdatePostApi";
 
 const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 
@@ -98,7 +93,7 @@ function AskQuestionForm({ post, user, onExit }: AskQuestionFormProps) {
       setIsSubmitting(true);
     }
 
-    createOrUpdatePost({
+    createOrUpdatePostApi({
       payload: {
         postId: post?.id,
         title: mutableFormFields.title,
@@ -127,29 +122,6 @@ function AskQuestionForm({ post, user, onExit }: AskQuestionFormProps) {
         onExit();
       },
     });
-
-    // createQuestion({
-    //   payload: {
-    //     admins: null,
-    //     created_by: user.id,
-    //     document_type: "QUESTION",
-    //     editors: null,
-    //     full_src: mutableFormFields.text,
-    //     hubs: mutableFormFields.hubs.map((hub) => hub.id),
-    //     is_public: true,
-    //     preview_img: firstImageFromHtml(mutableFormFields.text),
-    //     renderable_text: getPlainTextFromMarkdown(mutableFormFields.text),
-    //     title: mutableFormFields.title,
-    //     viewers: null,
-    //   },
-
-    //   onError: (_err: Error): void => setIsSubmitting(false),
-    //   onSuccess: (response: any): void => {
-    //     const { id, slug } = response ?? {};
-    //     router.push(`/question/${id}/${slug}`);
-    //     onExit();
-    //   },
-    // });
   };
 
   const handleOnChangeFields = (fieldID: string, value: string): void => {

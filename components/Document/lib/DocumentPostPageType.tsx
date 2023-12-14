@@ -1,5 +1,4 @@
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps";
+import { NextPage } from "next";
 import DocumentPageLayout from "~/components/Document/pages/DocumentPageLayout";
 import { useRouter } from "next/router";
 import { Post } from "~/components/Document/lib/types";
@@ -17,10 +16,6 @@ import {
   DocumentContext,
   DocumentPreferences,
 } from "~/components/Document/lib/DocumentContext";
-import removeMd from "remove-markdown";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import Button from "~/components/Form/Button";
 import {
   LEFT_SIDEBAR_MAX_WIDTH,
   LEFT_SIDEBAR_MIN_WIDTH,
@@ -29,34 +24,11 @@ import { breakpoints } from "~/config/themes/screen";
 import DocumentViewer, {
   ZoomAction,
 } from "~/components/Document/DocumentViewer";
-import dynamic from "next/dynamic";
 import CommentFeed from "~/components/Comment/CommentFeed";
-import { COMMENT_TYPES, parseComment } from "~/components/Comment/lib/types";
+import { COMMENT_TYPES } from "~/components/Comment/lib/types";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import colors from "~/config/themes/colors";
-import EditPostModal from "./EditPostModal";
-const DynamicCKEditor = dynamic(
-  () => import("~/components/CKEditor/SimpleEditor")
-);
-
-const savePostApi = ({ id, postHtml }) => {
-  const _toPlaintext = (text) => {
-    return removeMd(text).replace(/&nbsp;/g, " ");
-  };
-
-  const params = {
-    post_id: id,
-    full_src: postHtml,
-    renderable_text: _toPlaintext(postHtml),
-  };
-
-  return fetch(API.RESEARCHHUB_POST({}), API.POST_CONFIG(params))
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .catch((error) => {
-      alert("Something went wrong. Please try again later.");
-    });
-};
+import EditQuestionModal from "./EditQuestionModal";
 
 interface Args {
   documentData?: any;
@@ -148,7 +120,7 @@ const DocumentPostPageType: NextPage<Args> = ({
           },
         }}
       >
-        <EditPostModal
+        <EditQuestionModal
           post={document}
           isOpen={isEditing}
           handleClose={() => setIsEditing(false)}
