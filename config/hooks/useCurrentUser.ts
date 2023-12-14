@@ -4,11 +4,11 @@ import { isEmpty } from "~/config/utils/nullchecks";
 import { useSelector } from "react-redux";
 
 const useCurrentUser = () => {
-    const currentUser = useSelector((state: RootState) =>
-      isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
-    );
-  
-    return currentUser;
-  };
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
+
+  return currentUser;
+};
 
 export default useCurrentUser;

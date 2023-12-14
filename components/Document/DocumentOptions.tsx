@@ -33,6 +33,7 @@ import useCacheControl from "~/config/hooks/useCacheControl";
 import excludeFromFeed from "../Admin/api/excludeDocFromFeedAPI";
 import censorDocument from "./api/censorDocAPI";
 import { useAlert } from "react-alert";
+import { useRouter } from "next/router";
 
 interface Props {
   document: GenericDocument;
@@ -56,6 +57,7 @@ function downloadPDF(pdfUrl) {
 
 const DocumentOptions = ({ document: doc, metadata }: Props) => {
   const alert = useAlert();
+  const router = useRouter();
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
@@ -64,7 +66,6 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
 
   const isModerator = Boolean(currentUser?.moderator);
   const isHubEditor = Boolean(currentUser?.authorProfile?.isHubEditor);
-
 
   const handleRemoveContent = () => {
     alert.show({
@@ -79,24 +80,29 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
         censorDocument({
           unifiedDocumentId: doc.unifiedDocument.id,
           onSuccess: () => {
-            alert.show({
-              // @ts-ignore
-              text: (
-                <div>
-                  {`This ${doc.unifiedDocument.documentType} has been deleted.`}
-                </div>
-              ),
-              buttonText: "OK",
-              onClick: () => {
-                window.location.reload();
+            alert.show(
+              {
+                // @ts-ignore
+                text: (
+                  <div>
+                    {`This ${doc.unifiedDocument.documentType} has been deleted.`}
+                  </div>
+                ),
+                buttonText: "OK",
+                onClick: () => {
+                  router.reload();
+                },
               },
-            });
+              { withCancel: false }
+            );
           },
-          onError: () => {},
+          onError: () => {
+            window.alert("Failed to remove");
+          },
         });
       },
     });
-  }    
+  };
 
   const options: Array<MenuOption> = [
     ...(isPaper(doc) && currentUser
