@@ -91,7 +91,7 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
                 ),
                 buttonText: "OK",
                 onClick: () => {
-                  router.reload();
+                  router.push("/");
                 },
               },
               { withCancel: false }
