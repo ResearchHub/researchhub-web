@@ -3,9 +3,9 @@ import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
 import { connect } from "react-redux";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { getNumberWithCommas } from "~/config/utils/getNumberWithCommas";
 import { postLastTimeClickedRscTab } from "./api/postLastTimeClickedRscTab";
 import { StyleSheet, css } from "aphrodite";
+import { formatBalance } from "~/config/utils/form";
 import { useRouter } from "next/router";
 import { useState, useEffect, SyntheticEvent, ReactElement } from "react";
 import colors from "~/config/themes/colors";
@@ -96,11 +96,11 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
           />
           {shouldDisplayBalanceHome && (
             <div className={css(styles.balanceText)}>
-              {getNumberWithCommas(Math.floor(balance ?? 0))} RSC
+              {formatBalance(Math.floor(balance ?? 0))} RSC
             </div>
           )}
           {shouldDisplayRscDelta && (
-            <div className={css(styles.rscDelta)}>{`+ ${getNumberWithCommas(
+            <div className={css(styles.rscDelta)}>{`+ ${formatBalance(
               Math.floor(rscDeltaSinceSeen)
             )}`}</div>
           )}
