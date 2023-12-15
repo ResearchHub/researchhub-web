@@ -161,9 +161,17 @@ function DocumentContainer({ tab, shouldDisplay }) {
           document={document}
           // errorCode={errorCode}
           metadata={documentMetadata}
+          headerContentWrapperClass={css(styles.headerContentWrapperClass)}
           noHorizontalTabBar
           noLineItems
           documentType={"post"}
+          topAreaClass={[css(styles.topAreaClass)]}
+          documentPageClass={[
+            css(
+              styles.noDisplay,
+              shouldDisplay && styles.documentViewerDisplay
+            ),
+          ]}
         >
           <DocumentViewer
             pdfUrl={tab.attachment}
@@ -461,9 +469,6 @@ function ReferencesContainer({
       searchForCitation(e);
     }
   };
-
-  // NOTE: calvinhlee - Using useffect with a socket like this looks glaringly bad. Can we explore
-  // if there are better solution? @lightninglu10. There's already an error that loops in log.
 
   useEffect(() => {
     if (wsResponse) {
@@ -1195,6 +1200,11 @@ const styles = StyleSheet.create({
     maxWidth: config.width,
     margin: "75px auto 0 auto",
   },
+  topAreaClass: {
+    // paddingLeft:
+    maxWidth: 860,
+    margin: "0 auto",
+  },
   shareButton: {
     color: colors.BLACK(),
     border: "none",
@@ -1258,6 +1268,17 @@ const styles = StyleSheet.create({
     maxWidth: 400,
     // flex: "1 1 40% !important",
   },
+  headerContentWrapperClass: {
+    paddingLeft: 50,
+
+    "@media only screen and (min-width: 768px)": {
+      paddingBottom: 25,
+    },
+
+    "@media only screen and (max-width:1023px)": {
+      paddingLeft: 0,
+    },
+  },
   formInputContainerFullWidth: {
     width: "100%",
     maxWidth: "unset",
@@ -1280,6 +1301,12 @@ const styles = StyleSheet.create({
     ":focus": {
       borderColor: "#E8E8F2",
     },
+  },
+  noDisplay: {
+    display: "none",
+  },
+  documentViewerDisplay: {
+    display: "unset",
   },
   documentViewerClass: {
     // overflow: "auto",

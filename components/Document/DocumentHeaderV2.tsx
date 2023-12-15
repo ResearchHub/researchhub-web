@@ -49,6 +49,7 @@ interface Props {
   metadata: DocumentMetadata;
   noLineItems?: boolean;
   noHorizontalTabBar?: boolean;
+  headerContentWrapperClass?: any;
 }
 
 const DocumentHeader = ({
@@ -56,6 +57,7 @@ const DocumentHeader = ({
   metadata,
   noLineItems,
   noHorizontalTabBar,
+  headerContentWrapperClass,
 }: Props) => {
   const documentContext = useContext(DocumentContext);
   const router = useRouter();
@@ -114,7 +116,11 @@ const DocumentHeader = ({
         />
       </div>
       <div className={css(styles.headerWrapper)}>
-        <div className={css(styles.headerContentWrapper)}>
+        <div
+          className={
+            css(styles.headerContentWrapper) + " " + headerContentWrapperClass
+          }
+        >
           <div>
             <div className={css(styles.badgesWrapper)}>
               <DocumentBadges document={doc} metadata={metadata} />
@@ -139,44 +145,46 @@ const DocumentHeader = ({
                 />
               </div>
             )}
-            {!noLineItems && (
+            {
               <div className={css(styles.lineItemsWrapper)}>
                 <div className={css(styles.lineItems)}>
                   <DocumentLineItems document={doc} />
                 </div>
 
-                <div
-                  className={css(
-                    styles.actionWrapper,
-                    styles.largeScreenActions
-                  )}
-                >
-                  <ReferenceProjectsUpsertContextProvider>
-                    <SaveToRefManager
-                      contentType={"paper"}
-                      doc={doc}
-                      contentId={doc?.unifiedDocument?.document?.id}
-                      unifiedDocumentId={doc?.unifiedDocument?.id}
-                    />
-                  </ReferenceProjectsUpsertContextProvider>
-                  <PermissionNotificationWrapper
-                    modalMessage="edit document"
-                    permissionKey="UpdatePaper"
-                    loginRequired={true}
-                    onClick={() =>
-                      dispatch(ModalActions.openPaperTransactionModal(true))
-                    }
-                    hideRipples={true}
+                {!noLineItems && (
+                  <div
+                    className={css(
+                      styles.actionWrapper,
+                      styles.largeScreenActions
+                    )}
                   >
-                    <IconButton variant="round">
-                      <ResearchCoinIcon version={6} width={21} height={21} />
-                      <span>Tip</span>
-                    </IconButton>
-                  </PermissionNotificationWrapper>
-                  <DocumentOptions document={doc} metadata={metadata} />
-                </div>
+                    <ReferenceProjectsUpsertContextProvider>
+                      <SaveToRefManager
+                        contentType={"paper"}
+                        doc={doc}
+                        contentId={doc?.unifiedDocument?.document?.id}
+                        unifiedDocumentId={doc?.unifiedDocument?.id}
+                      />
+                    </ReferenceProjectsUpsertContextProvider>
+                    <PermissionNotificationWrapper
+                      modalMessage="edit document"
+                      permissionKey="UpdatePaper"
+                      loginRequired={true}
+                      onClick={() =>
+                        dispatch(ModalActions.openPaperTransactionModal(true))
+                      }
+                      hideRipples={true}
+                    >
+                      <IconButton variant="round">
+                        <ResearchCoinIcon version={6} width={21} height={21} />
+                        <span>Tip</span>
+                      </IconButton>
+                    </PermissionNotificationWrapper>
+                    <DocumentOptions document={doc} metadata={metadata} />
+                  </div>
+                )}
               </div>
-            )}
+            }
             <div className={css(styles.smallScreenActions)}>
               <div className={css(styles.voteWrapperForSmallScreen)}>
                 <DocumentVote

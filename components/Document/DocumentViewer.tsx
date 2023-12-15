@@ -32,8 +32,6 @@ import DocumentViewerContext, {
 import { useRouter } from "next/router";
 import colors from "~/config/themes/colors";
 import UploadFileDragAndDrop from "../UploadFileDragAndDrop";
-import postUploadFiles from "../ReferenceManager/references/api/postUploadFiles";
-import { nullthrows } from "~/config/utils/nullchecks";
 import { useReferenceActiveProjectContext } from "../ReferenceManager/references/reference_organizer/context/ReferenceActiveProjectContext";
 import { useOrgs } from "../contexts/OrganizationContext";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";

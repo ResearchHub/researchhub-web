@@ -23,6 +23,9 @@ interface Args {
   isExpanded?: boolean;
   noLineItems?: boolean;
   noHorizontalTabBar?: boolean;
+  documentPageClass?: any;
+  topAreaClass?: any;
+  headerContentWrapperClass?: any;
 }
 
 const toPlaintext = (text) => {
@@ -35,6 +38,9 @@ const DocumentPageLayout = ({
   children,
   noLineItems,
   noHorizontalTabBar,
+  documentPageClass,
+  topAreaClass,
+  headerContentWrapperClass,
 }: Args) => {
   const router = useRouter();
   let openGraphData: OpenGraphData = { meta: {}, graph: [] };
@@ -53,7 +59,7 @@ const DocumentPageLayout = ({
   }
 
   return (
-    <div className={css(styles.pageWrapper)}>
+    <div className={css(styles.pageWrapper) + " " + documentPageClass}>
       <HeadComponent {...openGraphData.meta} graph={openGraphData.graph}>
         <meta
           name="viewport"
@@ -61,12 +67,13 @@ const DocumentPageLayout = ({
         />
       </HeadComponent>
 
-      <div className={css(styles.topArea)}>
+      <div className={css(styles.topArea) + " " + topAreaClass}>
         <DocumentHeader
           document={document}
           metadata={metadata}
           noLineItems={noLineItems}
           noHorizontalTabBar={noHorizontalTabBar}
+          headerContentWrapperClass={headerContentWrapperClass}
         />
       </div>
       <div className={css(styles.bodyArea)}>{children}</div>
