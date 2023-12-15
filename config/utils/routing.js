@@ -100,7 +100,6 @@ export function getUrlToUniDoc(uniDoc) {
     uniDoc.documentType ??
     ""
   ).toLowerCase();
-  console.log(uniDoc);
 
   switch (docType) {
     case "paper":

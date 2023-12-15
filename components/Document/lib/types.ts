@@ -1,6 +1,10 @@
 import Bounty, { parseBountyList } from "~/config/types/bounty";
 import { Hub, parseHub } from "~/config/types/hub";
-import { EmptyPredictionMarketDetails, PredictionMarketDetails, parsePredictionMarketDetails } from "~/components/PredictionMarket/lib/types";
+import {
+  EmptyPredictionMarketDetails,
+  PredictionMarketDetails,
+  parsePredictionMarketDetails,
+} from "~/components/PredictionMarket/lib/types";
 import { Purchase, parsePurchase } from "~/config/types/purchase";
 import {
   AuthorProfile,
@@ -18,7 +22,6 @@ import { parseVote, Vote } from "~/config/types/vote";
 import { formatDateStandard } from "~/config/utils/dates";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { stripHTML } from "~/config/utils/string";
-
 
 export type DocumentFormat = {
   type: "pdf" | "latex";
@@ -249,11 +252,11 @@ export const getConcreteDocument = (
 };
 
 export const isPaper = (document: GenericDocument): document is Paper => {
-  return (document as Paper).type === "paper";
+  return (document as Paper)?.type === "paper";
 };
 
 export const isPost = (document: GenericDocument): document is Post => {
-  return (document as Post).type === "post";
+  return (document as Post)?.type === "post";
 };
 
 const getDocumentFromRaw = ({

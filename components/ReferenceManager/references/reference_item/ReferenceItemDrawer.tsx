@@ -167,7 +167,12 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
               }}
               placeholder={label}
               required={isRequired}
-              value={value && !!value.length && value?.split(", ")}
+              value={
+                value &&
+                !!value.length &&
+                typeof value === "string" &&
+                value?.split(", ")
+              }
             />
           );
         } else {

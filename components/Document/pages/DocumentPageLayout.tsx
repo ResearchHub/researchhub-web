@@ -21,13 +21,21 @@ interface Args {
   children?: any;
   metadata: DocumentMetadata;
   isExpanded?: boolean;
+  noLineItems?: boolean;
+  noHorizontalTabBar?: boolean;
 }
 
 const toPlaintext = (text) => {
   return removeMd(text).replace(/&nbsp;/g, " ");
 };
 
-const DocumentPageLayout = ({ document, metadata, children }: Args) => {
+const DocumentPageLayout = ({
+  document,
+  metadata,
+  children,
+  noLineItems,
+  noHorizontalTabBar,
+}: Args) => {
   const router = useRouter();
   let openGraphData: OpenGraphData = { meta: {}, graph: [] };
   try {
@@ -54,7 +62,12 @@ const DocumentPageLayout = ({ document, metadata, children }: Args) => {
       </HeadComponent>
 
       <div className={css(styles.topArea)}>
-        <DocumentHeader document={document} metadata={metadata} />
+        <DocumentHeader
+          document={document}
+          metadata={metadata}
+          noLineItems={noLineItems}
+          noHorizontalTabBar={noHorizontalTabBar}
+        />
       </div>
       <div className={css(styles.bodyArea)}>{children}</div>
     </div>

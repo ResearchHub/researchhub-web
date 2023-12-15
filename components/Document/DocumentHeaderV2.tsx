@@ -47,9 +47,16 @@ const PaperTransactionModal = dynamic(
 interface Props {
   document: GenericDocument;
   metadata: DocumentMetadata;
+  noLineItems?: boolean;
+  noHorizontalTabBar?: boolean;
 }
 
-const DocumentHeader = ({ document: doc, metadata }: Props) => {
+const DocumentHeader = ({
+  document: doc,
+  metadata,
+  noLineItems,
+  noHorizontalTabBar,
+}: Props) => {
   const documentContext = useContext(DocumentContext);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -115,7 +122,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
             <div className={css(styles.titleWrapper)}>
               <div className={css(styles.voteWrapper)}>
                 <DocumentVote
-                  id={doc.id}
+                  id={doc?.id}
                   metadata={metadata}
                   score={metadata.score}
                   apiDocumentType={doc.apiDocumentType}
@@ -132,43 +139,48 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                 />
               </div>
             )}
-            <div className={css(styles.lineItemsWrapper)}>
-              <div className={css(styles.lineItems)}>
-                <DocumentLineItems document={doc} />
-              </div>
+            {!noLineItems && (
+              <div className={css(styles.lineItemsWrapper)}>
+                <div className={css(styles.lineItems)}>
+                  <DocumentLineItems document={doc} />
+                </div>
 
-              <div
-                className={css(styles.actionWrapper, styles.largeScreenActions)}
-              >
-                <ReferenceProjectsUpsertContextProvider>
-                  <SaveToRefManager
-                    contentType={"paper"}
-                    doc={doc}
-                    contentId={doc?.unifiedDocument?.document?.id}
-                    unifiedDocumentId={doc?.unifiedDocument?.id}
-                  />
-                </ReferenceProjectsUpsertContextProvider>
-                <PermissionNotificationWrapper
-                  modalMessage="edit document"
-                  permissionKey="UpdatePaper"
-                  loginRequired={true}
-                  onClick={() =>
-                    dispatch(ModalActions.openPaperTransactionModal(true))
-                  }
-                  hideRipples={true}
+                <div
+                  className={css(
+                    styles.actionWrapper,
+                    styles.largeScreenActions
+                  )}
                 >
-                  <IconButton variant="round">
-                    <ResearchCoinIcon version={6} width={21} height={21} />
-                    <span>Tip</span>
-                  </IconButton>
-                </PermissionNotificationWrapper>
-                <DocumentOptions document={doc} metadata={metadata} />
+                  <ReferenceProjectsUpsertContextProvider>
+                    <SaveToRefManager
+                      contentType={"paper"}
+                      doc={doc}
+                      contentId={doc?.unifiedDocument?.document?.id}
+                      unifiedDocumentId={doc?.unifiedDocument?.id}
+                    />
+                  </ReferenceProjectsUpsertContextProvider>
+                  <PermissionNotificationWrapper
+                    modalMessage="edit document"
+                    permissionKey="UpdatePaper"
+                    loginRequired={true}
+                    onClick={() =>
+                      dispatch(ModalActions.openPaperTransactionModal(true))
+                    }
+                    hideRipples={true}
+                  >
+                    <IconButton variant="round">
+                      <ResearchCoinIcon version={6} width={21} height={21} />
+                      <span>Tip</span>
+                    </IconButton>
+                  </PermissionNotificationWrapper>
+                  <DocumentOptions document={doc} metadata={metadata} />
+                </div>
               </div>
-            </div>
+            )}
             <div className={css(styles.smallScreenActions)}>
               <div className={css(styles.voteWrapperForSmallScreen)}>
                 <DocumentVote
-                  id={doc.id}
+                  id={doc?.id}
                   metadata={metadata}
                   score={metadata.score}
                   iconButton={true}
@@ -177,35 +189,39 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                   isHorizontal={true}
                 />
               </div>
-              <div className={css(styles.actionWrapper)}>
-                <PermissionNotificationWrapper
-                  modalMessage="edit document"
-                  permissionKey="UpdatePaper"
-                  loginRequired={true}
-                  onClick={() =>
-                    dispatch(ModalActions.openPaperTransactionModal(true))
-                  }
-                  hideRipples={true}
-                >
-                  <IconButton variant="round">
-                    <ResearchCoinIcon version={6} width={21} height={21} />
-                    <span>Tip</span>
-                  </IconButton>
-                </PermissionNotificationWrapper>
-                <ReferenceProjectsUpsertContextProvider>
-                  <SaveToRefManager
-                    contentType={"paper"}
-                    doc={doc}
-                    contentId={doc.unifiedDocument.document?.id}
-                    unifiedDocumentId={doc.unifiedDocument.id}
-                  />
-                </ReferenceProjectsUpsertContextProvider>
-                <DocumentOptions document={doc} metadata={metadata} />
+              {!noLineItems && (
+                <div className={css(styles.actionWrapper)}>
+                  <PermissionNotificationWrapper
+                    modalMessage="edit document"
+                    permissionKey="UpdatePaper"
+                    loginRequired={true}
+                    onClick={() =>
+                      dispatch(ModalActions.openPaperTransactionModal(true))
+                    }
+                    hideRipples={true}
+                  >
+                    <IconButton variant="round">
+                      <ResearchCoinIcon version={6} width={21} height={21} />
+                      <span>Tip</span>
+                    </IconButton>
+                  </PermissionNotificationWrapper>
+                  <ReferenceProjectsUpsertContextProvider>
+                    <SaveToRefManager
+                      contentType={"paper"}
+                      doc={doc}
+                      contentId={doc.unifiedDocument.document?.id}
+                      unifiedDocumentId={doc.unifiedDocument.id}
+                    />
+                  </ReferenceProjectsUpsertContextProvider>
+                  <DocumentOptions document={doc} metadata={metadata} />
+                </div>
+              )}
+            </div>
+            {!noHorizontalTabBar && (
+              <div className={css(styles.tabsWrapper)}>
+                <HorizontalTabBar tabs={tabs} />
               </div>
-            </div>
-            <div className={css(styles.tabsWrapper)}>
-              <HorizontalTabBar tabs={tabs} />
-            </div>
+            )}
           </div>
         </div>
 
@@ -250,6 +266,14 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     justifyContent: "center",
     borderBottom: `1px solid ${config.border}`,
+
+    "@media only screen and (max-width: 767px)": {
+      paddingBottom: 25,
+    },
+
+    "@media only screen and (min-width: 1024px)": {
+      minHeight: 130,
+    },
   },
   lineItemsWrapper: {
     display: "flex",

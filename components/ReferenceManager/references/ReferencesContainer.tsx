@@ -119,17 +119,19 @@ function DocumentContainer({ tab, shouldDisplay }) {
         if (tab.attachment.includes("uploads/post_discussion")) {
           const documentType = "post";
           setDocumentType(documentType);
-          const documentId = tab.related_unified_doc_id;
+          const documentId = tab.related_unified_doc?.documents[0].id;
+          const unifiedDocId = tab.related_unified_doc.id;
           const _documentData = await fetchDocumentByType({
             documentType,
             documentId,
           });
           const _metadata = await fetchDocumentMetadata({
-            unifiedDocId: _documentData?.unified_document.id,
+            unifiedDocId,
           });
           const postHtml = await fetchPostFromS3({
             s3Url: tab.attachment,
           });
+
           setMetadata(_metadata);
           setDocumentData(_documentData);
           setPostHtml(postHtml);
@@ -154,12 +156,35 @@ function DocumentContainer({ tab, shouldDisplay }) {
 
   return (
     <div>
-      <DocumentPageLayout
-        document={document}
-        // errorCode={errorCode}
-        metadata={documentMetadata}
-        documentType={"post"}
-      >
+      {postHtml ? (
+        <DocumentPageLayout
+          document={document}
+          // errorCode={errorCode}
+          metadata={documentMetadata}
+          noHorizontalTabBar
+          noLineItems
+          documentType={"post"}
+        >
+          <DocumentViewer
+            pdfUrl={tab.attachment}
+            postHtml={postHtml}
+            documentViewerClass={[
+              styles.documentViewerClass,
+              shouldDisplay && styles.display,
+            ]}
+            referenceItemDatum={tab}
+            citationInstance={{ id: tab.id, type: "citationentry" }}
+            documentInstance={
+              tab.related_unified_doc
+                ? {
+                    id: tab.related_unified_doc?.documents?.id,
+                    type: "paper",
+                  }
+                : undefined
+            }
+          />
+        </DocumentPageLayout>
+      ) : (
         <DocumentViewer
           pdfUrl={tab.attachment}
           postHtml={postHtml}
@@ -178,7 +203,7 @@ function DocumentContainer({ tab, shouldDisplay }) {
               : undefined
           }
         />
-      </DocumentPageLayout>
+      )}
     </div>
   );
 }

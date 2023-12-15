@@ -7,7 +7,8 @@ interface Props {
 }
 
 const fetchPost = ({ postId }: Props): Promise<any> => {
-  return fetch(API.RESEARCHHUB_POST({ post_id: postId }), API.GET_CONFIG())
+  const url = API.RESEARCHHUB_POST({ post_id: postId });
+  return fetch(url, API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((resp) => {
