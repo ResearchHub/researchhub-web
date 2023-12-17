@@ -1,5 +1,45 @@
 import { formatDateStandard } from "~/config/utils/dates";
 
+export type VerificationPaper = {
+  id: string;
+  title: string;
+  publishedDate: string;
+  authors: string[];
+  doi?: string;
+  doiUrl?: string;
+  concepts: OpenAlexConcept[];
+};
+
+export const parseVerificationPaper = (
+  raw: any,
+  onlyImportantConcepts: boolean
+): VerificationPaper => {
+  const parsed = {
+    title: raw.title,
+    id: raw.id,
+    publishedDate: formatDateStandard(raw.publication_date, "MMM D, YYYY"),
+    authors: raw.authorships.map(
+      (authorship) => authorship.author.display_name
+    ),
+    doiUrl: raw.doi,
+    concepts: raw.concepts.map((concept) => parseOpenAlexConcept(concept)),
+  };
+
+  if (onlyImportantConcepts) {
+    parsed.concepts = parsed.concepts.filter((concept) => concept.level === 1);
+    parsed.concepts = parsed.concepts.sort(
+      (a, b) => b.relevancyScore - a.relevancyScore
+    );
+    parsed.concepts = parsed.concepts.slice(0, 3);
+  }
+
+  if (parsed.doiUrl) {
+    parsed["doi"] = parsed.doiUrl.replace("https://doi.org/", "");
+  }
+
+  return parsed;
+};
+
 export type OpenAlexProfile = {
   id: string;
   displayName: string;
