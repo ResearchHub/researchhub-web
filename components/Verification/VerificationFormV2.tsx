@@ -43,10 +43,14 @@ interface VerificationFormProps {
   onStepSelect?: (step: "PROVIDER_STEP" | "PROFILE_STEP") => void;
 }
 
+export type VERIFICATION_STEP =
+  | "DOI_STEP"
+  | "AUTHOR_STEP"
+  | "SUCCESS_STEP"
+  | "ERROR_STEP";
+
 const VerificationForm = ({ onStepSelect }: VerificationFormProps) => {
-  const [step, setStep] = useState<
-    "DOI_STEP" | "AUTHOR_STEP" | "SUCCESS_STEP" | "ERROR_STEP"
-  >("DOI_STEP");
+  const [step, setStep] = useState<VERIFICATION_STEP>("DOI_STEP");
   const [error, setError] = useState<any | null>(null);
 
   const [providerDataResponse, setProviderDataResponse] = useState<any | null>(
@@ -180,7 +184,9 @@ const VerificationFormErrorStep = ({ onPrevClick, error }) => {
 
 const VerificationFormDoiStep = ({ onPrevClick }) => {
   const [doiInput, setDoiInput] = useState<string | null>(null);
+  const [isDoiValid, setIsDoiValid] = useState<boolean>(false);
   const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [isPaperFound, setIsPaperFound] = useState<boolean>(false);
 
   function extractAndValidateDOI(urlOrDOI) {
     // Remove the protocol and domain if present
@@ -201,6 +207,7 @@ const VerificationFormDoiStep = ({ onPrevClick }) => {
     }
 
     const isValid = extractAndValidateDOI(doiInput);
+    setIsDoiValid(isValid);
     if (isValid) {
       setIsFetching(true);
       debounceFetchPaperByDoi({ doi: doiInput });
@@ -222,30 +229,37 @@ const VerificationFormDoiStep = ({ onPrevClick }) => {
     <div>
       <div>First, enter a DOI for a paper you authored:</div>
       <FormInput
+        error={doiInput && !isDoiValid && "Please enter a valid DOI"}
         disabled={isFetching}
         containerStyle={profileStepStyles.inputContainer}
         onChange={(name, value) => {
           setDoiInput(value);
+          setIsPaperFound(false);
         }}
       />
-      {isFetching && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100%",
-            marginTop: 150,
-          }}
-        >
-          <ClipLoader
-            sizeUnit={"px"}
-            size={44}
-            color={colors.NEW_BLUE()}
-            loading={true}
-          />
-        </div>
-      )}
+      <div style={{ minHeight: 100 }}>
+        {isFetching && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              marginTop: 150,
+            }}
+          >
+            <ClipLoader
+              sizeUnit={"px"}
+              size={44}
+              color={colors.NEW_BLUE()}
+              loading={true}
+            />
+          </div>
+        )}
+      </div>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button disabled={!isPaperFound} label={"Next"} />
+      </div>
     </div>
   );
 };

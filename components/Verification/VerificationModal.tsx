@@ -1,18 +1,46 @@
 import BaseModal from "../Modals/BaseModal";
 import { css, StyleSheet } from "aphrodite";
-import VerificationForm from "./VerificationFormV2";
+import VerificationForm, { VERIFICATION_STEP } from "./VerificationFormV2";
 import { breakpoints } from "~/config/themes/screen";
+import { useState } from "react";
+import colors from "~/config/themes/colors";
+import { faArrowLeft } from "@fortawesome/pro-light-svg-icons";
+import { CloseIcon } from "~/config/themes/icons";
+import IconButton from "../Icons/IconButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
+  const [step, setStep] = useState<VERIFICATION_STEP>("DOI_STEP");
+
   return (
     <BaseModal
       offset={"0px"}
       isOpen={isModalOpen}
-      hideClose={false}
+      hideClose={true}
       closeModal={handleModalClose}
       zIndex={1000000001}
       modalStyle={styles.modalStyle}
       modalContentStyle={styles.modalContentStyle}
+      titleStyle={styles.modalTitleStyleOverride}
+      title={
+        <div
+          className={css(styles.titleWrapper, styles.titleWrapperWithBorder)}
+        >
+          {step === "DOI_STEP" ? "Enter DOI" : ""}
+
+          <IconButton overrideStyle={styles.backButton}>
+            <FontAwesomeIcon
+              icon={faArrowLeft}
+              onClick={() => setStep("DOI_STEP")}
+            />
+          </IconButton>
+          <CloseIcon
+            overrideStyle={styles.close}
+            color={colors.MEDIUM_GREY()}
+            onClick={handleModalClose}
+          />
+        </div>
+      }
     >
       <div className={css(styles.formWrapper)}>
         <VerificationForm />
@@ -24,6 +52,7 @@ const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
 const styles = StyleSheet.create({
   formWrapper: {
     width: 540,
+    padding: "25px 25px 0px 25px",
     height: "100%",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
@@ -32,14 +61,50 @@ const styles = StyleSheet.create({
       width: "90%",
     },
   },
+  titleWrapper: {
+    padding: 15,
+    marginBottom: 15,
+    justifyContent: "center",
+    position: "relative",
+    flexDirection: "row",
+    display: "flex",
+    fontSize: 16,
+  },
+  backButton: {
+    position: "absolute",
+    left: 10,
+    top: 7,
+    fontSize: 20,
+    cursor: "pointer",
+  },
+  close: {
+    position: "absolute",
+    right: 10,
+    top: 7,
+    cursor: "pointer",
+  },
+  titleWrapperWithBorder: {
+    borderBottom: `1px solid ${colors.LIGHT_GREY()}`,
+  },
   modalStyle: {},
-  modalTitleStyleOverride: {},
+  modalTitleStyleOverride: {
+    height: "auto",
+
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "100%",
+    },
+  },
   modalContentStyle: {
     position: "relative",
     minHeight: 560,
-    padding: "50px 25px ",
+    padding: "0px 0px 25px 0px",
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       height: "100%",
+    },
+    display: "block",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "100%",
+      padding: 0,
     },
   },
   prevActionWrapper: {
