@@ -73,6 +73,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
   } = useReferenceTabContext();
 
   const { citation_type, id: citation_id } = referenceItemDatum ?? {};
+
   const [localReferenceFields, setLocalReferenceFields] = useState(
     referenceItemDatum?.fields ?? {}
   );
@@ -270,42 +271,49 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
           </Typography>
         </Stack>
         {tabInputItems}
-        <ReferenceItemFieldAttachment
-          attachmentURL={attachmentURL}
-          onRemoveAttachment={() => {
-            updateReferenceCitation({
-              orgId: currentOrg?.id,
-              payload: {
-                fields: {
-                  // use existing reference fields (since we don't want to update them in this request)
-                  ...referenceItemDatum?.fields,
-                  author: referenceItemDatum?.fields.author ?? [],
-                  // set fields.attachment to null
+        {referenceItemDatum.related_unified_doc &&
+        (referenceItemDatum.related_unified_doc.document_type === "QUESTION" ||
+          referenceItemDatum.related_unified_doc.document_type ===
+            "DISCUSSION" ||
+          referenceItemDatum.related_unified_doc.document_type ===
+            "BOUNTY") ? null : (
+          <ReferenceItemFieldAttachment
+            attachmentURL={attachmentURL}
+            onRemoveAttachment={() => {
+              updateReferenceCitation({
+                orgId: currentOrg?.id,
+                payload: {
+                  fields: {
+                    // use existing reference fields (since we don't want to update them in this request)
+                    ...referenceItemDatum?.fields,
+                    author: referenceItemDatum?.fields.author ?? [],
+                    // set fields.attachment to null
+                    attachment: null,
+                  },
+                  // set attachment to null
                   attachment: null,
+                  citation_id,
+                  citation_type,
+                  organization: currentOrg?.id,
                 },
-                // set attachment to null
-                attachment: null,
-                citation_id,
-                citation_type,
-                organization: currentOrg?.id,
-              },
-              onSuccess: (res) => {
-                const newReferenceTableRowData = [...referenceTableRowData].map(
-                  (reference) => {
+                onSuccess: (res) => {
+                  const newReferenceTableRowData = [
+                    ...referenceTableRowData,
+                  ].map((reference) => {
                     if (reference.id === referenceItemDatum.id) {
                       return res;
                     } else {
                       return reference;
                     }
-                  }
-                );
-                setReferenceTableRowData(newReferenceTableRowData);
-                setAttachmentURL(null);
-              },
-              onError: emptyFncWithMsg,
-            });
-          }}
-        />
+                  });
+                  setReferenceTableRowData(newReferenceTableRowData);
+                  setAttachmentURL(null);
+                },
+                onError: emptyFncWithMsg,
+              });
+            }}
+          />
+        )}
       </Box>
       <Box
         display="flex"
