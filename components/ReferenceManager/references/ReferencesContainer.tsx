@@ -86,6 +86,7 @@ import { fetchDocumentByType } from "~/components/Document/lib/fetchDocumentByTy
 import fetchDocumentMetadata from "~/components/Document/api/fetchDocumentMetadata";
 import DocumentPlaceholder from "~/components/Document/lib/Placeholders/DocumentPlaceholder";
 import DocumentPageLayout from "~/components/Document/pages/DocumentPageLayout";
+import LinkToPublicPage from "~/components/LinkToPublicPage";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -155,7 +156,7 @@ function DocumentContainer({ tab, shouldDisplay }) {
   }
 
   return (
-    <div>
+    <div className={css(styles.documentContainer)}>
       {postHtml ? (
         <DocumentPageLayout
           document={document}
@@ -164,6 +165,7 @@ function DocumentContainer({ tab, shouldDisplay }) {
           headerContentWrapperClass={css(styles.headerContentWrapperClass)}
           noHorizontalTabBar
           noLineItems
+          referenceManagerView
           documentType={"post"}
           topAreaClass={[css(styles.topAreaClass)]}
           documentPageClass={[
@@ -1347,6 +1349,15 @@ const styles = StyleSheet.create({
     ":hover": {
       background: colors.GREY_LINE(1),
     },
+  },
+  documentContainer: {
+    position: "relative",
+  },
+  linkToPublicPage: {
+    position: "absolute",
+    zIndex: 4,
+    top: 16,
+    right: 16,
   },
   noHover: {
     ":hover": {

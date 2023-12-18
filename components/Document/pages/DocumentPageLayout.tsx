@@ -26,6 +26,7 @@ interface Args {
   documentPageClass?: any;
   topAreaClass?: any;
   headerContentWrapperClass?: any;
+  referenceManagerView?: boolean;
 }
 
 const toPlaintext = (text) => {
@@ -41,6 +42,7 @@ const DocumentPageLayout = ({
   documentPageClass,
   topAreaClass,
   headerContentWrapperClass,
+  referenceManagerView,
 }: Args) => {
   const router = useRouter();
   let openGraphData: OpenGraphData = { meta: {}, graph: [] };
@@ -74,6 +76,7 @@ const DocumentPageLayout = ({
           noLineItems={noLineItems}
           noHorizontalTabBar={noHorizontalTabBar}
           headerContentWrapperClass={headerContentWrapperClass}
+          referenceManagerView
         />
       </div>
       <div className={css(styles.bodyArea)}>{children}</div>

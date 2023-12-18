@@ -40,6 +40,7 @@ import {
   useReferenceProjectUpsertContext,
 } from "~/components/ReferenceManager/references/reference_organizer/context/ReferenceProjectsUpsertContext";
 import DocumentPageTutorial from "./lib/DocumentPageTutorial";
+import LinkToPublicPage from "../LinkToPublicPage";
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
 );
@@ -50,6 +51,7 @@ interface Props {
   noLineItems?: boolean;
   noHorizontalTabBar?: boolean;
   headerContentWrapperClass?: any;
+  referenceManagerView?: boolean;
 }
 
 const DocumentHeader = ({
@@ -58,6 +60,7 @@ const DocumentHeader = ({
   noLineItems,
   noHorizontalTabBar,
   headerContentWrapperClass,
+  referenceManagerView,
 }: Props) => {
   const documentContext = useContext(DocumentContext);
   const router = useRouter();
@@ -183,6 +186,21 @@ const DocumentHeader = ({
                     <DocumentOptions document={doc} metadata={metadata} />
                   </div>
                 )}
+                {referenceManagerView && (
+                  <div
+                    className={css(
+                      styles.actionWrapper,
+                      styles.largeScreenActions
+                    )}
+                  >
+                    <LinkToPublicPage
+                      type={doc?.unifiedDocument?.documentType}
+                      id={doc?.id}
+                      target={"_blank"}
+                      slug={doc?.unifiedDocument?.document?.slug}
+                    />
+                  </div>
+                )}
               </div>
             }
             <div className={css(styles.smallScreenActions)}>
@@ -222,6 +240,18 @@ const DocumentHeader = ({
                     />
                   </ReferenceProjectsUpsertContextProvider>
                   <DocumentOptions document={doc} metadata={metadata} />
+                </div>
+              )}
+              {referenceManagerView && (
+                <div
+                  className={css(styles.actionWrapper, styles.linkToPublicPage)}
+                >
+                  <LinkToPublicPage
+                    type={doc?.unifiedDocument?.documentType}
+                    id={doc?.id}
+                    target={"_blank"}
+                    slug={doc?.unifiedDocument?.document?.slug}
+                  />
                 </div>
               )}
             </div>
@@ -356,6 +386,10 @@ const styles = StyleSheet.create({
     display: "flex",
     columnGap: "10px",
     alignItems: "flex-end",
+  },
+  linkToPublicPage: {
+    alignItems: "center",
+    marginLeft: "auto",
   },
   smallScreenActions: {
     marginTop: 15,
