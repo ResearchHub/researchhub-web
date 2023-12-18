@@ -12,12 +12,16 @@ import VerificationPaperResult from "./VerificationPaperResult";
 
 type ERROR_TYPE = "DOI_ERROR" | "PAPER_NOT_FOUND" | null;
 
-const VerificationFormDoiStep = ({}) => {
+interface Props {
+  nextStep: () => void,
+  setAuthoredPaper: (paper: VerificationPaperResultType|null) => void,
+  authoredPaper: VerificationPaperResultType | null,
+}
+
+const VerificationFormDoiStep = ({ nextStep, setAuthoredPaper, authoredPaper }: Props) => {
   const [doiInput, setDoiInput] = useState<string | null>(null);
   const [error, setError] = useState<ERROR_TYPE>(null);
   const [isFetching, setIsFetching] = useState<boolean>(false);
-  const [foundPaper, setFoundPaper] =
-    useState<VerificationPaperResultType | null>(null);
 
   useEffect(() => {
     if (!doiInput) {
@@ -37,11 +41,11 @@ const VerificationFormDoiStep = ({}) => {
     debounce(async ({ doi }) => {
       try {
         const foundPaper = await fetchPaperByDoi({ doi });
-        setFoundPaper(foundPaper);
+        setAuthoredPaper(foundPaper);
         setError(null);
       } catch (error) {
         setError("PAPER_NOT_FOUND");
-        setFoundPaper(null);
+        setAuthoredPaper(null);
       } finally {
         setIsFetching(false);
       }
@@ -85,10 +89,10 @@ const VerificationFormDoiStep = ({}) => {
             />
           </div>
         )}
-        {foundPaper && <VerificationPaperResult result={foundPaper} />}
+        {authoredPaper && <VerificationPaperResult result={authoredPaper} />}
       </div>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button disabled={!foundPaper} label={"Next"} />
+        <Button disabled={!authoredPaper} onClick={nextStep} label={"Next"} />
       </div>
     </div>
   );

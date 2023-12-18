@@ -27,7 +27,7 @@ const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
         <div
           className={css(styles.titleWrapper, styles.titleWrapperWithBorder)}
         >
-          {step === "DOI_STEP" ? "Enter DOI" : ""}
+          {step === "DOI_STEP" ? "Enter DOI" : step === "AUTHOR_STEP" ? "Select Author" : ""}
 
           <IconButton overrideStyle={styles.backButton}>
             <FontAwesomeIcon
