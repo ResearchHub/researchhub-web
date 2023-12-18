@@ -87,6 +87,10 @@ import fetchDocumentMetadata from "~/components/Document/api/fetchDocumentMetada
 import DocumentPlaceholder from "~/components/Document/lib/Placeholders/DocumentPlaceholder";
 import DocumentPageLayout from "~/components/Document/pages/DocumentPageLayout";
 import LinkToPublicPage from "~/components/LinkToPublicPage";
+import {
+  DocumentContext,
+  DocumentPreferences,
+} from "~/components/Document/lib/DocumentContext";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -103,6 +107,9 @@ function DocumentContainer({ tab, shouldDisplay }) {
   const [isReady, setIsReady] = useState(false);
   const [metadata, setMetadata] = useState(false);
   const [documentData, setDocumentData] = useState(false);
+  const [docPreferences, setDocPreferences] = useState<DocumentPreferences>({
+    comments: "all",
+  });
   const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({
     rawMetadata: metadata,
     unifiedDocumentId: documentData?.unified_document?.id,
@@ -158,44 +165,55 @@ function DocumentContainer({ tab, shouldDisplay }) {
   return (
     <div className={css(styles.documentContainer)}>
       {postHtml ? (
-        <DocumentPageLayout
-          document={document}
-          // errorCode={errorCode}
-          metadata={documentMetadata}
-          headerContentWrapperClass={css(styles.headerContentWrapperClass)}
-          noHorizontalTabBar
-          noLineItems
-          referenceManagerView
-          documentType={"post"}
-          topAreaClass={[css(styles.topAreaClass)]}
-          documentPageClass={[
-            css(
-              styles.noDisplay,
-              styles.overflowHidden,
-              shouldDisplay && styles.documentViewerDisplay
-            ),
-          ]}
+        <DocumentContext.Provider
+          value={{
+            metadata: documentMetadata,
+            documentType: "post",
+            preferences: docPreferences,
+            updateMetadata: setDocumentMetadata,
+            setPreference: ({ key, value }) =>
+              setDocPreferences({ ...docPreferences, [key]: value }),
+          }}
         >
-          <DocumentViewer
-            pdfUrl={tab.attachment}
-            postHtml={postHtml}
-            documentViewerClass={[
-              styles.documentViewerClass,
-              shouldDisplay && styles.display,
+          <DocumentPageLayout
+            document={document}
+            // errorCode={errorCode}
+            metadata={documentMetadata}
+            headerContentWrapperClass={css(styles.headerContentWrapperClass)}
+            noHorizontalTabBar
+            noLineItems
+            referenceManagerView
+            documentType={"post"}
+            topAreaClass={[css(styles.topAreaClass)]}
+            documentPageClass={[
+              css(
+                styles.noDisplay,
+                styles.overflowHidden,
+                shouldDisplay && styles.documentViewerDisplay
+              ),
             ]}
-            showExpandBtn={false}
-            referenceItemDatum={tab}
-            citationInstance={{ id: tab.id, type: "citationentry" }}
-            documentInstance={
-              tab.related_unified_doc
-                ? {
-                    id: tab.related_unified_doc?.documents[0]?.id,
-                    type: "researchhubpost",
-                  }
-                : undefined
-            }
-          />
-        </DocumentPageLayout>
+          >
+            <DocumentViewer
+              pdfUrl={tab.attachment}
+              postHtml={postHtml}
+              documentViewerClass={[
+                styles.documentViewerClass,
+                shouldDisplay && styles.display,
+              ]}
+              showExpandBtn={false}
+              referenceItemDatum={tab}
+              citationInstance={{ id: tab.id, type: "citationentry" }}
+              documentInstance={
+                tab.related_unified_doc
+                  ? {
+                      id: tab.related_unified_doc?.documents[0]?.id,
+                      type: "researchhubpost",
+                    }
+                  : undefined
+              }
+            />
+          </DocumentPageLayout>
+        </DocumentContext.Provider>
       ) : (
         <DocumentViewer
           pdfUrl={tab.attachment}

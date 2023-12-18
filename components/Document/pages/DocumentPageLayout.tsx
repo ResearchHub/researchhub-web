@@ -76,7 +76,7 @@ const DocumentPageLayout = ({
           noLineItems={noLineItems}
           noHorizontalTabBar={noHorizontalTabBar}
           headerContentWrapperClass={headerContentWrapperClass}
-          referenceManagerView
+          referenceManagerView={referenceManagerView}
         />
       </div>
       <div className={css(styles.bodyArea)}>{children}</div>
