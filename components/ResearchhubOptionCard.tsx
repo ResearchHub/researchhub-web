@@ -2,15 +2,15 @@
 import { genericCardColors } from "~/config/themes/colors";
 import { ReactElement } from "react";
 import { StyleSheet, css } from "aphrodite";
-import CheckBox from "./Form/CheckBox";
 import TabNewFeature from "~/components/NewFeature/TabNewFeature";
+import { breakpoints } from "~/config/themes/screen";
+import colors from "~/config/themes/colors";
 
 export type ResearchhubOptionCardProps = {
   description: string;
   header: string;
   icon: any;
-  isActive: boolean;
-  isCheckboxSquare: boolean;
+  isActive?: boolean;
   newFeature: boolean;
   onSelect: Function;
   whiteStyle?: boolean;
@@ -21,7 +21,6 @@ export default function ResearchhubOptionCard({
   header,
   icon,
   isActive,
-  isCheckboxSquare,
   newFeature,
   onSelect,
   whiteStyle,
@@ -30,16 +29,13 @@ export default function ResearchhubOptionCard({
     <div
       className={css(
         Boolean(whiteStyle) ? styles.largeListItemWhite : styles.largeListItem,
-        styles.clickable
+        styles.clickable,
+        isActive && styles.active
       )}
       onClick={onSelect}
     >
-      {!whiteStyle && (
-        <div className={css(styles.checkboxAligner)}>
-          <CheckBox isSquare={isCheckboxSquare} active={isActive} />
-        </div>
-      )}
       <div className={css(styles.mediaContainer)}>
+        <div className={css(styles.mediaImgBox)}>{icon}</div>
         <div className={css(styles.mediaContent)}>
           <div className={css(styles.mediaHeader)}>
             {header}
@@ -47,17 +43,26 @@ export default function ResearchhubOptionCard({
           </div>
           <div className={css(styles.mediaDescription)}> {description} </div>
         </div>
-        <div className={css(styles.mediaImgBox)}>{icon}</div>
       </div>
     </div>
   );
 }
 
 const styles = StyleSheet.create({
+  active: {
+    border: `1px solid ${colors.NEW_BLUE()}`,
+    backgroundColor: colors.NEW_BLUE(0.1),
+  },
   mediaContainer: {
     display: "flex",
     flexDirection: "row",
     alignSelf: "stretch",
+    gap: 25,
+    width: "100%",
+    alignItems: "center",
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      flexDirection: "row-reverse",
+    },
   },
   mediaContent: {
     display: "flex",
@@ -83,6 +88,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     marginTop: "10px",
     width: "373px",
+    lineHeight: "20px",
     "@media only screen and (max-width: 767px)": {
       width: "100%",
     },
@@ -93,9 +99,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "75px",
     height: "75px",
-    borderRadius: "8px",
+    borderRadius: "4px",
     backgroundColor: "#eee",
-    marginLeft: "25px",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: 100,
+    },
   },
   mediaImg: {},
   largeListItem: {
@@ -103,13 +111,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignSelf: "stretch",
-    // height: '100%',
-    // height: 500,
     borderRadius: "4px",
     background: genericCardColors.BACKGROUND,
     border: "1.5px solid #F0F0F0",
-    margin: "5px 0px",
-    padding: "20px",
+    margin: "8px 0px",
+    padding: "15px",
   },
   largeListItemWhite: {
     display: "flex",
@@ -119,7 +125,7 @@ const styles = StyleSheet.create({
     borderRadius: "4px",
     backgroundColor: "#FFF",
     border: "none",
-    padding: "20px 20px 20px 36px",
+    padding: 20,
     ":hover": {
       background: genericCardColors.BACKGROUND,
     },

@@ -136,6 +136,29 @@ h3 {
 #askQuestionForm .ck-content {
   max-height: 200px !important;
   overflow: scroll !important;
+  min-height: 200px !important;
+}
+
+#askQuestionForm .ck-code-block-dropdown {
+  display: none;
+}
+
+@media only screen and (max-width: 600px) {
+  #askQuestionForm .ck-content {
+    min-height: 150px !important;
+  }
+  #askQuestionForm .ck-toolbar {
+    display: none;
+  }
+  #askQuestionForm .ck-heading-dropdown {
+    display: none;
+  }
+  #askQuestionForm .ck-heading-dropdown + .ck-toolbar__separator {
+    display: none;
+  }
+  #askQuestionForm .ck.ck-toolbar > .ck-toolbar__items {
+    flex-flow: row;
+  }
 }
 
 #askQuestionForm .ck-content p,

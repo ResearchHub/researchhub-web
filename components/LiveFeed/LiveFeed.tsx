@@ -1,59 +1,156 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFlag } from "@fortawesome/pro-solid-svg-icons";
+import { faComments, faStar, faGrid2 } from "@fortawesome/pro-solid-svg-icons";
 import fetchContributionsAPI, { ApiFilters } from "./api/fetchContributionsAPI";
 import {
-  CommentContributionItem,
   Contribution,
   getContributionUrl,
   parseContribution,
 } from "~/config/types/contribution";
 import { css, StyleSheet } from "aphrodite";
-import { ID, UnifiedDocument } from "~/config/types/root_types";
 import { ReactElement, useState, useEffect } from "react";
 import colors from "~/config/themes/colors";
-import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
-
 import LoadMoreButton from "../LoadMoreButton";
 import ContributionEntry from "./Contribution/ContributionEntry";
-import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 import Link from "next/link";
+import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
+import HorizontalTabBar, { Tab } from "~/components/HorizontalTabBar";
+import { PaperIcon } from "~/config/themes/icons";
+import { faGlobe, faX } from "@fortawesome/pro-regular-svg-icons";
+import { useRouter } from "next/router";
+import HubSelectModal from "../Hubs/HubSelectModal";
+import fetchHubDetailsAPI from "../Hubs/api/fetcHubDetails";
+import { Hub, parseHub } from "~/config/types/hub";
+import { faAngleRight } from "@fortawesome/pro-light-svg-icons";
+import { truncateText } from "~/config/utils/string";
+import { breakpoints } from "~/config/themes/screen";
 
-export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
-  const [appliedFilters, setAppliedFilters] = useState<ApiFilters>({
-    hubId: hub?.id as ID,
+const getAppliedUrlFiltersForLiveFeed = (router) => {
+  const appliedFilters: ApiFilters = {
+    // Defaults
+    hubId: null,
+    contentType: "ALL",
+  };
+  const availableContentTypes = tabs.map((t) => t.value);
+
+  const hasContentTypeFilter =
+    router.query?.contentType &&
+    availableContentTypes.includes(router.query.contentType as string);
+  appliedFilters.contentType = hasContentTypeFilter
+    ? (router.query.contentType as string)
+    : "ALL";
+  appliedFilters.hubId = router.query?.hubId
+    ? (router.query.hubId as string)
+    : null;
+
+  return appliedFilters;
+};
+
+const tabs: Array<Tab> = [
+  {
+    icon: <FontAwesomeIcon icon={faGlobe} />,
+    label: "All",
+    value: "ALL",
+    isSelected: true,
+  },
+  {
+    icon: <FontAwesomeIcon icon={faComments} />,
+    label: "Conversation",
+    value: "CONVERSATION",
+  },
+  {
+    icon: (
+      <ResearchCoinIcon
+        version={4}
+        color={colors.BLACK(0.5)}
+        height={14}
+        width={14}
+      />
+    ),
+    selectedIcon: (
+      <ResearchCoinIcon
+        version={4}
+        color={colors.NEW_BLUE(1.0)}
+        height={14}
+        width={14}
+      />
+    ),
+    hoverIcon: (
+      <ResearchCoinIcon
+        version={4}
+        color={colors.NEW_BLUE(1.0)}
+        height={14}
+        width={14}
+      />
+    ),
+    label: "Bounties",
+    value: "BOUNTY",
+  },
+  {
+    icon: <FontAwesomeIcon icon={faStar} />,
+    label: "Peer Reviews",
+    value: "REVIEW",
+  },
+];
+
+const getTabsForLiveFeed = (filters: ApiFilters) => {
+  const _tabs = tabs.map((tab) => {
+    return {
+      ...tab,
+      isSelected: tab.value === filters.contentType,
+    };
   });
+
+  return _tabs;
+};
+
+export default function LiveFeed(): ReactElement<"div"> {
+  const router = useRouter();
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [isLoadingPage, setIsLoadingPage] = useState<boolean>(true);
-
   const [results, setResults] = useState<Array<Contribution>>([]);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
+  const [liveFeedForHub, setLiveFeedForHub] = useState<undefined | Hub>(
+    undefined
+  );
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const appliedUrlFilters = getAppliedUrlFiltersForLiveFeed(router);
+  const tabs = getTabsForLiveFeed(appliedUrlFilters);
 
   useEffect(() => {
-    let appliedFilters = { hubId: null };
-    if (hub?.id) {
-      appliedFilters = { hubId: hub.id };
-    }
-    setAppliedFilters(appliedFilters);
-    loadResults(appliedFilters, null);
-  }, [hub, isHomePage]);
+    loadResults({});
+  }, [router.query]);
 
-  const loadResults = (filters: ApiFilters, url = null) => {
-    if (!url) {
+  useEffect(() => {
+    if (appliedUrlFilters.hubId) {
+      (async () => {
+        const hub = await fetchHubDetailsAPI({
+          hubId: appliedUrlFilters.hubId,
+        });
+        if (hub) {
+          const parsedHub = parseHub(hub);
+          setLiveFeedForHub(parsedHub);
+        }
+      })();
+    }
+  }, [appliedUrlFilters.hubId]);
+
+  const loadResults = ({ nextResultsUrl }: { nextResultsUrl?: string }) => {
+    if (!nextResultsUrl) {
       setIsLoadingPage(true);
     } else {
       setIsLoadingMore(true);
     }
 
     fetchContributionsAPI({
-      pageUrl: url,
-      filters,
+      pageUrl: nextResultsUrl,
+      filters: appliedUrlFilters,
       onSuccess: (response: any) => {
         const incomingResults = response.results.map((r) => {
           return parseContribution(r);
         });
 
-        if (url) {
+        if (nextResultsUrl) {
           setResults([...results, ...incomingResults]);
         } else {
           setResults(incomingResults);
@@ -78,81 +175,6 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
               entry={result}
               actions={[]}
               context="live-feed"
-              // Kobe: Let's expose flagging in the live feed when the UI is ready and supports
-              // actions.
-
-              // actions={[
-              //   {
-              //     html: (
-              //       <FlagButtonV2
-              //         modalHeaderText="Flag Content"
-              //         flagIconOverride={styles.flagIcon}
-              //         iconOverride={
-              //           <FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>
-              //         }
-              //         errorMsgText="Failed to flag"
-              //         successMsgText="Content flagged"
-              //         primaryButtonLabel="Flag"
-              //         subHeaderText="I am flagging this content because of:"
-              //         onSubmit={(
-              //           flagReason,
-              //           renderErrorMsg,
-              //           renderSuccessMsg
-              //         ) => {
-              //           let args: any = {
-              //             flagReason,
-              //             onError: renderErrorMsg,
-              //             onSuccess: renderSuccessMsg,
-              //           };
-
-              //           let item = result.item;
-              //           if (result.contentType.name === "comment") {
-              //             item = item as CommentContributionItem;
-              //             args.commentPayload = {
-              //               ...(result._raw.content_type.name === "thread" && {
-              //                 threadID: item.id,
-              //                 commentType: "thread",
-              //               }),
-              //               ...(result._raw.content_type.name === "comment" && {
-              //                 commentID: item.id,
-              //                 commentType: "comment",
-              //               }),
-              //               ...(result._raw.content_type.name === "reply" && {
-              //                 replyID: item.id,
-              //                 commentType: "reply",
-              //               }),
-              //             };
-              //           }
-
-              //           const unifiedDocument: UnifiedDocument =
-              //             // @ts-ignore
-              //             item.unifiedDocument;
-              //           if (
-              //             ["paper", "post", "hypothesis", "question"].includes(
-              //               unifiedDocument.documentType
-              //             )
-              //           ) {
-              //             args = {
-              //               contentType: unifiedDocument.documentType,
-              //               // @ts-ignore
-              //               contentID: unifiedDocument.document.id,
-              //               ...args,
-              //             };
-              //           } else {
-              //             console.error(
-              //               `${result.contentType.name} Not supported for flagging`
-              //             );
-              //             return false;
-              //           }
-
-              //           flagGrmContent(args);
-              //         }}
-              //       />
-              //     ),
-              //     label: "Flag",
-              //     isActive: true,
-              //   },
-              // ]}
             />
           ),
         };
@@ -178,6 +200,119 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
 
   return (
     <div className={css(styles.pageWrapper) + " live-feed"}>
+      <div className={css(styles.titleContainer)}>
+        <h1 className={css(styles.title) + " clamp2"}>
+          Live Feed
+          {liveFeedForHub && (
+            <>
+              <FontAwesomeIcon
+                fontSize={24}
+                style={{ marginLeft: 10 }}
+                icon={faAngleRight}
+              />{" "}
+              <div className={css(styles.hubName)}>{liveFeedForHub?.name}</div>
+            </>
+          )}
+        </h1>
+      </div>
+      <div className={css(styles.titleContainerForSmallScreens)}>
+        <h1 className={css(styles.title) + " clamp2"}>
+          {liveFeedForHub ? `${liveFeedForHub?.name} Feed` : `Live Feed`}
+        </h1>
+      </div>
+      <div className={css(styles.description)}>
+        Stream of real-time activity{" "}
+        {liveFeedForHub ? (
+          <>
+            in the{" "}
+            <span className={css(styles.hubName)}>{liveFeedForHub.name}</span>{" "}
+            hub
+          </>
+        ) : (
+          "on ResearchHub"
+        )}
+        .
+      </div>
+      <HubSelectModal
+        preventLinkClick={true}
+        selectedHub={liveFeedForHub}
+        isModalOpen={isModalOpen}
+        handleModalClose={() => setIsModalOpen(false)}
+        handleSelect={(hub) => {
+          const query = {
+            ...router.query,
+            ...(hub?.id ? { hubId: hub.id } : {}),
+          };
+          if (!hub) {
+            delete query.hubId;
+            setLiveFeedForHub(undefined);
+          }
+
+          setIsModalOpen(false);
+          router.push(
+            {
+              pathname: `/live`,
+              query,
+            },
+            undefined,
+            { shallow: true }
+          );
+        }}
+      />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <HorizontalTabBar
+          tabs={tabs}
+          variant="text"
+          tabStyle={styles.tab}
+          onClick={(selectedTab) => {
+            const query = { ...router.query, contentType: selectedTab.value };
+            if (query.contentType === "ALL") {
+              delete query.contentType;
+            }
+
+            router.push(
+              {
+                pathname: `/live`,
+                query,
+              },
+              undefined,
+              { shallow: true }
+            );
+          }}
+        />
+        <div
+          className={css(
+            styles.tab,
+            styles.hubsFilter,
+            Boolean(router.query?.hubId) && styles.hubFilterSelected
+          )}
+          onClick={() => {
+            setIsModalOpen(true);
+          }}
+        >
+          <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>
+          Hubs
+          {router.query?.hubId && (
+            <div
+              style={{
+                background: colors.NEW_BLUE(0.1),
+                borderRadius: "5px",
+                padding: "2px 10px",
+                color: colors.NEW_BLUE(1.0),
+                fontSize: 12,
+              }}
+            >
+              1
+            </div>
+          )}
+        </div>
+      </div>
       {isLoadingPage ? (
         <div className={css(styles.placeholderWrapper)}>
           {Array(10)
@@ -199,7 +334,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
             <LoadMoreButton
               onClick={() => {
                 setIsLoadingMore(true);
-                loadResults(appliedFilters, nextResultsUrl);
+                loadResults({ nextResultsUrl });
               }}
               // @ts-ignore
               isLoadingMore={isLoadingMore}
@@ -212,6 +347,60 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
 }
 
 const styles = StyleSheet.create({
+  hubName: {
+    textTransform: "capitalize",
+    display: "inline-block",
+  },
+  description: {
+    fontSize: 15,
+    marginBottom: 15,
+    maxWidth: 790,
+    lineHeight: "22px",
+  },
+  title: {
+    fontWeight: 500,
+    textOverflow: "ellipsis",
+    marginBottom: 0,
+    textTransform: "capitalize",
+  },
+  titleContainer: {
+    alignItems: "center",
+    display: "flex",
+    width: "100%",
+    marginBottom: 15,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
+  },
+  titleContainerForSmallScreens: {
+    marginBottom: 15,
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
+  },
+  tab: {
+    fontSize: 14,
+  },
+  hubFilterSelected: {
+    color: colors.NEW_BLUE(1),
+  },
+  hubsFilter: {
+    fontWeight: 500,
+    fontSize: 14,
+    display: "flex",
+    columnGap: "5px",
+    alignItems: "center",
+    borderBottom: "3px solid transparent",
+    padding: "1rem 10px",
+    ":hover": {
+      color: colors.NEW_BLUE(1),
+      cursor: "pointer",
+    },
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      display: "none",
+    },
+  },
   pageWrapper: {
     maxWidth: 800,
     width: 800,
@@ -219,7 +408,7 @@ const styles = StyleSheet.create({
     marginRight: "auto",
     paddingTop: 25,
     [`@media only screen and (max-width: 800px)`]: {
-      width: "100%",
+      width: "auto",
     },
   },
   result: {

@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import dayjs from "dayjs";
 import updatePaperMetadataAPI from "./api/updatePaperMetadataAPI";
 import colors from "~/config/themes/colors";
-import HubSelect from "../Hubs/HubSelect";
+import HubSelectDropdown from "../Hubs/HubSelectDropdown";
 import { ClipLoader } from "react-spinners";
 const { setMessage, showMessage } = MessageActions;
 
@@ -120,7 +120,7 @@ const PaperMetadataForm = ({ paper, onUpdate, metadata }: FormProps) => {
         id="title"
         onChange={handleChange}
       />
-      <HubSelect
+      <HubSelectDropdown
         selectedHubs={fields.hubs}
         onChange={(hubs) => {
           handleChange("hubs", hubs);

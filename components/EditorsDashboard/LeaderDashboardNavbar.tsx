@@ -4,14 +4,23 @@ import { ID } from "~/config/types/root_types";
 import { ReactElement, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
-import FormSelect from "../Form/FormSelect";
+import FormSelect, {
+  CustomSelectControlWithoutClickEvents,
+} from "~/components/Form/FormSelect";
 import {
   faLongArrowAltDown,
   faLongArrowAltUp,
+  faComments,
+  faStar,
+  faGrid2,
 } from "@fortawesome/pro-solid-svg-icons";
 import "react-dates/initialize";
 import { DateRangePicker } from "react-dates";
 import "react-dates/lib/css/_datepicker.css";
+import HubSelectModal from "../Hubs/HubSelectModal";
+import colors from "~/config/themes/colors";
+import { DownIcon } from "~/config/themes/icons";
+import { set } from "react-ga";
 
 export type EditorDashFilters = {
   selectedHub: any;
@@ -101,6 +110,7 @@ export default function LeaderDashboardNavbar({
   const router = useRouter();
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
   const [datesOpen, setDatesOpen] = useState<boolean>(false);
+  const [isHubsModalOpen, setIsHubsModalOpen] = useState<boolean>(false);
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
@@ -112,20 +122,57 @@ export default function LeaderDashboardNavbar({
 
   return (
     <div className={css(styles.LeaderDashboardNavbar)}>
+      <HubSelectModal
+        preventLinkClick={true}
+        selectedHub={currentSelectedHub}
+        isModalOpen={isHubsModalOpen}
+        handleModalClose={() => setIsHubsModalOpen(false)}
+        handleSelect={(hub) => {
+          onFilterChange({ ...currentFilters, selectedHub: hub });
+          setIsHubsModalOpen(false);
+        }}
+      />
       <div className={css(styles.header)}>{headerLabel}</div>
+
       <div className={css(styles.navButtons)}>
-        <FormSelect
-          containerStyle={styles.hubDropdown}
-          inputStyle={INPUT_STYLE}
-          id="hubs"
-          label=""
-          onChange={(_id: ID, selectedHub: any): void =>
-            onFilterChange({ ...currentFilters, selectedHub })
-          }
-          options={suggestedHubs}
-          placeholder="Search Hubs"
-          value={currentSelectedHub ?? null}
-        />
+        <div onClick={(e) => setIsHubsModalOpen(true)}>
+          <FormSelect
+            selectComponents={{
+              Control: CustomSelectControlWithoutClickEvents,
+            }}
+            containerStyle={[styles.dropdown, styles.hubsFilter]}
+            inputStyle={INPUT_STYLE}
+            options={[]}
+            value={{
+              value: "hubs",
+              label: currentSelectedHub ? (
+                <div
+                  style={{
+                    display: "flex",
+                    columnGap: "5px",
+                    alignItems: "center",
+                  }}
+                >
+                  {currentSelectedHub.name}
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    columnGap: "5px",
+                    alignItems: "center",
+                  }}
+                >
+                  <span style={{ marginTop: 1 }}>
+                    {<FontAwesomeIcon icon={faGrid2} />}{" "}
+                  </span>
+                  <span>{"Hubs"}</span>
+                </div>
+              ),
+            }}
+          />
+        </div>
+
         <DateRangePicker
           startDate={currentTimeframe.startDate} // momentPropTypes.momentObj or null,
           startDateId="start_id" // PropTypes.string.isRequired,
@@ -171,6 +218,13 @@ const styles = StyleSheet.create({
       flexDirection: "column",
       marginBottom: 0,
     },
+  },
+  downIcon: {
+    padding: 4,
+    fontSize: 11,
+  },
+  hubsFilter: {
+    marginRight: 16,
   },
   dropdown: {
     width: 170,

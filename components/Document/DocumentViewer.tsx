@@ -5,11 +5,7 @@ import { breakpoints } from "~/config/themes/screen";
 import DocumentControls from "~/components/Document/DocumentControls";
 import DocumentExpandedNav from "~/components/Document/DocumentExpandedNav";
 import { zoomOptions } from "~/components/Document/lib/PDFViewer/config";
-import {
-  ContentInstance,
-  DocumentMetadata,
-  GenericDocument,
-} from "./lib/types";
+import { ContentInstance, GenericDocument } from "./lib/types";
 import throttle from "lodash/throttle";
 import { LEFT_SIDEBAR_MAX_WIDTH } from "../Home/sidebar/RootLeftSidebar";
 import DocumentPlaceholder from "./lib/Placeholders/DocumentPlaceholder";
@@ -68,6 +64,8 @@ type Props = {
   setReferenceItemDatum?: (datum) => void;
   referenceItemDatum?: any;
   documentViewerClass?: any;
+  withControls?: boolean;
+  allowAnnotations?: boolean;
 };
 
 const DocumentViewer = ({
@@ -87,6 +85,8 @@ const DocumentViewer = ({
   setReferenceItemDatum,
   referenceItemDatum,
   documentViewerClass,
+  withControls = true,
+  allowAnnotations = true,
 }: Props) => {
   const router = useRouter();
   const currentUser = getCurrentUser();
@@ -415,7 +415,8 @@ const DocumentViewer = ({
             </div>
           ) : (
             <>
-              {visibilityPreferenceForViewingComments !== "OFF" &&
+              {allowAnnotations &&
+                visibilityPreferenceForViewingComments !== "OFF" &&
                 process.browser && (
                   <AnnotationLayer
                     documentInstance={documentInstance}
@@ -494,23 +495,26 @@ const DocumentViewer = ({
                 </>
               )}
 
-              <DocumentControls
-                handleFullScreen={() => {
-                  if (isExpanded) {
-                    onClose && onClose();
-                    setIsExpanded(false);
-                  } else {
-                    setIsExpanded(true);
+              {withControls && (
+                <DocumentControls
+                  handleFullScreen={() => {
+                    if (isExpanded) {
+                      onClose && onClose();
+                      setIsExpanded(false);
+                    } else {
+                      setIsExpanded(true);
+                    }
+                  }}
+                  handleZoomIn={handleZoomIn}
+                  handleZoomOut={handleZoomOut}
+                  handleZoomSelection={handleZoomSelection}
+                  currentZoom={
+                    isExpanded ? fullScreenSelectedZoom : selectedZoom
                   }
-                }}
-                documentType={documentInstance?.type}
-                handleZoomIn={handleZoomIn}
-                handleZoomOut={handleZoomOut}
-                handleZoomSelection={handleZoomSelection}
-                currentZoom={isExpanded ? fullScreenSelectedZoom : selectedZoom}
-                showExpand={showExpandBtn}
-                isExpanded={isExpanded}
-              />
+                  showExpand={showExpandBtn}
+                  isExpanded={isExpanded}
+                />
+              )}
             </>
           )}
         </div>

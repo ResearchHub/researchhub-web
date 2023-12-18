@@ -4,11 +4,12 @@ import { captureEvent } from "~/config/utils/events";
 import { ID } from "~/config/types/root_types";
 
 export type ApiFilters = {
-  hubId?: ID;
+  hubId?: ID | null;
+  contentType?: string | null;
 };
 
 type Args = {
-  pageUrl: string | null;
+  pageUrl: string | null | undefined;
   onError?: Function;
   onSuccess: Function;
   filters: ApiFilters;

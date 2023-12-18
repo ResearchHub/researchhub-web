@@ -1,27 +1,28 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import { faX } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
-import { createQuestion } from "./api/createQuestion";
-import { firstImageFromHtml } from "~/config/utils/getFirstImageOfHtml";
 import { formGenericStyles } from "../Paper/Upload/styles/formGenericStyles";
-import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdown";
 import { StyleSheet, css } from "aphrodite";
-import { SyntheticEvent, useState } from "react";
-import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
+import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Button from "../Form/Button";
 import colors from "../../config/themes/colors";
 import dynamic from "next/dynamic";
 import FormInput from "../Form/FormInput";
-import FormSelect from "../Form/FormSelect";
-import HubSelect from "../Hubs/HubSelect";
+import HubSelectDropdown from "../Hubs/HubSelectDropdown";
+import { Post } from "../Document/lib/types";
+import { ID } from "~/config/types/root_types";
+import { DocumentContext } from "../Document/lib/DocumentContext";
+import { parseHub } from "~/config/types/hub";
+import { createOrUpdatePostApi } from "../Document/api/createOrUpdatePostApi";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
 
 const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 
 type FormFields = {
   hubs: any[];
-  text: string;
+  text: string | TrustedHTML;
   title: string;
 };
 
@@ -51,28 +52,27 @@ function validateFormField(fieldID: string, value: any): boolean {
 }
 
 export type AskQuestionFormProps = {
-  documentType: string;
   onExit: (event?: SyntheticEvent) => void;
   user: any;
+  post?: Post;
 };
 
-function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
+function AskQuestionForm({ post, user, onExit }: AskQuestionFormProps) {
   const router = useRouter();
   const [formErrors, setFormErrors] = useState<FormError>({
-    hubs: true,
+    hubs: false,
     text: false,
-    title: true,
+    title: false,
   });
   const [mutableFormFields, setMutableFormFields] = useState<FormFields>({
-    hubs: [],
-    text: "",
-    title: "",
+    hubs: post?.hubs ?? [],
+    text: post?.postHtml ?? "",
+    title: post?.title ?? "",
   });
-  const [suggestedHubs, setSuggestedHubs] = useState([]);
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
-  useEffectFetchSuggestedHubs({ setSuggestedHubs });
+  const currentUser = useCurrentUser();
+  const documentContext = useContext(DocumentContext);
 
   const onFormSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
@@ -84,24 +84,32 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
       setIsSubmitting(true);
     }
 
-    createQuestion({
+    createOrUpdatePostApi({
       payload: {
-        admins: null,
-        created_by: user.id,
-        document_type: "QUESTION",
-        editors: null,
-        full_src: mutableFormFields.text,
-        hubs: mutableFormFields.hubs.map((hub) => hub.id),
-        is_public: true,
-        preview_img: firstImageFromHtml(mutableFormFields.text),
-        renderable_text: getPlainTextFromMarkdown(mutableFormFields.text),
+        postId: post?.id,
         title: mutableFormFields.title,
-        viewers: null,
+        textContent: mutableFormFields.text,
+        editorContent: mutableFormFields.text,
+        hubIds: mutableFormFields.hubs.map((hub) => hub.id as ID),
+        postType: "QUESTION",
       },
+      currentUser,
       onError: (_err: Error): void => setIsSubmitting(false),
       onSuccess: (response: any): void => {
-        const { id, slug } = response ?? {};
-        router.push(`/question/${id}/${slug}`);
+        if (post?.id) {
+          const updatedHubs = (mutableFormFields.hubs || []).map(parseHub);
+          const updated = {
+            ...post,
+            title: response.title,
+            postHtml: response.full_markdown,
+            hubs: updatedHubs,
+          };
+          documentContext.updateDocument(updated);
+        } else {
+          const { id, slug } = response ?? {};
+          router.push(`/question/${id}/${slug}`);
+        }
+
         onExit();
       },
     });
@@ -124,7 +132,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
       onSubmit={onFormSubmit}
     >
       <div className={css(formGenericStyles.text, styles.header)}>
-        {"Ask a Question"}
+        {post ? "Update Question" : "Ask a Question"}
         <a
           className={css(formGenericStyles.authorGuidelines)}
           style={{ color: colors.BLUE(1) }}
@@ -135,7 +143,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
           {"Submission Guidelines"}
         </a>
         <span className={css(styles.close)} onClick={onExit}>
-          {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
+          {<FontAwesomeIcon icon={faX}></FontAwesomeIcon>}
         </span>
       </div>
       <FormInput
@@ -148,37 +156,40 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         }
         errorStyle={styles.errorText}
         id="title"
+        value={mutableFormFields.title}
         inputStyle={shouldDisplayError && formErrors.title && styles.error}
-        label={"Question"}
-        labelStyle={styles.label}
+        label={"Title"}
         onChange={handleOnChangeFields}
         required
       />
       {/* @ts-ignore */}
-      <SimpleEditor
-        id="text"
-        initialData={mutableFormFields.text}
-        label="Additional Details"
-        placeholder={
-          "Include all the information someone would need to answer your question. Be specific about what you need."
-        }
-        labelStyle={styles.label}
-        onChange={handleOnChangeFields}
-        containerStyle={styles.editor}
-        required
-      />
-      <HubSelect
+      <div className={css(styles.editorWrapper)}>
+        <SimpleEditor
+          id="text"
+          initialData={mutableFormFields.text}
+          label="Additional Details"
+          placeholder={
+            "Include all the information someone would need to answer your question. Be specific about what you need."
+          }
+          text={mutableFormFields.title}
+          onChange={handleOnChangeFields}
+          containerStyle={styles.editor}
+          required
+        />
+      </div>
+      <HubSelectDropdown
         selectedHubs={mutableFormFields.hubs}
+        required
         onChange={(hubs) => {
           handleOnChangeFields("hubs", hubs);
         }}
-        menuPlacement="top"
       />
       <div className={css(styles.buttonsContainer)}>
         <Button
+          fullWidth
           customButtonStyle={styles.buttonStyle}
           disabled={isSubmitting}
-          label="Ask Question"
+          label={post ? "Update" : "Ask Question"}
           type="submit"
         />
       </div>
@@ -198,29 +209,15 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     boxSizing: "border-box",
     background: "#FFFFFF",
-    "@media only screen and (min-width: 1024px)": {
-      minWidth: 720,
-    },
-    "@media only screen and (max-width: 1209px)": {
-      paddingLeft: "5vw",
-      paddingRight: "5vw",
-    },
-    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      width: "100%",
-    },
   },
   close: {
-    cursor: "pointer",
-    fontSize: 18,
     position: "absolute",
-    right: 0,
-    top: -12,
-    opacity: 0.6,
-    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      fontSize: 20,
-      top: -32,
-      right: -14,
-    },
+    padding: "16px",
+    cursor: "pointer",
+    fontSize: 16,
+    color: colors.BLACK(0.5),
+    top: -32,
+    right: -14,
   },
   header: {
     alignItems: "center",
@@ -234,16 +231,17 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      fontSize: 18,
+      fontSize: 22,
     },
   },
   buttonsContainer: {
-    width: "auto",
+    width: 200,
     display: "flex",
     justifyContent: "flex-end",
     marginTop: "30px",
+    marginLeft: "auto",
     "@media only screen and (max-width: 767px)": {
-      width: "auto",
+      width: "100%",
       justifyContent: "center",
     },
   },
@@ -262,11 +260,6 @@ const styles = StyleSheet.create({
     height: "55px",
     marginBottom: "35px",
   },
-  label: {
-    fontWeight: 500,
-    fontSize: "19px",
-    lineHeight: "21px",
-  },
   error: {
     border: `1px solid ${colors.RED(1)}`,
   },
@@ -277,14 +270,9 @@ const styles = StyleSheet.create({
     zIndex: 999,
   },
   buttonStyle: {
-    width: "160px",
     height: "50px",
-    "@media only screen and (max-width: 415px)": {
-      width: "160px",
-      height: "50px",
-    },
   },
-  editor: {
+  editorWrapper: {
     width: "721px",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "80vw",
@@ -292,6 +280,9 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       width: "86vw",
     },
+  },
+  editor: {
+    width: "100%",
   },
   supportText: {
     marginTop: 6,

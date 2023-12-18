@@ -4,7 +4,7 @@ import Ripples from "react-ripples";
 
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
-import Loader from "~/components/Loader/Loader";
+import { ClipLoader } from "react-spinners";
 
 const LoadMoreButton = ({
   onClick,
@@ -20,7 +20,12 @@ const LoadMoreButton = ({
           {label}
         </Ripples>
       ) : (
-        <Loader key={key} loading={true} size={size} color={colors.BLUE()} />
+        <ClipLoader
+          sizeUnit={"px"}
+          size={23}
+          color={colors.BLUE(1)}
+          loading={true}
+        />
       )}
     </div>
   );

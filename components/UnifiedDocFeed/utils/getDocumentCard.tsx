@@ -39,18 +39,20 @@ export function getDocumentCard({
         <FeedCard
           {...targetDoc}
           document={targetDoc}
+          documentFilter={uniDoc.document_filter}
           formattedDocType={formattedDocType}
           formattedDocLabel={formattedDocLabel}
           index={arrIndex}
           twitterScore={targetDoc.twitter_score}
           key={`${formattedDocType}-${docID}-${arrIndex}`}
           paper={uniDoc.documents}
+          hubs={uniDoc.hubs}
           vote={uniDoc.user_vote}
           score={uniDoc.score}
           featured={uniDoc.featured}
           reviews={uniDoc.reviews}
           bounties={bounties}
-          hasAcceptedAnswer={targetDoc.has_accepted_answer}
+          hasAcceptedAnswer={uniDoc.document_filter.answered}
           voteCallback={(arrIndex: number, currPaper: any): void => {
             const [currUniDoc, newUniDocs] = [
               { ...uniDoc },

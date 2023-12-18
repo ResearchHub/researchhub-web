@@ -1,4 +1,10 @@
-import { useContext, createContext, useEffect, useState } from "react";
+import {
+  useContext,
+  createContext,
+  useEffect,
+  useState,
+  ReactElement,
+} from "react";
 import numeral from "numeral";
 import { fetchExchangeRate } from "~/config/fetch/exchangeRate";
 
@@ -15,6 +21,19 @@ const ExchangeRateContext = createContext<ContextType>({
 });
 
 export const useExchangeRate = () => useContext(ExchangeRateContext);
+
+/**
+ * Older components can't use hooks, so this is a wrapper to use the context.
+ * You'd use it like this:
+ * const Component = ({ rscToUSDDisplay }) => <div>{rscToUSDDisplay(100)}</div>;
+ * export default withExchangeRate(Component);
+ */
+export function withExchangeRate(Component: any) {
+  return function WrappedComponent(props: any): ReactElement {
+    const { rscToUSDDisplay } = useExchangeRate();
+    return <Component {...props} rscToUSDDisplay={rscToUSDDisplay} />;
+  };
+}
 
 export const ExchangeRateContextProvider = ({ children }) => {
   const [exchangeRate, setExchangeRate] = useState(0);

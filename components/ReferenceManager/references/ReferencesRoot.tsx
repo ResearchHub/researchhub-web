@@ -8,9 +8,10 @@ import { ReferenceUploadDrawerContextProvider } from "./reference_uploader/conte
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import HeadComponent from "~/components/Head";
 import killswitch from "~/config/killswitch/killswitch";
-import LoginModal from "~/components/Login/LoginModal";
 import ReferencesContainer from "~/components/ReferenceManager/references/ReferencesContainer";
 import { ReferenceActiveProjectContextProvider } from "./reference_organizer/context/ReferenceActiveProjectContext";
+import { useRouter } from "next/router";
+import ReferenceManagerIntroModal from "../lib/ReferenceManagerIntroModal";
 
 type Props = {
   authChecked?: boolean;
@@ -25,7 +26,13 @@ function ReferencesRoot({
   isLoggedIn,
   calloutOpen,
 }: Props): ReactElement {
+  const router = useRouter();
   const wsUrl = currentUserID ? WS_ROUTES.CITATION_ENTRY(currentUserID) : "";
+
+  if (!isLoggedIn && authChecked) {
+    // /login?redirect=/reference-manager
+    router.push("/login?redirect=/reference-manager");
+  }
 
   if (!killswitch("reference-manager")) {
     return <Fragment />;
@@ -41,19 +48,15 @@ function ReferencesRoot({
                 ></HeadComponent>
                 {isLoggedIn || !authChecked ? (
                   // @ts-ignore - faulty legacy connect hook
-                  <ReferencesContainer
-                    wsUrl={wsUrl}
-                    wsAuth
-                    calloutOpen={calloutOpen}
-                  />
-                ) : (
-                  <LoginModal
-                    isOpen={true}
-                    handleClose={undefined}
-                    loginCallback={undefined}
-                    persistent={undefined}
-                  />
-                )}
+                  <>
+                    <ReferenceManagerIntroModal />
+                    <ReferencesContainer
+                      wsUrl={wsUrl}
+                      wsAuth
+                      calloutOpen={calloutOpen}
+                    />
+                  </>
+                ) : null}
               </ReferencesTableContextProvider>
             </ReferenceProjectsUpsertContextProvider>
           </ReferenceActiveProjectContextProvider>

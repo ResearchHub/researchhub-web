@@ -91,8 +91,6 @@ const Navbar = (props) => {
       </div>
       {` Reference Manager`}
     </div>
-  ) : pathname.includes("live") ? (
-    "Live Activity"
   ) : isPaper ? (
     <div className={css(styles.backBtnWrapper)}>
       <BackBtn label={"Paper"} href="/" />
@@ -150,7 +148,6 @@ const Navbar = (props) => {
       <DndModal />
       <FirstVoteModal auth={auth} updateUser={updateUser} />
       {props.modals.openLoginModal && <LoginModal isOpen={true} />}
-      <NewPostModal />
       <OrcidConnectModal />
       <PromotionInfoModal />
       <ReCaptchaPrompt />
@@ -220,7 +217,6 @@ const Navbar = (props) => {
               </div>
             )}
           </div>
-          {isLoggedIn && <NewPostButton />}
 
           {Boolean(user.id) && (
             <PaperUploadStateNotifier
@@ -287,7 +283,6 @@ const styles = StyleSheet.create({
     position: "initial",
   },
   buttonRight: {
-    marginRight: 16,
     "@media only screen and (min-width: 1024px)": {
       marginLeft: 20,
     },

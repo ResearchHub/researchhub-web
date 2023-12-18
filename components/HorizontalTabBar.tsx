@@ -11,6 +11,7 @@ import {
 } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
+import { faFire } from "@fortawesome/pro-solid-svg-icons";
 
 export type Tab = {
   label: string;
@@ -19,7 +20,9 @@ export type Tab = {
   isSelected?: boolean;
   icon?: React.ReactNode;
   selectedIcon?: React.ReactNode;
+  hoverIcon?: React.ReactNode;
   pillContent?: React.ReactNode | string;
+  showNewFeatureIndicator?: boolean;
 };
 
 interface Props {
@@ -27,6 +30,7 @@ interface Props {
   onClick?: Function;
   containerStyle?: any;
   tabStyle?: any;
+  variant?: "underline" | "text";
 }
 
 const HorizontalTabBar = ({
@@ -34,9 +38,11 @@ const HorizontalTabBar = ({
   onClick,
   containerStyle,
   tabStyle,
+  variant = "underline",
 }: Props) => {
   const tabContainerEl = useRef<HTMLDivElement>(null);
   const [showRightArrow, setShowRightArrow] = useState(false);
+  const [hoveredTab, setHoveredTab] = useState<any>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,15 +62,30 @@ const HorizontalTabBar = ({
   }, [tabContainerEl]);
 
   const renderTab = (tab: Tab, index) => {
-    const { isSelected, value, label, icon, selectedIcon, pillContent, href } =
-      tab;
+    const {
+      isSelected,
+      value,
+      label,
+      icon,
+      selectedIcon,
+      pillContent,
+      href,
+      showNewFeatureIndicator,
+    } = tab;
     const tabType = href ? "link" : "div";
 
     const props = {
       key: value,
       className: css(
         styles.tab,
-        isSelected ? styles.tabSelected : styles.tabNotSelected,
+        isSelected &&
+          variant === "underline" &&
+          styles.underlineVariantSelected,
+        !isSelected &&
+          variant === "underline" &&
+          styles.underlineVariantNotSelected,
+        isSelected && variant === "text" && styles.textVariantSelected,
+        !isSelected && variant === "text" && styles.textVariantNotSelected,
         tabStyle
       ),
       ...(href && { href }),
@@ -76,8 +97,16 @@ const HorizontalTabBar = ({
         <div className={css(styles.tabContentWrapper)}>
           {isSelected && selectedIcon ? selectedIcon : icon}
           {label}
-          {pillContent !== undefined && (
+          {!showNewFeatureIndicator && pillContent !== undefined && (
             <div className={css(styles.pillContent)}>{pillContent}</div>
+          )}
+          {showNewFeatureIndicator && (
+            <span className={css(styles.new)}>
+              <span className={css(styles.fireIcon)}>
+                {<FontAwesomeIcon icon={faFire}></FontAwesomeIcon>}
+              </span>
+              <span className={css(styles.newText)}>New</span>
+            </span>
           )}
         </div>
       </_WrapperElement>
@@ -197,17 +226,46 @@ const styles = StyleSheet.create({
     alignItems: "center",
     columnGap: "8px",
   },
-  tabNotSelected: {
+  underlineVariantSelected: {
+    borderBottom: "solid 3px",
+    color: colors.NEW_BLUE(),
+    borderColor: colors.NEW_BLUE(),
+  },
+  underlineVariantNotSelected: {
+    ":active": {
+      color: `solid 3px ${colors.GREY()}`,
+    },
     ":hover": {
-      color: colors.MEDIUM_GREY(),
       borderBottom: `solid 3px ${colors.GREY()}`,
       transition: "all 0.2s ease-in-out",
     },
   },
-  tabSelected: {
+  textVariantSelected: {
     color: colors.NEW_BLUE(),
-    borderBottom: "solid 3px",
-    borderColor: colors.NEW_BLUE(),
+  },
+  textVariantNotSelected: {
+    ":hover": {
+      color: colors.NEW_BLUE(),
+    },
+  },
+
+  // new feature indicator
+  new: {
+    display: "flex",
+    alignItems: "center",
+    background: colors.NEW_BLUE(0.1),
+    borderRadius: "5px",
+    padding: "4px 6px",
+  },
+  newText: {
+    fontWeight: 500,
+    fontSize: 14,
+    color: colors.NEW_BLUE(0.9),
+  },
+  fireIcon: {
+    fontSize: 14,
+    marginRight: 5,
+    color: colors.NEW_BLUE(0.9),
   },
 });
 

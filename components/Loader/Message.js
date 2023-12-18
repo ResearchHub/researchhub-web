@@ -104,7 +104,8 @@ var styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    zIndex: 9999999,
+    // this is intentionally higher than `LoginModal`'s z-index
+    zIndex: 1000000002,
     whiteSpace: "pre-wrap",
   },
   load: {

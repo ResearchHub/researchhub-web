@@ -9,7 +9,12 @@ import {
 import GenericMenu, { MenuOption } from "../shared/GenericMenu";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
-import { faPen, faFlag, faBan } from "@fortawesome/pro-light-svg-icons";
+import {
+  faPen,
+  faFlag,
+  faBan,
+  faTrashAlt,
+} from "@fortawesome/pro-light-svg-icons";
 import PaperMetadataModal from "./PaperMetadataModal";
 import { useSelector } from "react-redux";
 import { parseUser } from "~/config/types/root_types";
@@ -20,13 +25,15 @@ import {
   faEllipsis,
   faArrowDownToBracket,
 } from "@fortawesome/pro-regular-svg-icons";
-import { StyleSheet, css } from "aphrodite";
+import { StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { useContext } from "react";
 import { DocumentContext } from "./lib/DocumentContext";
 import useCacheControl from "~/config/hooks/useCacheControl";
-import removeDocFromFeatured from "../Admin/api/removeDocFromFeaturedAPI";
 import excludeFromFeed from "../Admin/api/excludeDocFromFeedAPI";
+import censorDocument from "./api/censorDocAPI";
+import { useAlert } from "react-alert";
+import { useRouter } from "next/router";
 
 interface Props {
   document: GenericDocument;
@@ -49,6 +56,8 @@ function downloadPDF(pdfUrl) {
 }
 
 const DocumentOptions = ({ document: doc, metadata }: Props) => {
+  const alert = useAlert();
+  const router = useRouter();
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
@@ -56,7 +65,45 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
   const { revalidateDocument } = useCacheControl();
 
   const isModerator = Boolean(currentUser?.moderator);
-  const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
+  const isHubEditor = Boolean(currentUser?.authorProfile?.isHubEditor);
+
+  const handleRemoveContent = () => {
+    alert.show({
+      // @ts-ignore
+      text: (
+        <div>
+          {`Permanently delete this ${doc.unifiedDocument.documentType}? This cannot be undone.`}
+        </div>
+      ),
+      buttonText: "Yes",
+      onClick: async () => {
+        censorDocument({
+          unifiedDocumentId: doc.unifiedDocument.id,
+          onSuccess: () => {
+            revalidateDocument();
+            alert.show(
+              {
+                // @ts-ignore
+                text: (
+                  <div>
+                    {`This ${doc.unifiedDocument.documentType} has been deleted.`}
+                  </div>
+                ),
+                buttonText: "OK",
+                onClick: () => {
+                  router.push("/");
+                },
+              },
+              { withCancel: false }
+            );
+          },
+          onError: () => {
+            window.alert("Failed to remove");
+          },
+        });
+      },
+    });
+  };
 
   const options: Array<MenuOption> = [
     ...(isPaper(doc) && currentUser
@@ -98,6 +145,19 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
             onClick: () => {
               documentContext.editDocument && documentContext.editDocument();
             },
+          },
+        ]
+      : []),
+
+    ...(isPost(doc) &&
+    doc.authors.some((author) => author.id === currentUser?.authorProfile.id)
+      ? [
+          {
+            label: "Remove",
+            group: "Document",
+            icon: <FontAwesomeIcon icon={faTrashAlt} />,
+            value: "remove-content",
+            onClick: handleRemoveContent,
           },
         ]
       : []),
@@ -158,10 +218,12 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
                   excludeFromHubs: false,
                 },
                 onError: () => {
-                  alert("Something went wrong trying to remove doc from feed");
+                  window.alert(
+                    "Something went wrong trying to remove doc from feed"
+                  );
                 },
                 onSuccess: () => {
-                  alert("Document successfully removed from feed!");
+                  window.alert("Document successfully removed from feed!");
                 },
               });
             },

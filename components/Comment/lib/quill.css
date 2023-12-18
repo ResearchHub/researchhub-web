@@ -1,7 +1,7 @@
 .CommentEditor .ql-container {
   border: none !important;
 }
-.CommentEditor .ql-container .ql-editor {
+.CommentEditor .ql-container .ql-editor[contenteditable="true"] {
   min-height: 50px;
   overflow: visible;
 }

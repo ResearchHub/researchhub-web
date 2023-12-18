@@ -39,11 +39,18 @@ export const tabs: Array<Tab> = [
     label: "Peer Reviews",
     value: "reviews",
   },
-  {
-    icon: <FontAwesomeIcon icon={faCircleCheck} />,
-    label: "Replicability",
-    value: "replicability",
-  },
+  // Disabled replicability since we were seeing a lot of spammy votes
+  // and thought that it'd be a net-negative to have this on the platform.
+  // Want to consider more quality/higher-value implementation before re-launching.
+  // {
+  //   icon: <FontAwesomeIcon icon={faCircleCheck} />,
+  //   label: "Replicability",
+  //   value: "replicability",
+  //   // let's show this until 2024 (~30 days since launch)
+  //   // after that it'll programmatically be hidden.
+  //   // if you're seeing this and it's 2024, please remove this code.
+  //   showNewFeatureIndicator: new Date() < new Date("2024-01-01"),
+  // },
 ];
 
 export const getTabs = ({

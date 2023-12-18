@@ -113,6 +113,11 @@ const nextConfig = {
         destination: "/",
         permanent: true,
       },
+      {
+        source: "/referral/:id",
+        destination: "/",
+        permanent: true,
+      },
     ];
   },
 };

@@ -30,12 +30,11 @@ export default async function sharedGetStaticProps({
     metadata = await fetchDocumentMetadata({
       unifiedDocId: documentData.unified_document.id,
     });
-  } catch (err) {
+  } catch (err: any) {
     captureException(err);
-    console.log("Error getting document", err);
     return {
       props: {
-        errorCode: 500,
+        errorCode: err?.response?.status || 500,
         documentType,
         postHtml,
         tabName,
