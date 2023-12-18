@@ -366,7 +366,7 @@ const SaveToRefManager = ({
                           orgId: selectedOrg?.id,
                           doc,
                         }).then((res: any) => {
-                          projectCitationMap[project.id] = [res.id];
+                          projectCitationMap[project.id] = [res?.id];
                           setProjectCitationMap({ ...projectCitationMap });
                         });
                       }

@@ -503,6 +503,7 @@ const DocumentViewer = ({
                     setIsExpanded(true);
                   }
                 }}
+                documentType={documentInstance?.type}
                 handleZoomIn={handleZoomIn}
                 handleZoomOut={handleZoomOut}
                 handleZoomSelection={handleZoomSelection}
@@ -523,10 +524,11 @@ const styles = StyleSheet.create({
     position: "relative",
     justifyContent: "center",
     width: "100%",
+    zIndex: 4,
   },
   scroll: {
-    overflowX: "scroll",
-    overflowY: "hidden",
+    // overflowX: "scroll",
+    // overflowY: "visible",
   },
   uploadFileTitle: {
     fontWeight: 500,

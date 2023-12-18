@@ -169,6 +169,7 @@ function DocumentContainer({ tab, shouldDisplay }) {
           documentPageClass={[
             css(
               styles.noDisplay,
+              styles.overflowHidden,
               shouldDisplay && styles.documentViewerDisplay
             ),
           ]}
@@ -180,13 +181,14 @@ function DocumentContainer({ tab, shouldDisplay }) {
               styles.documentViewerClass,
               shouldDisplay && styles.display,
             ]}
+            showExpandBtn={false}
             referenceItemDatum={tab}
             citationInstance={{ id: tab.id, type: "citationentry" }}
             documentInstance={
               tab.related_unified_doc
                 ? {
-                    id: tab.related_unified_doc?.documents?.id,
-                    type: "paper",
+                    id: tab.related_unified_doc?.documents[0]?.id,
+                    type: "researchhubpost",
                   }
                 : undefined
             }
@@ -1218,6 +1220,9 @@ const styles = StyleSheet.create({
       color: colors.BLACK(),
       textDecoration: "underline",
     },
+  },
+  overflowHidden: {
+    overflow: "hidden",
   },
   divider: {
     borderLeft: `1px solid ${colors.MEDIUM_GREY2(0.5)}`,
