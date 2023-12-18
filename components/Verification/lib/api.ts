@@ -1,9 +1,15 @@
 import API, { generateApiUrl } from "~/config/api";
 import helpers from "~/config/api/helpers";
 import { captureEvent } from "~/config/utils/events";
-import { VerificationPaper, parseVerificationPaper } from "./types";
+import { VerificationPaperResult, parseVerificationPaperResult } from "./types";
 
-export const fetchPaperByDoi = async ({ doi }): Promise<VerificationPaper> => {
+export const fetchPaperByDoi = async ({
+  doi,
+}): Promise<VerificationPaperResult> => {
+  if (doi !== "https://doi.org/10.1155/2017/2925869") {
+    throw new Error("DOI not found");
+  }
+
   const mockResponse = {
     id: "https://openalex.org/W2594873390",
     doi: "https://doi.org/10.1155/2017/2925869",
@@ -666,7 +672,7 @@ export const fetchPaperByDoi = async ({ doi }): Promise<VerificationPaper> => {
     created_date: "2017-03-16",
   };
 
-  return parseVerificationPaper(mockResponse, true);
+  return parseVerificationPaperResult(mockResponse, true);
 };
 
 type OpenAlexResponse = {

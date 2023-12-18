@@ -1,6 +1,6 @@
 import BaseModal from "../Modals/BaseModal";
 import { css, StyleSheet } from "aphrodite";
-import VerificationForm, { VERIFICATION_STEP } from "./VerificationFormV2";
+import VerificationForm from "./VerificationFormV2";
 import { breakpoints } from "~/config/themes/screen";
 import { useState } from "react";
 import colors from "~/config/themes/colors";
@@ -8,6 +8,7 @@ import { faArrowLeft } from "@fortawesome/pro-light-svg-icons";
 import { CloseIcon } from "~/config/themes/icons";
 import IconButton from "../Icons/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { VERIFICATION_STEP } from "./lib/types";
 
 const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
   const [step, setStep] = useState<VERIFICATION_STEP>("DOI_STEP");
@@ -35,6 +36,7 @@ const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
             />
           </IconButton>
           <CloseIcon
+            // @ts-ignore
             overrideStyle={styles.close}
             color={colors.MEDIUM_GREY()}
             onClick={handleModalClose}

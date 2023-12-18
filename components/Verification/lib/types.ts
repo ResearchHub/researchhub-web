@@ -1,6 +1,12 @@
 import { formatDateStandard } from "~/config/utils/dates";
 
-export type VerificationPaper = {
+export type VERIFICATION_STEP =
+  | "DOI_STEP"
+  | "AUTHOR_STEP"
+  | "SUCCESS_STEP"
+  | "ERROR_STEP";
+
+export type VerificationPaperResult = {
   id: string;
   title: string;
   publishedDate: string;
@@ -10,10 +16,10 @@ export type VerificationPaper = {
   concepts: OpenAlexConcept[];
 };
 
-export const parseVerificationPaper = (
+export const parseVerificationPaperResult = (
   raw: any,
   onlyImportantConcepts: boolean
-): VerificationPaper => {
+): VerificationPaperResult => {
   const parsed = {
     title: raw.title,
     id: raw.id,
