@@ -15,7 +15,13 @@ import StarInput from "../Form/StarInput";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
+const DocumentLineItems = ({
+  document,
+  id,
+  slug,
+}: {
+  document: GenericDocument;
+}) => {
   const router = useRouter();
   const auth = useSelector((state: any) => state.auth);
   const claimableAuthors = document.authors.filter((a) => !a.isClaimed);
@@ -23,7 +29,9 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
     useState<boolean>(false);
   const [isShowingAllMetadata, setIsShowingAllMetadata] =
     useState<boolean>(false);
-  const basePath = `/${document.type}/${router.query.documentId}/${router.query.documentSlug}`;
+  const basePath = `/${document.type}/${id || router.query.documentId}/${
+    slug || router.query.documentSlug
+  }`;
 
   const lineItems = [
     ...(document.title !== document.title

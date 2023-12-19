@@ -115,6 +115,7 @@ export interface GenericDocument {
   formats: DocumentFormat[];
   raw: any; // Strictly for legacy purposes
   images: DocumentImage[];
+  slug?: string;
 }
 
 export type Paper = GenericDocument & {

@@ -100,6 +100,8 @@ const DocumentHeader = ({
     };
   }, []);
 
+  console.log(doc);
+
   return (
     <div ref={headerWrapperRef} className={css(styles.headerRoot)}>
       <DocumentPageTutorial />
@@ -151,7 +153,11 @@ const DocumentHeader = ({
             {
               <div className={css(styles.lineItemsWrapper)}>
                 <div className={css(styles.lineItems)}>
-                  <DocumentLineItems document={doc} />
+                  <DocumentLineItems
+                    document={doc}
+                    id={doc?.id}
+                    slug={doc?.unifiedDocument?.document?.slug}
+                  />
                 </div>
 
                 {!noLineItems && (

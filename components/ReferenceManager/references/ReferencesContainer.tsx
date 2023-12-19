@@ -70,14 +70,12 @@ import RefManagerCallouts from "../onboarding/RefManagerCallouts";
 import { storeToCookie } from "~/config/utils/storeToCookie";
 import DocumentViewer from "~/components/Document/DocumentViewer";
 import ReferenceImportLibraryModal from "./reference_import_library_modal/ReferenceImportLibraryModal";
-import ExportReferencesModal from "./reference_bibliography/ExportReferencesModal";
 import {
   downloadBibliography,
   formatBibliography,
 } from "./reference_bibliography/export";
 import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 import fetchPostFromS3 from "~/components/Document/api/fetchPostFromS3";
-import { isPost } from "~/components/Document/lib/types";
 import {
   useDocument,
   useDocumentMetadata,
@@ -86,7 +84,6 @@ import { fetchDocumentByType } from "~/components/Document/lib/fetchDocumentByTy
 import fetchDocumentMetadata from "~/components/Document/api/fetchDocumentMetadata";
 import DocumentPlaceholder from "~/components/Document/lib/Placeholders/DocumentPlaceholder";
 import DocumentPageLayout from "~/components/Document/pages/DocumentPageLayout";
-import LinkToPublicPage from "~/components/LinkToPublicPage";
 import {
   DocumentContext,
   DocumentPreferences,
@@ -127,8 +124,8 @@ function DocumentContainer({ tab, shouldDisplay }) {
         if (tab.attachment.includes("uploads/post_discussion")) {
           const documentType = "post";
           setDocumentType(documentType);
-          const documentId = tab.related_unified_doc?.documents[0].id;
-          const unifiedDocId = tab.related_unified_doc.id;
+          const documentId = tab.related_unified_doc?.documents[0]?.id;
+          const unifiedDocId = tab.related_unified_doc?.id;
           const _documentData = await fetchDocumentByType({
             documentType,
             documentId,
@@ -139,7 +136,6 @@ function DocumentContainer({ tab, shouldDisplay }) {
           const postHtml = await fetchPostFromS3({
             s3Url: tab.attachment,
           });
-
           setMetadata(_metadata);
           setDocumentData(_documentData);
           setPostHtml(postHtml);
@@ -200,7 +196,7 @@ function DocumentContainer({ tab, shouldDisplay }) {
                 styles.documentViewerClass,
                 shouldDisplay && styles.display,
               ]}
-              showExpandBtn={false}
+              withControls={false}
               referenceItemDatum={tab}
               citationInstance={{ id: tab.id, type: "citationentry" }}
               documentInstance={
@@ -1294,7 +1290,7 @@ const styles = StyleSheet.create({
     // flex: "1 1 40% !important",
   },
   headerContentWrapperClass: {
-    paddingLeft: 50,
+    // paddingLeft: 50,
 
     "@media only screen and (min-width: 768px)": {
       paddingBottom: 25,
@@ -1370,6 +1366,8 @@ const styles = StyleSheet.create({
   },
   documentContainer: {
     position: "relative",
+    paddingLeft: 16,
+    paddingRight: 16,
   },
   linkToPublicPage: {
     position: "absolute",
