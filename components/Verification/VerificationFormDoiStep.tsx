@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 import Button from "../Form/Button";
@@ -13,29 +13,46 @@ import VerificationPaperResult from "./VerificationPaperResult";
 type ERROR_TYPE = "DOI_ERROR" | "PAPER_NOT_FOUND" | null;
 
 interface Props {
-  nextStep: () => void,
-  setAuthoredPaper: (paper: VerificationPaperResultType|null) => void,
-  authoredPaper: VerificationPaperResultType | null,
+  nextStep: Function;
+  setPaperDoi: Function;
+  paperDoi: string | null;
+  setAuthoredPaper: (paper: VerificationPaperResultType | null) => void;
+  authoredPaper: VerificationPaperResultType | null;
 }
 
-const VerificationFormDoiStep = ({ nextStep, setAuthoredPaper, authoredPaper }: Props) => {
-  const [doiInput, setDoiInput] = useState<string | null>(null);
+const VerificationFormDoiStep = ({
+  nextStep,
+  setAuthoredPaper,
+  authoredPaper,
+  paperDoi,
+  setPaperDoi,
+}: Props) => {
   const [error, setError] = useState<ERROR_TYPE>(null);
   const [isFetching, setIsFetching] = useState<boolean>(false);
+  const isInitialMount = useRef(true);
 
   useEffect(() => {
-    if (!doiInput) {
+    // If paperDoi and authoredPaper already set, don't refetch on initial mount.
+    // This scenario occurs when user navigates back to the previous step.
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      if (paperDoi && authoredPaper) {
+        return;
+      }
+    }
+
+    if (!paperDoi) {
       return;
     }
 
-    const isValid = extractAndValidateDOI({ doi: doiInput });
+    const isValid = extractAndValidateDOI({ doi: paperDoi });
     if (isValid) {
       setIsFetching(true);
-      debounceFetchPaperByDoi({ doi: doiInput });
+      debounceFetchPaperByDoi({ doi: paperDoi });
     } else {
       setError("DOI_ERROR");
     }
-  }, [doiInput]);
+  }, [paperDoi]);
 
   const debounceFetchPaperByDoi = useCallback(
     debounce(async ({ doi }) => {
@@ -58,16 +75,17 @@ const VerificationFormDoiStep = ({ nextStep, setAuthoredPaper, authoredPaper }: 
       <div>First, enter a DOI for a paper you authored:</div>
       <FormInput
         error={
-          doiInput &&
+          paperDoi &&
           error &&
           (error === "DOI_ERROR"
             ? "Please enter a valid DOI."
             : "Paper not found. Please try another DOI.")
         }
+        value={paperDoi || ""}
         disabled={isFetching}
         containerStyle={styles.inputContainer}
         onChange={(name, value) => {
-          setDoiInput(value);
+          setPaperDoi(value);
         }}
       />
       <div style={{ minHeight: 100 }}>

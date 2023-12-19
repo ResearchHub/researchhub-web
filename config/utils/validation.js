@@ -11,6 +11,42 @@ export const isValidEmail = (email) => {
     );
 };
 
+export const isCommonEmailExt = (email) => {
+  const commonEmailExtensions = [
+    "@gmail",
+    "@yahoo",
+    "@hotmail",
+    "@aol",
+    "@outlook",
+    "@live",
+    "@msn",
+    "@icloud",
+    "@mail",
+    "@yandex",
+    "@protonmail",
+    "@zoho",
+    "@gmx",
+    "@fastmail",
+    "@inbox",
+    "@hushmail",
+    "@tutanota",
+    "@rediffmail",
+    "@mail",
+    "@lycos",
+    "@excite",
+    "@lavabit",
+    "@outlook",
+    "@web",
+    "@naver",
+  ];
+
+  // Extract the domain from the email
+  const domain = email.substring(email.lastIndexOf("@"));
+
+  // Check if the domain is in the list of common email extensions
+  return commonEmailExtensions.some((ext) => domain.indexOf(ext) > -1);
+};
+
 export function currentUserHasMinimumReputation(stateObject, minimum) {
   let reputation = getCurrentUserReputation(stateObject);
   return reputation >= minimum;

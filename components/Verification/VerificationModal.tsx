@@ -8,7 +8,7 @@ import { faArrowLeft } from "@fortawesome/pro-light-svg-icons";
 import { CloseIcon } from "~/config/themes/icons";
 import IconButton from "../Icons/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { VERIFICATION_STEP } from "./lib/types";
+import { VERIFICATION_STEP, ORDERED_VERIFICATION_STEPS } from "./lib/types";
 
 const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
   const [step, setStep] = useState<VERIFICATION_STEP>("DOI_STEP");
@@ -27,12 +27,22 @@ const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
         <div
           className={css(styles.titleWrapper, styles.titleWrapperWithBorder)}
         >
-          {step === "DOI_STEP" ? "Enter DOI" : step === "AUTHOR_STEP" ? "Select Author" : ""}
+          {step === "DOI_STEP"
+            ? "Enter DOI"
+            : step === "AUTHOR_STEP"
+            ? "Select Author"
+            : ""}
 
           <IconButton overrideStyle={styles.backButton}>
             <FontAwesomeIcon
               icon={faArrowLeft}
-              onClick={() => setStep("DOI_STEP")}
+              onClick={() => {
+                const indexOfCurrentStep =
+                  ORDERED_VERIFICATION_STEPS.indexOf(step);
+                if (indexOfCurrentStep > 0) {
+                  setStep(ORDERED_VERIFICATION_STEPS[indexOfCurrentStep - 1]);
+                }
+              }}
             />
           </IconButton>
           <CloseIcon
@@ -45,7 +55,7 @@ const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
       }
     >
       <div className={css(styles.formWrapper)}>
-        <VerificationForm />
+        <VerificationForm currentStep={step} onStepSelect={setStep} />
       </div>
     </BaseModal>
   );

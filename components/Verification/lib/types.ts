@@ -6,6 +6,13 @@ export type VERIFICATION_STEP =
   | "SUCCESS_STEP"
   | "ERROR_STEP";
 
+export const ORDERED_VERIFICATION_STEPS: Array<VERIFICATION_STEP> = [
+  "DOI_STEP",
+  "AUTHOR_STEP",
+  "SUCCESS_STEP",
+  "ERROR_STEP",
+];
+
 export type VerificationPaperResult = {
   id: string;
   title: string;
