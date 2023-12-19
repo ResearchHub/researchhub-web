@@ -2,7 +2,7 @@ import BaseModal from "../Modals/BaseModal";
 import { css, StyleSheet } from "aphrodite";
 import VerificationForm from "./VerificationFormV2";
 import { breakpoints } from "~/config/themes/screen";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import colors from "~/config/themes/colors";
 import { faArrowLeft } from "@fortawesome/pro-light-svg-icons";
 import { CloseIcon } from "~/config/themes/icons";
@@ -13,45 +13,57 @@ import { VERIFICATION_STEP, ORDERED_VERIFICATION_STEPS } from "./lib/types";
 const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
   const [step, setStep] = useState<VERIFICATION_STEP>("DOI_STEP");
 
+  useEffect(() => {
+    if (isModalOpen) { // Reset
+      setStep("DOI_STEP");
+    }
+  }, [])
+
   return (
     <BaseModal
       offset={"0px"}
       isOpen={isModalOpen}
-      hideClose={true}
+      hideClose={step !== "EMAIL_SENT_STEP"}
       closeModal={handleModalClose}
       zIndex={1000000001}
       modalStyle={styles.modalStyle}
       modalContentStyle={styles.modalContentStyle}
       titleStyle={styles.modalTitleStyleOverride}
       title={
-        <div
-          className={css(styles.titleWrapper, styles.titleWrapperWithBorder)}
-        >
-          {step === "DOI_STEP"
-            ? "Enter DOI"
-            : step === "AUTHOR_STEP"
-            ? "Select Author"
-            : ""}
 
-          <IconButton overrideStyle={styles.backButton}>
-            <FontAwesomeIcon
-              icon={faArrowLeft}
-              onClick={() => {
-                const indexOfCurrentStep =
-                  ORDERED_VERIFICATION_STEPS.indexOf(step);
-                if (indexOfCurrentStep > 0) {
-                  setStep(ORDERED_VERIFICATION_STEPS[indexOfCurrentStep - 1]);
-                }
-              }}
+        step !== "EMAIL_SENT_STEP" ? (
+
+          <div
+            className={css(styles.titleWrapper, styles.titleWrapperWithBorder)}
+          >
+            {step === "DOI_STEP"
+              ? "Enter DOI"
+              : step === "AUTHOR_STEP"
+                ? "Select Author"
+                : ""}
+
+
+            <IconButton overrideStyle={styles.backButton}>
+              <FontAwesomeIcon
+                icon={faArrowLeft}
+                onClick={() => {
+                  const indexOfCurrentStep =
+                    ORDERED_VERIFICATION_STEPS.indexOf(step);
+                  if (indexOfCurrentStep > 0) {
+                    setStep(ORDERED_VERIFICATION_STEPS[indexOfCurrentStep - 1]);
+                  }
+                }}
+              />
+            </IconButton>
+            <CloseIcon
+              // @ts-ignore
+              overrideStyle={styles.close}
+              color={colors.MEDIUM_GREY()}
+              onClick={handleModalClose}
             />
-          </IconButton>
-          <CloseIcon
-            // @ts-ignore
-            overrideStyle={styles.close}
-            color={colors.MEDIUM_GREY()}
-            onClick={handleModalClose}
-          />
-        </div>
+          </div>
+
+        ) : null
       }
     >
       <div className={css(styles.formWrapper)}>

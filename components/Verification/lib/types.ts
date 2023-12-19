@@ -3,13 +3,13 @@ import { formatDateStandard } from "~/config/utils/dates";
 export type VERIFICATION_STEP =
   | "DOI_STEP"
   | "AUTHOR_STEP"
-  | "SUCCESS_STEP"
+  | "EMAIL_SENT_STEP"
   | "ERROR_STEP";
 
 export const ORDERED_VERIFICATION_STEPS: Array<VERIFICATION_STEP> = [
   "DOI_STEP",
   "AUTHOR_STEP",
-  "SUCCESS_STEP",
+  "EMAIL_SENT_STEP",
   "ERROR_STEP",
 ];
 

@@ -3,8 +3,12 @@ import Button from "../Form/Button";
 import ALink from "../ALink";
 import VerifiedBadge from "./VerifiedBadge";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
+import { faEnvelopeCircleCheck } from "@fortawesome/pro-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const VerificationFormSuccessStep = ({}) => {
+
+
+const VerificationFormEmailSentStep = () => {
   const currentUser = useCurrentUser();
 
   return (
@@ -17,9 +21,9 @@ const VerificationFormSuccessStep = ({}) => {
         paddingTop: 15,
       }}
     >
-      <VerifiedBadge width={100} height={100} showTooltipOnHover={false} />
+      <FontAwesomeIcon icon={faEnvelopeCircleCheck} color={colors.NEW_BLUE()} size={"5x"} />
       <div style={{ fontSize: 26, fontWeight: 500, marginTop: 20 }}>
-        Your account is now verified
+        Check your email
       </div>
       <div
         style={{
@@ -28,22 +32,9 @@ const VerificationFormSuccessStep = ({}) => {
           lineHeight: "26px",
         }}
       >
-        <ul style={{ marginTop: 40, textAlign: "left" }}>
-          <li>
-            Your account will be updated to reflect your academic reputation in
-            a few minutes.
-          </li>
-          <li>
-            You will be able to view the papers you authored in the{" "}
-            <ALink
-              theme="solidPrimary"
-              href={`/user/${currentUser?.authorProfile.id}/authored-papers`}
-            >
-              Authored Papers
-            </ALink>{" "}
-            section.
-          </li>
-        </ul>
+        <p>
+          Visit your inbox click the link to verify ownership of the email address provided.
+        </p>
       </div>
       <div style={{ width: 250, marginTop: 75 }}>
         <Button fullWidth onClick={() => (window.location.href = "/")}>
@@ -54,4 +45,4 @@ const VerificationFormSuccessStep = ({}) => {
   );
 };
 
-export default VerificationFormSuccessStep;
+export default VerificationFormEmailSentStep;

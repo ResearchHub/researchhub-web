@@ -10,7 +10,8 @@ type Args = {
   onSuccess?: Function;
   userID: ID;
   targetAuthorName: string;
-  targetPaperId: ID;
+  targetPaperId?: ID;
+  doi?: string;
 };
 
 type Params = {
@@ -20,7 +21,8 @@ type Params = {
   requestor: ID;
   provided_email: string;
   author?: Object;
-  target_paper_id: ID;
+  target_paper_id?: ID;
+  target_paper_doi?: string;
   target_author_name: string;
 };
 
@@ -31,6 +33,7 @@ export function createAuthorClaimCase({
   userID,
   targetPaperId,
   targetAuthorName,
+  doi,
 }: Args) {
   let params: Params = {
     case_type: "PAPER_CLAIM",
@@ -50,7 +53,8 @@ export function createAuthorClaimCase({
       targetPaperId,
       "paperID must be present to create AuthorClaimCase"
     ),
-    target_author_name: targetAuthorName
+    target_author_name: targetAuthorName,
+    target_paper_doi: doi
   };
 
   fetch(API.AUTHOR_CLAIM_CASE(), API.POST_CONFIG(params))

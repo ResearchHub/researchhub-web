@@ -7,6 +7,7 @@ import Button from "../Form/Button";
 import { StyleSheet, css } from "aphrodite";
 import { isValidEmail, isCommonEmailExt } from "~/config/utils/validation";
 import debounce from "lodash/debounce";
+import { createAuthorClaimCase } from "../AuthorClaimModal/api/authorClaimCaseCreate";
 
 interface Props {
   authoredPaper: VerificationPaperResultType | null;
@@ -26,7 +27,7 @@ const VerificationFormSelectAuthorStep = ({
   const [academicEmail, setAcademicEmail] = useState<string>("");
   const [error, setError] = useState<EMAIL_ERROR>(null);
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
-  const [selectedAuthor, setSelectedAuthor] = useState<string | undefined>(
+  const [selectedAuthor, setSelectedAuthor] = useState<{label: string, value: string} | undefined>(
     undefined
   );
   const user = useCurrentUser();
@@ -82,6 +83,22 @@ const VerificationFormSelectAuthorStep = ({
     };
   });
 
+  const handleClaimRequest = async () => {
+    createAuthorClaimCase({
+      eduEmail: academicEmail,
+      onError: (errMsg: string): void => {
+        console.log('error', errMsg);
+      },
+      onSuccess: (): void => {
+        console.log('success');
+        nextStep();
+      },
+      userID: user?.id,
+      targetAuthorName: selectedAuthor!.value,
+      doi: authoredPaper?.doi,
+    });
+  }    
+
   // @ts-ignore
   // const foundAuthor = foundAuthorByLastNameIndex > -1 ? authorsAsOptions[foundAuthorByLastNameIndex] : undefined;
   return (
@@ -118,7 +135,7 @@ const VerificationFormSelectAuthorStep = ({
         />
       </div>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button disabled={!isFormValid} onClick={nextStep} label={"Next"} />
+        <Button disabled={!isFormValid} onClick={handleClaimRequest} label={"Next"} />
       </div>
     </div>
   );

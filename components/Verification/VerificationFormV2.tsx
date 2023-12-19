@@ -4,7 +4,7 @@ import {
   VerificationPaperResult as VerificationPaperResultType,
 } from "./lib/types";
 import VerificationFormDoiStep from "./VerificationFormDoiStep";
-import VerificationFormSuccessStep from "./VerificationFormSuccessStep";
+import VerificationFormEmailSentStep from "./VerificationFormEmailSentStep";
 import VerificationFormSelectAuthorStep from "./VerificationFormSelectAuthorStep";
 
 interface VerificationFormProps {
@@ -37,17 +37,23 @@ const VerificationForm = ({
         <VerificationFormSelectAuthorStep
           authoredPaper={authoredPaper}
           nextStep={() => {
-            onStepSelect && onStepSelect("SUCCESS_STEP");
+            onStepSelect && onStepSelect("EMAIL_SENT_STEP");
           }}
         />
       )}
+
+      
+      
       {/* {step === "ERROR_STEP" && (
         <VerificationFormErrorStep
           error={error}
           onPrevClick={() => setStep("PROVIDER_STEP")}
         />
       )} */}
-      {/* {step === "SUCCESS_STEP" && <VerificationFormSuccessStep />} */}
+
+
+
+      {currentStep === "EMAIL_SENT_STEP" && <VerificationFormEmailSentStep />}
     </div>
   );
 };

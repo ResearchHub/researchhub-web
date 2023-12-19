@@ -3,6 +3,16 @@ import helpers from "~/config/api/helpers";
 import { captureEvent } from "~/config/utils/events";
 import { VerificationPaperResult, parseVerificationPaperResult } from "./types";
 
+
+export const verifyEmailOwnership = async ({ email }):Promise<any> => {
+
+  return true;
+
+  const url = generateApiUrl(`user_verification/verify_email`);
+
+  return fetch(url, API.POST_CONFIG({ email })).then(helpers.checkStatus);
+}
+
 export const fetchPaperByDoi = async ({
   doi,
 }): Promise<VerificationPaperResult> => {
