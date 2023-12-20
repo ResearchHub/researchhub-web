@@ -5,6 +5,7 @@ import {
 } from "./lib/types";
 import VerificationFormDoiStep from "./VerificationFormDoiStep";
 import VerificationFormEmailSentStep from "./VerificationFormEmailSentStep";
+import VerificationFormIntroStep from "./VerificationFormIntroStep";
 import VerificationFormSelectAuthorStep from "./VerificationFormSelectAuthorStep";
 
 interface VerificationFormProps {
@@ -22,6 +23,13 @@ const VerificationForm = ({
 
   return (
     <div>
+      {currentStep === "INTRO_STEP" && (
+        <VerificationFormIntroStep
+          nextStep={() => {
+            onStepSelect && onStepSelect("DOI_STEP");
+          }}
+        />
+      )}
       {currentStep === "DOI_STEP" && (
         <VerificationFormDoiStep
           setAuthoredPaper={setAuthoredPaper}
@@ -42,16 +50,12 @@ const VerificationForm = ({
         />
       )}
 
-      
-      
       {/* {step === "ERROR_STEP" && (
         <VerificationFormErrorStep
           error={error}
           onPrevClick={() => setStep("PROVIDER_STEP")}
         />
       )} */}
-
-
 
       {currentStep === "EMAIL_SENT_STEP" && <VerificationFormEmailSentStep />}
     </div>

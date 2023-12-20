@@ -11,13 +11,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { VERIFICATION_STEP, ORDERED_VERIFICATION_STEPS } from "./lib/types";
 
 const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
-  const [step, setStep] = useState<VERIFICATION_STEP>("DOI_STEP");
+  const [step, setStep] = useState<VERIFICATION_STEP>("INTRO_STEP");
 
   useEffect(() => {
-    if (isModalOpen) { // Reset
-      setStep("DOI_STEP");
+    if (isModalOpen) {
+      // Reset
+      setStep("INTRO_STEP");
     }
-  }, [])
+  }, []);
 
   return (
     <BaseModal
@@ -30,18 +31,15 @@ const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
       modalContentStyle={styles.modalContentStyle}
       titleStyle={styles.modalTitleStyleOverride}
       title={
-
-        step !== "EMAIL_SENT_STEP" ? (
-
+        step == "DOI_STEP" || step == "AUTHOR_STEP" ? (
           <div
             className={css(styles.titleWrapper, styles.titleWrapperWithBorder)}
           >
             {step === "DOI_STEP"
               ? "Enter DOI"
               : step === "AUTHOR_STEP"
-                ? "Select Author"
-                : ""}
-
+              ? "Select Author"
+              : ""}
 
             <IconButton overrideStyle={styles.backButton}>
               <FontAwesomeIcon
@@ -62,7 +60,6 @@ const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
               onClick={handleModalClose}
             />
           </div>
-
         ) : null
       }
     >
