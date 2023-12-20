@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX } from "@fortawesome/pro-light-svg-icons";
+import { faX, faTimes, faPlus } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { formGenericStyles } from "../Paper/Upload/styles/formGenericStyles";
@@ -17,6 +17,10 @@ import { DocumentContext } from "../Document/lib/DocumentContext";
 import { parseHub } from "~/config/types/hub";
 import { createOrUpdatePostApi } from "../Document/api/createOrUpdatePostApi";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
+import BountyInput from "../Bounty/BountyInput";
+import { createCommentAPI } from "../Comment/lib/api";
+import { COMMENT_TYPES } from "../Comment/lib/types";
+import { useAlert } from "react-alert";
 
 const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 
@@ -73,6 +77,14 @@ function AskQuestionForm({ post, user, onExit }: AskQuestionFormProps) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const currentUser = useCurrentUser();
   const documentContext = useContext(DocumentContext);
+  const [withBounty, setWithBounty] = useState<boolean>(false);
+  const [bountyOffered, setBountyOffered] = useState<number>(0);
+  const [bountyError, setBountyError] = useState<any>(null);
+  const alert = useAlert();
+  const handleBountyInputChange = ({ hasError, errorMsg, value }) => {
+    setBountyOffered(value);
+    setBountyError(errorMsg);
+  };
 
   const onFormSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
@@ -96,7 +108,8 @@ function AskQuestionForm({ post, user, onExit }: AskQuestionFormProps) {
       currentUser,
       onError: (_err: Error): void => setIsSubmitting(false),
       onSuccess: (response: any): void => {
-        if (post?.id) {
+        const isEditingPost = Boolean(post?.id);
+        if (isEditingPost) {
           const updatedHubs = (mutableFormFields.hubs || []).map(parseHub);
           const updated = {
             ...post,
@@ -106,8 +119,50 @@ function AskQuestionForm({ post, user, onExit }: AskQuestionFormProps) {
           };
           documentContext.updateDocument(updated);
         } else {
+          // Creating new post
           const { id, slug } = response ?? {};
-          router.push(`/question/${id}/${slug}`);
+          const questionPath = `/question/${id}/${slug}`;
+
+          if (withBounty) {
+            try {
+              createCommentAPI({
+                content: {
+                  ops: [
+                    {
+                      insert: `Offering a bounty to the best answer to this question:\n${mutableFormFields.title}`,
+                    },
+                    {
+                      insert: "\n",
+                      attributes: {
+                        blockquote: true,
+                      },
+                    },
+                  ],
+                },
+                documentType: "researchhubpost",
+                documentId: id,
+                bountyAmount: bountyOffered,
+                bountyType: COMMENT_TYPES.ANSWER,
+              });
+            } catch (error) {
+              alert.show(
+                {
+                  // @ts-ignore
+                  text: (
+                    <div>
+                      {`Your question was created but we couldn't create your bounty at this time.`}
+                    </div>
+                  ),
+                  buttonText: "OK",
+                  onClick: () => {},
+                },
+                { withCancel: false }
+              );
+            } finally {
+            }
+          }
+
+          router.push(questionPath);
         }
 
         onExit();
@@ -177,6 +232,48 @@ function AskQuestionForm({ post, user, onExit }: AskQuestionFormProps) {
           required
         />
       </div>
+      {!post && (
+        <div className={css(styles.researchcoinContainer)}>
+          <div className={css(styles.researchcoinTitle)}>
+            <div>
+              <div className={css(styles.rscLabel)}>ResearchCoin Bounty</div>
+              <p style={{ fontSize: 16 }}>
+                Incentivize the community to answer your question by adding RSC.
+              </p>
+            </div>
+            {withBounty ? (
+              <div onClick={() => setWithBounty(false)}>
+                <Button size="small" customButtonStyle={styles.removeBountyBtn}>
+                  <FontAwesomeIcon icon={faPlus} style={{ marginRight: 4 }} />
+                  Remove Bounty
+                </Button>
+              </div>
+            ) : (
+              <div onClick={() => setWithBounty(true)}>
+                <Button size="small" customButtonStyle={styles.addBountyBtn}>
+                  <FontAwesomeIcon icon={faPlus} style={{ marginRight: 4 }} />
+                  Add Bounty
+                </Button>
+              </div>
+            )}
+          </div>
+          {withBounty && (
+            <>
+              <div
+                style={{
+                  border: `1px solid rgb(232, 232, 242)`,
+                  borderRadius: "4px",
+                  marginBottom: 20,
+                }}
+              >
+                <BountyInput
+                  handleBountyInputChange={handleBountyInputChange}
+                />
+              </div>
+            </>
+          )}
+        </div>
+      )}
       <HubSelectDropdown
         selectedHubs={mutableFormFields.hubs}
         required
@@ -184,11 +281,16 @@ function AskQuestionForm({ post, user, onExit }: AskQuestionFormProps) {
           handleOnChangeFields("hubs", hubs);
         }}
       />
-      <div className={css(styles.buttonsContainer)}>
+      <div
+        className={css(
+          styles.buttonsContainer,
+          withBounty && bountyError && styles.buttonRowWithErrorText
+        )}
+      >
         <Button
           fullWidth
           customButtonStyle={styles.buttonStyle}
-          disabled={isSubmitting}
+          disabled={isSubmitting || (withBounty && bountyError)}
           label={post ? "Update" : "Ask Question"}
           type="submit"
         />
@@ -204,6 +306,53 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps)(AskQuestionForm);
 
 const styles = StyleSheet.create({
+  addBountyBtn: {
+    border: `1px solid ${colors.ORANGE_LIGHT2(1.0)}`,
+    color: colors.ORANGE_LIGHT2(1.0),
+    background: "white",
+  },
+  removeBountyBtn: {
+    border: `1px solid ${colors.RED(1.0)}`,
+    color: colors.RED(1.0),
+    background: "white",
+  },
+  hubsContainer: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  errorText: {
+    color: colors.RED(),
+    fontSize: 14,
+    textAlign: "left",
+    marginTop: 5,
+  },
+  buttonRowWithErrorText: {
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  researchcoinContainer: {
+    marginBottom: 0,
+    marginTop: 30,
+  },
+  researchcoinTitle: {
+    display: "flex",
+    marginLeft: "auto",
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: "center",
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      display: "block",
+      marginBottom: 15,
+    },
+  },
+  rscLabel: {
+    cursor: "pointer",
+    display: "flex",
+    justifyContent: "space-between",
+    fontWeight: 500,
+    marginBottom: 6,
+    color: "#232038",
+  },
   askQuestionForm: {
     display: "flex",
     flexDirection: "column",
@@ -263,9 +412,6 @@ const styles = StyleSheet.create({
   error: {
     border: `1px solid ${colors.RED(1)}`,
   },
-  errorText: {
-    marginTop: "5px",
-  },
   dropDown: {
     zIndex: 999,
   },
@@ -274,6 +420,7 @@ const styles = StyleSheet.create({
   },
   editorWrapper: {
     width: "721px",
+    marginBottom: 10,
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "80vw",
     },

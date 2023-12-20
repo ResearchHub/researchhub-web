@@ -38,15 +38,16 @@ export const commentTypes = [
     // @ts-ignore
     icon: <FontAwesomeIcon icon={faLayerGroup} />,
   },
-  {
-    label: "Replicability",
-    value: COMMENT_TYPES.REPLICABILITY_COMMENT,
-    isDefault: false,
-    placeholder:
-      "Add a comment on why you think this paper is replicable or not",
-    // @ts-ignore
-    icon: <FontAwesomeIcon icon={faCheckCircle} />,
-  },
+  // Kobe: Removing for now until replicability is enabled.
+  // {
+  //   label: "Replicability",
+  //   value: COMMENT_TYPES.REPLICABILITY_COMMENT,
+  //   isDefault: false,
+  //   placeholder:
+  //     "Add a comment on why you think this paper is replicable or not",
+  //   // @ts-ignore
+  //   icon: <FontAwesomeIcon icon={faCheckCircle} />,
+  // },
 ];
 
 export const filterOpts = [
