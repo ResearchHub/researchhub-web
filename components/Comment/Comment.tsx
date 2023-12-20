@@ -286,8 +286,6 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
   const currentUserIsOpenBountyCreator = userOpenRootBounties.length > 0;
   const isQuestion = document?.unifiedDocument?.documentType === "question";
 
-  console.log("isQuestion", isQuestion);
-
   const previewMaxChars = getConfigForContext(
     commentTreeState.context
   ).previewMaxChars;
