@@ -22,8 +22,10 @@ import {
 } from "~/config/types/contribution";
 import getReviewCategoryScore from "~/components/Comment/lib/quill/getReviewCategoryScore";
 import PeerReviewSidebarItem from "./sidebar_items/PeerReviewSidebarItem";
+import { textLength } from "~/components/Comment/lib/quill";
 
-const MAX_CARDS_TO_DISPLAY = 6;
+const MAX_PEER_REVIEWS = 5;
+const MAX_BOUNTIES = 5;
 
 type PaginationInfo = { isFetching: boolean; page?: number };
 const useEffectFetchOpenBounties = ({
@@ -116,35 +118,53 @@ export default function HomeSidebarBountiesSection({
         );
       }
     )
-    .slice(0, MAX_CARDS_TO_DISPLAY);
+    .slice(0, MAX_BOUNTIES);
 
   const peerReviewItems = peerReviews
     .map((result, idx) => {
-      let { item } = result;
-      const { createdBy } = item;
-      item = item as CommentContributionItem;
+      try {
+        let { item } = result;
+        const { createdBy } = item;
+        item = item as CommentContributionItem;
 
-      const score = getReviewCategoryScore({
-        quillContents: item.content,
-        category: "overall",
-      });
-      const docTitle = item?.unifiedDocument?.document?.title;
+        const score = getReviewCategoryScore({
+          quillContents: item.content,
+          category: "overall",
+        });
+        const docTitle = item?.unifiedDocument?.document?.title;
+        const length = textLength({ quillOps: item.content.ops });
 
-      if (!score || !docTitle) {
+        if (!score || !docTitle) {
+          return null;
+        }
+
+        return {
+          length,
+          isVerified: createdBy.authorProfile.isVerified,
+          score,
+          elem: (
+            <PeerReviewSidebarItem
+              createdBy={createdBy}
+              key={`peer-review-${idx}`}
+              score={score}
+              unifiedDocument={item.unifiedDocument}
+            />
+          ),
+        };
+      } catch (e) {
+        console.error("[Peer Review Card]", e);
         return null;
       }
-
-      return (
-        <PeerReviewSidebarItem
-          createdBy={createdBy}
-          key={`peer-review-${idx}`}
-          score={score}
-          unifiedDocument={item.unifiedDocument}
-        />
-      );
     })
     .filter((pr) => pr !== null)
-    .slice(0, MAX_CARDS_TO_DISPLAY);
+    .sort((a, b) => {
+      if (a?.length !== b?.length) {
+        return b?.length - a?.length;
+      }
+
+      return a?.isVerified === b?.isVerified ? 0 : a?.isVerified ? -1 : 1;
+    })
+    .slice(0, MAX_PEER_REVIEWS);
 
   return (
     <Fragment>
@@ -158,6 +178,32 @@ export default function HomeSidebarBountiesSection({
           />
         }
       >
+        {peerReviewItems.length > 0 && (
+          <>
+            <SideColumnTitle
+              title={
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                >
+                  <div>{"Recently Peer Reviewed"}</div>
+                  <Link
+                    href="/live?contentType=REVIEW"
+                    className={css(styles.viewAll)}
+                  >
+                    {"View All"}
+                  </Link>
+                </div>
+              }
+              overrideStyles={styles.RightSidebarTitle}
+            />
+            {peerReviewItems.map((pr) => pr?.elem)}
+          </>
+        )}
+
         {bountyItems.length > 0 && (
           <>
             <SideColumnTitle
@@ -181,32 +227,6 @@ export default function HomeSidebarBountiesSection({
               overrideStyles={styles.RightSidebarTitle}
             />
             {bountyItems}
-          </>
-        )}
-
-        {peerReviewItems.length > 0 && (
-          <>
-            <SideColumnTitle
-              title={
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    width: "100%",
-                  }}
-                >
-                  <div>{"Recently Peer Reviewed"}</div>
-                  <Link
-                    href="/live?contentType=REVIEW"
-                    className={css(styles.viewAll)}
-                  >
-                    {"View All"}
-                  </Link>
-                </div>
-              }
-              overrideStyles={styles.RightSidebarTitle}
-            />
-            {peerReviewItems}
           </>
         )}
       </ReactPlaceholder>
