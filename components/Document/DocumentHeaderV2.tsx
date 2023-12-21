@@ -41,6 +41,7 @@ import {
 } from "~/components/ReferenceManager/references/reference_organizer/context/ReferenceProjectsUpsertContext";
 import DocumentPageTutorial from "./lib/DocumentPageTutorial";
 import LinkToPublicPage from "../LinkToPublicPage";
+import { breakpoints } from "~/config/themes/screen";
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
 );
@@ -309,11 +310,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderBottom: `1px solid ${config.border}`,
 
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       paddingBottom: 25,
     },
 
-    "@media only screen and (min-width: 1024px)": {
+    [`@media only screen and (min-width: ${breakpoints.desktop.str})`]: {
       minHeight: 130,
     },
   },

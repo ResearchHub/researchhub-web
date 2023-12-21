@@ -88,6 +88,7 @@ import {
   DocumentContext,
   DocumentPreferences,
 } from "~/components/Document/lib/DocumentContext";
+import { breakpoints } from "~/config/themes/screen";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -1320,18 +1321,14 @@ const styles = StyleSheet.create({
     height: 40,
     margin: 0,
     marginLeft: "auto",
-    // width: "unset",
     maxWidth: 400,
-    // flex: "1 1 40% !important",
   },
   headerContentWrapperClass: {
-    // paddingLeft: 50,
-
-    "@media only screen and (min-width: 768px)": {
+    [`@media only screen and (min-width: ${breakpoints.tablet.str})`]: {
       paddingBottom: 25,
     },
 
-    "@media only screen and (max-width:1023px)": {
+    [`@media only screen and (max-width: ${breakpoints.desktop.int - 1}px)`]: {
       paddingLeft: 0,
     },
   },
@@ -1340,7 +1337,6 @@ const styles = StyleSheet.create({
     maxWidth: "unset",
     marginLeft: "unset",
     marginTop: 15,
-    // flex: "1 1 100% !important",
   },
   inputStyle: {
     fontSize: 14,
