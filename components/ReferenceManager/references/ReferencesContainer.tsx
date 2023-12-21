@@ -121,7 +121,10 @@ function DocumentContainer({ tab, shouldDisplay }) {
 
   // currently there's only a post or a paper
   // there should be a better way to do this -- the type should come from the backend and the FE should just render the type
-  const tabIsPost = tab.related_unified_doc.document_type === "DISCUSSION";
+  const tabIsPost =
+    tab.related_unified_doc.document_type === "DISCUSSION" ||
+    tab.related_unified_doc.document_type === "QUESTION" ||
+    tab.related_unified_doc.document_type === "BOUNTY";
 
   useEffect(() => {
     (async () => {
