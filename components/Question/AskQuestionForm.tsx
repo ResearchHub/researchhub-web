@@ -21,6 +21,7 @@ import BountyInput from "../Bounty/BountyInput";
 import { createCommentAPI } from "../Comment/lib/api";
 import { COMMENT_TYPES } from "../Comment/lib/types";
 import { useAlert } from "react-alert";
+import { faMinus } from "@fortawesome/pro-regular-svg-icons";
 
 const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 
@@ -235,16 +236,17 @@ function AskQuestionForm({ post, user, onExit }: AskQuestionFormProps) {
       {!post && (
         <div className={css(styles.researchcoinContainer)}>
           <div className={css(styles.researchcoinTitle)}>
-            <div>
+            <div style={{ marginBottom: 10,}}>
               <div className={css(styles.rscLabel)}>ResearchCoin Bounty</div>
-              <p style={{ fontSize: 16 }}>
+              <p style={{ fontSize: 16, marginBottom: 0 }}>
                 Incentivize the community to answer your question by adding RSC.
               </p>
+
             </div>
             {withBounty ? (
-              <div onClick={() => setWithBounty(false)}>
+              <div onClick={() => setWithBounty(false)} style={{ marginTop: 8 }}>
                 <Button size="small" customButtonStyle={styles.removeBountyBtn}>
-                  <FontAwesomeIcon icon={faPlus} style={{ marginRight: 4 }} />
+                  <FontAwesomeIcon icon={faMinus} style={{ marginRight: 4 }} />
                   Remove Bounty
                 </Button>
               </div>
@@ -260,16 +262,15 @@ function AskQuestionForm({ post, user, onExit }: AskQuestionFormProps) {
           {withBounty && (
             <>
               <div
-                style={{
-                  border: `1px solid rgb(232, 232, 242)`,
-                  borderRadius: "4px",
-                  marginBottom: 20,
-                }}
+                className={css(styles.bountyInputWrapper, bountyError && styles.withError)}
               >
                 <BountyInput
                   handleBountyInputChange={handleBountyInputChange}
                 />
               </div>
+              {bountyError && (
+                <div className={css(styles.errorText)}>{bountyError}</div>
+              )}              
             </>
           )}
         </div>
@@ -306,6 +307,14 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps)(AskQuestionForm);
 
 const styles = StyleSheet.create({
+  bountyInputWrapper: {
+    borderRadius: "4px",
+    marginBottom: 20,
+    border: `1px solid rgb(232, 232, 242)`,
+  },
+  withError: {
+    border: `1px solid ${colors.RED(1.0)}`,
+  },
   addBountyBtn: {
     border: `1px solid ${colors.ORANGE_LIGHT2(1.0)}`,
     color: colors.ORANGE_LIGHT2(1.0),
@@ -324,7 +333,7 @@ const styles = StyleSheet.create({
     color: colors.RED(),
     fontSize: 14,
     textAlign: "left",
-    marginTop: 5,
+    marginTop: -5,
   },
   buttonRowWithErrorText: {
     justifyContent: "space-between",
@@ -339,7 +348,6 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     width: "100%",
     justifyContent: "space-between",
-    alignItems: "center",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       display: "block",
       marginBottom: 15,
