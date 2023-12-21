@@ -127,11 +127,11 @@ function DocumentContainer({ tab, shouldDisplay }) {
     (async () => {
       try {
         let documentType = "";
-        // Right now we only support two attachment types
-        if (tab.attachment.includes("uploads/post_discussion")) {
+        // Right now we only support two attachment types, post and paper
+        if (tabIsPost) {
           documentType = "post";
           setDocumentType(documentType);
-        } else if (tab.attachment.includes("citation_entry/attachment")) {
+        } else {
           documentType = "paper";
           setDocumentType(documentType);
         }

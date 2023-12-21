@@ -134,7 +134,7 @@ const DocumentHeader = ({
                 <DocumentVote
                   id={doc?.id}
                   metadata={metadata}
-                  score={metadata.score}
+                  score={metadata?.score}
                   apiDocumentType={doc.apiDocumentType}
                   userVote={metadata.userVote}
                 />
@@ -213,10 +213,10 @@ const DocumentHeader = ({
                 <DocumentVote
                   id={doc?.id}
                   metadata={metadata}
-                  score={metadata.score}
+                  score={metadata?.score}
                   iconButton={true}
-                  apiDocumentType={doc.apiDocumentType}
-                  userVote={metadata.userVote}
+                  apiDocumentType={doc?.apiDocumentType}
+                  userVote={metadata?.userVote}
                   isHorizontal={true}
                 />
               </div>
