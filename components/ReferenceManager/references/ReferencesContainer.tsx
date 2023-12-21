@@ -102,7 +102,7 @@ const WRAP_SEARCHBAR_AT_WIDTH = 700;
 function DocumentContainer({ tab, shouldDisplay }) {
   const [postHtml, setPostHtml] = useState(null);
   const [isReady, setIsReady] = useState(false);
-  const [metadata, setMetadata] = useState(false);
+  const [metadata, setMetadata] = useState();
   const [documentData, setDocumentData] = useState(false);
   const [docPreferences, setDocPreferences] = useState<DocumentPreferences>({
     comments: "all",
@@ -118,31 +118,45 @@ function DocumentContainer({ tab, shouldDisplay }) {
     documentType,
   }) as [Post | null, Function];
 
+  // currently there's only a post or a paper
+  // there should be a better way to do this -- the type should come from the backend and the FE should just render the type
+  const tabIsPost = tab.related_unified_doc.document_type === "DISCUSSION";
+
   useEffect(() => {
     (async () => {
       try {
+        let documentType = "";
+        // Right now we only support two attachment types
         if (tab.attachment.includes("uploads/post_discussion")) {
-          const documentType = "post";
+          documentType = "post";
           setDocumentType(documentType);
-          const documentId = tab.related_unified_doc?.documents[0]?.id;
-          const unifiedDocId = tab.related_unified_doc?.id;
-          const _documentData = await fetchDocumentByType({
-            documentType,
-            documentId,
-          });
-          const _metadata = await fetchDocumentMetadata({
-            unifiedDocId,
-          });
+        } else if (tab.attachment.includes("citation_entry/attachment")) {
+          documentType = "paper";
+          setDocumentType(documentType);
+        }
+
+        const documentId = tabIsPost
+          ? tab.related_unified_doc?.documents[0]?.id
+          : tab.related_unified_doc?.documents?.id;
+        const unifiedDocId = tab.related_unified_doc?.id;
+        const _documentData = await fetchDocumentByType({
+          documentType,
+          documentId,
+        });
+        const _metadata = await fetchDocumentMetadata({
+          unifiedDocId,
+        });
+
+        setMetadata(_metadata);
+        setDocumentData(_documentData);
+
+        if (tabIsPost) {
           const postHtml = await fetchPostFromS3({
             s3Url: tab.attachment,
           });
-          setMetadata(_metadata);
-          setDocumentData(_documentData);
           setPostHtml(postHtml);
-          setIsReady(true);
-        } else {
-          setIsReady(true);
         }
+        setIsReady(true);
       } catch (error) {
         console.log("Error fetching post. Error: ", error);
         setIsReady(true);
@@ -160,76 +174,55 @@ function DocumentContainer({ tab, shouldDisplay }) {
 
   return (
     <div className={css(styles.documentContainer)}>
-      {postHtml ? (
-        <DocumentContext.Provider
-          value={{
-            metadata: documentMetadata,
-            documentType: "post",
-            preferences: docPreferences,
-            updateMetadata: setDocumentMetadata,
-            setPreference: ({ key, value }) =>
-              setDocPreferences({ ...docPreferences, [key]: value }),
-          }}
-        >
-          <DocumentPageLayout
-            document={document}
-            // errorCode={errorCode}
-            metadata={documentMetadata}
-            headerContentWrapperClass={css(styles.headerContentWrapperClass)}
-            noHorizontalTabBar
-            noLineItems
-            referenceManagerView
-            documentType={"post"}
-            topAreaClass={[css(styles.topAreaClass)]}
-            documentPageClass={[
-              css(
-                styles.noDisplay,
-                styles.overflowHidden,
-                shouldDisplay && styles.documentViewerDisplay
-              ),
-            ]}
-          >
-            <DocumentViewer
-              pdfUrl={tab.attachment}
-              postHtml={postHtml}
-              documentViewerClass={[
-                styles.documentViewerClass,
-                shouldDisplay && styles.display,
-              ]}
-              withControls={false}
-              referenceItemDatum={tab}
-              citationInstance={{ id: tab.id, type: "citationentry" }}
-              documentInstance={
-                tab.related_unified_doc
-                  ? {
-                      id: tab.related_unified_doc?.documents[0]?.id,
-                      type: "researchhubpost",
-                    }
-                  : undefined
-              }
-            />
-          </DocumentPageLayout>
-        </DocumentContext.Provider>
-      ) : (
-        <DocumentViewer
-          pdfUrl={tab.attachment}
-          postHtml={postHtml}
-          documentViewerClass={[
-            styles.documentViewerClass,
-            shouldDisplay && styles.display,
+      <DocumentContext.Provider
+        value={{
+          metadata: documentMetadata,
+          documentType: tabIsPost ? "post" : "paper",
+          preferences: docPreferences,
+          updateMetadata: setDocumentMetadata,
+          setPreference: ({ key, value }) =>
+            setDocPreferences({ ...docPreferences, [key]: value }),
+        }}
+      >
+        <DocumentPageLayout
+          document={document}
+          // errorCode={errorCode}
+          metadata={documentMetadata}
+          headerContentWrapperClass={css(styles.headerContentWrapperClass)}
+          noHorizontalTabBar
+          noLineItems
+          referenceManagerView
+          documentType={tabIsPost ? "post" : "paper"}
+          topAreaClass={[css(styles.topAreaClass)]}
+          documentPageClass={[
+            css(
+              styles.noDisplay,
+              styles.overflowHidden,
+              shouldDisplay && styles.documentViewerDisplay
+            ),
           ]}
-          referenceItemDatum={tab}
-          citationInstance={{ id: tab.id, type: "citationentry" }}
-          documentInstance={
-            tab.related_unified_doc
-              ? {
-                  id: tab.related_unified_doc?.documents?.id,
-                  type: "paper",
-                }
-              : undefined
-          }
-        />
-      )}
+        >
+          <DocumentViewer
+            pdfUrl={tab.attachment}
+            postHtml={postHtml}
+            documentViewerClass={[
+              styles.documentViewerClass,
+              shouldDisplay && styles.display,
+            ]}
+            withControls={false}
+            referenceItemDatum={tab}
+            citationInstance={{ id: tab.id, type: "citationentry" }}
+            documentInstance={
+              tab.related_unified_doc
+                ? {
+                    id: tab.related_unified_doc?.documents[0]?.id,
+                    type: tabIsPost ? "researchhubpost" : "paper",
+                  }
+                : undefined
+            }
+          />
+        </DocumentPageLayout>
+      </DocumentContext.Provider>
     </div>
   );
 }
@@ -1169,6 +1162,7 @@ function ReferencesContainer({
             overflow: "auto",
             boxSizing: "border-box",
             flex: 1,
+            overflow: "hidden",
           }}
           className={"references-section"}
           ref={mainContentRef}
@@ -1249,15 +1243,6 @@ function ReferencesContainer({
           />
         )}
       </div>
-      {/* <ToastContainer
-          autoClose={true}
-          closeOnClick
-          hideProgressBar={false}
-          newestOnTop
-          containerId={"reference-toast"}
-          position="top-center"
-          progressStyle={{ background: colors.NEW_BLUE() }}
-        ></ToastContainer> */}
     </>
   );
 }

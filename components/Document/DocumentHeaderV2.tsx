@@ -100,8 +100,6 @@ const DocumentHeader = ({
     };
   }, []);
 
-  console.log(doc);
-
   return (
     <div ref={headerWrapperRef} className={css(styles.headerRoot)}>
       <DocumentPageTutorial />

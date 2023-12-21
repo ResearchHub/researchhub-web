@@ -8,7 +8,8 @@ interface Props {
 }
 
 const fetchPaper = ({ paperId }: Props): Promise<any> => {
-  return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
+  const url = API.PAPER({ paperId });
+  return fetch(url, API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((resp) => {
