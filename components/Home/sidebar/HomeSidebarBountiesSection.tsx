@@ -23,7 +23,7 @@ import {
 import getReviewCategoryScore from "~/components/Comment/lib/quill/getReviewCategoryScore";
 import PeerReviewSidebarItem from "./sidebar_items/PeerReviewSidebarItem";
 
-const MAX_CARDS_TO_DISPLAY = 5;
+const MAX_CARDS_TO_DISPLAY = 6;
 
 type PaginationInfo = { isFetching: boolean; page?: number };
 const useEffectFetchOpenBounties = ({
