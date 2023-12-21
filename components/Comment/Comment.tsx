@@ -284,7 +284,8 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
 
   const hasOpenBounties = openBounties.length > 0;
   const currentUserIsOpenBountyCreator = userOpenRootBounties.length > 0;
-  const isQuestion = relatedContent.type === "question";
+  const isQuestion = document?.unifiedDocument?.documentType === "question";
+
   const previewMaxChars = getConfigForContext(
     commentTreeState.context
   ).previewMaxChars;
@@ -505,7 +506,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                       ? comment.bounties[0]._bountyType
                       : undefined
                   }
-                  allowCommentTypeSelection={true}
+                  allowCommentTypeSelection={isQuestion ? false : true}
                   editorId={`reply-to-${comment.id}`}
                   author={currentUser?.authorProfile}
                   placeholder={`Enter reply to this comment`}
