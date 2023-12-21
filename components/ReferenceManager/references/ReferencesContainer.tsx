@@ -219,7 +219,9 @@ function DocumentContainer({ tab, shouldDisplay }) {
             documentInstance={
               tab.related_unified_doc
                 ? {
-                    id: tab.related_unified_doc?.documents[0]?.id,
+                    id: tabIsPost
+                      ? tab.related_unified_doc?.documents[0]?.id
+                      : tab.related_unified_doc?.documents?.id,
                     type: tabIsPost ? "researchhubpost" : "paper",
                   }
                 : undefined
