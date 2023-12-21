@@ -7,6 +7,7 @@ import { RHUser, UnifiedDocument } from "~/config/types/root_types";
 import Link from "next/link";
 import colors from "~/config/themes/colors";
 import { StyleSheet, css } from "aphrodite";
+import { truncateText } from "~/config/utils/string";
 
 const PeerReviewSidebarItem = ({
   createdBy,
@@ -17,7 +18,7 @@ const PeerReviewSidebarItem = ({
   score: number;
   unifiedDocument: UnifiedDocument;
 }) => {
-  const docTitle = unifiedDocument?.document?.title;
+  const docTitle = truncateText(unifiedDocument?.document?.title, 180);
   const url = getUrlToUniDoc(unifiedDocument) + "/reviews";
 
   return (
