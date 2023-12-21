@@ -107,10 +107,10 @@ export function getUrlToUniDoc(uniDoc) {
     case "hypothesis":
       return `/hypothesis/${doc.id}/${doc.slug}`;
     case "bounty": /* case type 'bounty' is an assumption & is flaky. Consider handling in BE */
-    case "discussion":
     case "post":
     case "question":
       return `/question/${doc?.id}/${doc?.slug}`;
+    case "discussion":
     case "researchhubpost":
       return `/post/${doc?.id}/${doc?.slug}`;
     default:

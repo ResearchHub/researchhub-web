@@ -44,7 +44,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { removeReferenceProject } from "./reference_organizer/api/removeReferenceProject";
 import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
-import AuthorFacePile from "~/components/shared/AuthorFacePile";
+import config from "~/components/Document/lib/config";
 import colors from "~/config/themes/colors";
 import DropdownMenu from "../menu/DropdownMenu";
 import Link from "next/link";
@@ -70,12 +70,25 @@ import RefManagerCallouts from "../onboarding/RefManagerCallouts";
 import { storeToCookie } from "~/config/utils/storeToCookie";
 import DocumentViewer from "~/components/Document/DocumentViewer";
 import ReferenceImportLibraryModal from "./reference_import_library_modal/ReferenceImportLibraryModal";
-import ExportReferencesModal from "./reference_bibliography/ExportReferencesModal";
 import {
   downloadBibliography,
   formatBibliography,
 } from "./reference_bibliography/export";
 import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
+import fetchPostFromS3 from "~/components/Document/api/fetchPostFromS3";
+import {
+  useDocument,
+  useDocumentMetadata,
+} from "~/components/Document/lib/useHooks";
+import { fetchDocumentByType } from "~/components/Document/lib/fetchDocumentByType";
+import fetchDocumentMetadata from "~/components/Document/api/fetchDocumentMetadata";
+import DocumentPlaceholder from "~/components/Document/lib/Placeholders/DocumentPlaceholder";
+import DocumentPageLayout from "~/components/Document/pages/DocumentPageLayout";
+import {
+  DocumentContext,
+  DocumentPreferences,
+} from "~/components/Document/lib/DocumentContext";
+import { breakpoints } from "~/config/themes/screen";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -86,6 +99,139 @@ interface Props {
 }
 
 const WRAP_SEARCHBAR_AT_WIDTH = 700;
+
+function DocumentContainer({ tab, shouldDisplay }) {
+  const [postHtml, setPostHtml] = useState(null);
+  const [isReady, setIsReady] = useState(false);
+  const [metadata, setMetadata] = useState();
+  const [documentData, setDocumentData] = useState(false);
+  const [docPreferences, setDocPreferences] = useState<DocumentPreferences>({
+    comments: "all",
+  });
+  const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({
+    rawMetadata: metadata,
+    unifiedDocumentId: documentData?.unified_document?.id,
+  });
+  const [documentType, setDocumentType] = useState("paper");
+
+  const [document, setDocument] = useDocument({
+    rawDocumentData: documentData,
+    documentType,
+  }) as [Post | null, Function];
+
+  // currently there's only a post or a paper
+  // there should be a better way to do this -- the type should come from the backend and the FE should just render the type
+  const tabIsPost =
+    tab.related_unified_doc.document_type === "DISCUSSION" ||
+    tab.related_unified_doc.document_type === "QUESTION" ||
+    tab.related_unified_doc.document_type === "BOUNTY";
+
+  useEffect(() => {
+    (async () => {
+      try {
+        let documentType = "";
+        // Right now we only support two attachment types, post and paper
+        if (tabIsPost) {
+          documentType = "post";
+          setDocumentType(documentType);
+        } else {
+          documentType = "paper";
+          setDocumentType(documentType);
+        }
+
+        const documentId = tabIsPost
+          ? tab.related_unified_doc?.documents[0]?.id
+          : tab.related_unified_doc?.documents?.id;
+        const unifiedDocId = tab.related_unified_doc?.id;
+        const _documentData = await fetchDocumentByType({
+          documentType,
+          documentId,
+        });
+        const _metadata = await fetchDocumentMetadata({
+          unifiedDocId,
+        });
+
+        setMetadata(_metadata);
+        setDocumentData(_documentData);
+
+        if (tabIsPost) {
+          const postHtml = await fetchPostFromS3({
+            s3Url: tab.attachment,
+          });
+          setPostHtml(postHtml);
+        }
+        setIsReady(true);
+      } catch (error) {
+        console.log("Error fetching post. Error: ", error);
+        setIsReady(true);
+      }
+    })();
+  }, [tab]);
+
+  if (!isReady) {
+    return (
+      <div className={css(styles.loadingWrapper)}>
+        <DocumentPlaceholder />
+      </div>
+    );
+  }
+
+  return (
+    <div className={css(styles.documentContainer)}>
+      <DocumentContext.Provider
+        value={{
+          metadata: documentMetadata,
+          documentType: tabIsPost ? "post" : "paper",
+          preferences: docPreferences,
+          updateMetadata: setDocumentMetadata,
+          setPreference: ({ key, value }) =>
+            setDocPreferences({ ...docPreferences, [key]: value }),
+        }}
+      >
+        <DocumentPageLayout
+          document={document}
+          // errorCode={errorCode}
+          metadata={documentMetadata}
+          headerContentWrapperClass={css(styles.headerContentWrapperClass)}
+          noHorizontalTabBar
+          noLineItems
+          referenceManagerView
+          documentType={tabIsPost ? "post" : "paper"}
+          topAreaClass={[css(styles.topAreaClass)]}
+          documentPageClass={[
+            css(
+              styles.noDisplay,
+              styles.overflowHidden,
+              shouldDisplay && styles.documentViewerDisplay
+            ),
+          ]}
+        >
+          <DocumentViewer
+            pdfUrl={tab.attachment}
+            postHtml={postHtml}
+            documentViewerClass={[
+              styles.documentViewerClass,
+              shouldDisplay && styles.display,
+            ]}
+            withControls={false}
+            referenceItemDatum={tab}
+            citationInstance={{ id: tab.id, type: "citationentry" }}
+            documentInstance={
+              tab.related_unified_doc
+                ? {
+                    id: tabIsPost
+                      ? tab.related_unified_doc?.documents[0]?.id
+                      : tab.related_unified_doc?.documents?.id,
+                    type: tabIsPost ? "researchhubpost" : "paper",
+                  }
+                : undefined
+            }
+          />
+        </DocumentPageLayout>
+      </DocumentContext.Provider>
+    </div>
+  );
+}
 
 // TODO: @lightninglu10 - fix TS.
 function ReferencesContainer({
@@ -115,6 +261,9 @@ function ReferencesContainer({
     setIsModalOpen: setIsProjectUpsertModalOpen,
     setProjectValue: setProjectUpsertValue,
     setUpsertPurpose: setProjectUpsertPurpose,
+    isDeleteModalOpen: isDeleteModalOpenLeftSide,
+    setIsDeleteModalOpen: setIsDeleteModalOpenLeftSide,
+    deleteProject,
   } = useReferenceProjectUpsertContext();
   const {
     setIsDrawerOpen: setIsRefUploadDrawerOpen,
@@ -340,9 +489,6 @@ function ReferencesContainer({
       searchForCitation(e);
     }
   };
-
-  // NOTE: calvinhlee - Using useffect with a socket like this looks glaringly bad. Can we explore
-  // if there are better solution? @lightninglu10. There's already an error that loops in log.
 
   useEffect(() => {
     if (wsResponse) {
@@ -909,6 +1055,52 @@ function ReferencesContainer({
         onClose={(): void => setIsDeleteModalOpen(false)}
         primaryButtonConfig={{ label: "Delete" }}
       />
+
+      <QuickModal
+        isOpen={isDeleteModalOpenLeftSide}
+        modalContent={
+          <Box sx={{ marginBottom: "16px", height: "120px" }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: "38px",
+              }}
+            >
+              <Typography id="modal-modal-title" variant="subtitle2">
+                {`Are you sure you want to remove this folder?`}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6">{deleteProject?.projectName}</Typography>
+            </Box>
+          </Box>
+        }
+        modalWidth="300px"
+        onPrimaryButtonClick={(): void => {
+          removeReferenceProject({
+            projectID: deleteProject?.id,
+            onSuccess: () => {
+              resetProjectsFetchTime();
+              setIsDeleteModalOpenLeftSide(false);
+              if (activeProject?.projectID === deleteProject.id) {
+                router.push(`/reference-manager/${currentOrg?.slug ?? ""}`);
+              }
+            },
+            onError: emptyFncWithMsg,
+          });
+        }}
+        onSecondaryButtonClick={(): void => setIsDeleteModalOpen(false)}
+        onClose={(): void => setIsDeleteModalOpen(false)}
+        primaryButtonConfig={{ label: "Delete" }}
+      />
       <ManageOrgModal
         org={currentOrg}
         isOpen={isOrgModalOpen}
@@ -963,6 +1155,7 @@ function ReferencesContainer({
           currentOrgProjects={currentOrgProjects}
           isOpen={isRefManagerSidebarOpen}
           navWidth={LEFT_MAX_NAV_WIDTH}
+          canEdit={canEdit}
           setIsDeleteModalOpen={setIsDeleteModalOpen}
           openOrgSettingsModal={() => setIsOrgModalOpen(true)}
           setIsOpen={setIsRefManagerSidebarOpen}
@@ -975,6 +1168,7 @@ function ReferencesContainer({
             overflow: "auto",
             boxSizing: "border-box",
             flex: 1,
+            overflow: "hidden",
           }}
           className={"references-section"}
           ref={mainContentRef}
@@ -1031,22 +1225,9 @@ function ReferencesContainer({
                 ? renderReferencesContainer()
                 : openedTabs.map((tab, index) => {
                     return (
-                      <DocumentViewer
-                        pdfUrl={tab.attachment}
-                        documentViewerClass={[
-                          styles.documentViewerClass,
-                          openTabIndex === index && styles.display,
-                        ]}
-                        referenceItemDatum={tab}
-                        citationInstance={{ id: tab.id, type: "citationentry" }}
-                        documentInstance={
-                          tab.related_unified_doc
-                            ? {
-                                id: tab.related_unified_doc?.documents?.id,
-                                type: "paper",
-                              }
-                            : undefined
-                        }
+                      <DocumentContainer
+                        tab={tab}
+                        shouldDisplay={openTabIndex === index}
                       />
                     );
                   })}
@@ -1068,20 +1249,21 @@ function ReferencesContainer({
           />
         )}
       </div>
-      {/* <ToastContainer
-          autoClose={true}
-          closeOnClick
-          hideProgressBar={false}
-          newestOnTop
-          containerId={"reference-toast"}
-          position="top-center"
-          progressStyle={{ background: colors.NEW_BLUE() }}
-        ></ToastContainer> */}
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  loadingWrapper: {
+    background: "white",
+    maxWidth: config.width,
+    margin: "75px auto 0 auto",
+  },
+  topAreaClass: {
+    // paddingLeft:
+    maxWidth: 860,
+    margin: "0 auto",
+  },
   shareButton: {
     color: colors.BLACK(),
     border: "none",
@@ -1095,6 +1277,9 @@ const styles = StyleSheet.create({
       color: colors.BLACK(),
       textDecoration: "underline",
     },
+  },
+  overflowHidden: {
+    overflow: "hidden",
   },
   divider: {
     borderLeft: `1px solid ${colors.MEDIUM_GREY2(0.5)}`,
@@ -1141,16 +1326,22 @@ const styles = StyleSheet.create({
     height: 40,
     margin: 0,
     marginLeft: "auto",
-    // width: "unset",
     maxWidth: 400,
-    // flex: "1 1 40% !important",
+  },
+  headerContentWrapperClass: {
+    [`@media only screen and (min-width: ${breakpoints.tablet.str})`]: {
+      paddingBottom: 25,
+    },
+
+    [`@media only screen and (max-width: ${breakpoints.desktop.int - 1}px)`]: {
+      paddingLeft: 0,
+    },
   },
   formInputContainerFullWidth: {
     width: "100%",
     maxWidth: "unset",
     marginLeft: "unset",
     marginTop: 15,
-    // flex: "1 1 100% !important",
   },
   inputStyle: {
     fontSize: 14,
@@ -1168,9 +1359,15 @@ const styles = StyleSheet.create({
       borderColor: "#E8E8F2",
     },
   },
+  noDisplay: {
+    display: "none",
+  },
+  documentViewerDisplay: {
+    display: "unset",
+  },
   documentViewerClass: {
-    overflow: "auto",
-    height: "calc(100vh - 45px - 68px)",
+    // overflow: "auto",
+    minHeight: "calc(100vh - 45px - 68px)",
     display: "flex",
     justifyContent: "center",
     display: "none",
@@ -1202,6 +1399,17 @@ const styles = StyleSheet.create({
     ":hover": {
       background: colors.GREY_LINE(1),
     },
+  },
+  documentContainer: {
+    position: "relative",
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
+  linkToPublicPage: {
+    position: "absolute",
+    zIndex: 4,
+    top: 16,
+    right: 16,
   },
   noHover: {
     ":hover": {

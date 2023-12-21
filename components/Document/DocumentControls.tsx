@@ -17,6 +17,7 @@ interface Props {
   showCommentMenu?: boolean;
   isExpanded?: boolean;
   annotationCount?: number;
+  documentType?: string;
 }
 
 const DocumentControls = ({
@@ -29,6 +30,7 @@ const DocumentControls = ({
   isExpanded = false,
   showCommentMenu = false,
   annotationCount = 0,
+  documentType,
 }: Props) => {
   const stopPropagation = (e) => {
     e.stopPropagation();

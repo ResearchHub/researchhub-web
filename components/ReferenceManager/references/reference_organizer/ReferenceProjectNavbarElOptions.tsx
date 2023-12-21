@@ -17,6 +17,15 @@ import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { useReferenceProjectUpsertContext } from "./context/ReferenceProjectsUpsertContext";
 import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
 import { useReferenceActiveProjectContext } from "./context/ReferenceActiveProjectContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFolderPlus,
+  faPlus,
+  faTrash,
+  faTrashAlt,
+} from "@fortawesome/pro-light-svg-icons";
+import { StyleSheet, css } from "aphrodite";
+import colors from "~/config/themes/colors";
 
 type Props = {
   isCurrentUserAdmin: boolean;
@@ -24,22 +33,20 @@ type Props = {
   onSelectCreateSubProject: (event: SyntheticEvent) => void;
   onSelectEditProject: (event: SyntheticEvent) => void;
   projectID: ID;
-  setIsDeleteModalOpen: () => void;
   projectName: string;
   setShouldShowOptions: (flag: boolean) => void;
+  createFolder: () => void;
 };
 
 export default function ReferenceProjectNavbarElOption({
-  isCurrentUserAdmin,
-  setIsDeleteModalOpen,
-  onSelectAddNewReference,
-  onSelectCreateSubProject,
-  onSelectEditProject,
-  projectID,
-  projectName,
   setShouldShowOptions,
+  createFolder,
+  projectName,
+  projectID,
 }: Props): ReactElement {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const { setIsDeleteModalOpen, setDeleteProject } =
+    useReferenceProjectUpsertContext();
   const isMenuOpen = Boolean(menuAnchorEl);
 
   const handleMenuClick = (event: MouseEvent<HTMLElement>) => {
@@ -73,18 +80,40 @@ export default function ReferenceProjectNavbarElOption({
           "aria-labelledby": "basic-button",
         }}
       >
-        {isCurrentUserAdmin && (
-          <MenuItem
-            key="remove"
-            onClick={(event: MouseEvent): void => {
-              event.preventDefault();
-              setIsDeleteModalOpen(true);
-            }}
-          >
-            <Typography color="red">{"Delete Folder"}</Typography>
-          </MenuItem>
-        )}
+        <MenuItem
+          key="create"
+          onClick={(event: MouseEvent): void => {
+            handleMenuClose();
+            createFolder();
+          }}
+        >
+          <FontAwesomeIcon icon={faPlus} className={css(styles.folderIcon)} />
+          <Typography>{"Create Folder"}</Typography>
+        </MenuItem>
+        <MenuItem
+          key="remove"
+          onClick={(event: MouseEvent): void => {
+            handleMenuClose();
+            setDeleteProject({
+              projectName,
+              id: projectID,
+            });
+            setIsDeleteModalOpen(true);
+          }}
+        >
+          <FontAwesomeIcon
+            icon={faTrashAlt}
+            className={css(styles.folderIcon)}
+          />
+          <Typography>{"Delete Folder"}</Typography>
+        </MenuItem>
       </Menu>
     </Fragment>
   );
 }
+
+const styles = StyleSheet.create({
+  folderIcon: {
+    marginRight: 8,
+  },
+});

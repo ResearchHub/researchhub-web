@@ -40,6 +40,8 @@ import {
   useReferenceProjectUpsertContext,
 } from "~/components/ReferenceManager/references/reference_organizer/context/ReferenceProjectsUpsertContext";
 import DocumentPageTutorial from "./lib/DocumentPageTutorial";
+import LinkToPublicPage from "../LinkToPublicPage";
+import { breakpoints } from "~/config/themes/screen";
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
 );
@@ -47,9 +49,20 @@ const PaperTransactionModal = dynamic(
 interface Props {
   document: GenericDocument;
   metadata: DocumentMetadata;
+  noLineItems?: boolean;
+  noHorizontalTabBar?: boolean;
+  headerContentWrapperClass?: any;
+  referenceManagerView?: boolean;
 }
 
-const DocumentHeader = ({ document: doc, metadata }: Props) => {
+const DocumentHeader = ({
+  document: doc,
+  metadata,
+  noLineItems,
+  noHorizontalTabBar,
+  headerContentWrapperClass,
+  referenceManagerView,
+}: Props) => {
   const documentContext = useContext(DocumentContext);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -107,7 +120,11 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
         />
       </div>
       <div className={css(styles.headerWrapper)}>
-        <div className={css(styles.headerContentWrapper)}>
+        <div
+          className={
+            css(styles.headerContentWrapper) + " " + headerContentWrapperClass
+          }
+        >
           <div>
             <div className={css(styles.badgesWrapper)}>
               <DocumentBadges document={doc} metadata={metadata} />
@@ -115,9 +132,9 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
             <div className={css(styles.titleWrapper)}>
               <div className={css(styles.voteWrapper)}>
                 <DocumentVote
-                  id={doc.id}
+                  id={doc?.id}
                   metadata={metadata}
-                  score={metadata.score}
+                  score={metadata?.score}
                   apiDocumentType={doc.apiDocumentType}
                   userVote={metadata.userVote}
                 />
@@ -132,82 +149,122 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                 />
               </div>
             )}
-            <div className={css(styles.lineItemsWrapper)}>
-              <div className={css(styles.lineItems)}>
-                <DocumentLineItems document={doc} />
-              </div>
+            {
+              <div className={css(styles.lineItemsWrapper)}>
+                <div className={css(styles.lineItems)}>
+                  <DocumentLineItems
+                    document={doc}
+                    id={doc?.id}
+                    slug={doc?.unifiedDocument?.document?.slug}
+                  />
+                </div>
 
-              <div
-                className={css(styles.actionWrapper, styles.largeScreenActions)}
-              >
-                {isPaper(doc) && (
-                  <ReferenceProjectsUpsertContextProvider>
-                    <SaveToRefManager
-                      contentType={"paper"}
-                      contentId={doc.unifiedDocument.document?.id}
-                      unifiedDocumentId={doc.unifiedDocument.id}
-                    />
-                  </ReferenceProjectsUpsertContextProvider>
+                {!noLineItems && (
+                  <div
+                    className={css(
+                      styles.actionWrapper,
+                      styles.largeScreenActions
+                    )}
+                  >
+                    <ReferenceProjectsUpsertContextProvider>
+                      <SaveToRefManager
+                        contentType={"paper"}
+                        doc={doc}
+                        contentId={doc?.unifiedDocument?.document?.id}
+                        unifiedDocumentId={doc?.unifiedDocument?.id}
+                      />
+                    </ReferenceProjectsUpsertContextProvider>
+                    <PermissionNotificationWrapper
+                      modalMessage="edit document"
+                      permissionKey="UpdatePaper"
+                      loginRequired={true}
+                      onClick={() =>
+                        dispatch(ModalActions.openPaperTransactionModal(true))
+                      }
+                      hideRipples={true}
+                    >
+                      <IconButton variant="round">
+                        <ResearchCoinIcon version={6} width={21} height={21} />
+                        <span>Tip</span>
+                      </IconButton>
+                    </PermissionNotificationWrapper>
+                    <DocumentOptions document={doc} metadata={metadata} />
+                  </div>
                 )}
-                <PermissionNotificationWrapper
-                  modalMessage="edit document"
-                  permissionKey="UpdatePaper"
-                  loginRequired={true}
-                  onClick={() =>
-                    dispatch(ModalActions.openPaperTransactionModal(true))
-                  }
-                  hideRipples={true}
-                >
-                  <IconButton variant="round">
-                    <ResearchCoinIcon version={6} width={21} height={21} />
-                    <span>Tip</span>
-                  </IconButton>
-                </PermissionNotificationWrapper>
-                <DocumentOptions document={doc} metadata={metadata} />
+                {referenceManagerView && (
+                  <div
+                    className={css(
+                      styles.actionWrapper,
+                      styles.largeScreenActions
+                    )}
+                  >
+                    <LinkToPublicPage
+                      type={doc?.unifiedDocument?.documentType}
+                      id={doc?.id}
+                      target={"_blank"}
+                      slug={doc?.unifiedDocument?.document?.slug}
+                    />
+                  </div>
+                )}
               </div>
-            </div>
+            }
             <div className={css(styles.smallScreenActions)}>
               <div className={css(styles.voteWrapperForSmallScreen)}>
                 <DocumentVote
-                  id={doc.id}
+                  id={doc?.id}
                   metadata={metadata}
-                  score={metadata.score}
+                  score={metadata?.score}
                   iconButton={true}
-                  apiDocumentType={doc.apiDocumentType}
-                  userVote={metadata.userVote}
+                  apiDocumentType={doc?.apiDocumentType}
+                  userVote={metadata?.userVote}
                   isHorizontal={true}
                 />
               </div>
-              <div className={css(styles.actionWrapper)}>
-                <PermissionNotificationWrapper
-                  modalMessage="edit document"
-                  permissionKey="UpdatePaper"
-                  loginRequired={true}
-                  onClick={() =>
-                    dispatch(ModalActions.openPaperTransactionModal(true))
-                  }
-                  hideRipples={true}
-                >
-                  <IconButton variant="round">
-                    <ResearchCoinIcon version={6} width={21} height={21} />
-                    <span>Tip</span>
-                  </IconButton>
-                </PermissionNotificationWrapper>
-                {isPaper(doc) && (
+              {!noLineItems && (
+                <div className={css(styles.actionWrapper)}>
+                  <PermissionNotificationWrapper
+                    modalMessage="edit document"
+                    permissionKey="UpdatePaper"
+                    loginRequired={true}
+                    onClick={() =>
+                      dispatch(ModalActions.openPaperTransactionModal(true))
+                    }
+                    hideRipples={true}
+                  >
+                    <IconButton variant="round">
+                      <ResearchCoinIcon version={6} width={21} height={21} />
+                      <span>Tip</span>
+                    </IconButton>
+                  </PermissionNotificationWrapper>
                   <ReferenceProjectsUpsertContextProvider>
                     <SaveToRefManager
                       contentType={"paper"}
+                      doc={doc}
                       contentId={doc.unifiedDocument.document?.id}
                       unifiedDocumentId={doc.unifiedDocument.id}
                     />
                   </ReferenceProjectsUpsertContextProvider>
-                )}
-                <DocumentOptions document={doc} metadata={metadata} />
+                  <DocumentOptions document={doc} metadata={metadata} />
+                </div>
+              )}
+              {referenceManagerView && (
+                <div
+                  className={css(styles.actionWrapper, styles.linkToPublicPage)}
+                >
+                  <LinkToPublicPage
+                    type={doc?.unifiedDocument?.documentType}
+                    id={doc?.id}
+                    target={"_blank"}
+                    slug={doc?.unifiedDocument?.document?.slug}
+                  />
+                </div>
+              )}
+            </div>
+            {!noHorizontalTabBar && (
+              <div className={css(styles.tabsWrapper)}>
+                <HorizontalTabBar tabs={tabs} />
               </div>
-            </div>
-            <div className={css(styles.tabsWrapper)}>
-              <HorizontalTabBar tabs={tabs} />
-            </div>
+            )}
           </div>
         </div>
 
@@ -252,6 +309,14 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     justifyContent: "center",
     borderBottom: `1px solid ${config.border}`,
+
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      paddingBottom: 25,
+    },
+
+    [`@media only screen and (min-width: ${breakpoints.desktop.str})`]: {
+      minHeight: 130,
+    },
   },
   lineItemsWrapper: {
     display: "flex",
@@ -326,6 +391,10 @@ const styles = StyleSheet.create({
     display: "flex",
     columnGap: "10px",
     alignItems: "flex-end",
+  },
+  linkToPublicPage: {
+    alignItems: "center",
+    marginLeft: "auto",
   },
   smallScreenActions: {
     marginTop: 15,

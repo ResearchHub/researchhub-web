@@ -185,7 +185,7 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
           modalHeaderText="Flag content"
           onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
             flagGrmContent({
-              contentID: doc.id,
+              contentID: doc?.id,
               contentType: doc.apiDocumentType,
               flagReason,
               onError: renderErrorMsg,

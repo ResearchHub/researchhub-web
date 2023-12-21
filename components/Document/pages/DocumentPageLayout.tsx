@@ -4,7 +4,6 @@ import config from "~/components/Document/lib/config";
 import {
   DocumentMetadata,
   GenericDocument,
-  DocumentType,
   isPaper,
   isPost,
 } from "../lib/types";
@@ -19,12 +18,15 @@ import { useState } from "react";
 
 interface Args {
   document: GenericDocument;
-  errorCode?: number;
-  documentType: DocumentType;
-  tabName?: string;
   children?: any;
   metadata: DocumentMetadata;
   isExpanded?: boolean;
+  noLineItems?: boolean;
+  noHorizontalTabBar?: boolean;
+  documentPageClass?: any;
+  topAreaClass?: any;
+  headerContentWrapperClass?: any;
+  referenceManagerView?: boolean;
 }
 
 const toPlaintext = (text) => {
@@ -34,10 +36,13 @@ const toPlaintext = (text) => {
 const DocumentPageLayout = ({
   document,
   metadata,
-  documentType,
-  tabName,
   children,
-  errorCode,
+  noLineItems,
+  noHorizontalTabBar,
+  documentPageClass,
+  topAreaClass,
+  headerContentWrapperClass,
+  referenceManagerView,
 }: Args) => {
   const router = useRouter();
   let openGraphData: OpenGraphData = { meta: {}, graph: [] };
@@ -55,9 +60,8 @@ const DocumentPageLayout = ({
     console.log("Error building open graph data", e);
   }
 
-  const pdfUrl = document.formats.find((f) => f.type === "pdf")?.url;
   return (
-    <div className={css(styles.pageWrapper)}>
+    <div className={css(styles.pageWrapper) + " " + documentPageClass}>
       <HeadComponent {...openGraphData.meta} graph={openGraphData.graph}>
         <meta
           name="viewport"
@@ -65,8 +69,15 @@ const DocumentPageLayout = ({
         />
       </HeadComponent>
 
-      <div className={css(styles.topArea)}>
-        <DocumentHeader document={document} metadata={metadata} />
+      <div className={css(styles.topArea) + " " + topAreaClass}>
+        <DocumentHeader
+          document={document}
+          metadata={metadata}
+          noLineItems={noLineItems}
+          noHorizontalTabBar={noHorizontalTabBar}
+          headerContentWrapperClass={headerContentWrapperClass}
+          referenceManagerView={referenceManagerView}
+        />
       </div>
       <div className={css(styles.bodyArea)}>{children}</div>
     </div>

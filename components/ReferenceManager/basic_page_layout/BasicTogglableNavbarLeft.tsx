@@ -32,9 +32,10 @@ type Props = {
   theme?: Theme;
   currentOrgProjects: any[];
   setIsDeleteModalOpen: () => void;
+  canEdit?: boolean;
 };
 
-const ContentWrapper = ({ children, width, isOpen, setIsOpen }) => {
+const ContentWrapper = ({ children, width, isOpen, setIsOpen, canEdit }) => {
   const { isRefManagerDisplayedAsDrawer } = navContext();
 
   if (isRefManagerDisplayedAsDrawer) {
@@ -90,6 +91,7 @@ export default function BasicTogglableNavbarLeft({
   theme,
   openOrgSettingsModal,
   currentOrgProjects,
+  canEdit,
 }: Props) {
   const {
     setIsModalOpen: setIsProjectsUpsertModalOpen,
@@ -192,6 +194,7 @@ export default function BasicTogglableNavbarLeft({
           currentOrgProjects={currentOrgProjects}
           currentOrg={currentOrg}
           allowManage={true}
+          canEdit={canEdit}
         />
       </List>
     </ContentWrapper>

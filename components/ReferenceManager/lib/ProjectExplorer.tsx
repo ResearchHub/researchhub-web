@@ -12,6 +12,7 @@ interface Props {
   handleSelectProject?: Function;
   allowSelection?: boolean;
   allowManage?: boolean;
+  canEdit?: boolean;
 }
 
 const ProjectExplorer = ({
@@ -22,6 +23,7 @@ const ProjectExplorer = ({
   handleClick,
   allowSelection = false,
   allowManage = false,
+  canEdit,
 }: Props) => {
   const [childrenOpenMap, setChildrenOpenMap] = useState({});
 
@@ -49,6 +51,7 @@ const ProjectExplorer = ({
       allowSelection,
       allowManage,
       selectedProjectIds,
+      canEdit,
       slug: `${encodeURIComponent(referenceProject.slug)}`,
     });
 

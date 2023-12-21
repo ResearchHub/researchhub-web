@@ -28,7 +28,7 @@ import { ID, RhDocumentType } from "~/config/types/root_types";
 import API, { generateApiUrl, buildQueryString } from "~/config/api";
 import Helpers from "~/config/api/helpers";
 import Button from "~/components/Form/Button";
-import { GenericDocument, ContentInstance } from "./types";
+import { GenericDocument, ContentInstance, isPaper } from "./types";
 import ALink from "~/components/ALink";
 import { ClipLoader } from "react-spinners";
 import OrgAvatar from "~/components/Org/OrgAvatar";
@@ -69,10 +69,16 @@ interface Props {
   contentId: ID;
   contentType: RhDocumentType;
   unifiedDocumentId: ID;
+  doc?: any;
 }
 
-const saveToRefManagerApi = ({ paperId, orgId, projectId }) => {
-  const url = generateApiUrl(`citation_entry/${paperId}/add_paper_as_citation`);
+const saveToRefManagerApi = ({ contentId, orgId, projectId, doc }) => {
+  const isDocPaper = isPaper(doc);
+  const url = generateApiUrl(
+    isDocPaper
+      ? `citation_entry/${contentId}/add_paper_as_citation`
+      : `citation_entry/${contentId}/add_post_as_citation`
+  );
 
   return fetch(
     url,
@@ -92,12 +98,14 @@ interface AlreadySavedProps {
   unifiedDocumentId: ID;
   orgId: ID;
   projectIds: ID[];
+  doc: any;
 }
 
 const checkWhichProjectsDocIsSavedApi = ({
   orgId,
   unifiedDocumentId,
   projectIds,
+  doc,
 }: AlreadySavedProps) => {
   const url = generateApiUrl(
     `citation_entry/${unifiedDocumentId}/check_paper_in_reference_manager`,
@@ -121,6 +129,7 @@ const SaveToRefManager = ({
   contentId,
   contentType,
   unifiedDocumentId,
+  doc,
 }: Props) => {
   const [orgProjects, setOrgProjects] = useState([]);
   const [isFetchingProjects, setIsFetchingProjects] = useState(true);
@@ -251,7 +260,7 @@ const SaveToRefManager = ({
         </div>
         {isOpen && (
           <div className={css(styles.main) + " save-ref-open"} ref={tooltipRef}>
-            <div className={css(styles.title)}>Save to reference manager:</div>
+            <div className={css(styles.title)}>Save to Reference Manager</div>
             <div
               className={css(styles.dropdown)}
               onClick={() => {
@@ -353,10 +362,11 @@ const SaveToRefManager = ({
                       } else {
                         saveToRefManagerApi({
                           projectId: project.id,
-                          paperId: contentId,
+                          contentId: contentId,
                           orgId: selectedOrg?.id,
+                          doc,
                         }).then((res: any) => {
-                          projectCitationMap[project.id] = [res.id];
+                          projectCitationMap[project.id] = [res?.id];
                           setProjectCitationMap({ ...projectCitationMap });
                         });
                       }

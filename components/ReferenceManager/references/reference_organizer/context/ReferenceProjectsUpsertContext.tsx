@@ -25,6 +25,10 @@ export type ReferenceProjectsUpsertContextValueType = {
   setProjectValue: (value: ProjectValue) => void;
   setUpsertPurpose: (value: UpsertPurpose) => void;
   upsertPurpose: UpsertPurpose;
+  isDeleteModalOpen: boolean;
+  setIsDeleteModalOpen: (val: boolean) => void;
+  deleteProject: any;
+  setDeleteProject: (value) => void;
 };
 export const DEFAULT_PROJECT_VALUES: ProjectValue = {
   children: [],
@@ -59,6 +63,8 @@ export const useReferenceProjectUpsertContext =
 
 export function ReferenceProjectsUpsertContextProvider({ children }) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [deleteProject, setDeleteProject] = useState<any>();
   const [upsertPurpose, setUpsertPurpose] = useState<UpsertPurpose>("create");
   const [projectValue, setProjectValue] = useState<ProjectValue>(
     DEFAULT_PROJECT_VALUES
@@ -84,6 +90,10 @@ export function ReferenceProjectsUpsertContextProvider({ children }) {
         setProjectValue,
         setUpsertPurpose,
         upsertPurpose,
+        isDeleteModalOpen,
+        setIsDeleteModalOpen,
+        deleteProject,
+        setDeleteProject,
       }}
     >
       {children}
