@@ -34,13 +34,13 @@ export const styles = StyleSheet.create({
     borderRadius: 4,
     color: colors.GREY_LIST_LABEL,
     padding: "0 0 16px 0",
-    position: "sticky",
+    // position: "sticky",
     top: NAVBAR_HEIGHT + 15,
     boxShadow: "none",
   },
   RightSidebarTitle: {
     background: colors.WHITE,
-    padding: "16px 20px 10px 20px",
+    padding: "22px 20px 10px 20px",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       padding: "15px 0 5px",

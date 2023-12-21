@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
-import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronDown, faChevronUp } from "@fortawesome/pro-regular-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 
@@ -46,10 +45,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     textTransform: "uppercase",
-    fontWeight: 500,
+    fontWeight: 600,
     fontSize: 12,
     letterSpacing: 1.2,
-    color: colors.BLACK(0.6),
+    color: colors.BLACK(0.75),
     width: "100%",
     boxSizing: "border-box",
     margin: 0,
