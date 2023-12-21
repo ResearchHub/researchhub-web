@@ -490,6 +490,7 @@ const routes = (BASE_URL) => {
       return `${BASE_URL}author/${authorId}/contributions/?type=${type}`;
     },
 
+    EXTERNAL_AUTHOR_CLAIM_CASE: () => BASE_URL + `external_author_claim_case/`,
     AUTHOR_CLAIM_CASE: () => BASE_URL + `author_claim_case/`,
     AUTHOR_CLAIM_CASE_COUNT: () => BASE_URL + "author_claim_case/count/",
     AUTHOR_CLAIM_TOKEN_VALIDATION: () =>

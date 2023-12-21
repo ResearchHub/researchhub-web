@@ -36,9 +36,9 @@ const VerificationFormEmailSentStep = () => {
           Visit your inbox click the link to verify ownership of the email address provided.
         </p>
       </div>
-      <div style={{ width: 250, marginTop: 75 }}>
+      <div style={{ width: 200, marginTop: 50 }}>
         <Button fullWidth onClick={() => (window.location.href = "/")}>
-          Back Home
+          Close
         </Button>
       </div>
     </div>

@@ -53,7 +53,7 @@ const VerificationPaperResult = ({ result }: Props) => {
           {result.concepts.map((concept, index) => {
             return (
               <div>
-                <HubBadge size={"small"} name={concept.displayName} />
+                <HubBadge key={`hub-${index}`} size={"small"} name={concept.displayName} />
               </div>
             );
           })}

@@ -27,7 +27,7 @@ export type VerificationPaperResult = {
 
 export const parseVerificationPaperResult = (
   raw: any,
-  onlyImportantConcepts: boolean
+  onlyImportantConcepts?: boolean
 ): VerificationPaperResult => {
   const parsed = {
     title: raw.title,

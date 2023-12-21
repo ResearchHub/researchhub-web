@@ -18,13 +18,13 @@ const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
       // Reset
       setStep("INTRO_STEP");
     }
-  }, []);
+  }, [isModalOpen]);
 
   return (
     <BaseModal
       offset={"0px"}
       isOpen={isModalOpen}
-      hideClose={step !== "EMAIL_SENT_STEP"}
+      hideClose={step == "DOI_STEP" || step == "AUTHOR_STEP"}
       closeModal={handleModalClose}
       zIndex={1000000001}
       modalStyle={styles.modalStyle}
@@ -117,7 +117,6 @@ const styles = StyleSheet.create({
   },
   modalContentStyle: {
     position: "relative",
-    minHeight: 560,
     padding: "0px 0px 25px 0px",
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       height: "100%",

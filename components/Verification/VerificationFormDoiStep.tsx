@@ -7,8 +7,9 @@ import debounce from "lodash/debounce";
 import { ClipLoader } from "react-spinners";
 import { fetchPaperByDoi } from "./lib/api";
 import extractAndValidateDOI from "~/config/utils/extractAndValidateDoi";
-import { VerificationPaperResult as VerificationPaperResultType } from "./lib/types";
+import { VerificationPaperResult as VerificationPaperResultType, parseVerificationPaperResult } from "./lib/types";
 import VerificationPaperResult from "./VerificationPaperResult";
+import { fetchReferenceFromDoi } from "../ReferenceManager/form/api/fetchReferenceFromDoi";
 
 type ERROR_TYPE = "DOI_ERROR" | "PAPER_NOT_FOUND" | null;
 
@@ -57,9 +58,20 @@ const VerificationFormDoiStep = ({
   const debounceFetchPaperByDoi = useCallback(
     debounce(async ({ doi }) => {
       try {
-        const foundPaper = await fetchPaperByDoi({ doi });
-        setAuthoredPaper(foundPaper);
-        setError(null);
+        fetchReferenceFromDoi({
+          doi,
+          onSuccess: (paper) => {
+            const parsed = parseVerificationPaperResult(paper, true);
+            setAuthoredPaper(parsed);
+            setError(null);
+          },
+          onError: () => {
+
+          }
+        });
+        // const foundPaper = await fetchPaperByDoi({ doi });
+        // setAuthoredPaper(foundPaper);
+        // setError(null);
       } catch (error) {
         setError("PAPER_NOT_FOUND");
         setAuthoredPaper(null);
@@ -71,8 +83,8 @@ const VerificationFormDoiStep = ({
   );
 
   return (
-    <div>
-      <div>First, enter a DOI for a paper you authored:</div>
+    <div className={css(styles.wrapper)}>
+      <div style={{ fontWeight: 500, }}>First, enter a DOI for a paper you authored:</div>
       <FormInput
         error={
           paperDoi &&
@@ -82,10 +94,11 @@ const VerificationFormDoiStep = ({
             : "Paper not found. Please try another DOI.")
         }
         value={paperDoi || ""}
+        placeholder={"e.g. 10.1038/s41586-023-06466-x"}
         disabled={isFetching}
         containerStyle={styles.inputContainer}
         onChange={(name, value) => {
-          setPaperDoi(value);
+          setPaperDoi(value.trim());
         }}
       />
       <div style={{ minHeight: 100 }}>
@@ -96,12 +109,13 @@ const VerificationFormDoiStep = ({
               alignItems: "center",
               justifyContent: "center",
               height: "100%",
-              marginTop: 150,
+              marginTop: 0,
+              paddingTop: 30,
             }}
           >
             <ClipLoader
               sizeUnit={"px"}
-              size={44}
+              size={30}
               color={colors.NEW_BLUE()}
               loading={true}
             />
@@ -117,6 +131,9 @@ const VerificationFormDoiStep = ({
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+
+  },
   successMessage: {
     color: colors.GREEN(),
     fontSize: 14,

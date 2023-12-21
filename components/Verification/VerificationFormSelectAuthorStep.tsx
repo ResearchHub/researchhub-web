@@ -104,10 +104,12 @@ const VerificationFormSelectAuthorStep = ({
   // const foundAuthor = foundAuthorByLastNameIndex > -1 ? authorsAsOptions[foundAuthorByLastNameIndex] : undefined;
   return (
     <div>
+      {/* {error && (
       <div className={css(styles.error)}>
         <FontAwesomeIcon icon="exclamation-circle" />
-        Attempting to open a duplicate case for author Li Zhong in paper None
+        {error}
       </div>
+      )} */}
       <div className={css(styles.inputWrapper)}>
         <FormSelect
           value={selectedAuthor}

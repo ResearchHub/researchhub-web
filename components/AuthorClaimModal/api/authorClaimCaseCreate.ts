@@ -57,7 +57,10 @@ export function createAuthorClaimCase({
     target_paper_doi: doi
   };
 
-  fetch(API.AUTHOR_CLAIM_CASE(), API.POST_CONFIG(params))
+  const url = doi ? API.EXTERNAL_AUTHOR_CLAIM_CASE() : API.AUTHOR_CLAIM_CASE();
+
+
+  fetch(url, API.POST_CONFIG(params))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((response: any): void => {

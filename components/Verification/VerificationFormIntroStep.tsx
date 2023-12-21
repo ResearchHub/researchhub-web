@@ -7,26 +7,18 @@ import VerifiedBadge from "./VerifiedBadge";
 const VerificationFormIntroStep = ({ nextStep }) => {
   return (
     <div>
-      {/* <VerifiedBadge width={100} height={100} showTooltipOnHover={false} /> */}
-      <div className={css(styles.title)}>Become a Verified Author</div>
-      <p className={css(styles.description)}>
-        ResearchHub is allowing scientific authors with at least one published
-        paper to verify their identity on the platform.
-      </p>
-
-      <div className={css(styles.subtitle)}>Requirements</div>
-      <ul className={css(styles.list)}>
-        <li className={css(styles.listItem)}>
-          Have published at least one paper with a DOI
-        </li>
-        <li className={css(styles.listItem)}>
-          Have access to an email affiliated with an academic institution
-        </li>
-        <li className={css(styles.listItem)}>Profile must have a photo</li>
-        <li className={css(styles.listItem)}>
-          Profile must have name matching the name on the published paper
-        </li>
-      </ul>
+      <div className={css(styles.header)}>
+        <div className={css(styles.badgeWrapper)}>
+          <VerifiedBadge width={75} height={75} showTooltipOnHover={false} />
+        </div>
+        <div className={css(styles.title)}>
+          Become a Verified Author
+        </div>
+        <p className={css(styles.description)}>
+          ResearchHub is allowing scientific authors with at least one published
+          paper to verify their identity on the platform.
+        </p>
+      </div>
 
       <div className={css(styles.whyVerify)}>
         <div className={css(styles.subtitle)}>
@@ -34,45 +26,76 @@ const VerificationFormIntroStep = ({ nextStep }) => {
         </div>
         <ul className={css(styles.list)}>
           <li className={css(styles.listItem)}>
-            Improve your academic reputation on the platform
+            <div style={{ display: "inline-flex", columnGap: 10 }}>
+              Have the verified badge appear next to your name
+            </div>
           </li>
           <li className={css(styles.listItem)}>
-            Get early access to new features
+            Improve your academic reputation on the platform
           </li>
           <li className={css(styles.listItem)}>
             Earn ResearchCoin on your papers
           </li>
           <li className={css(styles.listItem)}>
-            <div style={{ display: "inline-flex", columnGap: 10 }}>
-              Have the verified badge appear next to your name
-            </div>
+            Get early access to new features
           </li>
         </ul>
       </div>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button onClick={nextStep} label={"Start"} />
+
+      <div className={css(styles.subtitle)}>Requirements</div>
+      <ul className={css(styles.list)}>
+        <li className={css(styles.listItem)}>
+          Published at least one paper with a DOI
+        </li>
+        <li className={css(styles.listItem)}>
+          Have access to an email affiliated with an academic institution
+        </li>
+        <li className={css(styles.listItem)}>Profile must have a photo and academic(s) instituation set</li>
+        <li className={css(styles.listItem)}>
+          Profile name must match the name on the published paper
+        </li>
+      </ul>
+
+
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 30,   }}>
+        <div style={{ width: 160,   }}>
+          <Button onClick={nextStep} label={"Start"} fullWidth />
+        </div>
       </div>
     </div>
   );
 };
 
 const styles = StyleSheet.create({
+  header: {
+    borderBottom: `1px solid ${colors.BLACK(0.1)}`,
+    marginBottom: 30,
+  },
+  badgeWrapper: {
+    justifyContent: "center",
+    display: "flex",
+    marginBottom: 15,
+  },
   description: {
     fontSize: 16,
-    marginTop: 15,
+    marginTop: 10,
+    textAlign: "center",
   },
   title: {
     fontSize: 26,
     fontWeight: 500,
+    textAlign: "center",
   },
   whyVerify: {},
   subtitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 500,
     marginTop: 20,
+    marginBottom: 8,
   },
+
   listItem: {
-    fontSize: 15,
+    fontSize: 14,
   },
   list: {
     padding: 0,

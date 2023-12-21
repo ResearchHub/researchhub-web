@@ -52,7 +52,7 @@ export function getDocumentCard({
           featured={uniDoc.featured}
           reviews={uniDoc.reviews}
           bounties={bounties}
-          hasAcceptedAnswer={uniDoc.document_filter.answered}
+          hasAcceptedAnswer={uniDoc?.document_filter?.answered}
           voteCallback={(arrIndex: number, currPaper: any): void => {
             const [currUniDoc, newUniDocs] = [
               { ...uniDoc },
