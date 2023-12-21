@@ -22,7 +22,6 @@ type Props = {
   active: boolean;
   addChildrenOpen: ({ key, value }) => void;
   collaborators: LookupSuggestedUser[];
-  isCurrentUserAdmin: boolean;
   isPublic: boolean;
   orgSlug: string;
   projectID: ID;
@@ -46,7 +45,6 @@ export default function ReferenceProjectsNavbarEl({
   child,
   collaborators,
   depth,
-  isCurrentUserAdmin,
   isOpen,
   isPublic,
   referenceProject,
@@ -227,12 +225,20 @@ export default function ReferenceProjectsNavbarEl({
         style={{ display: "flex", alignItems: "center" }}
         className={css(styles.options)}
       >
-        {/* {shouldShowOptions && isCurrentUserAdmin && allowManage && (
+        {shouldShowOptions && canEdit && allowManage && (
           <div className={css(styles.moreOptionsIcon)}>
             <ReferenceProjectNavbarElOption
-              isCurrentUserAdmin={isCurrentUserAdmin}
+              isCurrentUserAdmin={canEdit}
               projectID={projectID}
               projectName={projectName}
+              createFolder={() => {
+                setProjectUpsertPurpose("create_sub_project");
+                setProjectUpsertValue({
+                  ...DEFAULT_PROJECT_VALUES,
+                  projectID,
+                });
+                setIsProjectUpsertModalOpen(true);
+              }}
               setIsDeleteModalOpen={setIsDeleteModalOpen}
               onSelectAddNewReference={(event: SyntheticEvent): void => {
                 event.preventDefault();
@@ -264,19 +270,6 @@ export default function ReferenceProjectsNavbarEl({
               setShouldShowOptions={setShouldShowOptions}
             />
           </div>
-        )} */}
-        {shouldShowOptions && (
-          <FontAwesomeIcon
-            icon={faFolderPlus}
-            className={css(styles.folderIcon)}
-            color={"#AAA8B4"}
-            onClick={(e) => {
-              e.stopPropagation();
-              setProjectUpsertPurpose("create_sub_project");
-              setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID });
-              setIsProjectUpsertModalOpen(true);
-            }}
-          />
         )}
       </div>
     </Box>

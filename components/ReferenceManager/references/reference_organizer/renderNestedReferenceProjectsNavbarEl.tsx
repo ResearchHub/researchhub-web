@@ -18,6 +18,7 @@ type Args = {
   allowManage?: boolean;
   setIsDeleteModalOpen: () => void;
   setActiveTab?: (tab) => void;
+  canEdit?: boolean;
 };
 
 export function renderNestedReferenceProjectsNavbarEl({
@@ -35,6 +36,7 @@ export function renderNestedReferenceProjectsNavbarEl({
   allowManage,
   allowSelection,
   selectedProjectIds,
+  canEdit,
 }: Args) {
   const router = useRouter();
   const hasChildren = !isEmpty(referenceProject.children);
@@ -62,6 +64,7 @@ export function renderNestedReferenceProjectsNavbarEl({
         referenceProject={referenceProject}
         child={Boolean(child)}
         depth={depth}
+        canEdit={canEdit}
         isOpen={childrenOpenMap[referenceProject?.id]}
         addChildrenOpen={addChildrenOpen}
         slug={slug}

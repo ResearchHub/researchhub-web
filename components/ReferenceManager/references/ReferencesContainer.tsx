@@ -262,6 +262,9 @@ function ReferencesContainer({
     setIsModalOpen: setIsProjectUpsertModalOpen,
     setProjectValue: setProjectUpsertValue,
     setUpsertPurpose: setProjectUpsertPurpose,
+    isDeleteModalOpen: isDeleteModalOpenLeftSide,
+    setIsDeleteModalOpen: setIsDeleteModalOpenLeftSide,
+    deleteProject,
   } = useReferenceProjectUpsertContext();
   const {
     setIsDrawerOpen: setIsRefUploadDrawerOpen,
@@ -1053,6 +1056,52 @@ function ReferencesContainer({
         onClose={(): void => setIsDeleteModalOpen(false)}
         primaryButtonConfig={{ label: "Delete" }}
       />
+
+      <QuickModal
+        isOpen={isDeleteModalOpenLeftSide}
+        modalContent={
+          <Box sx={{ marginBottom: "16px", height: "120px" }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: "38px",
+              }}
+            >
+              <Typography id="modal-modal-title" variant="subtitle2">
+                {`Are you sure you want to remove this folder?`}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6">{deleteProject?.projectName}</Typography>
+            </Box>
+          </Box>
+        }
+        modalWidth="300px"
+        onPrimaryButtonClick={(): void => {
+          removeReferenceProject({
+            projectID: deleteProject?.id,
+            onSuccess: () => {
+              resetProjectsFetchTime();
+              setIsDeleteModalOpenLeftSide(false);
+              if (activeProject?.projectID === deleteProject.id) {
+                router.push(`/reference-manager/${currentOrg?.slug ?? ""}`);
+              }
+            },
+            onError: emptyFncWithMsg,
+          });
+        }}
+        onSecondaryButtonClick={(): void => setIsDeleteModalOpen(false)}
+        onClose={(): void => setIsDeleteModalOpen(false)}
+        primaryButtonConfig={{ label: "Delete" }}
+      />
       <ManageOrgModal
         org={currentOrg}
         isOpen={isOrgModalOpen}
@@ -1107,6 +1156,7 @@ function ReferencesContainer({
           currentOrgProjects={currentOrgProjects}
           isOpen={isRefManagerSidebarOpen}
           navWidth={LEFT_MAX_NAV_WIDTH}
+          canEdit={canEdit}
           setIsDeleteModalOpen={setIsDeleteModalOpen}
           openOrgSettingsModal={() => setIsOrgModalOpen(true)}
           setIsOpen={setIsRefManagerSidebarOpen}
