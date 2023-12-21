@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
       width: "80vw",
     },
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      width: "86vw",
+      width: "100%",
     },
   },
   editor: {
