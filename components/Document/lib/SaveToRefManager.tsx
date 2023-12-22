@@ -73,6 +73,7 @@ interface Props {
 }
 
 const saveToRefManagerApi = ({ contentId, orgId, projectId, doc }) => {
+  debugger;
   const isDocPaper = isPaper(doc);
   const url = generateApiUrl(
     isDocPaper

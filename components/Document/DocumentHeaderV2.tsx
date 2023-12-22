@@ -155,7 +155,7 @@ const DocumentHeader = ({
                   <DocumentLineItems
                     document={doc}
                     id={doc?.id}
-                    slug={doc?.unifiedDocument?.document?.slug}
+                    slug={doc?.raw?.slug}
                   />
                 </div>
 
