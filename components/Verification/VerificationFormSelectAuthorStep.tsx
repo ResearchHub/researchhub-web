@@ -97,6 +97,7 @@ const VerificationFormSelectAuthorStep = ({
       userID: user?.id,
       targetAuthorName: selectedAuthor!.value,
       doi: authoredPaper?.doi,
+      targetPaperTitle: authoredPaper?.title,
     });
   };
 
