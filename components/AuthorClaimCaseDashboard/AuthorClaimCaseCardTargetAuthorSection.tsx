@@ -9,10 +9,23 @@ type Props = {
   caseData: any;
 };
 
+const getPaperUrl = (caseData: any) => {
+  if (caseData?.paper) {
+    return `/paper/${caseData?.paper?.id}/${caseData?.paper?.slug}`;
+  } else {
+    if (caseData?.targetPaperDOI.indexOf("doi.org") > -1) {
+      return caseData?.targetPaperDOI;
+    }
+    return "https://doi.org/" + caseData?.targetPaperDOI;
+  }
+};
+
 export default function AuthorClaimCaseCardTargetAuthorSection({
   caseCreatedDate,
   caseData,
 }: Props): ReactElement<"div"> {
+  const paperUrl = getPaperUrl(caseData);
+
   return (
     <div className={css(styles.targetAuthorSection)}>
       <div className={css(styles.marginBottom)}>
@@ -26,10 +39,12 @@ export default function AuthorClaimCaseCardTargetAuthorSection({
       <div className={css(styles.marginBottom)}>
         <span className={css(styles.fontGrey)}>{"Paper - "}</span>
         <Link
-          href={`/paper/${caseData?.paper?.id}/${caseData?.paper?.slug}`}
+          href={paperUrl}
           className={css(styles.link)}
+          target="_blank"
+          onClick={(e) => e.stopPropagation()}
         >
-          <span>{caseData?.paper?.title}</span>
+          <span>{caseData?.paper?.title || caseData?.targetPaperTitle}</span>
         </Link>
       </div>
     </div>

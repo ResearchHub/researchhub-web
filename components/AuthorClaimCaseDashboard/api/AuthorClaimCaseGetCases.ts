@@ -26,6 +26,8 @@ export type CaseData = {
   status: string;
   targetAuthorName?: NullableString;
   updatedDate: string;
+  targetPaperTitle?: NullableString;
+  targetPaperDoi?: NullableString;
 };
 export type PaginationInfo = {
   caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS> | null;
@@ -73,6 +75,8 @@ export function getCases({
             updated_date,
             paper,
             target_author_name,
+            target_paper_title,
+            target_paper_doi,
           } = resultData;
           const {
             id: requestorID,
@@ -91,6 +95,8 @@ export function getCases({
               updatedDate: updated_date,
               paper,
               targetAuthorName: target_author_name,
+              targetPaperTitle: target_paper_title,
+              targetPaperDOI: target_paper_doi,
             },
             requestor: {
               name: `${requestorFirstName} ${requestorLastName}`,

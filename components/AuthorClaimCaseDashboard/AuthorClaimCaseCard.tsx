@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
-import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronUp, faChevronDown } from "@fortawesome/pro-regular-svg-icons";
 import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
 import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 import { breakpoints } from "~/config/themes/screen";
@@ -38,6 +37,7 @@ export default function AuthorClaimCaseCard({
     requestorAuthorID,
   } = requestor || {};
   const formattedCreatedDate = dayjs(createdDate).format("YYYY-MM-DD");
+
   const actionLabels = useMemo(() => {
     return caseStatus === AUTHOR_CLAIM_STATUS.OPEN ? (
       getCardAllowedActions(caseStatus).map(
@@ -63,7 +63,7 @@ export default function AuthorClaimCaseCard({
   }, [caseStatus]);
 
   return (
-    (<div
+    <div
       className={css(styles.authorClaimCaseCard)}
       onClick={(): void => setIsCollapsed(!isCollapsed)}
       role="none"
@@ -122,7 +122,7 @@ export default function AuthorClaimCaseCard({
           </div>
         ) : null}
       </div>
-    </div>)
+    </div>
   );
 }
 
