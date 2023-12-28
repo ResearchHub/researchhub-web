@@ -8,6 +8,7 @@ import AuthorAvatar from "../AuthorAvatar";
 import colors from "../../config/themes/colors";
 import Ripples from "react-ripples";
 import Router from "next/router";
+import VerifiedBadge from "../Verification/VerifiedBadge";
 
 const NotificationEntry = (props) => {
   const { notification, data } = props;
@@ -67,14 +68,17 @@ const NotificationEntry = (props) => {
     return [];
   };
 
-  const formatBody = (body) => {
+  const formatBody = (notification, notification_type) => {
+    const { body } = notification;
     const onClick = (e) => {
       e.stopPropagation();
       markAsRead(data);
       props.closeMenu();
     };
 
-    if (body == null) {
+    if (notification_type === "ACCOUNT_VERIFIED") {
+      return "Congratulations! Your account has been verified by the ResearchHub team. ";
+    } else if (body == null) {
       return null;
     }
 
@@ -112,10 +116,11 @@ const NotificationEntry = (props) => {
   };
 
   const renderMessage = () => {
-    const { notification } = props;
+    const { notification, data } = props;
     const { body, created_date } = notification;
     const timeStamp = <TimeStamp date={created_date} />;
-    const formatedBody = formatBody(body);
+    const notificationType = data?.notification_type;
+    const formatedBody = formatBody(notification, notificationType);
 
     return (
       <div className={css(styles.message)}>
@@ -126,6 +131,7 @@ const NotificationEntry = (props) => {
   };
 
   const message = renderMessage();
+  const notificationType = data?.notification_type;
 
   return (
     <Ripples
@@ -133,10 +139,14 @@ const NotificationEntry = (props) => {
       onClick={handleNavigation}
     >
       <div className={css(styles.authorAvatar)}>
-        <AuthorAvatar
-          size={35}
-          author={notification?.created_by?.author_profile ?? ""}
-        />
+        {notificationType === "ACCOUNT_VERIFIED" ? (
+          <VerifiedBadge showTooltipOnHover={false} height={40} width={40} />
+        ) : (
+          <AuthorAvatar
+            size={35}
+            author={notification?.created_by?.author_profile ?? ""}
+          />
+        )}
       </div>
       <div className={css(styles.body)}>{message}</div>
     </Ripples>
