@@ -59,13 +59,15 @@ export default function AuthorClaimCaseCardTargetAuthorSection({
         </div>
       </div>
       <div className={css(styles.userDetails)}>
-        <div className={css(styles.marginBottom)}>
-          <span className={css(styles.fontGrey)}>{"User Education - "}</span>
-          <span>{requestor.authorProfile.education[0]?.summary}</span>
-        </div>
+        {requestor.authorProfile.education.length > 0 && (
+          <div className={css(styles.marginBottom)}>
+            <span className={css(styles.fontGrey)}>{"User Education - "}</span>
+            <span>{requestor.authorProfile.education[0]?.summary}</span>
+          </div>
+        )}
         <div className={css(styles.marginBottom)}>
           <span className={css(styles.fontGrey)}>{"User Joined - "}</span>
-          <span>{requestor.createdAt}</span>
+          <span>{requestor.createdDate}</span>
         </div>
         <div className={css(styles.marginBottom)}>
           <span className={css(styles.fontGrey)}>{"User Rep - "}</span>
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
     width: 20,
   },
   fontGrey: {
-    color: colors.GREY(1),
+    color: colors.MEDIUM_GREY(1),
   },
   link: {
     color: colors.BLUE(1),

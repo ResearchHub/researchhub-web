@@ -2,6 +2,7 @@ import { CitationConsensus } from "./hypothesis";
 import { Hub } from "./hub";
 import Bounty from "./bounty";
 import { Purchase } from "./purchase";
+import { formatDateStandard } from "../utils/dates";
 
 export type ID = string | number | null | undefined;
 export type KeyOf<ObjectType> = keyof ObjectType;
@@ -201,6 +202,7 @@ export type RHUser = {
   moderator: boolean;
   balance?: number;
   isVerified?: boolean;
+  createdDate?: string;
 };
 
 export type Organization = {
@@ -334,6 +336,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
 };
 
 export const parseUser = (raw: any): RHUser => {
+
   let _raw = raw;
   if (!raw) {
     _raw = {
@@ -372,8 +375,8 @@ export const parseUser = (raw: any): RHUser => {
     balance: _raw.balance,
     isVerified: _raw.is_verified,
     moderator: _raw.moderator,
-    // Used for legacy components
-    raw,
+    createdDate: _raw.created_date ? formatDateStandard(_raw.created_date, "MM-DD-YYYY") : null,
+    raw, // Used for legacy components
   };
 
   return mapped;
