@@ -158,10 +158,6 @@ const NotificationEntry = (props) => {
 
   const message = renderMessage();
   const notificationType = data?.notification_type;
-  const unifiedDocument = data?.unified_document
-    ? parseUnifiedDocument(data.unified_document)
-    : null;
-  const url = getUrlToUniDoc(unifiedDocument);
 
   return (
     <Ripples

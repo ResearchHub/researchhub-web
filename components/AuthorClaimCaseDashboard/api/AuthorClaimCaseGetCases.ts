@@ -1,7 +1,13 @@
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { emptyFncWithMsg, isEmpty } from "../../../config/utils/nullchecks";
-import { ID, NullableString, ValueOf } from "../../../config/types/root_types";
+import {
+  ID,
+  NullableString,
+  RHUser,
+  ValueOf,
+  parseUser,
+} from "../../../config/types/root_types";
 import { AUTHOR_CLAIM_STATUS } from "../constants/AuthorClaimStatus";
 
 type ApiArgs = {
@@ -17,7 +23,7 @@ export type formattedResult = {
 };
 export type AuthorClaimCase = {
   caseData: CaseData;
-  requestor: Requestor;
+  requestor: RHUser;
 };
 export type CaseData = {
   createdDate: string;
@@ -27,7 +33,8 @@ export type CaseData = {
   targetAuthorName?: NullableString;
   updatedDate: string;
   targetPaperTitle?: NullableString;
-  targetPaperDoi?: NullableString;
+  targetPaperDOI?: NullableString;
+  providedEmail?: NullableString;
 };
 export type PaginationInfo = {
   caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS> | null;
@@ -35,12 +42,6 @@ export type PaginationInfo = {
   isLoadingMore: boolean;
   isPageLoading: boolean;
   page: number;
-};
-export type Requestor = {
-  name: string;
-  profileImg: string;
-  providedEmail: string;
-  requestorAuthorID: ID;
 };
 
 export const defaultPaginationInfo: PaginationInfo = {
@@ -64,13 +65,15 @@ export function getCases({
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then(({ count: _count, next, results }: any): void => {
+      console.log("results", results);
+
       onSuccess({
         claimCases: (results || []).map((resultData: any): AuthorClaimCase => {
+          const requestingUser = parseUser(resultData.requestor);
+
           const {
             created_date,
             id,
-            provided_email,
-            requestor,
             status,
             updated_date,
             paper,
@@ -78,15 +81,6 @@ export function getCases({
             target_paper_title,
             target_paper_doi,
           } = resultData;
-          const {
-            id: requestorID,
-            author_profile: {
-              id: requestorAuthorID,
-              profile_image: requestorProfileImg,
-              first_name: requestorFirstName,
-              last_name: requestorLastName,
-            },
-          } = requestor || {};
           return {
             caseData: {
               createdDate: created_date,
@@ -97,13 +91,9 @@ export function getCases({
               targetAuthorName: target_author_name,
               targetPaperTitle: target_paper_title,
               targetPaperDOI: target_paper_doi,
+              providedEmail: resultData.provided_email,
             },
-            requestor: {
-              name: `${requestorFirstName} ${requestorLastName}`,
-              profileImg: requestorProfileImg,
-              providedEmail: provided_email,
-              requestorAuthorID,
-            },
+            requestor: requestingUser,
           };
         }),
         hasMore: !isEmpty(next),
