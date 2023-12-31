@@ -73,13 +73,20 @@ const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
 const styles = StyleSheet.create({
   formWrapper: {
     width: 540,
-    padding: "25px 25px 0px 25px",
+    padding: "25px 25px 25px 25px",
     height: "100%",
+    boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
     },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: 600,
+    },
+    [`@media only screen and (max-width: 670px)`]: {
+      width: "100%",
+    },        
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      width: "90%",
+      width: "100%",
     },
   },
   titleWrapper: {
@@ -123,7 +130,6 @@ const styles = StyleSheet.create({
     },
     display: "block",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      width: "100%",
       padding: 0,
     },
   },
