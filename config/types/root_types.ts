@@ -313,7 +313,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     isHubEditor: raw.is_hub_editor,
     openAlexIds: raw.openalex_ids || [],
     ...(raw.sequence && { sequence: raw.sequence }),
-    education: raw.education.map((edu) => parseEducation(edu)),
+    education: (raw?.education || []).map((edu) => parseEducation(edu)),
   };
 
   if (raw.orcid_id) {
