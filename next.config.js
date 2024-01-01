@@ -131,7 +131,9 @@ const SentryWebpackPluginOptions = {
   disableClientWebpackPlugin: false,
 };
 
-module.exports = withSentryConfig(
-  withTM({ ...nextConfig }),
-  SentryWebpackPluginOptions
-);
+module.exports = withTM({ ...nextConfig });
+
+// module.exports = withSentryConfig(
+//   withTM({ ...nextConfig }),
+//   SentryWebpackPluginOptions
+// );
