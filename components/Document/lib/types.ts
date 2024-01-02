@@ -22,6 +22,7 @@ import { parseVote, Vote } from "~/config/types/vote";
 import { formatDateStandard } from "~/config/utils/dates";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { stripHTML } from "~/config/utils/string";
+import { Fundraise, parseFundraise } from "~/components/Fundraise/lib/types";
 
 export type DocumentFormat = {
   type: "pdf" | "latex";
@@ -56,6 +57,7 @@ export type DocumentMetadata = {
   reviewCount: number;
   summaryCount: number;
   predictionMarket?: PredictionMarketDetails;
+  fundraise?: Fundraise;
   score: number;
   id: ID;
   hubs: Hub[];
@@ -81,6 +83,7 @@ export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
     predictionMarket: raw.prediction_market
       ? parsePredictionMarketDetails(raw.prediction_market)
       : EmptyPredictionMarketDetails,
+    fundraise: raw.fundraise ? parseFundraise(raw.fundraise) : undefined,
     score: raw.score,
     twitterScore: document?.twitter_score || 0,
     id: raw.id,

@@ -5,6 +5,7 @@ import UserTooltip from "../Tooltips/User/UserTooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import colors from "./lib/colors";
+import globalColors from "~/config/themes/colors";
 
 const _dedupePeople = (people: Array<RHUser | null>): Array<RHUser | null> => {
   const uniquePeople: Array<RHUser | null> = [];
@@ -26,7 +27,11 @@ type CommentAvatarsArgs = {
   spacing?: number;
   size?: number;
   wrapperStyle?: any;
+
+  // we can either show +{n} or just the total number of people
   maxPeople?: number;
+  showTotal?: boolean;
+  totalNoun?: string; // e.g. "people" or "contributors"
 };
 
 const CommentAvatars = ({
@@ -36,6 +41,8 @@ const CommentAvatars = ({
   size = 30,
   wrapperStyle,
   maxPeople = 3,
+  showTotal = false,
+  totalNoun = "people",
 }: CommentAvatarsArgs) => {
   const avatarPeople = _dedupePeople(people).slice(0, maxPeople);
   const remainderPeople = avatarPeople.length - maxPeople;
@@ -46,7 +53,7 @@ const CommentAvatars = ({
         const avatarEl = (
           <div className={css(styles.avatarWrapper)}>
             <AuthorAvatar
-              author={p?.authorProfile}
+              author={p?.authorProfile || p?.author_profile}
               size={size}
               trueSize={true}
               disableLink={true}
@@ -73,7 +80,7 @@ const CommentAvatars = ({
           </div>
         );
       })}
-      {remainderPeople > 0 && (
+      {!showTotal && remainderPeople > 0 && (
         <div className={css(styles.person)} style={{ marginLeft: spacing }}>
           <div className={css(styles.avatarWrapper)}>
             <div
@@ -82,6 +89,31 @@ const CommentAvatars = ({
             >
               <FontAwesomeIcon icon={faPlus} style={{ fontSize: 12 }} />
               <span>{remainderPeople}</span>
+            </div>
+          </div>
+        </div>
+      )}
+      {showTotal && (
+        <div className={css(styles.person)} style={{ marginLeft: spacing }}>
+          <div
+            className={css(styles.avatarWrapper, styles.totalWrapper)}
+            style={{ borderRadius: size / 2 }}
+          >
+            <div
+              className={css(styles.totalAvatar)}
+              style={{
+                height: size,
+                paddingLeft: 12,
+                paddingRight: 12,
+                minWidth: size,
+                borderRadius: size / 2,
+              }}
+            >
+              <span>{avatarPeople.length}</span>
+              <span style={{ marginLeft: 3 }}>
+                {totalNoun}
+                {avatarPeople.length !== 1 ? "s" : ""}
+              </span>
             </div>
           </div>
         </div>
@@ -113,6 +145,22 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  totalWrapper: {
+    background: "white",
+  },
+  totalAvatar: {
+    background: colors.avatar.background,
+    fontWeight: 400,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 14,
+    ":hover": {
+      cursor: "pointer",
+      background: globalColors.NEW_BLUE(0.1),
+      color: globalColors.NEW_BLUE(),
+    },
   },
   avatarWrapper: {},
 });

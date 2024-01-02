@@ -93,6 +93,32 @@ export const getLeftSidebarItemAttrs = ({
       onClick: silentEmptyFnc,
     },
     {
+      icon: ["/funding"].includes(pathname) ? (
+        <img
+          src="/static/rsc-icon-dark-blue.svg"
+          width="24"
+          height="24"
+          style={{
+            marginLeft: "-2px",
+          }}
+        />
+      ) : (
+        <img
+          src="/static/rsc-icon-gray.svg"
+          width="24"
+          height="24"
+          style={{
+            marginLeft: "-2px",
+          }}
+        />
+      ),
+      label: "Funding",
+      isActive: ["/funding"].includes(pathname),
+      isMinimized,
+      href: "/funding",
+      onClick: silentEmptyFnc,
+    },
+    {
       icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
       label: "Hubs",
       isActive: ["/hubs"].includes(pathname),
@@ -100,24 +126,6 @@ export const getLeftSidebarItemAttrs = ({
       href: "/hubs",
       onClick: silentEmptyFnc,
     },
-    // This is for when we have grants/pre-registrations
-    // {
-    //   icon: (
-    //     <img
-    //       src="/static/rsc-icon-gray.svg"
-    //       width="24"
-    //       height="24"
-    //       style={{
-    //         marginLeft: "-2px",
-    //       }}
-    //     />
-    //   ),
-    //   label: "Earn",
-    //   isActive: ["/grants"].includes(pathname),
-    //   isMinimized,
-    //   href: "/grants",
-    //   onClick: silentEmptyFnc,
-    // },
     {
       icon: <FontAwesomeIcon icon={faBook}></FontAwesomeIcon>,
       label: "Lab Notebook",
@@ -223,6 +231,7 @@ function RootLeftSidebar({
         "post",
         "hypothesis",
         "live",
+        "funding",
         "hubs",
         "referral",
         "user",

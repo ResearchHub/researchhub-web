@@ -27,7 +27,7 @@ import { LEFT_SIDEBAR_MIN_WIDTH } from "../Home/sidebar/RootLeftSidebar";
 import { faPen } from "@fortawesome/pro-light-svg-icons";
 import { parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
-import { isEmpty } from "~/config/utils/nullchecks";
+import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { Purchase } from "~/config/types/purchase";
 import { DocumentContext } from "./lib/DocumentContext";
 import useCacheControl from "~/config/hooks/useCacheControl";
@@ -40,6 +40,7 @@ import {
   useReferenceProjectUpsertContext,
 } from "~/components/ReferenceManager/references/reference_organizer/context/ReferenceProjectsUpsertContext";
 import DocumentPageTutorial from "./lib/DocumentPageTutorial";
+import FundraiseCard from "../Fundraise/FundraiseCard";
 import LinkToPublicPage from "../LinkToPublicPage";
 import { breakpoints } from "~/config/themes/screen";
 const PaperTransactionModal = dynamic(
@@ -174,20 +175,23 @@ const DocumentHeader = ({
                         unifiedDocumentId={doc?.unifiedDocument?.id}
                       />
                     </ReferenceProjectsUpsertContextProvider>
-                    <PermissionNotificationWrapper
-                      modalMessage="edit document"
-                      permissionKey="UpdatePaper"
-                      loginRequired={true}
-                      onClick={() =>
-                        dispatch(ModalActions.openPaperTransactionModal(true))
-                      }
-                      hideRipples={true}
-                    >
-                      <IconButton variant="round">
-                        <ResearchCoinIcon version={6} width={21} height={21} />
-                        <span>Tip</span>
-                      </IconButton>
-                    </PermissionNotificationWrapper>
+                    {/* Don't show "Tip" if it's a preregistration */}
+                    {!(isPost(doc) && doc.postType === "preregistration") && (
+                      <PermissionNotificationWrapper
+                        modalMessage="edit document"
+                        permissionKey="UpdatePaper"
+                        loginRequired={true}
+                        onClick={() =>
+                          dispatch(ModalActions.openPaperTransactionModal(true))
+                        }
+                        hideRipples={true}
+                      >
+                        <IconButton variant="round">
+                          <ResearchCoinIcon version={6} width={21} height={21} />
+                          <span>Tip</span>
+                        </IconButton>
+                      </PermissionNotificationWrapper>
+                    )}
                     <DocumentOptions document={doc} metadata={metadata} />
                   </div>
                 )}
@@ -222,20 +226,23 @@ const DocumentHeader = ({
               </div>
               {!noLineItems && (
                 <div className={css(styles.actionWrapper)}>
-                  <PermissionNotificationWrapper
-                    modalMessage="edit document"
-                    permissionKey="UpdatePaper"
-                    loginRequired={true}
-                    onClick={() =>
-                      dispatch(ModalActions.openPaperTransactionModal(true))
-                    }
-                    hideRipples={true}
-                  >
-                    <IconButton variant="round">
-                      <ResearchCoinIcon version={6} width={21} height={21} />
-                      <span>Tip</span>
-                    </IconButton>
-                  </PermissionNotificationWrapper>
+                  {/* Don't show "Tip" if it's a preregistration */}
+                  {!(isPost(doc) && doc.postType === "preregistration") && (
+                    <PermissionNotificationWrapper
+                      modalMessage="edit document"
+                      permissionKey="UpdatePaper"
+                      loginRequired={true}
+                      onClick={() =>
+                        dispatch(ModalActions.openPaperTransactionModal(true))
+                      }
+                      hideRipples={true}
+                    >
+                      <IconButton variant="round">
+                        <ResearchCoinIcon version={6} width={21} height={21} />
+                        <span>Tip</span>
+                      </IconButton>
+                    </PermissionNotificationWrapper>
+                  )}
                   <ReferenceProjectsUpsertContextProvider>
                     <SaveToRefManager
                       contentType={"paper"}
@@ -260,6 +267,24 @@ const DocumentHeader = ({
                 </div>
               )}
             </div>
+            {!isNullOrUndefined(metadata.fundraise) && (
+              <div className={css(styles.fundraiseWrapper)}>
+                <FundraiseCard
+                  fundraise={metadata.fundraise!}
+                  onUpdateFundraise={(f) => {
+                    documentContext.updateMetadata({
+                      ...metadata,
+                      fundraise: {
+                        ...metadata.fundraise!,
+                        ...f,
+                      },
+                    });
+
+                    revalidateDocument();
+                  }}
+                />
+              </div>
+            )}
             {!noHorizontalTabBar && (
               <div className={css(styles.tabsWrapper)}>
                 <HorizontalTabBar tabs={tabs} />
@@ -325,6 +350,9 @@ const styles = StyleSheet.create({
       paddingLeft: 15,
       paddingRight: 15,
     },
+  },
+  fundraiseWrapper: {
+    marginTop: 20,
   },
   headerContentWrapper: {
     maxWidth: config.width,
