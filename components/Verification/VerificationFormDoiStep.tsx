@@ -5,11 +5,9 @@ import Button from "../Form/Button";
 import FormInput from "../Form/FormInput";
 import debounce from "lodash/debounce";
 import { ClipLoader } from "react-spinners";
-import { fetchPaperByDoi } from "./lib/api";
 import extractAndValidateDOI from "~/config/utils/extractAndValidateDoi";
 import { VerificationPaperResult as VerificationPaperResultType, parseVerificationPaperResult } from "./lib/types";
 import VerificationPaperResult from "./VerificationPaperResult";
-import { fetchReferenceFromDoi } from "../ReferenceManager/form/api/fetchReferenceFromDoi";
 import searchPaperViaOpenAlex from "../Document/api/searchPaperViaOpenAlex";
 
 type ERROR_TYPE = "DOI_ERROR" | "PAPER_NOT_FOUND" | null;
@@ -62,11 +60,7 @@ const VerificationFormDoiStep = ({
         const paper = await searchPaperViaOpenAlex({ doi })
         const parsed = parseVerificationPaperResult(paper, true);
         setAuthoredPaper(parsed);
-        // const foundPaper = await fetchPaperByDoi({ doi });
-        // setAuthoredPaper(foundPaper);
-        // setError(null);
       } catch (error) {
-        console.log('error', error)
         setError("PAPER_NOT_FOUND");
         setAuthoredPaper(null);
       } finally {

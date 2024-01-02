@@ -8,7 +8,6 @@ import { StyleSheet, css } from "aphrodite";
 import { isValidEmail, isCommonEmailExt } from "~/config/utils/validation";
 import debounce from "lodash/debounce";
 import { createAuthorClaimCase } from "../AuthorClaimModal/api/authorClaimCaseCreate";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface Props {
   authoredPaper: VerificationPaperResultType | null;
@@ -105,12 +104,6 @@ const VerificationFormSelectAuthorStep = ({
   // const foundAuthor = foundAuthorByLastNameIndex > -1 ? authorsAsOptions[foundAuthorByLastNameIndex] : undefined;
   return (
     <div>
-      {/* {error && (
-      <div className={css(styles.error)}>
-        <FontAwesomeIcon icon="exclamation-circle" />
-        {error}
-      </div>
-      )} */}
       <div className={css(styles.inputWrapper)}>
         <FormSelect
           value={selectedAuthor}

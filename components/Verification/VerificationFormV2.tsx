@@ -50,13 +50,6 @@ const VerificationForm = ({
         />
       )}
 
-      {/* {step === "ERROR_STEP" && (
-        <VerificationFormErrorStep
-          error={error}
-          onPrevClick={() => setStep("PROVIDER_STEP")}
-        />
-      )} */}
-
       {currentStep === "EMAIL_SENT_STEP" && <VerificationFormEmailSentStep />}
     </div>
   );
