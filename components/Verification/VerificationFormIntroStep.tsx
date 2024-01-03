@@ -50,7 +50,7 @@ const VerificationFormIntroStep = ({ nextStep }) => {
         <li className={css(styles.listItem)}>
           Have access to an email affiliated with an academic institution
         </li>
-        <li className={css(styles.listItem)}>Profile must have a photo and academic(s) instituation set</li>
+        <li className={css(styles.listItem)}>Profile must have a photo and academic instituation(s) set</li>
         <li className={css(styles.listItem)}>
           Profile name must match the name on the published paper
         </li>
