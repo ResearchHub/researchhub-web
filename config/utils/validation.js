@@ -11,6 +11,64 @@ export const isValidEmail = (email) => {
     );
 };
 
+export const isCommonEmailExt = (email) => {
+  const commonEmailExtensions = [
+    "@gmail.com",
+    "@yahoo.com",
+    "@hotmail.com",
+    "@aol.com",
+    "@outlook.com",
+    "@live.com",
+    "@msn.com",
+    "@icloud.com",
+    "@mail.com",
+    "@yandex.com",
+    "@protonmail.com",
+    "@zoho.com",
+    "@gmx.com",
+    "@fastmail.com",
+    "@inbox.com",
+    "@hushmail.com",
+    "@tutanota.com",
+    "@rediffmail.com",
+    "@lycos.com",
+    "@excite.com",
+    "@lavabit.com",
+    "@web.de",
+    "@naver.com",
+    "@qq.com",
+    "@sina.com",
+    "@163.com",
+    "@baidu.com",
+    "@cox.net",
+    "@optonline.net",
+    "@comcast.net",
+    "@btinternet.com",
+    "@virginmedia.com",
+    "@orange.fr",
+    "@gmx.de",
+    "@webmail.co.za",
+    "@mail.ru",
+    "@rambler.ru",
+    "@yandex.ru",
+    "@hotmail.co.uk",
+    "@hotmail.fr",
+    "@yahoo.co.jp",
+    "@yahoo.co.in",
+    "@yahoo.co.uk",
+    "@seznam.cz",
+    "@me.com",
+    "@sbcglobal.net",
+    "@earthlink.net",
+  ];
+
+  // Extract the domain from the email
+  const domain = email.substring(email.lastIndexOf("@"));
+
+  // Check if the domain is in the list of common email extensions
+  return commonEmailExtensions.some((ext) => domain.indexOf(ext) > -1);
+};
+
 export function currentUserHasMinimumReputation(stateObject, minimum) {
   let reputation = getCurrentUserReputation(stateObject);
   return reputation >= minimum;

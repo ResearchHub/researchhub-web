@@ -7,9 +7,9 @@ import {
   defaultPaginationInfo,
   formattedResult,
   PaginationInfo,
+  getCases,
 } from "./api/AuthorClaimCaseGetCases";
 import { css, StyleSheet } from "aphrodite";
-import { getCases } from "./api/AuthorClaimCaseGetCases";
 import { useEffect, ReactElement, useState } from "react";
 import { useRouter } from "next/router";
 import AuthorClaimCaseCard from "./AuthorClaimCaseCard";
@@ -105,6 +105,7 @@ export default function AuthorClaimCaseContainer({
   const caseCards = claimCases.map(
     (claimCase: AuthorClaimCase): ReactElement<typeof AuthorClaimCaseCard> => {
       const caseID = claimCase.caseData.id || Date.now();
+
       return (
         <AuthorClaimCaseCard
           authorClaimCase={claimCase}

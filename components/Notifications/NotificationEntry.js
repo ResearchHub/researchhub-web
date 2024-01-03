@@ -8,6 +8,11 @@ import AuthorAvatar from "../AuthorAvatar";
 import colors from "../../config/themes/colors";
 import Ripples from "react-ripples";
 import Router from "next/router";
+import VerifiedBadge from "../Verification/VerifiedBadge";
+import { parseUnifiedDocument } from "~/config/types/root_types";
+import { getUrlToUniDoc } from "~/config/utils/routing";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMemoCircleCheck } from "@fortawesome/pro-solid-svg-icons";
 
 const NotificationEntry = (props) => {
   const { notification, data } = props;
@@ -67,14 +72,39 @@ const NotificationEntry = (props) => {
     return [];
   };
 
-  const formatBody = (body) => {
+  const formatBody = (notification, data) => {
+    const { notification_type } = data;
+    const { body } = notification;
     const onClick = (e) => {
       e.stopPropagation();
       markAsRead(data);
       props.closeMenu();
     };
 
-    if (body == null) {
+    if (notification_type === "ACCOUNT_VERIFIED") {
+      return "Congratulations! Your account has been verified by the ResearchHub team. ";
+    } else if (notification_type === "PAPER_CLAIMED") {
+      const unifiedDocument = data?.unified_document
+        ? parseUnifiedDocument(data.unified_document)
+        : null;
+      const url = getUrlToUniDoc(unifiedDocument);
+
+      return (
+        <>
+          <span>
+            Congratulations! You have been verified as an author of {` `}
+          </span>
+          {url && (
+            <HyperLink
+              link={{ href: url }}
+              onClick={onClick}
+              style={styles.link}
+              text={unifiedDocument.document.paperTitle}
+            />
+          )}
+        </>
+      );
+    } else if (body == null) {
       return null;
     }
 
@@ -112,10 +142,11 @@ const NotificationEntry = (props) => {
   };
 
   const renderMessage = () => {
-    const { notification } = props;
+    const { notification, data } = props;
     const { body, created_date } = notification;
     const timeStamp = <TimeStamp date={created_date} />;
-    const formatedBody = formatBody(body);
+    const notificationType = data?.notification_type;
+    const formatedBody = formatBody(notification, data);
 
     return (
       <div className={css(styles.message)}>
@@ -126,6 +157,7 @@ const NotificationEntry = (props) => {
   };
 
   const message = renderMessage();
+  const notificationType = data?.notification_type;
 
   return (
     <Ripples
@@ -133,10 +165,22 @@ const NotificationEntry = (props) => {
       onClick={handleNavigation}
     >
       <div className={css(styles.authorAvatar)}>
-        <AuthorAvatar
-          size={35}
-          author={notification?.created_by?.author_profile ?? ""}
-        />
+        {notificationType === "ACCOUNT_VERIFIED" ? (
+          <div style={{ marginLeft: -3 }}>
+            <VerifiedBadge showTooltipOnHover={false} height={40} width={40} />
+          </div>
+        ) : notificationType === "PAPER_CLAIMED" ? (
+          <FontAwesomeIcon
+            icon={faMemoCircleCheck}
+            style={{ color: colors.NEW_GREEN() }}
+            fontSize={30}
+          />
+        ) : (
+          <AuthorAvatar
+            size={35}
+            author={notification?.created_by?.author_profile ?? ""}
+          />
+        )}
       </div>
       <div className={css(styles.body)}>{message}</div>
     </Ripples>

@@ -2,6 +2,7 @@ import { CitationConsensus } from "./hypothesis";
 import { Hub } from "./hub";
 import Bounty from "./bounty";
 import { Purchase } from "./purchase";
+import { formatDateStandard } from "../utils/dates";
 
 export type ID = string | number | null | undefined;
 export type KeyOf<ObjectType> = keyof ObjectType;
@@ -104,6 +105,7 @@ export type AuthorProfile = {
   linkedIn?: LinkedInConnect;
   orcid?: OrcidConnect;
   openAlexIds: Array<string>;
+  education: Array<Education>;
 };
 
 /**
@@ -200,6 +202,7 @@ export type RHUser = {
   moderator: boolean;
   balance?: number;
   isVerified?: boolean;
+  createdDate?: string;
 };
 
 export type Organization = {
@@ -270,6 +273,30 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   return parsed;
 };
 
+type Education = {
+  city?: string;
+  country?: string;
+  state?: string;
+  name?: string;
+  year?: string;
+  summary?: string;
+  degree?: string;
+  id?: ID;
+};
+
+export const parseEducation = (raw: any): Education => {
+  return {
+    city: raw.city,
+    country: raw.country,
+    state: raw.state,
+    name: raw.name,
+    year: raw.year,
+    summary: raw.summary,
+    degree: raw?.degree?.value,
+    id: raw.id,
+  };
+};
+
 export const parseAuthorProfile = (raw: any): AuthorProfile => {
   if (typeof raw !== "object") {
     return raw;
@@ -281,12 +308,12 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     lastName: raw.last_name,
     url: `/user/${raw.id}/overview`,
     description: raw.description,
-    education: raw.education,
     isVerified: raw.is_verified,
     headline: raw?.headline?.title || "",
     isHubEditor: raw.is_hub_editor,
     openAlexIds: raw.openalex_ids || [],
     ...(raw.sequence && { sequence: raw.sequence }),
+    education: (raw?.education || []).map((edu) => parseEducation(edu)),
   };
 
   if (raw.orcid_id) {
@@ -309,6 +336,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
 };
 
 export const parseUser = (raw: any): RHUser => {
+
   let _raw = raw;
   if (!raw) {
     _raw = {
@@ -347,8 +375,8 @@ export const parseUser = (raw: any): RHUser => {
     balance: _raw.balance,
     isVerified: _raw.is_verified,
     moderator: _raw.moderator,
-    // Used for legacy components
-    raw,
+    createdDate: _raw.created_date ? formatDateStandard(_raw.created_date, "MM-DD-YYYY") : null,
+    raw, // Used for legacy components
   };
 
   return mapped;

@@ -1,8 +1,7 @@
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { emptyFncWithMsg } from "../../../config/utils/nullchecks";
+import { emptyFncWithMsg, nullthrows } from "../../../config/utils/nullchecks";
 import { ID } from "../../../config/types/root_types";
-import { nullthrows } from "../../../config/utils/nullchecks";
 
 type Args = {
   eduEmail: string | null;
@@ -10,7 +9,9 @@ type Args = {
   onSuccess?: Function;
   userID: ID;
   targetAuthorName: string;
-  targetPaperId: ID;
+  targetPaperId?: ID;
+  targetPaperTitle?: string;
+  doi?: string;
 };
 
 type Params = {
@@ -20,8 +21,10 @@ type Params = {
   requestor: ID;
   provided_email: string;
   author?: Object;
-  target_paper_id: ID;
+  target_paper_id?: ID;
+  target_paper_doi?: string;
   target_author_name: string;
+  target_paper_title?: string;
 };
 
 export function createAuthorClaimCase({
@@ -31,8 +34,10 @@ export function createAuthorClaimCase({
   userID,
   targetPaperId,
   targetAuthorName,
+  targetPaperTitle,
+  doi,
 }: Args) {
-  let params: Params = {
+  const params: Params = {
     case_type: "PAPER_CLAIM",
     creator: nullthrows(
       userID,
@@ -50,7 +55,9 @@ export function createAuthorClaimCase({
       targetPaperId,
       "paperID must be present to create AuthorClaimCase"
     ),
-    target_author_name: targetAuthorName
+    target_author_name: targetAuthorName,
+    target_paper_doi: doi,
+    target_paper_title: targetPaperTitle,
   };
 
   fetch(API.AUTHOR_CLAIM_CASE(), API.POST_CONFIG(params))
@@ -62,9 +69,13 @@ export function createAuthorClaimCase({
     .catch((err) => {
       const message = err.message ?? "Something went wrong!";
       if (message.includes("duplicate")) {
-        onError("You already made a request to claim this author. If you believe this is a mistake, reach out via our community Discord.");
+        onError(
+          "You already made a request to claim this author. If you believe this is a mistake, reach out via our community Discord."
+        );
       } else if (message.includes("already claimed")) {
-        onError("This author was already claimed by someone else. Your request is being reviewed.");
+        onError(
+          "This author was already claimed by someone else. Your request is being reviewed."
+        );
       } else {
         onError(message);
       }

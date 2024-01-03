@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
-import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronUp, faChevronDown } from "@fortawesome/pro-regular-svg-icons";
 import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
 import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 import { breakpoints } from "~/config/themes/screen";
@@ -31,13 +30,8 @@ export default function AuthorClaimCaseCard({
     useState<ValueOf<typeof AUTHOR_CLAIM_STATUS>>("");
   const { caseData, requestor } = authorClaimCase || {};
   const { createdDate, id: caseID, status: caseStatus } = caseData || {};
-  const {
-    name: requestorName,
-    profileImg: requestorFaceImg,
-    providedEmail,
-    requestorAuthorID,
-  } = requestor || {};
   const formattedCreatedDate = dayjs(createdDate).format("YYYY-MM-DD");
+
   const actionLabels = useMemo(() => {
     return caseStatus === AUTHOR_CLAIM_STATUS.OPEN ? (
       getCardAllowedActions(caseStatus).map(
@@ -63,15 +57,15 @@ export default function AuthorClaimCaseCard({
   }, [caseStatus]);
 
   return (
-    (<div
+    <div
       className={css(styles.authorClaimCaseCard)}
       onClick={(): void => setIsCollapsed(!isCollapsed)}
       role="none"
     >
       <AuthorClaimCaseModal
         caseID={caseID}
-        requestorName={requestorName}
-        profileImg={requestorFaceImg}
+        requestorName={requestor.firstName + " " + requestor.lastName}
+        profileImg={requestor.authorProfile.profileImage}
         openModalType={openModalType}
         setOpenModalType={setOpenModalType}
         setLastFetchTime={setLastFetchTime}
@@ -93,21 +87,18 @@ export default function AuthorClaimCaseCard({
           <div className={css(styles.cardMainSection)}>
             <img
               className={css(styles.requestorFaceImg)}
-              src={requestorFaceImg}
+              src={requestor.authorProfile.profileImage}
             />
             <a
               className={css(styles.link)}
-              href={`/user/${requestorAuthorID}`}
+              href={requestor.authorProfile.url}
               onClick={(e: SyntheticEvent) => e.stopPropagation()}
               target="__blank"
             >
-              <span className={css(styles.requestorName)}>{requestorName}</span>
+              <span className={css(styles.requestorName)}>
+                {requestor.firstName + " " + (requestor.lastName || "")}
+              </span>
             </a>
-          </div>
-          <div className={css(styles.row)}>
-            <div className={css(styles.cardMainSection, styles.fontGrey)}>
-              {providedEmail}
-            </div>
           </div>
           <div className={css(styles.cardSmallerMainSection, styles.actions)}>
             {actionLabels}
@@ -117,12 +108,13 @@ export default function AuthorClaimCaseCard({
           <div className={css(styles.cardSubmain)}>
             <AuthorClaimCaseCardTargetAuthorSection
               caseCreatedDate={formattedCreatedDate}
+              requestor={requestor}
               caseData={caseData}
             />
           </div>
         ) : null}
       </div>
-    </div>)
+    </div>
   );
 }
 

@@ -111,6 +111,14 @@ function AuthorClaimModal({
                 </span>
               </div>
             </div>
+            <div>
+              <div className={css(customModalStyle.checkListHeader)}>Please verify the following:</div>
+              <ul className={css(customModalStyle.checkList)}>
+                <li>User's Email address is associated with an academic institution</li>
+                <li>User has profile photo set</li>
+                <li>User's name resembles that of published paper</li>
+              </ul>
+            </div>
             <div className={css(acceptRejectStyles.buttonContainer)}>
               <Button
                 label={
@@ -147,6 +155,17 @@ const customModalStyle = StyleSheet.create({
     right: 0,
     padding: 16,
     cursor: "pointer",
+  },
+  checkListHeader: {
+    fontWeight: 500,
+    fontSize: 18,
+  },
+  checkList: {
+    marginLeft: 0,
+    marginTop: 10,
+    fontSize: 16,
+    paddingLeft: 5,
+    listStylePosition: "inside",
   },
   modalStyle: {
     maxHeight: "95vh",
