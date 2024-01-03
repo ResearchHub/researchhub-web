@@ -10,6 +10,7 @@
 //  */
 
 import React, {
+  ReactElement,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -36,7 +37,7 @@ interface Props {
   pdfUrl?: string;
   viewerWidth?: number;
   contentRef: any;
-  numPagesToPreload?: number;
+  numPagesToPreload?: number | "all";
   showWhenLoading?: any;
   scale: number;
   onReady?: ({ numPages }) => void;
@@ -48,13 +49,13 @@ const PDFViewer = ({
   pdfUrl,
   showWhenLoading,
   onReady,
-  numPagesToPreload = config.numPdfPagesToPreload,
+  numPagesToPreload = config.numPdfPagesToPreload as number | "all",
   onLoadError,
   onPageRender,
   viewerWidth = 860,
   contentRef,
   scale,
-}: Props) => {
+}: Props): ReactElement => {
   const viewerWidthRef = useRef<number>(viewerWidth);
   const scaleRef = useRef<number>(scale);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -70,52 +71,19 @@ const PDFViewer = ({
   const [renderedPages, setRenderedPages] = useState<{
     [pageNumber: number]: Page;
   }>({});
+  // We need to store renderedPages in a ref so that we can access the latest value in `scrollToDestination`.
+  // Otherwise, the `scrollToDestination` used in the onClick handlers of internal links will point to a stale `renderedPages` value.
+  const renderedPagesRef = useRef<{ [pageNumber: number]: Page }>({});
+  useEffect(() => {
+    renderedPagesRef.current = renderedPages;
+  }, [renderedPages]);
   const observer = useRef<HTMLDivElement>(null);
   const eventBus = new EventBus();
 
   // Store destinations for internal links (e.g. anchors)
   const internalLinkDestinations = useRef({});
-  // Used to specify a target page that we should scroll to
-  const [scrollTarget, setScrollTarget] = useState<{
-    page: number;
-    x?: number;
-    y?: number;
-  } | null>(null);
 
-  useEffect(() => {
-    // If there is a scrollTarget, scroll to it.
-    // We do scrolling because we have existing logic to load additional pages
-    // when we scroll to the bottom of the page.
-    if (!scrollTarget) return;
-
-    const { page } = scrollTarget;
-
-    if (page !== undefined && !renderedPages[page]) {
-      // Scroll to the bottom of the last rendered page
-      const lastPageRendered = Object.keys(renderedPages).length;
-      if (lastPageRendered < page) {
-        renderedPages[lastPageRendered]?.pageContainer.scrollIntoView({
-          behavior: "smooth",
-        });
-      } else if (lastPageRendered === page) {
-        // Target page is now rendered, perform scrolling logic
-        const pageContainer = renderedPages[page]?.pageContainer;
-        pageContainer.scrollIntoView({ behavior: "smooth" });
-
-        // Reset scrollTarget
-        setScrollTarget(null);
-      }
-    } else {
-      // Target page is already rendered, perform your scrolling logic
-      const pageContainer = renderedPages[page]?.pageContainer;
-      pageContainer.scrollIntoView({ behavior: "smooth" });
-
-      // Reset scrollTarget
-      setScrollTarget(null);
-    }
-  }, [renderedPages, scrollTarget]);
-
-  const navigateToDestination = useCallback(
+  const scrollToDestination = useCallback(
     async (destination) => {
       if (destination === null || destination === undefined) return;
 
@@ -124,15 +92,11 @@ const PDFViewer = ({
         const targetPageNumber = destination;
         if (targetPageNumber >= 1 && targetPageNumber <= numPages) {
           // Logic to scroll to the top of the target page
-          const pageToScroll = renderedPages[targetPageNumber].pageContainer;
+          const pageToScroll = (renderedPagesRef.current || {})[
+            targetPageNumber
+          ]?.pageContainer;
           if (pageToScroll) {
             pageToScroll.scrollIntoView({ behavior: "smooth" });
-          } else {
-            // We haven't rendered the target page yet, so we need to load it.
-            // Set is as the scroll target so we can iteratively scroll to it.
-            setScrollTarget({
-              page: targetPageNumber,
-            });
           }
         }
       } else if (Array.isArray(destination)) {
@@ -147,15 +111,10 @@ const PDFViewer = ({
               gen: generationNumber,
             })) + 1; // getPageIndex is zero-based
           if (pageNumber >= 1 && pageNumber <= numPages) {
-            const pageContainer = renderedPages[pageNumber]?.pageContainer;
+            const pageContainer = (renderedPagesRef.current || {})[pageNumber]
+              ?.pageContainer;
             if (pageContainer) {
               pageContainer.scrollIntoView({ behavior: "smooth" });
-            } else {
-              // We haven't rendered the target page yet, so we need to load it.
-              // Set is as the scroll target so we can iteratively scroll to it.
-              setScrollTarget({
-                page: pageNumber,
-              });
             }
           }
         } catch (error) {
@@ -163,13 +122,13 @@ const PDFViewer = ({
         }
       } else {
         // it's a named destination that we need to look up in the document
-        navigateToNamedDestination(destination);
+        scrollToNamedDestination(destination);
       }
     },
-    [numPages, renderedPages]
+    [numPages, renderedPagesRef]
   );
 
-  const navigateToNamedDestination = useCallback(
+  const scrollToNamedDestination = useCallback(
     async (namedDestination) => {
       try {
         const resolvedDestination = await pdfDocument.getDestination(
@@ -178,14 +137,14 @@ const PDFViewer = ({
         if (resolvedDestination) {
           // resolvedDestination is an array of page/coordinate details.
           // e.g. [ { num: 1, gen: 0 }, { name: 'XYZ' }, 0, 841.89, null ]
-          // So we can handle it in navigateToDestination
-          navigateToDestination(resolvedDestination);
+          // So we can handle it in scrollToDestination
+          scrollToDestination(resolvedDestination);
         }
       } catch (error) {
         console.log("error navigating to named destination", error);
       }
     },
-    [pdfDocument, navigateToDestination]
+    [pdfDocument, scrollToDestination]
   );
 
   const loadPage = useCallback(
@@ -252,7 +211,7 @@ const PDFViewer = ({
             link.addEventListener("click", (event) => {
               event.preventDefault();
               const destination = internalLinkDestinations.current[linkKey];
-              navigateToDestination(destination);
+              scrollToDestination(destination);
             });
           } else {
             // it's an external link, so we want to open it in a new tab
@@ -361,7 +320,11 @@ const PDFViewer = ({
         };
       });
 
-      if (nextPage <= numPagesToPreload) {
+      if (numPagesToPreload === "all") {
+        if (nextPage < numPages) {
+          setNextPage((prevNextPage) => prevNextPage + 1);
+        }
+      } else if (nextPage <= numPagesToPreload) {
         setNextPage((prevNextPage) => prevNextPage + 1);
       }
 

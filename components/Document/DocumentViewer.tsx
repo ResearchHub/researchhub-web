@@ -104,9 +104,6 @@ const DocumentViewer = ({
   const [viewerContext, setViewerContext] = useState<ViewerContext>(
     ViewerContext.GENERIC
   );
-  const [numPagesToPreload, setNumPagesToPreload] = useState<number>(
-    config.numPdfPagesToPreload
-  );
   const [lastPageRendered, setLastPageRendered] = useState<Page>({
     pageNumber: 0,
   });
@@ -287,35 +284,6 @@ const DocumentViewer = ({
     }
   }
 
-  function onCommentsFetched({
-    threads,
-    comments,
-    urlPosition,
-  }: {
-    threads: { [threadId: string]: CommentThreadGroup };
-    comments: CommentType[];
-    urlPosition: any;
-  }) {
-    let furthestPageToPreload = config.numPdfPagesToPreload;
-
-    if (
-      urlPosition?.pageNumber &&
-      urlPosition?.pageNumber > furthestPageToPreload
-    ) {
-      furthestPageToPreload = urlPosition?.pageNumber;
-    }
-
-    comments.forEach((comment) => {
-      const commentPageNum = comment?.thread?.anchor?.pageNumber || 1;
-
-      if (commentPageNum > furthestPageToPreload) {
-        furthestPageToPreload = commentPageNum;
-      }
-    });
-
-    setNumPagesToPreload(furthestPageToPreload);
-  }
-
   // TODO: Update this. Will probably need to create a DocumentViewer Context
   const actualContentWidth = isExpanded
     ? viewerWidth * fullScreenSelectedZoom
@@ -422,7 +390,6 @@ const DocumentViewer = ({
                     documentInstance={documentInstance}
                     citationInstance={citationInstance}
                     contentRef={contentRef}
-                    onFetch={onCommentsFetched}
                   />
                 )}
 
@@ -440,7 +407,11 @@ const DocumentViewer = ({
                         viewerWidth={actualContentWidth}
                         onLoadError={setHasLoadError}
                         onPageRender={setLastPageRendered}
-                        numPagesToPreload={numPagesToPreload}
+                        // This used to be programmatic (and not "all"),
+                        // but we wanted to give the user the ability to scroll to anchor links,
+                        // e.g. "some claim [1]", and clicking on [1] would scroll to the reference at the end.
+                        // and the simplest way to enable that was to preload all pages.
+                        numPagesToPreload="all"
                         showWhenLoading={
                           <div style={{ padding: 20 }}>
                             <DocumentPlaceholder />
