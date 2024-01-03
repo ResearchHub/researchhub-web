@@ -1,16 +1,9 @@
 import colors from "~/config/themes/colors";
 import Button from "../Form/Button";
-import ALink from "../ALink";
-import VerifiedBadge from "./VerifiedBadge";
-import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { faEnvelopeCircleCheck } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-
-
-const VerificationFormEmailSentStep = () => {
-  const currentUser = useCurrentUser();
-
+const VerificationFormEmailSentStep = ({ onClose }: { onClose: Function }) => {
   return (
     <div
       style={{
@@ -21,7 +14,11 @@ const VerificationFormEmailSentStep = () => {
         paddingTop: 15,
       }}
     >
-      <FontAwesomeIcon icon={faEnvelopeCircleCheck} color={colors.NEW_BLUE()} size={"5x"} />
+      <FontAwesomeIcon
+        icon={faEnvelopeCircleCheck}
+        color={colors.NEW_BLUE()}
+        size={"5x"}
+      />
       <div style={{ fontSize: 26, fontWeight: 500, marginTop: 20 }}>
         Check your email
       </div>
@@ -33,11 +30,12 @@ const VerificationFormEmailSentStep = () => {
         }}
       >
         <p>
-          Visit your inbox click the link to verify ownership of the email address provided.
+          Visit your inbox click the link to verify ownership of the email
+          address provided.
         </p>
       </div>
       <div style={{ width: 200, marginTop: 50 }}>
-        <Button fullWidth onClick={() => (window.location.href = "/")}>
+        <Button fullWidth onClick={onClose}>
           Close
         </Button>
       </div>

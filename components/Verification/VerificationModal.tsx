@@ -11,12 +11,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { VERIFICATION_STEP, ORDERED_VERIFICATION_STEPS } from "./lib/types";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
 import VerifiedBadge from "./VerifiedBadge";
+import Button from "../Form/Button";
 
 const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
   const [step, setStep] = useState<VERIFICATION_STEP>("INTRO_STEP");
   const currentUser = useCurrentUser();
-  console.log('current', currentUser?.isVerified)
-  
+
   useEffect(() => {
     if (isModalOpen) {
       // Reset
@@ -68,18 +68,33 @@ const VerificationModal = ({ isModalOpen = true, handleModalClose }) => {
       }
     >
       <div className={css(styles.formWrapper)}>
-        {currentUser?.isVerified ? (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        {false ? (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              marginTop: 50,
+            }}
+          >
             <VerifiedBadge width={75} height={75} showTooltipOnHover={false} />
-            <div className={css(styles.title)}>
-              You are verified
-            </div>
+            <div className={css(styles.title)}>You are verified</div>
             <p>
-              Your account has already been verified. Thank your for being a verified member of the ResearchHub community.
+              Your account has already been verified. Thank your for being a
+              verified member of the ResearchHub community.
             </p>
+            <div style={{ width: 200, marginTop: 50 }}>
+              <Button fullWidth onClick={handleModalClose}>
+                Close
+              </Button>
             </div>
+          </div>
         ) : (
-          <VerificationForm currentStep={step} onStepSelect={setStep} />
+          <VerificationForm
+            onClose={handleModalClose}
+            currentStep={step}
+            onStepSelect={setStep}
+          />
         )}
       </div>
     </BaseModal>
@@ -92,7 +107,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     textAlign: "center",
     marginBottom: 15,
-  },  
+  },
   formWrapper: {
     width: 540,
     padding: "25px 25px 25px 25px",
@@ -106,7 +121,7 @@ const styles = StyleSheet.create({
     },
     [`@media only screen and (max-width: 670px)`]: {
       width: "100%",
-    },        
+    },
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       width: "100%",
     },
@@ -136,7 +151,11 @@ const styles = StyleSheet.create({
   titleWrapperWithBorder: {
     borderBottom: `1px solid ${colors.LIGHT_GREY()}`,
   },
-  modalStyle: {},
+  modalStyle: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      maxHeight: "100vh",
+    },
+  },
   modalTitleStyleOverride: {
     height: "auto",
 

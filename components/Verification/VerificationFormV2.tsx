@@ -11,11 +11,13 @@ import VerificationFormSelectAuthorStep from "./VerificationFormSelectAuthorStep
 interface VerificationFormProps {
   currentStep: VERIFICATION_STEP;
   onStepSelect?: (step: VERIFICATION_STEP) => void;
+  onClose: Function;
 }
 
 const VerificationForm = ({
   currentStep,
   onStepSelect,
+  onClose,
 }: VerificationFormProps) => {
   const [authoredPaper, setAuthoredPaper] =
     useState<VerificationPaperResultType | null>(null);
@@ -50,7 +52,9 @@ const VerificationForm = ({
         />
       )}
 
-      {currentStep === "EMAIL_SENT_STEP" && <VerificationFormEmailSentStep />}
+      {currentStep === "EMAIL_SENT_STEP" && (
+        <VerificationFormEmailSentStep onClose={onClose} />
+      )}
     </div>
   );
 };

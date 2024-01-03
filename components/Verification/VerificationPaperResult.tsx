@@ -12,7 +12,7 @@ interface Props {
 const VerificationPaperResult = ({ result }: Props) => {
   return (
     <div className={css(styles.paper)}>
-      <div>
+      <div style={{ maxWidth: "100%" }}>
         <div className={css(styles.title)}>{result.title}</div>
         <div className={css(styles.metaWrapper)}>
           <div>
@@ -53,7 +53,11 @@ const VerificationPaperResult = ({ result }: Props) => {
           {result.concepts.map((concept, index) => {
             return (
               <div>
-                <HubBadge key={`hub-${index}`} size={"small"} name={concept.displayName} />
+                <HubBadge
+                  key={`hub-${index}`}
+                  size={"small"}
+                  name={concept.displayName}
+                />
               </div>
             );
           })}
@@ -137,6 +141,7 @@ const styles = StyleSheet.create({
     display: "flex",
     columnGap: "10px",
     marginTop: 8,
+    flexWrap: "wrap",
   },
   metaWrapper: {
     display: "flex",
