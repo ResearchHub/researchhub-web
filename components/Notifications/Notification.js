@@ -4,6 +4,7 @@ import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
+import { breakpoints } from "~/config/themes/screen";
 
 // Component
 import withWebSocket from "~/components/withWebSocket";
@@ -15,6 +16,7 @@ import { NotificationActions } from "~/redux/notification";
 
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import colors, { mainNavIcons } from "~/config/themes/colors";
+import { NAVBAR_HEIGHT } from "../Navbar";
 
 class Notification extends Component {
   constructor(props) {
@@ -222,6 +224,11 @@ const styles = StyleSheet.create({
     zIndex: -100,
     userSelect: "none",
     pointerEvents: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "100vw",
+      position: "fixed",
+      top: 58,
+    },
   },
   open: {
     opacity: 1,

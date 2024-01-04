@@ -136,8 +136,12 @@ const Navbar = (props) => {
           }}
           style={{ cursor: "pointer" }}
         >
-          {/* <RHLogo withText iconStyle={styles.rhLogoNav} /> */}
-          <RHLogo iconStyle={styles.rhLogoNavNoText} />
+          <div className={css(styles.rhLogoNavWrapper)}>
+            <RHLogo withText iconStyle={styles.rhLogoNav} />
+          </div>
+          <div className={css(styles.rhLogoNavNoTextWrapper)}>
+            <RHLogo iconStyle={styles.rhLogoNavNoText} />
+          </div>
         </div>
       </div>
     </Fragment>
@@ -463,13 +467,22 @@ const styles = StyleSheet.create({
       display: "block",
     },
   },
+  rhLogoNavWrapper: {
+    marginTop: 3,
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      display: "none",
+    },
+  },
   rhLogoNav: {
     width: 140,
     position: "static",
     width: "auto",
-    // transform: "translateX(-50%)",
-    // left: "50%",
-    // top: 15,
+  },
+  rhLogoNavNoTextWrapper: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      display: "block",
+    },
   },
   rhLogoNavNoText: {
     width: 20,
