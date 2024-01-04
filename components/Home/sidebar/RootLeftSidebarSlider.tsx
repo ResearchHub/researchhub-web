@@ -76,15 +76,9 @@ function RootLeftSidebarSlider({
         <RHLogo withText iconStyle={styles.rhLogoSlider} />
       </div>
       <NewPostModal />
-      {isLoggedIn ? (
+      {isLoggedIn && (
         <div className={css(styles.newPostButtonContainer)}>
           <NewPostButton customButtonStyle={styles.newPostButtonCustom} />
-        </div>
-      ) : (
-        <div className={css(styles.loginButtonWrap)}>
-          <Login>
-            <Button size="med" label="Log in" fullWidth hideRipples={true} />
-          </Login>
         </div>
       )}
       {sliderMainItems}

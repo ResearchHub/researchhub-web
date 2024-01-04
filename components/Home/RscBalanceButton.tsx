@@ -8,10 +8,12 @@ import { StyleSheet, css } from "aphrodite";
 import { formatBalance } from "~/config/utils/form";
 import { useRouter } from "next/router";
 import { useState, useEffect, SyntheticEvent, ReactElement } from "react";
-import colors from "~/config/themes/colors";
+import colors, { mainNavIcons } from "~/config/themes/colors";
 
 import ResearchHubPopover from "../ResearchHubPopover";
 import RscBalanceHistoryDropContent from "./RscBalanceHistoryDropContent";
+import { breakpoints } from "~/config/themes/screen";
+import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 
 /* intentionally using legacy redux wrap to ensure it make unintended behavior in server */
 type Props = { auth?: any /* redux */ };
@@ -88,11 +90,11 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
           }}
         >
           {/* {!isPopoverOpen && <ReputationTooltip />} */}
-          <img
-            src={"/static/icons/coin-filled.png"}
-            draggable={false}
-            className={css(styles.coinIcon)}
-            alt="RSC Coin"
+          <ResearchCoinIcon
+            version={4}
+            height={20}
+            width={20}
+            color={colors.ORANGE_DARK()}
           />
           {shouldDisplayBalanceHome && (
             <div className={css(styles.balanceText)}>
@@ -120,8 +122,8 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     justifyContent: "center",
-    margin: "-1px 6px 0 0",
-    padding: 8,
+    margin: "-1px 0px 0 0",
+    padding: 7,
     userSelect: "none",
     position: "relative",
   },
@@ -130,14 +132,17 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     marginLeft: 6,
     whiteSpace: "nowrap",
-    color: colors.ORANGE_DARK2(),
+    color: colors.ORANGE_DARK(),
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
   },
   blur: {
     filter: "blur(2px)",
   },
   coinIcon: {
-    height: 18,
-    width: 18,
+    height: 20,
+    width: 20,
     borderRadius: "50%",
     boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
   },
