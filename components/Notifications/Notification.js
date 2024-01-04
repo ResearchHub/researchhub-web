@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell } from "@fortawesome/pro-solid-svg-icons";
+import { faBell } from "@fortawesome/pro-light-svg-icons";
 import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -14,7 +14,7 @@ import NotificationPlaceholder from "~/components/Placeholders/NotificationPlace
 import { NotificationActions } from "~/redux/notification";
 
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import colors from "~/config/themes/colors";
+import colors, { mainNavIcons } from "~/config/themes/colors";
 
 class Notification extends Component {
   constructor(props) {
@@ -180,9 +180,9 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   bellIcon: {
-    fontSize: 18,
+    fontSize: 21,
     cursor: "pointer",
-    color: colors.GREY(),
+    color: mainNavIcons.color,
     position: "relative",
     ":hover": {
       color: colors.BLUE(),

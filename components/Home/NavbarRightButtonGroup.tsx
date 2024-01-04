@@ -7,6 +7,7 @@ import {
   faPortrait,
   faShieldHalved,
 } from "@fortawesome/pro-solid-svg-icons";
+
 import { AuthActions } from "~/redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -22,12 +23,13 @@ import {
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { silentEmptyFnc } from "~/config/utils/nullchecks";
 import AuthorAvatar from "../AuthorAvatar";
-import colors from "~/config/themes/colors";
+import colors, { mainNavIcons } from "~/config/themes/colors";
 import getFlagCountAPI from "../Flag/api/getFlagCountAPI";
 
 import Link from "next/link";
 import Notification from "~/components/Notifications/Notification";
 import RscBalanceButton from "./RscBalanceButton";
+import { faScrewdriverWrench } from "@fortawesome/pro-light-svg-icons";
 
 type Props = {
   // intentionally accessing redux directly because functional call to redux is problematic at server level
@@ -95,7 +97,7 @@ function NavbarRightButtonGroup({
                 href={"/moderators/audit/flagged"}
                 className={css(styles.modBtn)}
               >
-                {<FontAwesomeIcon icon={faShieldHalved}></FontAwesomeIcon>}
+                {<FontAwesomeIcon icon={faScrewdriverWrench}></FontAwesomeIcon>}
                 {openCaseCounts > 0 && (
                   <div className={css(styles.notifCount)}>{openCaseCounts}</div>
                 )}
@@ -216,15 +218,15 @@ const styles = StyleSheet.create({
     borderBottom: 0,
   },
   modBtnContainer: {
-    marginLeft: 16,
+    marginLeft: 20,
     position: "relative",
     fontSize: 18,
   },
   modBtn: {
-    fontSize: 18,
+    fontSize: 21,
     display: "inline-block",
     cursor: "pointer",
-    color: colors.GREY(),
+    color: mainNavIcons.color,
     ":hover": {
       color: colors.NEW_BLUE(),
     },
@@ -256,7 +258,6 @@ const styles = StyleSheet.create({
   },
   buttonsGroup: {
     alignItems: "center",
-    borderLeft: `1px solid ${colors.GREY(0.8)}`,
     borderRight: `1px solid ${colors.GREY(0.8)}`,
     boxSizing: "border-box",
     display: "flex",
@@ -264,8 +265,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     justifyContent: "space-between",
     padding: "0 20px",
-    "@media only screen and (max-width: 900px)": {
-      marginLeft: 10,
+    borderLeft: `1px solid ${colors.GREY(0.8)}`,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      borderLeft: "none",
     },
   },
   option: {
@@ -296,7 +298,7 @@ const styles = StyleSheet.create({
     position: "relative",
     zIndex: 5,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
+      // display: "none",
     },
   },
   borderNone: {

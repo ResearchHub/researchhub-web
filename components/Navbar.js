@@ -136,7 +136,8 @@ const Navbar = (props) => {
           }}
           style={{ cursor: "pointer" }}
         >
-          <RHLogo withText iconStyle={styles.rhLogoNav} />
+          {/* <RHLogo withText iconStyle={styles.rhLogoNav} /> */}
+          <RHLogo iconStyle={styles.rhLogoNavNoText} />
         </div>
       </div>
     </Fragment>
@@ -283,8 +284,9 @@ const styles = StyleSheet.create({
     position: "initial",
   },
   buttonRight: {
-    "@media only screen and (min-width: 1024px)": {
-      marginLeft: 20,
+    marginLeft: 20,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      marginLeft: 0,
     },
   },
   banner: {
@@ -306,12 +308,12 @@ const styles = StyleSheet.create({
       width: "unset",
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      margin: "0 16px 4px 0",
+      // margin: "0 16px 4px 0",
+      marginTop: 0,
       maxWidth: "unset",
       width: "unset",
     },
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      margin: 0,
       maxWidth: "unset",
       width: "unset",
     },
@@ -355,7 +357,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
+      // display: "none",
     },
   },
   actionsLoggedIn: {
@@ -403,11 +405,14 @@ const styles = StyleSheet.create({
   },
   burgerIcon: {
     cursor: "pointer",
-    fontSize: 20,
+    fontSize: 22,
     height: "100%",
     marginRight: 16,
     lineHeight: "16px",
     textAlign: "center",
+
+    color: colors.NEW_BLUE(),
+    marginTop: 5,
   },
   oauthContainer: {
     position: "relative",
@@ -460,11 +465,14 @@ const styles = StyleSheet.create({
   },
   rhLogoNav: {
     width: 140,
-    position: "absolute",
+    position: "static",
     width: "auto",
-    transform: "translateX(-50%)",
-    left: "50%",
-    top: 15,
+    // transform: "translateX(-50%)",
+    // left: "50%",
+    // top: 15,
+  },
+  rhLogoNavNoText: {
+    width: 22,
   },
 });
 

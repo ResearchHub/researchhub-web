@@ -127,4 +127,8 @@ export const iconColors = {
   BACKGROUND: colors.LIGHT_GREY(),
 };
 
+export const mainNavIcons = {
+  color: "rgb(154 154 154)",
+};
+
 export default colors;

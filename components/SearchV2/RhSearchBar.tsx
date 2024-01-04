@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeftLong } from "@fortawesome/pro-light-svg-icons";
-import { faSearch } from "@fortawesome/pro-light-svg-icons";
+import { faArrowLeftLong, faSearch } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import {
@@ -21,7 +20,7 @@ import { NullableString } from "~/config/types/root_types";
 import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils/search";
 import { trackEvent } from "~/config/utils/analytics";
 import { useStore } from "react-redux";
-import colors from "~/config/themes/colors";
+import colors, { mainNavIcons } from "~/config/themes/colors";
 
 type SearchProps = {
   expendableSearchbarRef?: RefObject<HTMLInputElement>;
@@ -137,7 +136,7 @@ function RhSearchBarInput({
   setSearchString,
 }: SearchProps): ReactElement {
   return (
-    (<div style={{ position: "relative" }}>
+    <div style={{ position: "relative" }}>
       <input
         className={css(styles.rhSearchBarInput)}
         placeholder="Search"
@@ -156,7 +155,7 @@ function RhSearchBarInput({
       >
         {<FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>}
       </span>
-    </div>)
+    </div>
   );
 }
 
@@ -182,7 +181,7 @@ function RhSearchBarExpandableInput({
   }, [expendableSearchbarRef]);
 
   return (
-    (<Fragment>
+    <Fragment>
       {!isExpanded && (
         <span
           className={css(styles.searchIcon, styles.searchIconSmallScreen)}
@@ -233,7 +232,7 @@ function RhSearchBarExpandableInput({
           </span>
         </Fragment>
       )}
-    </Fragment>)
+    </Fragment>
   );
 }
 
@@ -312,19 +311,21 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     cursor: "pointer",
     fontSize: 14,
-    opacity: 0.4,
+    opacity: 1.0,
     padding: "4px 7px",
     position: "absolute",
     right: 6,
     top: 4,
     zIndex: 2,
+    color: mainNavIcons.color,
     ":hover": {
       background: colors.GREY(0.14) /* matching NavbarRightButtonGroup */,
     },
   },
   searchIconSmallScreen: {
-    fontSize: 18,
+    fontSize: 19,
     position: "static",
+    padding: "2px 7px",
     right: "unset",
     top: "unset",
     ":hover": {
