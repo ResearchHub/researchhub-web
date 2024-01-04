@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     margin: "-1px 0px 0 0",
-    padding: 8,
+    padding: 7,
     userSelect: "none",
     position: "relative",
   },

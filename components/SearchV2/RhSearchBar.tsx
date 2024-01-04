@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
   searchIconSmallScreen: {
     fontSize: 19,
     position: "static",
-    padding: "2px 7px",
+    padding: "2px 11px",
     right: "unset",
     top: "unset",
     ":hover": {

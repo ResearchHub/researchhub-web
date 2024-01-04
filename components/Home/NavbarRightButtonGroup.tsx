@@ -109,6 +109,7 @@ function NavbarRightButtonGroup({
           className={css(
             styles.buttonsGroup,
             styles.borderNone,
+            styles.avatarContainerGroup,
             styles.noPaddingLeft
           )}
         >
@@ -121,7 +122,7 @@ function NavbarRightButtonGroup({
             <AuthorAvatar
               author={user?.author_profile}
               showBadgeIfVerified={true}
-              size={32}
+              size={34}
               disableLink
               showModeratorBadge={user?.moderator}
             />
@@ -201,6 +202,11 @@ const styles = StyleSheet.create({
     margin: "0 8px 0 8px",
     padding: 4,
     position: "relative",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      paddingRight: 0,
+      marginRight: 0,
+      marginLeft: 6,
+    }
   },
   avatarDropdown: {
     background: "#fff",
@@ -261,7 +267,7 @@ const styles = StyleSheet.create({
     borderRight: `1px solid ${colors.GREY(0.8)}`,
     boxSizing: "border-box",
     display: "flex",
-    height: 24,
+    height: 21,
     fontSize: 18,
     justifyContent: "space-between",
     padding: "0 20px",
@@ -269,6 +275,12 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       borderLeft: "none",
     },
+  },
+  avatarContainerGroup: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      paddingRight: 0,
+      marginRight: 0,
+    }
   },
   option: {
     width: "100%",

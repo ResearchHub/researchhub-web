@@ -48,7 +48,7 @@ const WithdrawalModal = dynamic(() =>
   import("~/components/Modals/WithdrawalModal")
 );
 
-export const NAVBAR_HEIGHT = 68;
+export const NAVBAR_HEIGHT = 58;
 
 const Navbar = (props) => {
   const { address, isConnected } = useAccount();
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
 
     color: colors.NEW_BLUE(),
-    marginTop: 5,
+    marginTop: 4,
   },
   oauthContainer: {
     position: "relative",
@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
     // top: 15,
   },
   rhLogoNavNoText: {
-    width: 22,
+    width: 20,
   },
 });
 
