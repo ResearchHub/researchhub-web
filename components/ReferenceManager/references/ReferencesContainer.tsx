@@ -124,7 +124,8 @@ function DocumentContainer({ tab, shouldDisplay }) {
   const tabIsPost =
     tab.related_unified_doc.document_type === "DISCUSSION" ||
     tab.related_unified_doc.document_type === "QUESTION" ||
-    tab.related_unified_doc.document_type === "BOUNTY";
+    tab.related_unified_doc.document_type === "BOUNTY" ||
+    tab.related_unified_doc.document_type === "PREREGISTRATION";
 
   useEffect(() => {
     (async () => {

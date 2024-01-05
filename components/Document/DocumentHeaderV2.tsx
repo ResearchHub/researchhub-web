@@ -120,7 +120,12 @@ const DocumentHeader = ({
           }
         />
       </div>
-      <div className={css(styles.headerWrapper)}>
+      <div
+        className={css(
+          styles.headerWrapper,
+          referenceManagerView && styles.headerWrapperReferenceManager
+        )}
+      >
         <div
           className={
             css(styles.headerContentWrapper) + " " + headerContentWrapperClass
@@ -335,12 +340,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderBottom: `1px solid ${config.border}`,
 
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      paddingBottom: 25,
-    },
-
     [`@media only screen and (min-width: ${breakpoints.desktop.str})`]: {
       minHeight: 130,
+    },
+  },
+  headerWrapperReferenceManager: {
+    // we currently don't have tabs on reference manager, so need some bottom padding
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      paddingBottom: 25,
     },
   },
   lineItemsWrapper: {
@@ -353,6 +360,10 @@ const styles = StyleSheet.create({
   },
   fundraiseWrapper: {
     marginTop: 20,
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
+      paddingLeft: 15,
+      paddingRight: 15,
+    },
   },
   headerContentWrapper: {
     maxWidth: config.width,

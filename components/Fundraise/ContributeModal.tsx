@@ -22,7 +22,7 @@ import {
   onKeyDownNumInput,
   onPasteNumInput,
 } from "~/config/utils/form";
-import { createFundraiseContribution } from "./api/contributions";
+import { createFundraiseContributionApi } from "./api/contributions";
 import { MessageActions } from "~/redux/message";
 import { ClipLoader } from "react-spinners";
 import { useDispatch } from "react-redux";
@@ -147,7 +147,7 @@ const FundraiseContributeModal = ({
     setIsSubmitting(true);
 
     try {
-      const { fundraise: updated } = await createFundraiseContribution({
+      const { fundraise: updated } = await createFundraiseContributionApi({
         fundraiseId: fundraise.id,
         amount: value,
       });
@@ -156,7 +156,11 @@ const FundraiseContributeModal = ({
       }
       setPage("SUCCESS");
     } catch (err) {
-      dispatch(setMessage("Something went wrong."));
+      if (err && (err as any).message) {
+        dispatch(setMessage((err as any).message));
+      } else {
+        dispatch(setMessage("Something went wrong."));
+      }
       dispatch(showMessage({ show: true, error: true } as any));
     } finally {
       setIsSubmitting(false);
@@ -257,7 +261,7 @@ const FundraiseContributeModal = ({
                   <span>
                     {formatBalance(
                       Math.ceil(
-                        fundraise.goal_amount.rsc - fundraise.amount_raised.rsc
+                        fundraise.goalAmount.rsc - fundraise.amountRaised.rsc
                       )
                     )}
                   </span>

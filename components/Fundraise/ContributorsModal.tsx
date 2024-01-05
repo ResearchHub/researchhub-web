@@ -3,7 +3,7 @@ import BaseModal from "../Modals/BaseModal";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import { fetchFundraiseContributions } from "./api/contributions";
+import { fetchFundraiseContributionsApi } from "./api/contributions";
 import { Purchase } from "~/config/types/purchase";
 import { captureEvent } from "~/config/utils/events";
 import CommentAvatars from "../Comment/CommentAvatars";
@@ -51,7 +51,7 @@ const FundraiseContributorsModal = ({
   const handleFetchContributions = async () => {
     setIsFetchingContributions(true);
     try {
-      const { contributions } = await fetchFundraiseContributions({
+      const { contributions } = await fetchFundraiseContributionsApi({
         fundraiseId,
       });
 

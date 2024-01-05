@@ -7,21 +7,21 @@ export interface Fundraise {
 
   status: FundraiseStatus;
 
-  goal_currency: "USD" | "RSC";
+  goalCurrency: "USD" | "RSC";
 
-  goal_amount: {
+  goalAmount: {
     usd: number;
     rsc: number;
   };
 
-  amount_raised: {
+  amountRaised: {
     usd: number;
     rsc: number;
   };
 
   // ISO 8601
-  start_date: string;
-  end_date: string;
+  startDate: string;
+  endDate: string;
 
   contributors: {
     total: number;
@@ -30,11 +30,11 @@ export interface Fundraise {
 }
 
 export const isFundraiseFulfilled = (f: Fundraise): boolean => {
-  if (f.goal_currency === "USD") {
-    return f.amount_raised.usd >= f.goal_amount.usd;
+  if (f.goalCurrency === "USD") {
+    return f.amountRaised.usd >= f.goalAmount.usd;
   }
-  if (f.goal_currency === "RSC") {
-    return f.amount_raised.rsc >= f.goal_amount.rsc;
+  if (f.goalCurrency === "RSC") {
+    return f.amountRaised.rsc >= f.goalAmount.rsc;
   }
 
   return false;
@@ -45,14 +45,14 @@ export const parseFundraise = (raw: any): Fundraise => ({
 
   status: raw.status,
 
-  goal_currency: raw.goal_currency || "USD",
+  goalCurrency: raw.goal_currency || "USD",
 
-  goal_amount: {
+  goalAmount: {
     usd: parseFloat(raw.goal_amount?.usd || "0"),
     rsc: parseFloat(raw.goal_amount?.rsc || "0"),
   },
 
-  amount_raised: {
+  amountRaised: {
     usd: parseFloat(raw.amount_raised?.usd || "0"),
     rsc: parseFloat(raw.amount_raised?.rsc || "0"),
   },
@@ -62,6 +62,6 @@ export const parseFundraise = (raw: any): Fundraise => ({
     top: (raw.contributors?.top || []).map(parseUser),
   },
 
-  start_date: raw.start_date,
-  end_date: raw.end_date,
+  startDate: raw.start_date,
+  endDate: raw.end_date,
 });

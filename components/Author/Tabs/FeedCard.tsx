@@ -63,7 +63,7 @@ import {
 import AuthorList from "../AuthorList";
 import { parseHub } from "~/config/types/hub";
 import DocumentHubs from "~/components/Document/lib/DocumentHubs";
-import { Fundraise } from "~/components/Fundraise/lib/types";
+import { Fundraise, parseFundraise } from "~/components/Fundraise/lib/types";
 import FundraiseCard from "~/components/Fundraise/FundraiseCard";
 
 const DocumentViewer = dynamic(
@@ -374,7 +374,7 @@ function FeedCard({
                   {fundraise && (
                     <div className={css(styles.fundraiseWrapper)}>
                       <FundraiseCard
-                        fundraise={fundraise}
+                        fundraise={parseFundraise(fundraise)}
                         showSupportButton={false}
                       />
                     </div>

@@ -6,7 +6,7 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { Purchase, parsePurchase } from "~/config/types/purchase";
 import { Fundraise, parseFundraise } from "../lib/types";
 
-export const fetchFundraiseContributions = async ({
+export const fetchFundraiseContributionsApi = async ({
   fundraiseId,
 }: {
   fundraiseId: ID;
@@ -20,9 +20,9 @@ export const fetchFundraiseContributions = async ({
   try {
     const url = generateApiUrl(`fundraise/${fundraiseId}/contributions`);
 
-    const response = await fetch(url, API.GET_CONFIG()).then((res): any =>
-      Helpers.parseJSON(res)
-    );
+    const response = await fetch(url, API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then((res): any => Helpers.parseJSON(res));
 
     return {
       contributions: response.map((raw: any) => parsePurchase(raw)),
@@ -37,7 +37,7 @@ export const fetchFundraiseContributions = async ({
   }
 };
 
-export const createFundraiseContribution = async ({
+export const createFundraiseContributionApi = async ({
   fundraiseId,
   amount,
   currency = "RSC",
@@ -58,16 +58,20 @@ export const createFundraiseContribution = async ({
     const response = await fetch(
       url,
       API.POST_CONFIG({ amount, amount_currency: currency })
-    )
-      .then(Helpers.checkStatus)
-      .then((res): any => Helpers.parseJSON(res));
+    );
+    const data = await Helpers.parseJSON(response);
+
+    if (response.status !== 200) {
+      // forward error message (this EP returns human readable error messages)
+      throw Error(data.message);
+    }
 
     return {
-      fundraise: parseFundraise(response),
+      fundraise: parseFundraise(data),
     };
-  } catch (err) {
+  } catch (err: any) {
     captureEvent({
-      msg: "Error contributing to fundraise",
+      msg: `Error: ${err.message}` || "Error contributing to fundraise",
       data: { fundraiseId, amount },
     });
 

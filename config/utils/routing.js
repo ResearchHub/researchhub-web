@@ -110,6 +110,7 @@ export function getUrlToUniDoc(uniDoc) {
     case "post":
     case "question":
       return `/question/${doc?.id}/${doc?.slug}`;
+    case "preregistration":
     case "discussion":
     case "researchhubpost":
       return `/post/${doc?.id}/${doc?.slug}`;

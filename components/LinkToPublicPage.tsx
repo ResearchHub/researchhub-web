@@ -7,9 +7,13 @@ import { StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 
 const LinkToPublicPage = ({ type, id, target, slug }) => {
+  let basePath = type;
+  if (type.toLowerCase() === "preregistration") {
+    basePath = "post";
+  }
   return (
     <Link
-      href={`/${type}/${id}/${slug}`}
+      href={`/${basePath}/${id}/${slug}`}
       data-tip={"View public page"}
       target={target}
       data-for="download-tooltip"

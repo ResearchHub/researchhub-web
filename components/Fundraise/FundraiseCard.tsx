@@ -1,7 +1,6 @@
 import React, { ReactElement, useMemo } from "react";
 import { Fundraise, isFundraiseFulfilled } from "./lib/types";
 import { css, StyleSheet } from "aphrodite";
-import numeral from "numeral";
 import colors from "~/config/themes/colors";
 import { timeTo } from "~/config/utils/dates";
 import CommentAvatars from "../Comment/CommentAvatars";
@@ -29,13 +28,10 @@ const FundraiseCard = ({
   showSupportButton = true,
   onUpdateFundraise = () => {},
 }: FundraiseCardProps): ReactElement => {
-  const barFillAmount = useMemo(() => {
-    const fillAmount = (f.amount_raised.rsc / f.goal_amount.rsc) * 100;
-    if (fillAmount > 100) {
-      return 100;
-    }
-    return fillAmount;
-  }, [f.amount_raised.rsc, f.goal_amount.rsc]);
+  const barFillAmount = useMemo(
+    () => Math.min((f.amountRaised.rsc / f.goalAmount.rsc) * 100, 100),
+    [f.amountRaised.rsc, f.goalAmount.rsc]
+  );
 
   return (
     <div className={css(styles.container)}>
@@ -58,19 +54,23 @@ const FundraiseCard = ({
               isFundraiseFulfilled(f) && styles.amountRaisedTextFulfilled
             )}
           >
-            {numeral(f.amount_raised.rsc).format("0[,]0")} RSC
+            {formatBountyAmount({
+              amount: f.amountRaised.rsc,
+              withPrecision: false,
+            })}{" "}
+            RSC
           </div>
           <div className={css(styles.goalText)}>
             raised of{" "}
             <ContentBadge
               contentType="closedBounty"
-              bountyAmount={f.goal_amount.rsc}
+              bountyAmount={f.goalAmount.rsc}
               size={`small`}
               label={
                 <div style={{ display: "flex", whiteSpace: "pre" }}>
                   <div style={{ flex: 1 }}>
                     {formatBountyAmount({
-                      amount: f.goal_amount.rsc,
+                      amount: f.goalAmount.rsc,
                       withPrecision: false,
                     })}{" "}
                     RSC
@@ -87,7 +87,7 @@ const FundraiseCard = ({
               style={{ fontSize: 14, marginRight: 5 }}
               icon={faClock}
             />
-            {timeTo(f.end_date)} to go
+            {timeTo(f.endDate)} to go
           </div>
         )}
         {isFundraiseFulfilled(f) && (
