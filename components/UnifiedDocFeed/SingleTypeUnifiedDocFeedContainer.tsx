@@ -5,6 +5,7 @@ import { getDocumentCard } from "./utils/getDocumentCard";
 import { ReactElement, useState } from "react";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
+import Button from "../Form/Button";
 
 function SingleTypeUnifiedDocFeedContainer({
   isLoggedIn,
@@ -23,12 +24,25 @@ function SingleTypeUnifiedDocFeedContainer({
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
-      <div className={css(styles.titleContainer)}>
-        <h1 className={css(styles.title)}>Funding</h1>
-      </div>
-      <div className={css(styles.description)}>
-        Crowdfund preregistrations on ResearchHub.
-      </div>
+      {docType.toLowerCase() === "preregistration" && (
+        <div className={css(styles.header)}>
+          <div>
+            <div className={css(styles.titleContainer)}>
+              <h1 className={css(styles.title)}>Funding</h1>
+            </div>
+            <div className={css(styles.description)}>
+              Crowdfund preregistrations on ResearchHub.
+            </div>
+          </div>
+          <Button
+            label="Apply for Funding"
+            onClick={() =>
+              window.open("https://forms.gle/QYuEa6YyDeGxSNxh9", "_blank")
+            }
+            variant="outlined"
+          />
+        </div>
+      )}
       <div className={css(styles.feedPosts)}>
         {cards.length > 0 ? cards : <EmptyFeedScreen />}
       </div>
@@ -58,6 +72,13 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
       width: "100%",
     },
+  },
+  header: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
   },
   titleContainer: {
     alignItems: "center",
