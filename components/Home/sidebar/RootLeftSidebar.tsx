@@ -721,13 +721,13 @@ const styles = StyleSheet.create({
   newPostButtonContainer: {
     display: "flex",
     justifyContent: "center",
-    margin: "0 auto 18px",
+    margin: "10px auto 18px",
     width: "calc(100% - 52px)",
   },
   newPostButtonContainerMin: {
     display: "flex",
     justifyContent: "center",
-    margin: "0 auto 20px",
+    margin: "10px auto 20px",
     width: "calc(100% - 26px)",
   },
   newPostButtonCustom: {
