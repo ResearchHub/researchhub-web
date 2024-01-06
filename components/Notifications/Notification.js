@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     color: mainNavIcons.color,
     position: "relative",
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
   },
   notifCount: {
