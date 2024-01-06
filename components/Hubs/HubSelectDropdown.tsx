@@ -15,6 +15,7 @@ interface Props {
   onChange: Function;
   menuPlacement?: "auto" | "top" | "bottom";
   required?: boolean;
+  isMulti?: boolean;
 }
 
 const selectDropdownStyles = {
@@ -91,6 +92,7 @@ const HubSelectDropdown = ({
   onChange,
   menuPlacement = "auto",
   required = false,
+  isMulti = true,
 }: Props) => {
   const [suggestedHubs, setSuggestedHubs] = useState<HubSuggestion[]>([]);
 
@@ -116,7 +118,7 @@ const HubSelectDropdown = ({
       <FormSelect
         containerStyle={formStyles.container}
         id="hubs"
-        isMulti
+        isMulti={isMulti}
         label="Hubs"
         required={required}
         reactStyles={{}}
@@ -126,10 +128,12 @@ const HubSelectDropdown = ({
           debouncedHandleInputChange(field, value);
         }}
         onChange={(name, values) => {
+          const _values = isMulti ? values : [values];
+
           const allAvailableHubs = suggestedHubs
             .map((suggestion) => suggestion.hub)
             .concat(selectedHubs);
-          const newHubs = (values || [])
+          const newHubs = (_values || [])
             .map((v) => allAvailableHubs.find((h) => h.id === v.value))
             .filter((h) => ![undefined, null].includes(h));
 

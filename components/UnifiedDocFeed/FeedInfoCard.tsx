@@ -116,7 +116,7 @@ export default function FeedInfoCard({
               >{`Editor${editorProfiles.length > 1 ? "s" : ""}: `}</span>
             </div>
             <AuthorFacePile
-              authorProfiles={[editorProfiles]}
+              authorProfiles={editorProfiles}
               horizontal
               imgSize={20}
               fontSize={14}

@@ -7,12 +7,12 @@ import { emptyFncWithMsg, nullthrows } from "~/config/utils/nullchecks";
 import { hubEditorCreate } from "../api/hubEditorCreate";
 import { ID } from "~/config/types/root_types";
 import { ReactElement, SyntheticEvent, useState } from "react";
-import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEffectGetSuggestedHubs";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import Button from "~/components/Form/Button";
 import FormInput from "~/components/Form/FormInput";
-import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
+import HubSelectDropdown from "~/components/Hubs/HubSelectDropdown";
+import { Hub } from "~/config/types/hub";
 
 type FormState = {
   selectedHub: any;
@@ -26,10 +26,7 @@ const DEFAULT_FORM_STATE: FormState = {
 
 export default function HubEditorCreateForm(): ReactElement<"div"> {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
   const [formState, setFormState] = useState<FormState>(DEFAULT_FORM_STATE);
-
-  useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
   const { selectedHub, editorEmail } = formState;
   const handleSubmit = (event: SyntheticEvent): void => {
@@ -63,19 +60,13 @@ export default function HubEditorCreateForm(): ReactElement<"div"> {
         <h1>{"Add a New Hub Editor"}</h1>
       </div>
       <form encType="multipart/form-data" onSubmit={handleSubmit}>
-        <FormSelect
-          containerStyle={formGenericStyles.container}
-          id="hubs"
-          label="Hubs"
-          inputStyle={customStyles.input}
-          labelStyle={formGenericStyles.labelStyle}
-          onChange={(_id: ID, selectedHub: any): void =>
-            setFormState({ ...formState, selectedHub })
-          }
-          options={suggestedHubs}
-          placeholder="Search Hubs"
+        <HubSelectDropdown
+          selectedHubs={selectedHub ? [selectedHub] : []}
           required
-          value={selectedHub}
+          isMulti={false}
+          onChange={(hubs: Array<Hub>) => {
+            setFormState({ ...formState, selectedHub: hubs[0] });
+          }}
         />
         <FormInput
           containerStyle={formGenericStyles.container}

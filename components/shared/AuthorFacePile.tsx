@@ -32,6 +32,8 @@ export default function AuthorFacePile({
   const tags = useMemo(
     () =>
       authorProfiles.map((author: any, index: number): ReactElement<"span"> => {
+        console.log("author", author);
+
         return (
           <span
             key={`face-pile-${index}-${author.id}`}
