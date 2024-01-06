@@ -271,8 +271,8 @@ function FeedCard({
   const user = uploaded_by || created_by;
   const cardTitle = getTitle();
   const cardBody = getBody();
-  let bountyAmount = documentFilter?.bounty_total_amount;
-  let hasActiveBounty = documentFilter?.bounty_open;
+  const bountyAmount = documentFilter?.bounty_total_amount;
+  const hasActiveBounty = documentFilter?.bounty_open;
 
   return (
     <div
@@ -330,7 +330,9 @@ function FeedCard({
                         {authors?.length > 1 && <span>{` et al.`}</span>}
                         {parsedDoc?.createdDate && (
                           <>
-                            <span className={css(styles.metaDivider)}></span>
+                            {authors?.length > 0 && (
+                              <span className={css(styles.metaDivider)}></span>
+                            )}
                             {parsedDoc?.createdDate}
                           </>
                         )}
