@@ -735,10 +735,10 @@ class PaperTransactionModal extends Component {
             <div className={css(bountyTooltip.bodyContainer)}>
               <div className={css(bountyTooltip.desc)}>
                 <div>
-                  • 2% of bounty amount will be used to support the ResearchHub
+                  • 1% of tip amount will be used to support the ResearchHub
                   Community
                 </div>
-                <div>• 7% of bounty amount will be paid to ResearchHub Inc</div>
+                <div>• 2% of tip amount will be paid to ResearchHub Inc</div>
               </div>
             </div>
           </ReactTooltip>
