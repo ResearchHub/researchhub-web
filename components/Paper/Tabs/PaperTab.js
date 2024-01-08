@@ -153,24 +153,27 @@ function PaperTab(props) {
         </div>
       );
     }
-    if (file) {
+    if (
+      !paper.pdf_copyright_allows_display ||
+      !paper.pdfCopyrightAllowsDisplay
+    ) {
+      return (
+        <div>
+          <p>
+            This paper's license is marked as closed access or non-commercial
+            and cannot be viewed on ResearchHub.{" "}
+            <ALink target="_blank" theme="solidPrimary" href={paper.url}>
+              Visit the paper's external site.
+            </ALink>
+          </p>
+        </div>
+      );
+    } else if (file) {
       const httpsUrl = convertHttpToHttps(file);
 
       return (
         <div className={css(styles.pdfFrame)}>
           <iframe src={httpsUrl} height={800} width={"100%"} loading="lazy" />
-        </div>
-      );
-    } else if (paper.oa_status && paper.oa_status === "closed") {
-      return (
-        <div>
-          <p>
-            This paper's license is marked as closed access and cannot be viewed
-            on ResearchHub.{" "}
-            <ALink target="_blank" theme="solidPrimary" href={paper.url}>
-              Visit the paper's external site.
-            </ALink>
-          </p>
         </div>
       );
     } else {
