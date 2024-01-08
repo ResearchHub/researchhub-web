@@ -34,6 +34,8 @@ import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // WalletConnect project ID
 const projectId = "a3e8904e258fe256bf772b764d3acfab";
@@ -229,6 +231,7 @@ function Base({
                       <Component {...pageProps} {...appProps} />
                     </div>
                   </div>
+                  <ToastContainer />
                 </NewPostButtonContext.Provider>
               </NavbarContext.Provider>
             </WagmiConfig>

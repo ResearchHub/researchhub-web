@@ -1,6 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationCircle } from "@fortawesome/pro-solid-svg-icons";
-import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faExclamationCircle,
+  faCheckCircle,
+} from "@fortawesome/pro-solid-svg-icons";
 import "react-toastify/dist/ReactToastify.css";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
@@ -8,6 +10,7 @@ import { ID, NullableString } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
 import {
   NewPostButtonContext,
+  NewPostButtonContextType,
   NewPostButtonContextValues,
 } from "../contexts/NewPostButtonContext";
 import { NextRouter, useRouter } from "next/router";
@@ -18,12 +21,13 @@ import {
   SyntheticEvent,
   useContext,
   useEffect,
+  useState,
 } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import { useState } from "react";
 import colors from "~/config/themes/colors";
 
 import withWebSocket from "../withWebSocket";
+import showToast from "./lib/showToast";
 
 type Props = {
   isNewPostModalOpen: boolean;
@@ -127,10 +131,7 @@ const getToastBody = ({
   }
 };
 
-function PaperUploadStateNotifier({
-  wsResponse,
-  wsSend,
-}: Props): ReactElement<typeof ToastContainer> {
+function PaperUploadStateNotifier({ wsResponse, wsSend }: Props) {
   const router = useRouter();
   const [toastType, setToastType] = useState<NullableString>(null);
   const { values: uploaderContextValues, setValues: setUploaderContextValues } =
@@ -173,9 +174,12 @@ function PaperUploadStateNotifier({
           paperUploadStatus !== "PROCESSING" &&
           paperUploadStatus !== "PROCESSING_MANUBOT"
         ) {
-          toast(bodyResult[1], {
-            onClose: markAsRead,
-            containerId: "paper-upload-toast",
+          showToast({
+            content: bodyResult[1],
+            options: {
+              onClose: markAsRead,
+              containerId: "paper-upload-toast",
+            },
           });
           setToastType(bodyResult[0]);
         }
@@ -189,19 +193,7 @@ function PaperUploadStateNotifier({
     paperUploadStatus,
   ]);
 
-  return (
-    <ToastContainer
-      autoClose={false}
-      closeOnClick
-      hideProgressBar={false}
-      // limit={1} /* render only 1 at a time */
-      newestOnTop
-      onClick={markAsRead}
-      position="bottom-right"
-      rtl={false}
-      containerId="paper-upload-toast"
-    />
-  );
+  return null;
 }
 
 const styles = StyleSheet.create({
