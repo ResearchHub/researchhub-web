@@ -92,32 +92,33 @@ export const getLeftSidebarItemAttrs = ({
       href: "/live",
       onClick: silentEmptyFnc,
     },
-    {
-      icon: ["/funding"].includes(pathname) ? (
-        <img
-          src="/static/rsc-icon-dark-blue.svg"
-          width="24"
-          height="24"
-          style={{
-            marginLeft: "-2px",
-          }}
-        />
-      ) : (
-        <img
-          src="/static/rsc-icon-gray.svg"
-          width="24"
-          height="24"
-          style={{
-            marginLeft: "-2px",
-          }}
-        />
-      ),
-      label: "Funding",
-      isActive: ["/funding"].includes(pathname),
-      isMinimized,
-      href: "/funding",
-      onClick: silentEmptyFnc,
-    },
+    // Disabled for now until we go live with funding.
+    // {
+    //   icon: ["/funding"].includes(pathname) ? (
+    //     <img
+    //       src="/static/rsc-icon-dark-blue.svg"
+    //       width="24"
+    //       height="24"
+    //       style={{
+    //         marginLeft: "-2px",
+    //       }}
+    //     />
+    //   ) : (
+    //     <img
+    //       src="/static/rsc-icon-gray.svg"
+    //       width="24"
+    //       height="24"
+    //       style={{
+    //         marginLeft: "-2px",
+    //       }}
+    //     />
+    //   ),
+    //   label: "Funding",
+    //   isActive: ["/funding"].includes(pathname),
+    //   isMinimized,
+    //   href: "/funding",
+    //   onClick: silentEmptyFnc,
+    // },
     {
       icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
       label: "Hubs",
