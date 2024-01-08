@@ -53,6 +53,7 @@ export function getDocumentCard({
           reviews={uniDoc.reviews}
           bounties={bounties}
           hasAcceptedAnswer={uniDoc?.document_filter?.answered}
+          fundraise={uniDoc.fundraise}
           voteCallback={(arrIndex: number, currPaper: any): void => {
             const [currUniDoc, newUniDocs] = [
               { ...uniDoc },

@@ -9,6 +9,7 @@ export type FEDocType =
   | "question"
   | "bounties"
   | "bounty"
+  | "preregistration"
   | "all";
 
 export type BEReturnType =
@@ -19,6 +20,7 @@ export type BEReturnType =
   | "question"
   | "bounty"
   | "bounties"
+  | "preregistration"
   | "all";
 type BEDocumentModelName =
   | "researchhubpost"
@@ -34,6 +36,7 @@ export const RESEARCHHUB_POST_DOCUMENT_TYPES = [
   "question",
   "questions",
   "bounty",
+  "preregistration",
 ];
 
 export function getBeDocumentModelName(
@@ -75,6 +78,8 @@ export function getFEUnifiedDocType(
       return "paper";
     case "bounty":
       return "bounty";
+    case "preregistration":
+      return "preregistration";
     default:
       return "all";
   }
@@ -101,6 +106,9 @@ export function getBEUnifiedDocType(
     case "bounty":
     case "bounties":
       return "bounty";
+    case "preregistration":
+    case "preregistrations":
+      return "preregistration";
     default:
       return "all";
   }

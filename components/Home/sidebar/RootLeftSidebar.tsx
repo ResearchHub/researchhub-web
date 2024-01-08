@@ -92,17 +92,18 @@ export const getLeftSidebarItemAttrs = ({
       href: "/live",
       onClick: silentEmptyFnc,
     },
-    {
-      icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
-      label: "Hubs",
-      isActive: ["/hubs"].includes(pathname),
-      isMinimized,
-      href: "/hubs",
-      onClick: silentEmptyFnc,
-    },
-    // This is for when we have grants/pre-registrations
+    // Disabled for now until we go live with funding.
     // {
-    //   icon: (
+    //   icon: ["/funding"].includes(pathname) ? (
+    //     <img
+    //       src="/static/rsc-icon-dark-blue.svg"
+    //       width="24"
+    //       height="24"
+    //       style={{
+    //         marginLeft: "-2px",
+    //       }}
+    //     />
+    //   ) : (
     //     <img
     //       src="/static/rsc-icon-gray.svg"
     //       width="24"
@@ -112,12 +113,20 @@ export const getLeftSidebarItemAttrs = ({
     //       }}
     //     />
     //   ),
-    //   label: "Earn",
-    //   isActive: ["/grants"].includes(pathname),
+    //   label: "Funding",
+    //   isActive: ["/funding"].includes(pathname),
     //   isMinimized,
-    //   href: "/grants",
+    //   href: "/funding",
     //   onClick: silentEmptyFnc,
     // },
+    {
+      icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
+      label: "Hubs",
+      isActive: ["/hubs"].includes(pathname),
+      isMinimized,
+      href: "/hubs",
+      onClick: silentEmptyFnc,
+    },
     {
       icon: <FontAwesomeIcon icon={faBook}></FontAwesomeIcon>,
       label: "Lab Notebook",
@@ -223,6 +232,7 @@ function RootLeftSidebar({
         "post",
         "hypothesis",
         "live",
+        "funding",
         "hubs",
         "referral",
         "user",

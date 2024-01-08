@@ -63,6 +63,8 @@ import {
 import AuthorList from "../AuthorList";
 import { parseHub } from "~/config/types/hub";
 import DocumentHubs from "~/components/Document/lib/DocumentHubs";
+import { Fundraise, parseFundraise } from "~/components/Fundraise/lib/types";
+import FundraiseCard from "~/components/Fundraise/FundraiseCard";
 
 const DocumentViewer = dynamic(
   () => import("~/components/Document/DocumentViewer")
@@ -109,6 +111,7 @@ export type FeedCardProps = {
   withSidePadding?: boolean;
   type: string;
   twitterScore?: number | undefined | null;
+  fundraise?: Fundraise;
 };
 
 const documentIcons = {
@@ -152,6 +155,7 @@ function FeedCard({
   user_vote: userVote,
   user: currentUser,
   withSidePadding,
+  fundraise,
 }: FeedCardProps) {
   let parsedDoc: null | Paper | Post = null;
   let authors: AuthorProfile[] = [];
@@ -369,6 +373,14 @@ function FeedCard({
                       </div>
                     )}
                   </div>
+                  {fundraise && (
+                    <div className={css(styles.fundraiseWrapper)}>
+                      <FundraiseCard
+                        fundraise={parseFundraise(fundraise)}
+                        showSupportButton={false}
+                      />
+                    </div>
+                  )}
                   <div className={css(styles.metadataContainer, styles.mobile)}>
                     <DocumentHubs
                       hubs={parsedHubs}
@@ -630,6 +642,13 @@ const styles = StyleSheet.create({
   previewSide: {
     marginLeft: 16,
   },
+
+  fundraiseWrapper: {
+    marginTop: 14,
+    marginBottom: 4,
+    width: "100%",
+  },
+
   metaData: {
     height: "100%",
     width: "100%",

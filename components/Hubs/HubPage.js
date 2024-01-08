@@ -32,6 +32,7 @@ import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedC
 import { parseUser } from "~/config/types/root_types";
 import Link from "next/link";
 import RHLogo from "../Home/RHLogo";
+import SingleTypeUnifiedDocFeedContainer from "../UnifiedDocFeed/SingleTypeUnifiedDocFeedContainer";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -468,6 +469,13 @@ class HubPage extends Component {
               <div className={css(styles.liveFeedwrapper)}>
                 <LiveFeed hub={hub} isHomePage={home} />
               </div>
+            ) : this.props.isSingleDocTypeFeed ? (
+              <SingleTypeUnifiedDocFeedContainer
+                feed={feed}
+                loggedIn={loggedIn}
+                serverLoadedData={initialFeed}
+                docType={this.props.docType}
+              />
             ) : (
               <UnifiedDocFeedContainer
                 feed={feed}

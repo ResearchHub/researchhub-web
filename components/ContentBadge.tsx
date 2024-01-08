@@ -87,6 +87,13 @@ const ContentBadgeBase = ({
             </span>
             <span>Question</span>
           </>
+        ) : contentType === "preregistration" ? (
+          <>
+            <span className={css(styles.icon)}>
+              <PostIcon withAnimation={false} onClick={undefined} />
+            </span>
+            <span>Preregistration</span>
+          </>
         ) : contentType === COMMENT_TYPES.DISCUSSION ||
           contentType === "comment" ? (
           <>
@@ -185,20 +192,34 @@ const ContentBadgeBase = ({
             </div>
           </div>
         ) : contentType === "closedBounty" ? (
-          <>
-            <span
-              className={css(styles.icon, size === "small" && styles.iconSmall)}
+          <div>
+            <div className={css(styles.row)}>
+              <span
+                className={css(
+                  styles.icon,
+                  size === "small" && styles.iconSmall
+                )}
+              >
+                <ResearchCoinIcon
+                  version={4}
+                  color={colors.BLACK(0.5)}
+                  height={size === "small" ? 14 : 16}
+                  width={size === "small" ? 14 : 16}
+                />
+                {` `}
+              </span>
+              <span>{label}</span>
+            </div>
+            <div
+              className={css(
+                styles.usdAmount,
+                badgeHovered && styles.transitionOpacity
+              )}
             >
-              <ResearchCoinIcon
-                version={4}
-                color={colors.BLACK(0.5)}
-                height={size === "small" ? 14 : 16}
-                width={size === "small" ? 14 : 16}
-              />
-              {` `}
-            </span>
-            <span>{label}</span>
-          </>
+              {" "}
+              ≈ {rscToUSDDisplay(bountyAmount || 0)}
+            </div>
+          </div>
         ) : (
           <></>
         )}
@@ -218,10 +239,14 @@ const ContentBadge = (props) => {
       onMouseMove={() => {
         if (!mouseLeaveTimeout.current) {
           setBadgeHovered(
-            props.contentType === "bounty" || props.contentType === "award"
+            props.contentType === "bounty" ||
+              props.contentType === "closedBounty" ||
+              props.contentType === "award"
           );
           setKeepPositionAbsolute(
-            props.contentType === "bounty" || props.contentType === "award"
+            props.contentType === "bounty" ||
+              props.contentType === "closedBounty" ||
+              props.contentType === "award"
           );
         }
       }}
