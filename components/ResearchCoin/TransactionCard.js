@@ -93,7 +93,10 @@ const TransactionCard = (props) => {
 
     if (transaction.readable_content_type === "bounty") {
       title = `Bounty #${transaction.source.id}: ${transaction.source.status}`;
-    } else if (transaction.readable_content_type === "bountyfee") {
+    } else if (
+      withdrawal.readable_content_type === "bountyfee" ||
+      withdrawal.readable_content_type === "supportfee"
+    ) {
       title = "ResearchHub Platform Fee";
     } else if (transaction.readable_content_type === "purchase") {
       title = transaction.source?.purchase_type
