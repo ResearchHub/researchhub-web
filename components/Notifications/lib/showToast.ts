@@ -4,7 +4,7 @@ const showToast = ({ content, options = {} }) => {
   toast(content, {
     // Defaults
     position: "bottom-right",
-    autoClose: 3000,
+    autoClose: 300000,
     hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,

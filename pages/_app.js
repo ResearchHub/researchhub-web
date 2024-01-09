@@ -14,6 +14,7 @@ import "react-quill/dist/quill.snow.css";
 import "react-tagsinput/react-tagsinput.css";
 import "~/components/Comment/lib/quill.css";
 import "~/components/Notifications/lib/react-toastify-custom.css";
+import "react-toastify/dist/ReactToastify.css";
 import "pdfjs-dist/web/pdf_viewer.css";
 import { Analytics } from "@vercel/analytics/react";
 import { configureStore } from "~/redux/configureStore";
