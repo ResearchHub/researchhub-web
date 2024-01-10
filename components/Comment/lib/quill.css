@@ -328,8 +328,8 @@
   max-width: 800px;
 }
 
-.CommentEditor .ql-editor {
-  white-space: initial;
+.ql-editor {
+  white-space: pre-wrap !important;
 }
 
 .CommentEditor .ql-editor ol,
