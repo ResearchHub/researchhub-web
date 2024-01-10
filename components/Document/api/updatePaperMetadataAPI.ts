@@ -9,12 +9,14 @@ export const updatePaperMetadataAPI = async ({
   doi,
   publishedDate,
   hubs,
+  pdfLicense,
 }: {
   id: ID;
   title?: string;
   doi?: string;
   publishedDate?: string;
   hubs?: Array<ID>;
+  pdfLicense?: string;
 }) => {
   const url = generateApiUrl(`paper/${id}`);
   const response = await fetch(
@@ -27,6 +29,7 @@ export const updatePaperMetadataAPI = async ({
       ...(publishedDate && {
         paper_publish_date: dayjs(publishedDate).format("YYYY-MM-DD"),
       }),
+      ...(pdfLicense && { pdf_license: pdfLicense }),
     })
   ).then((res): any => Helpers.parseJSON(res));
 
