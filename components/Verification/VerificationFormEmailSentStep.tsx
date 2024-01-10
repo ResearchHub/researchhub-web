@@ -2,6 +2,7 @@ import colors from "~/config/themes/colors";
 import Button from "../Form/Button";
 import { faEnvelopeCircleCheck } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { css, StyleSheet } from "aphrodite";
 
 const VerificationFormEmailSentStep = ({ onClose }: { onClose: Function }) => {
   return (
@@ -33,6 +34,10 @@ const VerificationFormEmailSentStep = ({ onClose }: { onClose: Function }) => {
           Visit your inbox click the link to verify ownership of the email
           address provided.
         </p>
+        <div className={css(styles.divider)}></div>
+        <p className={css(styles.notice)}>
+          Above requirements are mendatory and must be met for verification. Please allow up to 72 hours for requests.
+        </p>        
       </div>
       <div style={{ width: 200, marginTop: 50 }}>
         <Button fullWidth onClick={onClose}>
@@ -42,5 +47,19 @@ const VerificationFormEmailSentStep = ({ onClose }: { onClose: Function }) => {
     </div>
   );
 };
+
+const styles = StyleSheet.create({
+  divider: {
+    borderTop: `1px solid ${colors.GREY()}`,
+    width: "50%",
+    margin: "0 auto"
+  },
+  notice: {
+    fontSize: 14,
+    paddingTop: 25,
+    marginBottom: 0,
+    color: "rgb(205 133 8)",
+  },
+})
 
 export default VerificationFormEmailSentStep;
