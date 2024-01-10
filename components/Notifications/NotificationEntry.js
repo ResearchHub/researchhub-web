@@ -13,6 +13,7 @@ import { parseUnifiedDocument } from "~/config/types/root_types";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMemoCircleCheck } from "@fortawesome/pro-solid-svg-icons";
+import { truncateText } from "~/config/utils/string";
 
 const NotificationEntry = (props) => {
   const { notification, data } = props;
@@ -111,6 +112,8 @@ const NotificationEntry = (props) => {
     return (
       <div>
         {body.map((element, i) => {
+          const value = truncateText(element.value, 100);
+
           const extraStyles = formatStyles(element.extra);
           switch (element.type) {
             case "link":
@@ -121,14 +124,14 @@ const NotificationEntry = (props) => {
                   link={link}
                   onClick={onClick}
                   style={extraStyles}
-                  text={element.value}
+                  text={value}
                 />
               );
             case "text":
               return (
                 <span key={i} className={css(...extraStyles)}>
                   {" "}
-                  {element.value}{" "}
+                  {value}{" "}
                 </span>
               );
             case "break":
@@ -236,14 +239,14 @@ const styles = StyleSheet.create({
   username: {
     color: "#000",
     textDecoration: "none",
-    fontWeight: "bold",
+    // fontWeight: "bold",
     cursor: "pointer",
     ":hover": {
       color: colors.BLUE(),
     },
   },
   link: {
-    color: colors.BLUE(),
+    color: colors.NEW_BLUE(),
     cursor: "pointer",
     textDecoration: "none",
     ":hover": {

@@ -34,6 +34,7 @@ import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
+import { ToastContainer, cssTransition } from "react-toastify";
 
 // WalletConnect project ID
 const projectId = "a3e8904e258fe256bf772b764d3acfab";
@@ -177,6 +178,13 @@ function Base({
     transition: transitions.SCALE,
   };
 
+  const fadeTransition = cssTransition({
+    collapse: false,
+    collapseDuration: 500,
+    enter: "fade-in",
+    exit: "fade-out",
+  });
+
   return (
     <AlertProvider template={DynamicAlertTemplate} {...options}>
       <CustomHead />
@@ -229,6 +237,7 @@ function Base({
                       <Component {...pageProps} {...appProps} />
                     </div>
                   </div>
+                  <ToastContainer transition={fadeTransition} />
                 </NewPostButtonContext.Provider>
               </NavbarContext.Provider>
             </WagmiConfig>
