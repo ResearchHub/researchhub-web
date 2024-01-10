@@ -8,11 +8,13 @@ const VerificationFormIntroStep = ({ nextStep }) => {
   return (
     <div>
       <div className={css(styles.header)}>
-        <div className={css(styles.badgeWrapper)}>
-          <VerifiedBadge width={75} height={75} showTooltipOnHover={false} />
-        </div>
         <div className={css(styles.title)}>
-          Become a Verified Author
+          <div className={css(styles.badgeWrapper)}>
+            <VerifiedBadge width={35} height={35} showTooltipOnHover={false} />
+          </div>
+          <span>
+            Become a Verified Author
+          </span>
         </div>
         <p className={css(styles.description)}>
           ResearchHub is allowing scientific authors with at least one published
@@ -36,9 +38,6 @@ const VerificationFormIntroStep = ({ nextStep }) => {
           <li className={css(styles.listItem)}>
             Earn ResearchCoin on your papers
           </li>
-          <li className={css(styles.listItem)}>
-            Get early access to new features
-          </li>
         </ul>
       </div>
 
@@ -61,11 +60,8 @@ const VerificationFormIntroStep = ({ nextStep }) => {
           </ul>
         </li>
       </ul>
-      <p className={css(styles.notice)}>
-        Above requirements are mendatory and must be met for verification. Please allow up to 72 hours for requests.
-      </p>
 
-      <div style={{ display: "flex", justifyContent: "center", marginTop: 30,   }}>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 20,   }}>
         <div style={{ width: 160,   }}>
           <Button onClick={nextStep} label={"Start"} fullWidth />
         </div>
@@ -77,32 +73,38 @@ const VerificationFormIntroStep = ({ nextStep }) => {
 const styles = StyleSheet.create({
   notice: {
     fontSize: 14,
+    marginBottom: 0,
     color: "rgb(205 133 8)",
   },
   header: {
     borderBottom: `1px solid ${colors.BLACK(0.1)}`,
-    marginBottom: 30,
+    marginBottom: 20,
   },
   badgeWrapper: {
     justifyContent: "center",
     display: "flex",
-    marginBottom: 15,
+    marginRight: 10,
   },
   description: {
-    fontSize: 16,
+    fontSize: 14,
     marginTop: 10,
-    textAlign: "center",
+    textAlign: "left",
   },
   title: {
     fontSize: 26,
     fontWeight: 500,
-    textAlign: "center",
+    textAlign: "left",
+    display: "flex",
+    alignItems: "center",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      fontSize: 22
+    },    
   },
   whyVerify: {},
   subtitle: {
     fontSize: 16,
     fontWeight: 500,
-    marginTop: 20,
+    marginTop: 15,
     marginBottom: 8,
   },
 
@@ -111,7 +113,7 @@ const styles = StyleSheet.create({
   },
   list: {
     padding: 0,
-    paddingLeft: 10,
+    paddingLeft: 5,
     lineHeight: "1.5em",
     listStylePosition: "inside",
   },
