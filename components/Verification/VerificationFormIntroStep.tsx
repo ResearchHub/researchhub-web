@@ -45,17 +45,25 @@ const VerificationFormIntroStep = ({ nextStep }) => {
       <div className={css(styles.subtitle)}>Requirements</div>
       <ul className={css(styles.list)}>
         <li className={css(styles.listItem)}>
-          Published at least one paper with a DOI
+          At least one published paper with DOI
         </li>
         <li className={css(styles.listItem)}>
           Have access to an email affiliated with an academic institution
         </li>
-        <li className={css(styles.listItem)}>Profile must have a photo and academic instituation(s) set</li>
+        <li className={css(styles.listItem)}>Profile must have authentic and clear photo of your face</li>
+        <li className={css(styles.listItem)}>Profile name must match the name on the published paper</li>
         <li className={css(styles.listItem)}>
-          Profile name must match the name on the published paper
+          Profile must be updated to include the following information:
+          <ul>
+            <li className={css(styles.listItem)}>Academic institution(s)</li>
+            <li className={css(styles.listItem)}>Biography</li>
+            <li className={css(styles.listItem)}>Orcid url (Recommended)</li>
+          </ul>
         </li>
       </ul>
-
+      <p className={css(styles.notice)}>
+        Above requirements are mendatory and must be met for verification. Please allow up to 72 hours for requests.
+      </p>
 
       <div style={{ display: "flex", justifyContent: "center", marginTop: 30,   }}>
         <div style={{ width: 160,   }}>
@@ -67,6 +75,10 @@ const VerificationFormIntroStep = ({ nextStep }) => {
 };
 
 const styles = StyleSheet.create({
+  notice: {
+    fontSize: 14,
+    color: "rgb(205 133 8)",
+  },
   header: {
     borderBottom: `1px solid ${colors.BLACK(0.1)}`,
     marginBottom: 30,
