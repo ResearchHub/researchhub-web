@@ -284,6 +284,7 @@ const styles = StyleSheet.create({
   actions: {
     marginTop: 5,
     display: "flex",
+    gap: 8,
   },
   documentLink: {
     fontWeight: 500,

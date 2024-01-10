@@ -30,6 +30,7 @@ import LoadMoreButton from "../LoadMoreButton";
 import removeFlaggedContent from "./api/removeFlaggedContentAPI";
 import ContributionEntry from "./Contribution/ContributionEntry";
 import IconButton from "../Icons/IconButton";
+import removeFlaggedPaperPDFApi from "./api/removeFlaggedPaperPDFAPI";
 
 function FlaggedContentDashboard({
   setMessage,
@@ -245,6 +246,52 @@ function FlaggedContentDashboard({
           style: styles.flagAndRemove,
           isActive: appliedFilters.verdict === "OPEN",
         },
+        r.contentType.name === "paper"
+          ? {
+              html: (
+                <FlagButtonV2
+                  modalHeaderText="Flag and Remove PDF"
+                  flagIconOverride={styles.flagIcon}
+                  iconOverride={
+                    <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
+                  }
+                  defaultReason={r.reason}
+                  successMsgText="Flagged PDF removed"
+                  errorMsgText="Failed to remove flagged PDF"
+                  subHeaderText="I am removing the paper's PDF because of:"
+                  primaryButtonLabel="Remove PDF"
+                  onSubmit={(
+                    verdict: KeyOf<typeof FLAG_REASON>,
+                    renderErrorMsg,
+                    renderSuccessMsg
+                  ) => {
+                    removeFlaggedPaperPDFApi({
+                      apiParams: {
+                        flagIds: [r.id],
+                        // @ts-ignore
+                        verdictChoice: verdict,
+                      },
+                      onError: renderErrorMsg,
+                      onSuccess: () => {
+                        renderSuccessMsg();
+                        setResults(results.filter((res) => res.id !== r.id));
+                        setNumNavInteractions(numNavInteractions - 1);
+                      },
+                    });
+                  }}
+                >
+                  <IconButton>
+                    <span style={{ color: colors.ORANGE_DARK() }}>
+                      Remove PDF Only
+                    </span>
+                  </IconButton>
+                </FlagButtonV2>
+              ),
+              label: "Remove PDF Only",
+              style: styles.flagAndRemove,
+              isActive: appliedFilters.verdict === "OPEN",
+            }
+          : undefined,
         {
           html: (
             <IconButton
@@ -282,7 +329,7 @@ function FlaggedContentDashboard({
           // style: styles.flagAndRemove,
           isActive: appliedFilters.verdict === "OPEN",
         },
-      ];
+      ].filter((a) => a);
 
       return (
         <div className={css(styles.result)} key={r.id}>
