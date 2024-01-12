@@ -560,7 +560,7 @@ class WithdrawalModal extends Component {
           containerStyles={styles.amountInputStyles}
           inputContainerStyles={styles.fullWidth}
           inputStyles={[styles.fullWidth]}
-          placeholder={"Enter the withdrawal amount (min. 5000 RSC)"}
+          placeholder={"Enter withdrawal amount"}
           required={true}
           // minValue={5000}
           value={amount}
