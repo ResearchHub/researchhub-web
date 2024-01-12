@@ -149,9 +149,13 @@ export type User = {
   date_joined: string;
   email: string;
   first_name: string;
+
+  // onboarding fields
   has_seen_first_coin_modal: boolean;
   has_seen_orcid_connect_modal: boolean;
   has_seen_stripe_modal: boolean;
+  has_completed_onboarding: boolean;
+
   id: ID;
   invited_by: any; // TODO
   is_active: boolean;

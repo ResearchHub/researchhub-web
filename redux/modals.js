@@ -174,31 +174,6 @@ export const ModalActions = {
       });
     };
   },
-  openOrcidConnectModal: (openModal, setHasSeen = false) => {
-    return (dispatch, getState) => {
-      if (!openModal && setHasSeen) {
-        const config = { has_seen_orcid_connect_modal: true };
-        return fetch(API.USER_ORCID_CONNECT_MODAL, API.PATCH_CONFIG(config))
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((res) => {
-            return dispatch({
-              type: ModalConstants.ORCID_CONNECT_MODAL_TOGGLE,
-              payload: {
-                openOrcidConnectModal: openModal,
-              },
-            });
-          });
-      } else {
-        return dispatch({
-          type: ModalConstants.ORCID_CONNECT_MODAL_TOGGLE,
-          payload: {
-            openOrcidConnectModal: openModal,
-          },
-        });
-      }
-    };
-  },
   openSignUpModal: (openModal) => {
     return (dispatch) => {
       return dispatch({
@@ -356,7 +331,6 @@ const defaultModalState = {
   editHubModal: {},
   openWithdrawalModal: false,
   openFirstVoteModal: false,
-  openOrcidConnectModal: false,
   openPaperTransactionModal: false,
   loginModal: {},
   uploadPaperModal: {

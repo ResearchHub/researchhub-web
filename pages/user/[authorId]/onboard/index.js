@@ -1,64 +1,25 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/pro-light-svg-icons";
 import { useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import ReactPlaceholder from "react-placeholder/lib";
 import Router from "next/router";
 
-import OnboardPlaceholder from "~/components/Placeholders/OnboardPlaceholder";
 import OnboardForm from "~/components/Onboard/OnboardForm";
-import OnboardHubList from "~/components/Onboard/OnboardHubList";
-import ButtonsRow from "~/components/Form/ButtonsRow";
 import Head from "~/components/Head";
 
-import { ModalActions } from "~/redux/modals";
 import { HubActions } from "~/redux/hub";
 
 // Config
 
 import colors from "~/config/themes/colors";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import { subscribeToHub, unsubscribeFromHub } from "~/config/fetch";
-import VerificationForm from "../../../../components/Form/VerificationForm";
 import ComponentWrapper from "../../../../components/ComponentWrapper";
 import { MessageActions } from "../../../../redux/message";
-import { captureException } from "@sentry/browser";
-
-const SEARCH_TIMEOUT = 400;
-
-const mapArrayToObject = (arr = []) => {
-  const result = {};
-  arr.forEach((el) => {
-    result[el.id] = el;
-  });
-  return result;
-};
+import Button from "~/components/Form/Button";
+import { setCompletedOnboardingApi } from "~/components/Onboard/api/setCompletedOnboardingApi";
 
 const Index = (props) => {
-  // hub select flow
-  const [onlyHubSelection, setOnlyHubSelection] = useState(props.selectHubs);
-
   // onboard flow
   const [page, setPage] = useState(1);
-  const [saving, toggleSaving] = useState(false);
-
-  // search feature
-  const [searchValue, setSearchValue] = useState("");
-  const [timeout, addTimeout] = useState(null);
-  const [searching, setSearching] = useState(false);
-  const [hubs, setHubs] = useState(props.hubs.topHubs || []);
-
-  const [userHubIds, setUserHubIds] = useState(
-    mapArrayToObject(props.hubs.subscribedHubs)
-  );
-  const { showMessage, setMessage } = props;
-
-  useEffect(() => {
-    setHubs(props.hubs.topHubs || []);
-    setUserHubIds(mapArrayToObject(props.hubs.subscribedHubs));
-  }, [props.hubs]);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     window.scrollTo({
@@ -68,270 +29,86 @@ const Index = (props) => {
   }, [page]);
 
   let formRef = useRef();
-  let verificationFormRef = useRef();
 
   const formatStep = () => {
-    if (onlyHubSelection) {
-      return "Subscribe to hubs You're Interested In";
-    }
-
     switch (page) {
       case 1:
-        return "Subscribe to hubs you're interested in";
-      case 2:
-        return "Enter your profile information";
+        return "Complete your profile";
       default:
         return;
-    }
-  };
-
-  const formatTitle = () => {
-    switch (page) {
-      case 1:
-        return "Subscribe to hubs you're interested in";
-      case 2:
-        return "Enter your profile information";
-      default:
-        return;
-    }
-  };
-
-  const saveVerification = () => {
-    // Saves verification step
-    verificationFormRef.current.uploadVerification().then(() => {
-      navigateHome();
-    });
-  };
-
-  const formatButtons = () => {
-    if (onlyHubSelection) {
-      return {
-        left: {
-          label: "Cancel",
-          onClick: () => Router.back(),
-        },
-        right: {
-          label: "Save",
-          onClick: saveHubPreferences,
-          disabled: saving,
-        },
-      };
-    }
-    switch (page) {
-      case 1:
-        return {
-          left: {
-            label: "Skip",
-            onClick: () => setPage(page + 1),
-          },
-          right: {
-            label: "Save & Continue",
-            onClick: saveHubPreferences,
-            disabled: saving,
-          },
-        };
-      case 2:
-        return {
-          left: {
-            label: "Previous Step",
-            onClick: () => setPage(page - 1),
-          },
-          right: {
-            label: "Save & Finish",
-            onClick: saveUserInformation,
-            disabled: saving,
-          },
-        };
-    }
-  };
-
-  /**
-   * Handle user's click of hub on onboarding screen
-   * @param {Object} hub metadata of hub being clicked.
-   * @param {Boolean} state whether the hub is being add or removed.
-   */
-  const handleHubClick = (hub, state) => {
-    const updatedUserHubs = { ...userHubIds };
-
-    if (state) {
-      updatedUserHubs[hub.id] = hub;
-    } else {
-      updatedUserHubs[hub.id] = null;
-    }
-
-    return setUserHubIds(updatedUserHubs);
-  };
-
-  /**
-   * Saves user's hub selections and updates client's state
-   */
-  const saveHubPreferences = async () => {
-    toggleSaving(true);
-
-    const newState = [];
-    const subscribedHubIds = [];
-    const unsubscribedHubIds = [];
-
-    const seen = mapArrayToObject(props.hubs.subscribedHubs);
-
-    for (const [id, value] of Object.entries(userHubIds)) {
-      if (value === null) {
-        unsubscribedHubIds.push(id);
-      } else {
-        if (!seen[id]) {
-          subscribedHubIds.push(id);
-        }
-        newState.push(value);
-      }
-    }
-
-    try {
-      await Promise.all([
-        ...subscribedHubIds.map((hubId) => {
-          return subscribeToHub({ hubId });
-        }),
-        ...unsubscribedHubIds.map((hubId) => {
-          return unsubscribeFromHub({ hubId });
-        }),
-      ]);
-    } catch (e) {
-      captureException(e);
-    }
-
-    props.updateSubscribedHubs(newState); // update client
-    toggleSaving(false);
-
-    if (onlyHubSelection) {
-      return Router.push("/", "/");
-    } else {
-      showMessage({ show: false });
-      setPage(page + 1);
     }
   };
 
   const saveUserInformation = () => {
+    setSaving(true);
     const saveButton = formRef.current;
     saveButton.click();
-    navigateHome();
+    handleSetCompletedOnboarding();
   };
 
-  const connectOrcidAccount = () => {
-    props.openOrcidConnectModal(true);
-  };
-
-  const navigateHome = () => {
-    Router.push("/", `/`).then(() => {
-      connectOrcidAccount();
-    });
-  };
-
-  const searchHubs = (e) => {
-    setSearching(true);
-    const search = e.target.value;
-    const ignoreTimeout = search.length >= 7 && search.length % 7 === 0; // call search at 7th keystroke and every multiple of 7 thereafter
-
-    if (!ignoreTimeout) {
-      timeout && clearTimeout(timeout);
-    }
-
-    setSearchValue(search);
-    addTimeout(
-      setTimeout(() => {
-        fetch(API.HUB({ search }), API.GET_CONFIG())
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((res) => {
-            setHubs(res.results);
-            setSearching(false);
-          });
-      }, SEARCH_TIMEOUT)
-    );
-  };
-
-  const resetSearch = (e) => {
-    e && e.stopPropagation();
-    timeout && clearTimeout(timeout);
-    setSearchValue("");
-    setHubs(props.hubs.topHubs || []);
+  const handleSetCompletedOnboarding = () => {
+    setCompletedOnboardingApi()
+      .then((res) => {
+        Router.push("/", "/").then(() => {
+          setSaving(false);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        setSaving(false);
+      });
   };
 
   const renderPage = () => {
     switch (page) {
       case 1:
-        return (
-          <div className={css(styles.column)}>
-            <div className={css(styles.searchContainer)}>
-              <input
-                className={css(styles.searchInput)}
-                type={"text"}
-                onChange={searchHubs}
-                value={searchValue}
-                placeholder={"Search Hubs"}
-              />
-              <span className={css(styles.searchIcon)}>
-                {<FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>}
-              </span>
-              <div
-                onClick={resetSearch}
-                className={css(
-                  styles.button,
-                  searchValue.trim() === "" && styles.disabled
-                )}
-              >
-                Clear
-              </div>
-            </div>
-            <ReactPlaceholder
-              ready={props.hubs.topHubs.length}
-              showLoadingAnimation
-              customPlaceholder={<OnboardPlaceholder color="#efefef" />}
-            >
-              <OnboardHubList
-                hubs={hubs}
-                onClick={handleHubClick}
-                searching={searching}
-                userHubIds={userHubIds}
-              />
-            </ReactPlaceholder>
-          </div>
-        );
-      case 2:
         return <OnboardForm submitRef={formRef} />;
-      case 3:
-        return (
-          <VerificationForm
-            ref={verificationFormRef}
-            showMessage={showMessage}
-          />
-        );
+      default:
+        return;
     }
   };
 
   return (
     <div className={css(styles.root)}>
       <Head
-        title={"Onboard onto ResearchHub"}
+        title={"Complete your profile"}
         description={"Welcome to ResearchHub!"}
       />
-      <div className={css(styles.titleContainer)}>
-        <h1 className={css(styles.title)}>{formatStep()}</h1>
-      </div>
       <ComponentWrapper overrideStyle={styles.componentWrapper}>
+        <div className={css(styles.titleContainer)}>
+          <h1 className={css(styles.title)}>{formatStep()}</h1>
+          <Button
+            variant="text"
+            label="Skip"
+            customButtonStyle={styles.skipButtonStyle}
+            onClick={handleSetCompletedOnboarding}
+          />
+        </div>
         <div className={css(styles.pageContainer)}>
           <div className={css(styles.pageContent)}>{renderPage()}</div>
         </div>
+        <div className={css(styles.buttonRowContainer)}>
+          <Button
+            variant="text"
+            label="Skip"
+            customButtonStyle={styles.skipButtonStyle}
+            onClick={handleSetCompletedOnboarding}
+          />
+          <Button
+            label="Save & Finish"
+            disabled={saving}
+            onClick={saveUserInformation}
+          />
+        </div>
       </ComponentWrapper>
-      <div className={css(styles.buttonRowContainer)}>
-        <ButtonsRow {...formatButtons()} />
-      </div>
     </div>
   );
 };
 
-Index.getInitialProps = async ({ query, res }) => {
-  const { authorId, selectHubs } = query;
+Index.getInitialProps = async ({ query }) => {
+  const { authorId } = query;
 
-  return { authorId, selectHubs };
+  return { authorId };
 };
 
 const styles = StyleSheet.create({
@@ -379,12 +156,20 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     textAlign: "center",
     marginTop: 60,
     marginBottom: 40,
+  },
+  skipButtonStyle: {
+    color: colors.NEW_BLUE(1),
+    ":hover": {
+      color: colors.NEW_BLUE(1),
+      background: colors.NEW_BLUE(0.1),
+      opacity: 1,
+    },
   },
   form: {
     display: "flex",
@@ -433,6 +218,10 @@ const styles = StyleSheet.create({
   buttonRowContainer: {
     marginTop: 40,
     width: "100%",
+    flexDirection: "row",
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: 16,
     marginBottom: 40,
     "@media only screen and (max-width: 935px)": {
       marginBottom: 30,
@@ -498,7 +287,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  openOrcidConnectModal: ModalActions.openOrcidConnectModal,
   updateSubscribedHubs: HubActions.updateSubscribedHubs,
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,

@@ -4,8 +4,6 @@ import { StyleSheet, css } from "aphrodite";
 import { withRouter } from "next/router";
 import Modal from "react-modal";
 
-import { ModalActions } from "~/redux/modals";
-
 import colors from "~/config/themes/colors";
 import { modalStyles } from "~/config/themes/styles";
 
@@ -150,12 +148,9 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-  openOrcidConnectModal: ModalActions.openOrcidConnectModal,
 });
 
-const mapDispatchToProps = {
-  openOrcidConnectModal: ModalActions.openOrcidConnectModal,
-};
+const mapDispatchToProps = {};
 
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps)(OrcidConnectSuccessPage)

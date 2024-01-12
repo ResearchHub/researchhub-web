@@ -215,7 +215,6 @@ const mapDispatchToProps = {
   removeBanner: BannerActions.removeBanner,
   googleLogin: AuthActions.googleLogin,
   getUser: AuthActions.getUser,
-  openOrcidConnectModal: ModalActions.openOrcidConnectModal,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
 };

@@ -27,7 +27,7 @@ const GoogleLoginButton = (props) => {
         getUser().then((userAction) => {
           props.loginCallback && props.loginCallback();
           props.showSignupBanner && props.removeBanner();
-          if (!userAction?.user?.has_seen_orcid_connect_modal) {
+          if (!userAction?.user?.has_completed_onboarding) {
             sendAmpEvent({
               event_type: "user_signup",
               time: +new Date(),
@@ -138,7 +138,6 @@ const mapDispatchToProps = {
   googleYoloLogin: AuthActions.googleYoloLogin,
   googleLogin: AuthActions.googleLogin,
   getUser: AuthActions.getUser,
-  openOrcidConnectModal: ModalActions.openOrcidConnectModal,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   removeBanner: BannerActions.removeBanner,
