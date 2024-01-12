@@ -209,6 +209,7 @@ export const parsePaper = (raw: any): Paper => {
     abstractHtml: raw.abstract_src_markdown,
     type: "paper",
     apiDocumentType: "paper",
+    pdfCopyrightAllowsDisplay: Boolean(raw.pdf_copyright_allows_display),
     ...(raw.pdf_license && { license: raw.pdf_license }),
   };
 

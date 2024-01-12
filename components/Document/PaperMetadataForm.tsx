@@ -11,7 +11,22 @@ import updatePaperMetadataAPI from "./api/updatePaperMetadataAPI";
 import colors from "~/config/themes/colors";
 import HubSelectDropdown from "../Hubs/HubSelectDropdown";
 import { ClipLoader } from "react-spinners";
+import { components } from "react-select";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
+import FormSelect from "../Form/FormSelect";
+import { LICENSE_OPTIONS } from "~/config/types/licenseOptions";
 const { setMessage, showMessage } = MessageActions;
+
+const LicenseOptionWithDescription: React.FC<any> = (props) => {
+  return (
+    <components.Option {...props}>
+      <div>{props.data.label}</div>
+      <small style={{ opacity: 0.5, textTransform: "none" }}>
+        {props.data.description}
+      </small>
+    </components.Option>
+  );
+};
 
 interface FormProps {
   paper: Paper;
@@ -20,11 +35,16 @@ interface FormProps {
 }
 
 const PaperMetadataForm = ({ paper, onUpdate, metadata }: FormProps) => {
+  const user = useCurrentUser();
   const [fields, setFields] = useState({
     doi: paper.doi || "",
     publishedDate: formatDateStandard(paper.publishedDate, "MM/DD/YYYY"),
     title: paper.title || "",
     hubs: metadata.hubs,
+    pdfLicense:
+      LICENSE_OPTIONS.find(
+        (l) => l.value === paper.license || l.value === paper.raw.pdf_license
+      ) || LICENSE_OPTIONS[0],
   });
 
   const [saveInProgress, setSaveInProgress] = useState(false);
@@ -69,6 +89,7 @@ const PaperMetadataForm = ({ paper, onUpdate, metadata }: FormProps) => {
       doi: fields.doi,
       publishedDate: fields.publishedDate,
       hubs: fields.hubs.map((h) => h.id),
+      pdfLicense: fields.pdfLicense?.value,
     })
       .then(() => {
         onUpdate &&
@@ -77,6 +98,7 @@ const PaperMetadataForm = ({ paper, onUpdate, metadata }: FormProps) => {
             publishedDate: fields.publishedDate,
             doi: fields.doi,
             hubs: fields.hubs,
+            pdfLicense: fields.pdfLicense?.value,
           });
         dispatch(setMessage("Paper updated"));
 
@@ -148,6 +170,27 @@ const PaperMetadataForm = ({ paper, onUpdate, metadata }: FormProps) => {
           onChange={handleChange}
         />
       </div>
+      {user?.moderator && (
+        <div style={{ display: "flex" }}>
+          <FormSelect
+            containerStyle={formStyles.container}
+            id="pdfLicense"
+            label="PDF License"
+            reactStyles={{}}
+            inputStyle={formStyles.inputStyle}
+            reactSelect={{ styles: {} }}
+            onChange={(name, value) => {
+              handleChange("pdfLicense", value);
+            }}
+            selectComponents={{
+              Option: LicenseOptionWithDescription,
+            }}
+            options={LICENSE_OPTIONS}
+            value={fields.pdfLicense}
+          />
+          <div />
+        </div>
+      )}
 
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <Button disabled={saveInProgress} onClick={handleSubmit} type="submit">
