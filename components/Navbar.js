@@ -19,7 +19,6 @@ import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStat
 import RhSearchBar from "./SearchV2/RhSearchBar";
 import RootLeftSidebarSlider from "~/components/Home/sidebar/RootLeftSidebarSlider";
 import SlidingPane from "react-sliding-pane";
-import UserStateBanner from "./Banner/UserStateBanner";
 import RHLogo from "./Home/RHLogo";
 import LoginModal from "./Login/LoginModal";
 import Login from "./Login/Login";

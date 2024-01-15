@@ -20,7 +20,7 @@ import { AuthActions } from "~/redux/auth";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-import colors from "~/config/themes/colors";
+import colors, { alertColors } from "~/config/themes/colors";
 import { sanitizeNumber, formatBalance } from "~/config/utils/form";
 import {
   getEtherscanLink,
@@ -30,6 +30,10 @@ import {
 import { captureEvent } from "~/config/utils/events";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { partyPopper } from "~/config/themes/icons";
+import UserStateBanner from "../Banner/UserStateBanner";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/pro-regular-svg-icons";
+import Alert from "@mui/material/Alert";
 
 const DepositScreen = dynamic(() => import("../Ethereum/DepositScreen"));
 
@@ -536,6 +540,8 @@ class WithdrawalModal extends Component {
   renderWithdrawalForm = () => {
     const { ethAccount, amount, transactionFee } = this.state;
 
+    const isUnderInvestigation = this.props?.auth?.user?.probable_spammer;
+
     return (
       <form
         className={css(styles.networkContainer)}
@@ -593,9 +599,23 @@ class WithdrawalModal extends Component {
             {formatBalance(amount - transactionFee)}
           </div>
         </div>
+
+        {isUnderInvestigation ? (
+          <Alert severity="warning" className={css(styles.alert)}>
+            This account is currently under review. RSC withdrawal has
+            temporarily suspended until a moderator reviews this account.
+          </Alert>
+        ) : (
+          <Alert severity="warning" className={css(styles.alert)}>
+            RSC is not currently supported on exchanges. Only transfer to a
+            self-custody wallet that supports RSC such as MetaMask or Coinbase
+            Wallet
+          </Alert>
+        )}
+
         <div className={css(styles.buttons)}>
           <Button
-            disabled={!ethAccount}
+            disabled={!ethAccount || isUnderInvestigation}
             label={"Confirm"}
             type="submit"
             customButtonStyle={styles.button}
@@ -772,6 +792,14 @@ class WithdrawalModal extends Component {
 }
 
 const styles = StyleSheet.create({
+  alert: {
+    marginTop: 15,
+  },
+  banner: {
+    backgroundColor: alertColors.warning,
+    color: colors.BLACK(),
+    fontSize: 14,
+  },
   modal: {
     transform: "translateX(-50%)",
     top: "10%",
