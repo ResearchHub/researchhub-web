@@ -233,6 +233,7 @@ class WithdrawalModal extends Component {
     if (this.props.auth.user.probable_spammer) {
       return;
     }
+
     return fetch(API.WITHDRAW_COIN({}), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -277,8 +278,6 @@ class WithdrawalModal extends Component {
     const { showMessage, setMessage } = this.props;
     const { buttonEnabled, amount, transactionFee, userBalance, ethAccount } =
       this.state;
-
-    console.log(this.props.auth.user);
 
     if (this.props.auth.user.probable_spammer) {
       showMessage({ show: false });
@@ -338,14 +337,18 @@ class WithdrawalModal extends Component {
             data: param,
           });
           if (err.response.status === 429) {
-            showMessage({ show: false });
+            showMessage({ show: false, error: true });
             this.closeModal();
             return this.props.openRecaptchaPrompt(true);
+          } else if (err.response.status === 403) {
+            showMessage({ show: true, error: true });
+            setMessage("Cannot withdraw funds at this time.");
+          } else {
+            err.name = "";
+            showMessage({ show: false });
+            setMessage(err.toString());
+            showMessage({ show: true, error: true });
           }
-          err.name = "";
-          showMessage({ show: false });
-          setMessage(err.toString());
-          showMessage({ show: true, error: true });
         });
     } else {
       showMessage({ show: false });
