@@ -149,8 +149,6 @@ function AuthorPage(props) {
   const xTwitterRef = useRef();
   const currentUser = useCurrentUser();
 
-  console.log("curr", currentUser);
-
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
     return () => {
