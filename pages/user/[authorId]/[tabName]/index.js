@@ -76,6 +76,7 @@ import { captureEvent } from "~/config/utils/events";
 import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import UserStateBanner from "~/components/Banner/UserStateBanner";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
 
 const AUTHOR_USER_STATUS = {
   EXISTS: "EXISTS",
@@ -146,6 +147,7 @@ function AuthorPage(props) {
   const facebookRef = useRef();
   const linkedinRef = useRef();
   const xTwitterRef = useRef();
+  const currentUser = useCurrentUser();
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
@@ -971,13 +973,18 @@ function AuthorPage(props) {
     );
   });
 
+  const shouldSeeSuspensionBanner =
+    (currentUser?.moderator && author?.suspended_status) ||
+    (currentUser?.editorOf && author?.suspended_status) ||
+    author?.suspended_status?.is_suspended;
+
   return (
     <div
       className={css(styles.profilePageRoot)}
       vocab="https://schema.org/"
       typeof="Person"
     >
-      {author?.suspended_status && (
+      {shouldSeeSuspensionBanner && (
         <UserStateBanner
           probable_spammer={author.suspended_status?.probable_spammer}
           is_suspended={author.suspended_status?.is_suspended}

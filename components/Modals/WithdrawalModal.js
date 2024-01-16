@@ -20,7 +20,7 @@ import { AuthActions } from "~/redux/auth";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-import colors from "~/config/themes/colors";
+import colors, { alertColors } from "~/config/themes/colors";
 import { sanitizeNumber, formatBalance } from "~/config/utils/form";
 import {
   getEtherscanLink,
@@ -30,6 +30,10 @@ import {
 import { captureEvent } from "~/config/utils/events";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { partyPopper } from "~/config/themes/icons";
+import UserStateBanner from "../Banner/UserStateBanner";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/pro-regular-svg-icons";
+import Alert from "@mui/material/Alert";
 
 const DepositScreen = dynamic(() => import("../Ethereum/DepositScreen"));
 
@@ -229,6 +233,7 @@ class WithdrawalModal extends Component {
     if (this.props.auth.user.probable_spammer) {
       return;
     }
+
     return fetch(API.WITHDRAW_COIN({}), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -273,8 +278,6 @@ class WithdrawalModal extends Component {
     const { showMessage, setMessage } = this.props;
     const { buttonEnabled, amount, transactionFee, userBalance, ethAccount } =
       this.state;
-
-    console.log(this.props.auth.user);
 
     if (this.props.auth.user.probable_spammer) {
       showMessage({ show: false });
@@ -334,14 +337,18 @@ class WithdrawalModal extends Component {
             data: param,
           });
           if (err.response.status === 429) {
-            showMessage({ show: false });
+            showMessage({ show: false, error: true });
             this.closeModal();
             return this.props.openRecaptchaPrompt(true);
+          } else if (err.response.status === 403) {
+            showMessage({ show: true, error: true });
+            setMessage("Cannot withdraw funds at this time.");
+          } else {
+            err.name = "";
+            showMessage({ show: false });
+            setMessage(err.toString());
+            showMessage({ show: true, error: true });
           }
-          err.name = "";
-          showMessage({ show: false });
-          setMessage(err.toString());
-          showMessage({ show: true, error: true });
         });
     } else {
       showMessage({ show: false });
@@ -536,6 +543,8 @@ class WithdrawalModal extends Component {
   renderWithdrawalForm = () => {
     const { ethAccount, amount, transactionFee } = this.state;
 
+    const isUnderInvestigation = this.props?.auth?.user?.probable_spammer;
+
     return (
       <form
         className={css(styles.networkContainer)}
@@ -593,9 +602,26 @@ class WithdrawalModal extends Component {
             {formatBalance(amount - transactionFee)}
           </div>
         </div>
+
+        {isUnderInvestigation && (
+          <Alert severity="warning" className={css(styles.alert)}>
+            Your account is currently under review. RSC withdrawal has been
+            temporarily suspended until a moderator reviews your account.
+            Contact us on{" "}
+            <Link
+              href="https://discord.com/invite/ZcCYgcnUp5"
+              style={{ color: colors.NEW_BLUE() }}
+              target="_blank"
+            >
+              Discord
+            </Link>{" "}
+            if you have questions.
+          </Alert>
+        )}
+
         <div className={css(styles.buttons)}>
           <Button
-            disabled={!ethAccount}
+            disabled={!ethAccount || isUnderInvestigation}
             label={"Confirm"}
             type="submit"
             customButtonStyle={styles.button}
@@ -772,6 +798,14 @@ class WithdrawalModal extends Component {
 }
 
 const styles = StyleSheet.create({
+  alert: {
+    marginTop: 15,
+  },
+  banner: {
+    backgroundColor: alertColors.warning,
+    color: colors.BLACK(),
+    fontSize: 14,
+  },
   modal: {
     transform: "translateX(-50%)",
     top: "10%",
@@ -810,11 +844,11 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid rgb(236, 239, 241)",
     color: "rgba(17, 51, 83, 0.6)",
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
   },
   tabActive: {
-    color: colors.BLUE(),
+    color: colors.NEW_BLUE(),
     border: "none",
     backgroundColor: "#FFF",
   },
@@ -905,7 +939,7 @@ const styles = StyleSheet.create({
   link: {
     cursor: "pointer",
     textDecoration: "unset",
-    color: colors.BLUE(),
+    color: colors.NEW_BLUE(),
     ":hover": {
       textDecoration: "underline",
     },
@@ -1058,7 +1092,7 @@ const styles = StyleSheet.create({
     minHeight: "unset",
   },
   buttons: {
-    marginTop: 35,
+    marginTop: 20,
     width: "100%",
   },
   button: {

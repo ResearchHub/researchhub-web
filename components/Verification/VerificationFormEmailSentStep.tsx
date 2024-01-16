@@ -1,6 +1,6 @@
 import colors from "~/config/themes/colors";
 import Button from "../Form/Button";
-import { faEnvelopeCircleCheck } from "@fortawesome/pro-solid-svg-icons";
+import { faEnvelopeCircleCheck, faExclamation, faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 
@@ -36,7 +36,8 @@ const VerificationFormEmailSentStep = ({ onClose }: { onClose: Function }) => {
         </p>
         <div className={css(styles.divider)}></div>
         <p className={css(styles.notice)}>
-          Above requirements are mendatory and must be met for verification. Please allow up to 72 hours for requests.
+          <FontAwesomeIcon icon={faExclamationTriangle} style={{ marginRight: 10, }} />
+          Please allow up to 72 hours for requests.
         </p>        
       </div>
       <div style={{ width: 200, marginTop: 50 }}>

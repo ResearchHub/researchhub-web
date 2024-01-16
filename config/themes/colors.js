@@ -131,4 +131,10 @@ export const mainNavIcons = {
   color: "rgb(154 154 154)",
 };
 
+export const alertColors = {
+  warning: `rgb(255, 244, 229)`,
+  warningIcon: colors.ORANGE_DARK2(),
+  warningText: "rgb(102, 60, 0)",
+};
+
 export default colors;

@@ -19,7 +19,6 @@ import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStat
 import RhSearchBar from "./SearchV2/RhSearchBar";
 import RootLeftSidebarSlider from "~/components/Home/sidebar/RootLeftSidebarSlider";
 import SlidingPane from "react-sliding-pane";
-import UserStateBanner from "./Banner/UserStateBanner";
 import RHLogo from "./Home/RHLogo";
 import LoginModal from "./Login/LoginModal";
 import Login from "./Login/Login";
@@ -231,16 +230,6 @@ const Navbar = (props) => {
           )}
         </div>
       </div>
-      {/* 
-        On profile page, we show <UserStateBanner /> based on the profile of the user.
-        We do not want to show this on that page to avoid showing the banner twice.
-      */}
-      {user && !isProfilePage && (
-        <UserStateBanner
-          probable_spammer={user.probable_spammer}
-          is_suspended={user.is_suspended}
-        />
-      )}
     </Fragment>
   );
 };
