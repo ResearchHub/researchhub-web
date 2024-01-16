@@ -8,9 +8,9 @@ import {
   faArrowRight,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
-  faFacebookF,
   faXTwitter,
   faLinkedin,
+  faGoogleScholar,
 } from "@fortawesome/free-brands-svg-icons";
 import {
   faEllipsis,
@@ -88,9 +88,9 @@ const AUTHOR_USER_STATUS = {
 const SECTIONS = {
   name: "name",
   description: "description",
-  facebook: "facebook",
   linkedin: "linkedin",
-  twitter: "x / twitter",
+  twitter: "twitter",
+  scholar: "google_scholar",
   picture: "picture",
 };
 
@@ -104,7 +104,7 @@ function AuthorPage(props) {
   const [isBalanceVisible, setIsBalanceVisible] = useState(false);
 
   // User External Links
-  const [editFacebook, setEditFacebook] = useState(false);
+  const [editGoogleScholar, setEditGoogleScholar] = useState(false);
   const [editLinkedin, setEditLinkedin] = useState(false);
   const [editXTwitter, setEditXTwitter] = useState(false);
 
@@ -144,7 +144,7 @@ function AuthorPage(props) {
     doesAuthorHaveUser &&
     auth.user.id !== authorUserID;
 
-  const facebookRef = useRef();
+  const googleScholarRef = useRef();
   const linkedinRef = useRef();
   const xTwitterRef = useRef();
   const currentUser = useCurrentUser();
@@ -318,7 +318,7 @@ function AuthorPage(props) {
       setName(`${author.first_name} ${author.last_name}`);
     }
     setSocialLinks({
-      facebook: author.facebook,
+      google_scholar: author.google_scholar,
       linkedin: author.linkedin,
       twitter: author.twitter,
     });
@@ -344,8 +344,11 @@ function AuthorPage(props) {
 
   /* TODO: calvinhlee - what is this function? */
   function handleOutsideClick(e) {
-    if (facebookRef.current && !facebookRef.current.contains(e.target)) {
-      setEditFacebook(false);
+    if (
+      googleScholarRef.current &&
+      !googleScholarRef.current.contains(e.target)
+    ) {
+      setEditGoogleScholar(false);
     }
     if (xTwitterRef.current && !xTwitterRef.current.contains(e.target)) {
       setEditXTwitter(false);
@@ -498,15 +501,15 @@ function AuthorPage(props) {
       }
       change = https + change;
     }
-    if (section === SECTIONS.facebook) {
-      changes.facebook = change;
+    if (section === SECTIONS.scholar) {
+      changes.google_scholar = change;
     } else if (section === SECTIONS.linkedin) {
       changes.linkedin = change;
     } else if (section === SECTIONS.twitter) {
       changes.twitter = change;
     }
 
-    setEditFacebook(false);
+    setEditGoogleScholar(false);
     setEditLinkedin(false);
     setEditXTwitter(false);
 
@@ -576,9 +579,16 @@ function AuthorPage(props) {
   };
 
   const renderSocialEdit = (social) => {
+    let title = `${social} Link`;
+    if (social === "google_scholar") {
+      title = "Google Scholar Link";
+    }
+    if (social === "twitter") {
+      title = "X / Twitter Link";
+    }
     return (
       <div className={css(styles.socialEditContainer)}>
-        <div className={css(styles.socialTitle)}>{`${social} Link`}</div>
+        <div className={css(styles.socialTitle)}>{title}</div>
         <div className={css(styles.socialInputContainer)}>
           <input
             className={css(styles.socialInput)}
@@ -726,14 +736,15 @@ function AuthorPage(props) {
       isEditing: editXTwitter,
     },
     {
-      link: safeGuardURL(author.facebook),
-      icon: <FontAwesomeIcon icon={faFacebookF}></FontAwesomeIcon>,
-      nodeRef: facebookRef,
-      dataTip: "Set Facebook Profile",
-      onClick: () => setEditFacebook(true),
-      renderDropdown: () => editFacebook && renderSocialEdit(SECTIONS.facebook),
-      customStyles: styles.facebook,
-      isEditing: editFacebook,
+      link: safeGuardURL(author.google_scholar),
+      icon: <FontAwesomeIcon icon={faGoogleScholar}></FontAwesomeIcon>,
+      nodeRef: googleScholarRef,
+      dataTip: "Set Google Scholar Profile",
+      onClick: () => setEditGoogleScholar(true),
+      renderDropdown: () =>
+        editGoogleScholar && renderSocialEdit(SECTIONS.scholar),
+      customStyles: styles.googleScholar,
+      isEditing: editGoogleScholar,
     },
   ].map((app, i) => {
     const {
@@ -1475,8 +1486,8 @@ const styles = StyleSheet.create({
   xTwitter: {
     background: "black",
   },
-  facebook: {
-    background: "#3B5998",
+  googleScholar: {
+    background: "#4285F4",
   },
   orcid: {
     background: "none",

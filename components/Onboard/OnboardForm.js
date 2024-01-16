@@ -25,6 +25,12 @@ const EducationModal = dynamic(() =>
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faLinkedin,
+  faSquareXTwitter,
+  faGoogleScholar,
+} from "@fortawesome/free-brands-svg-icons";
 
 class OnboardForm extends Component {
   constructor(props) {
@@ -105,6 +111,10 @@ class OnboardForm extends Component {
       twitter:
         this.props.author && this.props.author.twitter
           ? this.props.author.twitter
+          : "",
+      google_scholar:
+        this.props.author && this.props.author.google_scholar
+          ? this.props.author.google_scholar
           : "",
       education:
         this.props.author && this.props.author.education
@@ -204,6 +214,9 @@ class OnboardForm extends Component {
       description: this.state.description,
       education,
       headline: this.state.headline,
+      linkedin: this.state.linkedin,
+      twitter: this.state.twitter,
+      google_scholar: this.state.google_scholar,
     };
 
     fetch(
@@ -394,21 +407,19 @@ class OnboardForm extends Component {
                 <div className={css(styles.profilePictureHover)}>Update</div>
               )}
             </div>
-            <div className={css(styles.column)}>
-              {this.renderFormInput({
-                label: "First Name",
-                id: "first_name",
-                required: true,
-                value: this.state.first_name,
-              })}
-              {this.renderFormInput({
-                label: "Last Name",
-                id: "last_name",
-                required: true,
-                value: this.state.last_name,
-              })}
-            </div>
           </div>
+          {this.renderFormInput({
+            label: "First name",
+            id: "first_name",
+            required: true,
+            value: this.state.first_name,
+          })}
+          {this.renderFormInput({
+            label: "Last name",
+            id: "last_name",
+            required: true,
+            value: this.state.last_name,
+          })}
           {this.renderFormInput({
             label: "Headline",
             id: "headline",
@@ -422,6 +433,39 @@ class OnboardForm extends Component {
             id: "description",
             value: this.state.description,
           })}
+          {/* Social Links */}
+          <div className={css(styles.inputLabel, styles.text)}>
+            Social Links
+          </div>
+          <div className={css(styles.formInputContainer)}>
+            <FormInput
+              id="linkedin"
+              onChange={this.handleFormChange}
+              containerStyle={[styles.formInput, styles.socialInput]}
+              value={this.state.linkedin}
+              icon={<FontAwesomeIcon icon={faLinkedin} />}
+              iconStyles={[styles.socialIcon, styles.linkedInIcon]}
+              placeholder="https://linkedin.com/in/username"
+            />
+            <FormInput
+              id="twitter"
+              onChange={this.handleFormChange}
+              containerStyle={[styles.formInput, styles.socialInput]}
+              value={this.state.twitter}
+              icon={<FontAwesomeIcon icon={faSquareXTwitter} />}
+              iconStyles={[styles.socialIcon, styles.xTwitterIcon]}
+              placeholder="https://twitter.com/username"
+            />
+            <FormInput
+              id="google_scholar"
+              onChange={this.handleFormChange}
+              containerStyle={[styles.formInput, styles.socialInput]}
+              value={this.state.google_scholar}
+              icon={<FontAwesomeIcon icon={faGoogleScholar} />}
+              iconStyles={[styles.socialIcon, styles.googleScholarIcon]}
+              placeholder="https://scholar.google.com/citations?user=username"
+            />
+          </div>
           <AvatarUpload
             isOpen={avatarUploadIsOpen}
             closeModal={() => this.toggleAvatarModal(false)}
@@ -485,10 +529,10 @@ const styles = StyleSheet.create({
   },
   titleHeader: {
     display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
+    flexDirection: "column",
+    alignItems: "center",
     width: "100%",
-    paddingBottom: 10,
+    paddingBottom: 24,
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       alignItems: "center",
@@ -514,6 +558,10 @@ const styles = StyleSheet.create({
 
     width: "100%",
   },
+  socialInput: {
+    marginBottom: 12,
+    minHeight: "unset",
+  },
 
   formTextAreaContainer: {
     marginTop: 10,
@@ -536,6 +584,17 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       width: "100%",
     },
+  },
+  inputLabel: {
+    fontWeight: 500,
+    marginBottom: 10,
+    color: "#232038",
+    display: "flex",
+    justifyContent: "flex-start",
+  },
+  text: {
+    fontFamily: "Roboto",
+    fontSize: 16,
   },
   rippleClass: {
     width: "100%",
@@ -640,6 +699,23 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       padding: 25,
     },
+  },
+
+  socialIcon: {
+    width: 24,
+    height: 24,
+    fontSize: 24,
+    top: 24,
+  },
+  linkedInIcon: {
+    color: "#0077B5",
+  },
+  xTwitterIcon: {
+    color: "black",
+  },
+  googleScholarIcon: {
+    color: "#4285F4",
+    fontSize: 22,
   },
 });
 

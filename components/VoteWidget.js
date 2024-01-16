@@ -105,6 +105,7 @@ const VoteWidget = (props) => {
       setDownvoteSelected(false);
       // TODO: show a user state here?
     } else {
+      dispatch(AuthActions.checkUserFirstTime(true));
       if (isPaper || type === "Discussion") {
         let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
         dispatch(AuthActions.checkUserFirstTime(firstTime));

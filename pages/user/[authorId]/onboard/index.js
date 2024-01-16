@@ -77,12 +77,10 @@ const Index = (props) => {
       <ComponentWrapper overrideStyle={styles.componentWrapper}>
         <div className={css(styles.titleContainer)}>
           <h1 className={css(styles.title)}>{formatStep()}</h1>
-          <Button
-            variant="text"
-            label="Skip"
-            customButtonStyle={styles.skipButtonStyle}
-            onClick={handleSetCompletedOnboarding}
-          />
+          <p className={css(styles.subtitle)}>
+            ResearchHub is a social platform, setting up your profile ensures
+            others can recognize you and your work.
+          </p>
         </div>
         <div className={css(styles.pageContainer)}>
           <div className={css(styles.pageContent)}>{renderPage()}</div>
@@ -142,6 +140,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     fontWeight: 400,
+    maxWidth: 500,
     color: "#6f6c7d",
     padding: 0,
     margin: 0,
@@ -156,8 +155,8 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: "column",
+    justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
     marginTop: 60,
@@ -220,8 +219,8 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     display: "flex",
-    justifyContent: "flex-end",
-    gap: 16,
+    justifyContent: "center",
+    gap: 24,
     marginBottom: 40,
     "@media only screen and (max-width: 935px)": {
       marginBottom: 30,

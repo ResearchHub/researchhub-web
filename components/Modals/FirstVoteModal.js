@@ -89,40 +89,21 @@ const FirstVoteModal = (props) => {
     <BaseModal
       isOpen={store.getState().modals.openFirstVoteModal}
       closeModal={closeModal}
-      title={"Welcome to ResearchHub!"}
+      title={"Your contributions earn you ResearchCoin"}
       modalContentStyle={styles.modalContentStyle}
-      subtitle={() => {
-        return (
-          <div className={css(styles.row)}>
-            Here's a ResearchCoin
-            <img
-              className={css(styles.coinIcon)}
-              src={"/static/icons/coin-filled.png"}
-              alt="RSC Coin"
-            />
-          </div>
-        );
-      }}
     >
       <div className={css(styles.modalBody)}>
-        <Confetti
-          recycle={recycle}
-          numberOfPieces={300}
-          width={584}
-          height={469}
-        />
         <div className={css(styles.text)}>
-          For the first month, all major actions you take on the site will help
-          you earn ResearchCoin (up to 200 RSC). After the month is over, you
-          will still earn coins on major actions, but not every single one.
+          Major actions that contribute valuable scientific content or advance
+          open science on ResearchHub will earn you ResearchCoin.
         </div>
         <div className={css(styles.text)}>
           Our goal with ResearchCoin is to help incentivize and reward great
-          content and great research.
+          content, great research and open science.
         </div>
         <div className={css(styles.body, reveal && styles.reveal)}>
           <div className={css(styles.hyperlink)} onClick={openLinkInTab}>
-            Click here to learn more about RSC.
+            Learn more about RSC
           </div>
           <div className={css(styles.button, styles.showButton)}>
             <Button label={"Close"} onClick={closeModal} />
@@ -149,6 +130,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     zIndex: 9999999,
     padding: 16,
+    paddingTop: 40,
     boxSizing: "border-box",
   },
   body: {
@@ -176,6 +158,7 @@ const styles = StyleSheet.create({
     zIndex: 3,
   },
   text: {
+    lineHeight: 1.4,
     margin: "16px 0px",
   },
   button: {
@@ -191,7 +174,7 @@ const styles = StyleSheet.create({
   },
   modalContentStyle: {
     overflow: "hidden",
-    maxWidth: 469,
+    maxWidth: 500,
   },
 });
 
