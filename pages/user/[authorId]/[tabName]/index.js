@@ -11,6 +11,7 @@ import {
   faXTwitter,
   faLinkedin,
   faGoogleScholar,
+  faOrcid,
 } from "@fortawesome/free-brands-svg-icons";
 import {
   faEllipsis,
@@ -43,7 +44,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Loader from "~/components/Loader/Loader";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
-import OrcidConnectButton from "~/components/OrcidConnectButton";
 import UserTransactions from "~/components/Author/Tabs/UserTransactions";
 import AuthorActivityFeed from "~/components/Author/Feed/AuthorActivityFeed";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
@@ -90,6 +90,7 @@ const SECTIONS = {
   description: "description",
   linkedin: "linkedin",
   twitter: "twitter",
+  orcid: "orcid",
   scholar: "google_scholar",
   picture: "picture",
 };
@@ -107,6 +108,7 @@ function AuthorPage(props) {
   const [editGoogleScholar, setEditGoogleScholar] = useState(false);
   const [editLinkedin, setEditLinkedin] = useState(false);
   const [editXTwitter, setEditXTwitter] = useState(false);
+  const [editOrcid, setEditOrcid] = useState(false);
 
   // User Profile Update
   const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
@@ -147,6 +149,7 @@ function AuthorPage(props) {
   const googleScholarRef = useRef();
   const linkedinRef = useRef();
   const xTwitterRef = useRef();
+  const orcidRef = useRef();
   const currentUser = useCurrentUser();
 
   useEffect(() => {
@@ -321,6 +324,7 @@ function AuthorPage(props) {
       google_scholar: author.google_scholar,
       linkedin: author.linkedin,
       twitter: author.twitter,
+      orcid: author.orcid_id ? `https://orcid.org/${author.orcid_id}` : null,
     });
   }, [author, user]);
 
@@ -355,6 +359,9 @@ function AuthorPage(props) {
     }
     if (linkedinRef.current && !linkedinRef.current.contains(e.target)) {
       setEditLinkedin(false);
+    }
+    if (orcidRef.current && !orcidRef.current.contains(e.target)) {
+      setEditOrcid(false);
     }
   }
 
@@ -507,11 +514,17 @@ function AuthorPage(props) {
       changes.linkedin = change;
     } else if (section === SECTIONS.twitter) {
       changes.twitter = change;
+    } else if (section === SECTIONS.orcid) {
+      const orcidId = change.split("https://orcid.org/").pop().trim();
+      if (orcidId) {
+        changes.orcid_id = orcidId;
+      }
     }
 
     setEditGoogleScholar(false);
     setEditLinkedin(false);
     setEditXTwitter(false);
+    setEditOrcid(false);
 
     await dispatch(
       AuthorActions.saveAuthorChanges({ changes, authorId: author.id })
@@ -586,6 +599,9 @@ function AuthorPage(props) {
     if (social === "twitter") {
       title = "X / Twitter Link";
     }
+    if (social === "orcid") {
+      title = "ORCiD Link";
+    }
     return (
       <div className={css(styles.socialEditContainer)}>
         <div className={css(styles.socialTitle)}>{title}</div>
@@ -622,46 +638,6 @@ function AuthorPage(props) {
   const closeRemoveProfile = () => {
     setExtraProfileOptionsIsOpen(false);
   };
-
-  const authorOrcidId = !isNullOrUndefined(author) ? author.orcid_id : null;
-
-  const orcidLinkButton = !isNullOrUndefined(authorOrcidId) ? (
-    <a
-      className={css(styles.link, styles.socialMedia)}
-      target="_blank"
-      href={`https://orcid.org/${authorOrcidId}`}
-      data-tip={"Open Orcid Profile"}
-      rel="noreferrer noopener"
-    >
-      <img src="/static/icons/orcid.png" className={css(styles.orcidLogo)} />
-    </a>
-  ) : (
-    <div
-      className={css(
-        styles.socialMedia,
-        styles.orcid,
-        !authorOrcidId && styles.noSocial
-      )}
-      data-tip={allowEdit ? "Connect Orcid" : null}
-    >
-      {allowEdit ? (
-        <OrcidConnectButton
-          hostname={hostname}
-          refreshProfileOnSuccess={false}
-          customLabel={"Connect ORCiD"}
-          styles={styles.orcidButton}
-          iconButton={true}
-        >
-          <img
-            src="/static/icons/orcid.png"
-            className={css(styles.orcidLogo)}
-          />
-        </OrcidConnectButton>
-      ) : (
-        <img src="/static/icons/orcid.png" className={css(styles.orcidLogo)} />
-      )}
-    </div>
-  );
 
   const authorRscBalance =
     !isNullOrUndefined(author.user) &&
@@ -718,7 +694,8 @@ function AuthorPage(props) {
     </div>
   );
 
-  const safeGuardURL = (url) => (!isNullOrUndefined(url) ? SafeURL(url) : null);
+  const safeGuardURL = (url) =>
+    !isNullOrUndefined(url) && !isEmpty(url) ? SafeURL(url) : null;
   const socialMediaLinkButtons = [
     {
       link: safeGuardURL(author.linkedin),
@@ -750,6 +727,18 @@ function AuthorPage(props) {
         editGoogleScholar && renderSocialEdit(SECTIONS.scholar),
       customStyles: styles.googleScholar,
       isEditing: editGoogleScholar,
+    },
+    {
+      link: safeGuardURL(
+        author.orcid_id ? `https://orcid.org/${author.orcid_id}` : null
+      ),
+      icon: <FontAwesomeIcon icon={faOrcid}></FontAwesomeIcon>,
+      nodeRef: orcidRef,
+      dataTip: "Set ORCiD Profile",
+      onClick: () => setEditOrcid(true),
+      renderDropdown: () => editOrcid && renderSocialEdit(SECTIONS.orcid),
+      customStyles: styles.orcid,
+      isEditing: editOrcid,
     },
   ].map((app, i) => {
     const {
@@ -917,7 +906,6 @@ function AuthorPage(props) {
   const userLinks = (
     <div className={css(styles.socialLinks)}>
       {socialMediaLinkButtons}
-      {orcidLinkButton}
       {/* <GenericMenu
         softHide={true}
         options={extraProfileOptions}
@@ -1355,19 +1343,6 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
-  connectOrcid: {
-    marginTop: 16,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
-  },
-  mobileConnectOrcid: {
-    display: "none",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "flex",
-      background: "#FFF",
-    },
-  },
   socialLinks: {
     display: "flex",
     position: "relative",
@@ -1412,13 +1387,6 @@ const styles = StyleSheet.create({
       marginTop: 15,
       marginBottom: 0,
       alignItems: "start",
-    },
-  },
-  orcidAvailable: {
-    marginBottom: 10,
-    marginLeft: 0,
-    "@media only screen and (min-width: 1280px)": {
-      flexDirection: "column",
     },
   },
   educationSummaryContainer: {
@@ -1495,7 +1463,7 @@ const styles = StyleSheet.create({
     background: "#4285F4",
   },
   orcid: {
-    background: "none",
+    background: "#A6CE39",
   },
   shareLink: {
     background: colors.BLUE(),
@@ -1647,8 +1615,7 @@ const styles = StyleSheet.create({
   socialEditContainer: {
     position: "absolute",
     bottom: -90,
-    left: "50%",
-    transform: "translateX(-50%)",
+    right: "0",
     background: "#fff",
     boxShadow: "0 5px 10px 0 #ddd",
     padding: 10,
@@ -1791,25 +1758,6 @@ const styles = StyleSheet.create({
   rscIcon: {
     width: 18,
     verticalAlign: "-3px",
-  },
-  orcidButton: {
-    width: 180,
-    height: 35,
-    fontSize: 14,
-    "@media only screen and (max-width: 415px)": {
-      height: 35,
-      background: "#fff",
-    },
-  },
-  orcidSection: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  orcidLogo: {
-    height: 35,
-    width: 35,
-    objectFit: "contain",
   },
   hidden: {
     visibility: "hidden",

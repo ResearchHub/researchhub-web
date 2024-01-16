@@ -30,6 +30,7 @@ import {
   faLinkedin,
   faSquareXTwitter,
   faGoogleScholar,
+  faOrcid,
 } from "@fortawesome/free-brands-svg-icons";
 
 class OnboardForm extends Component {
@@ -38,7 +39,6 @@ class OnboardForm extends Component {
     this.initialState = this.mapStateFromProps();
     this.state = {
       ...this.initialState,
-      hoverAvatar: false,
       hoverEducation: false,
       allowEdit: true,
       avatarUploadIsOpen: false,
@@ -112,6 +112,10 @@ class OnboardForm extends Component {
         this.props.author && this.props.author.twitter
           ? this.props.author.twitter
           : "",
+      orcid:
+        this.props.author && this.props.author.orcid_id
+          ? `https://orcid.org/${this.props.author.orcid_id}`
+          : "",
       google_scholar:
         this.props.author && this.props.author.google_scholar
           ? this.props.author.google_scholar
@@ -125,14 +129,6 @@ class OnboardForm extends Component {
           ? this.props.author.headline
           : { title: "", isPublic: true },
     };
-  };
-
-  onMouseEnterAvatar = () => {
-    !this.state.hoverAvatar && this.setState({ hoverAvatar: true });
-  };
-
-  onMouseLeaveAvatar = () => {
-    this.state.hoverAvatar && this.setState({ hoverAvatar: false });
   };
 
   openEducationModal = (activeIndex) => {
@@ -207,6 +203,7 @@ class OnboardForm extends Component {
     showMessage({ show: true, load: true });
 
     const education = this.state.education.filter((el) => el.summary);
+    const orcidID = this.state.orcid.split("/").pop().trim();
 
     const params = {
       first_name: this.state.first_name,
@@ -216,6 +213,7 @@ class OnboardForm extends Component {
       headline: this.state.headline,
       linkedin: this.state.linkedin,
       twitter: this.state.twitter,
+      orcid_id: orcidID ? orcidID : null,
       google_scholar: this.state.google_scholar,
     };
 
@@ -379,7 +377,7 @@ class OnboardForm extends Component {
     );
   };
   render() {
-    const { hoverAvatar, allowEdit, avatarUploadIsOpen } = this.state;
+    const { allowEdit, avatarUploadIsOpen } = this.state;
     const { author, modals } = this.props;
 
     return (
@@ -403,7 +401,7 @@ class OnboardForm extends Component {
               draggable={false}
             >
               <AuthorAvatar author={author} disableLink={true} size={120} />
-              {allowEdit && hoverAvatar && (
+              {allowEdit && (
                 <div className={css(styles.profilePictureHover)}>Update</div>
               )}
             </div>
@@ -454,7 +452,16 @@ class OnboardForm extends Component {
               value={this.state.twitter}
               icon={<FontAwesomeIcon icon={faSquareXTwitter} />}
               iconStyles={[styles.socialIcon, styles.xTwitterIcon]}
-              placeholder="https://twitter.com/username"
+              placeholder="https://x.com/username"
+            />
+            <FormInput
+              id="orcid"
+              onChange={this.handleFormChange}
+              containerStyle={[styles.formInput, styles.socialInput]}
+              value={this.state.orcid}
+              icon={<FontAwesomeIcon icon={faOrcid} />}
+              iconStyles={[styles.socialIcon, styles.orcidIcon]}
+              placeholder="https://orcid.org/0000-0000-0000-0000"
             />
             <FormInput
               id="google_scholar"
@@ -517,13 +524,14 @@ const styles = StyleSheet.create({
   profilePictureHover: {
     width: 120,
     height: 60,
+    fontWeight: 400,
     borderRadius: "0 0 100px 100px",
     display: "flex",
     justifyContent: "center",
-    paddingTop: 5,
+    paddingTop: 8,
     boxSizing: "border-box",
     position: "absolute",
-    background: "rgba(0, 0, 0, .3)",
+    background: "rgba(0, 0, 0, .5)",
     color: "#fff",
     bottom: 0,
   },
@@ -715,6 +723,10 @@ const styles = StyleSheet.create({
   },
   googleScholarIcon: {
     color: "#4285F4",
+    fontSize: 22,
+  },
+  orcidIcon: {
+    color: "#A6CE39",
     fontSize: 22,
   },
 });

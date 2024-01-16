@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useDispatch, useStore } from "react-redux";
-import Confetti from "react-confetti";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -15,6 +14,7 @@ import { ModalActions } from "~/redux/modals";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
+import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 
 const FirstVoteModal = (props) => {
   const dispatch = useDispatch();
@@ -79,8 +79,7 @@ const FirstVoteModal = (props) => {
 
   function openLinkInTab(e) {
     e.stopPropagation();
-    let url =
-      "https://www.notion.so/researchhub/ResearchCoin-21d1af8428824915a4d1f7c0b6b77cb4";
+    let url = "https://docs.researchhub.com/researchcoin/what-is-researchcoin";
     let win = window.open(url, "_blank");
     win.focus();
   }
@@ -89,7 +88,12 @@ const FirstVoteModal = (props) => {
     <BaseModal
       isOpen={store.getState().modals.openFirstVoteModal}
       closeModal={closeModal}
-      title={"Your contributions earn you ResearchCoin"}
+      title={
+        <>
+          Your contributions earn you ResearchCoin
+          <ResearchCoinIcon overrideStyle={styles.coinIcon} />
+        </>
+      }
       modalContentStyle={styles.modalContentStyle}
     >
       <div className={css(styles.modalBody)}>
@@ -98,8 +102,8 @@ const FirstVoteModal = (props) => {
           open science on ResearchHub will earn you ResearchCoin.
         </div>
         <div className={css(styles.text)}>
-          Our goal with ResearchCoin is to help incentivize and reward great
-          content, great research and open science.
+          Our goal with ResearchCoin is to incentivize and reward great content,
+          great research and open science.
         </div>
         <div className={css(styles.body, reveal && styles.reveal)}>
           <div className={css(styles.hyperlink)} onClick={openLinkInTab}>
@@ -116,8 +120,8 @@ const FirstVoteModal = (props) => {
 
 const styles = StyleSheet.create({
   coinIcon: {
-    height: 20,
-    marginLeft: 8,
+    marginLeft: 5,
+    transform: "translateY(4px)",
   },
   row: {
     display: "flex",
@@ -131,6 +135,7 @@ const styles = StyleSheet.create({
     zIndex: 9999999,
     padding: 16,
     paddingTop: 40,
+    paddingBottom: 0,
     boxSizing: "border-box",
   },
   body: {
@@ -175,6 +180,8 @@ const styles = StyleSheet.create({
   modalContentStyle: {
     overflow: "hidden",
     maxWidth: 500,
+    padding: 25,
+    paddingTop: 40,
   },
 });
 

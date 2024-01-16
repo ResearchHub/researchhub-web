@@ -15,6 +15,7 @@ import ComponentWrapper from "../../../../components/ComponentWrapper";
 import { MessageActions } from "../../../../redux/message";
 import Button from "~/components/Form/Button";
 import { setCompletedOnboardingApi } from "~/components/Onboard/api/setCompletedOnboardingApi";
+import { breakpoints } from "~/config/themes/screen";
 
 const Index = (props) => {
   // onboard flow
@@ -27,6 +28,15 @@ const Index = (props) => {
       top: 0,
     });
   }, [page]);
+
+  useEffect(() => {
+    // Cleanup function to be called when component unmounts
+    return () => {
+      // If user leaves the page without completing onboarding,
+      // we assume they're "skipping"
+      handleSetCompletedOnboarding();
+    };
+  }, []);
 
   let formRef = useRef();
 
@@ -152,6 +162,11 @@ const styles = StyleSheet.create({
   },
   componentWrapper: {
     margin: "unset",
+    "@media only screen and (min-width: 300px)": {
+      width: "100%",
+      paddingRight: 16,
+      paddingLeft: 16,
+    },
   },
   titleContainer: {
     display: "flex",
@@ -161,6 +176,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 60,
     marginBottom: 40,
+    [`@media (max-width: ${breakpoints.mobile.str}px)`]: {
+      paddingLeft: 16,
+      paddingRight: 16,
+    },
   },
   skipButtonStyle: {
     color: colors.NEW_BLUE(1),
@@ -183,6 +202,8 @@ const styles = StyleSheet.create({
     border: "1px solid #ddd",
     borderRadius: 4,
     padding: "30px 60px",
+    maxWidth: 800,
+    margin: "0 auto",
     "@media only screen and (max-width: 935px)": {
       minWidth: "unset",
       width: 600,
@@ -190,7 +211,7 @@ const styles = StyleSheet.create({
       marginTop: 16,
     },
     "@media only screen and (max-width: 665px)": {
-      width: "calc(100% - 16px)",
+      width: "calc(100% - 32px)",
       padding: 16,
     },
   },
