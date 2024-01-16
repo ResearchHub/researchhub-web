@@ -603,16 +603,19 @@ class WithdrawalModal extends Component {
           </div>
         </div>
 
-        {isUnderInvestigation ? (
+        {isUnderInvestigation && (
           <Alert severity="warning" className={css(styles.alert)}>
-            This account is currently under review. RSC withdrawal has
-            temporarily suspended until a moderator reviews this account.
-          </Alert>
-        ) : (
-          <Alert severity="warning" className={css(styles.alert)}>
-            RSC is not currently supported on exchanges. Only transfer to a
-            self-custody wallet that supports RSC such as MetaMask or Coinbase
-            Wallet
+            Your account is currently under review. RSC withdrawal has been
+            temporarily suspended until a moderator reviews your account.
+            Contact us on{" "}
+            <Link
+              href="https://discord.com/invite/ZcCYgcnUp5"
+              style={{ color: colors.NEW_BLUE() }}
+              target="_blank"
+            >
+              Discord
+            </Link>{" "}
+            if you have questions.
           </Alert>
         )}
 
@@ -841,11 +844,11 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid rgb(236, 239, 241)",
     color: "rgba(17, 51, 83, 0.6)",
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
   },
   tabActive: {
-    color: colors.BLUE(),
+    color: colors.NEW_BLUE(),
     border: "none",
     backgroundColor: "#FFF",
   },
@@ -936,7 +939,7 @@ const styles = StyleSheet.create({
   link: {
     cursor: "pointer",
     textDecoration: "unset",
-    color: colors.BLUE(),
+    color: colors.NEW_BLUE(),
     ":hover": {
       textDecoration: "underline",
     },
@@ -1089,7 +1092,7 @@ const styles = StyleSheet.create({
     minHeight: "unset",
   },
   buttons: {
-    marginTop: 35,
+    marginTop: 20,
     width: "100%",
   },
   button: {
