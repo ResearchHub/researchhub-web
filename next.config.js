@@ -2,7 +2,7 @@ const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const ANALYZE = process.env.ANALYZE;
 const path = require("path");
 const withTM = require("next-transpile-modules")(["@quantfive/js-web-config"]);
-// const { withSentryConfig } = require("@sentry/nextjs");
+const { withSentryConfig } = require("@sentry/nextjs");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
