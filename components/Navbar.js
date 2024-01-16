@@ -31,6 +31,9 @@ const FirstVoteModal = dynamic(() =>
   import("~/components/Modals/FirstVoteModal")
 );
 const NewPostModal = dynamic(() => import("./Modals/NewPostModal"));
+const OrcidConnectModal = dynamic(() =>
+  import("~/components/Modals/OrcidConnectModal")
+);
 const PromotionInfoModal = dynamic(() =>
   import("~/components/Modals/PromotionInfoModal")
 );
@@ -149,6 +152,7 @@ const Navbar = (props) => {
       <DndModal />
       <FirstVoteModal auth={auth} updateUser={updateUser} />
       {props.modals.openLoginModal && <LoginModal isOpen={true} />}
+      <OrcidConnectModal />
       <PromotionInfoModal />
       <ReCaptchaPrompt />
       <UploadPaperModal />

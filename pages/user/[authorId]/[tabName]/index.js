@@ -651,7 +651,12 @@ function AuthorPage(props) {
           customLabel={"Connect ORCiD"}
           styles={styles.orcidButton}
           iconButton={true}
-        />
+        >
+          <img
+            src="/static/icons/orcid.png"
+            className={css(styles.orcidLogo)}
+          />
+        </OrcidConnectButton>
       ) : (
         <img src="/static/icons/orcid.png" className={css(styles.orcidLogo)} />
       )}
@@ -1789,10 +1794,10 @@ const styles = StyleSheet.create({
   },
   orcidButton: {
     width: 180,
-    height: 42,
+    height: 35,
     fontSize: 14,
     "@media only screen and (max-width: 415px)": {
-      height: 50,
+      height: 35,
       background: "#fff",
     },
   },
