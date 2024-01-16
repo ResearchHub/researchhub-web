@@ -25,6 +25,13 @@ const EducationModal = dynamic(() =>
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faLinkedin,
+  faSquareXTwitter,
+  faGoogleScholar,
+  faOrcid,
+} from "@fortawesome/free-brands-svg-icons";
 
 class OnboardForm extends Component {
   constructor(props) {
@@ -32,7 +39,6 @@ class OnboardForm extends Component {
     this.initialState = this.mapStateFromProps();
     this.state = {
       ...this.initialState,
-      hoverAvatar: false,
       hoverEducation: false,
       allowEdit: true,
       avatarUploadIsOpen: false,
@@ -106,6 +112,14 @@ class OnboardForm extends Component {
         this.props.author && this.props.author.twitter
           ? this.props.author.twitter
           : "",
+      orcid:
+        this.props.author && this.props.author.orcid_id
+          ? `https://orcid.org/${this.props.author.orcid_id}`
+          : "",
+      google_scholar:
+        this.props.author && this.props.author.google_scholar
+          ? this.props.author.google_scholar
+          : "",
       education:
         this.props.author && this.props.author.education
           ? this.props.author.education
@@ -115,14 +129,6 @@ class OnboardForm extends Component {
           ? this.props.author.headline
           : { title: "", isPublic: true },
     };
-  };
-
-  onMouseEnterAvatar = () => {
-    !this.state.hoverAvatar && this.setState({ hoverAvatar: true });
-  };
-
-  onMouseLeaveAvatar = () => {
-    this.state.hoverAvatar && this.setState({ hoverAvatar: false });
   };
 
   openEducationModal = (activeIndex) => {
@@ -197,6 +203,7 @@ class OnboardForm extends Component {
     showMessage({ show: true, load: true });
 
     const education = this.state.education.filter((el) => el.summary);
+    const orcidID = this.state.orcid.split("/").pop().trim();
 
     const params = {
       first_name: this.state.first_name,
@@ -204,6 +211,10 @@ class OnboardForm extends Component {
       description: this.state.description,
       education,
       headline: this.state.headline,
+      linkedin: this.state.linkedin,
+      twitter: this.state.twitter,
+      orcid_id: orcidID ? orcidID : null,
+      google_scholar: this.state.google_scholar,
     };
 
     fetch(
@@ -366,7 +377,7 @@ class OnboardForm extends Component {
     );
   };
   render() {
-    const { hoverAvatar, allowEdit, avatarUploadIsOpen } = this.state;
+    const { allowEdit, avatarUploadIsOpen } = this.state;
     const { author, modals } = this.props;
 
     return (
@@ -390,25 +401,23 @@ class OnboardForm extends Component {
               draggable={false}
             >
               <AuthorAvatar author={author} disableLink={true} size={120} />
-              {allowEdit && hoverAvatar && (
+              {allowEdit && (
                 <div className={css(styles.profilePictureHover)}>Update</div>
               )}
             </div>
-            <div className={css(styles.column)}>
-              {this.renderFormInput({
-                label: "First Name",
-                id: "first_name",
-                required: true,
-                value: this.state.first_name,
-              })}
-              {this.renderFormInput({
-                label: "Last Name",
-                id: "last_name",
-                required: true,
-                value: this.state.last_name,
-              })}
-            </div>
           </div>
+          {this.renderFormInput({
+            label: "First name",
+            id: "first_name",
+            required: true,
+            value: this.state.first_name,
+          })}
+          {this.renderFormInput({
+            label: "Last name",
+            id: "last_name",
+            required: true,
+            value: this.state.last_name,
+          })}
           {this.renderFormInput({
             label: "Headline",
             id: "headline",
@@ -422,6 +431,48 @@ class OnboardForm extends Component {
             id: "description",
             value: this.state.description,
           })}
+          {/* Social Links */}
+          <div className={css(styles.inputLabel, styles.text)}>
+            Social Links
+          </div>
+          <div className={css(styles.formInputContainer)}>
+            <FormInput
+              id="linkedin"
+              onChange={this.handleFormChange}
+              containerStyle={[styles.formInput, styles.socialInput]}
+              value={this.state.linkedin}
+              icon={<FontAwesomeIcon icon={faLinkedin} />}
+              iconStyles={[styles.socialIcon, styles.linkedInIcon]}
+              placeholder="https://linkedin.com/in/username"
+            />
+            <FormInput
+              id="twitter"
+              onChange={this.handleFormChange}
+              containerStyle={[styles.formInput, styles.socialInput]}
+              value={this.state.twitter}
+              icon={<FontAwesomeIcon icon={faSquareXTwitter} />}
+              iconStyles={[styles.socialIcon, styles.xTwitterIcon]}
+              placeholder="https://x.com/username"
+            />
+            <FormInput
+              id="orcid"
+              onChange={this.handleFormChange}
+              containerStyle={[styles.formInput, styles.socialInput]}
+              value={this.state.orcid}
+              icon={<FontAwesomeIcon icon={faOrcid} />}
+              iconStyles={[styles.socialIcon, styles.orcidIcon]}
+              placeholder="https://orcid.org/0000-0000-0000-0000"
+            />
+            <FormInput
+              id="google_scholar"
+              onChange={this.handleFormChange}
+              containerStyle={[styles.formInput, styles.socialInput]}
+              value={this.state.google_scholar}
+              icon={<FontAwesomeIcon icon={faGoogleScholar} />}
+              iconStyles={[styles.socialIcon, styles.googleScholarIcon]}
+              placeholder="https://scholar.google.com/citations?user=username"
+            />
+          </div>
           <AvatarUpload
             isOpen={avatarUploadIsOpen}
             closeModal={() => this.toggleAvatarModal(false)}
@@ -473,22 +524,23 @@ const styles = StyleSheet.create({
   profilePictureHover: {
     width: 120,
     height: 60,
+    fontWeight: 400,
     borderRadius: "0 0 100px 100px",
     display: "flex",
     justifyContent: "center",
-    paddingTop: 5,
+    paddingTop: 8,
     boxSizing: "border-box",
     position: "absolute",
-    background: "rgba(0, 0, 0, .3)",
+    background: "rgba(0, 0, 0, .5)",
     color: "#fff",
     bottom: 0,
   },
   titleHeader: {
     display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
+    flexDirection: "column",
+    alignItems: "center",
     width: "100%",
-    paddingBottom: 10,
+    paddingBottom: 24,
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       alignItems: "center",
@@ -514,6 +566,10 @@ const styles = StyleSheet.create({
 
     width: "100%",
   },
+  socialInput: {
+    marginBottom: 12,
+    minHeight: "unset",
+  },
 
   formTextAreaContainer: {
     marginTop: 10,
@@ -536,6 +592,17 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       width: "100%",
     },
+  },
+  inputLabel: {
+    fontWeight: 500,
+    marginBottom: 10,
+    color: "#232038",
+    display: "flex",
+    justifyContent: "flex-start",
+  },
+  text: {
+    fontFamily: "Roboto",
+    fontSize: 16,
   },
   rippleClass: {
     width: "100%",
@@ -640,6 +707,27 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       padding: 25,
     },
+  },
+
+  socialIcon: {
+    width: 24,
+    height: 24,
+    fontSize: 24,
+    top: 24,
+  },
+  linkedInIcon: {
+    color: "#0077B5",
+  },
+  xTwitterIcon: {
+    color: "black",
+  },
+  googleScholarIcon: {
+    color: "#4285F4",
+    fontSize: 22,
+  },
+  orcidIcon: {
+    color: "#A6CE39",
+    fontSize: 22,
   },
 });
 

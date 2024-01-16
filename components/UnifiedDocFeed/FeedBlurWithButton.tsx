@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 
 type Props = {
   auth: any;
-  currentAuthorId: ID;
   hubState: any;
   isLoggedIn: boolean;
 };
@@ -15,7 +14,7 @@ type Props = {
 function FeedBlurWithButton(
   props: Props
 ): ReactElement<typeof Fragment> | null {
-  const { auth, currentAuthorId, hubState, isLoggedIn } = props;
+  const { auth, hubState, isLoggedIn } = props;
   const router = useRouter();
 
   const isOnMyHubsTab = ["/my-hubs"].includes(router.pathname);
@@ -28,21 +27,12 @@ function FeedBlurWithButton(
     <Fragment>
       <div className={css(styles.blur)} />
       <Button
-        isLink={
-          isLoggedIn
-            ? {
-                href: `/user/${currentAuthorId || ""}/onboard`,
-                query: {
-                  selectHubs: true,
-                },
-              }
-            : {
-                href: "/hubs",
-                linkAs: "/hubs",
-              }
-        }
+        isLink={{
+          href: "/hubs",
+          linkAs: "/hubs",
+        }}
         hideRipples={true}
-        label={isLoggedIn ? "Generate My Hubs" : "View All Hubs"}
+        label="View All Hubs"
         customButtonStyle={styles.allFeedButton}
       />
     </Fragment>
@@ -54,8 +44,6 @@ const mapStateToProps = ({ auth, hubs }: any) => ({
   hubState: hubs,
   allHubs: hubs.hubs,
   isLoggedIn: auth.isLoggedIn,
-  currentAuthorId:
-    auth.user && auth.user.author_profile ? auth.user.author_profile.id : null,
 });
 
 export default connect(mapStateToProps)(FeedBlurWithButton);

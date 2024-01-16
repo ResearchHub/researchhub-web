@@ -82,7 +82,7 @@ const OrcidConnectButton = ({ children, onSuccess, onFailure }) => {
   };
 
   return (
-    <div onClick={handleClick} style={{ width: "100%" }}>
+    <div onClick={handleClick} style={{ width: "100%", height: "35px" }}>
       {children}
     </div>
   );

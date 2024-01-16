@@ -356,7 +356,6 @@ const defaultModalState = {
   editHubModal: {},
   openWithdrawalModal: false,
   openFirstVoteModal: false,
-  openOrcidConnectModal: false,
   openPaperTransactionModal: false,
   loginModal: {},
   uploadPaperModal: {

@@ -46,7 +46,7 @@ export function useGoogleOneTapLogin() {
               }
 
               reduxDispatcher(AuthActions.getUser()).then((userAction) => {
-                if (!userAction?.user?.has_seen_orcid_connect_modal) {
+                if (!userAction?.user?.has_completed_onboarding) {
                   sendAmpEvent({
                     event_type: "user_signup",
                     time: +new Date(),

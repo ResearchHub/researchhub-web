@@ -8,9 +8,10 @@ import {
   faArrowRight,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
-  faFacebookF,
   faXTwitter,
   faLinkedin,
+  faGoogleScholar,
+  faOrcid,
 } from "@fortawesome/free-brands-svg-icons";
 import {
   faEllipsis,
@@ -43,7 +44,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Loader from "~/components/Loader/Loader";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
-import OrcidConnectButton from "~/components/OrcidConnectButton";
 import UserTransactions from "~/components/Author/Tabs/UserTransactions";
 import AuthorActivityFeed from "~/components/Author/Feed/AuthorActivityFeed";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
@@ -88,9 +88,10 @@ const AUTHOR_USER_STATUS = {
 const SECTIONS = {
   name: "name",
   description: "description",
-  facebook: "facebook",
   linkedin: "linkedin",
-  twitter: "x / twitter",
+  twitter: "twitter",
+  orcid: "orcid",
+  scholar: "google_scholar",
   picture: "picture",
 };
 
@@ -104,9 +105,10 @@ function AuthorPage(props) {
   const [isBalanceVisible, setIsBalanceVisible] = useState(false);
 
   // User External Links
-  const [editFacebook, setEditFacebook] = useState(false);
+  const [editGoogleScholar, setEditGoogleScholar] = useState(false);
   const [editLinkedin, setEditLinkedin] = useState(false);
   const [editXTwitter, setEditXTwitter] = useState(false);
+  const [editOrcid, setEditOrcid] = useState(false);
 
   // User Profile Update
   const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
@@ -144,9 +146,10 @@ function AuthorPage(props) {
     doesAuthorHaveUser &&
     auth.user.id !== authorUserID;
 
-  const facebookRef = useRef();
+  const googleScholarRef = useRef();
   const linkedinRef = useRef();
   const xTwitterRef = useRef();
+  const orcidRef = useRef();
   const currentUser = useCurrentUser();
 
   useEffect(() => {
@@ -318,9 +321,10 @@ function AuthorPage(props) {
       setName(`${author.first_name} ${author.last_name}`);
     }
     setSocialLinks({
-      facebook: author.facebook,
+      google_scholar: author.google_scholar,
       linkedin: author.linkedin,
       twitter: author.twitter,
+      orcid: author.orcid_id ? `https://orcid.org/${author.orcid_id}` : null,
     });
   }, [author, user]);
 
@@ -344,14 +348,20 @@ function AuthorPage(props) {
 
   /* TODO: calvinhlee - what is this function? */
   function handleOutsideClick(e) {
-    if (facebookRef.current && !facebookRef.current.contains(e.target)) {
-      setEditFacebook(false);
+    if (
+      googleScholarRef.current &&
+      !googleScholarRef.current.contains(e.target)
+    ) {
+      setEditGoogleScholar(false);
     }
     if (xTwitterRef.current && !xTwitterRef.current.contains(e.target)) {
       setEditXTwitter(false);
     }
     if (linkedinRef.current && !linkedinRef.current.contains(e.target)) {
       setEditLinkedin(false);
+    }
+    if (orcidRef.current && !orcidRef.current.contains(e.target)) {
+      setEditOrcid(false);
     }
   }
 
@@ -498,17 +508,23 @@ function AuthorPage(props) {
       }
       change = https + change;
     }
-    if (section === SECTIONS.facebook) {
-      changes.facebook = change;
+    if (section === SECTIONS.scholar) {
+      changes.google_scholar = change;
     } else if (section === SECTIONS.linkedin) {
       changes.linkedin = change;
     } else if (section === SECTIONS.twitter) {
       changes.twitter = change;
+    } else if (section === SECTIONS.orcid) {
+      const orcidId = change.split("https://orcid.org/").pop().trim();
+      if (orcidId) {
+        changes.orcid_id = orcidId;
+      }
     }
 
-    setEditFacebook(false);
+    setEditGoogleScholar(false);
     setEditLinkedin(false);
     setEditXTwitter(false);
+    setEditOrcid(false);
 
     await dispatch(
       AuthorActions.saveAuthorChanges({ changes, authorId: author.id })
@@ -576,9 +592,19 @@ function AuthorPage(props) {
   };
 
   const renderSocialEdit = (social) => {
+    let title = `${social} Link`;
+    if (social === "google_scholar") {
+      title = "Google Scholar Link";
+    }
+    if (social === "twitter") {
+      title = "X / Twitter Link";
+    }
+    if (social === "orcid") {
+      title = "ORCiD Link";
+    }
     return (
       <div className={css(styles.socialEditContainer)}>
-        <div className={css(styles.socialTitle)}>{`${social} Link`}</div>
+        <div className={css(styles.socialTitle)}>{title}</div>
         <div className={css(styles.socialInputContainer)}>
           <input
             className={css(styles.socialInput)}
@@ -612,41 +638,6 @@ function AuthorPage(props) {
   const closeRemoveProfile = () => {
     setExtraProfileOptionsIsOpen(false);
   };
-
-  const authorOrcidId = !isNullOrUndefined(author) ? author.orcid_id : null;
-
-  const orcidLinkButton = !isNullOrUndefined(authorOrcidId) ? (
-    <a
-      className={css(styles.link, styles.socialMedia)}
-      target="_blank"
-      href={`https://orcid.org/${authorOrcidId}`}
-      data-tip={"Open Orcid Profile"}
-      rel="noreferrer noopener"
-    >
-      <img src="/static/icons/orcid.png" className={css(styles.orcidLogo)} />
-    </a>
-  ) : (
-    <div
-      className={css(
-        styles.socialMedia,
-        styles.orcid,
-        !authorOrcidId && styles.noSocial
-      )}
-      data-tip={allowEdit ? "Connect Orcid" : null}
-    >
-      {allowEdit ? (
-        <OrcidConnectButton
-          hostname={hostname}
-          refreshProfileOnSuccess={false}
-          customLabel={"Connect ORCiD"}
-          styles={styles.orcidButton}
-          iconButton={true}
-        />
-      ) : (
-        <img src="/static/icons/orcid.png" className={css(styles.orcidLogo)} />
-      )}
-    </div>
-  );
 
   const authorRscBalance =
     !isNullOrUndefined(author.user) &&
@@ -703,7 +694,8 @@ function AuthorPage(props) {
     </div>
   );
 
-  const safeGuardURL = (url) => (!isNullOrUndefined(url) ? SafeURL(url) : null);
+  const safeGuardURL = (url) =>
+    !isNullOrUndefined(url) && !isEmpty(url) ? SafeURL(url) : null;
   const socialMediaLinkButtons = [
     {
       link: safeGuardURL(author.linkedin),
@@ -726,14 +718,27 @@ function AuthorPage(props) {
       isEditing: editXTwitter,
     },
     {
-      link: safeGuardURL(author.facebook),
-      icon: <FontAwesomeIcon icon={faFacebookF}></FontAwesomeIcon>,
-      nodeRef: facebookRef,
-      dataTip: "Set Facebook Profile",
-      onClick: () => setEditFacebook(true),
-      renderDropdown: () => editFacebook && renderSocialEdit(SECTIONS.facebook),
-      customStyles: styles.facebook,
-      isEditing: editFacebook,
+      link: safeGuardURL(author.google_scholar),
+      icon: <FontAwesomeIcon icon={faGoogleScholar}></FontAwesomeIcon>,
+      nodeRef: googleScholarRef,
+      dataTip: "Set Google Scholar Profile",
+      onClick: () => setEditGoogleScholar(true),
+      renderDropdown: () =>
+        editGoogleScholar && renderSocialEdit(SECTIONS.scholar),
+      customStyles: styles.googleScholar,
+      isEditing: editGoogleScholar,
+    },
+    {
+      link: safeGuardURL(
+        author.orcid_id ? `https://orcid.org/${author.orcid_id}` : null
+      ),
+      icon: <FontAwesomeIcon icon={faOrcid}></FontAwesomeIcon>,
+      nodeRef: orcidRef,
+      dataTip: "Set ORCiD Profile",
+      onClick: () => setEditOrcid(true),
+      renderDropdown: () => editOrcid && renderSocialEdit(SECTIONS.orcid),
+      customStyles: styles.orcid,
+      isEditing: editOrcid,
     },
   ].map((app, i) => {
     const {
@@ -901,7 +906,6 @@ function AuthorPage(props) {
   const userLinks = (
     <div className={css(styles.socialLinks)}>
       {socialMediaLinkButtons}
-      {orcidLinkButton}
       {/* <GenericMenu
         softHide={true}
         options={extraProfileOptions}
@@ -1339,19 +1343,6 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
-  connectOrcid: {
-    marginTop: 16,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
-  },
-  mobileConnectOrcid: {
-    display: "none",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "flex",
-      background: "#FFF",
-    },
-  },
   socialLinks: {
     display: "flex",
     position: "relative",
@@ -1396,13 +1387,6 @@ const styles = StyleSheet.create({
       marginTop: 15,
       marginBottom: 0,
       alignItems: "start",
-    },
-  },
-  orcidAvailable: {
-    marginBottom: 10,
-    marginLeft: 0,
-    "@media only screen and (min-width: 1280px)": {
-      flexDirection: "column",
     },
   },
   educationSummaryContainer: {
@@ -1475,11 +1459,11 @@ const styles = StyleSheet.create({
   xTwitter: {
     background: "black",
   },
-  facebook: {
-    background: "#3B5998",
+  googleScholar: {
+    background: "#4285F4",
   },
   orcid: {
-    background: "none",
+    background: "#A6CE39",
   },
   shareLink: {
     background: colors.BLUE(),
@@ -1631,8 +1615,7 @@ const styles = StyleSheet.create({
   socialEditContainer: {
     position: "absolute",
     bottom: -90,
-    left: "50%",
-    transform: "translateX(-50%)",
+    right: "0",
     background: "#fff",
     boxShadow: "0 5px 10px 0 #ddd",
     padding: 10,
@@ -1775,25 +1758,6 @@ const styles = StyleSheet.create({
   rscIcon: {
     width: 18,
     verticalAlign: "-3px",
-  },
-  orcidButton: {
-    width: 180,
-    height: 42,
-    fontSize: 14,
-    "@media only screen and (max-width: 415px)": {
-      height: 50,
-      background: "#fff",
-    },
-  },
-  orcidSection: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  orcidLogo: {
-    height: 35,
-    width: 35,
-    objectFit: "contain",
   },
   hidden: {
     visibility: "hidden",
