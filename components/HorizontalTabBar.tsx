@@ -23,12 +23,14 @@ export type Tab = {
   hoverIcon?: React.ReactNode;
   pillContent?: React.ReactNode | string;
   showNewFeatureIndicator?: boolean;
+  isExternal?: boolean;
 };
 
 interface Props {
   tabs: Array<Tab>;
   onClick?: Function;
   containerStyle?: any;
+  tabContainerStyle?: any;
   tabStyle?: any;
   variant?: "underline" | "text";
 }
@@ -37,6 +39,7 @@ const HorizontalTabBar = ({
   tabs,
   onClick,
   containerStyle,
+  tabContainerStyle,
   tabStyle,
   variant = "underline",
 }: Props) => {
@@ -71,6 +74,7 @@ const HorizontalTabBar = ({
       pillContent,
       href,
       showNewFeatureIndicator,
+      isExternal,
     } = tab;
     const tabType = href ? "link" : "div";
 
@@ -89,6 +93,7 @@ const HorizontalTabBar = ({
         tabStyle
       ),
       ...(href && { href }),
+      ...(isExternal && { target: "_blank" }),      
       ...(onClick && { onClick: () => onClick(tab, index) }),
     };
 
@@ -123,7 +128,7 @@ const HorizontalTabBar = ({
   return (
     <div className={css(styles.container, containerStyle)}>
       <div className={css(styles.arrowWrapper)}>
-        <div className={css(styles.tabContainer)} ref={tabContainerEl}>
+        <div className={css(styles.tabContainer, tabContainerStyle)} ref={tabContainerEl}>
           {tabs.map(renderTab)}
         </div>
         {showRightArrow && (
