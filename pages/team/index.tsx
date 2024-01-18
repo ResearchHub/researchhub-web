@@ -33,13 +33,11 @@ const ReactTransitionComponent = ({ children, state, trail }) => {
   ));
 };
 
-const TeamPage: NextPage = ({ }) => {
-
+const TeamPage: NextPage = ({}) => {
   const tabs = [
     {
       label: "About",
       href: "/about",
-      isSelected: true,
     },
     {
       label: "Docs",
@@ -53,7 +51,6 @@ const TeamPage: NextPage = ({ }) => {
     },
   ];
 
-  
   return (
     <div className={css(styles.page)}>
       <Head title={"About ResearchHub"} description={"What is ResearchHub"} />
@@ -74,55 +71,75 @@ const TeamPage: NextPage = ({ }) => {
         </ReactTransitionComponent>
       </div>
       <div className={css(styles.tabsWrapper)}>
-        <HorizontalTabBar tabs={tabs} tabContainerStyle={styles.tabsContainerOverride} />
+        <HorizontalTabBar
+          tabs={tabs}
+          tabContainerStyle={styles.tabsContainerOverride}
+        />
       </div>
       <div className={css(styles.mainContent)}>
         <div className={css(styles.people)}>
           <div className={css(styles.person)}>
             <div className={css(styles.imageWrapper)}>
-              <Image src={"/static/team/brian.jpeg"} className={css(styles.personImg)} alt="Kobe Attias" width={245} height={250} />
+              <Image
+                src={"/static/team/brian.jpeg"}
+                className={css(styles.personImg)}
+                alt="Kobe Attias"
+                width={245}
+                height={250}
+              />
             </div>
-            <Link href="https://www.linkedin.com/in/barmstrong/" className={css(styles.nameWrapper)} target="_blank">
+            <Link
+              href="https://www.linkedin.com/in/barmstrong/"
+              className={css(styles.nameWrapper)}
+              target="_blank"
+            >
               <FontAwesomeIcon icon={faLinkedin} />
-              <div className={css(styles.name)}>
-                Brian Armstrong
-              </div>
+              <div className={css(styles.name)}>Brian Armstrong</div>
             </Link>
-            <div className={css(styles.jobTitle)}>
-              Chief Executive Officer
-            </div>
+            <div className={css(styles.jobTitle)}>Chief Executive Officer</div>
           </div>
 
           <div className={css(styles.person)}>
             <div className={css(styles.imageWrapper)}>
-              <Image src={"/static/team/joyce.jpeg"} className={css(styles.personImg)} alt="Kobe Attias" width={245} height={250} />
+              <Image
+                src={"/static/team/joyce.jpeg"}
+                className={css(styles.personImg)}
+                alt="Kobe Attias"
+                width={245}
+                height={250}
+              />
             </div>
-            <Link href="https://www.linkedin.com/in/patrick-joyce-396b953b/" className={css(styles.nameWrapper)} target="_blank">
+            <Link
+              href="https://www.linkedin.com/in/patrick-joyce-396b953b/"
+              className={css(styles.nameWrapper)}
+              target="_blank"
+            >
               <FontAwesomeIcon icon={faLinkedin} />
-              <div className={css(styles.name)}>
-                Patrick Joyce
-              </div>
+              <div className={css(styles.name)}>Patrick Joyce</div>
             </Link>
-            <div className={css(styles.jobTitle)}>
-              Chief Operating Officer
-            </div>
+            <div className={css(styles.jobTitle)}>Chief Operating Officer</div>
           </div>
 
           <div className={css(styles.person)}>
             <div className={css(styles.imageWrapper)}>
-              <Image src={"/static/team/kobe.png"} className={css(styles.personImg)} alt="Kobe Attias" width={245} height={250} />
+              <Image
+                src={"/static/team/kobe.png"}
+                className={css(styles.personImg)}
+                alt="Kobe Attias"
+                width={245}
+                height={250}
+              />
             </div>
-            <Link href="https://www.linkedin.com/in/kobe-attias-5a9a9421/" className={css(styles.nameWrapper)} target="_blank">
+            <Link
+              href="https://www.linkedin.com/in/kobe-attias-5a9a9421/"
+              className={css(styles.nameWrapper)}
+              target="_blank"
+            >
               <FontAwesomeIcon icon={faLinkedin} />
-              <div className={css(styles.name)}>
-                Kobe Attias
-              </div>
+              <div className={css(styles.name)}>Kobe Attias</div>
             </Link>
-            <div className={css(styles.jobTitle)}>
-              Founding Engineer
-            </div>
+            <div className={css(styles.jobTitle)}>Founding Engineer</div>
           </div>
-
         </div>
       </div>
     </div>
@@ -166,13 +183,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     ":hover": {
       textDecoration: "underline",
-    }
+    },
   },
-  name: {
-
-  },
-  imageWrapper: {
-  },
+  name: {},
+  imageWrapper: {},
   jobTitle: {
     marginTop: 5,
     color: colors.BLACK(0.8),
@@ -206,7 +220,7 @@ const styles = StyleSheet.create({
     transition: "all ease-in-out 0.5s",
     "@media only screen and (max-width: 767px)": {
       height: 150,
-    },    
+    },
   },
   column: {
     display: "flex",
@@ -238,6 +252,7 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     padding: "30px 0 0 0",
     "@media only screen and (max-width: 767px)": {
+      padding: "20px 0 0 0",
       fontSize: 33,
     },
   },
@@ -259,8 +274,8 @@ const styles = StyleSheet.create({
     },
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       fontSize: 18,
-    },    
+    },
   },
-})
+});
 
 export default TeamPage;

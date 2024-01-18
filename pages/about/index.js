@@ -1,8 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
-import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
-import { faSortAmountUpAlt } from "@fortawesome/pro-duotone-svg-icons";
-import { faStarHalf } from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faChevronRight,
+  faChevronLeft,
+} from "@fortawesome/pro-regular-svg-icons";
+import {
+  faRocket,
+  faSortAmountUpAlt,
+  faStarHalf,
+} from "@fortawesome/pro-duotone-svg-icons";
 import { faExternalLink, faGlobe } from "@fortawesome/pro-light-svg-icons";
 import Collapsible from "~/components/Form/Collapsible";
 import Head from "~/components/Head";
@@ -129,7 +134,12 @@ const points = [
   {
     title: "Efficient",
     text: "It can take 3-5 years today to go through the process of applying for funding, completing the research, submitting a paper to journals, having it reviewed, and finally getting it published. We believe research could be completed at least one order of magnitude more efficiently.",
-    icon: <FontAwesomeIcon icon={faAnglesRight}></FontAwesomeIcon>,
+    icon: (
+      <FontAwesomeIcon
+        icon={faRocket}
+        style={{ color: colors.BLUE() }}
+      ></FontAwesomeIcon>
+    ),
   },
 ];
 
@@ -408,12 +418,13 @@ class Index extends Component {
             />
 
             <div className={css(styles.pointCardList)}>
-              <ScrollMenu
+              {this.points}
+              {/* <ScrollMenu
                 data={this.points}
                 menuStyle={{
                   justifyContent: "center",
                   width: "100%",
-                  maxWidth: 1000,
+                  maxWidth: 1400,
                   boxSizing: "border-box",
                 }}
                 wrapperStyle={{
@@ -447,7 +458,7 @@ class Index extends Component {
                     customStyles={styles.navArrow}
                   />
                 }
-              />
+              /> */}
             </div>
           </div>
         </div>
@@ -491,11 +502,8 @@ class Index extends Component {
                   Reputation is linked to certain privileges in the app, as well
                   as a mechanism for moderation within the community.{"\n \n"}
                   Further details about ResearchCoin can also be found on the{" "}
-                  <a
-                    href="https://researchhub.notion.site/ResearchCoin-RSC-1e8e25b771ec4b92b9095e060c4095f6"
-                    target="_blank"
-                  >
-                    ResearchHub Notion
+                  <a href="https://docs.researchhub.com/" target="_blank">
+                    ResearchHub docs page
                   </a>{" "}
                   page.
                 </p>
@@ -740,10 +748,7 @@ const styles = StyleSheet.create({
     opacity: 0,
     transition: "all ease-in-out 0.5s",
     "@media only screen and (max-width: 800px)": {
-      height: 300,
-    },
-    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      height: 200,
+      height: 150,
     },
   },
   reveal: {
@@ -840,6 +845,7 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     padding: "30px 0 0 0",
     "@media only screen and (max-width: 800px)": {
+      padding: "20px 0 0 0",
       fontSize: 30,
     },
   },
@@ -897,6 +903,7 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     "@media only screen and (max-width: 800px)": {
       fontSize: 28,
+      marginTop: 15,
     },
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       textAlign: "center",
@@ -930,6 +937,9 @@ const styles = StyleSheet.create({
     height: 570,
     width: "100%",
     position: "relative",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      height: "auto",
+    },
   },
   valuesTitle: {
     zIndex: 2,
@@ -1045,6 +1055,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   contactText: {
+    marginBottom: 0,
     color: "#4e4c5f",
     fontSize: 18,
     "@media only screen and (max-width: 800px)": {
@@ -1055,11 +1066,13 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    width: "80%",
+    width: "100%",
     marginTop: 20,
     zIndex: 2,
     "@media only screen and (max-width: 800px)": {
       width: "90%",
+      flexWrap: "wrap",
+      marginTop: 20,
     },
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       width: "100%",
@@ -1083,21 +1096,19 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: 295,
     height: 300,
-    minWidth: 295,
-    maxWidth: 295,
     backgroundColor: "#FFF",
     boxShadow: "rgba(93, 83, 254, 0.18) 0px 4px 15px",
     zIndex: 3,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       padding: "20px 25px 20px 25px",
-      width: 200,
-      minWidth: 200,
-      maxWidth: 200,
-      height: 350,
+      // width: 200,
+      // minWidth: 200,
+      // maxWidth: 200,
+      // height: 350,
     },
   },
   itemIcon: {
-    height: 80,
+    height: 60,
     display: "flex",
     justifyContent: "center",
     textAlign: "justify",
@@ -1130,7 +1141,8 @@ const styles = StyleSheet.create({
     transition: "all ease-in-out 0.6s",
     opacity: 0,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      fontSize: 18,
+      fontSize: 22,
+      width: "90%",
       top: 40,
     },
     "@media only screen and (max-width: 320px)": {

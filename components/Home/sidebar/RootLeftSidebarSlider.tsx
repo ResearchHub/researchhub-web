@@ -97,8 +97,7 @@ function RootLeftSidebarSlider({
             </span>
           )} */}
           <ALink
-            href="https://docs.researchhub.com"
-            target="_blank"
+            href="/about"
             overrideStyle={styles.leftSidebarSliderFooterTxtItem}
           >
             {"About"}
