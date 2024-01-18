@@ -125,6 +125,7 @@ const FundraiseCard = ({
                 spacing={f.contributors.total > 0 ? -20 : 0}
                 withTooltip={false}
                 showTotal={true}
+                totalPeople={f.contributors.total}
                 totalNoun="Supporter"
               />
             </div>
