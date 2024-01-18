@@ -40,11 +40,6 @@ const TeamPage: NextPage = ({}) => {
       href: "/about",
     },
     {
-      label: "Docs",
-      href: "https://docs.researchhub.com/",
-      isExternal: true,
-    },
-    {
       label: "Team",
       href: "/team",
       isSelected: true,
@@ -63,9 +58,9 @@ const TeamPage: NextPage = ({}) => {
         />
         <ReactTransitionComponent>
           <div className={css(styles.column, styles.titleContainer)}>
-            <h1 className={css(styles.title)}>Meet our Team</h1>
+            <h1 className={css(styles.title)}>Team</h1>
             <h3 className={css(styles.subtitle)}>
-              Meet the people behind ResearchHub
+              The people behind ResearchHub
             </h3>
           </div>
         </ReactTransitionComponent>
@@ -77,6 +72,11 @@ const TeamPage: NextPage = ({}) => {
         />
       </div>
       <div className={css(styles.mainContent)}>
+
+        <p className={css(styles.introText)}>
+          We are a small team of builders and thinkers working towards making science better for everyone.
+        </p>
+
         <div className={css(styles.people)}>
           <div className={css(styles.person)}>
             <div className={css(styles.imageWrapper)}>
@@ -147,6 +147,16 @@ const TeamPage: NextPage = ({}) => {
 };
 
 const styles = StyleSheet.create({
+  introText: {
+    fontSize: 21,
+    marginTop: 25,
+    marginBottom: 0,
+    color: colors.BLACK(0.8),
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      fontSize: 16,
+      textAlign: "center",
+    }
+  },
   mainContent: {
     width: "100%",
     maxWidth: 800,

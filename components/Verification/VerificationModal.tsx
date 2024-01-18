@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   },
   formWrapper: {
     width: 540,
-    padding: "25px 25px 25px 25px",
+    padding: "25px 25px 0px 25px",
     height: "100%",
     boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {

@@ -366,11 +366,6 @@ class Index extends Component {
         isSelected: true,
       },
       {
-        label: "Docs",
-        href: "https://docs.researchhub.com/",
-        isExternal: true,
-      },
-      {
         label: "Team",
         href: "/team",
       },
