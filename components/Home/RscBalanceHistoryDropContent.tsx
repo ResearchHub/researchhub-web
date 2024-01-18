@@ -154,9 +154,9 @@ export default function RscBalanceHistoryDropContent({
                 width={18}
               />
               <div className={css(styles.balanceText)}>
-                ResearchCoin{" "}
-                <span className={css(styles.dropContentDate)}>(RSC)</span>
+                ResearchCoin<sup style={{ fontSize: 9 }}>TM</sup>
               </div>
+              <span className={css(styles.dropContentDate)}>(RSC)</span>
             </div>
             <ALink
               href={`/user/${currentUser?.author_profile?.id}/rsc`}
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 500,
     whiteSpace: "pre-wrap",
-    display: "flex",
+    // display: "flex",
     alignItems: "center",
     // opacity: 0.8,
     // color: colors.ORANGE_DARK2(),
@@ -355,6 +355,7 @@ const styles = StyleSheet.create({
     color: colors.LIGHT_GREY_TEXT,
     display: "flex",
     justifyContent: "space-between",
+    marginLeft: 6,
   },
   previewPlaceholder: {
     width: "calc(100% - 16px)",

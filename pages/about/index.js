@@ -1,9 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
-import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
-import { faSortAmountUpAlt } from "@fortawesome/pro-duotone-svg-icons";
-import { faStarHalf } from "@fortawesome/pro-duotone-svg-icons";
-import { faGlobe } from "@fortawesome/pro-light-svg-icons";
+import {
+  faChevronRight,
+  faChevronLeft,
+} from "@fortawesome/pro-regular-svg-icons";
+import {
+  faRocket,
+  faSortAmountUpAlt,
+  faStarHalf,
+} from "@fortawesome/pro-duotone-svg-icons";
+import { faExternalLink, faGlobe } from "@fortawesome/pro-light-svg-icons";
 import Collapsible from "~/components/Form/Collapsible";
 import Head from "~/components/Head";
 import ScrollMenu from "react-horizontal-scrolling-menu";
@@ -13,6 +18,51 @@ import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { createRef, Component, Fragment, useState } from "react";
 import { useTransition, animated } from "react-spring";
+import HorizontalTabBar from "~/components/HorizontalTabBar";
+import { faAnglesRight } from "@fortawesome/pro-solid-svg-icons";
+
+export const NavigationArrow = ({ icon, direction }) => {
+  const classNames = [navStyles.arrowContainer];
+
+  if (direction === "left") {
+    classNames.push(navStyles.arrowLeft);
+  } else {
+    classNames.push(navStyles.arrowRight);
+  }
+
+  return <div className={css(classNames)}>{icon}</div>;
+};
+
+const navStyles = StyleSheet.create({
+  arrowContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    maxHeight: 40,
+    minHeight: 40,
+    height: 40,
+    maxWidth: 40,
+    minWidth: 40,
+    width: 40,
+    fontSize: 20,
+    borderRadius: "50%",
+    background: "#FFF",
+    boxSizing: "border-box",
+    color: colors.PURPLE(),
+    border: "1.5px solid rgba(151, 151, 151, 0.2)",
+    cursor: "pointer",
+    boxShadow: "0 0 15px rgba(255, 255, 255, 0.14)",
+    ":hover": {
+      background: "#FAFAFA",
+    },
+  },
+  arrowLeft: {
+    paddingRight: 2,
+  },
+  arrowRight: {
+    paddingLeft: 5,
+  },
+});
 
 const points = [
   {
@@ -35,16 +85,16 @@ const points = [
       </span>
     ),
   },
-  {
-    key: 2,
-    title: "Prioritized",
-    text: "There are over two million academic papers published each year, and the number continues to grow. By crowd-sourcing curation and prioritization of articles, ResearchHub enables the scientific community to provide visiblity to research it deems impactful.",
-    icon: (
-      <span draggable={false} style={{ color: colors.GREEN(1) }}>
-        {<FontAwesomeIcon icon={faSortAmountUpAlt}></FontAwesomeIcon>}
-      </span>
-    ),
-  },
+  // {
+  //   key: 2,
+  //   title: "Prioritized",
+  //   text: "There are over two million academic papers published each year, and the number continues to grow. By crowd-sourcing curation and prioritization of articles, ResearchHub enables the scientific community to provide visiblity to research it deems impactful.",
+  //   icon: (
+  //     <span draggable={false} style={{ color: colors.GREEN(1) }}>
+  //       {<FontAwesomeIcon icon={faSortAmountUpAlt}></FontAwesomeIcon>}
+  //     </span>
+  //   ),
+  // },
   // {
   //   title: "Easy to understand",
   //   text:
@@ -81,18 +131,16 @@ const points = [
   //     />
   //   ),
   // },
-  // {
-  //   title: "Efficient",
-  //   text:
-  //     "It can take 3-5 years today to go through the process of applying for funding, completing the research, submitting a paper to journals, having it reviewed, and finally getting it published. We believe research could be completed at least one order of magnitude more efficiently.",
-  //   icon: (
-  //     <i
-  //       class="fad fa-angle-double-right"
-  //       draggable={false}
-  //       style={{ color: "#4c986e" }}
-  //     />
-  //   ),
-  // },
+  {
+    title: "Efficient",
+    text: "It can take 3-5 years today to go through the process of applying for funding, completing the research, submitting a paper to journals, having it reviewed, and finally getting it published. We believe research could be completed at least one order of magnitude more efficiently.",
+    icon: (
+      <FontAwesomeIcon
+        icon={faRocket}
+        style={{ color: colors.BLUE() }}
+      ></FontAwesomeIcon>
+    ),
+  },
 ];
 
 const PointCards = (props) => {
@@ -311,9 +359,22 @@ class Index extends Component {
   };
 
   render() {
+    const tabs = [
+      {
+        label: "About",
+        href: "/about",
+        isSelected: true,
+      },
+      {
+        label: "Team",
+        href: "/team",
+      },
+    ];
+
     return (
       <div className={css(styles.page)}>
         <Head title={"About ResearchHub"} description={"What is ResearchHub"} />
+
         <div className={css(styles.banner, this.state.reveal && styles.reveal)}>
           <img
             draggable={false}
@@ -328,6 +389,12 @@ class Index extends Component {
               </h3>
             </div>
           </ReactTransitionComponent>
+        </div>
+        <div className={css(styles.tabsWrapper)}>
+          <HorizontalTabBar
+            tabs={tabs}
+            tabContainerStyle={styles.tabsContainerOverride}
+          />
         </div>
         <div className={css(styles.column, styles.fullWidth)}>
           <div className={css(styles.valuesContainer)}>
@@ -346,12 +413,13 @@ class Index extends Component {
             />
 
             <div className={css(styles.pointCardList)}>
-              <ScrollMenu
+              {this.points}
+              {/* <ScrollMenu
                 data={this.points}
                 menuStyle={{
                   justifyContent: "center",
                   width: "100%",
-                  maxWidth: 1000,
+                  maxWidth: 1400,
                   boxSizing: "border-box",
                 }}
                 wrapperStyle={{
@@ -363,18 +431,36 @@ class Index extends Component {
                   highlight: "none",
                   outline: "none",
                 }}
-                hideSingleArrow={true}
+                hideSingleArrow={false}
                 wheel={false}
                 selected={"item-1"}
                 scrollToSelected={true}
-              />
+                arrowLeft={
+                  <NavigationArrow
+                    icon={
+                      <FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>
+                    }
+                    direction={"left"}
+                    customStyles={styles.navArrow}
+                  />
+                }
+                arrowRight={
+                  <NavigationArrow
+                    icon={
+                      <FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>
+                    }
+                    direction={"right"}
+                    customStyles={styles.navArrow}
+                  />
+                }
+              /> */}
             </div>
           </div>
         </div>
         <div className={css(styles.infoContainer)}>
           {this.renderTextContainer(
             "A GitHub For Science",
-            "ResearchHub's mission is to accelerate the pace of scientific research. Our goal is to make a modern mobile and web application where people can collaborate on scientific research in a more efficient way, similar to what GitHub has done for software engineering. \n \nResearchers are able to upload articles (preprint or postprint) in PDF form, summarize the findings of the work in an attached wiki, and discuss the findings in a completely open and accessible forum dedicated solely to the relevant article.",
+            "ResearchHub's mission is to accelerate the pace of scientific research. Our goal is to make a modern mobile and web application where people can collaborate on scientific research in a more efficient way, similar to what GitHub has done for software engineering. \n \nResearchers should be able to publish articles (preprint or postprint) and discuss the findings in a completely open and accessible forum dedicated solely to the relevant article.",
             "/static/about/about-1.png",
             true
           )}
@@ -411,11 +497,8 @@ class Index extends Component {
                   Reputation is linked to certain privileges in the app, as well
                   as a mechanism for moderation within the community.{"\n \n"}
                   Further details about ResearchCoin can also be found on the{" "}
-                  <a
-                    href="https://researchhub.notion.site/ResearchCoin-RSC-1e8e25b771ec4b92b9095e060c4095f6"
-                    target="_blank"
-                  >
-                    ResearchHub Notion
+                  <a href="https://docs.researchhub.com/" target="_blank">
+                    ResearchHub docs page
                   </a>{" "}
                   page.
                 </p>
@@ -632,6 +715,14 @@ class Index extends Component {
 }
 
 const styles = StyleSheet.create({
+  tabsWrapper: {
+    width: "100%",
+    justifyContent: "center",
+    borderBottom: `1px solid #E9EAEF`,
+  },
+  tabsContainerOverride: {
+    justifyContent: "center",
+  },
   page: {
     display: "flex",
     flexDirection: "column",
@@ -642,7 +733,7 @@ const styles = StyleSheet.create({
     background: "#FFF",
   },
   banner: {
-    height: 320,
+    height: 210,
     width: "100%",
     position: "relative",
     display: "flex",
@@ -652,10 +743,7 @@ const styles = StyleSheet.create({
     opacity: 0,
     transition: "all ease-in-out 0.5s",
     "@media only screen and (max-width: 800px)": {
-      height: 300,
-    },
-    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      height: 200,
+      height: 150,
     },
   },
   reveal: {
@@ -752,6 +840,7 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     padding: "30px 0 0 0",
     "@media only screen and (max-width: 800px)": {
+      padding: "20px 0 0 0",
       fontSize: 30,
     },
   },
@@ -809,6 +898,7 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     "@media only screen and (max-width: 800px)": {
       fontSize: 28,
+      marginTop: 15,
     },
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       textAlign: "center",
@@ -842,6 +932,9 @@ const styles = StyleSheet.create({
     height: 570,
     width: "100%",
     position: "relative",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      height: "auto",
+    },
   },
   valuesTitle: {
     zIndex: 2,
@@ -957,6 +1050,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   contactText: {
+    marginBottom: 0,
     color: "#4e4c5f",
     fontSize: 18,
     "@media only screen and (max-width: 800px)": {
@@ -967,11 +1061,13 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    width: "80%",
+    width: "100%",
     marginTop: 20,
     zIndex: 2,
     "@media only screen and (max-width: 800px)": {
       width: "90%",
+      flexWrap: "wrap",
+      marginTop: 20,
     },
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       width: "100%",
@@ -995,21 +1091,19 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: 295,
     height: 300,
-    minWidth: 295,
-    maxWidth: 295,
     backgroundColor: "#FFF",
     boxShadow: "rgba(93, 83, 254, 0.18) 0px 4px 15px",
     zIndex: 3,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       padding: "20px 25px 20px 25px",
-      width: 200,
-      minWidth: 200,
-      maxWidth: 200,
-      height: 350,
+      // width: 200,
+      // minWidth: 200,
+      // maxWidth: 200,
+      // height: 350,
     },
   },
   itemIcon: {
-    height: 80,
+    height: 60,
     display: "flex",
     justifyContent: "center",
     textAlign: "justify",
@@ -1042,7 +1136,8 @@ const styles = StyleSheet.create({
     transition: "all ease-in-out 0.6s",
     opacity: 0,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      fontSize: 18,
+      fontSize: 22,
+      width: "90%",
       top: 40,
     },
     "@media only screen and (max-width: 320px)": {

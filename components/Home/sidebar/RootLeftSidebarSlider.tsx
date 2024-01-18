@@ -97,12 +97,18 @@ function RootLeftSidebarSlider({
             </span>
           )} */}
           <ALink
-            href="https://docs.researchhub.com"
-            target="_blank"
+            href="/about"
             overrideStyle={styles.leftSidebarSliderFooterTxtItem}
           >
             {"About"}
           </ALink>
+          <ALink
+            target="_blank"
+            href="https://docs.researchhub.com/"
+            overrideStyle={styles.leftSidebarSliderFooterTxtItem}
+          >
+            {"Docs"}
+          </ALink>          
           <ALink
             href="https://researchhub.foundation"
             overrideStyle={styles.leftSidebarSliderFooterTxtItem}

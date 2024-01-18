@@ -605,8 +605,8 @@ class WithdrawalModal extends Component {
 
         {isUnderInvestigation && (
           <Alert severity="warning" className={css(styles.alert)}>
-            Your account is currently under review. RSC withdrawal has been
-            temporarily suspended until a moderator reviews your account.
+            Your account is currently under review. ResearchCoin withdrawal has
+            been temporarily suspended until a moderator reviews your account.
             Contact us on{" "}
             <Link
               href="https://discord.com/invite/ZcCYgcnUp5"

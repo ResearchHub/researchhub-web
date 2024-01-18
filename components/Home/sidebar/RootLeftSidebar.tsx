@@ -442,12 +442,11 @@ function RootLeftSidebar({
                 </span>
               </InviteButton>
             </span> */}
-            <ALink
-              href="https://docs.researchhub.com"
-              target="_blank"
-              overrideStyle={formattedFooterTxtItem}
-            >
+            <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
               {"About"}
+            </ALink>
+            <ALink href="https://docs.researchhub.com/" target="_blank" overrideStyle={formattedFooterTxtItem}>
+              {"Docs"}
             </ALink>
             <ALink
               href="https://researchhub.foundation"

@@ -104,7 +104,7 @@ const DocumentHeader = ({
 
   return (
     <div ref={headerWrapperRef} className={css(styles.headerRoot)}>
-      <DocumentPageTutorial />
+      {/* <DocumentPageTutorial /> */}
       <div
         className={css(
           styles.stickyHeader,
@@ -192,7 +192,11 @@ const DocumentHeader = ({
                         hideRipples={true}
                       >
                         <IconButton variant="round">
-                          <ResearchCoinIcon version={6} width={21} height={21} />
+                          <ResearchCoinIcon
+                            version={6}
+                            width={21}
+                            height={21}
+                          />
                           <span>Tip</span>
                         </IconButton>
                       </PermissionNotificationWrapper>

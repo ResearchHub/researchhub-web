@@ -76,7 +76,7 @@ const AmountInput = (props) => {
           <img
             className={css(styles.rscIcon, styles.mobileIcon)}
             src={"/static/icons/coin-filled.png"}
-            alt="RSC Coin"
+            alt="ResearchCoin TM"
           />
         )}
         <span className={css(styles.balance)}>
@@ -85,7 +85,9 @@ const AmountInput = (props) => {
               ? formatBalance(balance)
               : balance
             : formatBalance(store.getState().auth.user.balance)}
-          {" RSC "}
+          <span>
+            {` `}ResearchCoin <sup style={{ fontSize: 9 }}>TM</sup>
+          </span>
         </span>
       </div>
       <div className={css(styles.rscToDisplay)}>
@@ -199,7 +201,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   balance: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 500,
     color: colors.ORANGE_DARK2(1),
     marginLeft: 4,

@@ -324,6 +324,7 @@ const CommentEditor = ({
                     />
                     <span className={css(styles.largeBountyText)}>
                       Offer award amount in ResearchCoin
+                      <sup style={{ fontSize: 9 }}>TM</sup>
                     </span>
                     <span className={css(styles.smallBountyText)}>
                       Offer ResearchCoin
