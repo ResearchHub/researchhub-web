@@ -30,6 +30,7 @@ type CommentAvatarsArgs = {
 
   // we can either show +{n} or just the total number of people
   maxPeople?: number;
+  totalPeople?: number;
   showTotal?: boolean;
   totalNoun?: string; // e.g. "people" or "contributors"
 };
@@ -41,6 +42,7 @@ const CommentAvatars = ({
   size = 30,
   wrapperStyle,
   maxPeople = 3,
+  totalPeople = 0,
   showTotal = false,
   totalNoun = "people",
 }: CommentAvatarsArgs) => {
@@ -109,10 +111,10 @@ const CommentAvatars = ({
                 borderRadius: size / 2,
               }}
             >
-              <span>{avatarPeople.length}</span>
+              <span>{totalPeople}</span>
               <span style={{ marginLeft: 3 }}>
                 {totalNoun}
-                {avatarPeople.length !== 1 ? "s" : ""}
+                {totalPeople !== 1 ? "s" : ""}
               </span>
             </div>
           </div>
