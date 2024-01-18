@@ -299,7 +299,6 @@ const placeholderStyles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 400,
     color: colors.MEDIUM_GREY2(),
-    marginTop: 24,
   },
 });
 
