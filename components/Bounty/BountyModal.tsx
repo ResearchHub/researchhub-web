@@ -78,7 +78,7 @@ function BountyModal({
   useEffect((): void => {
     setHasMinRscAlert(
       currentUserBalance <= MIN_RSC_REQUIRED ||
-        offeredAmount <= MIN_RSC_REQUIRED ||
+        offeredAmount < MIN_RSC_REQUIRED ||
         currentUserBalance < offeredAmount
     );
   }, [currentUserBalance, offeredAmount]);
@@ -395,7 +395,7 @@ function BountyModal({
                         ? `Your RSC balance is below offered amount ${numeral(
                             offeredAmount
                           ).format("0[,]0")}`
-                        : `Minimum bounty must be greater than ${MIN_RSC_REQUIRED} RSC`}
+                        : `Minimum bounty amount is ${MIN_RSC_REQUIRED} RSC`}
                     </div>
                   ) : hasMaxRscAlert ? (
                     <div

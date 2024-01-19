@@ -734,11 +734,7 @@ class PaperTransactionModal extends Component {
           >
             <div className={css(bountyTooltip.bodyContainer)}>
               <div className={css(bountyTooltip.desc)}>
-                <div>
-                  • 1% of tip amount will be used to support the ResearchHub
-                  Community
-                </div>
-                <div>• 2% of tip amount will be paid to ResearchHub Inc</div>
+                <div>The tip amount will be paid to ResearchHub Inc</div>
               </div>
             </div>
           </ReactTooltip>
@@ -1022,7 +1018,6 @@ const alertStyles = StyleSheet.create({
 const bountyTooltip = StyleSheet.create({
   tooltipContainer: {
     textAlign: "left",
-    width: 300,
     padding: 12,
   },
   tooltipContainerSmall: {
