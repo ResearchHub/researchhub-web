@@ -162,9 +162,21 @@ function PaperTab(props) {
           <p>
             This paper's license is marked as closed access or non-commercial
             and cannot be viewed on ResearchHub.{" "}
-            <ALink target="_blank" theme="solidPrimary" href={paper.url}>
-              Visit the paper's external site.
-            </ALink>
+            {(paper.url || paper.doi) && (
+              <ALink
+                target="_blank"
+                theme="solidPrimary"
+                href={
+                  paper.url
+                    ? paper.url
+                    : paper.doi?.startsWith("http")
+                    ? paper.doi
+                    : `https://doi.org/${paper.doi}`
+                }
+              >
+                Visit the paper's external site.
+              </ALink>
+            )}
           </p>
         </div>
       );
