@@ -118,7 +118,9 @@ const DocumentLineItems = ({
                 href={
                   isPaper(document) && document.externalUrl
                     ? document.externalUrl
-                    : `https://` + document.doi
+                    : document.doi.startsWith("http")
+                    ? document.doi
+                    : `https://doi.org/${document.doi}`
                 }
                 target="blank"
               >
