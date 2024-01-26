@@ -154,7 +154,7 @@ function PaperTab(props) {
       );
     }
     if (
-      !paper.pdf_copyright_allows_display ||
+      !paper.pdf_copyright_allows_display &&
       !paper.pdfCopyrightAllowsDisplay
     ) {
       return (
