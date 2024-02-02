@@ -795,13 +795,30 @@ const routes = (BASE_URL) => {
         frontendFilters: selectedFilters,
         hubId,
       });
+      let url =
+        BASE_URL + "researchhub_unified_document/get_unified_documents/";
+
+      // Kobe, 2024-02-01: This is a temporary shim to allow for recs experiment
+      // The unified docs API will be replaced by a new API that delivers mixed-content which will
+      // make this code obsolete.
+      try {
+        if (
+          typeof window !== "undefined" &&
+          window.location.search.includes("experiment")
+        ) {
+          const userId = window.location.search.split("user_id=")[1];
+          url =
+            BASE_URL +
+            `researchhub_unified_document/recommendations/?user_id=${userId}`;
+        }
+      } catch (error) {
+        console.error("Failed to generate recs url", error);
+      }
 
       const HOME_HUB = 0;
       const isHomeHub = !hubId || hubId === HOME_HUB;
       const hasTags = (backendFilters.tags ?? []).length > 0;
 
-      const url =
-        BASE_URL + "researchhub_unified_document/get_unified_documents/";
       const params = {
         querystring: {
           external_source: externalSource,
@@ -826,6 +843,7 @@ const routes = (BASE_URL) => {
       const finalUrl = prepURL(url, params);
       return finalUrl;
     },
+
     UNIFIED_DOC: ({ id }) => {
       const url = BASE_URL + "researchhub_unified_document/";
       const params = {
