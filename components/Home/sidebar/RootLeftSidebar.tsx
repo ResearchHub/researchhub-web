@@ -92,33 +92,35 @@ export const getLeftSidebarItemAttrs = ({
       href: "/live",
       onClick: silentEmptyFnc,
     },
-    // Disabled for now until we go live with funding.
-    // {
-    //   icon: ["/funding"].includes(pathname) ? (
-    //     <img
-    //       src="/static/rsc-icon-dark-blue.svg"
-    //       width="24"
-    //       height="24"
-    //       style={{
-    //         marginLeft: "-2px",
-    //       }}
-    //     />
-    //   ) : (
-    //     <img
-    //       src="/static/rsc-icon-gray.svg"
-    //       width="24"
-    //       height="24"
-    //       style={{
-    //         marginLeft: "-2px",
-    //       }}
-    //     />
-    //   ),
-    //   label: "Funding",
-    //   isActive: ["/funding"].includes(pathname),
-    //   isMinimized,
-    //   href: "/funding",
-    //   onClick: silentEmptyFnc,
-    // },
+    {
+      icon: ["/funding"].includes(pathname) ? (
+        <img
+          src="/static/rsc-icon-dark-blue.svg"
+          width="24"
+          height="24"
+          style={{
+            marginLeft: "-2px",
+          }}
+        />
+      ) : (
+        <img
+          src="/static/rsc-icon-gray.svg"
+          width="24"
+          height="24"
+          style={{
+            marginLeft: "-2px",
+          }}
+        />
+      ),
+      label: "Funding",
+      isActive: ["/funding"].includes(pathname),
+      // let's show this for 15 days, after that it'll programmatically be hidden.
+      // if you're seeing this after the date below, please remove this code.
+      showNewFeatureIndicator: new Date() < new Date("2024-03-21"),
+      isMinimized,
+      href: "/funding",
+      onClick: silentEmptyFnc,
+    },
     {
       icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
       label: "Hubs",

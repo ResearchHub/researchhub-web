@@ -1,6 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
+import { faFire } from "@fortawesome/pro-solid-svg-icons";
 import {
   ReactElement,
   ReactNode,
@@ -9,6 +10,7 @@ import {
   useState,
 } from "react";
 import colors from "~/config/themes/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export type Props = {
   href: string;
@@ -16,6 +18,7 @@ export type Props = {
   isActive?: boolean;
   isMinimized: boolean;
   label: ReactNode;
+  showNewFeatureIndicator?: boolean;
   onClick: (event: SyntheticEvent) => void;
   subItems?: ReactElement[];
   target?: undefined | "__blank";
@@ -29,6 +32,7 @@ export default function RootLeftSidebarItem({
   isActive = false,
   isMinimized,
   label,
+  showNewFeatureIndicator = false,
   onClick,
   subItems,
   target,
@@ -99,6 +103,14 @@ export default function RootLeftSidebarItem({
             {label}
           </motion.div>
         )}
+        {!isMinimized && showNewFeatureIndicator && (
+          <span className={css(styles.new)}>
+            <span className={css(styles.fireIcon)}>
+              {<FontAwesomeIcon icon={faFire}></FontAwesomeIcon>}
+            </span>
+            <span className={css(styles.newText)}>New</span>
+          </span>
+        )}
       </AnimatePresence>
     </Link>
   );
@@ -156,5 +168,25 @@ const styles = StyleSheet.create({
   },
   labelWrapActive: {
     color: colors.NEW_BLUE(1),
+  },
+
+  // new feature indicator
+  new: {
+    display: "flex",
+    alignItems: "center",
+    background: colors.NEW_BLUE(0.1),
+    borderRadius: "5px",
+    padding: "4px 6px",
+    marginLeft: "auto",
+  },
+  newText: {
+    fontWeight: 500,
+    fontSize: 14,
+    color: colors.NEW_BLUE(0.9),
+  },
+  fireIcon: {
+    fontSize: 14,
+    marginRight: 5,
+    color: colors.NEW_BLUE(0.9),
   },
 });

@@ -353,29 +353,31 @@ class HubPage extends Component {
       <div className={css(styles.rhHomeContainer)}>
         <div className={css(styles.homeContentContainer, styles.column)}>
           <div className={css(styles.mobileInfoTab)}>
-            <ExitableBanner
-              bannerKey={INFO_TAB_EXIT_KEY}
-              content={<RhCarousel rhCarouselItems={carouselElements} />}
-              contentStyleOverride={{
-                background: colors.NEW_BLUE(0.07),
-                borderRadius: 6,
-                boxSizing: "border-box !important",
-                height: "180px !important",
-                margin: 16,
-                maxHeight: "180px !important",
-                padding: 16,
-              }}
-              exitButton={
-                <div style={{ fontSize: 20 }}>
-                  {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
-                </div>
-              }
-              exitButtonPositionOverride={{
-                top: "20px !important",
-                right: "24px !important",
-              }}
-              onExit={silentEmptyFnc}
-            />
+            {!this.props.isSingleDocTypeFeed && (
+              <ExitableBanner
+                bannerKey={INFO_TAB_EXIT_KEY}
+                content={<RhCarousel rhCarouselItems={carouselElements} />}
+                contentStyleOverride={{
+                  background: colors.NEW_BLUE(0.07),
+                  borderRadius: 6,
+                  boxSizing: "border-box !important",
+                  height: "180px !important",
+                  margin: 16,
+                  maxHeight: "180px !important",
+                  padding: 16,
+                }}
+                exitButton={
+                  <div style={{ fontSize: 20 }}>
+                    {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
+                  </div>
+                }
+                exitButtonPositionOverride={{
+                  top: "20px !important",
+                  right: "24px !important",
+                }}
+                onExit={silentEmptyFnc}
+              />
+            )}
           </div>
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}

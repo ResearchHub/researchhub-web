@@ -1,13 +1,16 @@
 import { css, StyleSheet } from "aphrodite";
 import Link from "next/link";
+import { faFire } from "@fortawesome/pro-solid-svg-icons";
 import { ReactElement, ReactNode, SyntheticEvent } from "react";
 import colors from "~/config/themes/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export type Props = {
   icon: ReactNode;
   isActive?: boolean;
   isMinimized?: boolean;
   label: string;
+  showNewFeatureIndicator?: boolean;
   href: string;
   onClick: (event: SyntheticEvent) => void;
 };
@@ -18,6 +21,7 @@ export default function RootLeftSidebarSliderItem({
   icon,
   isActive = false,
   label,
+  showNewFeatureIndicator = false,
   href,
   onClick,
 }: Props): ReactElement {
@@ -39,6 +43,14 @@ export default function RootLeftSidebarSliderItem({
       >
         {label}
       </div>
+      {showNewFeatureIndicator && (
+        <span className={css(styles.new)}>
+          <span className={css(styles.fireIcon)}>
+            {<FontAwesomeIcon icon={faFire}></FontAwesomeIcon>}
+          </span>
+          <span className={css(styles.newText)}>New</span>
+        </span>
+      )}
     </Link>
   );
 }
@@ -92,5 +104,25 @@ const styles = StyleSheet.create({
   },
   labelWrapActive: {
     color: colors.NEW_BLUE(1),
+  },
+
+  // new feature indicator
+  new: {
+    display: "flex",
+    alignItems: "center",
+    background: colors.NEW_BLUE(0.1),
+    borderRadius: "5px",
+    padding: "4px 6px",
+    marginLeft: "auto",
+  },
+  newText: {
+    fontWeight: 500,
+    fontSize: 14,
+    color: colors.NEW_BLUE(0.9),
+  },
+  fireIcon: {
+    fontSize: 14,
+    marginRight: 5,
+    color: colors.NEW_BLUE(0.9),
   },
 });

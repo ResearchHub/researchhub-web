@@ -71,6 +71,8 @@ const FundraiseContributorsModal = ({
         }, {});
 
       const contributionsArr = Object.values(groupedContributions);
+      // sort by amount descending
+      contributionsArr.sort((a, b) => b.amount - a.amount);
       setContributors(contributionsArr);
     } catch (error) {
       captureEvent({
