@@ -1,5 +1,6 @@
 {
   "name": "researchhub",
+  "license": "MIT",
   "scripts": {
     "dev": "HOST=localhost:3000 next dev",
     "inspect": "NODE_OPTIONS='--inspect' next dev",
