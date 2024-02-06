@@ -2,10 +2,11 @@ import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { getDocumentCard } from "./utils/getDocumentCard";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
 import Button from "../Form/Button";
+import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 
 function SingleTypeUnifiedDocFeedContainer({
   isLoggedIn,
@@ -16,35 +17,51 @@ function SingleTypeUnifiedDocFeedContainer({
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     serverLoadedData?.results || []
   );
+  const [cards, setCards] = useState<any[]>([]);
 
-  const cards = getDocumentCard({
-    setUnifiedDocuments,
-    unifiedDocumentData: unifiedDocuments,
-  });
+  useEffect(() => {
+    // we purposely do this in a useEffect,
+    // because if we do it directly in the component there's a weird rendering bug
+    // and adding the delay that this useEffect causes fixes it
+    const cards = getDocumentCard({
+      setUnifiedDocuments,
+      unifiedDocumentData: unifiedDocuments,
+    });
+    setCards(cards);
+  }, [unifiedDocuments]);
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
       {docType.toLowerCase() === "preregistration" && (
         <div className={css(styles.header)}>
-          <div>
+          <div className={css(styles.headerRow)}>
             <div className={css(styles.titleContainer)}>
               <h1 className={css(styles.title)}>Funding</h1>
             </div>
-            <div className={css(styles.description)}>
-              Crowdfund preregistrations on ResearchHub.
-            </div>
+            <Button
+              label="Apply for Funding"
+              onClick={() =>
+                window.open("https://forms.gle/QYuEa6YyDeGxSNxh9", "_blank")
+              }
+              variant="outlined"
+            />
           </div>
-          <Button
-            label="Apply for Funding"
-            onClick={() =>
-              window.open("https://forms.gle/QYuEa6YyDeGxSNxh9", "_blank")
-            }
-            variant="outlined"
-          />
+
+          <div className={css(styles.description)}>
+            Crowdfund preregistrations on ResearchHub.
+          </div>
         </div>
       )}
       <div className={css(styles.feedPosts)}>
-        {cards.length > 0 ? cards : <EmptyFeedScreen />}
+        {cards.length > 0 ? (
+          cards
+        ) : (
+          <>
+            <UnifiedDocFeedCardPlaceholder color="#efefef" />
+            <UnifiedDocFeedCardPlaceholder color="#efefef" />
+            <UnifiedDocFeedCardPlaceholder color="#efefef" />
+          </>
+        )}
       </div>
     </div>
   );
@@ -75,16 +92,21 @@ const styles = StyleSheet.create({
   },
   header: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     width: "100%",
-    justifyContent: "space-between",
     alignItems: "flex-start",
+  },
+  headerRow: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 15,
   },
   titleContainer: {
     alignItems: "center",
     display: "flex",
-    width: "100%",
-    marginBottom: 15,
   },
   description: {
     fontSize: 15,
