@@ -62,7 +62,7 @@ function RootLeftSidebarSlider({
       ind: number
     ): ReactElement<typeof RootLeftSidebarSliderItem> => (
       <>
-        {attrs.label === "Lab Notebook" && (
+        {attrs.label === "Funding" && (
           <div className={css(styles.subheader)}>Tools</div>
         )}
         <RootLeftSidebarSliderItem key={`${attrs.label}-${ind}`} {...attrs} />

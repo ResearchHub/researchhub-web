@@ -93,6 +93,14 @@ export const getLeftSidebarItemAttrs = ({
       onClick: silentEmptyFnc,
     },
     {
+      icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
+      label: "Hubs",
+      isActive: ["/hubs"].includes(pathname),
+      isMinimized,
+      href: "/hubs",
+      onClick: silentEmptyFnc,
+    },
+    {
       icon: ["/funding"].includes(pathname) ? (
         <img
           src="/static/rsc-icon-dark-blue.svg"
@@ -119,14 +127,6 @@ export const getLeftSidebarItemAttrs = ({
       showNewFeatureIndicator: new Date() < new Date("2024-03-21"),
       isMinimized,
       href: "/funding",
-      onClick: silentEmptyFnc,
-    },
-    {
-      icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
-      label: "Hubs",
-      isActive: ["/hubs"].includes(pathname),
-      isMinimized,
-      href: "/hubs",
       onClick: silentEmptyFnc,
     },
     {
@@ -286,7 +286,7 @@ function RootLeftSidebar({
       ind: number
     ): ReactElement<typeof RootLeftSidebarItem> => (
       <>
-        {attrs.label === "Lab Notebook" && !isMinimized && (
+        {attrs.label === "Funding" && !isMinimized && (
           <div className={css(styles.subheader)}>Tools</div>
         )}
         <RootLeftSidebarItem key={`${attrs.label}-${ind}`} {...attrs} />
