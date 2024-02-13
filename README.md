@@ -19,19 +19,17 @@ We believe that by empowering scientists to independently fund, create, and publ
 
 ## Important Links 👀
 
-
 💡 Got an idea or request? [Open issue on Github](https://github.com/ResearchHub/researchhub-web/issues).  
-🐛 Found a bug? [Report it here](https://github.com/ResearchHub/researchhub-web/issues).   
-➕ Want to contribute to this project? [Introduce yourself in our Discord community](https://discord.gg/ZcCYgcnUp5)    
-🔨 [See what we are working on](https://github.com/orgs/ResearchHub/projects/2)   
-📰 Read the [ResearchCoin White Paper](https://www.researchhub.com/paper/819400/the-researchcoin-whitepaper)  
-
+🐛 Found a bug? [Report it here](https://github.com/ResearchHub/researchhub-web/issues).  
+➕ Want to contribute to this project? [Introduce yourself in our Discord community](https://discord.gg/ZcCYgcnUp5)  
+🔨 [See what we are working on](https://github.com/orgs/ResearchHub/projects/2)  
+📰 Read the [ResearchCoin White Paper](https://www.researchhub.com/paper/819400/the-researchcoin-whitepaper)
 
 ## Setup
 
 1. Run `cp .env.development.example .env.development`
-1. `nvm install 14.15.5` (installing [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
-1. `nvm use 14.15.5`
+1. `nvm install 16.20.2` (installing [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
+1. `nvm use 16.20.2`
 1. `yarn install` (installing [yarn](https://classic.yarnpkg.com/lang/en/docs/install/))
 1. `yarn run dev`
 1. You will also need to [install the backend app](https://github.com/ResearchHub/researchhub-backend) for the project to run
