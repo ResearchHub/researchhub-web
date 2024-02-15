@@ -1,6 +1,6 @@
 import { ID, RHUser, parseUser } from "~/config/types/root_types";
 
-export type FundraiseStatus = "OPEN" | "CLOSED";
+export type FundraiseStatus = "OPEN" | "CLOSED" | "COMPLETED";
 
 export interface Fundraise {
   id: ID;

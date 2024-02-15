@@ -1,12 +1,12 @@
 import React, { ReactElement, useMemo } from "react";
-import { Fundraise, isFundraiseFulfilled } from "./lib/types";
+import { Fundraise } from "./lib/types";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { timeTo } from "~/config/utils/dates";
 import CommentAvatars from "../Comment/CommentAvatars";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck } from "@fortawesome/pro-solid-svg-icons";
+import { faCircleCheck, faCircleX } from "@fortawesome/pro-solid-svg-icons";
 import { faClock } from "@fortawesome/pro-regular-svg-icons";
 import FundraiseContributorsModal from "./ContributorsModal";
 import Button from "../Form/Button";
@@ -28,10 +28,10 @@ const FundraiseCard = ({
   showSupportButton = true,
   onUpdateFundraise = () => {},
 }: FundraiseCardProps): ReactElement => {
-  const barFillAmount = useMemo(
-    () => Math.min((f.amountRaised.rsc / f.goalAmount.rsc) * 100, 100),
-    [f.amountRaised.rsc, f.goalAmount.rsc]
-  );
+  const barFillAmount = useMemo(() => {
+    if (f.status === "COMPLETED") return 100;
+    else return Math.min((f.amountRaised.rsc / f.goalAmount.rsc) * 100, 100);
+  }, [f.amountRaised.rsc, f.goalAmount.rsc, f.status]);
 
   return (
     <div className={css(styles.container)}>
@@ -40,7 +40,7 @@ const FundraiseCard = ({
           <ResearchCoinIcon
             overrideStyle={styles.rscIcon}
             color={
-              isFundraiseFulfilled(f)
+              f.status === "COMPLETED"
                 ? colors.NEW_GREEN()
                 : colors.ORANGE_LIGHT2()
             }
@@ -51,7 +51,7 @@ const FundraiseCard = ({
           <div
             className={css(
               styles.amountRaisedText,
-              isFundraiseFulfilled(f) && styles.amountRaisedTextFulfilled
+              f.status === "COMPLETED" && styles.amountRaisedTextFulfilled
             )}
           >
             {formatBountyAmount({
@@ -81,7 +81,7 @@ const FundraiseCard = ({
             goal
           </div>
         </div>
-        {f.status === "OPEN" && !isFundraiseFulfilled(f) && (
+        {f.status === "OPEN" && (
           <div className={css(styles.timeLeft)}>
             <FontAwesomeIcon
               style={{ fontSize: 14, marginRight: 5 }}
@@ -90,13 +90,22 @@ const FundraiseCard = ({
             {timeTo(f.endDate)} to go
           </div>
         )}
-        {isFundraiseFulfilled(f) && (
+        {f.status === "COMPLETED" && (
           <div className={css(styles.fundraiseCompletedDetail)}>
             <FontAwesomeIcon
               style={{ fontSize: 14, marginRight: 5 }}
               icon={faCircleCheck}
             />
             Fundraise Completed
+          </div>
+        )}
+        {f.status === "CLOSED" && (
+          <div className={css(styles.fundraiseClosedDetail)}>
+            <FontAwesomeIcon
+              style={{ fontSize: 14, marginRight: 5 }}
+              icon={faCircleX}
+            />
+            Fundraise Closed
           </div>
         )}
       </div>
@@ -107,10 +116,8 @@ const FundraiseCard = ({
           }}
           className={css(
             styles.bar,
-            isFundraiseFulfilled(f) && styles.barFulfilled,
-            f.status === "CLOSED" &&
-              !isFundraiseFulfilled(f) &&
-              styles.barCancelled
+            f.status === "COMPLETED" && styles.barFulfilled,
+            f.status === "CLOSED" && styles.barCancelled
           )}
         />
       </div>
@@ -131,29 +138,27 @@ const FundraiseCard = ({
             </div>
           }
         />
-        {showSupportButton &&
-          f.status === "OPEN" &&
-          !isFundraiseFulfilled(f) && (
-            <FundraiseContributeModal
-              triggerComponent={
-                <PermissionNotificationWrapper
-                  modalMessage="support this fundraise"
-                  loginRequired={true}
-                  hideRipples={true}
+        {showSupportButton && f.status === "OPEN" && (
+          <FundraiseContributeModal
+            triggerComponent={
+              <PermissionNotificationWrapper
+                modalMessage="support this fundraise"
+                loginRequired={true}
+                hideRipples={true}
+              >
+                <Button
+                  size="small"
+                  type="primary"
+                  customButtonStyle={styles.customButtonStyle}
                 >
-                  <Button
-                    size="small"
-                    type="primary"
-                    customButtonStyle={styles.customButtonStyle}
-                  >
-                    Support
-                  </Button>
-                </PermissionNotificationWrapper>
-              }
-              fundraise={f}
-              onUpdateFundraise={onUpdateFundraise}
-            />
-          )}
+                  Support
+                </Button>
+              </PermissionNotificationWrapper>
+            }
+            fundraise={f}
+            onUpdateFundraise={onUpdateFundraise}
+          />
+        )}
       </div>
     </div>
   );
@@ -224,6 +229,18 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     color: colors.NEW_GREEN(),
     whiteSpace: "nowrap",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  fundraiseClosedDetail: {
+    fontSize: 14,
+    fontWeight: 500,
+    color: colors.MEDIUM_GREY2(0.8),
+    whiteSpace: "nowrap",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
   },
 
   barContainer: {
