@@ -24,6 +24,7 @@ const ForYouFeed = ({}: ForYouFeedProps): ReactElement => {
         setFetchStatus("fulfilled");
       },
       onError: (error) => {
+        console.log('error', error)
         setFetchStatus("rejected");
       },
     });
@@ -32,6 +33,7 @@ const ForYouFeed = ({}: ForYouFeedProps): ReactElement => {
   // TODO: Add loading state
   return (
     <div className={css(styles.feedContainer)}>
+      <h2>Personalized content (beta)</h2>
       {feedItems.map((item) => (
         <>
           <ForYouFeedCard item={item} />
@@ -47,6 +49,8 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     padding: "0 28px",
+    width: "800px",
+    margin: "0 auto",
   },
   divider: {
     margin: "0 auto",

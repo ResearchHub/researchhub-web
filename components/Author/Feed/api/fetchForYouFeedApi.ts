@@ -1,6 +1,6 @@
 import API, { generateApiUrl } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { parseForYouFeedItem } from "../types/forYouFeedTypes";
+import { parseFeedItem } from "../types/forYouFeedTypes";
 
 export default function fetchForYouFeedApi({
   userId,
@@ -18,7 +18,7 @@ export default function fetchForYouFeedApi({
     .then(Helpers.parseJSON)
     .then((response) => {
       const results = (response as any)?.results || [];
-      onSuccess(results.map(parseForYouFeedItem));
+      onSuccess(results.map(parseFeedItem));
     })
     .catch((error) => {
       onError && onError(error);
