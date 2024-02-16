@@ -30,6 +30,7 @@ import { parseUser } from "~/config/types/root_types";
 import Link from "next/link";
 import RHLogo from "../Home/RHLogo";
 import SingleTypeUnifiedDocFeedContainer from "../UnifiedDocFeed/SingleTypeUnifiedDocFeedContainer";
+import ForYouFeed from "../Author/Feed/ForYouFeed";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -394,6 +395,8 @@ class HubPage extends Component {
                 serverLoadedData={initialFeed}
                 docType={this.props.docType}
               />
+            ) : this.props.isForYouFeed ? (
+              <ForYouFeed />
             ) : (
               <UnifiedDocFeedContainer
                 feed={feed}
