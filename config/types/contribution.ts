@@ -79,6 +79,7 @@ export type BountyContributionItem = {
   content: any;
   id: ID;
   parent?: Bounty;
+  expirationDate?: string;
 };
 
 export type PostContributionItem = {
@@ -256,6 +257,7 @@ export const parseBountyContributionItem = (
     ...(raw.item.bounty_parent && {
       parent: new Bounty(raw.item.bounty_parent),
     }),
+    expirationDate: raw.item.expiration_date,
   };
 
   return mapped;

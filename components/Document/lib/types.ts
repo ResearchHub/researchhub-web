@@ -136,6 +136,7 @@ export type Post = GenericDocument & {
   note?: Note;
   srcUrl: string;
   postHtml: TrustedHTML;
+  renderableText?: string;
 };
 
 export type Hypothesis = GenericDocument & {
@@ -240,6 +241,7 @@ export const parsePost = (raw: any): Post => {
     srcUrl: raw.post_src,
     postHtml: raw.postHtml || "",
     postType: postType as any,
+    renderableText: raw.renderable_text,
   };
 
   if (raw.note) {
