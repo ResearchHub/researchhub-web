@@ -4,18 +4,22 @@ import {
   parsePaper,
   parsePost,
 } from "~/components/Document/lib/types";
-import Bounty from "~/config/types/bounty";
 import { parseContentType } from "~/config/types/contentType";
+import {
+  BountyContributionItem,
+  parseBountyContributionItem,
+} from "~/config/types/contribution";
 import { Hub, parseHub } from "~/config/types/hub";
 import {
   ID,
   RHUser,
   UnifiedDocument,
+  parseUnifiedDocument,
   parseUser,
 } from "~/config/types/root_types";
 
-export interface ForYouFeedItem {
-  item: Paper | Post | Bounty | ForYouFeedCommentObject;
+export interface FeedItem {
+  item: Paper | Post | BountyContributionItem | FeedCommentObject;
   contentType: string;
 
   hubs: Hub[];
@@ -27,27 +31,25 @@ export interface ForYouFeedItem {
   createdBy: RHUser;
   createdDate: string;
 }
-export interface ForYouFeedPaperItem extends ForYouFeedItem {
+export interface FeedPaperItem extends FeedItem {
   item: Paper;
 }
-export interface ForYouFeedPostItem extends ForYouFeedItem {
+export interface FeedPostItem extends FeedItem {
   item: Post;
 }
-export interface ForYouFeedBountyItem extends ForYouFeedItem {
-  item: Bounty;
+export interface FeedBountyItem extends FeedItem {
+  item: BountyContributionItem;
 }
-export interface ForYouFeedCommentItem extends ForYouFeedItem {
-  item: ForYouFeedCommentObject;
+export interface FeedCommentItem extends FeedItem {
+  item: FeedCommentObject;
 }
 
-export interface ForYouFeedCommentObject {
+export interface FeedCommentObject {
   id: ID;
   createdBy: RHUser;
   content: any;
 }
-export const parseForYouFeedCommentObject = (
-  raw: any
-): ForYouFeedCommentObject => {
+export const parseFeedCommentObject = (raw: any): FeedCommentObject => {
   return {
     id: raw.id,
     createdBy: parseUser(raw.created_by),
@@ -55,33 +57,36 @@ export const parseForYouFeedCommentObject = (
   };
 };
 
-export const parseForYouFeedItem = (raw: any): ForYouFeedItem | null => {
+export const parseFeedItem = (raw: any): FeedItem | null => {
   try {
-    const parsed: ForYouFeedItem = {
+    const parsed: FeedItem = {
       contentType: parseContentType({ name: raw.content_type }).name,
       hubs: (raw.hubs || []).map(parseHub),
-      unifiedDocument: raw.unified_document,
+      unifiedDocument: parseUnifiedDocument(raw.unified_document),
       userVote: raw.user_vote,
       score: raw.score,
       createdBy: parseUser(raw.created_by),
       createdDate: raw.created_date,
-    } as ForYouFeedItem;
+    } as FeedItem;
 
     if (parsed.contentType === "paper") {
       parsed.item = parsePaper(raw.item);
-    } else if (parsed.contentType === "post") {
+    } else if (
+      parsed.contentType === "post" ||
+      parsed.contentType === "question" ||
+      parsed.contentType === "preregistration"
+    ) {
       parsed.item = parsePost(raw.item);
-    } else if (parsed.contentType === "bounty_contribution") {
-      parsed.item = new Bounty(raw.item);
+    } else if (parsed.contentType === "bounty") {
+      parsed.item = parseBountyContributionItem(raw);
     } else if (parsed.contentType === "comment") {
-      parsed.item = parseForYouFeedCommentObject(raw.item);
+      parsed.item = parseFeedCommentObject(raw.item);
     } else {
       console.error(
         `Could not parse item with content_type=${parsed.contentType}`
       );
       return null;
     }
-
     return parsed;
   } catch (e) {
     console.error("Error parsing feed item", e);

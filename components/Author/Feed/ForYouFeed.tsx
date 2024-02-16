@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
   feedContainer: {
     display: "flex",
     flexDirection: "column",
+    padding: "0 28px",
   },
   divider: {
     margin: "0 auto",

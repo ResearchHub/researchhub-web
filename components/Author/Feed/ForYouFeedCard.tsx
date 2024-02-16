@@ -1,20 +1,36 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
-  ForYouFeedCommentItem,
-  ForYouFeedItem,
-  ForYouFeedPaperItem,
+  FeedPostItem,
+  FeedCommentItem,
+  FeedItem,
+  FeedPaperItem,
+  FeedBountyItem,
 } from "./types/forYouFeedTypes";
 import { AuthorProfile, RHUser } from "~/config/types/root_types";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import CommentAvatars from "~/components/Comment/CommentAvatars";
 import UserTooltip from "~/components/Tooltips/User/UserTooltip";
 import ALink from "~/components/ALink";
-import { timeSince } from "~/config/utils/dates";
+import { timeSince, timeTo } from "~/config/utils/dates";
 import VoteWidget from "~/components/VoteWidget";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 import DocumentHubs from "~/components/Document/lib/DocumentHubs";
 import CommentReadOnly from "~/components/Comment/CommentReadOnly";
+import fetchDocumentMetadata from "~/components/Document/api/fetchDocumentMetadata";
+import { isEmpty } from "~/config/utils/nullchecks";
+import {
+  DocumentMetadata,
+  parseDocumentMetadata,
+} from "~/components/Document/lib/types";
+import FundraiseCard from "~/components/Fundraise/FundraiseCard";
+import ContentBadge from "~/components/ContentBadge";
+import { formatBountyAmount } from "~/config/types/bounty";
+import { breakpoints } from "~/config/themes/screen";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock } from "@fortawesome/pro-light-svg-icons";
+import Button from "~/components/Form/Button";
+import { faReply } from "@fortawesome/pro-solid-svg-icons";
 
 const FeedCardHeader = ({
   users,
@@ -26,7 +42,7 @@ const FeedCardHeader = ({
   users?: RHUser[];
   authors?: AuthorProfile[];
 
-  actionText?: string;
+  actionText?: string | React.ReactNode;
   actionNoun?: string;
 
   createdDate?: string;
@@ -107,10 +123,18 @@ const headerStyles = StyleSheet.create({
   actionText: {
     fontSize: 14,
     color: colors.MEDIUM_GREY2(),
+    whiteSpace: "nowrap",
+    display: "flex",
+    alignItems: "center",
   },
   actionNoun: {
     fontSize: 16,
     color: colors.BLACK_TEXT(),
+    // limit to one line and truncate
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "200px",
   },
   timeSince: {
     fontSize: 14,
@@ -118,7 +142,7 @@ const headerStyles = StyleSheet.create({
   },
 });
 
-const FeedCardFooter = ({ item }: { item: ForYouFeedItem }) => {
+const FeedCardFooter = ({ item }: { item: FeedItem }) => {
   return (
     <div className={css(footerStyles.container)}>
       <VoteWidget
@@ -146,17 +170,16 @@ const footerStyles = StyleSheet.create({
   },
 });
 
-const FeedCardPaper = ({ item }: { item: ForYouFeedPaperItem }) => {
+const FeedCardPaper = ({ item }: { item: FeedPaperItem }) => {
   return (
     <div className={css(paperStyles.container)}>
       <FeedCardHeader
-        users={[item.createdBy]}
         authors={item.item.authors}
         actionText="published paper"
         createdDate={item.createdDate}
       />
       <div className={css(paperStyles.title)}>
-        {item.item.title || "This is a test title"}
+        {item.item.title || "Unknown Title"}
       </div>
       <div className={css(paperStyles.abstract) + " clamp2"}>
         {item.item.abstract}
@@ -180,7 +203,7 @@ const paperStyles = StyleSheet.create({
     padding: "24px 0",
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 500,
     marginBottom: 8,
   },
@@ -193,7 +216,152 @@ const paperStyles = StyleSheet.create({
   },
 });
 
-const FeedCardComment = ({ item }: { item: ForYouFeedCommentItem }) => {
+const FeedCardPost = ({ item }: { item: FeedPostItem }) => {
+  return (
+    <div className={css(postStyles.container)}>
+      <FeedCardHeader
+        users={[item.createdBy]}
+        authors={item.item.authors}
+        actionText={
+          {
+            post: "created a post",
+            question: "asked a question",
+            preregistration: "requested funding",
+          }[item.contentType]
+        }
+        createdDate={item.createdDate}
+      />
+      <div className={css(postStyles.title)}>
+        {item.item.title || "Unknown Title"}
+      </div>
+      {!isEmpty(item.item.postHtml) ? (
+        <div
+          id="postBody"
+          className={css(postStyles.postBody) + " rh-post"}
+          dangerouslySetInnerHTML={{ __html: item.item.postHtml }}
+        />
+      ) : !isEmpty(item.item.renderableText) ? (
+        <div className={css(postStyles.postBody) + " clamp2"}>
+          {item.item.renderableText}
+        </div>
+      ) : null}
+      {item.hubs && (
+        <DocumentHubs
+          hubs={item.hubs}
+          withShowMore={false}
+          hideOnSmallerResolution={true}
+        />
+      )}
+      <FeedCardFooter item={item} />
+    </div>
+  );
+};
+
+const postStyles = StyleSheet.create({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    padding: "24px 0",
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 500,
+    marginBottom: 8,
+  },
+  postBody: {
+    fontSize: 14,
+    fontWeight: 400,
+    color: colors.MEDIUM_GREY2(),
+    lineHeight: "18px",
+    marginBottom: 12,
+  },
+});
+
+const FeedCardPreregistration = ({ item }: { item: FeedPostItem }) => {
+  const [metadata, setMetadata] = useState<DocumentMetadata | null>(null);
+
+  useEffect(() => {
+    if (isEmpty(item.unifiedDocument.id)) return;
+    const _fetchFreshData = async () => {
+      const _metadata = await fetchDocumentMetadata({
+        unifiedDocId: item.unifiedDocument.id,
+      });
+
+      setMetadata(parseDocumentMetadata(_metadata));
+    };
+
+    _fetchFreshData();
+  }, []);
+
+  return (
+    <div className={css(preregStyles.container)}>
+      <FeedCardHeader
+        users={[item.createdBy]}
+        authors={item.item.authors}
+        actionText={
+          {
+            post: "created a post",
+            question: "asked a question",
+            preregistration: "requested funding",
+          }[item.contentType]
+        }
+        createdDate={item.createdDate}
+      />
+      <div className={css(preregStyles.title)}>
+        {item.item.title || "Unknown Title"}
+      </div>
+      {!isEmpty(item.item.postHtml) ? (
+        <div
+          id="postBody"
+          className={css(preregStyles.postBody) + " rh-post"}
+          dangerouslySetInnerHTML={{ __html: item.item.postHtml }}
+        />
+      ) : !isEmpty(item.item.renderableText) ? (
+        <div className={css(preregStyles.postBody) + " clamp2"}>
+          {item.item.renderableText}
+        </div>
+      ) : null}
+      {metadata && metadata.fundraise && (
+        <div className={css(preregStyles.fundraiseContainer)}>
+          <FundraiseCard fundraise={metadata.fundraise} />
+        </div>
+      )}
+      {item.hubs && (
+        <DocumentHubs
+          hubs={item.hubs}
+          withShowMore={false}
+          hideOnSmallerResolution={true}
+        />
+      )}
+      <FeedCardFooter item={item} />
+    </div>
+  );
+};
+
+const preregStyles = StyleSheet.create({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    padding: "24px 0",
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 500,
+    marginBottom: 8,
+  },
+  postBody: {
+    fontSize: 14,
+    fontWeight: 400,
+    color: colors.MEDIUM_GREY2(),
+    lineHeight: "18px",
+    marginBottom: 12,
+  },
+  fundraiseContainer: {
+    marginBottom: 12,
+  },
+});
+
+const FeedCardComment = ({ item }: { item: FeedCommentItem }) => {
   return (
     <div className={css(commentStyles.container)}>
       <FeedCardHeader
@@ -204,7 +372,12 @@ const FeedCardComment = ({ item }: { item: ForYouFeedCommentItem }) => {
           item.unifiedDocument?.document?.title || "Test Title of Paper"
         }
       />
-      <CommentReadOnly comment={item.item as any} content={item.item.content} />
+      <div className={css(commentStyles.content)}>
+        <CommentReadOnly
+          comment={item.item as any}
+          content={item.item.content}
+        />
+      </div>
       {item.hubs && (
         <DocumentHubs
           hubs={item.hubs}
@@ -224,21 +397,158 @@ const commentStyles = StyleSheet.create({
     padding: "24px 0",
   },
   content: {
-    fontSize: 16,
-    fontWeight: 400,
-    color: colors.MEDIUM_GREY2(),
-    lineHeight: "18px",
     marginBottom: 12,
   },
 });
 
-const ForYouFeedCard = ({ item }: { item: ForYouFeedItem }) => {
+const FeedCardBounty = ({ item }: { item: FeedBountyItem }) => {
+  const isQuestion = item?.unifiedDocument?.documentType === "question";
+
+  return (
+    <div className={css(bountyStyles.container)}>
+      <FeedCardHeader
+        users={[item.createdBy]}
+        createdDate={item.createdDate}
+        actionText={
+          <>
+            is offering{" "}
+            <ContentBadge
+              contentType="bounty"
+              bountyAmount={item.item.amount}
+              size={`small`}
+              badgeContainerOverride={bountyStyles.badgeContainerOverride}
+              label={
+                <div style={{ display: "flex", whiteSpace: "pre" }}>
+                  <div style={{ flex: 1 }}>
+                    {formatBountyAmount({
+                      amount: item.item.amount,
+                      withPrecision: false,
+                    })}{" "}
+                    RSC
+                  </div>
+                </div>
+              }
+            />
+            {" on "}
+          </>
+        }
+        actionNoun={
+          item.unifiedDocument?.document?.title || "Test Title of Paper"
+        }
+      />
+      <div className={css(bountyStyles.content)}>
+        <CommentReadOnly
+          comment={item.item as any}
+          content={item.item.content}
+        />
+      </div>
+      <div className={css(bountyStyles.contributeWrapper)}>
+        <div className={css(bountyStyles.contributeDetails)}>
+          <span style={{ fontWeight: 500 }}>
+            <FontAwesomeIcon
+              style={{ fontSize: 13, marginRight: 5 }}
+              icon={faClock}
+            />
+            {`Bounty expiring in ` + timeTo(item.item.expirationDate) + `.  `}
+          </span>
+          <span>
+            <>{`Reply to this ${
+              isQuestion ? "question" : "thread"
+            } to be eligible for bounty award.`}</>
+          </span>
+        </div>
+        {
+          <Button
+            customButtonStyle={bountyStyles.contributeBtn}
+            customLabelStyle={bountyStyles.contributeBtnLabel}
+            hideRipples={true}
+            onClick={() => {}}
+            size="small"
+          >
+            <div>
+              <FontAwesomeIcon icon={faReply} />
+              {` `}
+              <span className={css(bountyStyles.bountyBtnText)}>
+                Answer the Bounty
+              </span>
+            </div>
+          </Button>
+        }
+      </div>
+      {item.hubs && (
+        <DocumentHubs
+          hubs={item.hubs}
+          withShowMore={false}
+          hideOnSmallerResolution={true}
+        />
+      )}
+      <FeedCardFooter item={item} />
+    </div>
+  );
+};
+
+const bountyStyles = StyleSheet.create({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    padding: "24px 0",
+  },
+  content: {
+    marginBottom: 12,
+  },
+  badgeContainerOverride: {
+    display: "inline",
+    margin: "0 4px",
+  },
+
+  contributeDetails: {
+    maxWidth: "70%",
+    lineHeight: "22px",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      maxWidth: "100%",
+    },
+  },
+  bountyBtnText: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
+  },
+  contributeWrapper: {
+    background: colors.ORANGE_LIGHTER(0.6),
+    padding: "9px 11px 10px 14px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    fontSize: 14,
+    borderRadius: "4px",
+    marginBottom: 12,
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      flexDirection: "column",
+      alignItems: "flex-start",
+      rowGap: "10px",
+    },
+  },
+  contributeBtn: {
+    background: colors.ORANGE_LIGHT2(1.0),
+    fontWeight: 500,
+    border: 0,
+    marginLeft: "auto",
+    borderRadius: "4px",
+  },
+  contributeBtnLabel: {
+    fontWeight: 500,
+    lineHeight: "22px",
+  },
+});
+
+const ForYouFeedCard = ({ item }: { item: FeedItem }) => {
   const mapped = {
-    // TODO: Account for all types
     paper: FeedCardPaper,
-    post: FeedCardPaper,
+    question: FeedCardPost,
+    post: FeedCardPost,
     comment: FeedCardComment,
-    bounty: FeedCardPaper,
+    bounty: FeedCardBounty,
+    preregistration: FeedCardPreregistration,
   };
 
   const Component = mapped[item.contentType] || null;
