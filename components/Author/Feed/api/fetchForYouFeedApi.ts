@@ -11,7 +11,7 @@ export default function fetchForYouFeedApi({
   onSuccess: (response: any) => void;
   onError?: (error: any) => void;
 }) {
-  const url = generateApiUrl("api/feed", { user_id: userId });
+  const url = generateApiUrl("feed", `?user_id=${userId}`);
 
   return fetch(url, API.GET_CONFIG())
     .then(Helpers.checkStatus)
