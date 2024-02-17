@@ -94,7 +94,7 @@ const NotebookSidebar = ({
         closeModal={() => setShowNewOrgModal(false)}
         onOrgChange={onOrgChange}
       />
-      <NoteTemplateModal
+      {/* <NoteTemplateModal
         isOpen={isNoteTemplateModalOpen}
         orgSlug={orgSlug}
         redirectToNote={redirectToNote}
@@ -102,7 +102,7 @@ const NotebookSidebar = ({
         setIsOpen={setIsNoteTemplateModalOpen}
         setTemplates={setTemplates}
         templates={templates}
-      />
+      /> */}
       <div className={css(styles.sidebarOrgContainer)}>
         <div>
           <ResearchHubPopover
@@ -195,13 +195,13 @@ const NotebookSidebar = ({
                 Settings & Members
               </span>
             </div>
-            <div
+            {/* <div
               className={css(styles.sidebarButton)}
               onClick={() => setIsNoteTemplateModalOpen(true)}
             >
               {<FontAwesomeIcon icon={faShapes}></FontAwesomeIcon>}
               <span className={css(styles.sidebarButtonText)}>Templates</span>
-            </div>
+            </div> */}
           </div>
         )}
       </div>
