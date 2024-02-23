@@ -466,7 +466,7 @@ class Index extends Component {
           )}
           {this.renderTextContainer(
             `"Hubs" as an Alternative to Journals`,
-            `Within ResearchHub, papers are grouped in "Hubs" by area of research. Individual Hubs will essentially act as live journals within focused areas, within highly upvoted posts. (i.e the paper and its associated summary and discussion) moving to the top of each Hub.`,
+            `Within the ResearchHub platform, research papers are stored and grouped in ‘Hubs’ by area of research. Individual Hubs will essentially act as live journals within focused areas, within highly upvoted posts. (i.e the paper and its associated summary and discussion) moving to the top of each Hub.`,
             "/static/about/about-hubs.png",
             false,
             true
@@ -481,15 +481,18 @@ class Index extends Component {
                 )}
               >
                 <h3 className={css(styles.textTitle, styles.centerText)}>
-                  A Community Powered by ResearchCoin
+                  ResearchCoin
                 </h3>
                 <p className={css(styles.subtext, styles.wideText)}>
                   To help bring this nascent community together and incentivize
                   contribution to the platform, a newly created ERC20 token,
-                  ResearchCoin (RSC), has been created. Users receive RSC for
-                  uploading new content to the platform, as well as for
-                  summarizing and discussion research. Rewards for contributions
-                  are proportionate to how valuable the community perceives the
+                  ResearchCoin (RSC), has been created. To incentivize users,
+                  ResearchHub issues tokens that users can earn and transfer to
+                  one another by sharing, curating, and discussing topics within
+                  the platform. Users can also transfer tokens to one another on
+                  the platform by creating “bounties” to incentivize other users
+                  to engage with their post. Rewards for contributions are
+                  proportionate to how valuable the community perceives the
                   actions to be - as measured by upvotes.{"\n \n"}
                   ResearchCoin is also linked to reputation on the
                   platform--with reputation being mesaured as a user's lifetime
