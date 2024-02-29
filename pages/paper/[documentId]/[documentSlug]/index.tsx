@@ -9,7 +9,7 @@ import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 import PaperPageAbstractSection from "~/components/Paper/abstract/PaperPageAbstractSection";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   DocumentContext,
   DocumentPreferences,
@@ -28,6 +28,7 @@ import {
 import DocumentViewer, {
   ZoomAction,
 } from "~/components/Document/DocumentViewer";
+import { buildQueryString, generateApiUrl } from "~/config/api";
 
 interface Args {
   documentData?: any;
@@ -60,6 +61,17 @@ const DocumentIndexPage: NextPage<Args> = ({
   }) as [Paper | null, Function];
   const { revalidateDocument } = useCacheControl();
 
+  const pdfUrl = useMemo(() => {
+    if (!document) return null;
+    // either the url is in format, in which case it's stored on our end.
+    // otherwise it's an external PDF URL and we need to proxy it.
+    let pdfUrl = document.formats.find((f) => f.type === "pdf")?.url;
+    if (!pdfUrl && document.proxyPdfUrl) {
+      pdfUrl = document.proxyPdfUrl;
+    }
+    return pdfUrl;
+  }, [document]);
+
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
   }
@@ -76,7 +88,6 @@ const DocumentIndexPage: NextPage<Args> = ({
     return <Error statusCode={500} />;
   }
 
-  const pdfUrl = document.formats.find((f) => f.type === "pdf")?.url;
   return (
     <DocumentContext.Provider
       value={{

@@ -23,6 +23,7 @@ import { formatDateStandard } from "~/config/utils/dates";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { stripHTML } from "~/config/utils/string";
 import { Fundraise, parseFundraise } from "~/components/Fundraise/lib/types";
+import proxyApi from "~/config/proxy-api";
 
 export type DocumentFormat = {
   type: "pdf" | "latex";
@@ -129,6 +130,9 @@ export type Paper = GenericDocument & {
   abstract?: string;
   abstractHtml?: TrustedHTML;
   license?: string;
+  pdfUrl?: string;
+  proxyPdfUrl?: string;
+  pdfCopyrightAllowsDisplay?: boolean;
 };
 
 export type Post = GenericDocument & {
@@ -210,6 +214,8 @@ export const parsePaper = (raw: any): Paper => {
     abstractHtml: raw.abstract_src_markdown,
     type: "paper",
     apiDocumentType: "paper",
+    pdfUrl: raw.pdf_url,
+    proxyPdfUrl: raw.pdf_url ? proxyApi.generateProxyUrl(raw.pdf_url) : null,
     pdfCopyrightAllowsDisplay: Boolean(raw.pdf_copyright_allows_display),
     ...(raw.pdf_license && { license: raw.pdf_license }),
   };
