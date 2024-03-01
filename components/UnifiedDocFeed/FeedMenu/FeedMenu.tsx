@@ -36,7 +36,8 @@ const FeedMenu = ({ hubState }: Args) => {
       handleDismissTagMenu: setTagsMenuOpenFor,
     });
 
-    setShouldShowTabs(router.pathname.indexOf("live") === -1);
+    const isOnNoFiltersPage =  ["live", "for-you"].some((key) => router.pathname.includes(key))  
+    setShouldShowTabs(!isOnNoFiltersPage);
   }, []);
 
   useEffect(() => {
@@ -85,10 +86,12 @@ const FeedMenu = ({ hubState }: Args) => {
     <div>
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters, isHubPage && styles.hubPage)}>
-          <FeedMenuTopLevelFilters
-            selectedFilters={selectedFilters}
-            hubState={hubState}
-          />
+          <div className={css(shouldShowTabs && styles.topLevelFiltersWrapper)}>
+            <FeedMenuTopLevelFilters
+              selectedFilters={selectedFilters}
+              hubState={hubState}
+            />
+          </div>
           {shouldShowTabs && (
             <div className={css(styles.filtersAsTabs)}>
               <div className={css(styles.typeFiltersContainer)}>
@@ -207,6 +210,9 @@ const styles = StyleSheet.create({
       borderBottom: `unset`,
     },
   },
+  topLevelFiltersWrapper: {
+    borderBottom: `1px solid ${colors.GREY_LINE(1)}`,
+  }
 });
 
 const mapStateToProps = (state) => ({

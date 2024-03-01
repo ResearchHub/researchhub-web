@@ -234,6 +234,7 @@ function RootLeftSidebar({
         "post",
         "hypothesis",
         "live",
+        "for-you",
         "funding",
         "hubs",
         "referral",

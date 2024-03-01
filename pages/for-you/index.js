@@ -23,21 +23,21 @@ Index.getInitialProps = async (ctx) => {
   try {
     const selectedFilters = getSelectedUrlFilters({
       query,
-      pathname: "/my-hubs",
+      pathname: "/for-you",
     });
-    const initialFeed = await fetchUnifiedDocFeed(
-      {
-        selectedFilters,
-        hubId: null,
-        page: 1,
-      },
-      authToken,
-      !isNullOrUndefined(authToken) /* withVotes */
-    );
+    // const initialFeed = await fetchUnifiedDocFeed(
+    //   {
+    //     selectedFilters,
+    //     hubId: null,
+    //     page: 1,
+    //   },
+    //   authToken,
+    //   !isNullOrUndefined(authToken) /* withVotes */
+    // );
 
     return {
       ...defaultProps,
-      initialFeed,
+      // initialFeed,
     };
   } catch (error) {
     return defaultProps;

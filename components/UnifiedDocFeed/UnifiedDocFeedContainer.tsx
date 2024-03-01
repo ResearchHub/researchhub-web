@@ -152,7 +152,7 @@ function UnifiedDocFeedContainer({
     unifiedDocumentData: unifiedDocuments,
   });
   const onMyHubsLoggedOut =
-    selectedFilters.topLevel === "/my-hubs" &&
+    selectedFilters.topLevel === "/for-you" &&
     auth?.authChecked &&
     !auth?.user?.id;
 

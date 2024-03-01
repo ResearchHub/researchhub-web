@@ -31,15 +31,15 @@ class FeedList extends Component {
         as: "/",
       },
       {
-        label: "My Hubs",
+        label: "For You",
         icon: (
           <img
             src={"/static/ResearchHubIcon.png"}
             className={css(styles.rhIcon)}
           />
         ),
-        href: "/my-hubs",
-        as: "/my-hubs",
+        href: "/for-you",
+        as: "/for-you",
       },
     ];
   }

@@ -401,7 +401,7 @@ class HubPage extends Component {
               <UnifiedDocFeedContainer
                 feed={feed}
                 home={home}
-                hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
+                hubName={home ? (feed ? "ResearchHub" : "For You") : hub.name}
                 hubState={hubState}
                 hub={hub}
                 loggedIn={loggedIn}
