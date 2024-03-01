@@ -136,6 +136,7 @@ var styles = StyleSheet.create({
     position: "relative",
     display: "flex",
     padding: "20px 40px",
+    marginTop: 20,
     boxSizing: "border-box",
     justifyContent: "flex-start",
     alignItems: "center",

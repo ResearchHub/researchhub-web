@@ -100,7 +100,7 @@ const FeedMenuTopLevelFilters = ({
           <span className={css(styles.filterLabel)}>
             {isMyHubs ? <>For You</> : <>{f.label}</>}
           </span>
-          {isMyHubs && isSubscribedToHubs && !renderAsDropdown && (
+          {/* {isMyHubs && isSubscribedToHubs && !renderAsDropdown && (
             <span
               className={css(styles.myHubsDown)}
               onClick={(event) => {
@@ -117,7 +117,7 @@ const FeedMenuTopLevelFilters = ({
           )}
           {isMyHubsDropdownOpen && isMyHubs && !renderAsDropdown && (
             <MyHubsDropdown hubState={hubState} />
-          )}
+          )} */}
         </div>)
       );
     });
