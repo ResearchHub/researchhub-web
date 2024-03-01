@@ -798,22 +798,6 @@ const routes = (BASE_URL) => {
       let url =
         BASE_URL + "researchhub_unified_document/get_unified_documents/";
 
-      // Kobe, 2024-02-01: This is a temporary shim to allow for recs experiment
-      // The unified docs API will be replaced by a new API that delivers mixed-content which will
-      // make this code obsolete.
-      try {
-        if (window.location.pathname.includes("for-you")) {
-          const userId = window.location.search.split("user_id=")[1];
-          url = BASE_URL + `researchhub_unified_document/recommendations/`;
-
-          if (userId) {
-            url += `?user_id=${userId}`;
-          }
-        }
-      } catch (error) {
-        console.error("Failed to generate recs url", error);
-      }
-
       const HOME_HUB = 0;
       const isHomeHub = !hubId || hubId === HOME_HUB;
       const hasTags = (backendFilters.tags ?? []).length > 0;
@@ -837,6 +821,23 @@ const routes = (BASE_URL) => {
 
       if (backendFilters.type === "bounty") {
         params.querystring.tags = "open";
+      }
+
+      // Kobe, 2024-02-01: This is a temporary shim to allow for recs experiment
+      // The unified docs API will be replaced by a new API that delivers mixed-content which will
+      // make this code obsolete.
+      try {
+        if (window.location.pathname.includes("for-you")) {
+          const userId = window.location.search.split("user_id=")[1];
+          url = BASE_URL + `researchhub_unified_document/recommendations/`;
+
+          if (userId) {
+            params.querystring.user_id = userId;
+            // url += `?user_id=${userId}`;
+          }
+        }
+      } catch (error) {
+        console.error("Failed to generate recs url", error);
       }
 
       const finalUrl = prepURL(url, params);
