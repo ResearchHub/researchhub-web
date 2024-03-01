@@ -4,7 +4,7 @@ import Button from "../Form/Button";
 import { Fragment, ReactElement, useMemo } from "react";
 import { ID } from "../../config/types/root_types";
 import { useRouter } from "next/router";
-
+import Login from "../Login/Login";
 type Props = {
   auth: any;
   hubState: any;
@@ -17,24 +17,22 @@ function FeedBlurWithButton(
   const { auth, hubState, isLoggedIn } = props;
   const router = useRouter();
 
-  const isOnMyHubsTab = ["/my-hubs"].includes(router.pathname);
+  const isOnMyHubsTab = ["/for-you"].includes(router.pathname);
   const hasSubscribed = useMemo(
     (): boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
   );
 
-  return (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab ? (
+  return (!isLoggedIn && isOnMyHubsTab) ? (
     <Fragment>
       <div className={css(styles.blur)} />
-      <Button
-        isLink={{
-          href: "/hubs",
-          linkAs: "/hubs",
-        }}
-        hideRipples={true}
-        label="View All Hubs"
-        customButtonStyle={styles.allFeedButton}
-      />
+      <Login>
+        <Button
+          hideRipples={true}
+          label="Join ResearchHub"
+          customButtonStyle={styles.allFeedButton}
+        />
+      </Login>
     </Fragment>
   ) : null;
 }

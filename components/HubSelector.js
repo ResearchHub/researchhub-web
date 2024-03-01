@@ -37,12 +37,12 @@ const HubSelector = ({ hubState }) => {
   const hubOpts = useMemo(() => {
     const myHubsHeaderOpt = {
       html: (
-        <Link href={`/my-hubs`} className={css(styles.primaryButton)}>
+        <Link href={`/for-you`} className={css(styles.primaryButton)}>
           <RHLogo withText={false} iconStyle={styles.rhIcon} />
-          My Hubs
+          For You
         </Link>
       ),
-      value: "my-hubs",
+      value: "for-you",
     };
 
     const allHubsHeaderOpt = {

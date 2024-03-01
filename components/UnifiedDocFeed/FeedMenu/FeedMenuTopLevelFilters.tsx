@@ -58,7 +58,7 @@ const FeedMenuTopLevelFilters = ({
     const filterValues = Object.values(topLevelFilters);
     return filterValues.map((f, idx) => {
       const isSelected = f.value === selectedFilters.topLevel;
-      const isMyHubs = f.value === "/my-hubs";
+      const isMyHubs = f.value === "/for-you";
       const isLive = f.value === "/live";
 
       if (isMyHubs && !shouldShowMyHubs) {
@@ -98,7 +98,7 @@ const FeedMenuTopLevelFilters = ({
             )}
           </span>
           <span className={css(styles.filterLabel)}>
-            {isMyHubs ? <>My Hubs</> : <>{f.label}</>}
+            {isMyHubs ? <>For You</> : <>{f.label}</>}
           </span>
           {isMyHubs && isSubscribedToHubs && !renderAsDropdown && (
             <span
@@ -135,7 +135,6 @@ const FeedMenuTopLevelFilters = ({
 const styles = StyleSheet.create({
   topLevelFilters: {
     display: "flex",
-    borderBottom: `1px solid ${colors.GREY_LINE(1)}`,
     width: "100%",
     position: "relative",
   },
