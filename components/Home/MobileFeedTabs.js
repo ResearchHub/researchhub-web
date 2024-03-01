@@ -10,7 +10,7 @@ const MobileFeedTabs = (props) => {
   const { activeLeft, activeRight, onFeedSelect } = props;
 
   const onClick = async (left) => {
-    const link = left ? "/" : "/my-hubs";
+    const link = left ? "/" : "/for-you";
     await Router.push(link, link, { shallow: true });
     return onFeedSelect(left ? 0 : 1);
   };

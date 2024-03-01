@@ -802,14 +802,13 @@ const routes = (BASE_URL) => {
       // The unified docs API will be replaced by a new API that delivers mixed-content which will
       // make this code obsolete.
       try {
-        if (
-          typeof window !== "undefined" &&
-          window.location.search.includes("experiment")
-        ) {
+        if (window.location.pathname.includes("for-you")) {
           const userId = window.location.search.split("user_id=")[1];
-          url =
-            BASE_URL +
-            `researchhub_unified_document/recommendations/?user_id=${userId}`;
+          url = BASE_URL + `researchhub_unified_document/recommendations/`;
+
+          if (userId) {
+            url += `?user_id=${userId}`;
+          }
         }
       } catch (error) {
         console.error("Failed to generate recs url", error);
@@ -829,7 +828,7 @@ const routes = (BASE_URL) => {
           time: backendFilters.time,
           type: backendFilters.type,
           ...(hasTags && { tags: backendFilters.tags }),
-          ...(backendFilters.topLevel === "/my-hubs" && {
+          ...(backendFilters.topLevel === "/for-you" && {
             subscribed_hubs: true,
           }),
           ...(isHomeHub && { ignore_excluded_homepage: true }),

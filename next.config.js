@@ -118,6 +118,11 @@ const nextConfig = {
         destination: "/",
         permanent: true,
       },
+      {
+        source: "/my-hubs",
+        destination: "/for-you",
+        permanent: true,
+      },
     ];
   },
 };

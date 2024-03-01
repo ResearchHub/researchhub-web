@@ -15,9 +15,9 @@ export const topLevelFilters = {
     value: "/",
     icon: <FontAwesomeIcon icon={faGlobe}></FontAwesomeIcon>,
   },
-  "/my-hubs": {
-    label: "My Hubs",
-    value: "/my-hubs",
+  "/for-you": {
+    label: "For You",
+    value: "/for-you",
     icon: null,
   },
   // "/live": {
