@@ -6,6 +6,7 @@ import {
   faUserSlash,
   faUserPlus,
   faArrowRight,
+  faSpinnerThird,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faXTwitter,
@@ -69,7 +70,7 @@ import {
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 
-import API from "~/config/api";
+import API, { generateApiUrl } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { captureEvent } from "~/config/utils/events";
@@ -77,6 +78,7 @@ import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import UserStateBanner from "~/components/Banner/UserStateBanner";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
+import api from "~/config/api";
 
 const AUTHOR_USER_STATUS = {
   EXISTS: "EXISTS",
@@ -103,6 +105,7 @@ function AuthorPage(props) {
   const [tabName, setTabName] = useState(get(router, "query.tabName"));
   const [prevProps, setPrevProps] = useState(props.auth.isLoggedIn);
   const [isBalanceVisible, setIsBalanceVisible] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   // User External Links
   const [editGoogleScholar, setEditGoogleScholar] = useState(false);
@@ -385,6 +388,41 @@ function AuthorPage(props) {
     }
   };
 
+  const downloadCSVFromJSON = (jsonData) => {
+    // Extract CSV data from the JSON object
+    const csvData = jsonData;
+    if (!csvData) {
+      console.error("No CSV data found in the provided JSON.");
+      return;
+    }
+
+    // Convert the CSV data into a Blob
+    const blob = new Blob([csvData], { type: "text/csv" });
+
+    // Create a URL for the Blob
+    const url = URL.createObjectURL(blob);
+
+    // Create a temporary anchor element to trigger the download
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "transactions.csv"; // You can name the file whatever you want
+    document.body.appendChild(a); // Append the anchor to the body to make it clickable
+    a.click(); // Programmatically click the anchor to trigger the download
+
+    // Clean up by removing the anchor and revoking the Blob URL
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadCSV = async () => {
+    setDownloading(true);
+    const url = generateApiUrl("transactions/list_csv");
+    const res = await fetch(url, api.GET_CONFIG());
+    const json = await res.json();
+    downloadCSVFromJSON(json);
+    setDownloading(false);
+  };
+
   const tabs = getTabs(allowEdit);
 
   let tabContents = (
@@ -459,6 +497,23 @@ function AuthorPage(props) {
       </div>
       {allowEdit && (
         <div className={css(tabName === "rsc" ? styles.reveal : styles.hidden)}>
+          <div className={css(styles.downloadAsCSV)}>
+            <Button
+              label={
+                downloading ? (
+                  <FontAwesomeIcon
+                    icon={faSpinnerThird}
+                    color={colors.BLUE()}
+                    spin
+                  />
+                ) : (
+                  "Download as CSV"
+                )
+              }
+              isWhite
+              onClick={downloadCSV}
+            />
+          </div>
           <UserTransactions fetching={fetching} />
         </div>
       )}
@@ -1169,7 +1224,7 @@ const fetchAuthor = ({ authorId }) => {
 export async function getStaticProps(ctx) {
   const { authorId } = ctx.params;
 
-  let fetchedAuthor;
+  let fetchedAuthor = {};
   try {
     fetchedAuthor = await fetchAuthor({ authorId });
   } catch (error) {
@@ -1211,6 +1266,10 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.BLUE(),
     },
+  },
+  downloadAsCSV: {
+    marginBottom: 16,
+    marginLeft: "auto",
   },
   tabMenuContainer: {
     // borderBottom: `1px solid ${colors.BLACK(0.1)}`,
