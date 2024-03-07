@@ -1,4 +1,5 @@
 import { captureEvent } from "~/config/utils/events";
+import sanitizeHtml from "sanitize-html";
 
 interface Props {
   s3Url: string;
@@ -15,6 +16,7 @@ const fetchPostFromS3 = async ({ s3Url, cleanIntroEmptyContent = true }: Props):
       });
     }
     let _html = await response.text();
+    _html = sanitizeHtml(_html);
 
     if (cleanIntroEmptyContent) {
       // CK Editor saves H1 tags on S3.
