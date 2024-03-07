@@ -146,6 +146,7 @@
     "redux-thunk": "^2.3.0",
     "remove-markdown": "^0.3.0",
     "safe-url": "^1.0.0",
+    "sanitize-html": "^2.12.1",
     "slate": "0.47.8",
     "slate-html-serializer": "^0.8.13",
     "slate-plain-serializer": "^0.7.13",
