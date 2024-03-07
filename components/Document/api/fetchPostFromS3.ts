@@ -16,7 +16,14 @@ const fetchPostFromS3 = async ({ s3Url, cleanIntroEmptyContent = true }: Props):
       });
     }
     let _html = await response.text();
-    _html = sanitizeHtml(_html);
+    _html = sanitizeHtml(_html, {
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(['video', 'source']),
+      allowedAttributes: {
+        ...sanitizeHtml.defaults.allowedAttributes,
+        video: ['src', 'type', 'controls', 'autoplay', 'muted', 'loop', 'width', 'height'],
+        source: ['src', 'type']
+      }
+    });
 
     if (cleanIntroEmptyContent) {
       // CK Editor saves H1 tags on S3.
