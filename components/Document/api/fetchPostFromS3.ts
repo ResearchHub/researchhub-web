@@ -18,6 +18,7 @@ const fetchPostFromS3 = async ({ s3Url, cleanIntroEmptyContent = true }: Props):
     let _html = await response.text().then((text) =>
       sanitizeHtml(text, {
         allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+          "img",
           "source",
           "video",
         ]),
