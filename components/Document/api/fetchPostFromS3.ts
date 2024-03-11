@@ -15,29 +15,30 @@ const fetchPostFromS3 = async ({ s3Url, cleanIntroEmptyContent = true }: Props):
         msg: `Error fetching post from S3`,
       });
     }
-    let _html = await response.text().then((text) =>
-      sanitizeHtml(text, {
-        allowedTags: sanitizeHtml.defaults.allowedTags.concat([
-          "img",
-          "source",
-          "video",
-        ]),
-        allowedAttributes: {
-          ...sanitizeHtml.defaults.allowedAttributes,
-          figure: ["class", "style"],
-          video: [
-            "autoplay",
-            "controls",
-            "height",
-            "loop",
-            "muted",
-            "src",
-            "type",
-            "width",
-          ],
-          source: ["src", "type"],
-        },
-      }));
+    let _html = await response.text()
+    _html = sanitizeHtml(_html, {
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+        "img",
+        "source",
+        "video",
+      ]),
+      allowedAttributes: {
+        ...sanitizeHtml.defaults.allowedAttributes,
+        code: ["class"],
+        figure: ["class", "style"],
+        video: [
+          "autoplay",
+          "controls",
+          "height",
+          "loop",
+          "muted",
+          "src",
+          "type",
+          "width",
+        ],
+        source: ["src", "type"],
+      },
+    });
 
     if (cleanIntroEmptyContent) {
       // CK Editor saves H1 tags on S3.
