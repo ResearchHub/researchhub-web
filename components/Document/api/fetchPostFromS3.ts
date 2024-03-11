@@ -15,15 +15,27 @@ const fetchPostFromS3 = async ({ s3Url, cleanIntroEmptyContent = true }: Props):
         msg: `Error fetching post from S3`,
       });
     }
-    let _html = await response.text();
-    _html = sanitizeHtml(_html, {
-      allowedTags: sanitizeHtml.defaults.allowedTags.concat(['video', 'source']),
-      allowedAttributes: {
-        ...sanitizeHtml.defaults.allowedAttributes,
-        video: ['src', 'type', 'controls', 'autoplay', 'muted', 'loop', 'width', 'height'],
-        source: ['src', 'type']
-      }
-    });
+    let _html = await response.text().then((text) =>
+      sanitizeHtml(text, {
+        allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+          "source",
+          "video",
+        ]),
+        allowedAttributes: {
+          ...sanitizeHtml.defaults.allowedAttributes,
+          video: [
+            "autoplay",
+            "controls",
+            "height",
+            "loop",
+            "muted",
+            "src",
+            "type",
+            "width",
+          ],
+          source: ["src", "type"],
+        },
+      }));
 
     if (cleanIntroEmptyContent) {
       // CK Editor saves H1 tags on S3.
@@ -34,12 +46,12 @@ const fetchPostFromS3 = async ({ s3Url, cleanIntroEmptyContent = true }: Props):
         /<p>((<br\/?>)*|\s*|(&nbsp;)*)*(.*?<\/p>)/,
         "<p>$4"
       );
-  
+
       // The following appear to be common "empty" content that pushes main content down in CK editor
       const cleanHtml = htmlWithoutIntroWhitespace.replace(
-        /^(<p>\s*<\/p>|<p>&nbsp;<\/p>|<h2>&nbsp;<\/h2>|<h3>&nbsp;<\/h3>|<h1>&nbsp;<\/h1>|<h2>\s*<\/h2>|<h3>\s*<\/h3>|<h1>\s*<\/h1>|\s*)*/gi, 
+        /^(<p>\s*<\/p>|<p>&nbsp;<\/p>|<h2>&nbsp;<\/h2>|<h3>&nbsp;<\/h3>|<h1>&nbsp;<\/h1>|<h2>\s*<\/h2>|<h3>\s*<\/h3>|<h1>\s*<\/h1>|\s*)*/gi,
         ""
-      );    
+      );
 
       _html = cleanHtml;
     }
