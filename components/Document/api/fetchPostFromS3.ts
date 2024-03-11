@@ -18,14 +18,20 @@ const fetchPostFromS3 = async ({ s3Url, cleanIntroEmptyContent = true }: Props):
     let _html = await response.text()
     _html = sanitizeHtml(_html, {
       allowedTags: sanitizeHtml.defaults.allowedTags.concat([
-        "img",
-        "source",
-        "video",
+        "a", "abbr", "address", "article", "aside", "b", "bdi", "bdo",
+        "blockquote", "br", "caption", "cite", "code", "col", "colgroup",
+        "data", "dd", "dfn", "div", "dl", "dt", "em", "figcaption", "figure",
+        "h1", "h2", "h3", "h4", "h5", "h6", "hgroup", "hr", "i", "img", "kbd",
+        "li", "main", "mark", "ol", "p", "pre", "q", "rb", "rp", "rt", "rtc",
+        "ruby", "s", "samp", "section", "small", "source", "span", "strong",
+        "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "time",
+        "tr", "u", "ul", "var", "video", "wbr"
       ]),
       allowedAttributes: {
-        ...sanitizeHtml.defaults.allowedAttributes,
+        a: ["href", "name", "target"],
         code: ["class"],
         figure: ["class", "style"],
+        img: ["src", "srcset", "alt", "title", "width", "height", "loading"],
         video: [
           "autoplay",
           "controls",
