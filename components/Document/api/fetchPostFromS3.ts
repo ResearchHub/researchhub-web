@@ -24,6 +24,7 @@ const fetchPostFromS3 = async ({ s3Url, cleanIntroEmptyContent = true }: Props):
         ]),
         allowedAttributes: {
           ...sanitizeHtml.defaults.allowedAttributes,
+          figure: ["class", "style"],
           video: [
             "autoplay",
             "controls",
