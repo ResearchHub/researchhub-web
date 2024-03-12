@@ -29,8 +29,6 @@ const fetchPostFromS3 = async ({ s3Url, cleanIntroEmptyContent = true }: Props):
       ]),
       allowedAttributes: {
         a: ["href", "name", "target"],
-        code: ["class"],
-        figure: ["class", "style"],
         img: ["src", "srcset", "alt", "title", "width", "height", "loading"],
         video: [
           "autoplay",
@@ -43,6 +41,7 @@ const fetchPostFromS3 = async ({ s3Url, cleanIntroEmptyContent = true }: Props):
           "width",
         ],
         source: ["src", "type"],
+        '*': ["class", "style"],
       },
     });
 
