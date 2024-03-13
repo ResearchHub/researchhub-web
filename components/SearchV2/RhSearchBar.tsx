@@ -21,6 +21,9 @@ import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils/search";
 import { trackEvent } from "~/config/utils/analytics";
 import { useStore } from "react-redux";
 import colors, { mainNavIcons } from "~/config/themes/colors";
+import { fetchAllSuggestions } from "../SearchSuggestion/lib/api";
+
+
 
 type SearchProps = {
   expendableSearchbarRef?: RefObject<HTMLInputElement>;
@@ -38,6 +41,7 @@ type SearchProps = {
 export default function RhSearchBar(): ReactElement {
   const auth = useStore()?.getState()?.auth;
   const router = useRouter();
+  const [suggestions, setSuggestions] = useState<any[]>([]);
   const [searchString, setSearchString] = useState<NullableString>(
     ((router?.query ?? {})?.[QUERY_PARAM] ?? [])[0] ?? null
   );
@@ -45,6 +49,13 @@ export default function RhSearchBar(): ReactElement {
   const searchbarRef = useRef<HTMLInputElement>(null);
 
   useEffectParseUrlToSearchState({ router, setSearchString });
+
+  useEffect(() => {
+    (async () => {
+      const suggestions = await fetchAllSuggestions(searchString)
+      setSuggestions(suggestions)
+    })()
+  }, [searchString])
 
   const blurAndCloseDeviceKeyboard = (): void => {
     if (isServer()) {
@@ -99,7 +110,7 @@ export default function RhSearchBar(): ReactElement {
     searchString,
     setSearchString,
   };
-
+  console.log(suggestions)
   return (
     <Fragment>
       <div
@@ -107,9 +118,31 @@ export default function RhSearchBar(): ReactElement {
         className={css(styles.rhSearchBarExpandableInputDisplay)}
       />
       <div
-        children={<RhSearchBarInput {...searchProps} />}
         className={css(styles.rhSearchBarInputDisplay)}
-      />
+      >
+        <RhSearchBarInput {...searchProps}  />
+        <div style={{
+          position: "absolute",
+          top: 35,
+          left: 0,
+          width: "100%",
+          boxShadow: "0px 3px 4px 0px #00000005",
+
+          height: "100%",
+          backgroundColor: "white",
+          borderRadius: 4,
+          zIndex: 9,
+        }}>
+          {suggestions.map((suggestion, index) => (
+            <div key={index}>
+              {suggestion.data.title}
+            </div>
+          ))}
+          <div>
+            <div>See all results</div>
+          </div>
+        </div>
+      </div>
     </Fragment>
   );
 }
@@ -264,6 +297,7 @@ const styles = StyleSheet.create({
   rhSearchBarInputDisplay: {
     backgroundColor: "#fff",
     display: "block",
+    position: "relative",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       display: "none",
