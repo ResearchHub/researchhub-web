@@ -69,6 +69,12 @@ export const parseSuggestion = (raw: any): Suggestion => {
       data: parsePostSuggestion(raw._source),
     };
   }
+  else if (raw._index === "user") {
+    return {
+      suggestionType: "user",
+      data: parseUserSuggestion(raw._source),
+    };
+  }  
 
   throw new Error(`Invalid suggestion type. Type was ${raw._index}`);
 };

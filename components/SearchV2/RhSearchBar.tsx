@@ -22,6 +22,7 @@ import { trackEvent } from "~/config/utils/analytics";
 import { useStore } from "react-redux";
 import colors, { mainNavIcons } from "~/config/themes/colors";
 import { fetchAllSuggestions } from "../SearchSuggestion/lib/api";
+import SearchSuggestions from "../SearchSuggestion/SearchAutosuggest";
 
 
 
@@ -133,11 +134,7 @@ export default function RhSearchBar(): ReactElement {
           borderRadius: 4,
           zIndex: 9,
         }}>
-          {suggestions.map((suggestion, index) => (
-            <div key={index}>
-              {suggestion.data.title}
-            </div>
-          ))}
+          <SearchSuggestions suggestions={suggestions} />
           <div>
             <div>See all results</div>
           </div>
