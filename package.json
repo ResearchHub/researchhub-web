@@ -188,7 +188,8 @@
     "child_process": false
   },
   "engines": {
-    "npm": "==7.19.1"
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   },
   "lint-staged": {
     "*..tsx": "eslint --cache --fix",
