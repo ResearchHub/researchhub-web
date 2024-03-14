@@ -4,34 +4,66 @@ import { css, StyleSheet } from "aphrodite";
 
 interface SearchSuggestionProps {
   suggestions: Suggestion[];
+  textToHighlight?: string;
 }
 
-const SearchSuggestions = ({ suggestions }: SearchSuggestionProps) => {
+const SearchSuggestions = ({ suggestions, textToHighlight }: SearchSuggestionProps) => {
   return (
     <div>
       {suggestions.map((suggestion, index) => (
         <div key={index}>
-          {suggestion.suggestionType === "paper" && <PaperSuggestion suggestion={suggestion.data as PaperSuggestion} />}
-          {suggestion.suggestionType === "paper" && <PostSuggestion suggestion={suggestion.data as PostSuggestion} />}
-          {suggestion.suggestionType === "user" && <UserSuggestion suggestion={suggestion.data as SuggestedUser} />}
+          {suggestion.suggestionType === "paper" && <PaperSuggestion suggestion={suggestion.data as PaperSuggestion} textToHighlight={textToHighlight} />}
+          {suggestion.suggestionType === "paper" && <PostSuggestion suggestion={suggestion.data as PostSuggestion} textToHighlight={textToHighlight} />}
+          {suggestion.suggestionType === "user" && <UserSuggestion suggestion={suggestion.data as SuggestedUser} textToHighlight={textToHighlight} />}
         </div>
       ))}
     </div>
   );
 }
 
-const PaperSuggestion = ({ suggestion }: { suggestion: PaperSuggestion }) => {
-  return <div>{suggestion.title}</div>;
-}
+const PaperSuggestion = ({ suggestion, textToHighlight }: { suggestion: PaperSuggestion, textToHighlight?: string }) => {
+  const titleWithHighlightedPortions = highlightTextInSuggestion(suggestion.title, textToHighlight);
 
-const PostSuggestion = ({ suggestion }: { suggestion: PostSuggestion }) => {
-  return <div>{suggestion.title}</div>;
-}
-
-const UserSuggestion = ({ suggestion }: { suggestion: SuggestedUser }) => {
   return (
     <div className={css(styles.record)}>
-      {suggestion.firstName + " " + suggestion.lastName}
+      <div>
+        <div dangerouslySetInnerHTML={{ __html: titleWithHighlightedPortions }} />
+      </div>
+    </div>
+  );
+}
+
+const PostSuggestion = ({ suggestion, textToHighlight }: { suggestion: PostSuggestion, textToHighlight?: string }) => {
+  const titleWithHighlightedPortions = highlightTextInSuggestion(suggestion.title, textToHighlight);
+
+  return (
+    <div className={css(styles.record)}>
+      <div>
+        <div dangerouslySetInnerHTML={{ __html: titleWithHighlightedPortions }} />
+      </div>
+    </div>
+  );
+}
+
+const highlightTextInSuggestion = (text: string, textToHighlight?: string) => {
+  if (textToHighlight) {
+    const regExp = new RegExp(textToHighlight, 'gi');
+    return text.replace(regExp, `<span class=${css(styles.highlightedPortion)}>${textToHighlight}</span>`);
+  }
+  
+  return text;
+}
+
+
+const UserSuggestion = ({ suggestion, textToHighlight }: { suggestion: SuggestedUser, textToHighlight?: string }) => {
+  const fullName = suggestion.firstName + " " + suggestion.lastName;
+  const fullNameWithHighlightedPortions = highlightTextInSuggestion(fullName, textToHighlight);
+
+  return (
+    <div className={css(styles.record)}>
+      <div>
+        <div dangerouslySetInnerHTML={{ __html: fullNameWithHighlightedPortions }} />
+      </div>
       <AuthorAvatar
           author={suggestion.authorProfile}
           size={25}
@@ -49,8 +81,14 @@ const styles = StyleSheet.create({
   },
   record: {
     display: "flex",
+    fontSize: 14,
+    lineHeight: "22px",
+    fontWeight: 400,
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  highlightedPortion: {
+    fontWeight: 500,
   }
 })
 

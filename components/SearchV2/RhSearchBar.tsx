@@ -122,23 +122,25 @@ export default function RhSearchBar(): ReactElement {
         className={css(styles.rhSearchBarInputDisplay)}
       >
         <RhSearchBarInput {...searchProps}  />
-        <div style={{
-          position: "absolute",
-          top: 35,
-          left: 0,
-          width: "100%",
-          boxShadow: "0px 3px 4px 0px #00000005",
+        {suggestions.length > 0 &&
+          <div style={{
+            position: "absolute",
+            top: 35,
+            left: 0,
+            width: "100%",
+            boxShadow: "0px 3px 4px 0px #00000005",
 
-          height: "100%",
-          backgroundColor: "white",
-          borderRadius: 4,
-          zIndex: 9,
-        }}>
-          <SearchSuggestions suggestions={suggestions} />
-          <div>
-            <div>See all results</div>
+            height: "100%",
+            backgroundColor: "white",
+            borderRadius: 4,
+            zIndex: 9,
+          }}>
+            <SearchSuggestions textToHighlight={searchString as string} suggestions={suggestions} />
+            <div>
+              <div>See all results</div>
+            </div>
           </div>
-        </div>
+        }
       </div>
     </Fragment>
   );
