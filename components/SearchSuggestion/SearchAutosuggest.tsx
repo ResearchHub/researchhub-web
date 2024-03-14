@@ -48,7 +48,7 @@ const PostSuggestion = ({ suggestion, textToHighlight }: { suggestion: PostSugge
 const highlightTextInSuggestion = (text: string, textToHighlight?: string) => {
   if (textToHighlight) {
     const regExp = new RegExp(textToHighlight, 'gi');
-    return text.replace(regExp, `<span class=${css(styles.highlightedPortion)}>${textToHighlight}</span>`);
+    return text.replace(regExp, (match) => `<span class=${css(styles.highlightedPortion)}>${match}</span>`);
   }
   
   return text;

@@ -129,7 +129,6 @@ export default function RhSearchBar(): ReactElement {
             left: 0,
             width: "100%",
             boxShadow: "0px 3px 4px 0px #00000005",
-
             height: "100%",
             backgroundColor: "white",
             borderRadius: 4,
