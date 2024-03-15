@@ -32,8 +32,10 @@ const Author = ({ author }: { author: AuthorProfile }) => {
 
 export const CondensedAuthorList = ({
   authors,
+  numPrimaryAuthorsToShow = 2,
 }: {
   authors: Array<AuthorProfile>;
+  numPrimaryAuthorsToShow?: number;
 }) => {
   if (authors.length === 0) {
     return null;
@@ -42,12 +44,12 @@ export const CondensedAuthorList = ({
   const primaryAuthors: Array<AuthorProfile> = [authors[0]];
   let showEtAllText = false;
 
-  if (authors.length > 1) {
+  if (numPrimaryAuthorsToShow > 1 && authors.length > 1) {
     // Last author is the second most important author
     primaryAuthors.push(authors[authors.length - 1]);
   }
 
-  if (authors.length > 2) {
+  if (authors.length > numPrimaryAuthorsToShow) {
     showEtAllText = true;
   }
 

@@ -9,6 +9,7 @@ import {
   ReactElement,
   RefObject,
   SyntheticEvent,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -26,6 +27,7 @@ import SearchSuggestions from "../SearchSuggestion/SearchAutosuggest";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import { getCurrServerEnv } from "~/config/utils/env";
 import { buildPageUrlFromSuggestion } from "../SearchSuggestion/lib/util";
+import debounce from "lodash/debounce";
 
 type SearchProps = {
   expendableSearchbarRef?: RefObject<HTMLInputElement>;
@@ -48,6 +50,7 @@ export default function RhSearchBar(): ReactElement {
   const [searchString, setSearchString] = useState<NullableString>(
     ((router?.query ?? {})?.[QUERY_PARAM] ?? [])[0] ?? null
   );
+  const searchStringRef = useRef<NullableString>(searchString);
 
   // "Poor man's feature flag" - if the URL contains the experiment query param, enable the experiment
   // Will be removed in subsequent iteration.
@@ -59,7 +62,16 @@ export default function RhSearchBar(): ReactElement {
     useState<boolean>(false);
   const suggestionsDrawerRef = useRef<HTMLInputElement>(null);
 
-  useEffectParseUrlToSearchState({ router, setSearchString });
+  const handleFetchSuggestions = useCallback(async () => {
+    const suggestions = await fetchAllSuggestions(searchStringRef.current);
+    setSuggestions(suggestions);
+    setIsSuggestionsDrawerOpen(true);
+  }, []);
+
+  const debouncedHandleInputChange = useCallback(
+    debounce(handleFetchSuggestions, 250),
+    [handleFetchSuggestions]
+  );
 
   useEffect(() => {
     const env = getCurrServerEnv();
@@ -85,9 +97,11 @@ export default function RhSearchBar(): ReactElement {
         return;
       }
 
-      const suggestions = await fetchAllSuggestions(searchString);
-      setSuggestions(suggestions);
-      setIsSuggestionsDrawerOpen(true);
+      if (searchString && searchString.length >= 3) {
+        debouncedHandleInputChange();
+      } else {
+        setSuggestions([]);
+      }
     })();
   }, [searchString, isSuggestionsExperimentEnabled]);
 
@@ -140,12 +154,16 @@ export default function RhSearchBar(): ReactElement {
     handleKeyPress: (event): void => {
       if (event.key === "Enter") {
         pushSearchToUrlAndTrack();
+        setIsSuggestionsDrawerOpen(false);
       }
     },
     pushSearchToUrlAndTrack,
     searchbarRef,
     searchString,
-    setSearchString,
+    setSearchString: (searchString) => {
+      setSearchString(searchString);
+      searchStringRef.current = searchString;
+    },
   };
 
   return (
@@ -176,7 +194,10 @@ export default function RhSearchBar(): ReactElement {
               </div>
               <div
                 className={css(styles.allResults)}
-                onClick={pushSearchToUrlAndTrack}
+                onClick={() => {
+                  pushSearchToUrlAndTrack();
+                  setIsSuggestionsDrawerOpen(false);
+                }}
               >
                 <div>See all results</div>
               </div>
@@ -184,20 +205,6 @@ export default function RhSearchBar(): ReactElement {
           )}
       </div>
     </Fragment>
-  );
-}
-
-function useEffectParseUrlToSearchState({
-  router,
-  setSearchString,
-}: {
-  router: NextRouter;
-  setSearchString: (str: NullableString) => void;
-}): void {
-  useEffect(
-    (): void =>
-      setSearchString(((router?.query ?? {})?.[QUERY_PARAM] ?? [])[0] ?? null),
-    []
   );
 }
 
