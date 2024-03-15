@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     justifyContent: "flex-end",
-    maxWidth: 340,
+    maxWidth: 500,
     position: "relative",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
