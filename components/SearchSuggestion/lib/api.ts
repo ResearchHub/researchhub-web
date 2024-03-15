@@ -4,7 +4,32 @@ import {
   HubSuggestion,
   parseUserSuggestion,
   parseHubSuggestion,
+  parseSuggestion,
+  Suggestion,
 } from "./types";
+import { NullableString } from "~/config/types/root_types";
+
+export const fetchAllSuggestions = (
+  query: NullableString
+): Promise<Suggestion[]> => {
+  const url = `${API.BASE_URL}search/combined-suggest/?query=${query}`;
+
+  return fetch(url, API.GET_CONFIG())
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error("HTTP-Error: " + response.status);
+      }
+    })
+    .then((rawSuggestions) => {
+      return rawSuggestions.map(raw => parseSuggestion(raw))
+    })
+    .catch((error) => {
+      console.error("Request Failed:", error);
+      return [];
+    });
+};
 
 export const fetchHubSuggestions = (
   query: string

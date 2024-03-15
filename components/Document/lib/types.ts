@@ -291,32 +291,48 @@ const getDocumentFromRaw = ({
   throw new Error(`Invalid document type. Type was ${type}`);
 };
 
-export const parsePaperAuthors = (rawPaper: any): Array<AuthorProfile> => {
+export const parsePaperAuthors = (
+  rawPaper: any,
+  parseRaw = true,
+  parseClaimed = true
+): Array<AuthorProfile> => {
   const rawAuthors = rawPaper?.raw_authors || [];
   const claimedAuthors = rawPaper?.authors || [];
   const nameToObjMap = {};
 
-  for (let i = 0; i < rawAuthors.length; i++) {
-    try {
-      const current = rawAuthors[i];
-      const key = (current.first_name + " " + current.last_name).toLowerCase();
-      nameToObjMap[key] = parseAuthorProfile(current);
-    } catch (error) {
-      emptyFncWithMsg(`Error parsing author ${rawAuthors[i]}`);
+  if (parseRaw) {
+    for (let i = 0; i < rawAuthors.length; i++) {
+      try {
+        const current = rawAuthors[i];
+        const key = (
+          current.first_name +
+          " " +
+          current.last_name
+        ).toLowerCase();
+        nameToObjMap[key] = parseAuthorProfile(current);
+      } catch (error) {
+        emptyFncWithMsg(`Error parsing author ${rawAuthors[i]}`);
+      }
     }
   }
 
-  for (let i = 0; i < claimedAuthors.length; i++) {
-    try {
-      const current = claimedAuthors[i];
-      const key = (current.first_name + " " + current.last_name).toLowerCase();
-      // Override raw_author if claimed author exists
-      nameToObjMap[key] = {
-        ...nameToObjMap[key],
-        ...parseAuthorProfile(current),
-      };
-    } catch (error) {
-      emptyFncWithMsg(`Error parsing author ${claimedAuthors[i]}`);
+  if (parseClaimed) {
+    for (let i = 0; i < claimedAuthors.length; i++) {
+      try {
+        const current = claimedAuthors[i];
+        const key = (
+          current.first_name +
+          " " +
+          current.last_name
+        ).toLowerCase();
+        // Override raw_author if claimed author exists
+        nameToObjMap[key] = {
+          ...nameToObjMap[key],
+          ...parseAuthorProfile(current),
+        };
+      } catch (error) {
+        emptyFncWithMsg(`Error parsing author ${claimedAuthors[i]}`);
+      }
     }
   }
 

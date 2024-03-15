@@ -13,7 +13,7 @@ const Author = ({ author }: { author: AuthorProfile }) => {
   return (
     <span
       className={css(styles.author)}
-      key={author.firstName + author.lastName + "_author"}
+      key={(author?.firstName || "") + (author?.lastName || "") + "_author"}
     >
       {author.id ? (
         <span>
@@ -27,6 +27,40 @@ const Author = ({ author }: { author: AuthorProfile }) => {
         </span>
       )}
     </span>
+  );
+};
+
+export const CondensedAuthorList = ({
+  authors,
+}: {
+  authors: Array<AuthorProfile>;
+}) => {
+  if (authors.length === 0) {
+    return null;
+  }
+
+  const primaryAuthors: Array<AuthorProfile> = [authors[0]];
+  let showEtAllText = false;
+
+  if (authors.length > 1) {
+    // Last author is the second most important author
+    primaryAuthors.push(authors[authors.length - 1]);
+  }
+
+  if (authors.length > 2) {
+    showEtAllText = true;
+  }
+
+  return (
+    <div className={css(styles.authorsContainer)}>
+      {primaryAuthors.map((author, idx) => (
+        <>
+          <Author author={author} key={idx} />
+          {idx < primaryAuthors.length - 1 && <>,</>}
+        </>
+      ))}
+      {showEtAllText && <>, et al.</>}
+    </div>
   );
 };
 

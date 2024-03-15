@@ -21,6 +21,11 @@ import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils/search";
 import { trackEvent } from "~/config/utils/analytics";
 import { useStore } from "react-redux";
 import colors, { mainNavIcons } from "~/config/themes/colors";
+import { fetchAllSuggestions } from "../SearchSuggestion/lib/api";
+import SearchSuggestions from "../SearchSuggestion/SearchAutosuggest";
+import { useEffectHandleClick } from "~/config/utils/clickEvent";
+import { getCurrServerEnv } from "~/config/utils/env";
+import { buildPageUrlFromSuggestion } from "../SearchSuggestion/lib/util";
 
 type SearchProps = {
   expendableSearchbarRef?: RefObject<HTMLInputElement>;
@@ -29,6 +34,7 @@ type SearchProps = {
   searchbarRef?: RefObject<HTMLInputElement>;
   searchString: NullableString;
   setSearchString: (query: NullableString) => void;
+  onInputFocus?: () => void;
 };
 
 /* 
@@ -38,13 +44,52 @@ type SearchProps = {
 export default function RhSearchBar(): ReactElement {
   const auth = useStore()?.getState()?.auth;
   const router = useRouter();
+  const [suggestions, setSuggestions] = useState<any[]>([]);
   const [searchString, setSearchString] = useState<NullableString>(
     ((router?.query ?? {})?.[QUERY_PARAM] ?? [])[0] ?? null
   );
+
+  // "Poor man's feature flag" - if the URL contains the experiment query param, enable the experiment
+  // Will be removed in subsequent iteration.
+  const [isSuggestionsExperimentEnabled, setIsSuggestionsExperimentEnabled] =
+    useState<boolean>(false);
   const expendableSearchbarRef = useRef<HTMLInputElement>(null);
   const searchbarRef = useRef<HTMLInputElement>(null);
+  const [isSuggestionsDrawerOpen, setIsSuggestionsDrawerOpen] =
+    useState<boolean>(false);
+  const suggestionsDrawerRef = useRef<HTMLInputElement>(null);
 
   useEffectParseUrlToSearchState({ router, setSearchString });
+
+  useEffect(() => {
+    const env = getCurrServerEnv();
+    if (
+      window.location.search.includes("experiment=suggestions") ||
+      ["development", "staging"].includes(env)
+    ) {
+      setIsSuggestionsExperimentEnabled(true);
+    }
+  }, []);
+
+  useEffectHandleClick({
+    ref: suggestionsDrawerRef,
+    onOutsideClick: () => {
+      setIsSuggestionsDrawerOpen(false);
+    },
+    exclude: [".search-input"],
+  });
+
+  useEffect(() => {
+    (async () => {
+      if (!isSuggestionsExperimentEnabled) {
+        return;
+      }
+
+      const suggestions = await fetchAllSuggestions(searchString);
+      setSuggestions(suggestions);
+      setIsSuggestionsDrawerOpen(true);
+    })();
+  }, [searchString, isSuggestionsExperimentEnabled]);
 
   const blurAndCloseDeviceKeyboard = (): void => {
     if (isServer()) {
@@ -89,6 +134,9 @@ export default function RhSearchBar(): ReactElement {
 
   const searchProps: SearchProps = {
     expendableSearchbarRef,
+    onInputFocus: (): void => {
+      setIsSuggestionsDrawerOpen(true);
+    },
     handleKeyPress: (event): void => {
       if (event.key === "Enter") {
         pushSearchToUrlAndTrack();
@@ -106,10 +154,35 @@ export default function RhSearchBar(): ReactElement {
         children={<RhSearchBarExpandableInput {...searchProps} />}
         className={css(styles.rhSearchBarExpandableInputDisplay)}
       />
-      <div
-        children={<RhSearchBarInput {...searchProps} />}
-        className={css(styles.rhSearchBarInputDisplay)}
-      />
+      <div className={css(styles.rhSearchBarInputDisplay)}>
+        <RhSearchBarInput {...searchProps} />
+        {isSuggestionsExperimentEnabled &&
+          suggestions.length > 0 &&
+          isSuggestionsDrawerOpen && (
+            <div
+              ref={suggestionsDrawerRef}
+              className={css(styles.suggestionsDrawer)}
+            >
+              <div className={css(styles.suggestionsWrapper)}>
+                <SearchSuggestions
+                  textToHighlight={searchString as string}
+                  suggestions={suggestions}
+                  handleSuggestionClick={(suggestion) => {
+                    const href = buildPageUrlFromSuggestion(suggestion);
+                    router.push(href);
+                    setIsSuggestionsDrawerOpen(false);
+                  }}
+                />
+              </div>
+              <div
+                className={css(styles.allResults)}
+                onClick={pushSearchToUrlAndTrack}
+              >
+                <div>See all results</div>
+              </div>
+            </div>
+          )}
+      </div>
     </Fragment>
   );
 }
@@ -134,14 +207,16 @@ function RhSearchBarInput({
   searchbarRef,
   searchString,
   setSearchString,
+  onInputFocus,
 }: SearchProps): ReactElement {
   return (
-    <div style={{ position: "relative" }}>
+    <div className="search-input" style={{ position: "relative" }}>
       <input
         className={css(styles.rhSearchBarInput)}
         placeholder="Search"
         onKeyDown={handleKeyPress}
         autoComplete="off"
+        onFocus={onInputFocus}
         onChange={(event: ChangeEvent<HTMLInputElement>): void =>
           setSearchString(event?.target?.value ?? null)
         }
@@ -165,6 +240,7 @@ function RhSearchBarExpandableInput({
   pushSearchToUrlAndTrack,
   searchString,
   setSearchString,
+  onInputFocus,
 }: SearchProps): ReactElement {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
@@ -203,10 +279,11 @@ function RhSearchBarExpandableInput({
           </span>
           <input
             autoFocus
-            className={css(styles.rhSearchBarExpandableInput)}
+            className={css(styles.rhSearchBarExpandableInput) + " search-input"}
             onChange={(event: ChangeEvent<HTMLInputElement>): void =>
               setSearchString(event?.target?.value ?? null)
             }
+            onFocus={onInputFocus}
             onKeyDown={handleKeyPress}
             placeholder="Search"
             ref={expendableSearchbarRef}
@@ -237,6 +314,30 @@ function RhSearchBarExpandableInput({
 }
 
 const styles = StyleSheet.create({
+  suggestionsDrawer: {
+    position: "absolute",
+    top: 35,
+    left: 0,
+    width: "100%",
+    // boxShadow: "0px 3px 4px 0px #00000005",
+    backgroundColor: "white",
+    borderRadius: 4,
+    zIndex: 9,
+    boxShadow: "0px 4px 20px 0px #241F3A1A",
+  },
+  suggestionsWrapper: {},
+  allResults: {
+    fontWeight: 500,
+    fontSize: 16,
+    padding: "12px 0px 12px 0px",
+    textAlign: "center",
+    borderTop: `1px solid ${colors.GREY_BORDER}`,
+    ":hover": {
+      transition: "0.2s",
+      backgroundColor: colors.GREY(0.14),
+      cursor: "pointer",
+    },
+  },
   rhSearchBarExpandableInputDisplay: {
     display: "none",
     width: 0,
@@ -264,6 +365,7 @@ const styles = StyleSheet.create({
   rhSearchBarInputDisplay: {
     backgroundColor: "#fff",
     display: "block",
+    position: "relative",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       display: "none",
@@ -284,7 +386,7 @@ const styles = StyleSheet.create({
     padding: "8px 32px 8px 16px",
     width: "100%",
     ":focus": {
-      border: `1px solid ${colors.BLUE()}`,
+      border: `1px solid ${colors.NEW_BLUE()}`,
     },
     "::placeholder": {
       opacity: 0.6,
@@ -329,7 +431,7 @@ const styles = StyleSheet.create({
     right: "unset",
     top: "unset",
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
   },
   searchIconExpandedFloaty: {
@@ -338,7 +440,7 @@ const styles = StyleSheet.create({
     top: 20,
     zIndex: 11,
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
   },
 });
