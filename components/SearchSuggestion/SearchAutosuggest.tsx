@@ -14,24 +14,23 @@ import { CondensedAuthorList } from "../Author/AuthorList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGrid2 } from "@fortawesome/pro-solid-svg-icons";
 import { toTitleCase } from "~/config/utils/string";
-import Link from "next/link";
-import { buildPageUrlFromSuggestion } from "./lib/util";
 
 interface SearchSuggestionProps {
   suggestions: Suggestion[];
   textToHighlight?: string;
+  handleSuggestionClick: (suggestion: Suggestion) => void;
 }
 
 const SearchSuggestions = ({
   suggestions,
   textToHighlight,
+  handleSuggestionClick,
 }: SearchSuggestionProps) => {
   return (
     <div>
       {suggestions.map((suggestion, index) => {
-        const href = buildPageUrlFromSuggestion(suggestion);
         return (
-          <Link href={href} key={index} style={{ textDecoration: "none" }}>
+          <div key={index} onClick={() => handleSuggestionClick(suggestion)}>
             {suggestion.suggestionType === "paper" && (
               <PaperSuggestion
                 suggestion={suggestion.data as PaperSuggestion}
@@ -62,7 +61,7 @@ const SearchSuggestions = ({
                 textToHighlight={textToHighlight}
               />
             )}
-          </Link>
+          </div>
         );
       })}
     </div>

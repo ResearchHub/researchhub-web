@@ -30,6 +30,7 @@ export type PaperSuggestion = {
   title: string;
   authors: AuthorProfile[];
   publishedDate: string;
+  slug: string;
 };
 
 export type PostSuggestion = {
@@ -37,6 +38,7 @@ export type PostSuggestion = {
   title: string;
   authors: AuthorProfile[];
   createdDate: string;
+  slug: string;
 };
 
 export type QuestionSuggestion = {
@@ -44,6 +46,7 @@ export type QuestionSuggestion = {
   title: string;
   authors: AuthorProfile[];
   createdDate: string;
+  slug: string;
 };
 
 export type Suggestion = {
@@ -57,6 +60,7 @@ export const parsePaperSuggestion = (raw: any): PaperSuggestion => {
     title: raw.title,
     publishedDate: formatDateStandard(raw.paper_publish_date, "MMM D, YYYY"),
     authors: parsePaperAuthors(raw, true, false),
+    slug: raw.slug,
   };
 };
 
@@ -66,6 +70,7 @@ export const parsePostSuggestion = (raw: any): PostSuggestion => {
     title: raw.title,
     createdDate: formatDateStandard(raw.created_date, "MMM D, YYYY"),
     authors: (raw.authors || []).map((a: any) => parseAuthorProfile(a)),
+    slug: raw.slug,
   };
 };
 
@@ -75,6 +80,7 @@ export const parseQuestionSuggestion = (raw: any): QuestionSuggestion => {
     title: raw.title,
     createdDate: formatDateStandard(raw.created_date, "MMM D, YYYY"),
     authors: (raw.authors || []).map((a: any) => parseAuthorProfile(a)),
+    slug: raw.slug,
   };
 };
 
