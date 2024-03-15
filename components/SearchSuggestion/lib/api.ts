@@ -23,7 +23,16 @@ export const fetchAllSuggestions = (
       }
     })
     .then((rawSuggestions) => {
-      return rawSuggestions.map(raw => parseSuggestion(raw))
+      return rawSuggestions
+        .map((raw) => {
+          try {
+            return parseSuggestion(raw);
+          } catch (err) {
+            console.warn("Failed to parse suggestion: ", raw, "Error: ", err);
+            return null;
+          }
+        })
+        .filter((suggestion) => suggestion !== null);
     })
     .catch((error) => {
       console.error("Request Failed:", error);

@@ -14,7 +14,7 @@ import { CondensedAuthorList } from "../Author/AuthorList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGrid2 } from "@fortawesome/pro-solid-svg-icons";
 import { toTitleCase } from "~/config/utils/string";
-
+import { formatNumber } from "~/config/utils/number";
 
 interface SearchSuggestionProps {
   suggestions: Suggestion[];
@@ -81,6 +81,7 @@ const HubSuggestion = ({
     hubName,
     textToHighlight
   );
+  const formattedNumDocs = formatNumber(suggestion.hub.numDocs || 0);
 
   return (
     <div className={css(styles.recordWrapper)}>
@@ -100,7 +101,7 @@ const HubSuggestion = ({
           {suggestion.hub.numDocs && suggestion.hub.numDocs > 0 && (
             <>
               <div className={css(styles.divider)} />
-              <div>{suggestion.hub.numDocs} papers</div>
+              <div>{formattedNumDocs} papers</div>
             </>
           )}
         </div>
@@ -141,7 +142,10 @@ const PaperSuggestion = ({
           {suggestion.authors.length > 0 && (
             <>
               <div className={css(styles.divider)} />
-              <CondensedAuthorList authors={suggestion.authors} />
+              <CondensedAuthorList
+                authors={suggestion.authors}
+                numPrimaryAuthorsToShow={1}
+              />
             </>
           )}
           {suggestion.publishedDate && (
@@ -188,7 +192,10 @@ const PostSuggestion = ({
           {suggestion.authors.length > 0 && (
             <>
               <div className={css(styles.divider)} />
-              <CondensedAuthorList authors={suggestion.authors} />
+              <CondensedAuthorList
+                authors={suggestion.authors}
+                numPrimaryAuthorsToShow={1}
+              />
             </>
           )}
           {suggestion.createdDate && (
@@ -230,7 +237,10 @@ const QuestionSuggestion = ({
           {suggestion.authors.length > 0 && (
             <>
               <div className={css(styles.divider)} />
-              <CondensedAuthorList authors={suggestion.authors} />
+              <CondensedAuthorList
+                authors={suggestion.authors}
+                numPrimaryAuthorsToShow={1}
+              />
             </>
           )}
           {suggestion.createdDate && (
@@ -314,8 +324,7 @@ const styles = StyleSheet.create({
   recordTitle: {
     whiteSpace: "nowrap",
     overflow: "hidden",
-    textOverflow:
-      "ellipsis",
+    textOverflow: "ellipsis",
     maxWidth: "90%",
   },
   divider: {
@@ -331,9 +340,8 @@ const styles = StyleSheet.create({
     display: "flex",
     whiteSpace: "nowrap",
     overflow: "hidden",
-    textOverflow:
-      "ellipsis",
-    maxWidth: "95%",    
+    textOverflow: "ellipsis",
+    maxWidth: "85%",
   },
   recordWrapper: {
     display: "flex",
