@@ -50,8 +50,6 @@ export const CondensedAuthorList = ({
   if (authors.length > 2) {
     showEtAllText = true;
   }
-  console.log("authors", authors);
-  console.log(primaryAuthors);
 
   return (
     <div className={css(styles.authorsContainer)}>

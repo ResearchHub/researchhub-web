@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGrid2 } from "@fortawesome/pro-solid-svg-icons";
 import { toTitleCase } from "~/config/utils/string";
 
+
 interface SearchSuggestionProps {
   suggestions: Suggestion[];
   textToHighlight?: string;
@@ -137,12 +138,18 @@ const PaperSuggestion = ({
         />
         <div className={css(styles.metadata)}>
           <div>Paper</div>
-          <div className={css(styles.divider)} />
-          <div>
-            <CondensedAuthorList authors={suggestion.authors} />
-          </div>
-          <div className={css(styles.divider)} />
-          <div>{suggestion.publishedDate}</div>
+          {suggestion.authors.length > 0 && (
+            <>
+              <div className={css(styles.divider)} />
+              <CondensedAuthorList authors={suggestion.authors} />
+            </>
+          )}
+          {suggestion.publishedDate && (
+            <>
+              <div className={css(styles.divider)} />
+              <div>{suggestion.publishedDate}</div>
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -178,12 +185,18 @@ const PostSuggestion = ({
         />
         <div className={css(styles.metadata)}>
           <div>Post</div>
-          <div className={css(styles.divider)} />
-          <div>
-            <CondensedAuthorList authors={suggestion.authors} />
-          </div>
-          <div className={css(styles.divider)} />
-          <div>{suggestion.createdDate}</div>
+          {suggestion.authors.length > 0 && (
+            <>
+              <div className={css(styles.divider)} />
+              <CondensedAuthorList authors={suggestion.authors} />
+            </>
+          )}
+          {suggestion.createdDate && (
+            <>
+              <div className={css(styles.divider)} />
+              <div>{suggestion.createdDate}</div>
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -214,12 +227,18 @@ const QuestionSuggestion = ({
         />
         <div className={css(styles.metadata)}>
           <div>Question</div>
-          <div className={css(styles.divider)} />
-          <div>
-            <CondensedAuthorList authors={suggestion.authors} />
-          </div>
-          <div className={css(styles.divider)} />
-          <div>{suggestion.createdDate}</div>
+          {suggestion.authors.length > 0 && (
+            <>
+              <div className={css(styles.divider)} />
+              <CondensedAuthorList authors={suggestion.authors} />
+            </>
+          )}
+          {suggestion.createdDate && (
+            <>
+              <div className={css(styles.divider)} />
+              <div>{suggestion.createdDate}</div>
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -293,11 +312,11 @@ const styles = StyleSheet.create({
     color: colors.BLACK(1.0),
   },
   recordTitle: {
-    whiteSpace: "nowrap" /* Prevents the text from wrapping */,
-    overflow: "hidden" /* Keeps the text from flowing outside its container */,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
     textOverflow:
-      "ellipsis" /* Adds ellipsis (...) at the end when text is clipped */,
-    maxWidth: "90%" /* Adjust this value based on your container's size */,
+      "ellipsis",
+    maxWidth: "90%",
   },
   divider: {
     borderLeft: "1px solid #7C7989",
@@ -310,6 +329,11 @@ const styles = StyleSheet.create({
     color: "#7C7989",
     fontSize: 13,
     display: "flex",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow:
+      "ellipsis",
+    maxWidth: "95%",    
   },
   recordWrapper: {
     display: "flex",

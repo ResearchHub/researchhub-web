@@ -103,7 +103,9 @@ const Navbar = (props) => {
       <BackBtn label={"Question"} href="/" />
     </div>
   ) : (
-    "Explore ResearchHub"
+    <div>
+      Explore <div className={css(styles.rhTextInHeader)}>ResearchHub</div>
+    </div>
   );
 
   useEffect(() => {
@@ -241,6 +243,12 @@ const styles = StyleSheet.create({
       fontSize: 20,
     },
   },
+  rhTextInHeader: {
+    display: "inline-block",
+    [`@media (max-width: 1380px)`]: {
+      display: "none",
+    },
+  },
   headerLabel: {
     fontSize: 22,
   },
@@ -292,7 +300,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     justifyContent: "flex-end",
-    maxWidth: 500,
+    maxWidth: 450,
     position: "relative",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {

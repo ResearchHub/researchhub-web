@@ -14,7 +14,6 @@ export const fetchAllSuggestions = (
 ): Promise<Suggestion[]> => {
   const url = `${API.BASE_URL}search/combined-suggest/?query=${query}`;
 
-  const sugestions: Suggestion[] = [];
   return fetch(url, API.GET_CONFIG())
     .then((response) => {
       if (response.ok) {
@@ -25,14 +24,6 @@ export const fetchAllSuggestions = (
     })
     .then((rawSuggestions) => {
       return rawSuggestions.map(raw => parseSuggestion(raw))
-      // const suggestions = data.name_suggest__completion;
-      // suggestions.forEach((suggestion) => {
-      //   suggestion.options.forEach((option) => {
-      //     const parsed = parseHubSuggestion(option._source);
-      //     hubSuggestions.push(parsed);
-      //   });
-      // });
-
     })
     .catch((error) => {
       console.error("Request Failed:", error);
