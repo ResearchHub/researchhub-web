@@ -24,6 +24,7 @@ import colors, { mainNavIcons } from "~/config/themes/colors";
 import { fetchAllSuggestions } from "../SearchSuggestion/lib/api";
 import SearchSuggestions from "../SearchSuggestion/SearchAutosuggest";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
+import { getCurrServerEnv } from "~/config/utils/env";
 
 type SearchProps = {
   expendableSearchbarRef?: RefObject<HTMLInputElement>;
@@ -46,6 +47,10 @@ export default function RhSearchBar(): ReactElement {
   const [searchString, setSearchString] = useState<NullableString>(
     ((router?.query ?? {})?.[QUERY_PARAM] ?? [])[0] ?? null
   );
+
+  // "Poor man's feature flag" - if the URL contains the experiment query param, enable the experiment
+  // Will be removed in subsequent iteration.
+  const [isSuggestionsExperimentEnabled, setIsSuggestionsExperimentEnabled] = useState<boolean>(false);
   const expendableSearchbarRef = useRef<HTMLInputElement>(null);
   const searchbarRef = useRef<HTMLInputElement>(null);
   const [isSuggestionsDrawerOpen, setIsSuggestionsDrawerOpen] =
@@ -53,6 +58,13 @@ export default function RhSearchBar(): ReactElement {
   const suggestionsDrawerRef = useRef<HTMLInputElement>(null);
 
   useEffectParseUrlToSearchState({ router, setSearchString });
+
+  useEffect(() => {
+    const env = getCurrServerEnv();
+    if (window.location.search.includes("experiment=suggestions") || ["development", "staging"].includes(env)) {
+      setIsSuggestionsExperimentEnabled(true);
+    }
+  }, [])
 
   useEffectHandleClick({
     ref: suggestionsDrawerRef,
@@ -64,11 +76,15 @@ export default function RhSearchBar(): ReactElement {
 
   useEffect(() => {
     (async () => {
+      if (!isSuggestionsExperimentEnabled) {
+        return;
+      }
+
       const suggestions = await fetchAllSuggestions(searchString);
       setSuggestions(suggestions);
       setIsSuggestionsDrawerOpen(true);
     })();
-  }, [searchString]);
+  }, [searchString, isSuggestionsExperimentEnabled]);
 
   const blurAndCloseDeviceKeyboard = (): void => {
     if (isServer()) {
@@ -135,7 +151,7 @@ export default function RhSearchBar(): ReactElement {
       />
       <div className={css(styles.rhSearchBarInputDisplay)}>
         <RhSearchBarInput {...searchProps} />
-        {suggestions.length > 0 && isSuggestionsDrawerOpen && (
+        {isSuggestionsExperimentEnabled && suggestions.length > 0 && isSuggestionsDrawerOpen && (
           <div
             ref={suggestionsDrawerRef}
             className={css(styles.suggestionsDrawer)}
