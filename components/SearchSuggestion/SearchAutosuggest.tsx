@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGrid2 } from "@fortawesome/pro-solid-svg-icons";
 import { toTitleCase } from "~/config/utils/string";
 import { formatNumber } from "~/config/utils/number";
+import { highlightTextInSuggestion } from "./lib/util";
 
 interface SearchSuggestionProps {
   suggestions: Suggestion[];
@@ -79,7 +80,8 @@ const HubSuggestion = ({
   const hubName = toTitleCase(suggestion.hub.name);
   const titleWithHighlightedPortions = highlightTextInSuggestion(
     hubName,
-    textToHighlight
+    textToHighlight,
+    css(styles.highlightedPortion)
   );
   const formattedNumDocs = formatNumber(suggestion.hub.numDocs || 0);
 
@@ -119,7 +121,20 @@ const PaperSuggestion = ({
 }) => {
   const titleWithHighlightedPortions = highlightTextInSuggestion(
     suggestion.title,
-    textToHighlight
+    textToHighlight,
+    css(styles.highlightedPortion)
+  );
+
+  const authorsWithHighlightedPortions: Array<string> = suggestion.authors.map(
+    (author) => {
+      const authorNameWithHighlights = highlightTextInSuggestion(
+        author.firstName + " " + author.lastName,
+        textToHighlight,
+        css(styles.highlightedPortion)
+      );
+
+      return authorNameWithHighlights;
+    }
   );
 
   return (
@@ -143,8 +158,9 @@ const PaperSuggestion = ({
             <>
               <div className={css(styles.divider)} />
               <CondensedAuthorList
-                authors={suggestion.authors}
+                authorNames={authorsWithHighlightedPortions}
                 numPrimaryAuthorsToShow={1}
+                allowAuthorNameToIncludeHtml={true}
               />
             </>
           )}
@@ -169,7 +185,20 @@ const PostSuggestion = ({
 }) => {
   const titleWithHighlightedPortions = highlightTextInSuggestion(
     suggestion.title,
-    textToHighlight
+    textToHighlight,
+    css(styles.highlightedPortion)
+  );
+
+  const authorsWithHighlightedPortions: Array<string> = suggestion.authors.map(
+    (author) => {
+      const authorNameWithHighlights = highlightTextInSuggestion(
+        author.firstName + " " + author.lastName,
+        textToHighlight,
+        css(styles.highlightedPortion)
+      );
+
+      return authorNameWithHighlights;
+    }
   );
 
   return (
@@ -193,7 +222,8 @@ const PostSuggestion = ({
             <>
               <div className={css(styles.divider)} />
               <CondensedAuthorList
-                authors={suggestion.authors}
+                authorNames={authorsWithHighlightedPortions}
+                allowAuthorNameToIncludeHtml={true}
                 numPrimaryAuthorsToShow={1}
               />
             </>
@@ -219,7 +249,20 @@ const QuestionSuggestion = ({
 }) => {
   const titleWithHighlightedPortions = highlightTextInSuggestion(
     suggestion.title,
-    textToHighlight
+    textToHighlight,
+    css(styles.highlightedPortion)
+  );
+
+  const authorsWithHighlightedPortions: Array<string> = suggestion.authors.map(
+    (author) => {
+      const authorNameWithHighlights = highlightTextInSuggestion(
+        author.firstName + " " + author.lastName,
+        textToHighlight,
+        css(styles.highlightedPortion)
+      );
+
+      return authorNameWithHighlights;
+    }
   );
 
   return (
@@ -238,7 +281,8 @@ const QuestionSuggestion = ({
             <>
               <div className={css(styles.divider)} />
               <CondensedAuthorList
-                authors={suggestion.authors}
+                authorNames={authorsWithHighlightedPortions}
+                allowAuthorNameToIncludeHtml={true}
                 numPrimaryAuthorsToShow={1}
               />
             </>
@@ -255,18 +299,6 @@ const QuestionSuggestion = ({
   );
 };
 
-const highlightTextInSuggestion = (text: string, textToHighlight?: string) => {
-  if (textToHighlight) {
-    const regExp = new RegExp(textToHighlight, "gi");
-    return text.replace(
-      regExp,
-      (match) => `<span class=${css(styles.highlightedPortion)}>${match}</span>`
-    );
-  }
-
-  return text;
-};
-
 const UserSuggestion = ({
   suggestion,
   textToHighlight,
@@ -277,7 +309,8 @@ const UserSuggestion = ({
   const fullName = suggestion.fullName;
   const fullNameWithHighlightedPortions = highlightTextInSuggestion(
     fullName,
-    textToHighlight
+    textToHighlight,
+    css(styles.highlightedPortion)
   );
 
   return (
@@ -359,6 +392,7 @@ const styles = StyleSheet.create({
   },
   highlightedPortion: {
     fontWeight: 600,
+    color: colors.BLACK(),
   },
 });
 

@@ -18,7 +18,9 @@ const Author = ({ author }: { author: AuthorProfile }) => {
       {author.id ? (
         <span>
           <ALink href={`/user/${author.id}/overview`}>
-            {author.firstName} {author.lastName}
+            <span>
+              {author.firstName} {author.lastName}
+            </span>
           </ALink>
         </span>
       ) : (
@@ -31,33 +33,39 @@ const Author = ({ author }: { author: AuthorProfile }) => {
 };
 
 export const CondensedAuthorList = ({
-  authors,
+  authorNames,
   numPrimaryAuthorsToShow = 2,
+  allowAuthorNameToIncludeHtml = false,
 }: {
-  authors: Array<AuthorProfile>;
+  authorNames: Array<string>;
   numPrimaryAuthorsToShow?: number;
+  allowAuthorNameToIncludeHtml: boolean;
 }) => {
-  if (authors.length === 0) {
+  if (authorNames.length === 0) {
     return null;
   }
 
-  const primaryAuthors: Array<AuthorProfile> = [authors[0]];
+  const primaryAuthors: Array<string> = [authorNames[0]];
   let showEtAllText = false;
 
-  if (numPrimaryAuthorsToShow > 1 && authors.length > 1) {
+  if (numPrimaryAuthorsToShow > 1 && authorNames.length > 1) {
     // Last author is the second most important author
-    primaryAuthors.push(authors[authors.length - 1]);
+    primaryAuthors.push(authorNames[authorNames.length - 1]);
   }
 
-  if (authors.length > numPrimaryAuthorsToShow) {
+  if (authorNames.length > numPrimaryAuthorsToShow) {
     showEtAllText = true;
   }
 
   return (
     <div className={css(styles.authorsContainer)}>
-      {primaryAuthors.map((author, idx) => (
+      {primaryAuthors.map((authorName, idx) => (
         <>
-          <Author author={author} key={idx} />
+          {allowAuthorNameToIncludeHtml ? (
+            <span dangerouslySetInnerHTML={{ __html: authorName }} />
+          ) : (
+            <span>{authorName}</span>
+          )}
           {idx < primaryAuthors.length - 1 && <>,</>}
         </>
       ))}

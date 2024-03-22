@@ -1,3 +1,6 @@
+import sanitizeHtml from "sanitize-html";
+import { SanitizedAndSafeHtml } from "~/config/types/root_types";
+
 import {
   HubSuggestion,
   PaperSuggestion,
@@ -25,4 +28,28 @@ export const buildPageUrlFromSuggestion = (suggestion: Suggestion) => {
       const questionSuggestion = suggestion.data as QuestionSuggestion;
       return `/question/${questionSuggestion.id}/${questionSuggestion.slug}`;
   }
+};
+
+export const highlightTextInSuggestion = (
+  text: string,
+  textToHighlight?: string,
+  aphroditeCssClass: any = null
+): SanitizedAndSafeHtml => {
+  // First, let's sanitize the text to ensure it doesn't have any unsanctioned HTML to avoid an XSS hack.
+  const _sanitizedText = sanitizeHtml(text, {
+    allowedTags: [], // No tags are allowed, so all will be stripped
+    allowedAttributes: {}, // No attributes are allowed
+  });
+
+  // Now we can add our own sanctioned HTML.
+  if (textToHighlight) {
+    const regExp = new RegExp(textToHighlight, "gi");
+
+    return _sanitizedText.replace(
+      regExp,
+      (match) => `<span class=${aphroditeCssClass}>${match}</span>`
+    );
+  }
+
+  return text;
 };
