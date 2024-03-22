@@ -340,7 +340,6 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
 };
 
 export const parseUser = (raw: any): RHUser => {
-
   let _raw = raw;
   if (!raw) {
     _raw = {
@@ -379,7 +378,9 @@ export const parseUser = (raw: any): RHUser => {
     balance: _raw.balance,
     isVerified: _raw.is_verified,
     moderator: _raw.moderator,
-    createdDate: _raw.created_date ? formatDateStandard(_raw.created_date, "MM-DD-YYYY") : null,
+    createdDate: _raw.created_date
+      ? formatDateStandard(_raw.created_date, "MM-DD-YYYY")
+      : null,
     raw, // Used for legacy components
   };
 
@@ -398,3 +399,5 @@ export class ErrorWithCode extends Error {
     }
   }
 }
+
+export type SanitizedAndSafeHtml = string; // Used in situations where we have HTML strings that we trust.
