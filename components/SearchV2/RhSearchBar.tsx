@@ -334,6 +334,10 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       position: "fixed",
       top: 68,
+      left: 80,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      left: 0,
     },
   },
   overlay: {
@@ -344,6 +348,9 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     zIndex: 8,
+    [`@media only screen and (min-width: ${breakpoints.large.str})`]: {
+      display: "none",
+    },
   },
   suggestionsWrapper: {
     zIndex: 10,
@@ -352,6 +359,7 @@ const styles = StyleSheet.create({
   },
   rhSearchBarWrapper: {
     position: "relative",
+    width: "100%",
   },
   allResults: {
     fontWeight: 500,
