@@ -31,7 +31,6 @@ import debounce from "lodash/debounce";
 
 type SearchProps = {
   expendableSearchbarRef?: RefObject<HTMLInputElement>;
-  handleKeyPress: KeyboardEventHandler<HTMLInputElement>;
   pushSearchToUrlAndTrack: () => void;
   searchbarRef?: RefObject<HTMLInputElement>;
   searchString: NullableString;
@@ -152,12 +151,6 @@ export default function RhSearchBar(): ReactElement {
     onInputFocus: (): void => {
       setIsSuggestionsDrawerOpen(true);
     },
-    handleKeyPress: (event): void => {
-      if (event.key === "Enter") {
-        pushSearchToUrlAndTrack();
-        setIsSuggestionsDrawerOpen(false);
-      }
-    },
     onSearchClose: (): void => {
       setIsSuggestionsDrawerOpen(false);
     },
@@ -180,7 +173,8 @@ export default function RhSearchBar(): ReactElement {
         <RhSearchBarInput {...searchProps} />
       </div>
       {isSuggestionsExperimentEnabled &&
-        suggestions.length > 0 &&
+        searchString &&
+        searchString.length > 0 &&
         isSuggestionsDrawerOpen && (
           <div className={css(styles.suggestionsDrawer)}>
             <div className={css(styles.overlay)}></div>
@@ -189,23 +183,19 @@ export default function RhSearchBar(): ReactElement {
               className={css(styles.suggestionsWrapper)}
             >
               <SearchSuggestions
-                textToHighlight={searchString as string}
+                handleClose={() => setIsSuggestionsDrawerOpen(false)}
+                searchString={searchString as string}
                 suggestions={suggestions}
-                handleSuggestionClick={(suggestion) => {
+                handleSuggestionSelect={(suggestion) => {
                   const href = buildPageUrlFromSuggestion(suggestion);
                   router.push(href);
                   setIsSuggestionsDrawerOpen(false);
                 }}
-              />
-              <div
-                className={css(styles.allResults)}
-                onClick={() => {
+                handleAllResultsSelect={() => {
                   pushSearchToUrlAndTrack();
                   setIsSuggestionsDrawerOpen(false);
                 }}
-              >
-                <div>See all results</div>
-              </div>
+              />
             </div>
           </div>
         )}
@@ -214,7 +204,6 @@ export default function RhSearchBar(): ReactElement {
 }
 
 function RhSearchBarInput({
-  handleKeyPress,
   pushSearchToUrlAndTrack,
   searchbarRef,
   searchString,
@@ -226,7 +215,6 @@ function RhSearchBarInput({
       <input
         className={css(styles.rhSearchBarInput)}
         placeholder="Search"
-        onKeyDown={handleKeyPress}
         autoComplete="off"
         onFocus={onInputFocus}
         onChange={(event: ChangeEvent<HTMLInputElement>): void =>
@@ -248,7 +236,6 @@ function RhSearchBarInput({
 
 function RhSearchBarExpandableInput({
   expendableSearchbarRef,
-  handleKeyPress,
   pushSearchToUrlAndTrack,
   searchString,
   setSearchString,
@@ -260,8 +247,10 @@ function RhSearchBarExpandableInput({
   useEffect((): (() => void) => {
     const handleClickOutside = (event) => {
       if (!expendableSearchbarRef?.current?.contains(event.target)) {
-        setIsExpanded(false);
-        onSearchClose && onSearchClose();
+        if (isExpanded) {
+          setIsExpanded(false);
+          onSearchClose && onSearchClose();
+        }
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -292,7 +281,6 @@ function RhSearchBarExpandableInput({
               setSearchString(event?.target?.value ?? null)
             }
             onFocus={onInputFocus}
-            onKeyDown={handleKeyPress}
             placeholder="Search"
             ref={expendableSearchbarRef}
             type="text"

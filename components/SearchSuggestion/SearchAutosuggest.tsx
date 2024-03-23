@@ -16,51 +16,120 @@ import { faGrid2 } from "@fortawesome/pro-solid-svg-icons";
 import { toTitleCase } from "~/config/utils/string";
 import { formatNumber } from "~/config/utils/number";
 import { highlightTextInSuggestion } from "./lib/util";
+import { useEffect, useState } from "react";
+import { faSearch } from "@fortawesome/pro-light-svg-icons";
 
 interface SearchSuggestionProps {
   suggestions: Suggestion[];
-  textToHighlight?: string;
-  handleSuggestionClick: (suggestion: Suggestion) => void;
+  searchString?: string;
+  handleSuggestionSelect: (suggestion: Suggestion) => void;
+  handleAllResultsSelect: () => void;
+  handleClose: () => void;
 }
 
 const SearchSuggestions = ({
   suggestions,
-  textToHighlight,
-  handleSuggestionClick,
+  searchString,
+  handleSuggestionSelect,
+  handleAllResultsSelect,
+  handleClose,
 }: SearchSuggestionProps) => {
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] =
+    useState<number>(0);
+
+  useEffect(() => {
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        if (selectedSuggestionIndex === 0) {
+          handleAllResultsSelect();
+        } else {
+          handleSuggestionSelect(suggestions[selectedSuggestionIndex - 1]);
+        }
+      }
+      if (event.key === "Escape") {
+        handleClose();
+      } else if (event.key === "ArrowUp") {
+        if (selectedSuggestionIndex === -1 || selectedSuggestionIndex === 0) {
+          setSelectedSuggestionIndex(suggestions.length);
+        } else {
+          setSelectedSuggestionIndex(selectedSuggestionIndex - 1);
+        }
+      } else if (event.key === "ArrowDown") {
+        if (
+          selectedSuggestionIndex === -1 ||
+          selectedSuggestionIndex >= suggestions.length
+        ) {
+          setSelectedSuggestionIndex(0);
+        } else {
+          setSelectedSuggestionIndex(selectedSuggestionIndex + 1);
+        }
+      }
+    };
+
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [suggestions, selectedSuggestionIndex]);
+
   return (
     <div>
+      <div
+        className={css(
+          styles.recordWrapper,
+          selectedSuggestionIndex === 0 && styles.selected
+        )}
+        onClick={handleAllResultsSelect}
+      >
+        <div className={css(styles.iconWrapper, styles.searchIconWrapper)}>
+          <FontAwesomeIcon
+            style={{ fontSize: 16 }}
+            icon={faSearch}
+          ></FontAwesomeIcon>
+        </div>
+        <div>
+          {searchString}{" "}
+          <span className={css(styles.seeAllResults)}>- See all results</span>
+        </div>
+      </div>
+
       {suggestions.map((suggestion, index) => {
+        const isSuggestionSelected = index + 1 === selectedSuggestionIndex;
         return (
-          <div key={index} onClick={() => handleSuggestionClick(suggestion)}>
+          <div
+            className={css(isSuggestionSelected && styles.selected)}
+            key={`suggest-result-` + index}
+            onClick={() => handleSuggestionSelect(suggestion)}
+          >
             {suggestion.suggestionType === "paper" && (
               <PaperSuggestion
                 suggestion={suggestion.data as PaperSuggestion}
-                textToHighlight={textToHighlight}
+                searchString={searchString}
               />
             )}
             {suggestion.suggestionType === "post" && (
               <PostSuggestion
                 suggestion={suggestion.data as PostSuggestion}
-                textToHighlight={textToHighlight}
+                searchString={searchString}
               />
             )}
             {suggestion.suggestionType === "user" && (
               <UserSuggestion
                 suggestion={suggestion.data as SuggestedUser}
-                textToHighlight={textToHighlight}
+                searchString={searchString}
               />
             )}
             {suggestion.suggestionType === "hub" && (
               <HubSuggestion
                 suggestion={suggestion.data as HubSuggestion}
-                textToHighlight={textToHighlight}
+                searchString={searchString}
               />
             )}
             {suggestion.suggestionType === "question" && (
               <QuestionSuggestion
                 suggestion={suggestion.data as QuestionSuggestion}
-                textToHighlight={textToHighlight}
+                searchString={searchString}
               />
             )}
           </div>
@@ -72,15 +141,15 @@ const SearchSuggestions = ({
 
 const HubSuggestion = ({
   suggestion,
-  textToHighlight,
+  searchString,
 }: {
   suggestion: HubSuggestion;
-  textToHighlight?: string;
+  searchString?: string;
 }) => {
   const hubName = toTitleCase(suggestion.hub.name);
   const titleWithHighlightedPortions = highlightTextInSuggestion(
     hubName,
-    textToHighlight,
+    searchString,
     css(styles.highlightedPortion)
   );
   const formattedNumDocs = formatNumber(suggestion.hub.numDocs || 0);
@@ -114,14 +183,14 @@ const HubSuggestion = ({
 
 const PaperSuggestion = ({
   suggestion,
-  textToHighlight,
+  searchString,
 }: {
   suggestion: PaperSuggestion;
-  textToHighlight?: string;
+  searchString?: string;
 }) => {
   const titleWithHighlightedPortions = highlightTextInSuggestion(
     suggestion.title,
-    textToHighlight,
+    searchString,
     css(styles.highlightedPortion)
   );
 
@@ -129,7 +198,7 @@ const PaperSuggestion = ({
     (author) => {
       const authorNameWithHighlights = highlightTextInSuggestion(
         author.firstName + " " + author.lastName,
-        textToHighlight,
+        searchString,
         css(styles.highlightedPortion)
       );
 
@@ -178,14 +247,14 @@ const PaperSuggestion = ({
 
 const PostSuggestion = ({
   suggestion,
-  textToHighlight,
+  searchString,
 }: {
   suggestion: PostSuggestion;
-  textToHighlight?: string;
+  searchString?: string;
 }) => {
   const titleWithHighlightedPortions = highlightTextInSuggestion(
     suggestion.title,
-    textToHighlight,
+    searchString,
     css(styles.highlightedPortion)
   );
 
@@ -193,7 +262,7 @@ const PostSuggestion = ({
     (author) => {
       const authorNameWithHighlights = highlightTextInSuggestion(
         author.firstName + " " + author.lastName,
-        textToHighlight,
+        searchString,
         css(styles.highlightedPortion)
       );
 
@@ -242,14 +311,14 @@ const PostSuggestion = ({
 
 const QuestionSuggestion = ({
   suggestion,
-  textToHighlight,
+  searchString,
 }: {
   suggestion: PostSuggestion;
-  textToHighlight?: string;
+  searchString?: string;
 }) => {
   const titleWithHighlightedPortions = highlightTextInSuggestion(
     suggestion.title,
-    textToHighlight,
+    searchString,
     css(styles.highlightedPortion)
   );
 
@@ -257,7 +326,7 @@ const QuestionSuggestion = ({
     (author) => {
       const authorNameWithHighlights = highlightTextInSuggestion(
         author.firstName + " " + author.lastName,
-        textToHighlight,
+        searchString,
         css(styles.highlightedPortion)
       );
 
@@ -301,15 +370,15 @@ const QuestionSuggestion = ({
 
 const UserSuggestion = ({
   suggestion,
-  textToHighlight,
+  searchString,
 }: {
   suggestion: SuggestedUser;
-  textToHighlight?: string;
+  searchString?: string;
 }) => {
   const fullName = suggestion.fullName;
   const fullNameWithHighlightedPortions = highlightTextInSuggestion(
     fullName,
-    textToHighlight,
+    searchString,
     css(styles.highlightedPortion)
   );
 
@@ -343,9 +412,21 @@ const UserSuggestion = ({
 };
 
 const styles = StyleSheet.create({
+  selected: {
+    backgroundColor: colors.GREY(0.14),
+  },
+  seeAllResults: {
+    color: colors.BLACK(0.6),
+    fontSize: 14,
+    fontWeight: 400,
+  },
   iconWrapper: {
     color: colors.BLACK(0.5),
     height: 25,
+  },
+  searchIconWrapper: {
+    color: colors.BLACK(0.5),
+    height: 15,
   },
   anonymousAvatar: {
     marginTop: -2,
