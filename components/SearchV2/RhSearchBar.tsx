@@ -52,10 +52,6 @@ export default function RhSearchBar(): ReactElement {
   );
   const searchStringRef = useRef<NullableString>(searchString);
 
-  // "Poor man's feature flag" - if the URL contains the experiment query param, enable the experiment
-  // Will be removed in subsequent iteration.
-  const [isSuggestionsExperimentEnabled, setIsSuggestionsExperimentEnabled] =
-    useState<boolean>(false);
   const expendableSearchbarRef = useRef<HTMLInputElement>(null);
   const searchbarRef = useRef<HTMLInputElement>(null);
   const [isSuggestionsDrawerOpen, setIsSuggestionsDrawerOpen] =
@@ -73,15 +69,6 @@ export default function RhSearchBar(): ReactElement {
     [handleFetchSuggestions]
   );
 
-  useEffect(() => {
-    const env = getCurrServerEnv();
-    if (
-      window.location.search.includes("experiment=suggestions") ||
-      ["development", "staging"].includes(env)
-    ) {
-      setIsSuggestionsExperimentEnabled(true);
-    }
-  }, []);
 
   useEffectHandleClick({
     ref: suggestionsDrawerRef,
@@ -93,9 +80,6 @@ export default function RhSearchBar(): ReactElement {
 
   useEffect(() => {
     (async () => {
-      if (!isSuggestionsExperimentEnabled) {
-        return;
-      }
 
       if (searchString && searchString.length >= 3) {
         debouncedHandleInputChange();
@@ -103,7 +87,7 @@ export default function RhSearchBar(): ReactElement {
         setSuggestions([]);
       }
     })();
-  }, [searchString, isSuggestionsExperimentEnabled]);
+  }, [searchString]);
 
   const blurAndCloseDeviceKeyboard = (): void => {
     if (isServer()) {
@@ -172,8 +156,7 @@ export default function RhSearchBar(): ReactElement {
       <div className={css(styles.rhSearchBarInputDisplay)}>
         <RhSearchBarInput {...searchProps} />
       </div>
-      {isSuggestionsExperimentEnabled &&
-        searchString &&
+      {searchString &&
         searchString.length > 0 &&
         isSuggestionsDrawerOpen && (
           <div className={css(styles.suggestionsDrawer)}>
