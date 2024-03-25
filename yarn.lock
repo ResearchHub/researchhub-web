@@ -9230,17 +9230,6 @@ react-alert@^7.0.3:
     prop-types "^15.7.2"
     react-transition-group "^4.4.1"
 
-react-animated-text@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/react-animated-text/-/react-animated-text-0.1.4.tgz#aaac6a46bbad561e0b93c588c9f18c6e7f9900be"
-  integrity sha512-k45hRFPYxm8ssdlUBYzoOI9sqLGoL363AEaE2r9TN5mQe+LIO7U3nu2dNC9MiE5SlStYEdXqcONQJsY1h5K/jg==
-  dependencies:
-    lodash "^4.17.11"
-    prop-types "^15.6.2"
-    randomatic "^3.1.1"
-    react-timeout "^1.1.2"
-    webpack "^2.6.1"
-
 react-async-script@^1.1.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/react-async-script/-/react-async-script-1.2.0.tgz#ab9412a26f0b83f5e2e00de1d2befc9400834b21"

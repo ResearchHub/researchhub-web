@@ -97,7 +97,6 @@
     "raw-loader": "^4.0.2",
     "react": "^18.2.0",
     "react-alert": "^7.0.3",
-    "react-animated-text": "^0.1.4",
     "react-autosize-textarea": "^7.0.0",
     "react-avatar": "^3.7.0",
     "react-avatar-edit": "^0.8.3",
