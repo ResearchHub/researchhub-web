@@ -39,30 +39,34 @@ const SearchSuggestions = ({
 
   useEffect(() => {
     const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.key === "Enter") {
-        if (selectedSuggestionIndex === 0) {
-          handleAllResultsSelect();
-        } else {
-          handleSuggestionSelect(suggestions[selectedSuggestionIndex - 1]);
-        }
-      }
-      if (event.key === "Escape") {
-        handleClose();
-      } else if (event.key === "ArrowUp") {
-        if (selectedSuggestionIndex === -1 || selectedSuggestionIndex === 0) {
-          setSelectedSuggestionIndex(suggestions.length);
-        } else {
-          setSelectedSuggestionIndex(selectedSuggestionIndex - 1);
-        }
-      } else if (event.key === "ArrowDown") {
-        if (
-          selectedSuggestionIndex === -1 ||
-          selectedSuggestionIndex >= suggestions.length
-        ) {
-          setSelectedSuggestionIndex(0);
-        } else {
-          setSelectedSuggestionIndex(selectedSuggestionIndex + 1);
-        }
+      switch (event.key) {
+        case "Enter":
+          if (selectedSuggestionIndex === 0) {
+            handleAllResultsSelect();
+          } else {
+            handleSuggestionSelect(suggestions[selectedSuggestionIndex - 1]);
+          }
+          break;
+        case "Escape":
+          handleClose();
+          break;
+        case "ArrowUp":
+          if (selectedSuggestionIndex === -1 || selectedSuggestionIndex === 0) {
+            setSelectedSuggestionIndex(suggestions.length);
+          } else {
+            setSelectedSuggestionIndex(selectedSuggestionIndex - 1);
+          }          
+          break;
+        case "ArrowDown":
+          if (
+            selectedSuggestionIndex === -1 ||
+            selectedSuggestionIndex >= suggestions.length
+          ) {
+            setSelectedSuggestionIndex(0);
+          } else {
+            setSelectedSuggestionIndex(selectedSuggestionIndex + 1);
+          }
+          break;
       }
     };
 
