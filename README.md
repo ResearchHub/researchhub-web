@@ -34,6 +34,15 @@ We believe that by empowering scientists to independently fund, create, and publ
 1. `yarn run dev`
 1. You will also need to [install the backend app](https://github.com/ResearchHub/researchhub-backend) for the project to run
 
+### macOS
+
+Executing `yarn install` on macOS may display some `gyp` errors associated with the `canvas` native dependency.
+To fix these errors, install the following packages using Homebrew:
+
+```shell
+brew install pango pkg-config
+```
+
 ## Contributing to the codebase
 
 1. Fork this repo and then clone it to your local env
