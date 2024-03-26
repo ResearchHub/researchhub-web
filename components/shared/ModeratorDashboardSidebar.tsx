@@ -42,18 +42,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
     shouldRedirect: false,
   });
 
-  const fetchProfileDeletes = async () => {
-    const url = generateApiUrl(
-      "user_verification",
-      "?ordering=created_date&status=INITIATED"
-    );
-    const res = await fetch(url, api.GET_CONFIG());
-    const json = await res.json();
-    setNumProfileDeletes(json.count);
-  };
-
   useEffect(() => {
-    fetchProfileDeletes();
     getCaseCounts({
       onSuccess: (counts) => {
         setAuthorClaimCount(counts.OPEN);

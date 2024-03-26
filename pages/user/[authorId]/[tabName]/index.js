@@ -14,10 +14,6 @@ import {
   faGoogleScholar,
   faOrcid,
 } from "@fortawesome/free-brands-svg-icons";
-import {
-  faEllipsis,
-  faArrowDownToBracket,
-} from "@fortawesome/pro-regular-svg-icons";
 import { buildSlug } from "~/config/utils/buildSlug";
 import { connect, useStore, useDispatch } from "react-redux";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";
@@ -38,7 +34,6 @@ import { TransactionActions } from "~/redux/transaction";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import AvatarUpload from "~/components/AvatarUpload";
 import Button from "~/components/Form/Button";
-import ClaimAuthorPopoverLabel from "../../../../components/ClaimAuthorPopoverLabel";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import Head from "~/components/Head";
 import Image from "next/image";
@@ -50,9 +45,6 @@ import AuthorActivityFeed from "~/components/Author/Feed/AuthorActivityFeed";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import ReactPlaceholder from "react-placeholder/lib";
 import AuthorDetailsPlaceholder from "~/components/Placeholders/AuthorDetailsPlaceholder";
-import GenericMenu, { MenuOption } from "~/components/shared/GenericMenu";
-import IconButton from "~/components/Icons/IconButton";
-import UserDeleteRequestModal from "~/components/Modals/UserDeleteRequestModal";
 // Dynamic modules
 import dynamic from "next/dynamic";
 const UserInfoModal = dynamic(() =>
@@ -199,14 +191,6 @@ function AuthorPage(props) {
           label: "Authored Papers",
           value: "authored-papers",
         },
-        // Disabled replicability since we were seeing a lot of spammy votes
-        // and thought that it'd be a net-negative to have this on the platform.
-        // Want to consider more quality/higher-value implementation before re-launching.
-        // {
-        //   href: "replication-votes",
-        //   label: "Replication Votes",
-        //   value: "replication-votes",
-        // },
       ];
 
       if (allowEdit) {
@@ -959,20 +943,7 @@ function AuthorPage(props) {
   );
 
   const userLinks = (
-    <div className={css(styles.socialLinks)}>
-      {socialMediaLinkButtons}
-      {/* <GenericMenu
-        softHide={true}
-        options={extraProfileOptions}
-        width={200}
-        id="header-more-options"
-        direction="bottom-right"
-      >
-        <IconButton overrideStyle={styles.btnDots}>
-          <FontAwesomeIcon icon={faEllipsis} />
-        </IconButton>
-      </GenericMenu> */}
-    </div>
+    <div className={css(styles.socialLinks)}>{socialMediaLinkButtons}</div>
   );
 
   const authorEducationSummary = useMemo(
@@ -1198,11 +1169,6 @@ function AuthorPage(props) {
         closeModal={onCloseAvatarModal}
         saveButton={renderSaveButton}
         section={SECTIONS.picture}
-      />
-      <UserDeleteRequestModal
-        isOpen={extraProfileOptionsIsOpen}
-        closeModal={closeRemoveProfile}
-        author={author}
       />
     </div>
   );
