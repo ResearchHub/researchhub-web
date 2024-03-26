@@ -61,13 +61,9 @@ const DocumentPageLayout = ({
   }
 
   return (
+    
     <div className={css(styles.pageWrapper) + " " + documentPageClass}>
-      <HeadComponent {...openGraphData.meta} graph={openGraphData.graph}>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-        />
-      </HeadComponent>
+      <HeadComponent {...openGraphData.meta} graph={openGraphData.graph} />
 
       <div className={css(styles.topArea) + " " + topAreaClass}>
         <DocumentHeader
