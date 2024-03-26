@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import get from "lodash/get";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
-
+import sanitizeHtml from "sanitize-html";
 import colors from "~/config/themes/colors";
 import { fetchURL } from "~/config/fetch";
 import FormSelect from "~/components/Form/FormSelect";
@@ -279,7 +279,12 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
       return searchResult[attribute];
     }
 
-    const parts = highlight.split(/(<mark>[^<]+<\/mark>)/);
+    const highlightWithoutHtml = sanitizeHtml(highlight, {
+      allowedTags: ["mark"], // No tags are allowed, so all will be stripped
+      allowedAttributes: {}, // No attributes are allowed
+    });
+
+    const parts = highlightWithoutHtml.split(/(<mark>[^<]+<\/mark>)/);
     const parsedString = parts.map((part) => {
       if (part.includes("<mark>")) {
         let replaced = part.replace("<mark>", "");
@@ -414,6 +419,21 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
             paper.promoted = false;
             paper.user_vote = userVotes[paper.id];
 
+            // There is a small but non-trivial chance that this will fail
+            // In such a case, we want to avoid the entire page from breaking.
+            try {
+              paper.abstract = parseIfHighlighted({
+                searchResult: paper,
+                attribute: "abstract",
+              });
+            } catch {}
+            try {
+              paper.titleAsHtml = parseIfHighlighted({
+                searchResult: paper,
+                attribute: "title",
+              });
+            } catch {}
+
             return (
               <FeedCard
                 {...paper}
@@ -493,7 +513,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   highlight: {
-    backgroundColor: "yellow",
+    backgroundColor: colors.ORANGE_LIGHT4(0.75),
   },
   clearFiltersBtn: {
     backgroundColor: "none",
