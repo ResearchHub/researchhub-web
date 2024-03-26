@@ -418,15 +418,18 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
           results.map((paper, index) => {
             paper.promoted = false;
             paper.user_vote = userVotes[paper.id];
-            paper.abstract = parseIfHighlighted({
-              searchResult: paper,
-              attribute: "abstract",
-            });
-            paper.titleAsHtml = parseIfHighlighted({
-              searchResult: paper,
-              attribute: "title",
-            });
-            console.log("paper", paper);
+            try {
+              paper.abstract = parseIfHighlighted({
+                searchResult: paper,
+                attribute: "abstract",
+              });
+            } catch {}
+            try {
+              paper.titleAsHtml = parseIfHighlighted({
+                searchResult: paper,
+                attribute: "title",
+              });
+            } catch {}
 
             return (
               <FeedCard
