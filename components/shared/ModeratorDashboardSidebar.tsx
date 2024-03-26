@@ -99,18 +99,6 @@ export default function ModeratorDashboardSidebar({}: Props) {
             ) : null,
         }
       : null,
-    isUserModerator
-      ? {
-          icon: <FontAwesomeIcon icon={faBan}></FontAwesomeIcon>,
-          id: "profile-delete",
-          name: "Profile Delete",
-          pathname: "/moderators/profile-delete",
-          extraHTML:
-            numProfileDeletes > 0 ? (
-              <span className={css(style.count)}>{numProfileDeletes}</span>
-            ) : null,
-        }
-      : null,
   ]);
 
   const listItems = SIDE_BAR_ITEMS.map(
