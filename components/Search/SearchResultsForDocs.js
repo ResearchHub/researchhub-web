@@ -418,6 +418,9 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
           results.map((paper, index) => {
             paper.promoted = false;
             paper.user_vote = userVotes[paper.id];
+
+            // There is a small but non-trivial chance that this will fail
+            // In such a case, we want to avoid the entire page from breaking.
             try {
               paper.abstract = parseIfHighlighted({
                 searchResult: paper,
