@@ -31,12 +31,12 @@ import debounce from "lodash/debounce";
 
 type SearchProps = {
   expendableSearchbarRef?: RefObject<HTMLInputElement>;
-  handleKeyPress: KeyboardEventHandler<HTMLInputElement>;
   pushSearchToUrlAndTrack: () => void;
   searchbarRef?: RefObject<HTMLInputElement>;
   searchString: NullableString;
   setSearchString: (query: NullableString) => void;
   onInputFocus?: () => void;
+  onSearchClose?: () => void;
 };
 
 /* 
@@ -151,11 +151,8 @@ export default function RhSearchBar(): ReactElement {
     onInputFocus: (): void => {
       setIsSuggestionsDrawerOpen(true);
     },
-    handleKeyPress: (event): void => {
-      if (event.key === "Enter") {
-        pushSearchToUrlAndTrack();
-        setIsSuggestionsDrawerOpen(false);
-      }
+    onSearchClose: (): void => {
+      setIsSuggestionsDrawerOpen(false);
     },
     pushSearchToUrlAndTrack,
     searchbarRef,
@@ -167,49 +164,46 @@ export default function RhSearchBar(): ReactElement {
   };
 
   return (
-    <Fragment>
+    <div className={css(styles.rhSearchBarWrapper)}>
       <div
         children={<RhSearchBarExpandableInput {...searchProps} />}
         className={css(styles.rhSearchBarExpandableInputDisplay)}
       />
       <div className={css(styles.rhSearchBarInputDisplay)}>
         <RhSearchBarInput {...searchProps} />
-        {isSuggestionsExperimentEnabled &&
-          suggestions.length > 0 &&
-          isSuggestionsDrawerOpen && (
+      </div>
+      {isSuggestionsExperimentEnabled &&
+        searchString &&
+        searchString.length > 0 &&
+        isSuggestionsDrawerOpen && (
+          <div className={css(styles.suggestionsDrawer)}>
+            <div className={css(styles.overlay)}></div>
             <div
               ref={suggestionsDrawerRef}
-              className={css(styles.suggestionsDrawer)}
+              className={css(styles.suggestionsWrapper)}
             >
-              <div className={css(styles.suggestionsWrapper)}>
-                <SearchSuggestions
-                  textToHighlight={searchString as string}
-                  suggestions={suggestions}
-                  handleSuggestionClick={(suggestion) => {
-                    const href = buildPageUrlFromSuggestion(suggestion);
-                    router.push(href);
-                    setIsSuggestionsDrawerOpen(false);
-                  }}
-                />
-              </div>
-              <div
-                className={css(styles.allResults)}
-                onClick={() => {
+              <SearchSuggestions
+                handleClose={() => setIsSuggestionsDrawerOpen(false)}
+                searchString={searchString as string}
+                suggestions={suggestions}
+                handleSuggestionSelect={(suggestion) => {
+                  const href = buildPageUrlFromSuggestion(suggestion);
+                  router.push(href);
+                  setIsSuggestionsDrawerOpen(false);
+                }}
+                handleAllResultsSelect={() => {
                   pushSearchToUrlAndTrack();
                   setIsSuggestionsDrawerOpen(false);
                 }}
-              >
-                <div>See all results</div>
-              </div>
+              />
             </div>
-          )}
-      </div>
-    </Fragment>
+          </div>
+        )}
+    </div>
   );
 }
 
 function RhSearchBarInput({
-  handleKeyPress,
   pushSearchToUrlAndTrack,
   searchbarRef,
   searchString,
@@ -221,7 +215,6 @@ function RhSearchBarInput({
       <input
         className={css(styles.rhSearchBarInput)}
         placeholder="Search"
-        onKeyDown={handleKeyPress}
         autoComplete="off"
         onFocus={onInputFocus}
         onChange={(event: ChangeEvent<HTMLInputElement>): void =>
@@ -243,18 +236,21 @@ function RhSearchBarInput({
 
 function RhSearchBarExpandableInput({
   expendableSearchbarRef,
-  handleKeyPress,
   pushSearchToUrlAndTrack,
   searchString,
   setSearchString,
   onInputFocus,
+  onSearchClose,
 }: SearchProps): ReactElement {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   useEffect((): (() => void) => {
     const handleClickOutside = (event) => {
       if (!expendableSearchbarRef?.current?.contains(event.target)) {
-        setIsExpanded(false);
+        if (isExpanded) {
+          setIsExpanded(false);
+          onSearchClose && onSearchClose();
+        }
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -275,13 +271,7 @@ function RhSearchBarExpandableInput({
       )}
       {isExpanded && (
         <Fragment>
-          <span
-            className={css(styles.backButton)}
-            onClick={(event: SyntheticEvent): void => {
-              event.preventDefault();
-              setIsExpanded(false);
-            }}
-          >
+          <span className={css(styles.backButton)}>
             {<FontAwesomeIcon icon={faArrowLeftLong}></FontAwesomeIcon>}
           </span>
           <input
@@ -291,7 +281,6 @@ function RhSearchBarExpandableInput({
               setSearchString(event?.target?.value ?? null)
             }
             onFocus={onInputFocus}
-            onKeyDown={handleKeyPress}
             placeholder="Search"
             ref={expendableSearchbarRef}
             type="text"
@@ -326,13 +315,40 @@ const styles = StyleSheet.create({
     top: 35,
     left: 0,
     width: "100%",
-    // boxShadow: "0px 3px 4px 0px #00000005",
     backgroundColor: "white",
     borderRadius: 4,
     zIndex: 9,
     boxShadow: "0px 4px 20px 0px #241F3A1A",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      position: "fixed",
+      top: 68,
+      left: 80,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      left: 0,
+    },
   },
-  suggestionsWrapper: {},
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 8,
+    [`@media only screen and (min-width: ${breakpoints.large.str})`]: {
+      display: "none",
+    },
+  },
+  suggestionsWrapper: {
+    zIndex: 10,
+    position: "relative",
+    background: "white",
+  },
+  rhSearchBarWrapper: {
+    position: "relative",
+    width: "100%",
+  },
   allResults: {
     fontWeight: 500,
     fontSize: 16,
@@ -372,7 +388,6 @@ const styles = StyleSheet.create({
   rhSearchBarInputDisplay: {
     backgroundColor: "#fff",
     display: "block",
-    position: "relative",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       display: "none",
