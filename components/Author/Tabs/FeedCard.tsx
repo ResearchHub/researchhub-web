@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import sanitizeHtml from "sanitize-html";
 import {
   faComments,
   faCommentAltLines,
@@ -265,7 +266,13 @@ function FeedCard({
     if (titleAsHtml) {
       return titleAsHtml;
     }
-    return unescapeHtmlString(title ?? "");
+
+    const titleWithoutHtml = sanitizeHtml(title, {
+      allowedTags: [], // No tags are allowed, so all will be stripped
+      allowedAttributes: {}, // No attributes are allowed
+    });
+
+    return titleWithoutHtml;
   };
 
   const getBody = () => {
