@@ -380,6 +380,10 @@ const styles = StyleSheet.create({
     top: 0,
     width: "calc(100% - 80px)" /* adjusted leftbar width */,
     zIndex: 10,
+    ":focus": {
+      outline: "none",
+      border: `2px solid ${colors.NEW_BLUE()}`,
+    },    
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       padding: "0 52px",
       width: "100%" /* adjusted leftbar width */,
