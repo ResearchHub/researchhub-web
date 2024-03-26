@@ -48,8 +48,9 @@ export default function RhSearchBar(): ReactElement {
   const router = useRouter();
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [searchString, setSearchString] = useState<NullableString>(
-    ((router?.query ?? {})?.[QUERY_PARAM] ?? [])[0] ?? null
+    ((router?.query ?? {})?.[QUERY_PARAM] as NullableString ?? "") ?? null
   );
+
   const searchStringRef = useRef<NullableString>(searchString);
 
   const expendableSearchbarRef = useRef<HTMLInputElement>(null);
