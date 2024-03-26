@@ -425,7 +425,6 @@ const LoginModal = ({
               containerStyle={styles.inputContainer}
               placeholder="Email"
               autoComplete="email"
-              autoFocus={!isMobileScreen}
               error={emailError}
               getRef={emailRef}
               type="email"
@@ -447,6 +446,7 @@ const LoginModal = ({
               containerStyle={styles.inputContainerShort}
               placeholder="Password"
               type="password"
+              autoFocus={!isMobileScreen}
               onKeyDown={(e) => {
                 e.keyCode === 13 && loginApi(e);
               }}
