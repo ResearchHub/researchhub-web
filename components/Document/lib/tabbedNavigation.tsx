@@ -6,7 +6,6 @@ import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import { Tab } from "~/components/HorizontalTabBar";
 import colors from "~/config/themes/colors";
 import { DocumentMetadata, GenericDocument, isPaper, isPost } from "./types";
-import predMarketUtils from "~/components/PredictionMarket/lib/util";
 
 export const tabs: Array<Tab> = [
   {
@@ -78,10 +77,6 @@ export const getTabs = ({
         tab.value !== "replicability" &&
         tab.value !== "bounties"
     );
-  }
-  if (!isPaper(document)) {
-    // we only have replication prediction markets on papers
-    _tabs = _tabs.filter((tab) => tab.value !== "replicability");
   }
 
   _tabs = withDocTypeTab({ tabs: _tabs, document });
@@ -163,14 +158,6 @@ const withPillContent = ({
       finalTabs.push({
         ...tab,
         pillContent: metadata.reviewSummary.count || undefined,
-      });
-    } else if (tab.value === "replicability") {
-      const pcnt = predMarketUtils.computeProbability(
-        metadata.predictionMarket?.votes
-      );
-      finalTabs.push({
-        ...tab,
-        pillContent: pcnt !== undefined ? `${pcnt.toFixed(0)}%` : undefined,
       });
     }
   }
