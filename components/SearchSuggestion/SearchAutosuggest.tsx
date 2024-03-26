@@ -81,6 +81,7 @@ const SearchSuggestions = ({
     <div>
       <div
         className={css(
+          styles.query,
           styles.recordWrapper,
           selectedSuggestionIndex === 0 && styles.selected
         )}
@@ -416,6 +417,10 @@ const UserSuggestion = ({
 };
 
 const styles = StyleSheet.create({
+  query: {
+    height: 50,
+    boxSizing: "border-box",
+  },
   selected: {
     backgroundColor: colors.GREY(0.14),
   },
