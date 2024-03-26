@@ -31,7 +31,7 @@ import debounce from "lodash/debounce";
 
 type SearchProps = {
   expendableSearchbarRef?: RefObject<HTMLInputElement>;
-  pushSearchToUrlAndTrack: () => void;
+  handleSearchSubmit: () => void;
   searchbarRef?: RefObject<HTMLInputElement>;
   searchString: NullableString;
   setSearchString: (query: NullableString) => void;
@@ -100,8 +100,7 @@ export default function RhSearchBar(): ReactElement {
     }
   };
 
-  const pushSearchToUrlAndTrack = (): void => {
-    // dont do anything if search string is empty
+  const pushSearchToUrlAndTrack = (searchString?: NullableString): void => {
     if (isEmpty(searchString)) {
       return;
     }
@@ -138,7 +137,9 @@ export default function RhSearchBar(): ReactElement {
     onSearchClose: (): void => {
       setIsSuggestionsDrawerOpen(false);
     },
-    pushSearchToUrlAndTrack,
+    handleSearchSubmit: (): void => {
+      pushSearchToUrlAndTrack(searchStringRef.current);
+    },
     searchbarRef,
     searchString,
     setSearchString: (searchString) => {
@@ -175,7 +176,7 @@ export default function RhSearchBar(): ReactElement {
                   setIsSuggestionsDrawerOpen(false);
                 }}
                 handleAllResultsSelect={() => {
-                  pushSearchToUrlAndTrack();
+                  pushSearchToUrlAndTrack(searchStringRef.current);
                   setIsSuggestionsDrawerOpen(false);
                 }}
               />
@@ -187,7 +188,7 @@ export default function RhSearchBar(): ReactElement {
 }
 
 function RhSearchBarInput({
-  pushSearchToUrlAndTrack,
+  handleSearchSubmit,
   searchbarRef,
   searchString,
   setSearchString,
@@ -209,7 +210,7 @@ function RhSearchBarInput({
       />
       <span
         className={css(styles.searchIcon)}
-        onClick={pushSearchToUrlAndTrack}
+        onClick={handleSearchSubmit}
       >
         {<FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>}
       </span>
@@ -219,7 +220,7 @@ function RhSearchBarInput({
 
 function RhSearchBarExpandableInput({
   expendableSearchbarRef,
-  pushSearchToUrlAndTrack,
+  handleSearchSubmit,
   searchString,
   setSearchString,
   onInputFocus,
@@ -277,7 +278,7 @@ function RhSearchBarExpandableInput({
             )}
             onClick={(event: SyntheticEvent): void => {
               event.stopPropagation();
-              pushSearchToUrlAndTrack();
+              handleSearchSubmit();
             }}
             // prevents collapsing behavior
             onMouseDown={(event: SyntheticEvent): void =>
