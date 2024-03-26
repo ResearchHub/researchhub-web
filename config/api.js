@@ -407,7 +407,6 @@ const routes = (BASE_URL) => {
       // Facets specified will have their values returned
       // alongside counts in the search response.
       facets = [],
-      external_source = true,
     }) => {
       let url = BASE_URL + "search/";
       let params = {
@@ -415,7 +414,6 @@ const routes = (BASE_URL) => {
           ...filters,
           page,
           size,
-          external_source,
           facet: facets,
         },
         rest: {

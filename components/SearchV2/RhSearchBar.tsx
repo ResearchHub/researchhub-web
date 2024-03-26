@@ -5,7 +5,6 @@ import { css, StyleSheet } from "aphrodite";
 import {
   ChangeEvent,
   Fragment,
-  KeyboardEventHandler,
   ReactElement,
   RefObject,
   SyntheticEvent,
@@ -25,16 +24,15 @@ import colors, { mainNavIcons } from "~/config/themes/colors";
 import { fetchAllSuggestions } from "../SearchSuggestion/lib/api";
 import SearchSuggestions from "../SearchSuggestion/SearchAutosuggest";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
-import { getCurrServerEnv } from "~/config/utils/env";
 import { buildPageUrlFromSuggestion } from "../SearchSuggestion/lib/util";
 import debounce from "lodash/debounce";
 
 type SearchProps = {
   expendableSearchbarRef?: RefObject<HTMLInputElement>;
-  pushSearchToUrlAndTrack: () => void;
+  handleSearchSubmit: () => void;
   searchbarRef?: RefObject<HTMLInputElement>;
   searchString: NullableString;
-  setSearchString: (query: NullableString) => void;
+  onInputChange: (query: NullableString) => void;
   onInputFocus?: () => void;
   onSearchClose?: () => void;
 };
@@ -48,8 +46,10 @@ export default function RhSearchBar(): ReactElement {
   const router = useRouter();
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [searchString, setSearchString] = useState<NullableString>(
-    ((router?.query ?? {})?.[QUERY_PARAM] ?? [])[0] ?? null
+    ((router?.query ?? {})?.[QUERY_PARAM] as NullableString ?? "") ?? null
   );
+  const [isInputStringClean, setIsInputStringClean] = useState(true);
+
   const searchStringRef = useRef<NullableString>(searchString);
 
   const expendableSearchbarRef = useRef<HTMLInputElement>(null);
@@ -80,14 +80,13 @@ export default function RhSearchBar(): ReactElement {
 
   useEffect(() => {
     (async () => {
-
-      if (searchString && searchString.length >= 3) {
+      if (!isInputStringClean && searchString && searchString.length >= 3) {
         debouncedHandleInputChange();
       } else {
         setSuggestions([]);
       }
     })();
-  }, [searchString]);
+  }, [searchString, isInputStringClean]);
 
   const blurAndCloseDeviceKeyboard = (): void => {
     if (isServer()) {
@@ -100,8 +99,7 @@ export default function RhSearchBar(): ReactElement {
     }
   };
 
-  const pushSearchToUrlAndTrack = (): void => {
-    // dont do anything if search string is empty
+  const pushSearchToUrlAndTrack = (searchString?: NullableString): void => {
     if (isEmpty(searchString)) {
       return;
     }
@@ -138,12 +136,15 @@ export default function RhSearchBar(): ReactElement {
     onSearchClose: (): void => {
       setIsSuggestionsDrawerOpen(false);
     },
-    pushSearchToUrlAndTrack,
+    handleSearchSubmit: (): void => {
+      pushSearchToUrlAndTrack(searchStringRef.current);
+    },
     searchbarRef,
     searchString,
-    setSearchString: (searchString) => {
+    onInputChange: (searchString) => {
       setSearchString(searchString);
       searchStringRef.current = searchString;
+      setIsInputStringClean(false);
     },
   };
 
@@ -175,7 +176,7 @@ export default function RhSearchBar(): ReactElement {
                   setIsSuggestionsDrawerOpen(false);
                 }}
                 handleAllResultsSelect={() => {
-                  pushSearchToUrlAndTrack();
+                  pushSearchToUrlAndTrack(searchStringRef.current);
                   setIsSuggestionsDrawerOpen(false);
                 }}
               />
@@ -187,10 +188,10 @@ export default function RhSearchBar(): ReactElement {
 }
 
 function RhSearchBarInput({
-  pushSearchToUrlAndTrack,
+  handleSearchSubmit,
   searchbarRef,
   searchString,
-  setSearchString,
+  onInputChange,
   onInputFocus,
 }: SearchProps): ReactElement {
   return (
@@ -201,7 +202,7 @@ function RhSearchBarInput({
         autoComplete="off"
         onFocus={onInputFocus}
         onChange={(event: ChangeEvent<HTMLInputElement>): void =>
-          setSearchString(event?.target?.value ?? null)
+          onInputChange(event?.target?.value ?? null)
         }
         value={searchString ?? ""}
         ref={searchbarRef}
@@ -209,7 +210,7 @@ function RhSearchBarInput({
       />
       <span
         className={css(styles.searchIcon)}
-        onClick={pushSearchToUrlAndTrack}
+        onClick={handleSearchSubmit}
       >
         {<FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>}
       </span>
@@ -219,9 +220,9 @@ function RhSearchBarInput({
 
 function RhSearchBarExpandableInput({
   expendableSearchbarRef,
-  pushSearchToUrlAndTrack,
+  handleSearchSubmit,
   searchString,
-  setSearchString,
+  onInputChange,
   onInputFocus,
   onSearchClose,
 }: SearchProps): ReactElement {
@@ -261,7 +262,7 @@ function RhSearchBarExpandableInput({
             autoFocus
             className={css(styles.rhSearchBarExpandableInput) + " search-input"}
             onChange={(event: ChangeEvent<HTMLInputElement>): void =>
-              setSearchString(event?.target?.value ?? null)
+              onInputChange(event?.target?.value ?? null)
             }
             onFocus={onInputFocus}
             placeholder="Search"
@@ -277,7 +278,7 @@ function RhSearchBarExpandableInput({
             )}
             onClick={(event: SyntheticEvent): void => {
               event.stopPropagation();
-              pushSearchToUrlAndTrack();
+              handleSearchSubmit();
             }}
             // prevents collapsing behavior
             onMouseDown={(event: SyntheticEvent): void =>

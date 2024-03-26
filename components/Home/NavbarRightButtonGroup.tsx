@@ -83,7 +83,6 @@ function NavbarRightButtonGroup({
       <div className={css(styles.navbarButtonContainer)}>
         <div
           className={css(styles.buttonsGroup)}
-          onClick={(event: SyntheticEvent): void => event.stopPropagation()}
         >
           <Notification
             // @ts-ignore legacy
