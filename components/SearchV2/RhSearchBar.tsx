@@ -271,7 +271,7 @@ function RhSearchBarExpandableInput({
       )}
       {isExpanded && (
         <Fragment>
-          <span className={css(styles.backButton)}>
+          <span className={css(styles.backButton)} onClick={(): void => setIsExpanded(false)}>
             {<FontAwesomeIcon icon={faArrowLeftLong}></FontAwesomeIcon>}
           </span>
           <input
