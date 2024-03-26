@@ -13,8 +13,6 @@ import DragNDrop from "./DragNDrop";
 import Loader from "../Loader/Loader";
 
 import colors from "../../config/themes/colors";
-import api from "../../config/api";
-import helpers from "@quantfive/js-web-config/helpers";
 
 const VerificationForm = forwardRef((props, ref) => {
   const { showMessage } = props;
@@ -30,28 +28,6 @@ const VerificationForm = forwardRef((props, ref) => {
     },
     [files]
   );
-
-  useImperativeHandle(ref, () => ({
-    uploadVerification: () => {
-      // setLoading(true);
-      showMessage({ show: true, load: true });
-
-      let params = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        params.append("images", files[i]);
-      }
-      return fetch(
-        api.USER_VERIFICATION({ route: "bulk_upload" }),
-        api.POST_FILE_CONFIG(params)
-      )
-        .then(helpers.checkStatus)
-        .then(helpers.parseJSON)
-        .then((res) => {
-          showMessage({ show: false });
-          return res;
-        });
-    },
-  }));
 
   /**
    * Remove an uploaded file

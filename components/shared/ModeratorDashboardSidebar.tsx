@@ -42,18 +42,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
     shouldRedirect: false,
   });
 
-  const fetchProfileDeletes = async () => {
-    const url = generateApiUrl(
-      "user_verification",
-      "?ordering=created_date&status=INITIATED"
-    );
-    const res = await fetch(url, api.GET_CONFIG());
-    const json = await res.json();
-    setNumProfileDeletes(json.count);
-  };
-
   useEffect(() => {
-    fetchProfileDeletes();
     getCaseCounts({
       onSuccess: (counts) => {
         setAuthorClaimCount(counts.OPEN);
@@ -107,18 +96,6 @@ export default function ModeratorDashboardSidebar({}: Props) {
           extraHTML:
             numNavInteractions > 0 ? (
               <span className={css(style.count)}>{numNavInteractions}</span>
-            ) : null,
-        }
-      : null,
-    isUserModerator
-      ? {
-          icon: <FontAwesomeIcon icon={faBan}></FontAwesomeIcon>,
-          id: "profile-delete",
-          name: "Profile Delete",
-          pathname: "/moderators/profile-delete",
-          extraHTML:
-            numProfileDeletes > 0 ? (
-              <span className={css(style.count)}>{numProfileDeletes}</span>
             ) : null,
         }
       : null,
