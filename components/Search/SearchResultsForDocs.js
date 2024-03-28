@@ -1,5 +1,5 @@
 import * as moment from "dayjs";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, useRef } from "react";
 import { useRouter } from "next/router";
 import get from "lodash/get";
 import { StyleSheet, css } from "aphrodite";
@@ -7,7 +7,6 @@ import PropTypes from "prop-types";
 import sanitizeHtml from "sanitize-html";
 import colors from "~/config/themes/colors";
 import { fetchURL } from "~/config/fetch";
-import FormSelect from "~/components/Form/FormSelect";
 import Badge from "~/components/Badge";
 import EmptyFeedScreen from "~/components/Home/EmptyFeedScreen";
 import FeedCard from "~/components/Author/Tabs/FeedCard";
@@ -17,35 +16,11 @@ import { breakpoints } from "~/config/themes/screen";
 import { isString } from "~/config/utils/string";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/pro-solid-svg-icons";
-
-const timeFilterOpts = [
-  {
-    valueForApi: moment().startOf("day").format("YYYY-MM-DD"),
-    value: "today",
-    label: "Today",
-  },
-  {
-    valueForApi: moment().startOf("week").format("YYYY-MM-DD"),
-    value: "this-week",
-    label: "This Week",
-  },
-  {
-    valueForApi: moment().startOf("month").format("YYYY-MM-DD"),
-    value: "this-month",
-    label: "This Month",
-  },
-  {
-    valueForApi: moment().startOf("year").format("YYYY-MM-DD"),
-    value: "this-year",
-    label: "This Year",
-  },
-  {
-    isDefault: true,
-    valueForApi: null,
-    value: null,
-    label: "All Time",
-  },
-];
+import RangeSlider from "../Form/RangeSlider";
+import FormSelect, {
+  CustomSelectControlWithoutClickEvents,
+} from "~/components/Form/FormSelect";
+import { useEffectHandleClick } from "~/config/utils/clickEvent";
 
 const sortOpts = [
   {
@@ -81,6 +56,10 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
 
   const [facetValuesForHub, setFacetValuesForHub] = useState([]);
   const [facetValuesForJournal, setFacetValuesForJournal] = useState([]);
+  const [facetValuesForPublicationYear, setFacetValuesForPublicationYear] =
+    useState([]);
+  const [isPublicationYearSelectionOpen, setIsPublicationYearSelectionOpen] =
+    useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [nextResultsUrl, setNextResultsUrl] = useState(null);
   const [numOfHits, setNumOfHits] = useState(null);
@@ -91,19 +70,37 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
   );
 
   const [pageWidth, setPageWidth] = useState(0);
-
   const [selectedHubs, setSelectedHubs] = useState([]);
   const [selectedJournals, setSelectedJournals] = useState([]);
-  const [selectedTimeRange, setSelectedTimeRange] = useState({});
+  const [selectedPublishYearRange, setSelectedPublishYearRange] = useState([]);
   const [selectedSortOrder, setSelectedSortOrder] = useState({});
+  const publicationYearRef = useRef(null);
+
+  useEffectHandleClick({
+    ref: publicationYearRef,
+    exclude: [".publication-year-dropdown"],
+    onOutsideClick: () => setIsPublicationYearSelectionOpen(false),
+  });
 
   useEffect(() => {
     setSelectedHubs(getSelectedFacetValues({ forKey: "hub" }));
     setSelectedJournals(getSelectedFacetValues({ forKey: "journal" }));
-    setSelectedTimeRange(
-      getSelectedDropdownValue({ forKey: "publish_date__gte" })
-    );
     setSelectedSortOrder(getSelectedDropdownValue({ forKey: "ordering" }));
+
+    let publishYearMin, publishYearMax;
+    if (router.query.paper_publish_year__gte) {
+      publishYearMin = router.query.paper_publish_year__gte;
+    }
+
+    if (router.query.paper_publish_year__lte) {
+      publishYearMax = router.query.paper_publish_year__lte;
+    }
+
+    if (publishYearMin && publishYearMax) {
+      setSelectedPublishYearRange([publishYearMin, publishYearMax]);
+    } else {
+      setSelectedPublishYearRange([]);
+    }
   }, [router.query]);
 
   useEffect(() => {
@@ -119,6 +116,13 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
       get(
         apiResponse,
         "facets._filter_external_source.external_source.buckets",
+        []
+      )
+    );
+    setFacetValuesForPublicationYear(
+      get(
+        apiResponse,
+        "facets._filter_paper_publish_year.paper_publish_year.buckets",
         []
       )
     );
@@ -200,12 +204,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     const urlParam = get(router, `query.${forKey}`, null);
     let dropdownValue = null;
 
-    if (forKey === "publish_date__gte") {
-      dropdownValue = timeFilterOpts.find(
-        (opt) => opt.valueForApi === urlParam
-      );
-      dropdownValue = dropdownValue || {};
-    } else if (forKey === "ordering") {
+    if (forKey === "ordering") {
       dropdownValue = sortOpts.find((opt) => opt.value === urlParam);
       dropdownValue =
         dropdownValue || sortOpts.find((opt) => opt.isDefault === true);
@@ -248,8 +247,9 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
         .map((j) => j.value);
 
       updatedQuery[dropdownKey] = newValue;
-    } else if (dropdownKey === "publish_date__gte") {
-      delete updatedQuery[dropdownKey];
+    } else if (dropdownKey === "paper_publish_year") {
+      delete updatedQuery["paper_publish_year__gte"];
+      delete updatedQuery["paper_publish_year__lte"];
     }
 
     router.push({
@@ -263,7 +263,8 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
       ...router.query,
     };
 
-    delete updatedQuery["publish_date__gte"];
+    delete updatedQuery["paper_publish_year__gte"];
+    delete updatedQuery["paper_publish_year__lte"];
     delete updatedQuery["hub"];
     delete updatedQuery["journal"];
     delete updatedQuery["ordering"];
@@ -333,8 +334,24 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     );
   };
 
+  const handlePublishYearRangeSelection = (yearRange) => {
+    let query = {
+      ...router.query,
+    };
+
+    query["paper_publish_year__gte"] = yearRange[0];
+    query["paper_publish_year__lte"] = yearRange[1];
+
+    router.push({
+      pathname: "/search/[type]",
+      query,
+    });
+  };
+
   const hasAppliedFilters =
-    selectedHubs.length || selectedJournals.length || selectedTimeRange.value;
+    selectedHubs.length ||
+    selectedJournals.length ||
+    selectedPublishYearRange[0];
 
   const getFacetOptionsForDropdown = (facetKey) => {
     let facetValues = [];
@@ -355,8 +372,29 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     }));
   };
 
+  const getLabelForPaperPublicationYear = () => {
+    const min = selectedPublishYearRange[0];
+    const max = selectedPublishYearRange[1];
+
+    if (min && max && min !== max) {
+      return `${min} - ${max}`;
+    } else if (min && max && min === max) {
+      return `${min}`;
+    }
+
+    return "Publication Year";
+  };
+
   const facetValueOptsForHubs = getFacetOptionsForDropdown("hubs");
   const facetValueOptsForJournal = getFacetOptionsForDropdown("journal");
+
+  const facetValueOptsForPublicationYear = facetValuesForPublicationYear.reduce(
+    (acc, { key, doc_count }) => {
+      acc[key] = doc_count;
+      return acc;
+    },
+    {}
+  );
 
   return (
     <div>
@@ -389,6 +427,68 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
               }}
               showCountInsteadOfLabels={true}
             />
+            <div
+              ref={publicationYearRef}
+              className="publication-year-dropdown"
+              style={{ position: "relative", zIndex: 9 }}
+              onClick={(e) =>
+                setIsPublicationYearSelectionOpen(
+                  !isPublicationYearSelectionOpen
+                )
+              }
+            >
+              <FormSelect
+                selectComponents={{
+                  Control: CustomSelectControlWithoutClickEvents,
+                }}
+                containerStyle={styles.dropdownContainer}
+                inputStyle={styles.dropdownInput}
+                options={[]}
+                value={{
+                  value: "paper_publish_year",
+                  label: selectedPublishYearRange ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        columnGap: "5px",
+                        alignItems: "center",
+                      }}
+                    >
+                      {getLabelForPaperPublicationYear()}
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        display: "flex",
+                        columnGap: "5px",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span>{"Year Published"}</span>
+                    </div>
+                  ),
+                }}
+              />
+              {isPublicationYearSelectionOpen && (
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className={css(styles.publicationYearDropdown)}
+                >
+                  <RangeSlider
+                    min={2000}
+                    max={2024}
+                    defaultValues={
+                      selectedPublishYearRange[0]
+                        ? selectedPublishYearRange
+                        : null
+                    }
+                    onChange={handlePublishYearRangeSelection}
+                    histogram={facetValueOptsForPublicationYear}
+                  />
+                </div>
+              )}
+            </div>
+
             <FormSelect
               id={"journal"}
               options={facetValueOptsForJournal}
@@ -413,23 +513,6 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
               multiTagLabelStyle={null}
               isClearable={false}
               showCountInsteadOfLabels={true}
-            />
-            <FormSelect
-              id={"publish_date__gte"}
-              options={timeFilterOpts}
-              containerStyle={styles.dropdownContainer}
-              inputStyle={styles.dropdownInput}
-              onChange={handleFilterSelect}
-              isSearchable={true}
-              placeholder={"Date Published"}
-              value={selectedTimeRange}
-              isMulti={false}
-              multiTagStyle={null}
-              multiTagLabelStyle={null}
-              isClearable={false}
-              showLabelAlongSelection={
-                pageWidth <= breakpoints.small.int ? true : false
-              }
             />
             <FormSelect
               id={"ordering"}
@@ -457,11 +540,20 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
               {selectedJournals.map((opt) =>
                 renderAppliedFilterBadge({ opt, dropdownKey: "journal" })
               )}
-              {selectedTimeRange.value &&
-                renderAppliedFilterBadge({
-                  opt: selectedTimeRange,
-                  dropdownKey: "publish_date__gte",
-                })}
+              {selectedPublishYearRange[0] && (
+                <Badge
+                  id={`paper_publish_year-badge`}
+                  label={`Published: ${getLabelForPaperPublicationYear()}`}
+                  badgeClassName={styles.appliedFilterBadge}
+                  badgeLabelClassName={styles.appliedFilterBadgeLabel}
+                  onClick={() =>
+                    handleRemoveSelected({ dropdownKey: "paper_publish_year" })
+                  }
+                  onRemove={() =>
+                    handleRemoveSelected({ dropdownKey: "paper_publish_year" })
+                  }
+                />
+              )}
 
               <Badge
                 id="clear-all"
@@ -543,6 +635,17 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
 };
 
 const styles = StyleSheet.create({
+  publicationYearDropdown: {
+    position: "absolute",
+    paddingRight: 30,
+    paddingTop: 30,
+    background: "white",
+    zIndex: 1,
+    width: 200,
+    top: 40,
+    left: 0,
+    boxShadow: "rgba(0, 0, 0, 0.15) 0px 0px 10px 0px",
+  },
   resultCount: {
     color: colors.GREY(),
     marginBottom: 20,
@@ -624,7 +727,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     color: colors.RED(),
     padding: "7px 8px",
-    fontSize: 12,
+    fontSize: 11,
     letterSpacing: "1px",
     ":hover": {
       background: colors.RED(0.1),
