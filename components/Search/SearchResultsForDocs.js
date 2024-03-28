@@ -1,4 +1,3 @@
-import * as moment from "dayjs";
 import { useState, useEffect, Fragment, useRef } from "react";
 import { useRouter } from "next/router";
 import get from "lodash/get";

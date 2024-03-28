@@ -46,22 +46,16 @@ const SearchResultsForHubs = ({ apiResponse, context }) => {
             </div>
           )}
           <div>
-            {results.map((hub) =>
-              context === "best-results" ? (
-                <div className={css(styles.hubCardWrapper)} key={hub.id}>
-                  <HubCard
-                    hub={hub}
-                    cardStyle={styles.hubCard}
-                    descriptionStyle={styles.hubDescription}
-                    metadataStyle={styles.metadataStyle}
-                  />
-                </div>
-              ) : (
-                <div className={css(styles.hubCardWrapper)} key={hub.id}>
-                  <HubCard key={hub.id} hub={hub} renderAsRow={true} />
-                </div>
-              )
-            )}
+            {results.map((hub) => (
+              <div className={css(styles.hubCardWrapper)} key={hub.id}>
+                <HubCard
+                  hub={hub}
+                  cardStyle={styles.hubCard}
+                  descriptionStyle={styles.hubDescription}
+                  metadataStyle={styles.metadataStyle}
+                />
+              </div>
+            ))}
           </div>
         </Fragment>
       )}
