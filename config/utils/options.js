@@ -324,9 +324,13 @@ const searchTypes = {
       fieldForApi: "search_multi_match",
       fieldForApp: "q",
     },
-    hubs: {
+    hub: {
       fieldForApi: "hubs",
       fieldForApp: "hubs",
+    },
+    journal: {
+      fieldForApi: "external_source",
+      fieldForApp: "journal",
     },
     paper_publish_year__gte: {
       fieldForApi: "paper_publish_year__gte",
