@@ -594,20 +594,22 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
             paper.promoted = false;
             paper.user_vote = userVotes[paper.id];
 
-            // There is a small but non-trivial chance that this will fail
-            // In such a case, we want to avoid the entire page from breaking.
-            try {
-              paper.abstract = parseIfHighlighted({
-                searchResult: paper,
-                attribute: "abstract",
-              });
-            } catch {}
-            try {
-              paper.titleAsHtml = parseIfHighlighted({
-                searchResult: paper,
-                attribute: "title",
-              });
-            } catch {}
+            if (context !== "best-results") {
+              // There is a small but non-trivial chance that this will fail
+              // In such a case, we want to avoid the entire page from breaking.
+              try {
+                paper.abstract = parseIfHighlighted({
+                  searchResult: paper,
+                  attribute: "abstract",
+                });
+              } catch {}
+              try {
+                paper.titleAsHtml = parseIfHighlighted({
+                  searchResult: paper,
+                  attribute: "title",
+                });
+              } catch {}
+            }
 
             return (
               <FeedCard
@@ -706,7 +708,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   highlight: {
-    backgroundColor: colors.ORANGE_LIGHT4(0.75),
+    color: colors.ORANGE_DARK(1.0),
   },
   appliedFilterBadge: {
     borderRadius: 4,
