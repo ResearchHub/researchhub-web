@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import get from "lodash/get";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
-
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import SearchResultsForDocs from "~/components/Search/SearchResultsForDocs";
 import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";
@@ -14,6 +13,14 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import { breakpoints } from "~/config/themes/screen";
 import { hasNoSearchResults, QUERY_PARAM } from "~/config/utils/search";
 import { trackEvent } from "~/config/utils/analytics";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faGrid2,
+  faSquarePen,
+  faStar,
+  faUser,
+} from "@fortawesome/pro-solid-svg-icons";
+import { PostIcon, PaperIcon } from "~/config/themes/icons";
 
 const SearchResults = ({ apiResponse }) => {
   const router = useRouter();
@@ -58,11 +65,27 @@ const SearchResults = ({ apiResponse }) => {
 
   const renderEntityTabs = () => {
     let tabs = [
-      { type: "all", label: "Best Results" },
-      { type: "paper", label: "Papers" },
-      { type: "post", label: "Posts" },
-      { type: "hub", label: "Hubs" },
-      { type: "person", label: "People" },
+      {
+        type: "all",
+        label: "Best Results",
+        icon: <FontAwesomeIcon icon={faStar} />,
+      },
+      {
+        type: "paper",
+        label: "Papers",
+        icon: <PaperIcon withAnimation={false} onClick={undefined} />,
+      },
+      {
+        type: "post",
+        label: "Posts",
+        icon: <FontAwesomeIcon icon={faSquarePen} />,
+      },
+      { type: "hub", label: "Hubs", icon: <FontAwesomeIcon icon={faGrid2} /> },
+      {
+        type: "person",
+        label: "People",
+        icon: <FontAwesomeIcon icon={faUser} />,
+      },
     ];
 
     tabs = tabs.map((t) => {
