@@ -618,6 +618,8 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
                 index={index}
                 key={paper.id}
                 paper={paper}
+                // TODO: Add discussion count. Currently missing from the API response.
+                discussion_count={0}
                 voteCallback={(arrIndex, currPaper) => {
                   const idx = results.findIndex((p) => p.id === currPaper.id);
 
