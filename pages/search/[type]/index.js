@@ -17,6 +17,9 @@ const getFacetsToAggregate = (query = {}) => {
   const facet = [];
   if (query.type === "paper" || query.type === "post") {
     facet.push("hubs");
+    facet.push("external_source");
+    facet.push("pdf_license");
+    facet.push("paper_publish_year");
   }
   return facet;
 };
@@ -56,7 +59,6 @@ Index.getInitialProps = async (ctx) => {
   });
 
   const facets = getFacetsToAggregate(ctx.query);
-
   const config = {
     route: ctx.query.type,
   };

@@ -328,9 +328,13 @@ const searchTypes = {
       fieldForApi: "hubs",
       fieldForApp: "hubs",
     },
-    publish_date__gte: {
-      fieldForApi: "publish_date__gte",
-      fieldForApp: "publish_date__gte",
+    paper_publish_year__gte: {
+      fieldForApi: "paper_publish_year__gte",
+      fieldForApp: "paper_publish_year__gte",
+    },
+    paper_publish_year__lte: {
+      fieldForApi: "paper_publish_year__lte",
+      fieldForApp: "paper_publish_year__lte",
     },
     ordering: {
       fieldForApi: "ordering",
