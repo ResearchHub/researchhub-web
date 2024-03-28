@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     borderRadius: "4px",
     display: "inline-block",
     color: colors.NEW_BLUE(),
-    fontWeight: 500,
+    fontWeight: 400,
     fontSize: 14,
     letterSpacing: "0.5px",
     cursor: "pointer",
