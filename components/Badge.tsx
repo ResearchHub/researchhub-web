@@ -11,6 +11,7 @@ type Args = {
   onClick?: Function;
   onRemove?: Function;
   badgeClassName: any;
+  badgeLabelClassName: any;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
 };
@@ -22,6 +23,7 @@ const Badge = ({
   onClick,
   onRemove,
   badgeClassName,
+  badgeLabelClassName,
   onMouseEnter,
   onMouseLeave,
 }: Args) => {
@@ -39,7 +41,9 @@ const Badge = ({
     >
       {children}
       {!children && label && (
-        <div className={css(styles.badgeLabel)}>{label}</div>
+        <div className={css(styles.badgeLabel, badgeLabelClassName)}>
+          {label}
+        </div>
       )}
       {onRemove && (
         <div
