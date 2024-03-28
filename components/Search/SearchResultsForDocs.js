@@ -1,4 +1,3 @@
-import * as moment from "dayjs";
 import { useState, useEffect, Fragment, useRef } from "react";
 import { useRouter } from "next/router";
 import get from "lodash/get";
@@ -429,8 +428,10 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
             />
             <div
               ref={publicationYearRef}
-              className="publication-year-dropdown"
-              style={{ position: "relative", zIndex: 9 }}
+              className={
+                css(styles.publicationYearDropdownWrapper) +
+                " publication-year-dropdown"
+              }
               onClick={(e) =>
                 setIsPublicationYearSelectionOpen(
                   !isPublicationYearSelectionOpen
@@ -592,20 +593,22 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
             paper.promoted = false;
             paper.user_vote = userVotes[paper.id];
 
-            // There is a small but non-trivial chance that this will fail
-            // In such a case, we want to avoid the entire page from breaking.
-            try {
-              paper.abstract = parseIfHighlighted({
-                searchResult: paper,
-                attribute: "abstract",
-              });
-            } catch {}
-            try {
-              paper.titleAsHtml = parseIfHighlighted({
-                searchResult: paper,
-                attribute: "title",
-              });
-            } catch {}
+            if (context !== "best-results") {
+              // There is a small but non-trivial chance that this will fail
+              // In such a case, we want to avoid the entire page from breaking.
+              try {
+                paper.abstract = parseIfHighlighted({
+                  searchResult: paper,
+                  attribute: "abstract",
+                });
+              } catch {}
+              try {
+                paper.titleAsHtml = parseIfHighlighted({
+                  searchResult: paper,
+                  attribute: "title",
+                });
+              } catch {}
+            }
 
             return (
               <FeedCard
@@ -614,6 +617,8 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
                 index={index}
                 key={paper.id}
                 paper={paper}
+                // TODO: Add discussion count. Currently missing from the API response.
+                discussion_count={0}
                 voteCallback={(arrIndex, currPaper) => {
                   const idx = results.findIndex((p) => p.id === currPaper.id);
 
@@ -636,6 +641,13 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
 };
 
 const styles = StyleSheet.create({
+  publicationYearDropdownWrapper: {
+    position: "relative",
+    zIndex: 9,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "100%",
+    },
+  },
   publicationYearDropdown: {
     position: "absolute",
     paddingRight: 30,
@@ -697,7 +709,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   highlight: {
-    backgroundColor: colors.ORANGE_LIGHT4(0.75),
+    color: colors.ORANGE_DARK(1.0),
   },
   appliedFilterBadge: {
     borderRadius: 4,

@@ -46,21 +46,16 @@ const SearchResultsForHubs = ({ apiResponse, context }) => {
             </div>
           )}
           <div>
-            {results.map((hub) =>
-              context === "best-results" ? (
-                <div className={css(styles.hubCardWrapper)} key={hub.id}>
-                  <HubCard
-                    hub={hub}
-                    renderAsRow={true}
-                    styleVariation="noBorderVariation"
-                  />
-                </div>
-              ) : (
-                <div className={css(styles.hubCardWrapper)} key={hub.id}>
-                  <HubCard key={hub.id} hub={hub} renderAsRow={true} />
-                </div>
-              )
-            )}
+            {results.map((hub) => (
+              <div className={css(styles.hubCardWrapper)} key={hub.id}>
+                <HubCard
+                  hub={hub}
+                  cardStyle={styles.hubCard}
+                  descriptionStyle={styles.hubDescription}
+                  metadataStyle={styles.metadataStyle}
+                />
+              </div>
+            ))}
           </div>
         </Fragment>
       )}
@@ -82,7 +77,22 @@ const styles = StyleSheet.create({
     },
   },
   hubCardWrapper: {
-    marginBottom: 15,
+    // marginBottom: 15,
+  },
+  hubCard: {
+    border: 0,
+    height: "auto",
+    minHeight: 50,
+    borderBottom: `1px solid ${colors.GREY_BORDER}`,
+  },
+  hubDescription: {
+    height: "auto",
+    marginTop: 10,
+    fontSize: 14,
+  },
+  metadataStyle: {
+    marginTop: 20,
+    borderTop: "none",
   },
 });
 

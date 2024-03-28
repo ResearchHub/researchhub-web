@@ -45,14 +45,14 @@ const UserCard = ({ authorProfile, reputation, styleVariation }) => {
           size={35}
         />
         <div className={css(styles.details)}>
-          <div
+          <h2
             className={css(
               styles.name,
               isEmpty(userSummary) && styles.withoutSummary
             )}
           >
             {getName(authorProfile)}
-          </div>
+          </h2>
           {userSummary && (
             <div className={css(styles.summary)}>
               <span className={css(styles.eduIcon)}>
@@ -115,13 +115,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     marginLeft: 15,
-    gap: 8,
     justifyContent: "center",
   },
   name: {
     fontSize: 20,
     color: colors.BLACK(),
     fontWeight: 500,
+    marginBottom: 10,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 16,
     },
@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
   summary: {
     color: colors.BLACK(0.6),
     lineHeight: "22px",
+    fontSize: 14,
     display: "flex",
     marginRight: 25,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {

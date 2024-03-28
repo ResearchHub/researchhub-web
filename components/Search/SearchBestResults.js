@@ -89,14 +89,14 @@ const SearchBestResults = ({ apiResponse }) => {
 
   return (
     <Fragment>
-      <ComponentWrapper key="hub" overrideStyle={styles.componentWrapper}>
-        {renderResultSection({ key: "hub", results: apiResponse["hub"] })}
-      </ComponentWrapper>
       <ComponentWrapper key="paper" overrideStyle={styles.componentWrapper}>
         {renderResultSection({ key: "paper", results: apiResponse["paper"] })}
       </ComponentWrapper>
       <ComponentWrapper key="post" overrideStyle={styles.componentWrapper}>
         {renderResultSection({ key: "post", results: apiResponse["post"] })}
+      </ComponentWrapper>
+      <ComponentWrapper key="hub" overrideStyle={styles.componentWrapper}>
+        {renderResultSection({ key: "hub", results: apiResponse["hub"] })}
       </ComponentWrapper>
       <ComponentWrapper key="person" overrideStyle={styles.componentWrapper}>
         {renderResultSection({ key: "person", results: apiResponse["person"] })}
@@ -123,12 +123,16 @@ const styles = StyleSheet.create({
     background: "white",
     padding: "16px 20px",
     borderRadius: "2px",
-    border: `1px solid ${genericCardColors.BORDER}`,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
   },
   sectionHeader: {
     paddingBottom: 10,
     marginBottom: 0,
-    color: colors.BLACK(0.5),
+    borderBottom: `1px solid ${colors.GREY_BORDER}`,
+    color: colors.MEDIUM_GREY2(),
     fontWeight: 500,
     fontSize: 16,
     marginTop: 0,
@@ -139,13 +143,25 @@ const styles = StyleSheet.create({
   },
   linkWrapper: {
     textAlign: "center",
-    paddingTop: 16,
+    marginTop: 16,
   },
   link: {
-    color: colors.BLUE(),
+    padding: "12px",
+    border: "1px solid",
+    borderColor: colors.NEW_BLUE(),
+    borderRadius: "4px",
+    display: "inline-block",
+    color: colors.NEW_BLUE(),
+    fontWeight: 400,
+    fontSize: 14,
+    letterSpacing: "0.5px",
     cursor: "pointer",
     ":hover": {
-      textDecoration: "underline",
+      transition: "0.2s",
+      background: colors.NEW_BLUE(0.1),
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
     },
   },
 });
