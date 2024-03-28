@@ -15,6 +15,8 @@ import LoadMoreButton from "~/components/LoadMoreButton";
 import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { breakpoints } from "~/config/themes/screen";
 import { isString } from "~/config/utils/string";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faX } from "@fortawesome/pro-solid-svg-icons";
 
 const timeFilterOpts = [
   {
@@ -78,6 +80,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
   const router = useRouter();
 
   const [facetValuesForHub, setFacetValuesForHub] = useState([]);
+  const [facetValuesForJournal, setFacetValuesForJournal] = useState([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [nextResultsUrl, setNextResultsUrl] = useState(null);
   const [numOfHits, setNumOfHits] = useState(null);
@@ -90,11 +93,13 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
   const [pageWidth, setPageWidth] = useState(0);
 
   const [selectedHubs, setSelectedHubs] = useState([]);
+  const [selectedJournals, setSelectedJournals] = useState([]);
   const [selectedTimeRange, setSelectedTimeRange] = useState({});
   const [selectedSortOrder, setSelectedSortOrder] = useState({});
 
   useEffect(() => {
-    setSelectedHubs(getSelectedFacetValues({ forKey: "hubs" }));
+    setSelectedHubs(getSelectedFacetValues({ forKey: "hub" }));
+    setSelectedJournals(getSelectedFacetValues({ forKey: "journal" }));
     setSelectedTimeRange(
       getSelectedDropdownValue({ forKey: "publish_date__gte" })
     );
@@ -109,6 +114,13 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     setNumOfHits(get(apiResponse, "count", 0));
     setFacetValuesForHub(
       get(apiResponse, "facets._filter_hubs.hubs.buckets", [])
+    );
+    setFacetValuesForJournal(
+      get(
+        apiResponse,
+        "facets._filter_external_source.external_source.buckets",
+        []
+      )
     );
 
     if (results && results.length) {
@@ -224,10 +236,16 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
   const handleRemoveSelected = ({ opt, dropdownKey }) => {
     let updatedQuery = { ...router.query };
 
-    if (dropdownKey === "hubs") {
+    if (dropdownKey === "hub") {
       const newValue = selectedHubs
         .filter((h) => h.value !== opt.value)
         .map((h) => h.value);
+
+      updatedQuery[dropdownKey] = newValue;
+    } else if (dropdownKey === "journal") {
+      const newValue = selectedJournals
+        .filter((j) => j.value !== opt.value)
+        .map((j) => j.value);
 
       updatedQuery[dropdownKey] = newValue;
     } else if (dropdownKey === "publish_date__gte") {
@@ -246,7 +264,8 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     };
 
     delete updatedQuery["publish_date__gte"];
-    delete updatedQuery["hubs"];
+    delete updatedQuery["hub"];
+    delete updatedQuery["journal"];
     delete updatedQuery["ordering"];
 
     router.push({
@@ -264,6 +283,9 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
         setNextResultsUrl(res.next);
         setNumOfHits(res.count);
         setFacetValuesForHub(get(res, "facets._filter_hubs.hubs.buckets", []));
+        setFacetValuesForJournal(
+          get(res, "facets._filter_external_source.external_source.buckets", [])
+        );
 
         fetchAndSetUserVotes(res.results);
       })
@@ -302,19 +324,39 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
       <Badge
         id={`${dropdownKey}-${opt.value}`}
         key={`${dropdownKey}-${opt.value}`}
-        label={opt.label}
+        label={`${dropdownKey}: ${opt.label}`}
+        badgeClassName={styles.appliedFilterBadge}
+        badgeLabelClassName={styles.appliedFilterBadgeLabel}
         onClick={() => handleRemoveSelected({ opt, dropdownKey })}
         onRemove={() => handleRemoveSelected({ opt, dropdownKey })}
       />
     );
   };
 
-  const hasAppliedFilters = selectedHubs.length || selectedTimeRange.value;
-  const facetValueOpts = facetValuesForHub.map((f) => ({
-    label: `${f.key} (${f.doc_count})`,
-    value: f.key,
-    valueForApi: f.key,
-  }));
+  const hasAppliedFilters =
+    selectedHubs.length || selectedJournals.length || selectedTimeRange.value;
+
+  const getFacetOptionsForDropdown = (facetKey) => {
+    let facetValues = [];
+
+    switch (facetKey) {
+      case "hubs":
+        facetValues = facetValuesForHub;
+        break;
+      case "journal":
+        facetValues = facetValuesForJournal;
+        break;
+    }
+
+    return facetValues.map((f) => ({
+      label: `${f.key} (${f.doc_count})`,
+      value: f.key,
+      valueForApi: f.key,
+    }));
+  };
+
+  const facetValueOptsForHubs = getFacetOptionsForDropdown("hubs");
+  const facetValueOptsForJournal = getFacetOptionsForDropdown("journal");
 
   return (
     <div>
@@ -325,14 +367,47 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
           </div>
           <div className={css(styles.filters)}>
             <FormSelect
-              id={"hubs"}
-              options={facetValueOpts}
+              id={"hub"}
+              options={facetValueOptsForHubs}
               containerStyle={styles.dropdownContainer}
               inputStyle={styles.dropdownInput}
               onChange={handleFilterSelect}
               isSearchable={true}
               placeholder={"Hubs"}
               value={selectedHubs}
+              isMulti={true}
+              multiTagStyle={null}
+              multiTagLabelStyle={null}
+              isClearable={false}
+              reactSelect={{
+                styles: {
+                  menu: {
+                    width:
+                      facetValueOptsForHubs.length > 0 ? "max-content" : "100%",
+                  },
+                },
+              }}
+              showCountInsteadOfLabels={true}
+            />
+            <FormSelect
+              id={"journal"}
+              options={facetValueOptsForJournal}
+              containerStyle={styles.dropdownContainer}
+              inputStyle={styles.dropdownInput}
+              onChange={handleFilterSelect}
+              isSearchable={true}
+              placeholder={"Journal"}
+              reactSelect={{
+                styles: {
+                  menu: {
+                    width:
+                      facetValueOptsForJournal.length > 0
+                        ? "max-content"
+                        : "100%",
+                  },
+                },
+              }}
+              value={selectedJournals}
               isMulti={true}
               multiTagStyle={null}
               multiTagLabelStyle={null}
@@ -377,7 +452,10 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
           {hasAppliedFilters && (
             <div className={css(styles.appliedFilters)}>
               {selectedHubs.map((opt) =>
-                renderAppliedFilterBadge({ opt, dropdownKey: "hubs" })
+                renderAppliedFilterBadge({ opt, dropdownKey: "hub" })
+              )}
+              {selectedJournals.map((opt) =>
+                renderAppliedFilterBadge({ opt, dropdownKey: "journal" })
               )}
               {selectedTimeRange.value &&
                 renderAppliedFilterBadge({
@@ -387,10 +465,12 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
 
               <Badge
                 id="clear-all"
-                label="CLEAR ALL"
-                badgeClassName={styles.clearFiltersBtn}
+                badgeClassName={styles.clearFiltersBadge}
                 onClick={handleClearAll}
-              />
+              >
+                <span>CLEAR FILTERS</span>
+                <FontAwesomeIcon style={{ fontSize: 10 }} icon={faX} />
+              </Badge>
             </div>
           )}
         </Fragment>
@@ -476,7 +556,7 @@ const styles = StyleSheet.create({
     },
   },
   dropdownContainer: {
-    width: 250,
+    width: 200,
     minHeight: "unset",
     marginTop: 0,
     marginBottom: 0,
@@ -515,11 +595,40 @@ const styles = StyleSheet.create({
   highlight: {
     backgroundColor: colors.ORANGE_LIGHT4(0.75),
   },
-  clearFiltersBtn: {
-    backgroundColor: "none",
-    color: colors.RED(),
-    fontSize: 12,
+  appliedFilterBadge: {
+    borderRadius: 4,
+    color: colors.BLACK(0.6),
+    background: colors.LIGHTER_GREY(1.0),
+    padding: "2px 8px",
+    letterSpacing: 0,
     ":hover": {
+      color: colors.NEW_BLUE(),
+      background: colors.LIGHTER_GREY(1.0),
+      cursor: "pointer",
+    },
+  },
+  appliedFilterBadgeLabel: {
+    letterSpacing: 0,
+    display: "flex",
+    alignItems: "center",
+    padding: 0,
+  },
+  clearFiltersBadge: {
+    cursor: "pointer",
+    letterSpacing: 0,
+    padding: 0,
+    display: "flex",
+    alignItems: "center",
+    columnGap: "5px",
+    backgroundColor: "none",
+    fontWeight: 500,
+    color: colors.RED(),
+    padding: "7px 8px",
+    fontSize: 12,
+    letterSpacing: "1px",
+    ":hover": {
+      background: colors.RED(0.1),
+      color: colors.RED(),
       boxShadow: `inset 0px 0px 0px 1px ${colors.RED()}`,
     },
   },

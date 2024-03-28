@@ -146,7 +146,7 @@ class FormSelect extends Component {
 
       return formattedStyle ? formattedStyle : styleObject;
     };
-
+    console.log("reactSelect?.styles?.menu", reactSelect);
     const selectStyles = {
       menuPortal: (base) => ({ ...base, zIndex: 100000000 }),
       control: (styles) => ({

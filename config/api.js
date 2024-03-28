@@ -408,6 +408,7 @@ const routes = (BASE_URL) => {
       // alongside counts in the search response.
       facets = [],
     }) => {
+      console.log("facets1", facets);
       let url = BASE_URL + "search/";
       let params = {
         querystring: {
