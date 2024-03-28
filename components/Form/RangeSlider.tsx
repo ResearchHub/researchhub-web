@@ -91,7 +91,7 @@ const RangeSlider: React.FC<RangeSliderProps> = ({
       </Box>
     );
   };
-  console.log("vaue", value);
+
   return (
     <Box sx={{ width: "100%", padding: "0 12px" }}>
       {renderHistogram()}
