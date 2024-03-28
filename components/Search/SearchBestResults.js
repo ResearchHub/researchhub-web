@@ -123,6 +123,10 @@ const styles = StyleSheet.create({
     background: "white",
     padding: "16px 20px",
     borderRadius: "2px",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
   },
   sectionHeader: {
     paddingBottom: 10,
@@ -155,6 +159,9 @@ const styles = StyleSheet.create({
     ":hover": {
       transition: "0.2s",
       background: colors.NEW_BLUE(0.1),
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
     },
   },
 });

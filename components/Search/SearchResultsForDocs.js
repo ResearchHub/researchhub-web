@@ -429,8 +429,10 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
             />
             <div
               ref={publicationYearRef}
-              className="publication-year-dropdown"
-              style={{ position: "relative", zIndex: 9 }}
+              className={
+                css(styles.publicationYearDropdownWrapper) +
+                " publication-year-dropdown"
+              }
               onClick={(e) =>
                 setIsPublicationYearSelectionOpen(
                   !isPublicationYearSelectionOpen
@@ -636,6 +638,13 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
 };
 
 const styles = StyleSheet.create({
+  publicationYearDropdownWrapper: {
+    position: "relative",
+    zIndex: 9,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "100%",
+    },
+  },
   publicationYearDropdown: {
     position: "absolute",
     paddingRight: 30,

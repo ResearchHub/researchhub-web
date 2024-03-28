@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { StyleSheet } from "aphrodite";
+import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 import get from "lodash/get";
 import { useRouter } from "next/router";
@@ -98,7 +98,6 @@ const SearchResults = ({ apiResponse }) => {
         id="tabBarForSearch"
         tabs={tabs}
         onClick={handleTabClick}
-        containerStyle={styles.tabContainer}
         dragging={true}
         showArrowsOnWidth={breakpoints.xsmall.int}
       />
@@ -107,7 +106,7 @@ const SearchResults = ({ apiResponse }) => {
 
   return (
     <ComponentWrapper overrideStyle={styles.componentWrapper}>
-      {renderEntityTabs()}
+      <div className={css(styles.tabsWrapper)}>{renderEntityTabs()}</div>
 
       {searchType === "paper" || searchType === "post" ? (
         <SearchResultsForDocs apiResponse={apiResponse} />
@@ -130,8 +129,9 @@ const styles = StyleSheet.create({
       marginTop: 10,
     },
   },
-  tabContainer: {
-    marginBottom: 40,
+  tabsWrapper: {
+    marginBottom: 50,
+    width: "95%",
   },
 });
 
