@@ -475,6 +475,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
                   className={css(styles.publicationYearDropdown)}
                 >
                   <RangeSlider
+                    // TODO: Make min and max dynamic
                     min={2000}
                     max={2024}
                     defaultValues={
