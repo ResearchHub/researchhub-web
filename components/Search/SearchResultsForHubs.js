@@ -51,8 +51,9 @@ const SearchResultsForHubs = ({ apiResponse, context }) => {
                 <div className={css(styles.hubCardWrapper)} key={hub.id}>
                   <HubCard
                     hub={hub}
-                    renderAsRow={true}
-                    styleVariation="noBorderVariation"
+                    cardStyle={styles.hubCard}
+                    descriptionStyle={styles.hubDescription}
+                    metadataStyle={styles.metadataStyle}
                   />
                 </div>
               ) : (
@@ -82,7 +83,22 @@ const styles = StyleSheet.create({
     },
   },
   hubCardWrapper: {
-    marginBottom: 15,
+    // marginBottom: 15,
+  },
+  hubCard: {
+    border: 0,
+    height: "auto",
+    minHeight: 50,
+    borderBottom: `1px solid ${colors.GREY_BORDER}`,
+  },
+  hubDescription: {
+    height: "auto",
+    marginTop: 10,
+    fontSize: 14,
+  },
+  metadataStyle: {
+    marginTop: 20,
+    borderTop: "none",
   },
 });
 

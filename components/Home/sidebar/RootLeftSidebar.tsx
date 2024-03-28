@@ -238,6 +238,7 @@ function RootLeftSidebar({
         "funding",
         "hubs",
         "referral",
+        "search",
         "user",
       ].includes(pathname.split("/")[1]) !== true;
     // if (onSpecficHubPage) {
