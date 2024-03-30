@@ -108,9 +108,7 @@ const CommentFeed = ({
   );
   const [currentDocumentId, setCurrentDocumentId] = useState<ID | null>(null);
   const dispatch = useDispatch();
-  const [editorId, setEditorId] = useState<string>(
-    `${editorType}-new-thread-${genClientId()}`
-  );
+  const [editorId, setEditorId] = useState<string>(genClientId());
 
   const handleFetch = async ({
     sort,
@@ -384,6 +382,10 @@ const CommentFeed = ({
     const filter = getCommentFilterByTab(router?.query?.tabName);
     setSelectedFilterValue(filter);
     handleFetch({ filter });
+
+    // When the tab changes, we want to update the editor ID so that the editor is reset.
+    // Not doing so will result in editor type not changing (e.g. peer review editor different than conversation editor)
+    setEditorId(genClientId());
   }, [router?.query?.tabName]);
 
   const isQuestion = document?.unifiedDocument?.documentType === "question";
@@ -474,7 +476,7 @@ const CommentFeed = ({
                       comment = { ...comment, review: review as Review };
                     }
                     onCreate({ comment });
-                    setEditorId(`${editorType}-new-thread-${genClientId()}`);
+                    setEditorId(genClientId());
                   } catch (error: any) {
                     if (error instanceof ErrorWithCode) {
                       dispatch(setMessage(error.message));
