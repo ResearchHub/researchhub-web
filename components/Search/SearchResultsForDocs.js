@@ -592,6 +592,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
           results.map((paper, index) => {
             paper.promoted = false;
             paper.user_vote = userVotes[paper.id];
+            paper.created_date = paper.paper_publish_date;
 
             if (context !== "best-results") {
               // There is a small but non-trivial chance that this will fail
@@ -613,12 +614,13 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
             return (
               <FeedCard
                 {...paper}
+                created_date={paper.paper_publish_date}
+                discussion_count={paper.discussion_count}
+                document={paper}
                 formattedDocType={"paper"}
                 index={index}
                 key={paper.id}
                 paper={paper}
-                // TODO: Add discussion count. Currently missing from the API response.
-                discussion_count={0}
                 voteCallback={(arrIndex, currPaper) => {
                   const idx = results.findIndex((p) => p.id === currPaper.id);
 
