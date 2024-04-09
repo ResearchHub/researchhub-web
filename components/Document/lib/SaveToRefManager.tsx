@@ -9,7 +9,12 @@ import { StyleSheet, css } from "aphrodite";
 import { fetchReferenceOrgProjects } from "~/components/ReferenceManager/references/reference_organizer/api/fetchReferenceOrgProjects";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import colors from "~/config/themes/colors";
-import { ID, Organization, RhDocumentType } from "~/config/types/root_types";
+import {
+  ID,
+  Organization,
+  RhDocumentType,
+  UnifiedDocument,
+} from "~/config/types/root_types";
 import API, { generateApiUrl } from "~/config/api";
 import Helpers from "~/config/api/helpers";
 import { isPaper } from "./types";
@@ -22,43 +27,32 @@ import PermissionNotificationWrapper from "~/components/PermissionNotificationWr
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import debounce from "lodash/debounce";
 import showSaveToRefManagerToast from "~/components/Notifications/lib/showSaveToRefManagerToast";
-
-interface Project {
-  id: number;
-  children: Project[];
-}
-
-function getFlatListOfProjectIds(projects: Project[]): number[] {
-  console.log("projects", projects);
-  const ids: number[] = [];
-
-  function extractIds(projects: Project[]) {
-    for (const project of projects) {
-      ids.push(project.id);
-      if (project.children.length) {
-        extractIds(project.children);
-      }
-    }
-  }
-
-  extractIds(projects);
-
-  return ids;
-}
+import {
+  SavedCitation,
+  parseSavedCitation,
+  savedCitationsContext,
+} from "~/components/contexts/SavedCitationsContext";
+import { genClientId } from "~/config/utils/id";
 
 interface Props {
-  contentId: ID;
-  contentType: RhDocumentType;
-  unifiedDocumentId: ID;
-  doc?: any;
+  unifiedDocument: UnifiedDocument;
 }
 
-const saveToRefManagerApi = ({ contentId, orgId, projectId, doc }) => {
-  const isDocPaper = isPaper(doc);
+interface SaveToRefManagerApiProps {
+  orgId: ID;
+  projectId: ID;
+  unifiedDocument: UnifiedDocument;
+}
+
+const saveToRefManagerApi = async ({
+  orgId,
+  projectId,
+  unifiedDocument,
+}: SaveToRefManagerApiProps): Promise<SavedCitation> => {
   const url = generateApiUrl(
-    isDocPaper
-      ? `citation_entry/${contentId}/add_paper_as_citation`
-      : `citation_entry/${contentId}/add_post_as_citation`
+    unifiedDocument.documentType === "paper"
+      ? `citation_entry/${unifiedDocument!.document!.id}/add_paper_as_citation`
+      : `citation_entry/${unifiedDocument!.document!.id}/add_post_as_citation`
   );
 
   return fetch(
@@ -70,46 +64,25 @@ const saveToRefManagerApi = ({ contentId, orgId, projectId, doc }) => {
     )
   )
     .then((res): any => Helpers.parseJSON(res))
-    .catch((error) => {
-      console.log("error", error);
+    .then((data) => {
+      return parseSavedCitation(data);
     });
 };
 
-interface AlreadySavedProps {
+const isDocSavedToAnyUserOrg = ({
+  savedCitations,
+  unifiedDocumentId,
+}: {
+  savedCitations: SavedCitation[];
   unifiedDocumentId: ID;
-  orgId: ID;
-  projectIds: ID[];
-}
-
-const checkWhichProjectsDocIsSavedApi = ({
-  orgId,
-  unifiedDocumentId,
-  projectIds,
-}: AlreadySavedProps) => {
-  const url = generateApiUrl(
-    `citation_entry/${unifiedDocumentId}/check_paper_in_reference_manager`,
-    `?project_ids=${projectIds.join(",")}`
+}) => {
+  return savedCitations.some(
+    (citation) => citation.relatedUnifiedDocumentId === unifiedDocumentId
   );
-
-  return fetch(
-    url,
-    API.GET_CONFIG(
-      undefined,
-      orgId ? { "x-organization-id": orgId } : undefined
-    )
-  )
-    .then((res): any => Helpers.parseJSON(res))
-    .catch((error) => {
-      console.log("error", error);
-    });
 };
 
-const SaveToRefManager = ({
-  contentId,
-  contentType,
-  unifiedDocumentId,
-  doc,
-}: Props) => {
+const SaveToRefManager = ({ unifiedDocument }: Props) => {
+  const { savedCitations, setSavedCitations } = savedCitationsContext();
   const [orgProjects, setOrgProjects] = useState([]);
   const [isFetchingProjects, setIsFetchingProjects] = useState(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -118,35 +91,10 @@ const SaveToRefManager = ({
   const projectCitationMap = useRef<{
     [key: string]: Array<string>;
   }>({});
-  const [checkboxState, setCheckboxState] = useState({});
+  // const [checkboxState, setCheckboxState] = useState({});
 
   const { orgs, setCurrentOrg } = useOrgs();
   const tooltipRef = useRef(null);
-
-  useEffect(() => {
-    if (!isFetchingProjects && selectedOrg && orgProjects.length > 0) {
-      const flatList = getFlatListOfProjectIds(orgProjects);
-      (async () => {
-        const res = await checkWhichProjectsDocIsSavedApi({
-          orgId: selectedOrg.id,
-          unifiedDocumentId,
-          projectIds: flatList,
-        });
-        projectCitationMap.current = res;
-
-        const checkboxState = flatList.reduce((obj, item) => {
-          if (res[item] && res[item].length > 0) {
-            obj[item] = true;
-          } else {
-            obj[item] = false;
-          }
-          return obj;
-        }, {});
-
-        setCheckboxState(checkboxState);
-      })();
-    }
-  }, [selectedOrg, orgProjects, isFetchingProjects]);
 
   const {
     setIsModalOpen: setIsProjectUpsertModalOpen,
@@ -155,7 +103,7 @@ const SaveToRefManager = ({
   } = useReferenceProjectUpsertContext();
 
   useEffect(() => {
-    if (selectedOrg) {
+    if (selectedOrg && isOpen) {
       setIsFetchingProjects(true);
       projectCitationMap.current = {};
 
@@ -173,7 +121,7 @@ const SaveToRefManager = ({
         },
       });
     }
-  }, [selectedOrg]);
+  }, [selectedOrg, isOpen]);
 
   useEffect(() => {
     if (orgs && orgs.length > 0 && !selectedOrg) {
@@ -191,13 +139,15 @@ const SaveToRefManager = ({
     },
   });
 
-  const savedInProjectIds = Object.keys(checkboxState)
-    .filter((projectId) => checkboxState[projectId] === true)
-    .map((projectId) => parseInt(projectId));
-
-  const isSaved = Object.values(checkboxState).find(
-    (isChecked) => isChecked === true
-  );
+  const savedInProjectIds = savedCitations
+    .filter(
+      (citation) => citation.relatedUnifiedDocumentId === unifiedDocument.id
+    )
+    .map((citation) => citation.projectId);
+  const isSaved = isDocSavedToAnyUserOrg({
+    savedCitations,
+    unifiedDocumentId: unifiedDocument?.id,
+  });
 
   const saveToApi = ({
     action,
@@ -209,10 +159,15 @@ const SaveToRefManager = ({
     const referenceIds = projectCitationMap.current[projectId];
 
     if (action === "REMOVE") {
+      setSavedCitations(
+        savedCitations.filter((citation) => citation.projectId !== projectId)
+      ); // Optimistic save
       projectCitationMap.current[projectId] = [];
 
       removeReferenceCitations({
-        onError: emptyFncWithMsg,
+        onError: () => {
+          setSavedCitations([...savedCitations]);
+        },
         orgId: selectedOrg!.id,
         onSuccess: emptyFncWithMsg,
         payload: {
@@ -220,14 +175,32 @@ const SaveToRefManager = ({
         },
       });
     } else {
+      const tempId = genClientId(); // Temporary id to show optimistic save
+      setSavedCitations([
+        ...savedCitations,
+        {
+          id: tempId,
+          organizationId: selectedOrg?.id,
+          projectId,
+          relatedUnifiedDocumentId: unifiedDocument.id,
+        },
+      ]); // Optimistic save
       saveToRefManagerApi({
-        projectId: projectId,
-        contentId: contentId,
+        unifiedDocument,
+        projectId,
         orgId: selectedOrg?.id,
-        doc,
-      }).then((res: any) => {
-        projectCitationMap[projectId] = [res?.id];
-      });
+      })
+        .then((citation: SavedCitation) => {
+          projectCitationMap[projectId] = [citation.id];
+          setSavedCitations([
+            ...savedCitations.filter((citation) => citation.id !== tempId),
+            citation,
+          ]);
+        })
+        .catch((error) => {
+          setSavedCitations([...savedCitations]);
+          console.error("Failed to save citation", error);
+        });
     }
   };
 
@@ -243,7 +216,6 @@ const SaveToRefManager = ({
         org: selectedOrg,
         onActionClick: () => {
           // Undo
-          setCheckboxState({ ...checkboxState, [project.id]: true });
           debouncedSaveToApi({ action: "ADD", projectId: project.id });
           showSaveToRefManagerToast({
             action: "ADD",
@@ -254,11 +226,9 @@ const SaveToRefManager = ({
         actionLabel: "Undo",
       }); // Optimistic notification before API is called
 
-      setCheckboxState({ ...checkboxState, [project.id]: false });
       debouncedSaveToApi({ action: "REMOVE", projectId: project.id });
     } else {
       showSaveToRefManagerToast({ action: "ADD", project, org: selectedOrg }); // Optimistic notification before API is called
-      setCheckboxState({ ...checkboxState, [project.id]: true });
       debouncedSaveToApi({ action: "ADD", projectId: project.id });
     }
   };
@@ -317,7 +287,14 @@ const SaveToRefManager = ({
           </PermissionNotificationWrapper>
         </div>
         {isOpen && (
-          <div className={css(styles.main) + " save-ref-open"} ref={tooltipRef}>
+          <div
+            className={css(styles.main) + " save-ref-open"}
+            ref={tooltipRef}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
             <div className={css(styles.title)}>Save to Reference Manager</div>
             <div
               className={css(styles.dropdown)}

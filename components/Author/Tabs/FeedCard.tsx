@@ -31,6 +31,7 @@ import {
   AuthorProfile,
   ID,
   RhDocumentType,
+  UnifiedDocument,
   parseAuthorProfile,
   parseUser,
 } from "~/config/types/root_types";
@@ -66,6 +67,19 @@ import { parseHub } from "~/config/types/hub";
 import DocumentHubs from "~/components/Document/lib/DocumentHubs";
 import { Fundraise, parseFundraise } from "~/components/Fundraise/lib/types";
 import FundraiseCard from "~/components/Fundraise/FundraiseCard";
+import SaveToRefManager from "~/components/Document/lib/SaveToRefManager";
+
+const FeedCardActivity = ({
+  unifiedDocument,
+}: {
+  unifiedDocument: UnifiedDocument;
+}) => {
+  return (
+    <div>
+      <SaveToRefManager unifiedDocument={unifiedDocument} />
+    </div>
+  );
+};
 
 const DocumentViewer = dynamic(
   () => import("~/components/Document/DocumentViewer")
@@ -77,6 +91,7 @@ export type FeedCardProps = {
   created_by: any;
   document: any;
   created_date: any;
+  documentFilter: any;
   discussion_count: number;
   featured: boolean;
   first_figure: any;
@@ -102,8 +117,7 @@ export type FeedCardProps = {
   slug: string;
   title: string;
   titleAsHtml: any;
-  unified_document_id: number;
-  unified_document: any;
+  unifiedDocument: UnifiedDocument;
   uploaded_by: any;
   uploaded_date: any;
   user_vote: any;
@@ -157,6 +171,7 @@ function FeedCard({
   user: currentUser,
   withSidePadding,
   fundraise,
+  unifiedDocument,
 }: FeedCardProps) {
   let parsedDoc: null | Paper | Post = null;
   let authors: AuthorProfile[] = [];
@@ -478,6 +493,7 @@ function FeedCard({
                       className={css(styles.metaItem)}
                       style={{ marginLeft: "auto" }}
                     >
+                      <FeedCardActivity unifiedDocument={unifiedDocument} />
                       <span className={css(styles.metadataIcon)}>
                         {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
                       </span>
