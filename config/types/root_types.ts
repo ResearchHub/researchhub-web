@@ -82,10 +82,6 @@ export type UnifiedDocument = {
   isRemoved: boolean;
 };
 
-export type LinkedInConnect = {
-  linkedInId: string;
-};
-
 export type OrcidConnect = {
   orcidId: string;
 };
@@ -102,7 +98,6 @@ export type AuthorProfile = {
   headline: string;
   isHubEditor: boolean;
   isVerified: boolean;
-  linkedIn?: LinkedInConnect;
   orcid?: OrcidConnect;
   openAlexIds: Array<string>;
   education: Array<Education>;
@@ -323,12 +318,6 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
   if (raw.orcid_id) {
     parsed["orcid"] = {
       orcidId: raw.orcid_id,
-    };
-  }
-
-  if (raw.linkedin_data) {
-    parsed["linkedIn"] = {
-      linkedInId: raw.linkedin_data.sub,
     };
   }
 
