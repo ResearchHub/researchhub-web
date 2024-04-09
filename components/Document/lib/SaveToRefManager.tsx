@@ -124,9 +124,14 @@ const SaveToRefManager = ({ unifiedDocument }: Props) => {
 
   useEffect(() => {
     if (orgs && orgs.length > 0 && !selectedOrg) {
-      setSelectedOrg(orgs[0]);
+
+      // If this document appears in a saved org already, default to that org.
+      const orgIdWhichCitationIsSavedTo = savedCitations.find((citation) => citation.relatedUnifiedDocumentId === unifiedDocument.id)?.organizationId;
+      const selectedOrg = orgs.find((org) => org.id === orgIdWhichCitationIsSavedTo) || orgs[0];
+
+      setSelectedOrg(selectedOrg);
       // @ts-ignore
-      setCurrentOrg(orgs[0]);
+      setCurrentOrg(selectedOrg);
     }
   }, [orgs]);
 
