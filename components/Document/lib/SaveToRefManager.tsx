@@ -2,7 +2,7 @@ import { faAngleDown, faFolderPlus } from "@fortawesome/pro-light-svg-icons";
 import { faBookmark } from "@fortawesome/pro-regular-svg-icons";
 import { faBookmark as solidBookmark } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import IconButton from "~/components/Icons/IconButton";
 import ProjectExplorer from "~/components/ReferenceManager/lib/ProjectExplorer";
 import { StyleSheet, css } from "aphrodite";
@@ -91,7 +91,6 @@ const SaveToRefManager = ({ unifiedDocument }: Props) => {
   const projectCitationMap = useRef<{
     [key: string]: Array<string>;
   }>({});
-  // const [checkboxState, setCheckboxState] = useState({});
 
   const { orgs, setCurrentOrg } = useOrgs();
   const tooltipRef = useRef(null);
@@ -149,74 +148,65 @@ const SaveToRefManager = ({ unifiedDocument }: Props) => {
     unifiedDocumentId: unifiedDocument?.id,
   });
 
-  const saveToApi = ({
-    action,
-    projectId,
-  }: {
-    action: "REMOVE" | "ADD";
-    projectId: any;
-  }) => {
-    const referenceIds = projectCitationMap.current[projectId];
+  const removeCitationsFromProjectApi = (citationIds: ID[]) => {
+    setSavedCitations(
+      savedCitations.filter((citation) => !citationIds.includes(citation.id))
+    ); // Optimistic save
 
-    if (action === "REMOVE") {
-      setSavedCitations(
-        savedCitations.filter((citation) => citation.projectId !== projectId)
-      ); // Optimistic save
-      projectCitationMap.current[projectId] = [];
+    removeReferenceCitations({
+      onError: () => {
+        setSavedCitations([...savedCitations]); // Revert on error
+      },
+      orgId: selectedOrg!.id,
+      onSuccess: emptyFncWithMsg,
+      payload: {
+        citation_entry_ids: citationIds,
+      },
+    });    
+  }
 
-      removeReferenceCitations({
-        onError: () => {
-          setSavedCitations([...savedCitations]);
-        },
-        orgId: selectedOrg!.id,
-        onSuccess: emptyFncWithMsg,
-        payload: {
-          citation_entry_ids: referenceIds,
-        },
-      });
-    } else {
-      const tempId = genClientId(); // Temporary id to show optimistic save
-      setSavedCitations([
-        ...savedCitations,
-        {
-          id: tempId,
-          organizationId: selectedOrg?.id,
-          projectId,
-          relatedUnifiedDocumentId: unifiedDocument.id,
-        },
-      ]); // Optimistic save
-      saveToRefManagerApi({
-        unifiedDocument,
+  const addCitationsToProjectApi = (projectId: ID) => {
+    const tempId = genClientId(); // Temporary id to show optimistic save
+    setSavedCitations([
+      ...savedCitations,
+      {
+        id: tempId,
+        organizationId: selectedOrg?.id,
         projectId,
-        orgId: selectedOrg?.id,
-      })
-        .then((citation: SavedCitation) => {
-          projectCitationMap[projectId] = [citation.id];
-          setSavedCitations([
-            ...savedCitations.filter((citation) => citation.id !== tempId),
-            citation,
-          ]);
-        })
-        .catch((error) => {
-          setSavedCitations([...savedCitations]);
-          console.error("Failed to save citation", error);
-        });
-    }
-  };
+        relatedUnifiedDocumentId: unifiedDocument.id,
+      },
+    ]);
 
-  const debouncedSaveToApi = useCallback(debounce(saveToApi, 500), [
-    selectedOrg,
-  ]);
+    saveToRefManagerApi({
+      unifiedDocument,
+      projectId,
+      orgId: selectedOrg?.id,
+    })
+      .then((citation: SavedCitation) => {
+        setSavedCitations([
+          ...savedCitations.filter((citation) => citation.id !== tempId),
+          citation,
+        ]);
+
+        console.log('citation', citation)
+      })
+      .catch((error) => {
+        setSavedCitations([...savedCitations]);
+        console.error("Failed to save citation", error);
+      });  
+  }
 
   const handleSelectProject = (project) => {
     if (savedInProjectIds.includes(project.id)) {
+      const citationIdsToRemove = savedCitations.filter((citation) => citation.projectId === project.id && citation.relatedUnifiedDocumentId === unifiedDocument.id).map(citation => citation.id)
+
       showSaveToRefManagerToast({
         action: "REMOVE",
         project,
         org: selectedOrg,
         onActionClick: () => {
           // Undo
-          debouncedSaveToApi({ action: "ADD", projectId: project.id });
+          addCitationsToProjectApi(project.id);
           showSaveToRefManagerToast({
             action: "ADD",
             project,
@@ -226,10 +216,10 @@ const SaveToRefManager = ({ unifiedDocument }: Props) => {
         actionLabel: "Undo",
       }); // Optimistic notification before API is called
 
-      debouncedSaveToApi({ action: "REMOVE", projectId: project.id });
+      removeCitationsFromProjectApi(citationIdsToRemove);
     } else {
       showSaveToRefManagerToast({ action: "ADD", project, org: selectedOrg }); // Optimistic notification before API is called
-      debouncedSaveToApi({ action: "ADD", projectId: project.id });
+      addCitationsToProjectApi(project.id);
     }
   };
 
