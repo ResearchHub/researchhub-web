@@ -9,12 +9,7 @@ import { StyleSheet, css } from "aphrodite";
 import { fetchReferenceOrgProjects } from "~/components/ReferenceManager/references/reference_organizer/api/fetchReferenceOrgProjects";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import colors from "~/config/themes/colors";
-import {
-  ID,
-  Organization,
-  RhDocumentType,
-  UnifiedDocument,
-} from "~/config/types/root_types";
+import { ID, UnifiedDocument } from "~/config/types/root_types";
 import API, { generateApiUrl } from "~/config/api";
 import Helpers from "~/config/api/helpers";
 import { isPaper } from "./types";
@@ -25,7 +20,6 @@ import { emptyFncWithMsg, silentEmptyFnc } from "~/config/utils/nullchecks";
 import { removeReferenceCitations } from "~/components/ReferenceManager/references/api/removeReferenceCitations";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
-import debounce from "lodash/debounce";
 import showSaveToRefManagerToast from "~/components/Notifications/lib/showSaveToRefManagerToast";
 import {
   SavedCitation,
@@ -124,10 +118,12 @@ const SaveToRefManager = ({ unifiedDocument }: Props) => {
 
   useEffect(() => {
     if (orgs && orgs.length > 0 && !selectedOrg) {
-
       // If this document appears in a saved org already, default to that org.
-      const orgIdWhichCitationIsSavedTo = savedCitations.find((citation) => citation.relatedUnifiedDocumentId === unifiedDocument.id)?.organizationId;
-      const selectedOrg = orgs.find((org) => org.id === orgIdWhichCitationIsSavedTo) || orgs[0];
+      const orgIdWhichCitationIsSavedTo = savedCitations.find(
+        (citation) => citation.relatedUnifiedDocumentId === unifiedDocument.id
+      )?.organizationId;
+      const selectedOrg =
+        orgs.find((org) => org.id === orgIdWhichCitationIsSavedTo) || orgs[0];
 
       setSelectedOrg(selectedOrg);
       // @ts-ignore
@@ -167,8 +163,8 @@ const SaveToRefManager = ({ unifiedDocument }: Props) => {
       payload: {
         citation_entry_ids: citationIds,
       },
-    });    
-  }
+    });
+  };
 
   const addCitationsToProjectApi = (projectId: ID) => {
     const tempId = genClientId(); // Temporary id to show optimistic save
@@ -192,18 +188,22 @@ const SaveToRefManager = ({ unifiedDocument }: Props) => {
           ...savedCitations.filter((citation) => citation.id !== tempId),
           citation,
         ]);
-
-        console.log('citation', citation)
       })
       .catch((error) => {
         setSavedCitations([...savedCitations]);
         console.error("Failed to save citation", error);
-      });  
-  }
+      });
+  };
 
   const handleSelectProject = (project) => {
     if (savedInProjectIds.includes(project.id)) {
-      const citationIdsToRemove = savedCitations.filter((citation) => citation.projectId === project.id && citation.relatedUnifiedDocumentId === unifiedDocument.id).map(citation => citation.id)
+      const citationIdsToRemove = savedCitations
+        .filter(
+          (citation) =>
+            citation.projectId === project.id &&
+            citation.relatedUnifiedDocumentId === unifiedDocument.id
+        )
+        .map((citation) => citation.id);
 
       showSaveToRefManagerToast({
         action: "REMOVE",

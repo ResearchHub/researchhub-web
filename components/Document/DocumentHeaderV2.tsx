@@ -174,10 +174,7 @@ const DocumentHeader = ({
                   >
                     <ReferenceProjectsUpsertContextProvider>
                       <SaveToRefManager
-                        contentType={"paper"}
-                        doc={doc}
-                        contentId={doc?.unifiedDocument?.document?.id}
-                        unifiedDocumentId={doc?.unifiedDocument?.id}
+                        unifiedDocument={doc!.unifiedDocument}
                       />
                     </ReferenceProjectsUpsertContextProvider>
                     {/* Don't show "Tip" if it's a preregistration */}
@@ -253,12 +250,7 @@ const DocumentHeader = ({
                     </PermissionNotificationWrapper>
                   )}
                   <ReferenceProjectsUpsertContextProvider>
-                    <SaveToRefManager
-                      contentType={"paper"}
-                      doc={doc}
-                      contentId={doc.unifiedDocument.document?.id}
-                      unifiedDocumentId={doc.unifiedDocument.id}
-                    />
+                    <SaveToRefManager unifiedDocument={doc!.unifiedDocument} />
                   </ReferenceProjectsUpsertContextProvider>
                   <DocumentOptions document={doc} metadata={metadata} />
                 </div>
