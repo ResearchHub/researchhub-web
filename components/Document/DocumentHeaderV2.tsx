@@ -10,7 +10,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   DocumentMetadata,
   GenericDocument,
-  Paper,
   isPaper,
   isPost,
 } from "./lib/types";
@@ -24,25 +23,21 @@ import { getTabs } from "./lib/tabbedNavigation";
 import config from "~/components/Document/lib/config";
 import DocumentStickyHeader from "./DocumentStickyHeader";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "../Home/sidebar/RootLeftSidebar";
-import { faPen } from "@fortawesome/pro-light-svg-icons";
 import { parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
 import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { Purchase } from "~/config/types/purchase";
 import { DocumentContext } from "./lib/DocumentContext";
 import useCacheControl from "~/config/hooks/useCacheControl";
-import PaperMetadataModal from "./PaperMetadataModal";
 import DocumentOptions from "./DocumentOptions";
 import DocumentHubs from "./lib/DocumentHubs";
 import SaveToRefManager from "./lib/SaveToRefManager";
-import {
-  ReferenceProjectsUpsertContextProvider,
-  useReferenceProjectUpsertContext,
-} from "~/components/ReferenceManager/references/reference_organizer/context/ReferenceProjectsUpsertContext";
-import DocumentPageTutorial from "./lib/DocumentPageTutorial";
+import { ReferenceProjectsUpsertContextProvider } from "~/components/ReferenceManager/references/reference_organizer/context/ReferenceProjectsUpsertContext";
 import FundraiseCard from "../Fundraise/FundraiseCard";
 import LinkToPublicPage from "../LinkToPublicPage";
 import { breakpoints } from "~/config/themes/screen";
+import { faBookmark } from "@fortawesome/pro-regular-svg-icons";
+import { faBookmark as solidBookmark } from "@fortawesome/pro-solid-svg-icons";
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
 );
@@ -175,6 +170,27 @@ const DocumentHeader = ({
                     <ReferenceProjectsUpsertContextProvider>
                       <SaveToRefManager
                         unifiedDocument={doc!.unifiedDocument}
+                        unsavedBtnComponent={
+                          <IconButton variant="round">
+                            <FontAwesomeIcon
+                              icon={faBookmark}
+                              style={{ marginRight: 3 }}
+                            />
+                            <span>Save</span>
+                          </IconButton>
+                        }
+                        savedBtnComponent={
+                          <IconButton variant="round">
+                            <FontAwesomeIcon
+                              icon={solidBookmark}
+                              style={{
+                                marginRight: 3,
+                                color: colors.MEDIUM_GREY2(),
+                              }}
+                            />
+                            <span>Save</span>
+                          </IconButton>
+                        }
                       />
                     </ReferenceProjectsUpsertContextProvider>
                     {/* Don't show "Tip" if it's a preregistration */}
@@ -250,7 +266,27 @@ const DocumentHeader = ({
                     </PermissionNotificationWrapper>
                   )}
                   <ReferenceProjectsUpsertContextProvider>
-                    <SaveToRefManager unifiedDocument={doc!.unifiedDocument} />
+                    <SaveToRefManager
+                      unifiedDocument={doc!.unifiedDocument}
+                      unsavedBtnComponent={
+                        <IconButton variant="round">
+                          <FontAwesomeIcon
+                            icon={faBookmark}
+                            style={{ marginRight: 3 }}
+                          />
+                          <span>Save</span>
+                        </IconButton>
+                      }
+                      savedBtnComponent={
+                        <IconButton variant="round">
+                          <FontAwesomeIcon
+                            icon={solidBookmark}
+                            style={{ marginRight: 3 }}
+                          />
+                          <span>Save</span>
+                        </IconButton>
+                      }
+                    />
                   </ReferenceProjectsUpsertContextProvider>
                   <DocumentOptions document={doc} metadata={metadata} />
                 </div>

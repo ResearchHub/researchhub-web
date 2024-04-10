@@ -30,6 +30,8 @@ import { genClientId } from "~/config/utils/id";
 
 interface Props {
   unifiedDocument: UnifiedDocument;
+  unsavedBtnComponent: JSX.Element;
+  savedBtnComponent: JSX.Element;
 }
 
 interface SaveToRefManagerApiProps {
@@ -75,7 +77,11 @@ const isDocSavedToAnyUserOrg = ({
   );
 };
 
-const SaveToRefManager = ({ unifiedDocument }: Props) => {
+const SaveToRefManager = ({
+  unifiedDocument,
+  unsavedBtnComponent,
+  savedBtnComponent,
+}: Props) => {
   const { savedCitations, setSavedCitations } = savedCitationsContext();
   const [orgProjects, setOrgProjects] = useState([]);
   const [isFetchingProjects, setIsFetchingProjects] = useState(true);
@@ -227,7 +233,8 @@ const SaveToRefManager = ({ unifiedDocument }: Props) => {
       addCitationsToProjectApi(project.id);
     }
   };
-
+  console.log("unsavedBtnComponent", unsavedBtnComponent);
+  console.log("savedBtnComponent", savedBtnComponent);
   return (
     <>
       <ReferenceProjectsUpsertModal
@@ -257,27 +264,7 @@ const SaveToRefManager = ({ unifiedDocument }: Props) => {
             hideRipples={true}
           >
             <div className="trigger-for-save-to-ref-manager">
-              <IconButton variant="round">
-                {isSaved ? (
-                  <>
-                    <FontAwesomeIcon
-                      icon={solidBookmark}
-                      style={{ marginRight: 3, color: colors.MEDIUM_GREY2() }}
-                    />
-                    <span>Saved</span>
-                  </>
-                ) : (
-                  <>
-                    <div>
-                      <FontAwesomeIcon
-                        icon={faBookmark}
-                        style={{ marginRight: 3 }}
-                      />
-                    </div>
-                    <span>Save</span>
-                  </>
-                )}
-              </IconButton>
+              {isSaved ? savedBtnComponent : unsavedBtnComponent}
             </div>
           </PermissionNotificationWrapper>
         </div>

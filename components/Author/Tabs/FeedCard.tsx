@@ -1,12 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import sanitizeHtml from "sanitize-html";
-import {
-  faComments,
-  faCommentAltLines,
-  faCheck,
-  faQuestion,
-  faPenSquare,
-} from "@fortawesome/pro-solid-svg-icons";
+import { faQuestion, faPenSquare } from "@fortawesome/pro-solid-svg-icons";
 import { faLightbulb, faFileLines } from "@fortawesome/pro-regular-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect, useDispatch } from "react-redux";
@@ -25,15 +19,11 @@ import {
   nullthrows,
 } from "~/config/utils/nullchecks";
 import { isDevEnv } from "~/config/utils/env";
-import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
 import {
   AuthorProfile,
-  ID,
   RhDocumentType,
   UnifiedDocument,
-  parseAuthorProfile,
-  parseUser,
 } from "~/config/types/root_types";
 import { useState, useEffect, SyntheticEvent } from "react";
 import colors, {
@@ -42,13 +32,9 @@ import colors, {
 } from "~/config/themes/colors";
 import DesktopOnly from "~/components/DesktopOnly";
 import dynamic from "next/dynamic";
-
-import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
-import Ripples from "react-ripples";
 import VoteWidget from "~/components/VoteWidget";
 import { createVoteHandler } from "~/components/Vote/utils/createVoteHandler";
-import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocType";
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import ContentBadge from "~/components/ContentBadge";
@@ -57,29 +43,14 @@ import Link from "next/link";
 import {
   Paper,
   Post,
-  isPaper,
   parsePaper,
-  parsePaperAuthors,
   parsePost,
 } from "~/components/Document/lib/types";
-import AuthorList from "../AuthorList";
 import { parseHub } from "~/config/types/hub";
 import DocumentHubs from "~/components/Document/lib/DocumentHubs";
 import { Fundraise, parseFundraise } from "~/components/Fundraise/lib/types";
 import FundraiseCard from "~/components/Fundraise/FundraiseCard";
-import SaveToRefManager from "~/components/Document/lib/SaveToRefManager";
-
-const FeedCardActivity = ({
-  unifiedDocument,
-}: {
-  unifiedDocument: UnifiedDocument;
-}) => {
-  return (
-    <div>
-      <SaveToRefManager unifiedDocument={unifiedDocument} />
-    </div>
-  );
-};
+import FeedCardActivity from "~/components/Feed/FeedCardActivity";
 
 const DocumentViewer = dynamic(
   () => import("~/components/Document/DocumentViewer")
@@ -493,16 +464,10 @@ function FeedCard({
                       className={css(styles.metaItem)}
                       style={{ marginLeft: "auto" }}
                     >
-                      <FeedCardActivity unifiedDocument={unifiedDocument} />
-                      <span className={css(styles.metadataIcon)}>
-                        {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
-                      </span>
-                      <span className={css(styles.metadataText)}>
-                        <span>{discussion_count}</span>
-                        <span className={css(styles.hideTextMobile)}>
-                          {` Comment${discussion_count === 1 ? "" : "s"}`}
-                        </span>
-                      </span>
+                      <FeedCardActivity
+                        unifiedDocument={unifiedDocument}
+                        discussionCount={discussion_count}
+                      />
                     </div>
                   </div>
                 </div>
