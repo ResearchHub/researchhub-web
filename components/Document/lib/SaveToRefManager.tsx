@@ -206,6 +206,9 @@ const SaveToRefManager = ({
 
   const handleSelectProject = (project) => {
     if (savedInProjectIds.includes(project.id)) {
+
+      // @ts-ignore
+      setCurrentOrg(selectedOrg);
       const citationIdsToRemove = savedCitations
         .filter(
           (citation) =>

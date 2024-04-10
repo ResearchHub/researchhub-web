@@ -9,7 +9,7 @@ import { ID } from "~/config/types/root_types";
 const fetchSavedUserCitations = () => {
   return fetch(
     buildApiUri({
-      apiPath: `citation_entry/saved_user_citations`,
+      apiPath: `citation_entry/saved_org_citations`,
     }),
     API.GET_CONFIG()
   )
