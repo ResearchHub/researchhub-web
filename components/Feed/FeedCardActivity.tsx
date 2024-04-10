@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faComments,
+  faStar,
   faBookmark as solidBookmark,
 } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
@@ -10,33 +11,50 @@ import { faBookmark } from "@fortawesome/pro-regular-svg-icons";
 import IconButton from "../Icons/IconButton";
 import Image from "next/image";
 import ReactTooltip from "react-tooltip";
+import numeral from "numeral";
 
 const FeedCardActivity = ({
   unifiedDocument,
   discussionCount,
   citationCount,
+  reviewScore = 4.5,
 }: {
   unifiedDocument: UnifiedDocument;
   discussionCount: number;
   citationCount: number;
+  reviewScore: number;
 }) => {
   return (
     <div className={css(styles.wrapper)}>
       <ReactTooltip effect="solid" />
+      {reviewScore > 0 && (
+        <>
+          <IconButton variant="round" overrideStyle={styles.iconButton}>
+            <div
+              className={css(styles.discussionCount)}
+              data-tip={`Average review score received from community`}
+            >
+              <FontAwesomeIcon icon={faStar}></FontAwesomeIcon>
+              <span>{numeral(reviewScore).format("0.0a")}</span>
+            </div>
+          </IconButton>
+          <div className={css(styles.divider)} />
+        </>
+      )}
       {citationCount > 0 && (
         <>
           <IconButton variant="round" overrideStyle={styles.iconButton}>
             <div
               className={css(styles.citationCount)}
-              data-tip={`This paper has been cited ${citationCount} times`}
+              data-tip={`Times paper has been cited`}
             >
               <Image
-                alt="Citation"
+                alt="Review"
                 width={15}
                 height={15}
                 src={"/static/citation.svg"}
               />
-              <span>{citationCount}</span>
+              <span>{reviewScore}</span>
             </div>
           </IconButton>
           <div className={css(styles.divider)} />

@@ -470,6 +470,7 @@ function FeedCard({
                         unifiedDocument={unifiedDocument}
                         discussionCount={discussion_count}
                         citationCount={citations ?? 0}
+                        reviewScore={reviews?.avg}
                       />
                     </div>
                   </div>
