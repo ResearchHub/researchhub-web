@@ -169,7 +169,9 @@ const DocumentHeader = ({
                   >
                     <ReferenceProjectsUpsertContextProvider>
                       <SaveToRefManager
-                        unifiedDocument={doc!.unifiedDocument}
+                        unifiedDocumentId={doc!.unifiedDocument.id}
+                        contentId={doc!.id}
+                        contentType={isPaper(doc) ? "paper" : "post"}
                         unsavedBtnComponent={
                           <IconButton variant="round">
                             <FontAwesomeIcon
