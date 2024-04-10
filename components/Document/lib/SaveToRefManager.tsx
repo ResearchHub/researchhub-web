@@ -1,9 +1,6 @@
 import { faAngleDown, faFolderPlus } from "@fortawesome/pro-light-svg-icons";
-import { faBookmark } from "@fortawesome/pro-regular-svg-icons";
-import { faBookmark as solidBookmark } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
-import IconButton from "~/components/Icons/IconButton";
 import ProjectExplorer from "~/components/ReferenceManager/lib/ProjectExplorer";
 import { StyleSheet, css } from "aphrodite";
 import { fetchReferenceOrgProjects } from "~/components/ReferenceManager/references/reference_organizer/api/fetchReferenceOrgProjects";
@@ -12,7 +9,6 @@ import colors from "~/config/themes/colors";
 import { ID, UnifiedDocument } from "~/config/types/root_types";
 import API, { generateApiUrl } from "~/config/api";
 import Helpers from "~/config/api/helpers";
-import { isPaper } from "./types";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 import { useReferenceProjectUpsertContext } from "~/components/ReferenceManager/references/reference_organizer/context/ReferenceProjectsUpsertContext";
 import ReferenceProjectsUpsertModal from "~/components/ReferenceManager/references/reference_organizer/ReferenceProjectsUpsertModal";
@@ -233,8 +229,7 @@ const SaveToRefManager = ({
       addCitationsToProjectApi(project.id);
     }
   };
-  console.log("unsavedBtnComponent", unsavedBtnComponent);
-  console.log("savedBtnComponent", savedBtnComponent);
+
   return (
     <>
       <ReferenceProjectsUpsertModal

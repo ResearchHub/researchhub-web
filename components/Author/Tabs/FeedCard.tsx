@@ -98,6 +98,7 @@ export type FeedCardProps = {
   type: string;
   twitterScore?: number | undefined | null;
   fundraise?: Fundraise;
+  citations?: number;
 };
 
 const documentIcons = {
@@ -143,6 +144,7 @@ function FeedCard({
   withSidePadding,
   fundraise,
   unifiedDocument,
+  citations,
 }: FeedCardProps) {
   let parsedDoc: null | Paper | Post = null;
   let authors: AuthorProfile[] = [];
@@ -467,6 +469,7 @@ function FeedCard({
                       <FeedCardActivity
                         unifiedDocument={unifiedDocument}
                         discussionCount={discussion_count}
+                        citationCount={citations ?? 0}
                       />
                     </div>
                   </div>
