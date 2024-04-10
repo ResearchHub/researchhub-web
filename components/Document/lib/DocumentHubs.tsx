@@ -13,17 +13,19 @@ const DocumentHubs = ({
   withShowMore = true,
   hideOnSmallerResolution = false,
   containerStyle = null,
+  numOfVisibleHubs = 3,
 }: {
   hubs: Hub[];
   withShowMore?: boolean;
   hideOnSmallerResolution?: boolean;
   containerStyle?: any;
+  numOfVisibleHubs?: number;
 }) => {
   const [showMore, setShowMore] = useState<boolean>(false);
   const sortedHubs = hubs.sort((a, b) => {
     return a.relevancyScore > b.relevancyScore ? -1 : 1;
   });
-  const visibleHubs = showMore ? sortedHubs : sortedHubs.slice(0, 3);
+  const visibleHubs = showMore ? sortedHubs : sortedHubs.slice(0, numOfVisibleHubs);
 
   return (
     <div className={css(styles.wrapper, containerStyle)}>
@@ -39,7 +41,7 @@ const DocumentHubs = ({
           <HubTag hub={h} />
         </div>
       ))}
-      {withShowMore && hubs.length > 3 && (
+      {withShowMore && hubs.length > numOfVisibleHubs && (
         <IconButton
           variant="round"
           overrideStyle={styles.moreLessBtn}

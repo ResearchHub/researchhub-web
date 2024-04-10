@@ -273,6 +273,17 @@ function FeedCard({
   const bountyAmount = documentFilter?.bounty_total_amount;
   const hasActiveBounty = documentFilter?.bounty_open;
 
+  let numOfVisibleHubs = 3; 
+  if (reviews && reviews?.avg > 0 && numOfVisibleHubs > 1) {
+    numOfVisibleHubs--;
+  }
+  if (citations && citations > 0 && numOfVisibleHubs > 1) {
+    numOfVisibleHubs--;
+  }
+  if (hasActiveBounty && numOfVisibleHubs > 1) {
+    numOfVisibleHubs--;
+  }  
+
   return (
     <div
       className={css(
@@ -381,7 +392,39 @@ function FeedCard({
                       hubs={parsedHubs}
                       withShowMore={false}
                       hideOnSmallerResolution={true}
+                      numOfVisibleHubs={3}
                     />
+                        {hasActiveBounty && (
+                          <ContentBadge
+                            badgeOverride={styles.badge}
+                            contentType="bounty"
+                            bountyAmount={bountyAmount}
+                            label={
+                              <div style={{ display: "flex", whiteSpace: "pre" }}>
+                                <div
+                                  style={{ flex: 1 }}
+                                  className={css(styles.mobile)}
+                                >
+                                  {numeral(
+                                    formatBountyAmount({
+                                      amount: bountyAmount,
+                                    })
+                                  ).format("0,0a")}{" "}
+                                  RSC
+                                </div>
+                                <div
+                                  style={{ flex: 1 }}
+                                  className={css(styles.desktop)}
+                                >
+                                  {formatBountyAmount({
+                                    amount: bountyAmount,
+                                  })}{" "}
+                                  RSC
+                                </div>
+                              </div>
+                            }
+                          />
+                        )}                    
                   </div>
                   <div
                     className={css(
@@ -422,43 +465,45 @@ function FeedCard({
                           badgeOverride={styles.badge}
                         />
                       </div>
-                      {hasActiveBounty && (
-                        <ContentBadge
-                          badgeOverride={styles.badge}
-                          contentType="bounty"
-                          bountyAmount={bountyAmount}
-                          label={
-                            <div style={{ display: "flex", whiteSpace: "pre" }}>
-                              <div
-                                style={{ flex: 1 }}
-                                className={css(styles.mobile)}
-                              >
-                                {numeral(
-                                  formatBountyAmount({
-                                    amount: bountyAmount,
-                                  })
-                                ).format("0,0a")}{" "}
-                                RSC
-                              </div>
-                              <div
-                                style={{ flex: 1 }}
-                                className={css(styles.desktop)}
-                              >
-                                {formatBountyAmount({
-                                  amount: bountyAmount,
-                                })}{" "}
-                                RSC
-                              </div>
-                            </div>
-                          }
-                        />
-                      )}
-                      <div className={css(styles.desktop)}>
+
+                      <div className={css(styles.desktop, styles.badges)}>
                         <DocumentHubs
                           hubs={parsedHubs}
                           withShowMore={false}
                           hideOnSmallerResolution={true}
+                          numOfVisibleHubs={numOfVisibleHubs}
                         />
+                        {hasActiveBounty && (
+                          <ContentBadge
+                            badgeOverride={styles.badge}
+                            contentType="bounty"
+                            bountyAmount={bountyAmount}
+                            label={
+                              <div style={{ display: "flex", whiteSpace: "pre" }}>
+                                <div
+                                  style={{ flex: 1 }}
+                                  className={css(styles.mobile)}
+                                >
+                                  {numeral(
+                                    formatBountyAmount({
+                                      amount: bountyAmount,
+                                    })
+                                  ).format("0,0a")}{" "}
+                                  RSC
+                                </div>
+                                <div
+                                  style={{ flex: 1 }}
+                                  className={css(styles.desktop)}
+                                >
+                                  {formatBountyAmount({
+                                    amount: bountyAmount,
+                                  })}{" "}
+                                  RSC
+                                </div>
+                              </div>
+                            }
+                          />
+                        )}
                       </div>
                     </div>
 
@@ -504,6 +549,9 @@ const styles = StyleSheet.create({
     marginRight: 8,
     borderLeft: `1px solid ${colors.BLACK(0.6)}`,
     height: 20,
+  },
+  badges: {
+    columnGap: "10px",
   },
   docBadgeWrapper: {
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
@@ -552,6 +600,11 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
+
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    }
   },
   mobile: {
     "@media only screen and (min-width: 768px)": {
@@ -559,6 +612,7 @@ const styles = StyleSheet.create({
     },
   },
   desktop: {
+    display: "flex",
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
