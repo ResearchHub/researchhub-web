@@ -5,7 +5,7 @@ import {
   faBookmark as solidBookmark,
 } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
-import { UnifiedDocument } from "~/config/types/root_types";
+import { ID } from "~/config/types/root_types";
 import SaveToRefManager from "~/components/Document/lib/SaveToRefManager";
 import { faBookmark } from "@fortawesome/pro-regular-svg-icons";
 import IconButton from "../Icons/IconButton";
@@ -14,12 +14,16 @@ import ReactTooltip from "react-tooltip";
 import numeral from "numeral";
 
 const FeedCardActivity = ({
-  unifiedDocument,
+  unifiedDocumentId,
+  contentId,
+  contentType,
   discussionCount,
   citationCount,
-  reviewScore = 4.5,
+  reviewScore,
 }: {
-  unifiedDocument: UnifiedDocument;
+  contentId: ID;
+  contentType: "paper" | "post";
+  unifiedDocumentId: ID;
   discussionCount: number;
   citationCount: number;
   reviewScore: number;
@@ -54,7 +58,7 @@ const FeedCardActivity = ({
                 height={15}
                 src={"/static/citation.svg"}
               />
-              <span>{reviewScore}</span>
+              <span>{citationCount}</span>
             </div>
           </IconButton>
           <div className={css(styles.divider)} />
@@ -66,30 +70,36 @@ const FeedCardActivity = ({
           <span>{discussionCount}</span>
         </div>
       </IconButton>
-      <div className={css(styles.divider)} />
-      <IconButton variant="round" overrideStyle={styles.iconButton}>
-        <SaveToRefManager
-          unifiedDocument={unifiedDocument}
-          unsavedBtnComponent={
-            <div>
-              <FontAwesomeIcon
-                icon={faBookmark}
-                style={{ marginRight: 5, fontSize: 14 }}
-              />
-              <span>Save</span>
-            </div>
-          }
-          savedBtnComponent={
-            <div>
-              <FontAwesomeIcon
-                icon={solidBookmark}
-                style={{ marginRight: 5, color: "#909090", fontSize: 14 }}
-              />
-              <span>Save</span>
-            </div>
-          }
-        />
-      </IconButton>
+      {unifiedDocumentId && (
+        <>
+          <div className={css(styles.divider)} />
+          <IconButton variant="round" overrideStyle={styles.iconButton}>
+            <SaveToRefManager
+              unifiedDocumentId={unifiedDocumentId}
+              contentId={contentId}
+              contentType={contentType}
+              unsavedBtnComponent={
+                <div>
+                  <FontAwesomeIcon
+                    icon={faBookmark}
+                    style={{ marginRight: 5, fontSize: 14 }}
+                  />
+                  <span>Save</span>
+                </div>
+              }
+              savedBtnComponent={
+                <div>
+                  <FontAwesomeIcon
+                    icon={solidBookmark}
+                    style={{ marginRight: 5, color: "#909090", fontSize: 14 }}
+                  />
+                  <span>Save</span>
+                </div>
+              }
+            />
+          </IconButton>
+        </>
+      )}
     </div>
   );
 };

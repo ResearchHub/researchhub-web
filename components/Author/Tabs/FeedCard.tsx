@@ -88,7 +88,6 @@ export type FeedCardProps = {
   slug: string;
   title: string;
   titleAsHtml: any;
-  unifiedDocument: UnifiedDocument;
   uploaded_by: any;
   uploaded_date: any;
   user_vote: any;
@@ -99,6 +98,7 @@ export type FeedCardProps = {
   twitterScore?: number | undefined | null;
   fundraise?: Fundraise;
   citations?: number;
+  unifiedDocumentId: ID;
 };
 
 const documentIcons = {
@@ -143,8 +143,8 @@ function FeedCard({
   user: currentUser,
   withSidePadding,
   fundraise,
-  unifiedDocument,
   citations,
+  unifiedDocumentId,
 }: FeedCardProps) {
   let parsedDoc: null | Paper | Post = null;
   let authors: AuthorProfile[] = [];
@@ -273,7 +273,7 @@ function FeedCard({
   const bountyAmount = documentFilter?.bounty_total_amount;
   const hasActiveBounty = documentFilter?.bounty_open;
 
-  let numOfVisibleHubs = 3; 
+  let numOfVisibleHubs = 3;
   if (reviews && reviews?.avg > 0 && numOfVisibleHubs > 1) {
     numOfVisibleHubs--;
   }
@@ -282,7 +282,7 @@ function FeedCard({
   }
   if (hasActiveBounty && numOfVisibleHubs > 1) {
     numOfVisibleHubs--;
-  }  
+  }
 
   return (
     <div
@@ -394,37 +394,37 @@ function FeedCard({
                       hideOnSmallerResolution={true}
                       numOfVisibleHubs={3}
                     />
-                        {hasActiveBounty && (
-                          <ContentBadge
-                            badgeOverride={styles.badge}
-                            contentType="bounty"
-                            bountyAmount={bountyAmount}
-                            label={
-                              <div style={{ display: "flex", whiteSpace: "pre" }}>
-                                <div
-                                  style={{ flex: 1 }}
-                                  className={css(styles.mobile)}
-                                >
-                                  {numeral(
-                                    formatBountyAmount({
-                                      amount: bountyAmount,
-                                    })
-                                  ).format("0,0a")}{" "}
-                                  RSC
-                                </div>
-                                <div
-                                  style={{ flex: 1 }}
-                                  className={css(styles.desktop)}
-                                >
-                                  {formatBountyAmount({
-                                    amount: bountyAmount,
-                                  })}{" "}
-                                  RSC
-                                </div>
-                              </div>
-                            }
-                          />
-                        )}                    
+                    {hasActiveBounty && (
+                      <ContentBadge
+                        badgeOverride={styles.badge}
+                        contentType="bounty"
+                        bountyAmount={bountyAmount}
+                        label={
+                          <div style={{ display: "flex", whiteSpace: "pre" }}>
+                            <div
+                              style={{ flex: 1 }}
+                              className={css(styles.mobile)}
+                            >
+                              {numeral(
+                                formatBountyAmount({
+                                  amount: bountyAmount,
+                                })
+                              ).format("0,0a")}{" "}
+                              RSC
+                            </div>
+                            <div
+                              style={{ flex: 1 }}
+                              className={css(styles.desktop)}
+                            >
+                              {formatBountyAmount({
+                                amount: bountyAmount,
+                              })}{" "}
+                              RSC
+                            </div>
+                          </div>
+                        }
+                      />
+                    )}
                   </div>
                   <div
                     className={css(
@@ -479,7 +479,9 @@ function FeedCard({
                             contentType="bounty"
                             bountyAmount={bountyAmount}
                             label={
-                              <div style={{ display: "flex", whiteSpace: "pre" }}>
+                              <div
+                                style={{ display: "flex", whiteSpace: "pre" }}
+                              >
                                 <div
                                   style={{ flex: 1 }}
                                   className={css(styles.mobile)}
@@ -512,7 +514,11 @@ function FeedCard({
                       style={{ marginLeft: "auto" }}
                     >
                       <FeedCardActivity
-                        unifiedDocument={unifiedDocument}
+                        unifiedDocumentId={unifiedDocumentId}
+                        contentId={id}
+                        contentType={
+                          formattedDocType === "paper" ? "paper" : "post"
+                        }
                         discussionCount={discussion_count}
                         citationCount={citations ?? 0}
                         reviewScore={reviews?.avg}
@@ -604,7 +610,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       paddingLeft: 0,
       paddingRight: 0,
-    }
+    },
   },
   mobile: {
     "@media only screen and (min-width: 768px)": {

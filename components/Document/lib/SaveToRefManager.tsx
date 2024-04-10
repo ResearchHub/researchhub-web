@@ -6,7 +6,7 @@ import { StyleSheet, css } from "aphrodite";
 import { fetchReferenceOrgProjects } from "~/components/ReferenceManager/references/reference_organizer/api/fetchReferenceOrgProjects";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import colors from "~/config/themes/colors";
-import { ID, UnifiedDocument } from "~/config/types/root_types";
+import { ID } from "~/config/types/root_types";
 import API, { generateApiUrl } from "~/config/api";
 import Helpers from "~/config/api/helpers";
 import OrgAvatar from "~/components/Org/OrgAvatar";
@@ -25,7 +25,9 @@ import {
 import { genClientId } from "~/config/utils/id";
 
 interface Props {
-  unifiedDocument: UnifiedDocument;
+  unifiedDocumentId: ID;
+  contentType: "paper" | "post";
+  contentId: ID;
   unsavedBtnComponent: JSX.Element;
   savedBtnComponent: JSX.Element;
 }
@@ -33,18 +35,20 @@ interface Props {
 interface SaveToRefManagerApiProps {
   orgId: ID;
   projectId: ID;
-  unifiedDocument: UnifiedDocument;
+  contentId: ID;
+  contentType: "paper" | "post";
 }
 
 const saveToRefManagerApi = async ({
   orgId,
   projectId,
-  unifiedDocument,
+  contentId,
+  contentType,
 }: SaveToRefManagerApiProps): Promise<SavedCitation> => {
   const url = generateApiUrl(
-    unifiedDocument.documentType === "paper"
-      ? `citation_entry/${unifiedDocument!.document!.id}/add_paper_as_citation`
-      : `citation_entry/${unifiedDocument!.document!.id}/add_post_as_citation`
+    contentType === "paper"
+      ? `citation_entry/${contentId}/add_paper_as_citation`
+      : `citation_entry/${contentId}/add_post_as_citation`
   );
 
   return fetch(
@@ -74,7 +78,9 @@ const isDocSavedToAnyUserOrg = ({
 };
 
 const SaveToRefManager = ({
-  unifiedDocument,
+  unifiedDocumentId,
+  contentId,
+  contentType,
   unsavedBtnComponent,
   savedBtnComponent,
 }: Props) => {
@@ -122,7 +128,7 @@ const SaveToRefManager = ({
     if (orgs && orgs.length > 0 && !selectedOrg) {
       // If this document appears in a saved org already, default to that org.
       const orgIdWhichCitationIsSavedTo = savedCitations.find(
-        (citation) => citation.relatedUnifiedDocumentId === unifiedDocument.id
+        (citation) => citation.relatedUnifiedDocumentId === unifiedDocumentId
       )?.organizationId;
       const selectedOrg =
         orgs.find((org) => org.id === orgIdWhichCitationIsSavedTo) || orgs[0];
@@ -143,12 +149,12 @@ const SaveToRefManager = ({
 
   const savedInProjectIds = savedCitations
     .filter(
-      (citation) => citation.relatedUnifiedDocumentId === unifiedDocument.id
+      (citation) => citation.relatedUnifiedDocumentId === unifiedDocumentId
     )
     .map((citation) => citation.projectId);
   const isSaved = isDocSavedToAnyUserOrg({
     savedCitations,
-    unifiedDocumentId: unifiedDocument?.id,
+    unifiedDocumentId,
   });
 
   const removeCitationsFromProjectApi = (citationIds: ID[]) => {
@@ -176,12 +182,13 @@ const SaveToRefManager = ({
         id: tempId,
         organizationId: selectedOrg?.id,
         projectId,
-        relatedUnifiedDocumentId: unifiedDocument.id,
+        relatedUnifiedDocumentId: unifiedDocumentId,
       },
     ]);
 
     saveToRefManagerApi({
-      unifiedDocument,
+      contentId,
+      contentType,
       projectId,
       orgId: selectedOrg?.id,
     })
@@ -203,7 +210,7 @@ const SaveToRefManager = ({
         .filter(
           (citation) =>
             citation.projectId === project.id &&
-            citation.relatedUnifiedDocumentId === unifiedDocument.id
+            citation.relatedUnifiedDocumentId === unifiedDocumentId
         )
         .map((citation) => citation.id);
 

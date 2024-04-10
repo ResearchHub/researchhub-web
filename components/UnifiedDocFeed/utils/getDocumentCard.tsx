@@ -36,12 +36,10 @@ export function getDocumentCard({
         .map((b) => new Bounty(b))
         .filter((b) => b.status === "OPEN");
 
-      const unifiedDocument = parseUnifiedDocument(uniDoc);
-
       return (
         <FeedCard
           {...targetDoc}
-          unifiedDocument={unifiedDocument}
+          unifiedDocumentId={uniDoc.id}
           document={targetDoc}
           documentFilter={uniDoc.document_filter}
           formattedDocType={formattedDocType}
