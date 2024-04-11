@@ -13,6 +13,7 @@ import Image from "next/image";
 import ReactTooltip from "react-tooltip";
 import numeral from "numeral";
 import { ReferenceProjectsUpsertContextProvider } from "~/components/ReferenceManager/references/reference_organizer/context/ReferenceProjectsUpsertContext";
+import colors from "~/config/themes/colors";
 
 const FeedCardActivity = ({
   unifiedDocumentId,
@@ -32,7 +33,6 @@ const FeedCardActivity = ({
   return (
     <div className={css(styles.wrapper)} onClick={(e) => {
       e.preventDefault();
-      e.stopPropagation();
     }}>
       <ReferenceProjectsUpsertContextProvider>
         <ReactTooltip effect="solid" />
@@ -137,6 +137,9 @@ const styles = StyleSheet.create({
     height: "auto",
     border: "none",
     fontWeight: 400,
+    ":hover": {
+      backgroundColor: colors.GREY(0.3),
+    }
   },
 });
 

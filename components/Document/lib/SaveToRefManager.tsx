@@ -90,12 +90,13 @@ const SaveToRefManager = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isOrgSelectorOpen, setIsOrgSelectorOpen] = useState<boolean>(false);
   const [selectedOrg, setSelectedOrg] = useState<any>(null);
+  const [refId, setRefId] = useState(`ref-${genClientId()}`);
   const projectCitationMap = useRef<{
     [key: string]: Array<string>;
   }>({});
 
   const { orgs, setCurrentOrg } = useOrgs();
-  const tooltipRef = useRef(null);
+  const btnRef = useRef(null);
 
   const {
     setIsModalOpen: setIsProjectUpsertModalOpen,
@@ -140,8 +141,8 @@ const SaveToRefManager = ({
   }, [orgs]);
 
   useEffectHandleClick({
-    ref: tooltipRef,
-    exclude: [`.trigger-for-save-to-ref-manager`, ".upsert-project-modal"],
+    ref: btnRef,
+    exclude: ["." + refId],
     onOutsideClick: () => {
       setIsOpen(false);
     },
@@ -242,25 +243,30 @@ const SaveToRefManager = ({
 
   return (
     <>
-      <ReferenceProjectsUpsertModal
-        redirectAfterUpsert={false}
-        onUpsertSuccess={(project) => {
-          fetchReferenceOrgProjects({
-            onError: () => {
-              silentEmptyFnc();
-            },
-            onSuccess: (payload): void => {
-              setOrgProjects(payload ?? []);
-            },
-            payload: {
-              organization: selectedOrg.id,
-            },
-          });
-        }}
-      />
+      <div onClick={(e) => {
+        e.stopPropagation()
+      }}>
+        <ReferenceProjectsUpsertModal
+          redirectAfterUpsert={false}
+          onUpsertSuccess={(project) => {
+            fetchReferenceOrgProjects({
+              onError: () => {
+                silentEmptyFnc();
+              },
+              onSuccess: (payload): void => {
+                setOrgProjects(payload ?? []);
+                setIsOpen(false);
+              },
+              payload: {
+                organization: selectedOrg.id,
+              },
+            });
+          }}
+        />
+      </div>
 
-      <div className={css(styles.wrapper)}>
-        <div id="save-to-ref-manager">
+      <div className={css(styles.wrapper) + " " + refId}>
+        <div>
           <PermissionNotificationWrapper
             modalMessage="edit document"
             permissionKey="UpdatePaper"
@@ -268,20 +274,13 @@ const SaveToRefManager = ({
             onClick={() => setIsOpen(!isOpen)}
             hideRipples={true}
           >
-            <div className="trigger-for-save-to-ref-manager">
+            <div ref={btnRef}>
               {isSaved ? savedBtnComponent : unsavedBtnComponent}
             </div>
           </PermissionNotificationWrapper>
         </div>
         {isOpen && (
-          <div
-            className={css(styles.main) + " save-ref-open"}
-            ref={tooltipRef}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-            }}
-          >
+          <div className={css(styles.main) + " save-ref-open"}>
             <div className={css(styles.title)}>Save to Reference Manager</div>
             <div
               className={css(styles.dropdown)}
