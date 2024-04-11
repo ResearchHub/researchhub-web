@@ -514,6 +514,7 @@ function FeedCard({
                       style={{ marginLeft: "auto" }}
                     >
                       <FeedCardActivity
+                        docUrl={feDocUrl}
                         unifiedDocumentId={unifiedDocumentId}
                         contentId={id}
                         contentType={

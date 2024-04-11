@@ -10,13 +10,14 @@ import SaveToRefManager from "~/components/Document/lib/SaveToRefManager";
 import { faBookmark } from "@fortawesome/pro-regular-svg-icons";
 import IconButton from "../Icons/IconButton";
 import Image from "next/image";
-import ReactTooltip from "react-tooltip";
 import numeral from "numeral";
 import { ReferenceProjectsUpsertContextProvider } from "~/components/ReferenceManager/references/reference_organizer/context/ReferenceProjectsUpsertContext";
 import colors from "~/config/themes/colors";
+import Link from "next/link";
 
 const FeedCardActivity = ({
   unifiedDocumentId,
+  docUrl,
   contentId,
   contentType,
   discussionCount,
@@ -26,6 +27,7 @@ const FeedCardActivity = ({
   contentId: ID;
   contentType: "paper" | "post";
   unifiedDocumentId: ID;
+  docUrl: string;
   discussionCount: number;
   citationCount: number;
   reviewScore: number;
@@ -35,74 +37,76 @@ const FeedCardActivity = ({
       e.preventDefault();
     }}>
       <ReferenceProjectsUpsertContextProvider>
-        <ReactTooltip effect="solid" />
         {reviewScore > 0 && (
           <>
-            <IconButton variant="round" overrideStyle={styles.iconButton}>
-              <div
-                className={css(styles.discussionCount)}
-                data-tip={`Average review score received from community`}
-              >
-                <FontAwesomeIcon icon={faStar}></FontAwesomeIcon>
-                <span>{numeral(reviewScore).format("0.0a")}</span>
-              </div>
-            </IconButton>
+            <Link href={docUrl + "/reviews"}>
+              <IconButton variant="round" overrideStyle={styles.iconButton}>
+                <div
+                  className={css(styles.discussionCount)}
+                >
+                  <FontAwesomeIcon icon={faStar}></FontAwesomeIcon>
+                  <span>{numeral(reviewScore).format("0.0a")}</span>
+                </div>
+              </IconButton>
+            </Link>
             <div className={css(styles.divider)} />
           </>
         )}
         {citationCount > 0 && (
           <>
-            <IconButton variant="round" overrideStyle={styles.iconButton}>
-              <div
-                className={css(styles.citationCount)}
-                data-tip={`Times paper has been cited`}
-              >
-                <Image
-                  alt="Review"
-                  width={15}
-                  height={15}
-                  src={"/static/citation.svg"}
-                />
-                <span>{citationCount}</span>
-              </div>
-            </IconButton>
+            <Link href={docUrl}>
+              <IconButton variant="round" overrideStyle={styles.iconButton}>
+                <div
+                  className={css(styles.citationCount)}
+                  data-tip={`Times paper has been cited`}
+                >
+                  <Image
+                    alt="Citation"
+                    width={15}
+                    height={15}
+                    src={"/static/citation.svg"}
+                  />
+                  <span>{citationCount}</span>
+                </div>
+              </IconButton>
+            </Link>
             <div className={css(styles.divider)} />
           </>
         )}
-        <IconButton variant="round" overrideStyle={styles.iconButton}>
-          <div className={css(styles.discussionCount)}>
-            <FontAwesomeIcon icon={faComments}></FontAwesomeIcon>
-            <span>{discussionCount}</span>
-          </div>
-        </IconButton>
+        <Link href={docUrl + "/conversation"}>
+          <IconButton variant="round" overrideStyle={styles.iconButton}>
+            <div className={css(styles.discussionCount)}>
+              <FontAwesomeIcon icon={faComments}></FontAwesomeIcon>
+              <span>{discussionCount}</span>
+            </div>
+          </IconButton>
+        </Link>
         {unifiedDocumentId && (
           <>
             <div className={css(styles.divider)} />
-            <IconButton variant="round" overrideStyle={styles.iconButton}>
-              <SaveToRefManager
-                unifiedDocumentId={unifiedDocumentId}
-                contentId={contentId}
-                contentType={contentType}
-                unsavedBtnComponent={
-                  <div>
-                    <FontAwesomeIcon
-                      icon={faBookmark}
-                      style={{ marginRight: 5, fontSize: 14 }}
-                    />
-                    <span>Save</span>
-                  </div>
-                }
-                savedBtnComponent={
-                  <div>
-                    <FontAwesomeIcon
-                      icon={solidBookmark}
-                      style={{ marginRight: 5, color: "#909090", fontSize: 14 }}
-                    />
-                    <span>Save</span>
-                  </div>
-                }
-              />
-            </IconButton>
+            <SaveToRefManager
+              unifiedDocumentId={unifiedDocumentId}
+              contentId={contentId}
+              contentType={contentType}
+              unsavedBtnComponent={
+                <IconButton variant="round" overrideStyle={styles.iconButton}>
+                  <FontAwesomeIcon
+                    icon={faBookmark}
+                    style={{ fontSize: 14 }}
+                  />
+                  <span>Save</span>
+                </IconButton>
+              }
+              savedBtnComponent={
+                <IconButton variant="round" overrideStyle={styles.iconButton}>
+                  <FontAwesomeIcon
+                    icon={solidBookmark}
+                    style={{ color: "#909090", fontSize: 14 }}
+                  />
+                  <span>Save</span>
+                </IconButton>
+              }
+            />
           </>
         )}
       </ReferenceProjectsUpsertContextProvider>
