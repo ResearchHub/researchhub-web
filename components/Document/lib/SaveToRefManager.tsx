@@ -135,8 +135,6 @@ const SaveToRefManager = ({
         orgs.find((org) => org.id === orgIdWhichCitationIsSavedTo) || orgs[0];
 
       setSelectedOrg(selectedOrg);
-      // @ts-ignore
-      setCurrentOrg(selectedOrg);
     }
   }, [orgs]);
 
@@ -207,9 +205,7 @@ const SaveToRefManager = ({
 
   const handleSelectProject = (project) => {
     if (savedInProjectIds.includes(project.id)) {
-
       // @ts-ignore
-      setCurrentOrg(selectedOrg);
       const citationIdsToRemove = savedCitations
         .filter(
           (citation) =>
@@ -243,10 +239,13 @@ const SaveToRefManager = ({
 
   return (
     <>
-      <div onClick={(e) => {
-        e.stopPropagation()
-      }}>
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <ReferenceProjectsUpsertModal
+          org={selectedOrg}
           redirectAfterUpsert={false}
           onUpsertSuccess={(project) => {
             fetchReferenceOrgProjects({
@@ -311,6 +310,8 @@ const SaveToRefManager = ({
                           className={css(styles.orgSelect)}
                           onClick={() => {
                             setSelectedOrg(org);
+                            // @ts-ignore
+                            setCurrentOrg(org);
                             setIsOrgSelectorOpen(false);
                           }}
                         >
