@@ -55,16 +55,22 @@ const getSelectedFacetValues = ({ router, forKey }) => {
 const Filters = ({ onChange, searchFacets }: Props) => {
   const router = useRouter();
   const [facetValuesForHub, setFacetValuesForHub] = useState([]);
+  const [facetValuesForJournal, setFacetValuesForJournal] = useState([]);
   const [selectedHubs, setSelectedHubs] = useState<
     { label: string; value: string }[]
   >([]);
+  const [selectedJournals, setSelectedJournals] = useState<
+    { label: string; value: string }[]
+  >([]);  
 
   useEffect(() => {
     setFacetValuesForHub(get(searchFacets, "_filter_hubs.hubs.buckets", []));
+    setFacetValuesForJournal(get(searchFacets, "_filter_external_source.external_source.buckets", []));
   }, [searchFacets]);
 
   useEffect(() => {
     setSelectedHubs(getSelectedFacetValues({ router, forKey: "hub" }));
+    setSelectedJournals(getSelectedFacetValues({ router, forKey: "journal" }));
   }, [router.query]);
 
   const getFacetOptionsForDropdown = (facetKey) => {
@@ -74,6 +80,9 @@ const Filters = ({ onChange, searchFacets }: Props) => {
       case "hubs":
         facetValues = facetValuesForHub;
         break;
+      case "journal":
+        facetValues = facetValuesForJournal;
+        break;        
     }
 
     return facetValues.map((f: any) => ({
@@ -84,6 +93,7 @@ const Filters = ({ onChange, searchFacets }: Props) => {
   };
 
   const facetValueOptsForHubs = getFacetOptionsForDropdown("hubs");
+  const facetValueOptsForJournal = getFacetOptionsForDropdown("journal");
   return (
     <div>
       <div>
@@ -113,6 +123,33 @@ const Filters = ({ onChange, searchFacets }: Props) => {
           // }}
           showCountInsteadOfLabels={true}
         />
+        <FormSelect
+          id={"journal"}
+          options={facetValueOptsForJournal}
+          containerStyle={styles.dropdownContainer}
+          inputStyle={styles.dropdownInput}
+          onChange={(id, value) => {
+            onChange("journal", value);
+          }}
+          isSearchable={true}
+          placeholder={"Journal"}
+          reactSelect={{
+            styles: {
+              menu: {
+                width:
+                  facetValueOptsForJournal.length > 0
+                    ? "max-content"
+                    : "100%",
+              },
+            },
+          }}
+          value={selectedJournals}
+          isMulti={true}
+          multiTagStyle={null}
+          multiTagLabelStyle={null}
+          isClearable={false}
+          showCountInsteadOfLabels={true}
+        />        
       </div>
 
       <div>
@@ -529,7 +566,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     } else if (filterType === "publication_year") {
       query["paper_publish_year__gte"] = value[0];
       query["paper_publish_year__lte"] = value[1];
-    } else if (filterType === "hub") {
+    } else if (filterType === "hub" || filterType === "journal") {
       if (Array.isArray(value)) {
         query[filterType] = value.map((v) => v.valueForApi);
       } else if (!value || !value.valueForApi) {
@@ -671,7 +708,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
               )} */}
             </div>
 
-            <FormSelect
+            {/* <FormSelect
               id={"journal"}
               options={facetValueOptsForJournal}
               containerStyle={styles.dropdownContainer}
@@ -695,7 +732,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
               multiTagLabelStyle={null}
               isClearable={false}
               showCountInsteadOfLabels={true}
-            />
+            /> */}
             <FormSelect
               id={"ordering"}
               placeholder={"Sort"}
