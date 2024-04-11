@@ -6,6 +6,7 @@ import {
   RESEARCHHUB_POST_DOCUMENT_TYPES,
 } from "~/config/utils/getUnifiedDocType";
 import Bounty from "~/config/types/bounty";
+import { parseUnifiedDocument } from "~/config/types/root_types";
 
 export type UnifiedCard = ReactElement<typeof FeedCard> | null;
 
@@ -38,6 +39,7 @@ export function getDocumentCard({
       return (
         <FeedCard
           {...targetDoc}
+          unifiedDocumentId={uniDoc.id}
           document={targetDoc}
           documentFilter={uniDoc.document_filter}
           formattedDocType={formattedDocType}

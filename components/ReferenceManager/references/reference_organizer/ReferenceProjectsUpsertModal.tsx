@@ -34,14 +34,15 @@ type ComponentProps = {
   onCloseModal?: (event?: SyntheticEvent) => void;
   onUpsertSuccess?: (result) => void;
   redirectAfterUpsert?: boolean;
+  org?: any;
 };
 
 export default function ReferenceProjectsUpsertModal({
   onCloseModal,
   onUpsertSuccess,
   redirectAfterUpsert = true,
+  org = null,
 }: ComponentProps): ReactElement {
-  // const currentOrg = getCurrentUserCurrentOrg();
   const {
     isModalOpen,
     projectValue,
@@ -50,6 +51,7 @@ export default function ReferenceProjectsUpsertModal({
     upsertPurpose,
   } = useReferenceProjectUpsertContext();
   const { currentOrg } = useOrgs();
+  const orgToUse = org || currentOrg;
 
   const { resetProjectsFetchTime, setActiveProject, flattenCollaborators } =
     useReferenceActiveProjectContext();
@@ -97,7 +99,7 @@ export default function ReferenceProjectsUpsertModal({
       //   ),
       // },
       is_public: isPublic,
-      organization: currentOrg?.id,
+      organization: orgToUse?.id,
       project_name: nullthrows(
         projectName?.trim(),
         "Folder name may not be null"
@@ -213,7 +215,7 @@ export default function ReferenceProjectsUpsertModal({
               width: "100%",
             }}
           >
-            <OrgAvatar org={currentOrg} />
+            <OrgAvatar org={orgToUse} />
             <div style={{ marginRight: "auto" }}>
               <Typography
                 color="rgba(36, 31, 58, 1)"
@@ -224,7 +226,7 @@ export default function ReferenceProjectsUpsertModal({
                 sx={{ background: "transparent" }}
                 marginLeft="8px"
               >
-                {`Everyone at ${currentOrg?.name}`}
+                {`Everyone at ${orgToUse?.name}`}
               </Typography>
             </div>
             <DropdownMenu

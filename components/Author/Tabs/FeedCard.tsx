@@ -1,12 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import sanitizeHtml from "sanitize-html";
-import {
-  faComments,
-  faCommentAltLines,
-  faCheck,
-  faQuestion,
-  faPenSquare,
-} from "@fortawesome/pro-solid-svg-icons";
+import { faQuestion, faPenSquare } from "@fortawesome/pro-solid-svg-icons";
 import { faLightbulb, faFileLines } from "@fortawesome/pro-regular-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect, useDispatch } from "react-redux";
@@ -25,14 +19,11 @@ import {
   nullthrows,
 } from "~/config/utils/nullchecks";
 import { isDevEnv } from "~/config/utils/env";
-import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
 import {
   AuthorProfile,
-  ID,
   RhDocumentType,
-  parseAuthorProfile,
-  parseUser,
+  UnifiedDocument,
 } from "~/config/types/root_types";
 import { useState, useEffect, SyntheticEvent } from "react";
 import colors, {
@@ -41,13 +32,9 @@ import colors, {
 } from "~/config/themes/colors";
 import DesktopOnly from "~/components/DesktopOnly";
 import dynamic from "next/dynamic";
-
-import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
-import Ripples from "react-ripples";
 import VoteWidget from "~/components/VoteWidget";
 import { createVoteHandler } from "~/components/Vote/utils/createVoteHandler";
-import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocType";
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import ContentBadge from "~/components/ContentBadge";
@@ -56,16 +43,14 @@ import Link from "next/link";
 import {
   Paper,
   Post,
-  isPaper,
   parsePaper,
-  parsePaperAuthors,
   parsePost,
 } from "~/components/Document/lib/types";
-import AuthorList from "../AuthorList";
 import { parseHub } from "~/config/types/hub";
 import DocumentHubs from "~/components/Document/lib/DocumentHubs";
 import { Fundraise, parseFundraise } from "~/components/Fundraise/lib/types";
 import FundraiseCard from "~/components/Fundraise/FundraiseCard";
+import FeedCardActivity from "~/components/Feed/FeedCardActivity";
 
 const DocumentViewer = dynamic(
   () => import("~/components/Document/DocumentViewer")
@@ -77,6 +62,7 @@ export type FeedCardProps = {
   created_by: any;
   document: any;
   created_date: any;
+  documentFilter: any;
   discussion_count: number;
   featured: boolean;
   first_figure: any;
@@ -102,8 +88,6 @@ export type FeedCardProps = {
   slug: string;
   title: string;
   titleAsHtml: any;
-  unified_document_id: number;
-  unified_document: any;
   uploaded_by: any;
   uploaded_date: any;
   user_vote: any;
@@ -113,6 +97,8 @@ export type FeedCardProps = {
   type: string;
   twitterScore?: number | undefined | null;
   fundraise?: Fundraise;
+  citations?: number;
+  unifiedDocumentId: ID;
 };
 
 const documentIcons = {
@@ -157,6 +143,8 @@ function FeedCard({
   user: currentUser,
   withSidePadding,
   fundraise,
+  citations,
+  unifiedDocumentId,
 }: FeedCardProps) {
   let parsedDoc: null | Paper | Post = null;
   let authors: AuthorProfile[] = [];
@@ -285,6 +273,17 @@ function FeedCard({
   const bountyAmount = documentFilter?.bounty_total_amount;
   const hasActiveBounty = documentFilter?.bounty_open;
 
+  let numOfVisibleHubs = 3;
+  if (reviews && reviews?.avg > 0 && numOfVisibleHubs > 1) {
+    numOfVisibleHubs--;
+  }
+  if (citations && citations > 0 && numOfVisibleHubs > 1) {
+    numOfVisibleHubs--;
+  }
+  if (hasActiveBounty && numOfVisibleHubs > 1) {
+    numOfVisibleHubs--;
+  }
+
   return (
     <div
       className={css(
@@ -393,7 +392,39 @@ function FeedCard({
                       hubs={parsedHubs}
                       withShowMore={false}
                       hideOnSmallerResolution={true}
+                      numOfVisibleHubs={3}
                     />
+                    {hasActiveBounty && (
+                      <ContentBadge
+                        badgeOverride={styles.badge}
+                        contentType="bounty"
+                        bountyAmount={bountyAmount}
+                        label={
+                          <div style={{ display: "flex", whiteSpace: "pre" }}>
+                            <div
+                              style={{ flex: 1 }}
+                              className={css(styles.mobile)}
+                            >
+                              {numeral(
+                                formatBountyAmount({
+                                  amount: bountyAmount,
+                                })
+                              ).format("0,0a")}{" "}
+                              RSC
+                            </div>
+                            <div
+                              style={{ flex: 1 }}
+                              className={css(styles.desktop)}
+                            >
+                              {formatBountyAmount({
+                                amount: bountyAmount,
+                              })}{" "}
+                              RSC
+                            </div>
+                          </div>
+                        }
+                      />
+                    )}
                   </div>
                   <div
                     className={css(
@@ -434,43 +465,47 @@ function FeedCard({
                           badgeOverride={styles.badge}
                         />
                       </div>
-                      {hasActiveBounty && (
-                        <ContentBadge
-                          badgeOverride={styles.badge}
-                          contentType="bounty"
-                          bountyAmount={bountyAmount}
-                          label={
-                            <div style={{ display: "flex", whiteSpace: "pre" }}>
-                              <div
-                                style={{ flex: 1 }}
-                                className={css(styles.mobile)}
-                              >
-                                {numeral(
-                                  formatBountyAmount({
-                                    amount: bountyAmount,
-                                  })
-                                ).format("0,0a")}{" "}
-                                RSC
-                              </div>
-                              <div
-                                style={{ flex: 1 }}
-                                className={css(styles.desktop)}
-                              >
-                                {formatBountyAmount({
-                                  amount: bountyAmount,
-                                })}{" "}
-                                RSC
-                              </div>
-                            </div>
-                          }
-                        />
-                      )}
-                      <div className={css(styles.desktop)}>
+
+                      <div className={css(styles.desktop, styles.badges)}>
                         <DocumentHubs
                           hubs={parsedHubs}
                           withShowMore={false}
                           hideOnSmallerResolution={true}
+                          numOfVisibleHubs={numOfVisibleHubs}
                         />
+                        {hasActiveBounty && (
+                          <ContentBadge
+                            badgeOverride={styles.badge}
+                            contentType="bounty"
+                            bountyAmount={bountyAmount}
+                            label={
+                              <div
+                                style={{ display: "flex", whiteSpace: "pre" }}
+                              >
+                                <div
+                                  style={{ flex: 1 }}
+                                  className={css(styles.mobile)}
+                                >
+                                  {numeral(
+                                    formatBountyAmount({
+                                      amount: bountyAmount,
+                                    })
+                                  ).format("0,0a")}{" "}
+                                  RSC
+                                </div>
+                                <div
+                                  style={{ flex: 1 }}
+                                  className={css(styles.desktop)}
+                                >
+                                  {formatBountyAmount({
+                                    amount: bountyAmount,
+                                  })}{" "}
+                                  RSC
+                                </div>
+                              </div>
+                            }
+                          />
+                        )}
                       </div>
                     </div>
 
@@ -478,15 +513,17 @@ function FeedCard({
                       className={css(styles.metaItem)}
                       style={{ marginLeft: "auto" }}
                     >
-                      <span className={css(styles.metadataIcon)}>
-                        {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
-                      </span>
-                      <span className={css(styles.metadataText)}>
-                        <span>{discussion_count}</span>
-                        <span className={css(styles.hideTextMobile)}>
-                          {` Comment${discussion_count === 1 ? "" : "s"}`}
-                        </span>
-                      </span>
+                      <FeedCardActivity
+                        docUrl={feDocUrl}
+                        unifiedDocumentId={unifiedDocumentId}
+                        contentId={id}
+                        contentType={
+                          formattedDocType === "paper" ? "paper" : "post"
+                        }
+                        discussionCount={discussion_count}
+                        citationCount={citations ?? 0}
+                        reviewScore={reviews?.avg}
+                      />
                     </div>
                   </div>
                 </div>
@@ -519,6 +556,9 @@ const styles = StyleSheet.create({
     marginRight: 8,
     borderLeft: `1px solid ${colors.BLACK(0.6)}`,
     height: 20,
+  },
+  badges: {
+    columnGap: "10px",
   },
   docBadgeWrapper: {
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
@@ -567,6 +607,11 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
+
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
   },
   mobile: {
     "@media only screen and (min-width: 768px)": {
@@ -574,6 +619,7 @@ const styles = StyleSheet.create({
     },
   },
   desktop: {
+    display: "flex",
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },

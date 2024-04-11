@@ -1,18 +1,14 @@
 import { faAngleDown, faFolderPlus } from "@fortawesome/pro-light-svg-icons";
-import { faBookmark } from "@fortawesome/pro-regular-svg-icons";
-import { faBookmark as solidBookmark } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useEffect, useRef, useState } from "react";
-import IconButton from "~/components/Icons/IconButton";
+import { useEffect, useRef, useState } from "react";
 import ProjectExplorer from "~/components/ReferenceManager/lib/ProjectExplorer";
 import { StyleSheet, css } from "aphrodite";
 import { fetchReferenceOrgProjects } from "~/components/ReferenceManager/references/reference_organizer/api/fetchReferenceOrgProjects";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import colors from "~/config/themes/colors";
-import { ID, Organization, RhDocumentType } from "~/config/types/root_types";
+import { ID } from "~/config/types/root_types";
 import API, { generateApiUrl } from "~/config/api";
 import Helpers from "~/config/api/helpers";
-import { isPaper } from "./types";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 import { useReferenceProjectUpsertContext } from "~/components/ReferenceManager/references/reference_organizer/context/ReferenceProjectsUpsertContext";
 import ReferenceProjectsUpsertModal from "~/components/ReferenceManager/references/reference_organizer/ReferenceProjectsUpsertModal";
@@ -20,43 +16,37 @@ import { emptyFncWithMsg, silentEmptyFnc } from "~/config/utils/nullchecks";
 import { removeReferenceCitations } from "~/components/ReferenceManager/references/api/removeReferenceCitations";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
-import debounce from "lodash/debounce";
 import showSaveToRefManagerToast from "~/components/Notifications/lib/showSaveToRefManagerToast";
-
-interface Project {
-  id: number;
-  children: Project[];
-}
-
-function getFlatListOfProjectIds(projects: Project[]): number[] {
-  console.log("projects", projects);
-  const ids: number[] = [];
-
-  function extractIds(projects: Project[]) {
-    for (const project of projects) {
-      ids.push(project.id);
-      if (project.children.length) {
-        extractIds(project.children);
-      }
-    }
-  }
-
-  extractIds(projects);
-
-  return ids;
-}
+import {
+  SavedCitation,
+  parseSavedCitation,
+  savedCitationsContext,
+} from "~/components/contexts/SavedCitationsContext";
+import { genClientId } from "~/config/utils/id";
 
 interface Props {
-  contentId: ID;
-  contentType: RhDocumentType;
   unifiedDocumentId: ID;
-  doc?: any;
+  contentType: "paper" | "post";
+  contentId: ID;
+  unsavedBtnComponent: JSX.Element;
+  savedBtnComponent: JSX.Element;
 }
 
-const saveToRefManagerApi = ({ contentId, orgId, projectId, doc }) => {
-  const isDocPaper = isPaper(doc);
+interface SaveToRefManagerApiProps {
+  orgId: ID;
+  projectId: ID;
+  contentId: ID;
+  contentType: "paper" | "post";
+}
+
+const saveToRefManagerApi = async ({
+  orgId,
+  projectId,
+  contentId,
+  contentType,
+}: SaveToRefManagerApiProps): Promise<SavedCitation> => {
   const url = generateApiUrl(
-    isDocPaper
+    contentType === "paper"
       ? `citation_entry/${contentId}/add_paper_as_citation`
       : `citation_entry/${contentId}/add_post_as_citation`
   );
@@ -70,83 +60,43 @@ const saveToRefManagerApi = ({ contentId, orgId, projectId, doc }) => {
     )
   )
     .then((res): any => Helpers.parseJSON(res))
-    .catch((error) => {
-      console.log("error", error);
+    .then((data) => {
+      return parseSavedCitation(data);
     });
 };
 
-interface AlreadySavedProps {
-  unifiedDocumentId: ID;
-  orgId: ID;
-  projectIds: ID[];
-}
-
-const checkWhichProjectsDocIsSavedApi = ({
-  orgId,
+const isDocSavedToAnyUserOrg = ({
+  savedCitations,
   unifiedDocumentId,
-  projectIds,
-}: AlreadySavedProps) => {
-  const url = generateApiUrl(
-    `citation_entry/${unifiedDocumentId}/check_paper_in_reference_manager`,
-    `?project_ids=${projectIds.join(",")}`
+}: {
+  savedCitations: SavedCitation[];
+  unifiedDocumentId: ID;
+}) => {
+  return savedCitations.some(
+    (citation) => citation.relatedUnifiedDocumentId === unifiedDocumentId
   );
-
-  return fetch(
-    url,
-    API.GET_CONFIG(
-      undefined,
-      orgId ? { "x-organization-id": orgId } : undefined
-    )
-  )
-    .then((res): any => Helpers.parseJSON(res))
-    .catch((error) => {
-      console.log("error", error);
-    });
 };
 
 const SaveToRefManager = ({
+  unifiedDocumentId,
   contentId,
   contentType,
-  unifiedDocumentId,
-  doc,
+  unsavedBtnComponent,
+  savedBtnComponent,
 }: Props) => {
+  const { savedCitations, setSavedCitations } = savedCitationsContext();
   const [orgProjects, setOrgProjects] = useState([]);
   const [isFetchingProjects, setIsFetchingProjects] = useState(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isOrgSelectorOpen, setIsOrgSelectorOpen] = useState<boolean>(false);
   const [selectedOrg, setSelectedOrg] = useState<any>(null);
+  const [refId, setRefId] = useState(`ref-${genClientId()}`);
   const projectCitationMap = useRef<{
     [key: string]: Array<string>;
   }>({});
-  const [checkboxState, setCheckboxState] = useState({});
 
   const { orgs, setCurrentOrg } = useOrgs();
-  const tooltipRef = useRef(null);
-
-  useEffect(() => {
-    if (!isFetchingProjects && selectedOrg && orgProjects.length > 0) {
-      const flatList = getFlatListOfProjectIds(orgProjects);
-      (async () => {
-        const res = await checkWhichProjectsDocIsSavedApi({
-          orgId: selectedOrg.id,
-          unifiedDocumentId,
-          projectIds: flatList,
-        });
-        projectCitationMap.current = res;
-
-        const checkboxState = flatList.reduce((obj, item) => {
-          if (res[item] && res[item].length > 0) {
-            obj[item] = true;
-          } else {
-            obj[item] = false;
-          }
-          return obj;
-        }, {});
-
-        setCheckboxState(checkboxState);
-      })();
-    }
-  }, [selectedOrg, orgProjects, isFetchingProjects]);
+  const btnRef = useRef(null);
 
   const {
     setIsModalOpen: setIsProjectUpsertModalOpen,
@@ -155,7 +105,7 @@ const SaveToRefManager = ({
   } = useReferenceProjectUpsertContext();
 
   useEffect(() => {
-    if (selectedOrg) {
+    if (selectedOrg && isOpen) {
       setIsFetchingProjects(true);
       projectCitationMap.current = {};
 
@@ -173,78 +123,104 @@ const SaveToRefManager = ({
         },
       });
     }
-  }, [selectedOrg]);
+  }, [selectedOrg, isOpen]);
 
   useEffect(() => {
     if (orgs && orgs.length > 0 && !selectedOrg) {
-      setSelectedOrg(orgs[0]);
-      // @ts-ignore
-      setCurrentOrg(orgs[0]);
+      // If this document appears in a saved org already, default to that org.
+      const orgIdWhichCitationIsSavedTo = savedCitations.find(
+        (citation) => citation.relatedUnifiedDocumentId === unifiedDocumentId
+      )?.organizationId;
+      const selectedOrg =
+        orgs.find((org) => org.id === orgIdWhichCitationIsSavedTo) || orgs[0];
+
+      setSelectedOrg(selectedOrg);
     }
   }, [orgs]);
 
   useEffectHandleClick({
-    ref: tooltipRef,
-    exclude: [`.trigger-for-save-to-ref-manager`, ".upsert-project-modal"],
+    ref: btnRef,
+    exclude: ["." + refId],
     onOutsideClick: () => {
       setIsOpen(false);
     },
   });
 
-  const savedInProjectIds = Object.keys(checkboxState)
-    .filter((projectId) => checkboxState[projectId] === true)
-    .map((projectId) => parseInt(projectId));
+  const savedInProjectIds = savedCitations
+    .filter(
+      (citation) => citation.relatedUnifiedDocumentId === unifiedDocumentId
+    )
+    .map((citation) => citation.projectId);
+  const isSaved = isDocSavedToAnyUserOrg({
+    savedCitations,
+    unifiedDocumentId,
+  });
 
-  const isSaved = Object.values(checkboxState).find(
-    (isChecked) => isChecked === true
-  );
+  const removeCitationsFromProjectApi = (citationIds: ID[]) => {
+    setSavedCitations(
+      savedCitations.filter((citation) => !citationIds.includes(citation.id))
+    ); // Optimistic save
 
-  const saveToApi = ({
-    action,
-    projectId,
-  }: {
-    action: "REMOVE" | "ADD";
-    projectId: any;
-  }) => {
-    const referenceIds = projectCitationMap.current[projectId];
-
-    if (action === "REMOVE") {
-      projectCitationMap.current[projectId] = [];
-
-      removeReferenceCitations({
-        onError: emptyFncWithMsg,
-        orgId: selectedOrg!.id,
-        onSuccess: emptyFncWithMsg,
-        payload: {
-          citation_entry_ids: referenceIds,
-        },
-      });
-    } else {
-      saveToRefManagerApi({
-        projectId: projectId,
-        contentId: contentId,
-        orgId: selectedOrg?.id,
-        doc,
-      }).then((res: any) => {
-        projectCitationMap[projectId] = [res?.id];
-      });
-    }
+    removeReferenceCitations({
+      onError: () => {
+        setSavedCitations([...savedCitations]); // Revert on error
+      },
+      orgId: selectedOrg!.id,
+      onSuccess: emptyFncWithMsg,
+      payload: {
+        citation_entry_ids: citationIds,
+      },
+    });
   };
 
-  const debouncedSaveToApi = useCallback(debounce(saveToApi, 500), [
-    selectedOrg,
-  ]);
+  const addCitationsToProjectApi = (projectId: ID) => {
+    const tempId = genClientId(); // Temporary id to show optimistic save
+    setSavedCitations([
+      ...savedCitations,
+      {
+        id: tempId,
+        organizationId: selectedOrg?.id,
+        projectId,
+        relatedUnifiedDocumentId: unifiedDocumentId,
+      },
+    ]);
+
+    saveToRefManagerApi({
+      contentId,
+      contentType,
+      projectId,
+      orgId: selectedOrg?.id,
+    })
+      .then((citation: SavedCitation) => {
+        setSavedCitations([
+          ...savedCitations.filter((citation) => citation.id !== tempId),
+          citation,
+        ]);
+      })
+      .catch((error) => {
+        setSavedCitations([...savedCitations]);
+        console.error("Failed to save citation", error);
+      });
+  };
 
   const handleSelectProject = (project) => {
     if (savedInProjectIds.includes(project.id)) {
+      // @ts-ignore
+      const citationIdsToRemove = savedCitations
+        .filter(
+          (citation) =>
+            citation.projectId === project.id &&
+            citation.relatedUnifiedDocumentId === unifiedDocumentId
+        )
+        .map((citation) => citation.id);
+
       showSaveToRefManagerToast({
         action: "REMOVE",
         project,
         org: selectedOrg,
         onActionClick: () => {
           // Undo
-          setCheckboxState({ ...checkboxState, [project.id]: true });
-          debouncedSaveToApi({ action: "ADD", projectId: project.id });
+          addCitationsToProjectApi(project.id);
           showSaveToRefManagerToast({
             action: "ADD",
             project,
@@ -254,36 +230,41 @@ const SaveToRefManager = ({
         actionLabel: "Undo",
       }); // Optimistic notification before API is called
 
-      setCheckboxState({ ...checkboxState, [project.id]: false });
-      debouncedSaveToApi({ action: "REMOVE", projectId: project.id });
+      removeCitationsFromProjectApi(citationIdsToRemove);
     } else {
       showSaveToRefManagerToast({ action: "ADD", project, org: selectedOrg }); // Optimistic notification before API is called
-      setCheckboxState({ ...checkboxState, [project.id]: true });
-      debouncedSaveToApi({ action: "ADD", projectId: project.id });
+      addCitationsToProjectApi(project.id);
     }
   };
 
   return (
     <>
-      <ReferenceProjectsUpsertModal
-        redirectAfterUpsert={false}
-        onUpsertSuccess={(project) => {
-          fetchReferenceOrgProjects({
-            onError: () => {
-              silentEmptyFnc();
-            },
-            onSuccess: (payload): void => {
-              setOrgProjects(payload ?? []);
-            },
-            payload: {
-              organization: selectedOrg.id,
-            },
-          });
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
         }}
-      />
+      >
+        <ReferenceProjectsUpsertModal
+          org={selectedOrg}
+          redirectAfterUpsert={false}
+          onUpsertSuccess={(project) => {
+            fetchReferenceOrgProjects({
+              onError: () => {
+                silentEmptyFnc();
+              },
+              onSuccess: (payload): void => {
+                setOrgProjects(payload ?? []);
+              },
+              payload: {
+                organization: selectedOrg.id,
+              },
+            });
+          }}
+        />
+      </div>
 
-      <div className={css(styles.wrapper)}>
-        <div id="save-to-ref-manager">
+      <div className={css(styles.wrapper) + " " + refId}>
+        <div>
           <PermissionNotificationWrapper
             modalMessage="edit document"
             permissionKey="UpdatePaper"
@@ -291,33 +272,13 @@ const SaveToRefManager = ({
             onClick={() => setIsOpen(!isOpen)}
             hideRipples={true}
           >
-            <div className="trigger-for-save-to-ref-manager">
-              <IconButton variant="round">
-                {isSaved ? (
-                  <>
-                    <FontAwesomeIcon
-                      icon={solidBookmark}
-                      style={{ marginRight: 3, color: colors.MEDIUM_GREY2() }}
-                    />
-                    <span>Saved</span>
-                  </>
-                ) : (
-                  <>
-                    <div>
-                      <FontAwesomeIcon
-                        icon={faBookmark}
-                        style={{ marginRight: 3 }}
-                      />
-                    </div>
-                    <span>Save</span>
-                  </>
-                )}
-              </IconButton>
+            <div ref={btnRef}>
+              {isSaved ? savedBtnComponent : unsavedBtnComponent}
             </div>
           </PermissionNotificationWrapper>
         </div>
         {isOpen && (
-          <div className={css(styles.main) + " save-ref-open"} ref={tooltipRef}>
+          <div className={css(styles.main) + " save-ref-open"}>
             <div className={css(styles.title)}>Save to Reference Manager</div>
             <div
               className={css(styles.dropdown)}
@@ -349,6 +310,8 @@ const SaveToRefManager = ({
                           className={css(styles.orgSelect)}
                           onClick={() => {
                             setSelectedOrg(org);
+                            // @ts-ignore
+                            setCurrentOrg(org);
                             setIsOrgSelectorOpen(false);
                           }}
                         >

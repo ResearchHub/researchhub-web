@@ -1,6 +1,5 @@
 import { nullthrows } from "~/config/utils/nullchecks";
-import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
-import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_organizer/renderNestedReferenceProjectsNavbarEl";
+import NestedReferenceProjectsNavbarEl from "../references/reference_organizer/NestedReferenceProjectsNavbarEl";
 import { useEffect, useState } from "react";
 import { ID } from "~/config/types/root_types";
 
@@ -41,19 +40,23 @@ const ProjectExplorer = ({
 
   const currentOrgSlug = currentOrg?.slug ?? null;
   const refProjectsNavbarEls = currentOrgProjects?.map((referenceProject) => {
-    const projectEl = renderNestedReferenceProjectsNavbarEl({
-      currentOrgSlug: nullthrows(currentOrgSlug, "Org must be present"),
-      referenceProject,
-      addChildrenOpen,
-      childrenOpenMap,
-      handleSelectProject,
-      handleClick,
-      allowSelection,
-      allowManage,
-      selectedProjectIds,
-      canEdit,
-      slug: `${encodeURIComponent(referenceProject.slug)}`,
-    });
+    const projectEl = 
+      <NestedReferenceProjectsNavbarEl
+        currentOrgSlug={nullthrows(currentOrgSlug, "Org must be present")}
+        referenceProject={referenceProject}
+        addChildrenOpen={addChildrenOpen}
+        childrenOpenMap={childrenOpenMap}
+        handleSelectProject={handleSelectProject}
+        handleClick={handleClick}
+        allowSelection={allowSelection}
+        allowManage={allowManage}
+        selectedProjectIds={selectedProjectIds}
+        canEdit={canEdit}
+        slug={`${encodeURIComponent(referenceProject.slug)}`}
+        setIsDeleteModalOpen={function (): void {
+          throw new Error("Function not implemented.");
+        } }
+      />
 
     return <div key={`proj-${referenceProject.id}`}>{projectEl}</div>;
   });

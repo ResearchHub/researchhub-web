@@ -582,8 +582,9 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
             return (
               <FeedCard
                 {...post}
+                unifiedDocumentId={post.unified_document_id}
                 formattedDocType={"post"}
-                key={post?.id || index}
+                key={`post-${post.id}`}
                 user_vote={post?.user_vote}
               />
             );
@@ -614,12 +615,13 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
             return (
               <FeedCard
                 {...paper}
+                unifiedDocumentId={paper.unified_document_id}
                 created_date={paper.paper_publish_date}
                 discussion_count={paper.discussion_count}
                 document={paper}
                 formattedDocType={"paper"}
                 index={index}
-                key={paper.id}
+                key={`paper-${paper.id}`}
                 paper={paper}
                 voteCallback={(arrIndex, currPaper) => {
                   const idx = results.findIndex((p) => p.id === currPaper.id);
