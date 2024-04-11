@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment, useRef } from "react";
+import React, { useState, useEffect, Fragment, useRef } from "react";
 import { useRouter } from "next/router";
 import get from "lodash/get";
 import { StyleSheet, css } from "aphrodite";
@@ -20,6 +20,188 @@ import FormSelect, {
   CustomSelectControlWithoutClickEvents,
 } from "~/components/Form/FormSelect";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
+import SimpleSlider from "../Form/SimpleSlider";
+
+import useMediaQuery from "@mui/material/useMediaQuery";
+import Modal from "@mui/material/Modal";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+
+type FilterType =
+  | "citation_percentile"
+  | "publication_year"
+  | "journal"
+  | "hub"
+  | "license";
+
+interface Props {
+  onChange: (filterType: FilterType, filterValue) => void;
+  searchFacets: any;
+}
+
+const getSelectedFacetValues = ({ router, forKey }) => {
+  let selected: any = [];
+
+  if (Array.isArray(router.query[forKey])) {
+    selected = router.query[forKey];
+  } else if (isString(router.query[forKey])) {
+    selected = [router.query[forKey]];
+  }
+
+  return selected.map((v) => ({ label: v, value: v, valueForApi: v }));
+};
+
+const Filters = ({ onChange, searchFacets }: Props) => {
+  const router = useRouter();
+  const [facetValuesForHub, setFacetValuesForHub] = useState([]);
+  const [selectedHubs, setSelectedHubs] = useState<
+    { label: string; value: string }[]
+  >([]);
+
+  useEffect(() => {
+    setFacetValuesForHub(get(searchFacets, "_filter_hubs.hubs.buckets", []));
+  }, [searchFacets]);
+
+  useEffect(() => {
+    setSelectedHubs(getSelectedFacetValues({ router, forKey: "hub" }));
+  }, [router.query]);
+
+  const getFacetOptionsForDropdown = (facetKey) => {
+    let facetValues = [];
+
+    switch (facetKey) {
+      case "hubs":
+        facetValues = facetValuesForHub;
+        break;
+    }
+
+    return facetValues.map((f: any) => ({
+      label: `${f.key} (${f.doc_count})`,
+      value: f.key,
+      valueForApi: f.key,
+    }));
+  };
+
+  const facetValueOptsForHubs = getFacetOptionsForDropdown("hubs");
+  return (
+    <div>
+      <div>
+        <div>Hubs</div>
+        <FormSelect
+          id={"hub"}
+          options={facetValueOptsForHubs}
+          containerStyle={styles.dropdownContainer}
+          inputStyle={styles.dropdownInput}
+          onChange={(id, value) => {
+            onChange("hub", value);
+          }}
+          isSearchable={true}
+          placeholder={"Hubs"}
+          value={selectedHubs}
+          isMulti={true}
+          multiTagStyle={null}
+          multiTagLabelStyle={null}
+          isClearable={false}
+          // reactSelect={{
+          //   styles: {
+          //     menu: {
+          //       width:
+          //         facetValueOptsForHubs.length > 0 ? "max-content" : "100%",
+          //     },
+          //   },
+          // }}
+          showCountInsteadOfLabels={true}
+        />
+      </div>
+
+      <div>
+        <div>Percentile</div>
+        <p>Shows only papers above specified citation percentile</p>
+        <SimpleSlider
+          start={0}
+          end={100}
+          initial={50}
+          onChange={(value: number) => onChange("citation_percentile", value)}
+        />
+      </div>
+
+      <div>
+        <div>Publication year</div>
+        <RangeSlider
+          // TODO: Make min and max dynamic
+          min={2000}
+          max={2024}
+          // defaultValues={
+          //   selectedPublishYearRange[0]
+          //     ? selectedPublishYearRange
+          //     : null
+          // }
+          onChange={(value: number) => onChange("publication_year", value)}
+          // histogram={facetValueOptsForPublicationYear}
+        />
+      </div>
+    </div>
+  );
+};
+
+const SearchFilters = ({ onChange, searchFacets }: Props) => {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  // Custom breakpoint at 665 pixels
+  const isMobile = useMediaQuery("(max-width:665px)");
+
+  // Styles for the modal content
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
+
+  const filters = <Filters onChange={onChange} searchFacets={searchFacets} />;
+
+  return (
+    <div>
+      <Button variant="contained" onClick={handleOpen}>
+        Open Filter
+      </Button>
+      {isMobile ? (
+        <SwipeableDrawer
+          anchor="bottom"
+          open={open}
+          onClose={handleClose}
+          onOpen={handleOpen}
+        >
+          <Box
+            sx={{ width: 250 }}
+            role="presentation"
+            onClick={handleClose}
+            onKeyDown={handleClose}
+          >
+            {filters}
+          </Box>
+        </SwipeableDrawer>
+      ) : (
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>{filters}</Box>
+        </Modal>
+      )}
+    </div>
+  );
+};
 
 const sortOpts = [
   {
@@ -69,9 +251,11 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
   );
 
   const [pageWidth, setPageWidth] = useState(0);
-  const [selectedHubs, setSelectedHubs] = useState([]);
+  // const [selectedHubs, setSelectedHubs] = useState([]);
   const [selectedJournals, setSelectedJournals] = useState([]);
   const [selectedPublishYearRange, setSelectedPublishYearRange] = useState([]);
+  const [selectedCitationPercentile, setSelectedCitationPercentile] =
+    useState(0);
   const [selectedSortOrder, setSelectedSortOrder] = useState({});
   const publicationYearRef = useRef(null);
 
@@ -82,11 +266,12 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
   });
 
   useEffect(() => {
-    setSelectedHubs(getSelectedFacetValues({ forKey: "hub" }));
-    setSelectedJournals(getSelectedFacetValues({ forKey: "journal" }));
+    // setSelectedHubs(getSelectedFacetValues({ forKey: "hub" }));
+    setSelectedJournals(getSelectedFacetValues({ router, forKey: "journal" }));
     setSelectedSortOrder(getSelectedDropdownValue({ forKey: "ordering" }));
 
     let publishYearMin, publishYearMax;
+    let citationPercentile;
     if (router.query.paper_publish_year__gte) {
       publishYearMin = router.query.paper_publish_year__gte;
     }
@@ -95,10 +280,20 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
       publishYearMax = router.query.paper_publish_year__lte;
     }
 
+    if (router.query.citation_percentile__gte) {
+      citationPercentile = router.query.citation_percentile__gte;
+    }
+
     if (publishYearMin && publishYearMax) {
       setSelectedPublishYearRange([publishYearMin, publishYearMax]);
     } else {
       setSelectedPublishYearRange([]);
+    }
+
+    if (citationPercentile) {
+      setSelectedCitationPercentile(citationPercentile);
+    } else {
+      setSelectedCitationPercentile(0);
     }
   }, [router.query]);
 
@@ -187,18 +382,6 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     }
   };
 
-  const getSelectedFacetValues = ({ forKey }) => {
-    let selected = [];
-
-    if (Array.isArray(router.query[forKey])) {
-      selected = router.query[forKey];
-    } else if (isString(router.query[forKey])) {
-      selected = [router.query[forKey]];
-    }
-
-    return selected.map((v) => ({ label: v, value: v, valueForApi: v }));
-  };
-
   const getSelectedDropdownValue = ({ forKey }) => {
     const urlParam = get(router, `query.${forKey}`, null);
     let dropdownValue = null;
@@ -212,8 +395,8 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     return dropdownValue;
   };
 
-  const handleFilterSelect = (filterId, selected) => {
-    let query = {
+  const handleDropdownFilterSelect = (filterId, selected) => {
+    const query = {
       ...router.query,
     };
 
@@ -232,7 +415,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
   };
 
   const handleRemoveSelected = ({ opt, dropdownKey }) => {
-    let updatedQuery = { ...router.query };
+    const updatedQuery = { ...router.query };
 
     if (dropdownKey === "hub") {
       const newValue = selectedHubs
@@ -249,6 +432,8 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     } else if (dropdownKey === "paper_publish_year") {
       delete updatedQuery["paper_publish_year__gte"];
       delete updatedQuery["paper_publish_year__lte"];
+    } else if (dropdownKey === "citation_percentile") {
+      delete updatedQuery["citation_percentile__gte"];
     }
 
     router.push({
@@ -264,6 +449,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
 
     delete updatedQuery["paper_publish_year__gte"];
     delete updatedQuery["paper_publish_year__lte"];
+    delete updatedQuery["citation_percentile__gte"];
     delete updatedQuery["hub"];
     delete updatedQuery["journal"];
     delete updatedQuery["ordering"];
@@ -333,13 +519,25 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     );
   };
 
-  const handlePublishYearRangeSelection = (yearRange) => {
-    let query = {
+  const handleSearchFilterChange = (filterType: FilterType, value: any) => {
+    const query = {
       ...router.query,
     };
 
-    query["paper_publish_year__gte"] = yearRange[0];
-    query["paper_publish_year__lte"] = yearRange[1];
+    if (filterType === "citation_percentile") {
+      query["citation_percentile__gte"] = value;
+    } else if (filterType === "publication_year") {
+      query["paper_publish_year__gte"] = value[0];
+      query["paper_publish_year__lte"] = value[1];
+    } else if (filterType === "hub") {
+      if (Array.isArray(value)) {
+        query[filterType] = value.map((v) => v.valueForApi);
+      } else if (!value || !value.valueForApi) {
+        delete query[filterType];
+      } else {
+        query[filterType] = value.valueForApi;
+      }
+    }
 
     router.push({
       pathname: "/search/[type]",
@@ -347,9 +545,11 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     });
   };
 
+  const selectedHubs = getSelectedFacetValues({ router, forKey: "hub" });
   const hasAppliedFilters =
     selectedHubs.length ||
     selectedJournals.length ||
+    selectedCitationPercentile > 0 ||
     selectedPublishYearRange[0];
 
   const getFacetOptionsForDropdown = (facetKey) => {
@@ -384,7 +584,6 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     return "Publication Year";
   };
 
-  const facetValueOptsForHubs = getFacetOptionsForDropdown("hubs");
   const facetValueOptsForJournal = getFacetOptionsForDropdown("journal");
 
   const facetValueOptsForPublicationYear = facetValuesForPublicationYear.reduce(
@@ -403,28 +602,9 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
             {`${numOfHits} ${numOfHits === 1 ? "result" : "results"} found.`}
           </div>
           <div className={css(styles.filters)}>
-            <FormSelect
-              id={"hub"}
-              options={facetValueOptsForHubs}
-              containerStyle={styles.dropdownContainer}
-              inputStyle={styles.dropdownInput}
-              onChange={handleFilterSelect}
-              isSearchable={true}
-              placeholder={"Hubs"}
-              value={selectedHubs}
-              isMulti={true}
-              multiTagStyle={null}
-              multiTagLabelStyle={null}
-              isClearable={false}
-              reactSelect={{
-                styles: {
-                  menu: {
-                    width:
-                      facetValueOptsForHubs.length > 0 ? "max-content" : "100%",
-                  },
-                },
-              }}
-              showCountInsteadOfLabels={true}
+            <SearchFilters
+              searchFacets={apiResponse?.facets}
+              onChange={handleSearchFilterChange}
             />
             <div
               ref={publicationYearRef}
@@ -470,7 +650,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
                   ),
                 }}
               />
-              {isPublicationYearSelectionOpen && (
+              {/* {isPublicationYearSelectionOpen && (
                 <div
                   onClick={(e) => e.stopPropagation()}
                   className={css(styles.publicationYearDropdown)}
@@ -488,7 +668,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
                     histogram={facetValueOptsForPublicationYear}
                   />
                 </div>
-              )}
+              )} */}
             </div>
 
             <FormSelect
@@ -496,7 +676,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
               options={facetValueOptsForJournal}
               containerStyle={styles.dropdownContainer}
               inputStyle={styles.dropdownInput}
-              onChange={handleFilterSelect}
+              onChange={handleDropdownFilterSelect}
               isSearchable={true}
               placeholder={"Journal"}
               reactSelect={{
@@ -526,7 +706,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
                 styles.dropdownContainerForSort,
               ]}
               inputStyle={styles.dropdownInput}
-              onChange={handleFilterSelect}
+              onChange={handleDropdownFilterSelect}
               isSearchable={false}
               showLabelAlongSelection={
                 pageWidth <= breakpoints.small.int ? true : false
@@ -553,6 +733,20 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
                   }
                   onRemove={() =>
                     handleRemoveSelected({ dropdownKey: "paper_publish_year" })
+                  }
+                />
+              )}
+              {selectedCitationPercentile > 0 && (
+                <Badge
+                  id={`citation_percentile-badge`}
+                  label={`Percentile: ${selectedCitationPercentile + "th"}`}
+                  badgeClassName={styles.appliedFilterBadge}
+                  badgeLabelClassName={styles.appliedFilterBadgeLabel}
+                  onClick={() =>
+                    handleRemoveSelected({ dropdownKey: "citation_percentile" })
+                  }
+                  onRemove={() =>
+                    handleRemoveSelected({ dropdownKey: "citation_percentile" })
                   }
                 />
               )}
