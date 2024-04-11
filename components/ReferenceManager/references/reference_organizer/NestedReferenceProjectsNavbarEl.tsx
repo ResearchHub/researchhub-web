@@ -21,7 +21,7 @@ type Args = {
   canEdit?: boolean;
 };
 
-export function renderNestedReferenceProjectsNavbarEl({
+export default function NestedReferenceProjectsNavbarEl({
   addChildrenOpen,
   child,
   childrenOpenMap,
@@ -33,7 +33,7 @@ export function renderNestedReferenceProjectsNavbarEl({
   slug,
   handleSelectProject,
   handleClick,
-  allowManage,
+  allowManage = false,
   allowSelection,
   selectedProjectIds,
   canEdit,
@@ -59,39 +59,37 @@ export function renderNestedReferenceProjectsNavbarEl({
         allowManage={allowManage}
         projectID={referenceProject?.id}
         projectName={referenceProject?.project_name}
-        isCurrentUserAdmin={referenceProject?.current_user_is_admin ?? false}
         isPublic={referenceProject?.is_public}
         referenceProject={referenceProject}
         child={Boolean(child)}
         depth={depth}
-        canEdit={canEdit}
         isOpen={childrenOpenMap[referenceProject?.id]}
         addChildrenOpen={addChildrenOpen}
         slug={slug}
-        setActiveTab={setActiveTab}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
+        collaborators={[]}
       />
       {hasChildren && childrenOpenMap[referenceProject?.id] && (
         <div
           style={{ marginLeft: 8, display: "flex", flexDirection: "column" }}
         >
           {referenceProject.children.map((childReferenceProject) => {
-            return renderNestedReferenceProjectsNavbarEl({
-              setActiveTab,
-              setIsDeleteModalOpen,
-              currentOrgSlug,
-              referenceProject: childReferenceProject,
-              child: true,
-              handleSelectProject,
-              allowManage,
-              handleClick,
-              allowSelection,
-              selectedProjectIds,
-              depth: depth + 1,
-              addChildrenOpen,
-              childrenOpenMap,
-              slug: `${slug}/${encodeURIComponent(childReferenceProject.slug)}`,
-            });
+            return <NestedReferenceProjectsNavbarEl
+              setActiveTab={setActiveTab}
+              setIsDeleteModalOpen={setIsDeleteModalOpen}
+              currentOrgSlug={currentOrgSlug}
+              referenceProject={childReferenceProject}
+              child={true}
+              handleSelectProject={handleSelectProject}
+              allowManage={allowManage}
+              handleClick={handleClick}
+              allowSelection={allowSelection}
+              selectedProjectIds={selectedProjectIds}
+              depth={depth + 1}
+              addChildrenOpen={addChildrenOpen}
+              childrenOpenMap={childrenOpenMap}
+              slug= {`${slug}/${encodeURIComponent(childReferenceProject.slug)}`}
+            />
           })}
         </div>
       )}

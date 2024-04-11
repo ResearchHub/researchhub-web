@@ -255,7 +255,6 @@ const SaveToRefManager = ({
               },
               onSuccess: (payload): void => {
                 setOrgProjects(payload ?? []);
-                setIsOpen(false);
               },
               payload: {
                 organization: selectedOrg.id,
