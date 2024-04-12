@@ -90,7 +90,10 @@ const Filters = ({ onChange, searchFacets, showLabels = true, onlyFilters, direc
         break;
       case "journal":
         facetValues = facetValuesForJournal;
-        break;        
+        break;   
+      case "license":
+        facetValues = facetValuesForLicense;
+        break;                
     }
 
     return facetValues.map((f: any) => ({
@@ -102,6 +105,8 @@ const Filters = ({ onChange, searchFacets, showLabels = true, onlyFilters, direc
 
   const facetValueOptsForHubs = getFacetOptionsForDropdown("hubs");
   const facetValueOptsForJournal = getFacetOptionsForDropdown("journal");
+  const facetValueOptsForLicense = getFacetOptionsForDropdown("license");
+
   return (
     <div style={{ display: "flex", flexDirection: direction === "vertical" ? "column" : "row" }}>
         {(!onlyFilters || onlyFilters.includes("hub")) && (
@@ -166,6 +171,38 @@ const Filters = ({ onChange, searchFacets, showLabels = true, onlyFilters, direc
             />        
           </>
         )}
+        {(!onlyFilters || onlyFilters.includes("license")) && (
+          <>
+            {showLabels && <div>License</div>}
+            <FormSelect
+              id={"license"}
+              options={facetValueOptsForLicense}
+              containerStyle={styles.dropdownContainer}
+              inputStyle={styles.dropdownInput}
+              onChange={(id, value) => {
+                onChange("license", value);
+              }}
+              isSearchable={true}
+              placeholder={"License"}
+              reactSelect={{
+                styles: {
+                  menu: {
+                    width:
+                      facetValueOptsForJournal.length > 0
+                        ? "max-content"
+                        : "100%",
+                  },
+                },
+              }}
+              value={selectedJournals}
+              isMulti={true}
+              multiTagStyle={null}
+              multiTagLabelStyle={null}
+              isClearable={false}
+              showCountInsteadOfLabels={true}
+            />        
+          </>
+        )}        
         {(!onlyFilters || onlyFilters.includes("citation_percentile")) && (
           <>
             {showLabels && <div>Percentile</div>}
@@ -205,7 +242,7 @@ const SearchFilters = ({ onChange, searchFacets, showLabels = true, onlyFilters 
   const handleClose = () => setOpen(false);
 
   // Custom breakpoint at 665 pixels
-  const isMobile = useMediaQuery("(max-width:665px)");
+  const isMobile = useMediaQuery("(max-width:768px)");
 
   // Styles for the modal content
   const style = {
@@ -223,14 +260,16 @@ const SearchFilters = ({ onChange, searchFacets, showLabels = true, onlyFilters 
 
   return (
     <div>
-      <div>
-        <Filters
-          onChange={onChange}
-          showLabels={false}
-          onlyFilters={["journal", "hub", "license"]}
-          searchFacets={searchFacets}
-        />
-        <Button variant="contained" disableElevation={true} style={{ background: "#FBFBFD", color: "rgb(20, 20, 20)", border: "1px solid hsl(0,0%,80%)", borderRadius: 2, columnGap: "4px" }} onClick={handleOpen}>
+      <div style={{ display: "flex" }}>
+        {!isMobile && (
+          <Filters
+            onChange={onChange}
+            showLabels={false}
+            onlyFilters={["journal", "hub"]}
+            searchFacets={searchFacets}
+          />
+        )}
+        <Button variant="contained" disableElevation={true} style={{ background: "#FBFBFD", color: "#232038", border: "1px solid #E8E8F2", fontWeight: 400, textTransform: "none", fontSize: 14, borderRadius: 2, columnGap: "4px" }} onClick={handleOpen}>
           <FontAwesomeIcon icon={faFilter} />
           Filters
         </Button>
@@ -659,7 +698,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
               searchFacets={apiResponse?.facets}
               onChange={handleSearchFilterChange}
             />
-            <div
+            {/* <div
               ref={publicationYearRef}
               className={
                 css(styles.publicationYearDropdownWrapper) +
@@ -670,7 +709,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
                   !isPublicationYearSelectionOpen
                 )
               }
-            >
+            > */}
               {/* <FormSelect
                 selectComponents={{
                   Control: CustomSelectControlWithoutClickEvents,
@@ -703,7 +742,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
                   ),
                 }}
               /> */}
-            </div>
+            {/* </div> */}
 
             <FormSelect
               id={"ordering"}
@@ -855,17 +894,17 @@ const styles = StyleSheet.create({
       width: "100%",
     },
   },
-  publicationYearDropdown: {
-    position: "absolute",
-    paddingRight: 30,
-    paddingTop: 30,
-    background: "white",
-    zIndex: 1,
-    width: 200,
-    top: 40,
-    left: 0,
-    boxShadow: "rgba(0, 0, 0, 0.15) 0px 0px 10px 0px",
-  },
+  // publicationYearDropdown: {
+  //   position: "absolute",
+  //   paddingRight: 30,
+  //   paddingTop: 30,
+  //   background: "white",
+  //   zIndex: 1,
+  //   width: 150,
+  //   top: 40,
+  //   left: 0,
+  //   boxShadow: "rgba(0, 0, 0, 0.15) 0px 0px 10px 0px",
+  // },
   resultCount: {
     color: colors.GREY(),
     marginBottom: 20,
@@ -873,13 +912,16 @@ const styles = StyleSheet.create({
   filters: {
     display: "flex",
     marginBottom: 20,
+    width: "100%",
+    justifyContent: "space-between",
+    // boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      flexWrap: "wrap",
+      // flexWrap: "wrap",
       marginBottom: 0,
     },
   },
   dropdownContainer: {
-    width: 200,
+    width: 150,
     minHeight: "unset",
     marginTop: 0,
     marginBottom: 0,
@@ -887,21 +929,24 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginRight: 0,
       marginBottom: 10,
-      width: "100%",
+      // width: "100%",
     },
   },
   dropdownContainerForSort: {
-    width: 200,
-    marginRight: 0,
-    marginLeft: "auto",
+    // marginRight: 0,
+    // marginLeft: "auto",
+    width: 150,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      width: "100%",
+      width: "auto",
+      // width: "100%",
     },
   },
   dropdownInput: {
-    width: 200,
+    width: 150,
     minHeight: "unset",
-    width: "100%",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: 200,
+    },    
   },
   appliedFilters: {
     alignItems: "center",
