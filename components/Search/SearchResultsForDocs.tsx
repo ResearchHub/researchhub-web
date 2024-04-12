@@ -27,6 +27,7 @@ import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import { faFilter } from "@fortawesome/pro-regular-svg-icons";
 
 type FilterType =
   | "citation_percentile"
@@ -38,6 +39,9 @@ type FilterType =
 interface Props {
   onChange: (filterType: FilterType, filterValue) => void;
   searchFacets: any;
+  showLabels?: boolean;
+  onlyFilters?: FilterType[];
+  direction?: "horizontal" | "vertical";
 }
 
 const getSelectedFacetValues = ({ router, forKey }) => {
@@ -52,10 +56,13 @@ const getSelectedFacetValues = ({ router, forKey }) => {
   return selected.map((v) => ({ label: v, value: v, valueForApi: v }));
 };
 
-const Filters = ({ onChange, searchFacets }: Props) => {
+
+
+const Filters = ({ onChange, searchFacets, showLabels = true, onlyFilters, direction = "horizontal" }: Props) => {
   const router = useRouter();
   const [facetValuesForHub, setFacetValuesForHub] = useState([]);
   const [facetValuesForJournal, setFacetValuesForJournal] = useState([]);
+  const [facetValuesForLicense, setFacetValuesForLicense] = useState([]);
   const [selectedHubs, setSelectedHubs] = useState<
     { label: string; value: string }[]
   >([]);
@@ -66,6 +73,7 @@ const Filters = ({ onChange, searchFacets }: Props) => {
   useEffect(() => {
     setFacetValuesForHub(get(searchFacets, "_filter_hubs.hubs.buckets", []));
     setFacetValuesForJournal(get(searchFacets, "_filter_external_source.external_source.buckets", []));
+    setFacetValuesForLicense(get(searchFacets, "_filter_pdf_license.pdf_license.buckets", []));
   }, [searchFacets]);
 
   useEffect(() => {
@@ -95,94 +103,103 @@ const Filters = ({ onChange, searchFacets }: Props) => {
   const facetValueOptsForHubs = getFacetOptionsForDropdown("hubs");
   const facetValueOptsForJournal = getFacetOptionsForDropdown("journal");
   return (
-    <div>
-      <div>
-        <div>Hubs</div>
-        <FormSelect
-          id={"hub"}
-          options={facetValueOptsForHubs}
-          containerStyle={styles.dropdownContainer}
-          inputStyle={styles.dropdownInput}
-          onChange={(id, value) => {
-            onChange("hub", value);
-          }}
-          isSearchable={true}
-          placeholder={"Hubs"}
-          value={selectedHubs}
-          isMulti={true}
-          multiTagStyle={null}
-          multiTagLabelStyle={null}
-          isClearable={false}
-          // reactSelect={{
-          //   styles: {
-          //     menu: {
-          //       width:
-          //         facetValueOptsForHubs.length > 0 ? "max-content" : "100%",
-          //     },
-          //   },
-          // }}
-          showCountInsteadOfLabels={true}
-        />
-        <FormSelect
-          id={"journal"}
-          options={facetValueOptsForJournal}
-          containerStyle={styles.dropdownContainer}
-          inputStyle={styles.dropdownInput}
-          onChange={(id, value) => {
-            onChange("journal", value);
-          }}
-          isSearchable={true}
-          placeholder={"Journal"}
-          reactSelect={{
-            styles: {
-              menu: {
-                width:
-                  facetValueOptsForJournal.length > 0
-                    ? "max-content"
-                    : "100%",
-              },
-            },
-          }}
-          value={selectedJournals}
-          isMulti={true}
-          multiTagStyle={null}
-          multiTagLabelStyle={null}
-          isClearable={false}
-          showCountInsteadOfLabels={true}
-        />        
-      </div>
-
-      <div>
-        <div>Percentile</div>
-        <p>Shows only papers above specified citation percentile</p>
-        <SimpleSlider
-          start={0}
-          end={100}
-          initial={50}
-          onChange={(value: number) => onChange("citation_percentile", value)}
-        />
-      </div>
-
-      <div>
-        <div>Publication year</div>
-        <RangeSlider
-          // TODO: Make min and max dynamic
-          min={2000}
-          max={2024}
-          // defaultValues={
-          //   selectedPublishYearRange[0]
-          //     ? selectedPublishYearRange
-          //     : null
-          // }
-          onChange={(value: number) => onChange("publication_year", value)}
-          // histogram={facetValueOptsForPublicationYear}
-        />
-      </div>
+    <div style={{ display: "flex", flexDirection: direction === "vertical" ? "column" : "row" }}>
+        {(!onlyFilters || onlyFilters.includes("hub")) && (
+          <>
+            {showLabels && <div>Hubs</div>}
+            <FormSelect
+              id={"hub"}
+              options={facetValueOptsForHubs}
+              containerStyle={styles.dropdownContainer}
+              inputStyle={styles.dropdownInput}
+              onChange={(id, value) => {
+                onChange("hub", value);
+              }}
+              isSearchable={true}
+              placeholder={"Hubs"}
+              value={selectedHubs}
+              isMulti={true}
+              multiTagStyle={null}
+              multiTagLabelStyle={null}
+              isClearable={false}
+              // reactSelect={{
+              //   styles: {
+              //     menu: {
+              //       width:
+              //         facetValueOptsForHubs.length > 0 ? "max-content" : "100%",
+              //     },
+              //   },
+              // }}
+              showCountInsteadOfLabels={true}
+            />
+          </>
+        )}
+        {(!onlyFilters || onlyFilters.includes("journal")) && (
+          <>
+            {showLabels && <div>Journal</div>}
+            <FormSelect
+              id={"journal"}
+              options={facetValueOptsForJournal}
+              containerStyle={styles.dropdownContainer}
+              inputStyle={styles.dropdownInput}
+              onChange={(id, value) => {
+                onChange("journal", value);
+              }}
+              isSearchable={true}
+              placeholder={"Journal"}
+              reactSelect={{
+                styles: {
+                  menu: {
+                    width:
+                      facetValueOptsForJournal.length > 0
+                        ? "max-content"
+                        : "100%",
+                  },
+                },
+              }}
+              value={selectedJournals}
+              isMulti={true}
+              multiTagStyle={null}
+              multiTagLabelStyle={null}
+              isClearable={false}
+              showCountInsteadOfLabels={true}
+            />        
+          </>
+        )}
+        {(!onlyFilters || onlyFilters.includes("citation_percentile")) && (
+          <>
+            {showLabels && <div>Percentile</div>}
+            <p>Shows only papers above specified citation percentile</p>
+            <SimpleSlider
+              start={0}
+              end={100}
+              initial={50}
+              onChange={(value: number) => onChange("citation_percentile", value)}
+            />
+          </>
+        )}
+        {(!onlyFilters || onlyFilters.includes("publication_year")) && (
+          <>
+            {showLabels && <div>Publication Year</div>}
+            <RangeSlider
+              // TODO: Make min and max dynamic
+              min={2000}
+              max={2024}
+              // defaultValues={
+              //   selectedPublishYearRange[0]
+              //     ? selectedPublishYearRange
+              //     : null
+              // }
+              onChange={(value: number) => onChange("publication_year", value)}
+              // histogram={facetValueOptsForPublicationYear}
+            />
+          </>
+        )}
     </div>
   );
 };
 
-const SearchFilters = ({ onChange, searchFacets }: Props) => {
+const SearchFilters = ({ onChange, searchFacets, showLabels = true, onlyFilters }: Props) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -203,13 +220,21 @@ const SearchFilters = ({ onChange, searchFacets }: Props) => {
     p: 4,
   };
 
-  const filters = <Filters onChange={onChange} searchFacets={searchFacets} />;
 
   return (
     <div>
-      <Button variant="contained" onClick={handleOpen}>
-        Open Filter
-      </Button>
+      <div>
+        <Filters
+          onChange={onChange}
+          showLabels={false}
+          onlyFilters={["journal", "hub", "license"]}
+          searchFacets={searchFacets}
+        />
+        <Button variant="contained" disableElevation={true} style={{ background: "#FBFBFD", color: "rgb(20, 20, 20)", border: "1px solid hsl(0,0%,80%)", borderRadius: 2, columnGap: "4px" }} onClick={handleOpen}>
+          <FontAwesomeIcon icon={faFilter} />
+          Filters
+        </Button>
+      </div>
       {isMobile ? (
         <SwipeableDrawer
           anchor="bottom"
@@ -223,7 +248,7 @@ const SearchFilters = ({ onChange, searchFacets }: Props) => {
             onClick={handleClose}
             onKeyDown={handleClose}
           >
-            {filters}
+            <Filters onChange={onChange} searchFacets={searchFacets} direction="vertical" />
           </Box>
         </SwipeableDrawer>
       ) : (
@@ -233,7 +258,7 @@ const SearchFilters = ({ onChange, searchFacets }: Props) => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={style}>{filters}</Box>
+          <Box sx={style}><Filters onChange={onChange} searchFacets={searchFacets} direction="vertical" /></Box>
         </Modal>
       )}
     </div>
@@ -621,15 +646,6 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     return "Publication Year";
   };
 
-  const facetValueOptsForJournal = getFacetOptionsForDropdown("journal");
-
-  const facetValueOptsForPublicationYear = facetValuesForPublicationYear.reduce(
-    (acc, { key, doc_count }) => {
-      acc[key] = doc_count;
-      return acc;
-    },
-    {}
-  );
 
   return (
     <div>
@@ -655,7 +671,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
                 )
               }
             >
-              <FormSelect
+              {/* <FormSelect
                 selectComponents={{
                   Control: CustomSelectControlWithoutClickEvents,
                 }}
@@ -686,53 +702,9 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
                     </div>
                   ),
                 }}
-              />
-              {/* {isPublicationYearSelectionOpen && (
-                <div
-                  onClick={(e) => e.stopPropagation()}
-                  className={css(styles.publicationYearDropdown)}
-                >
-                  <RangeSlider
-                    // TODO: Make min and max dynamic
-                    min={2000}
-                    max={2024}
-                    defaultValues={
-                      selectedPublishYearRange[0]
-                        ? selectedPublishYearRange
-                        : null
-                    }
-                    onChange={handlePublishYearRangeSelection}
-                    histogram={facetValueOptsForPublicationYear}
-                  />
-                </div>
-              )} */}
+              /> */}
             </div>
 
-            {/* <FormSelect
-              id={"journal"}
-              options={facetValueOptsForJournal}
-              containerStyle={styles.dropdownContainer}
-              inputStyle={styles.dropdownInput}
-              onChange={handleDropdownFilterSelect}
-              isSearchable={true}
-              placeholder={"Journal"}
-              reactSelect={{
-                styles: {
-                  menu: {
-                    width:
-                      facetValueOptsForJournal.length > 0
-                        ? "max-content"
-                        : "100%",
-                  },
-                },
-              }}
-              value={selectedJournals}
-              isMulti={true}
-              multiTagStyle={null}
-              multiTagLabelStyle={null}
-              isClearable={false}
-              showCountInsteadOfLabels={true}
-            /> */}
             <FormSelect
               id={"ordering"}
               placeholder={"Sort"}
