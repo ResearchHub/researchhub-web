@@ -28,21 +28,9 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { faFilter } from "@fortawesome/pro-regular-svg-icons";
-
-type FilterType =
-  | "citation_percentile"
-  | "publication_year"
-  | "journal"
-  | "hub"
-  | "license";
-
-interface Props {
-  onChange: (filterType: FilterType, filterValue) => void;
-  searchFacets: any;
-  showLabels?: boolean;
-  onlyFilters?: FilterType[];
-  direction?: "horizontal" | "vertical";
-}
+import SearchFilters from "./SearchFiltersForDocs";
+import { SearchFiltersContextProvider } from "./lib/SearchFiltersContext";
+import AppliedFilters from "./lib/AppliedFilters";
 
 const getSelectedFacetValues = ({ router, forKey }) => {
   let selected: any = [];
@@ -54,254 +42,6 @@ const getSelectedFacetValues = ({ router, forKey }) => {
   }
 
   return selected.map((v) => ({ label: v, value: v, valueForApi: v }));
-};
-
-
-
-const Filters = ({ onChange, searchFacets, showLabels = true, onlyFilters, direction = "horizontal" }: Props) => {
-  const router = useRouter();
-  const [facetValuesForHub, setFacetValuesForHub] = useState([]);
-  const [facetValuesForJournal, setFacetValuesForJournal] = useState([]);
-  const [facetValuesForLicense, setFacetValuesForLicense] = useState([]);
-  const [selectedHubs, setSelectedHubs] = useState<
-    { label: string; value: string }[]
-  >([]);
-  const [selectedJournals, setSelectedJournals] = useState<
-    { label: string; value: string }[]
-  >([]);  
-
-  useEffect(() => {
-    setFacetValuesForHub(get(searchFacets, "_filter_hubs.hubs.buckets", []));
-    setFacetValuesForJournal(get(searchFacets, "_filter_external_source.external_source.buckets", []));
-    setFacetValuesForLicense(get(searchFacets, "_filter_pdf_license.pdf_license.buckets", []));
-  }, [searchFacets]);
-
-  useEffect(() => {
-    setSelectedHubs(getSelectedFacetValues({ router, forKey: "hub" }));
-    setSelectedJournals(getSelectedFacetValues({ router, forKey: "journal" }));
-  }, [router.query]);
-
-  const getFacetOptionsForDropdown = (facetKey) => {
-    let facetValues = [];
-
-    switch (facetKey) {
-      case "hubs":
-        facetValues = facetValuesForHub;
-        break;
-      case "journal":
-        facetValues = facetValuesForJournal;
-        break;   
-      case "license":
-        facetValues = facetValuesForLicense;
-        break;                
-    }
-
-    return facetValues.map((f: any) => ({
-      label: `${f.key} (${f.doc_count})`,
-      value: f.key,
-      valueForApi: f.key,
-    }));
-  };
-
-  const facetValueOptsForHubs = getFacetOptionsForDropdown("hubs");
-  const facetValueOptsForJournal = getFacetOptionsForDropdown("journal");
-  const facetValueOptsForLicense = getFacetOptionsForDropdown("license");
-
-  return (
-    <div style={{ display: "flex", flexDirection: direction === "vertical" ? "column" : "row" }}>
-        {(!onlyFilters || onlyFilters.includes("hub")) && (
-          <>
-            {showLabels && <div>Hubs</div>}
-            <FormSelect
-              id={"hub"}
-              options={facetValueOptsForHubs}
-              containerStyle={styles.dropdownContainer}
-              inputStyle={styles.dropdownInput}
-              onChange={(id, value) => {
-                onChange("hub", value);
-              }}
-              isSearchable={true}
-              placeholder={"Hubs"}
-              value={selectedHubs}
-              isMulti={true}
-              multiTagStyle={null}
-              multiTagLabelStyle={null}
-              isClearable={false}
-              // reactSelect={{
-              //   styles: {
-              //     menu: {
-              //       width:
-              //         facetValueOptsForHubs.length > 0 ? "max-content" : "100%",
-              //     },
-              //   },
-              // }}
-              showCountInsteadOfLabels={true}
-            />
-          </>
-        )}
-        {(!onlyFilters || onlyFilters.includes("journal")) && (
-          <>
-            {showLabels && <div>Journal</div>}
-            <FormSelect
-              id={"journal"}
-              options={facetValueOptsForJournal}
-              containerStyle={styles.dropdownContainer}
-              inputStyle={styles.dropdownInput}
-              onChange={(id, value) => {
-                onChange("journal", value);
-              }}
-              isSearchable={true}
-              placeholder={"Journal"}
-              reactSelect={{
-                styles: {
-                  menu: {
-                    width:
-                      facetValueOptsForJournal.length > 0
-                        ? "max-content"
-                        : "100%",
-                  },
-                },
-              }}
-              value={selectedJournals}
-              isMulti={true}
-              multiTagStyle={null}
-              multiTagLabelStyle={null}
-              isClearable={false}
-              showCountInsteadOfLabels={true}
-            />        
-          </>
-        )}
-        {(!onlyFilters || onlyFilters.includes("license")) && (
-          <>
-            {showLabels && <div>License</div>}
-            <FormSelect
-              id={"license"}
-              options={facetValueOptsForLicense}
-              containerStyle={styles.dropdownContainer}
-              inputStyle={styles.dropdownInput}
-              onChange={(id, value) => {
-                onChange("license", value);
-              }}
-              isSearchable={true}
-              placeholder={"License"}
-              reactSelect={{
-                styles: {
-                  menu: {
-                    width:
-                      facetValueOptsForJournal.length > 0
-                        ? "max-content"
-                        : "100%",
-                  },
-                },
-              }}
-              value={selectedJournals}
-              isMulti={true}
-              multiTagStyle={null}
-              multiTagLabelStyle={null}
-              isClearable={false}
-              showCountInsteadOfLabels={true}
-            />        
-          </>
-        )}        
-        {(!onlyFilters || onlyFilters.includes("citation_percentile")) && (
-          <>
-            {showLabels && <div>Percentile</div>}
-            <p>Shows only papers above specified citation percentile</p>
-            <SimpleSlider
-              start={0}
-              end={100}
-              initial={50}
-              onChange={(value: number) => onChange("citation_percentile", value)}
-            />
-          </>
-        )}
-        {(!onlyFilters || onlyFilters.includes("publication_year")) && (
-          <>
-            {showLabels && <div>Publication Year</div>}
-            <RangeSlider
-              // TODO: Make min and max dynamic
-              min={2000}
-              max={2024}
-              // defaultValues={
-              //   selectedPublishYearRange[0]
-              //     ? selectedPublishYearRange
-              //     : null
-              // }
-              onChange={(value: number) => onChange("publication_year", value)}
-              // histogram={facetValueOptsForPublicationYear}
-            />
-          </>
-        )}
-    </div>
-  );
-};
-
-const SearchFilters = ({ onChange, searchFacets, showLabels = true, onlyFilters }: Props) => {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  // Custom breakpoint at 665 pixels
-  const isMobile = useMediaQuery("(max-width:768px)");
-
-  // Styles for the modal content
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
-
-
-  return (
-    <div>
-      <div style={{ display: "flex" }}>
-        {!isMobile && (
-          <Filters
-            onChange={onChange}
-            showLabels={false}
-            onlyFilters={["journal", "hub"]}
-            searchFacets={searchFacets}
-          />
-        )}
-        <Button variant="contained" disableElevation={true} style={{ background: "#FBFBFD", color: "#232038", border: "1px solid #E8E8F2", fontWeight: 400, textTransform: "none", fontSize: 14, borderRadius: 2, columnGap: "4px" }} onClick={handleOpen}>
-          <FontAwesomeIcon icon={faFilter} />
-          Filters
-        </Button>
-      </div>
-      {isMobile ? (
-        <SwipeableDrawer
-          anchor="bottom"
-          open={open}
-          onClose={handleClose}
-          onOpen={handleOpen}
-        >
-          <Box
-            sx={{ width: 250 }}
-            role="presentation"
-            onClick={handleClose}
-            onKeyDown={handleClose}
-          >
-            <Filters onChange={onChange} searchFacets={searchFacets} direction="vertical" />
-          </Box>
-        </SwipeableDrawer>
-      ) : (
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}><Filters onChange={onChange} searchFacets={searchFacets} direction="vertical" /></Box>
-        </Modal>
-      )}
-    </div>
-  );
 };
 
 const sortOpts = [
@@ -515,51 +255,51 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     });
   };
 
-  const handleRemoveSelected = ({ opt, dropdownKey }) => {
-    const updatedQuery = { ...router.query };
+  // const handleRemoveSelected = ({ opt, dropdownKey }) => {
+  //   const updatedQuery = { ...router.query };
 
-    if (dropdownKey === "hub") {
-      const newValue = selectedHubs
-        .filter((h) => h.value !== opt.value)
-        .map((h) => h.value);
+  //   if (dropdownKey === "hub") {
+  //     const newValue = selectedHubs
+  //       .filter((h) => h.value !== opt.value)
+  //       .map((h) => h.value);
 
-      updatedQuery[dropdownKey] = newValue;
-    } else if (dropdownKey === "journal") {
-      const newValue = selectedJournals
-        .filter((j) => j.value !== opt.value)
-        .map((j) => j.value);
+  //     updatedQuery[dropdownKey] = newValue;
+  //   } else if (dropdownKey === "journal") {
+  //     const newValue = selectedJournals
+  //       .filter((j) => j.value !== opt.value)
+  //       .map((j) => j.value);
 
-      updatedQuery[dropdownKey] = newValue;
-    } else if (dropdownKey === "paper_publish_year") {
-      delete updatedQuery["paper_publish_year__gte"];
-      delete updatedQuery["paper_publish_year__lte"];
-    } else if (dropdownKey === "citation_percentile") {
-      delete updatedQuery["citation_percentile__gte"];
-    }
+  //     updatedQuery[dropdownKey] = newValue;
+  //   } else if (dropdownKey === "paper_publish_year") {
+  //     delete updatedQuery["paper_publish_year__gte"];
+  //     delete updatedQuery["paper_publish_year__lte"];
+  //   } else if (dropdownKey === "citation_percentile") {
+  //     delete updatedQuery["citation_percentile__gte"];
+  //   }
 
-    router.push({
-      pathname: "/search/[type]",
-      query: updatedQuery,
-    });
-  };
+  //   router.push({
+  //     pathname: "/search/[type]",
+  //     query: updatedQuery,
+  //   });
+  // };
 
-  const handleClearAll = () => {
-    const updatedQuery = {
-      ...router.query,
-    };
+  // const handleClearAll = () => {
+  //   const updatedQuery = {
+  //     ...router.query,
+  //   };
 
-    delete updatedQuery["paper_publish_year__gte"];
-    delete updatedQuery["paper_publish_year__lte"];
-    delete updatedQuery["citation_percentile__gte"];
-    delete updatedQuery["hub"];
-    delete updatedQuery["journal"];
-    delete updatedQuery["ordering"];
+  //   delete updatedQuery["paper_publish_year__gte"];
+  //   delete updatedQuery["paper_publish_year__lte"];
+  //   delete updatedQuery["citation_percentile__gte"];
+  //   delete updatedQuery["hub"];
+  //   delete updatedQuery["journal"];
+  //   delete updatedQuery["ordering"];
 
-    router.push({
-      pathname: "/search/[type]",
-      query: updatedQuery,
-    });
-  };
+  //   router.push({
+  //     pathname: "/search/[type]",
+  //     query: updatedQuery,
+  //   });
+  // };
 
   const loadMoreResults = () => {
     setIsLoadingMore(true);
@@ -606,19 +346,19 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     return parsedString;
   };
 
-  const renderAppliedFilterBadge = ({ opt, dropdownKey }) => {
-    return (
-      <Badge
-        id={`${dropdownKey}-${opt.value}`}
-        key={`${dropdownKey}-${opt.value}`}
-        label={`${dropdownKey}: ${opt.label}`}
-        badgeClassName={styles.appliedFilterBadge}
-        badgeLabelClassName={styles.appliedFilterBadgeLabel}
-        onClick={() => handleRemoveSelected({ opt, dropdownKey })}
-        onRemove={() => handleRemoveSelected({ opt, dropdownKey })}
-      />
-    );
-  };
+  // const renderAppliedFilterBadge = ({ opt, dropdownKey }) => {
+  //   return (
+  //     <Badge
+  //       id={`${dropdownKey}-${opt.value}`}
+  //       key={`${dropdownKey}-${opt.value}`}
+  //       label={`${dropdownKey}: ${opt.label}`}
+  //       badgeClassName={styles.appliedFilterBadge}
+  //       badgeLabelClassName={styles.appliedFilterBadgeLabel}
+  //       onClick={() => handleRemoveSelected({ opt, dropdownKey })}
+  //       onRemove={() => handleRemoveSelected({ opt, dropdownKey })}
+  //     />
+  //   );
+  // };
 
   const handleSearchFilterChange = (filterType: FilterType, value: any) => {
     const query = {
@@ -647,58 +387,58 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
   };
 
   const selectedHubs = getSelectedFacetValues({ router, forKey: "hub" });
-  const hasAppliedFilters =
-    selectedHubs.length ||
-    selectedJournals.length ||
-    selectedCitationPercentile > 0 ||
-    selectedPublishYearRange[0];
+  // const hasAppliedFilters =
+  //   selectedHubs.length ||
+  //   selectedJournals.length ||
+  //   selectedCitationPercentile > 0 ||
+  //   selectedPublishYearRange[0];
 
-  const getFacetOptionsForDropdown = (facetKey) => {
-    let facetValues = [];
+  // const getFacetOptionsForDropdown = (facetKey) => {
+  //   let facetValues = [];
 
-    switch (facetKey) {
-      case "hubs":
-        facetValues = facetValuesForHub;
-        break;
-      case "journal":
-        facetValues = facetValuesForJournal;
-        break;
-    }
+  //   switch (facetKey) {
+  //     case "hubs":
+  //       facetValues = facetValuesForHub;
+  //       break;
+  //     case "journal":
+  //       facetValues = facetValuesForJournal;
+  //       break;
+  //   }
 
-    return facetValues.map((f) => ({
-      label: `${f.key} (${f.doc_count})`,
-      value: f.key,
-      valueForApi: f.key,
-    }));
-  };
+  //   return facetValues.map((f) => ({
+  //     label: `${f.key} (${f.doc_count})`,
+  //     value: f.key,
+  //     valueForApi: f.key,
+  //   }));
+  // };
 
-  const getLabelForPaperPublicationYear = () => {
-    const min = selectedPublishYearRange[0];
-    const max = selectedPublishYearRange[1];
+  // const getLabelForPaperPublicationYear = () => {
+  //   const min = selectedPublishYearRange[0];
+  //   const max = selectedPublishYearRange[1];
 
-    if (min && max && min !== max) {
-      return `${min} - ${max}`;
-    } else if (min && max && min === max) {
-      return `${min}`;
-    }
+  //   if (min && max && min !== max) {
+  //     return `${min} - ${max}`;
+  //   } else if (min && max && min === max) {
+  //     return `${min}`;
+  //   }
 
-    return "Publication Year";
-  };
-
+  //   return "Publication Year";
+  // };
 
   return (
-    <div>
-      {context !== "best-results" && (numOfHits > 0 || hasAppliedFilters) && (
-        <Fragment>
-          <div className={css(styles.resultCount)}>
-            {`${numOfHits} ${numOfHits === 1 ? "result" : "results"} found.`}
-          </div>
-          <div className={css(styles.filters)}>
-            <SearchFilters
-              searchFacets={apiResponse?.facets}
-              onChange={handleSearchFilterChange}
-            />
-            {/* <div
+    <SearchFiltersContextProvider>
+      <div>
+        {context !== "best-results" && numOfHits > 0 && (
+          <Fragment>
+            <div className={css(styles.resultCount)}>
+              {`${numOfHits} ${numOfHits === 1 ? "result" : "results"} found.`}
+            </div>
+            <div className={css(styles.filters)}>
+              <SearchFilters
+                searchFacets={apiResponse?.facets}
+                onChange={handleSearchFilterChange}
+              />
+              {/* <div
               ref={publicationYearRef}
               className={
                 css(styles.publicationYearDropdownWrapper) +
@@ -742,27 +482,28 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
                   ),
                 }}
               /> */}
-            {/* </div> */}
+              {/* </div> */}
 
-            <FormSelect
-              id={"ordering"}
-              placeholder={"Sort"}
-              options={sortOpts}
-              value={selectedSortOrder}
-              containerStyle={[
-                styles.dropdownContainer,
-                styles.dropdownContainerForSort,
-              ]}
-              inputStyle={styles.dropdownInput}
-              onChange={handleDropdownFilterSelect}
-              isSearchable={false}
-              showLabelAlongSelection={
-                pageWidth <= breakpoints.small.int ? true : false
-              }
-            />
-          </div>
+              <FormSelect
+                id={"ordering"}
+                placeholder={"Sort"}
+                options={sortOpts}
+                value={selectedSortOrder}
+                containerStyle={[
+                  styles.dropdownContainer,
+                  styles.dropdownContainerForSort,
+                ]}
+                inputStyle={styles.dropdownInput}
+                onChange={handleDropdownFilterSelect}
+                isSearchable={false}
+                showLabelAlongSelection={
+                  pageWidth <= breakpoints.small.int ? true : false
+                }
+              />
+            </div>
+            <AppliedFilters />
 
-          {hasAppliedFilters && (
+            {/* {hasAppliedFilters && (
             <div className={css(styles.appliedFilters)}>
               {selectedHubs.map((opt) =>
                 renderAppliedFilterBadge({ opt, dropdownKey: "hub" })
@@ -808,81 +549,82 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
                 <FontAwesomeIcon style={{ fontSize: 10 }} icon={faX} />
               </Badge>
             </div>
-          )}
-        </Fragment>
-      )}
+          )} */}
+          </Fragment>
+        )}
 
-      {numOfHits === 0 && (
-        <EmptyFeedScreen title="There are no results found for this criteria" />
-      )}
+        {numOfHits === 0 && (
+          <EmptyFeedScreen title="There are no results found for this criteria" />
+        )}
 
-      <div>
-        {searchEntityType === "post" &&
-          results.map((post, index) => {
-            post.user_vote = userVotes[post.id];
+        <div>
+          {searchEntityType === "post" &&
+            results.map((post, index) => {
+              post.user_vote = userVotes[post.id];
 
-            return (
-              <FeedCard
-                {...post}
-                unifiedDocumentId={post.unified_document_id}
-                formattedDocType={"post"}
-                key={`post-${post.id}`}
-                user_vote={post?.user_vote}
-              />
-            );
-          })}
-        {searchEntityType === "paper" &&
-          results.map((paper, index) => {
-            paper.promoted = false;
-            paper.user_vote = userVotes[paper.id];
-            paper.created_date = paper.paper_publish_date;
+              return (
+                <FeedCard
+                  {...post}
+                  unifiedDocumentId={post.unified_document_id}
+                  formattedDocType={"post"}
+                  key={`post-${post.id}`}
+                  user_vote={post?.user_vote}
+                />
+              );
+            })}
+          {searchEntityType === "paper" &&
+            results.map((paper, index) => {
+              paper.promoted = false;
+              paper.user_vote = userVotes[paper.id];
+              paper.created_date = paper.paper_publish_date;
 
-            if (context !== "best-results") {
-              // There is a small but non-trivial chance that this will fail
-              // In such a case, we want to avoid the entire page from breaking.
-              try {
-                paper.abstract = parseIfHighlighted({
-                  searchResult: paper,
-                  attribute: "abstract",
-                });
-              } catch {}
-              try {
-                paper.titleAsHtml = parseIfHighlighted({
-                  searchResult: paper,
-                  attribute: "title",
-                });
-              } catch {}
-            }
+              if (context !== "best-results") {
+                // There is a small but non-trivial chance that this will fail
+                // In such a case, we want to avoid the entire page from breaking.
+                try {
+                  paper.abstract = parseIfHighlighted({
+                    searchResult: paper,
+                    attribute: "abstract",
+                  });
+                } catch {}
+                try {
+                  paper.titleAsHtml = parseIfHighlighted({
+                    searchResult: paper,
+                    attribute: "title",
+                  });
+                } catch {}
+              }
 
-            return (
-              <FeedCard
-                {...paper}
-                unifiedDocumentId={paper.unified_document_id}
-                created_date={paper.paper_publish_date}
-                discussion_count={paper.discussion_count}
-                document={paper}
-                formattedDocType={"paper"}
-                index={index}
-                key={`paper-${paper.id}`}
-                paper={paper}
-                voteCallback={(arrIndex, currPaper) => {
-                  const idx = results.findIndex((p) => p.id === currPaper.id);
+              return (
+                <FeedCard
+                  {...paper}
+                  unifiedDocumentId={paper.unified_document_id}
+                  created_date={paper.paper_publish_date}
+                  discussion_count={paper.discussion_count}
+                  document={paper}
+                  formattedDocType={"paper"}
+                  index={index}
+                  key={`paper-${paper.id}`}
+                  paper={paper}
+                  voteCallback={(arrIndex, currPaper) => {
+                    const idx = results.findIndex((p) => p.id === currPaper.id);
 
-                  results[idx] = currPaper;
-                  userVotes[currPaper.id] = currPaper.user_vote;
+                    results[idx] = currPaper;
+                    userVotes[currPaper.id] = currPaper.user_vote;
 
-                  setResults(results);
-                  setUserVotes(userVotes);
-                }}
-              />
-            );
-          })}
+                    setResults(results);
+                    setUserVotes(userVotes);
+                  }}
+                />
+              );
+            })}
+        </div>
+
+        {nextResultsUrl && (
+          <LoadMoreButton onClick={loadMoreResults} isLoading={isLoadingMore} />
+        )}
       </div>
-
-      {nextResultsUrl && (
-        <LoadMoreButton onClick={loadMoreResults} isLoading={isLoadingMore} />
-      )}
-    </div>
+    </SearchFiltersContextProvider>
   );
 };
 
@@ -920,6 +662,9 @@ const styles = StyleSheet.create({
       marginBottom: 0,
     },
   },
+  fullWidthInput: {
+    width: "100%",
+  },
   dropdownContainer: {
     width: 150,
     minHeight: "unset",
@@ -946,20 +691,20 @@ const styles = StyleSheet.create({
     minHeight: "unset",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: 200,
-    },    
+    },
   },
-  appliedFilters: {
-    alignItems: "center",
-    flex: 1,
-    flexWrap: "wrap",
-    padding: "2px 2px",
-    position: "relative",
-    overflow: "hidden",
-    boxSizing: "border-box",
-    display: "flex",
-    textTransform: "capitalize",
-    marginBottom: 20,
-  },
+  // appliedFilters: {
+  //   alignItems: "center",
+  //   flex: 1,
+  //   flexWrap: "wrap",
+  //   padding: "2px 2px",
+  //   position: "relative",
+  //   overflow: "hidden",
+  //   boxSizing: "border-box",
+  //   display: "flex",
+  //   textTransform: "capitalize",
+  //   marginBottom: 20,
+  // },
   highlight: {
     color: colors.ORANGE_DARK(1.0),
   },
