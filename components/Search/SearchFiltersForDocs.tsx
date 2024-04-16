@@ -316,7 +316,7 @@ const SearchFilters = ({
                 onlyFilters={["journal", "hub"]}
                 searchFacets={searchFacets}
               />
-              {/* <Button
+              <Button
                 variant="contained"
                 disableElevation={true}
                 style={{
@@ -333,7 +333,7 @@ const SearchFilters = ({
               >
                 <FontAwesomeIcon icon={faFilter} />
                 Filters
-              </Button> */}
+              </Button>
             </>
           )}
         </div>
@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
   verticalFilters: {
     display: "flex",
     flexDirection: "column",
-    rowGap: 15,
+    rowGap: 10,
   },
   filterWrapper: {},
   filtersWrapper: {
