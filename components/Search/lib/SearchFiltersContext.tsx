@@ -1,6 +1,9 @@
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useState } from "react";
+import { NullableString } from "~/config/types/root_types";
 import { isString } from "~/config/utils/string";
+import get from "lodash/get";
+import { sortOpts } from "./SearchSortOpts";
 
 const getSelectedFacetValues = ({ router, forKey }) => {
   let selected: any = [];
@@ -14,6 +17,19 @@ const getSelectedFacetValues = ({ router, forKey }) => {
   return selected.map((v) => ({ label: v, value: v, valueForApi: v }));
 };
 
+const getSelectedDropdownValue = ({ router, forKey }) => {
+  const urlParam = get(router, `query.${forKey}`, null);
+  let dropdownValue: any = null;
+
+  if (forKey === "ordering") {
+    dropdownValue = sortOpts.find((opt) => opt.value === urlParam);
+    dropdownValue =
+      dropdownValue || sortOpts.find((opt) => opt.isDefault === true);
+  }
+
+  return dropdownValue;
+};
+
 export type SearchFiltersContextType = {
   hasAppliedFilters: () => boolean;
   selectedJournals: any[];
@@ -21,11 +37,13 @@ export type SearchFiltersContextType = {
   selectedLicenses: any[];
   selectedPublishYearRange: [number, number];
   selectedCitationPercentile: number;
+  selectedSortOrder: NullableString;
   setSelectedJournals: (journals: any[]) => void;
   setSelectedHubs: (hubs: any[]) => void;
   setSelectedLicenses: (licenses: any[]) => void;
   setSelectedPublishYearRange: (range: [number, number]) => void;
   setSelectedCitationPercentile: (percentile: number) => void;
+  setSelectedSortOrder: (sortOrder: NullableString) => void;
   removeFilter: ({
     opt,
     dropdownKey,
@@ -43,6 +61,7 @@ const SearchFiltersContext = createContext<SearchFiltersContextType>({
   selectedLicenses: [],
   selectedPublishYearRange: [0, 0],
   selectedCitationPercentile: 0,
+  selectedSortOrder: null,
   setSelectedJournals: () => {
     throw new Error("setSelectedJournals() not implemented");
   },
@@ -64,6 +83,9 @@ const SearchFiltersContext = createContext<SearchFiltersContextType>({
   clearFilters: () => {
     throw new Error("clearFilters() not implemented");
   },
+  setSelectedSortOrder: () => {
+    throw new Error("setSelectedSortOrder() not implemented");
+  },
 });
 
 export const useSearchFiltersContext = () => useContext(SearchFiltersContext);
@@ -84,11 +106,16 @@ export const SearchFiltersContextProvider = ({ children }) => {
   >([0, 0]);
   const [selectedCitationPercentile, setSelectedCitationPercentile] =
     useState(0);
+  const [selectedSortOrder, setSelectedSortOrder] =
+    useState<NullableString>(null);
 
   useEffect(() => {
     setSelectedHubs(getSelectedFacetValues({ router, forKey: "hub" }));
     setSelectedJournals(getSelectedFacetValues({ router, forKey: "journal" }));
     setSelectedLicenses(getSelectedFacetValues({ router, forKey: "license" }));
+    setSelectedSortOrder(
+      getSelectedDropdownValue({ router, forKey: "ordering" })
+    );
 
     let publishYearMin = 0,
       publishYearMax = 0;
@@ -175,6 +202,8 @@ export const SearchFiltersContextProvider = ({ children }) => {
         selectedPublishYearRange,
         selectedCitationPercentile,
         selectedLicenses,
+        selectedSortOrder,
+        setSelectedSortOrder,
         removeFilter: handleRemoveSelected,
         setSelectedJournals,
         setSelectedHubs,

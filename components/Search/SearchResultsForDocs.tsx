@@ -28,7 +28,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { faFilter } from "@fortawesome/pro-regular-svg-icons";
-import SearchFilters from "./SearchFiltersForDocs";
+import SearchFilters, { FilterType } from "./SearchFiltersForDocs";
 import { SearchFiltersContextProvider } from "./lib/SearchFiltersContext";
 import AppliedFilters from "./lib/AppliedFilters";
 
@@ -43,35 +43,6 @@ const getSelectedFacetValues = ({ router, forKey }) => {
 
   return selected.map((v) => ({ label: v, value: v, valueForApi: v }));
 };
-
-const sortOpts = [
-  {
-    isDefault: true,
-    valueForApi: null,
-    value: null,
-    label: "Relevance",
-  },
-  {
-    valueForApi: "-hot_score",
-    value: "-hot_score",
-    label: "Trending",
-  },
-  {
-    valueForApi: "-score",
-    value: "-score",
-    label: "Top Rated",
-  },
-  {
-    valueForApi: "-publish_date",
-    value: "-publish_date",
-    label: "Newest",
-  },
-  {
-    valueForApi: "-discussion_count",
-    value: "-discussion_count",
-    label: "Most Discussed",
-  },
-];
 
 const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
   const router = useRouter();
@@ -109,7 +80,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
   useEffect(() => {
     // setSelectedHubs(getSelectedFacetValues({ forKey: "hub" }));
     setSelectedJournals(getSelectedFacetValues({ router, forKey: "journal" }));
-    setSelectedSortOrder(getSelectedDropdownValue({ forKey: "ordering" }));
+    // setSelectedSortOrder(getSelectedDropdownValue({ forKey: "ordering" }));
 
     let publishYearMin, publishYearMax;
     let citationPercentile;
@@ -223,18 +194,18 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     }
   };
 
-  const getSelectedDropdownValue = ({ forKey }) => {
-    const urlParam = get(router, `query.${forKey}`, null);
-    let dropdownValue = null;
+  // const getSelectedDropdownValue = ({ forKey }) => {
+  //   const urlParam = get(router, `query.${forKey}`, null);
+  //   let dropdownValue = null;
 
-    if (forKey === "ordering") {
-      dropdownValue = sortOpts.find((opt) => opt.value === urlParam);
-      dropdownValue =
-        dropdownValue || sortOpts.find((opt) => opt.isDefault === true);
-    }
+  //   if (forKey === "ordering") {
+  //     dropdownValue = sortOpts.find((opt) => opt.value === urlParam);
+  //     dropdownValue =
+  //       dropdownValue || sortOpts.find((opt) => opt.isDefault === true);
+  //   }
 
-    return dropdownValue;
-  };
+  //   return dropdownValue;
+  // };
 
   const handleDropdownFilterSelect = (filterId, selected) => {
     const query = {
@@ -373,6 +344,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     } else if (
       filterType === "hub" ||
       filterType === "journal" ||
+      filterType === "ordering" ||
       filterType === "license"
     ) {
       if (Array.isArray(value)) {
@@ -488,7 +460,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
               /> */}
               {/* </div> */}
 
-              <FormSelect
+              {/* <FormSelect
                 id={"ordering"}
                 placeholder={"Sort"}
                 options={sortOpts}
@@ -503,7 +475,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
                 showLabelAlongSelection={
                   pageWidth <= breakpoints.small.int ? true : false
                 }
-              />
+              /> */}
             </div>
             <AppliedFilters />
 

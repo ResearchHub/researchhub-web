@@ -30,13 +30,16 @@ import { faFilter } from "@fortawesome/pro-regular-svg-icons";
 import { useSearchFiltersContext } from "./lib/SearchFiltersContext";
 import AppliedFilters from "./lib/AppliedFilters";
 import { getLicenseOptions } from "~/config/types/licenseOptions";
+import useWindow from "~/config/hooks/useWindow";
+import { sortOpts } from "./lib/SearchSortOpts";
 
-type FilterType =
+export type FilterType =
   | "citation_percentile"
   | "publication_year"
   | "journal"
   | "hub"
-  | "license";
+  | "license"
+  | "ordering";
 
 interface Props {
   onChange: (filterType: FilterType, filterValue) => void;
@@ -61,21 +64,8 @@ const Filters = ({
   const [facetValuesForPublicationYear, setFacetValuesForPublicationYear] =
     useState([]);
 
-  const {
-    hasAppliedFilters,
-    selectedJournals,
-    selectedHubs,
-    selectedLicenses,
-    selectedPublishYearRange,
-    selectedCitationPercentile,
-    setSelectedJournals,
-    setSelectedHubs,
-    setSelectedLicenses,
-    setSelectedPublishYearRange,
-    setSelectedCitationPercentile,
-    removeFilter,
-    clearFilters,
-  } = useSearchFiltersContext();
+  const { selectedJournals, selectedHubs, selectedLicenses } =
+    useSearchFiltersContext();
 
   useEffect(() => {
     setFacetValuesForHub(get(searchFacets, "_filter_hubs.hubs.buckets", []));
@@ -306,56 +296,64 @@ const SearchFilters = ({
   showLabels = true,
   onlyFilters,
 }: Props) => {
+  const { width: winWidth } = useWindow();
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const {
-    hasAppliedFilters,
-    selectedJournals,
-    selectedHubs,
-    selectedLicenses,
-    selectedPublishYearRange,
-    selectedCitationPercentile,
-    setSelectedJournals,
-    setSelectedHubs,
-    setSelectedLicenses,
-    setSelectedPublishYearRange,
-    setSelectedCitationPercentile,
-    removeFilter,
-    clearFilters,
-  } = useSearchFiltersContext();
+  const { selectedSortOrder } = useSearchFiltersContext();
 
-  const isMobile = useMediaQuery("(max-width:768px)");
+  const isMobile = useMediaQuery(`(max-width:${breakpoints.small.str})`);
 
   return (
-    <div>
-      <div style={{ display: "flex" }}>
-        {!isMobile && (
-          <Filters
-            onChange={onChange}
-            showLabels={false}
-            onlyFilters={["journal", "hub"]}
-            searchFacets={searchFacets}
-          />
-        )}
-        <Button
-          variant="contained"
-          disableElevation={true}
-          style={{
-            background: "#FBFBFD",
-            color: "#232038",
-            border: "1px solid #E8E8F2",
-            fontWeight: 400,
-            textTransform: "none",
-            fontSize: 14,
-            borderRadius: 2,
-            columnGap: "4px",
-          }}
-          onClick={handleOpen}
-        >
-          <FontAwesomeIcon icon={faFilter} />
-          Filters
-        </Button>
+    <>
+      <div className={css(styles.filtersAndSortWrapper)}>
+        <div className={css(styles.filtersWrapper)}>
+          {!isMobile && (
+            <>
+              <Filters
+                onChange={onChange}
+                showLabels={false}
+                onlyFilters={["journal", "hub"]}
+                searchFacets={searchFacets}
+              />
+              {/* <Button
+                variant="contained"
+                disableElevation={true}
+                style={{
+                  background: "#FBFBFD",
+                  color: "#232038",
+                  border: "1px solid #E8E8F2",
+                  fontWeight: 400,
+                  textTransform: "none",
+                  fontSize: 14,
+                  borderRadius: 2,
+                  columnGap: "4px",
+                }}
+                onClick={handleOpen}
+              >
+                <FontAwesomeIcon icon={faFilter} />
+                Filters
+              </Button> */}
+            </>
+          )}
+        </div>
+
+        <FormSelect
+          id={"ordering"}
+          placeholder={"Sort"}
+          options={sortOpts}
+          value={selectedSortOrder}
+          containerStyle={[
+            styles.dropdownContainer,
+            styles.dropdownContainerForSort,
+          ]}
+          inputStyle={styles.dropdownInput}
+          onChange={onChange}
+          isSearchable={false}
+          showLabelAlongSelection={
+            winWidth && winWidth <= breakpoints.small.int ? true : false
+          }
+        />
       </div>
       {isMobile ? (
         <SwipeableDrawer
@@ -414,7 +412,7 @@ const SearchFilters = ({
           </div>
         </Modal>
       )}
-    </div>
+    </>
   );
 };
 
@@ -460,6 +458,11 @@ const styles = StyleSheet.create({
   filtersWrapper: {
     display: "flex",
   },
+  filtersAndSortWrapper: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "space-between",
+  },
   filterTitle: {
     fontSize: 18,
     fontWeight: 500,
@@ -490,7 +493,7 @@ const styles = StyleSheet.create({
     display: "flex",
     marginBottom: 20,
     width: "100%",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     // boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       // flexWrap: "wrap",
@@ -513,13 +516,9 @@ const styles = StyleSheet.create({
     },
   },
   dropdownContainerForSort: {
-    // marginRight: 0,
-    // marginLeft: "auto",
     width: 150,
-    minHeight: "444px",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "auto",
-      // width: "100%",
     },
   },
   dropdownInput: {
