@@ -1,26 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import get from "lodash/get";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
-import { fetchURL } from "~/config/fetch";
-import Badge from "~/components/Badge";
-import EmptyFeedScreen from "~/components/Home/EmptyFeedScreen";
-import FeedCard from "~/components/Author/Tabs/FeedCard";
-import LoadMoreButton from "~/components/LoadMoreButton";
-import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { breakpoints } from "~/config/themes/screen";
-import { isString } from "~/config/utils/string";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX } from "@fortawesome/pro-solid-svg-icons";
 import RangeSlider from "../Form/RangeSlider";
 import FormSelect, {
-  CustomSelectControlWithoutClickEvents,
   LicenseOptionWithDescription,
 } from "~/components/Form/FormSelect";
-import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import SimpleSlider from "../Form/SimpleSlider";
-
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
@@ -64,8 +52,12 @@ const Filters = ({
   const [facetValuesForPublicationYear, setFacetValuesForPublicationYear] =
     useState([]);
 
-  const { selectedJournals, selectedHubs, selectedLicenses } =
-    useSearchFiltersContext();
+  const {
+    selectedJournals,
+    selectedHubs,
+    selectedLicenses,
+    selectedPublishYearRange,
+  } = useSearchFiltersContext();
 
   useEffect(() => {
     setFacetValuesForHub(get(searchFacets, "_filter_hubs.hubs.buckets", []));
@@ -152,7 +144,7 @@ const Filters = ({
             onChange={(id, value) => {
               onChange("hub", value);
             }}
-            isSearchable={true}
+            isSearchable={false}
             placeholder={"Hubs"}
             value={selectedHubs}
             isMulti={true}
@@ -186,7 +178,7 @@ const Filters = ({
             onChange={(id, value) => {
               onChange("journal", value);
             }}
-            isSearchable={true}
+            isSearchable={false}
             placeholder={"Journal"}
             reactSelect={{
               styles: {
@@ -274,11 +266,10 @@ const Filters = ({
               // TODO: Make min and max dynamic
               min={2000}
               max={2024}
-              // defaultValues={
-              //   selectedPublishYearRange[0]
-              //     ? selectedPublishYearRange
-              //     : null
-              // }
+              // @ts-ignore
+              defaultValues={
+                selectedPublishYearRange[0] ? selectedPublishYearRange : null
+              }
               // @ts-ignore
               onChange={(value: number) => onChange("publication_year", value)}
               histogram={facetValueOptsForPublicationYear}
@@ -290,12 +281,7 @@ const Filters = ({
   );
 };
 
-const SearchFilters = ({
-  onChange,
-  searchFacets,
-  showLabels = true,
-  onlyFilters,
-}: Props) => {
+const SearchFilters = ({ onChange, searchFacets }: Props) => {
   const { width: winWidth } = useWindow();
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -309,33 +295,31 @@ const SearchFilters = ({
       <div className={css(styles.filtersAndSortWrapper)}>
         <div className={css(styles.filtersWrapper)}>
           {!isMobile && (
-            <>
-              <Filters
-                onChange={onChange}
-                showLabels={false}
-                onlyFilters={["journal", "hub"]}
-                searchFacets={searchFacets}
-              />
-              <Button
-                variant="contained"
-                disableElevation={true}
-                style={{
-                  background: "#FBFBFD",
-                  color: "#232038",
-                  border: "1px solid #E8E8F2",
-                  fontWeight: 400,
-                  textTransform: "none",
-                  fontSize: 14,
-                  borderRadius: 2,
-                  columnGap: "4px",
-                }}
-                onClick={handleOpen}
-              >
-                <FontAwesomeIcon icon={faFilter} />
-                Filters
-              </Button>
-            </>
+            <Filters
+              onChange={onChange}
+              showLabels={false}
+              onlyFilters={["journal", "hub"]}
+              searchFacets={searchFacets}
+            />
           )}
+          <Button
+            variant="contained"
+            disableElevation={true}
+            style={{
+              background: "#FBFBFD",
+              color: "#232038",
+              border: "1px solid #E8E8F2",
+              fontWeight: 400,
+              textTransform: "none",
+              fontSize: 14,
+              borderRadius: 2,
+              columnGap: "4px",
+            }}
+            onClick={handleOpen}
+          >
+            <FontAwesomeIcon icon={faFilter} />
+            Filters
+          </Button>
         </div>
 
         <FormSelect
@@ -474,17 +458,6 @@ const styles = StyleSheet.create({
       width: "100%",
     },
   },
-  // publicationYearDropdown: {
-  //   position: "absolute",
-  //   paddingRight: 30,
-  //   paddingTop: 30,
-  //   background: "white",
-  //   zIndex: 1,
-  //   width: 150,
-  //   top: 40,
-  //   left: 0,
-  //   boxShadow: "rgba(0, 0, 0, 0.15) 0px 0px 10px 0px",
-  // },
   resultCount: {
     color: colors.GREY(),
     marginBottom: 20,
@@ -493,10 +466,7 @@ const styles = StyleSheet.create({
     display: "flex",
     marginBottom: 20,
     width: "100%",
-    // justifyContent: "space-between",
-    // boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      // flexWrap: "wrap",
       marginBottom: 0,
     },
   },
@@ -511,8 +481,6 @@ const styles = StyleSheet.create({
     marginRight: 20,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginRight: 0,
-      marginBottom: 10,
-      // width: "100%",
     },
   },
   dropdownContainerForSort: {
@@ -522,7 +490,7 @@ const styles = StyleSheet.create({
     },
   },
   dropdownInput: {
-    width: 150,
+    width: 160,
     minHeight: "unset",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: 200,
