@@ -1,5 +1,6 @@
 import Slider from "@mui/material/Slider";
 import { useState } from "react";
+import colors from "~/config/themes/colors";
 
 interface Props {
   start: number;
@@ -27,6 +28,9 @@ const SimpleSlider = ({ start, end, initial = 0, onChange }: Props) => {
   return (
     <Slider
       value={value}
+      sx={{
+        color: colors.NEW_BLUE(),
+      }}
       // @ts-ignore
       onChangeCommitted={handleCommitChange}
       onChange={handleSliderChange}

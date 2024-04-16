@@ -56,6 +56,7 @@ const Filters = ({
   const [facetValuesForHub, setFacetValuesForHub] = useState([]);
   const [facetValuesForJournal, setFacetValuesForJournal] = useState([]);
   const [facetValuesForLicense, setFacetValuesForLicense] = useState([]);
+  const [facetValuesForPublicationYear, setFacetValuesForPublicationYear] = useState([]);
   const {
     hasAppliedFilters,
     selectedJournals,
@@ -80,6 +81,17 @@ const Filters = ({
     setFacetValuesForLicense(
       get(searchFacets, "_filter_pdf_license.pdf_license.buckets", [])
     );
+    setFacetValuesForLicense(
+      get(searchFacets, "_filter_publication_year.publication_year.buckets", [])
+    );
+    setFacetValuesForPublicationYear(
+      get(
+        searchFacets,
+        "_filter_paper_publish_year.paper_publish_year.buckets",
+        []
+      )
+    );
+
   }, [searchFacets]);
 
   const getFacetOptionsForDropdown = (facetKey) => {
@@ -107,6 +119,13 @@ const Filters = ({
   const facetValueOptsForHubs = getFacetOptionsForDropdown("hubs");
   const facetValueOptsForJournal = getFacetOptionsForDropdown("journal");
   const facetValueOptsForLicense = getFacetOptionsForDropdown("license");
+  const facetValueOptsForPublicationYear = facetValuesForPublicationYear.reduce(
+    (acc, { key, doc_count }) => {
+      acc[key] = doc_count;
+      return acc;
+    },
+    {}
+  );
 
   return (
     <div
@@ -227,8 +246,8 @@ const Filters = ({
       )}
       {(!onlyFilters || onlyFilters.includes("citation_percentile")) && (
         <div className={css(styles.filterWrapper)}>
-          {showLabels && <div>Percentile</div>}
-          <p>Shows only papers above specified citation percentile</p>
+          {showLabels && <div className={css(styles.filterLabel)}>Percentile</div>}
+          <p className={css(styles.filterDescription)}>Shows only papers above specified citation percentile</p>
           <div style={{ padding: "0px 15px" }}>
             <SimpleSlider
               start={0}
@@ -243,7 +262,8 @@ const Filters = ({
       )}
       {(!onlyFilters || onlyFilters.includes("publication_year")) && (
         <div className={css(styles.filterWrapper)}>
-          {showLabels && <div>Publication Year</div>}
+          {showLabels && <div className={css(styles.filterLabel)}>Publication Year</div>}
+          <p className={css(styles.filterDescription)}>Shows only papers published within specified range</p>
           <div style={{ padding: "0px 5px" }}>
             <RangeSlider
               // TODO: Make min and max dynamic
@@ -256,7 +276,7 @@ const Filters = ({
               // }
               // @ts-ignore
               onChange={(value: number) => onChange("publication_year", value)}
-              // histogram={facetValueOptsForPublicationYear}
+              histogram={facetValueOptsForPublicationYear}
             />
           </div>
         </div>
@@ -355,6 +375,11 @@ const SearchFilters = ({
           onClose={handleClose}
           aria-labelledby="Filters"
           aria-describedby="Search filters"
+          BackdropProps={{
+            style: {
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+            },
+          }}
         >
           <div className={css(styles.modal)}>
             <div className={css(styles.filtersHeading)}>
@@ -379,15 +404,22 @@ const SearchFilters = ({
 };
 
 const styles = StyleSheet.create({
+  filterLabel: {
+    fontSize: 16,
+    fontWeight: 500,
+  },
+  filterDescription: {
+    fontSize: 14,
+  },
   modal: {
     position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: 600,
-    border: "2px solid #000",
+    borderRadius: 4,
     backgroundColor: "white",
-    // boxShadow: 24,
+    boxShadow: "rgba(0, 0, 0, 0.28) 0px 8px 28px",
   },
   modalBody: {
     padding: "25px",
@@ -407,7 +439,7 @@ const styles = StyleSheet.create({
   verticalFilters: {
     display: "flex",
     flexDirection: "column",
-    rowGap: 20,
+    rowGap: 15,
   },
   filterWrapper: {},
   filtersWrapper: {
@@ -469,6 +501,7 @@ const styles = StyleSheet.create({
     // marginRight: 0,
     // marginLeft: "auto",
     width: 150,
+    minHeight: "444px",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "auto",
       // width: "100%",

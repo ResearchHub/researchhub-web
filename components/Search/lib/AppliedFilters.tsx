@@ -60,7 +60,7 @@ const AppliedFilters = ({}) => {
           {selectedJournals.map((opt) =>
             renderAppliedFilterBadge({ opt, dropdownKey: "journal" })
           )}
-          {selectedPublishYearRange[0] && (
+          {Boolean(selectedPublishYearRange[0]) && (
             <Badge
               id={`paper_publish_year-badge`}
               label={`Published: ${getLabelForPaperPublicationYear()}`}

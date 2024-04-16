@@ -681,13 +681,15 @@ const styles = StyleSheet.create({
     // marginRight: 0,
     // marginLeft: "auto",
     width: 150,
+    minHeight: "unset",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "auto",
       // width: "100%",
     },
   },
   dropdownInput: {
-    width: 150,
+    width: 180,
+    height: 50,
     minHeight: "unset",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: 200,

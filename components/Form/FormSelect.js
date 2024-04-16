@@ -186,6 +186,7 @@ class FormSelect extends Component {
         ...styles,
         ...formatStyle(reactSelect?.styles?.menu),
         textTransform: "capitalize",
+        zIndex: 10,
       }),
       option: (styles) => ({
         ...styles,
