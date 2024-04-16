@@ -11,22 +11,10 @@ import updatePaperMetadataAPI from "./api/updatePaperMetadataAPI";
 import colors from "~/config/themes/colors";
 import HubSelectDropdown from "../Hubs/HubSelectDropdown";
 import { ClipLoader } from "react-spinners";
-import { components } from "react-select";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
-import FormSelect from "../Form/FormSelect";
-import { LICENSE_OPTIONS } from "~/config/types/licenseOptions";
+import FormSelect, { LicenseOptionWithDescription } from "../Form/FormSelect";
+import { getLicenseOptions } from "~/config/types/licenseOptions";
 const { setMessage, showMessage } = MessageActions;
-
-const LicenseOptionWithDescription: React.FC<any> = (props) => {
-  return (
-    <components.Option {...props}>
-      <div>{props.data.label}</div>
-      <small style={{ opacity: 0.5, textTransform: "none" }}>
-        {props.data.description}
-      </small>
-    </components.Option>
-  );
-};
 
 interface FormProps {
   paper: Paper;
@@ -35,6 +23,7 @@ interface FormProps {
 }
 
 const PaperMetadataForm = ({ paper, onUpdate, metadata }: FormProps) => {
+  const LICENSE_OPTIONS = getLicenseOptions();
   const user = useCurrentUser();
   const [fields, setFields] = useState({
     doi: paper.doi || "",

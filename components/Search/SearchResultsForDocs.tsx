@@ -370,7 +370,11 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     } else if (filterType === "publication_year") {
       query["paper_publish_year__gte"] = value[0];
       query["paper_publish_year__lte"] = value[1];
-    } else if (filterType === "hub" || filterType === "journal") {
+    } else if (
+      filterType === "hub" ||
+      filterType === "journal" ||
+      filterType === "license"
+    ) {
       if (Array.isArray(value)) {
         query[filterType] = value.map((v) => v.valueForApi);
       } else if (!value || !value.valueForApi) {

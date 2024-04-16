@@ -16,6 +16,7 @@ import { faX } from "@fortawesome/pro-solid-svg-icons";
 import RangeSlider from "../Form/RangeSlider";
 import FormSelect, {
   CustomSelectControlWithoutClickEvents,
+  LicenseOptionWithDescription,
 } from "~/components/Form/FormSelect";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import SimpleSlider from "../Form/SimpleSlider";
@@ -28,6 +29,7 @@ import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { faFilter } from "@fortawesome/pro-regular-svg-icons";
 import { useSearchFiltersContext } from "./lib/SearchFiltersContext";
 import AppliedFilters from "./lib/AppliedFilters";
+import { getLicenseOptions } from "~/config/types/licenseOptions";
 
 type FilterType =
   | "citation_percentile"
@@ -56,7 +58,9 @@ const Filters = ({
   const [facetValuesForHub, setFacetValuesForHub] = useState([]);
   const [facetValuesForJournal, setFacetValuesForJournal] = useState([]);
   const [facetValuesForLicense, setFacetValuesForLicense] = useState([]);
-  const [facetValuesForPublicationYear, setFacetValuesForPublicationYear] = useState([]);
+  const [facetValuesForPublicationYear, setFacetValuesForPublicationYear] =
+    useState([]);
+
   const {
     hasAppliedFilters,
     selectedJournals,
@@ -81,9 +85,6 @@ const Filters = ({
     setFacetValuesForLicense(
       get(searchFacets, "_filter_pdf_license.pdf_license.buckets", [])
     );
-    setFacetValuesForLicense(
-      get(searchFacets, "_filter_publication_year.publication_year.buckets", [])
-    );
     setFacetValuesForPublicationYear(
       get(
         searchFacets,
@@ -91,7 +92,6 @@ const Filters = ({
         []
       )
     );
-
   }, [searchFacets]);
 
   const getFacetOptionsForDropdown = (facetKey) => {
@@ -118,7 +118,6 @@ const Filters = ({
 
   const facetValueOptsForHubs = getFacetOptionsForDropdown("hubs");
   const facetValueOptsForJournal = getFacetOptionsForDropdown("journal");
-  const facetValueOptsForLicense = getFacetOptionsForDropdown("license");
   const facetValueOptsForPublicationYear = facetValuesForPublicationYear.reduce(
     (acc, { key, doc_count }) => {
       acc[key] = doc_count;
@@ -126,6 +125,18 @@ const Filters = ({
     },
     {}
   );
+
+  const availableFacetValuesForLicense = getFacetOptionsForDropdown("license");
+  const facetValueOptsForLicense = getLicenseOptions()
+    .map((l) => {
+      const found = availableFacetValuesForLicense.find(
+        (f) => f.value === l.value
+      );
+      if (found) {
+        return { ...found, ...l };
+      }
+    })
+    .filter((l) => l);
 
   return (
     <div
@@ -158,14 +169,13 @@ const Filters = ({
             multiTagStyle={null}
             multiTagLabelStyle={null}
             isClearable={false}
-            // reactSelect={{
-            //   styles: {
-            //     menu: {
-            //       width:
-            //         facetValueOptsForHubs.length > 0 ? "max-content" : "100%",
-            //     },
-            //   },
-            // }}
+            reactSelect={{
+              styles: {
+                menu: {
+                  width: direction === "vertical" ? "100%" : "max-content",
+                },
+              },
+            }}
             showCountInsteadOfLabels={true}
           />
         </div>
@@ -191,10 +201,7 @@ const Filters = ({
             reactSelect={{
               styles: {
                 menu: {
-                  width:
-                    facetValueOptsForJournal.length > 0
-                      ? "max-content"
-                      : "100%",
+                  width: direction === "vertical" ? "100%" : "max-content",
                 },
               },
             }}
@@ -216,6 +223,9 @@ const Filters = ({
               styles.dropdownContainer,
               fullWidth && styles.fullWidthInput,
             ]}
+            selectComponents={{
+              Option: LicenseOptionWithDescription,
+            }}
             inputStyle={[
               styles.dropdownInput,
               fullWidth && styles.fullWidthInput,
@@ -228,14 +238,11 @@ const Filters = ({
             reactSelect={{
               styles: {
                 menu: {
-                  width:
-                    facetValueOptsForJournal.length > 0
-                      ? "max-content"
-                      : "100%",
+                  width: direction === "vertical" ? "100%" : "max-content",
                 },
               },
             }}
-            value={selectedJournals}
+            value={selectedLicenses}
             isMulti={true}
             multiTagStyle={null}
             multiTagLabelStyle={null}
@@ -246,8 +253,12 @@ const Filters = ({
       )}
       {(!onlyFilters || onlyFilters.includes("citation_percentile")) && (
         <div className={css(styles.filterWrapper)}>
-          {showLabels && <div className={css(styles.filterLabel)}>Percentile</div>}
-          <p className={css(styles.filterDescription)}>Shows only papers above specified citation percentile</p>
+          {showLabels && (
+            <div className={css(styles.filterLabel)}>Percentile</div>
+          )}
+          <p className={css(styles.filterDescription)}>
+            Shows only papers above specified citation percentile
+          </p>
           <div style={{ padding: "0px 15px" }}>
             <SimpleSlider
               start={0}
@@ -262,8 +273,12 @@ const Filters = ({
       )}
       {(!onlyFilters || onlyFilters.includes("publication_year")) && (
         <div className={css(styles.filterWrapper)}>
-          {showLabels && <div className={css(styles.filterLabel)}>Publication Year</div>}
-          <p className={css(styles.filterDescription)}>Shows only papers published within specified range</p>
+          {showLabels && (
+            <div className={css(styles.filterLabel)}>Publication Year</div>
+          )}
+          <p className={css(styles.filterDescription)}>
+            Shows only papers published within specified range
+          </p>
           <div style={{ padding: "0px 5px" }}>
             <RangeSlider
               // TODO: Make min and max dynamic

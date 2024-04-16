@@ -60,6 +60,9 @@ const AppliedFilters = ({}) => {
           {selectedJournals.map((opt) =>
             renderAppliedFilterBadge({ opt, dropdownKey: "journal" })
           )}
+          {selectedLicenses.map((opt) =>
+            renderAppliedFilterBadge({ opt, dropdownKey: "license" })
+          )}
           {Boolean(selectedPublishYearRange[0]) && (
             <Badge
               id={`paper_publish_year-badge`}
@@ -119,6 +122,7 @@ const styles = StyleSheet.create({
     display: "flex",
     textTransform: "capitalize",
     marginBottom: 20,
+    rowGap: "10px",
   },
   appliedFilterBadge: {
     borderRadius: 4,

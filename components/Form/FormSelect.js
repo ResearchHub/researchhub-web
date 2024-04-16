@@ -10,6 +10,18 @@ import { isDevEnv } from "~/config/utils/env";
 
 const animatedComponents = makeAnimated();
 
+// Custom control used for the purpose of rendering a license option.
+export const LicenseOptionWithDescription = (props) => {
+  return (
+    <components.Option {...props}>
+      <div>{props.data.label}</div>
+      <small style={{ opacity: 0.5, textTransform: "none" }}>
+        {props.data.description}
+      </small>
+    </components.Option>
+  );
+};
+
 // This is a seldom used control. It should only be used
 // in cases where you do not want click events on your Select Control.
 // e.g. Showing a modal onClick instead of the default dropdown.

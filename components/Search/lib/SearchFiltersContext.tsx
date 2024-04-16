@@ -88,6 +88,7 @@ export const SearchFiltersContextProvider = ({ children }) => {
   useEffect(() => {
     setSelectedHubs(getSelectedFacetValues({ router, forKey: "hub" }));
     setSelectedJournals(getSelectedFacetValues({ router, forKey: "journal" }));
+    setSelectedLicenses(getSelectedFacetValues({ router, forKey: "license" }));
 
     let publishYearMin = 0,
       publishYearMax = 0;
@@ -140,6 +141,12 @@ export const SearchFiltersContextProvider = ({ children }) => {
         .map((j) => j.value);
 
       updatedQuery[dropdownKey] = newValue;
+    } else if (dropdownKey === "license") {
+      const newValue = selectedJournals
+        .filter((j) => j.value !== opt.value)
+        .map((j) => j.value);
+
+      updatedQuery[dropdownKey] = newValue;
     } else if (dropdownKey === "paper_publish_year") {
       delete updatedQuery["paper_publish_year__gte"];
       delete updatedQuery["paper_publish_year__lte"];
@@ -159,6 +166,7 @@ export const SearchFiltersContextProvider = ({ children }) => {
         hasAppliedFilters: () =>
           selectedHubs.length > 0 ||
           selectedJournals.length > 0 ||
+          selectedLicenses.length > 0 ||
           selectedPublishYearRange[0] > 0 ||
           selectedPublishYearRange[1] > 0 ||
           selectedCitationPercentile > 0,
@@ -184,6 +192,7 @@ export const SearchFiltersContextProvider = ({ children }) => {
           delete updatedQuery["hub"];
           delete updatedQuery["journal"];
           delete updatedQuery["ordering"];
+          delete updatedQuery["license"];
 
           router.push({
             pathname: "/search/[type]",
