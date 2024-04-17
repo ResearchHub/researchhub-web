@@ -268,13 +268,16 @@ const styles = StyleSheet.create({
     height: NAVBAR_HEIGHT,
     justifyContent: "space-between",
     left: 0,
-    padding: "0 0px 0 5px",
+    padding: "0 0px 0 28px",
     position: "sticky",
     top: 0,
     width: "100%",
     zIndex: 5,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      padding: "0 0px 0 18px",
+    },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: "10px 15px 10px 5px",
+      padding: "10px 15px 10px 18px",
       justifyContent: "space-between",
     },
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {

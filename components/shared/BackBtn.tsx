@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeftLong } from "@fortawesome/pro-regular-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
-import { breakpoints } from "~/config/themes/screen";
 import { useRouter } from "next/router";
 
 const BackBtn = ({
@@ -63,6 +62,7 @@ const styles = StyleSheet.create({
   backButton: {
     border: 0,
     marginRight: 3,
+    paddingLeft: 0,
   },
 });
 
