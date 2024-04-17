@@ -28,7 +28,6 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }: Props) => {
   const [numOfHits, setNumOfHits] = useState<number | null>(null);
   const [results, setResults] = useState<Array<any>>([]);
   const [userVotes, setUserVotes] = useState<any>({});
-  const [pageWidth, setPageWidth] = useState<number>(0);
 
   useEffect(() => {
     const results = get(apiResponse, "results", []);
@@ -176,6 +175,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }: Props) => {
               <SearchFilters
                 searchFacets={apiResponse?.facets}
                 onChange={handleSearchFilterChange}
+                forEntityType={entityType}
               />
             </div>
             <AppliedFilters />

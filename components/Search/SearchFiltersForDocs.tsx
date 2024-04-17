@@ -36,6 +36,7 @@ interface Props {
   fullWidth?: boolean;
   onlyFilters?: FilterType[];
   direction?: "horizontal" | "vertical";
+  forEntityType: "paper" | "post";
 }
 
 const Filters = ({
@@ -45,6 +46,7 @@ const Filters = ({
   onlyFilters,
   direction = "horizontal",
   fullWidth = false,
+  forEntityType,
 }: Props) => {
   const [facetValuesForHub, setFacetValuesForHub] = useState([]);
   const [facetValuesForJournal, setFacetValuesForJournal] = useState([]);
@@ -281,7 +283,7 @@ const Filters = ({
   );
 };
 
-const SearchFilters = ({ onChange, searchFacets }: Props) => {
+const SearchFilters = ({ onChange, searchFacets, forEntityType }: Props) => {
   const { width: winWidth } = useWindow();
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -289,6 +291,7 @@ const SearchFilters = ({ onChange, searchFacets }: Props) => {
   const { selectedSortOrder } = useSearchFiltersContext();
 
   const isMobile = useMediaQuery(`(max-width:${breakpoints.small.str})`);
+  const showMoreFilters = forEntityType === "paper";
 
   return (
     <>
@@ -298,28 +301,33 @@ const SearchFilters = ({ onChange, searchFacets }: Props) => {
             <Filters
               onChange={onChange}
               showLabels={false}
-              onlyFilters={["journal", "hub"]}
+              onlyFilters={
+                forEntityType === "paper" ? ["journal", "hub"] : ["hub"]
+              }
               searchFacets={searchFacets}
+              forEntityType={forEntityType}
             />
           )}
-          <Button
-            variant="contained"
-            disableElevation={true}
-            style={{
-              background: "#FBFBFD",
-              color: "#232038",
-              border: "1px solid #E8E8F2",
-              fontWeight: 400,
-              textTransform: "none",
-              fontSize: 14,
-              borderRadius: 2,
-              columnGap: "4px",
-            }}
-            onClick={handleOpen}
-          >
-            <FontAwesomeIcon icon={faFilter} />
-            Filters
-          </Button>
+          {showMoreFilters && (
+            <Button
+              variant="contained"
+              disableElevation={true}
+              style={{
+                background: "#FBFBFD",
+                color: "#232038",
+                border: "1px solid #E8E8F2",
+                fontWeight: 400,
+                textTransform: "none",
+                fontSize: 14,
+                borderRadius: 2,
+                columnGap: "4px",
+              }}
+              onClick={handleOpen}
+            >
+              <FontAwesomeIcon icon={faFilter} />
+              Filters
+            </Button>
+          )}
         </div>
 
         <FormSelect
@@ -363,6 +371,7 @@ const SearchFilters = ({ onChange, searchFacets }: Props) => {
               searchFacets={searchFacets}
               direction="vertical"
               fullWidth
+              forEntityType={forEntityType}
             />
           </Box>
         </SwipeableDrawer>
@@ -391,6 +400,7 @@ const SearchFilters = ({ onChange, searchFacets }: Props) => {
                 searchFacets={searchFacets}
                 direction="vertical"
                 fullWidth
+                forEntityType={forEntityType}
               />
             </div>
           </div>
