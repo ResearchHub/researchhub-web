@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     height: NAVBAR_HEIGHT,
     justifyContent: "space-between",
     left: 0,
-    padding: "0 28px",
+    padding: "0 0px 0 28px",
     position: "sticky",
     top: 0,
     width: "100%",

@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "space-between",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      marginBottom: 0,
+      marginBottom: 10,
     },
   },
   highlight: {

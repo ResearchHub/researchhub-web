@@ -477,7 +477,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      marginBottom: 0,
+      marginBottom: 10,
     },
   },
   fullWidthInput: {

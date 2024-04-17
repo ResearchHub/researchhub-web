@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   },
   tabsWrapper: {
     marginBottom: 50,
-    width: "95%",
+    width: "100%",
   },
 });
 

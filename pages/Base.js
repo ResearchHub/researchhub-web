@@ -13,7 +13,9 @@ import { transitions, positions, Provider as AlertProvider } from "react-alert";
 import { UniversityActions } from "../redux/universities";
 import dynamic from "next/dynamic";
 import PermissionActions from "../redux/permission";
-import RootLeftSidebar from "~/components/Home/sidebar/RootLeftSidebar";
+import RootLeftSidebar, {
+  LEFT_SIDEBAR_MIN_WIDTH,
+} from "~/components/Home/sidebar/RootLeftSidebar";
 import Router from "next/router";
 import Script from "next/script";
 import { ExchangeRateContextProvider } from "~/components/contexts/ExchangeRateContext";
@@ -36,7 +38,7 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import { ToastContainer, cssTransition } from "react-toastify";
-
+LEFT_SIDEBAR_MIN_WIDTH;
 // WalletConnect project ID
 const projectId = "a3e8904e258fe256bf772b764d3acfab";
 
@@ -267,6 +269,8 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     flex: 1,
+    // Account for left sidebar in order to prevent page to overflow beyond 100vw
+    width: `calc(100% - ${LEFT_SIDEBAR_MIN_WIDTH}px)`,
   },
 });
 
