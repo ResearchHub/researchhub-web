@@ -2,8 +2,8 @@ import IconButton from "../Icons/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeftLong } from "@fortawesome/pro-regular-svg-icons";
 import { StyleSheet, css } from "aphrodite";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const BackBtn = ({
   label,
@@ -15,40 +15,32 @@ const BackBtn = ({
   labelStyle?: any;
 }) => {
   const router = useRouter();
-  const hasHistory = false; //typeof window !== "undefined" && window.history.length > 2;
+  const [canGoBack, setCanGoBack] = useState(false);
+
+  useEffect(() => {
+    const referrer = document.referrer;
+    const currentDomain = window.location.origin;
+    const isSameDomain = referrer.startsWith(currentDomain);
+    const hasHistory = window.history.length > 2 && isSameDomain;
+
+    setCanGoBack(hasHistory);
+  }, []);
 
   const handleBackClick = (e) => {
-    const shouldOpenNewTab = e.metaKey || e.ctrlKey; // metaKey is for Command on Mac
-    // if (shouldOpenNewTab && document.referrer) {
-    //   window.open(document.referrer, "_blank");
-    // } else {
-    //   router.back();
-    // }
-    // router.back();
+    e.preventDefault();
+    if (canGoBack) {
+      router.back();
+    } else {
+      router.push(href);  // Redirect to homepage or a default route
+    }
   };
 
   return (
     <div className={css(styles.backToPrev)}>
-      <div className={css(styles.backToPrev)}>
-        <IconButton variant="round" overrideStyle={styles.backButton}>
-          {hasHistory ? (
-            <div onClick={handleBackClick}>
-              <FontAwesomeIcon
-                icon={faArrowLeftLong}
-                style={{ color: "black" }}
-              />
-            </div>
-          ) : (
-            <Link href={href}>
-              <FontAwesomeIcon
-                icon={faArrowLeftLong}
-                style={{ color: "black" }}
-              />
-            </Link>
-          )}
-        </IconButton>
-        <div className={css(styles.label, labelStyle)}>{label}</div>
-      </div>
+      <IconButton variant="round" overrideStyle={styles.backButton} onClick={handleBackClick}>
+        <FontAwesomeIcon icon={faArrowLeftLong} style={{ color: "black" }} />
+      </IconButton>
+      <div className={css(styles.label, labelStyle)}>{label}</div>
     </div>
   );
 };
@@ -62,7 +54,6 @@ const styles = StyleSheet.create({
   backButton: {
     border: 0,
     marginRight: 3,
-    paddingLeft: 0,
   },
 });
 

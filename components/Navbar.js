@@ -239,6 +239,7 @@ const Navbar = (props) => {
 const styles = StyleSheet.create({
   backBtnWrapper: {
     fontSize: 20,
+    marginLeft: -10,
     [`@media (max-width: ${breakpoints.medium.str})`]: {
       fontSize: 20,
     },
