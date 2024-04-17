@@ -241,7 +241,7 @@ const Filters = ({
             <div className={css(styles.filterLabel)}>Percentile</div>
           )}
           <p className={css(styles.filterDescription)}>
-            Shows only papers above specified citation percentile
+            Show only the most-cited papers above a specified citation threshold
           </p>
           <div style={{ padding: "0px 15px" }}>
             <SimpleSlider
@@ -339,7 +339,7 @@ const SearchFilters = ({ onChange, searchFacets, forEntityType }: Props) => {
             styles.dropdownContainer,
             styles.dropdownContainerForSort,
           ]}
-          inputStyle={styles.dropdownInput}
+          inputStyle={styles.dropdownInputForSort}
           onChange={onChange}
           isSearchable={false}
           showLabelAlongSelection={
@@ -499,12 +499,15 @@ const styles = StyleSheet.create({
       width: "auto",
     },
   },
+  dropdownInputForSort: {
+    minHeight: "unset",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "auto",
+    },
+  },
   dropdownInput: {
     width: 160,
     minHeight: "unset",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      width: 200,
-    },
   },
   appliedFilters: {
     alignItems: "center",
