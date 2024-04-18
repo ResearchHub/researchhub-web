@@ -501,8 +501,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   scroll: {
-    // overflowX: "scroll",
-    // overflowY: "visible",
+    overflowX: "scroll",
+    overflowY: "visible",
   },
   uploadFileTitle: {
     fontWeight: 500,
