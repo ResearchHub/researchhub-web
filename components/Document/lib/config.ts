@@ -3,7 +3,7 @@ import globalColors from "~/config/themes/colors";
 const config = {
   width: 860,
   background: "#FCFCFC",
-  controlsWidth: 260,
+  controlsWidth: 190,
   border: globalColors.GREY_LINE(1.0),
   // This used to be 3 (and not "all"),
   // but we wanted to give the user the ability to scroll to anchor links,
