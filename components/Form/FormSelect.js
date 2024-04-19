@@ -10,6 +10,18 @@ import { isDevEnv } from "~/config/utils/env";
 
 const animatedComponents = makeAnimated();
 
+// Custom control used for the purpose of rendering a license option.
+export const LicenseOptionWithDescription = (props) => {
+  return (
+    <components.Option {...props}>
+      <div>{props.data.label}</div>
+      <small style={{ opacity: 0.5, textTransform: "none" }}>
+        {props.data.description}
+      </small>
+    </components.Option>
+  );
+};
+
 // This is a seldom used control. It should only be used
 // in cases where you do not want click events on your Select Control.
 // e.g. Showing a modal onClick instead of the default dropdown.
@@ -139,12 +151,26 @@ class FormSelect extends Component {
         return;
       }
 
-      var formattedStyle;
-      if (styleObject["_definition"]) {
-        formattedStyle = { ...styleObject["_definition"] };
+      // Legacy style scenario
+      if (!Array.isArray(styleObject) && !styleObject["_definition"]) {
+        return styleObject;
       }
 
-      return formattedStyle ? formattedStyle : styleObject;
+      // Aphrodite style scenario. Normalize to array to make external usage easier.
+      if (!Array.isArray(styleObject)) {
+        styleObject = [styleObject];
+      }
+
+      let appliedStyles = {};
+      styleObject
+        .map((style) => {
+          if (style["_definition"]) {
+            appliedStyles = { ...appliedStyles, ...style["_definition"] };
+          }
+        })
+        .filter((style) => style);
+
+      return appliedStyles ? appliedStyles : styleObject;
     };
 
     const selectStyles = {
@@ -186,6 +212,7 @@ class FormSelect extends Component {
         ...styles,
         ...formatStyle(reactSelect?.styles?.menu),
         textTransform: "capitalize",
+        zIndex: 10,
       }),
       option: (styles) => ({
         ...styles,

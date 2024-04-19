@@ -332,6 +332,10 @@ const searchTypes = {
       fieldForApi: "external_source",
       fieldForApp: "journal",
     },
+    citation_percentile__gte: {
+      fieldForApi: "citation_percentile__gte",
+      fieldForApp: "citation_percentile__gte",
+    },
     paper_publish_year__gte: {
       fieldForApi: "paper_publish_year__gte",
       fieldForApp: "paper_publish_year__gte",

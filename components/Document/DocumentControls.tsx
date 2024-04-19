@@ -6,6 +6,8 @@ import IconButton from "../Icons/IconButton";
 import colors from "~/config/themes/colors";
 import DocumentZoomControls from "./lib/DocumentZoomControls";
 import DocumentCommentMenu from "~/components/Document/DocumentCommentMenu";
+import { breakpoints } from "~/config/themes/screen";
+import { LEFT_MAX_NAV_WIDTH, LEFT_MIN_NAV_WIDTH } from "../ReferenceManager/basic_page_layout/BasicTogglableNavbarLeft";
 
 interface Props {
   handleFullScreen: Function;
@@ -86,7 +88,6 @@ const styles = StyleSheet.create({
     zIndex: 99,
     right: 0,
     top: 25,
-    marginRight: 10,
     marginTop: -10,
     display: "flex",
     columnGap: "10px",
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
   },
   controlsSticky: {
     position: "fixed",
-    left: `calc(50%)`,
+    left: `calc(50% - ${(config.controlsWidth / 2)}px + ${LEFT_MAX_NAV_WIDTH / 2}px )`,
     top: "unset",
     right: "unset",
     zIndex: 9999999,
@@ -111,11 +112,19 @@ const styles = StyleSheet.create({
     padding: "8px 15px",
     borderRadius: "42px",
 
+    [`@media (max-width: 1200px)`]: {
+      left: `calc(50% - ${(config.controlsWidth / 2)}px + ${LEFT_MIN_NAV_WIDTH / 2}px )`,
+    },
+
     [`@media (max-width: 1100px)`]: {
       transform: "unset",
-      left: `calc(50% - ${config.controlsWidth / 2}px)`,
       bottom: 30,
     },
+
+    [`@media (max-width: ${breakpoints.xsmall.str})`]: {
+      left: `calc(50% - ${(config.controlsWidth / 2)}px)`,
+    },    
+
   },
   controlsStickyExpanded: {
     left: `50%`,

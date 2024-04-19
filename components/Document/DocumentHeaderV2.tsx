@@ -155,8 +155,6 @@ const DocumentHeader = ({
                 <div className={css(styles.lineItems)}>
                   <DocumentLineItems
                     document={doc}
-                    id={doc?.id}
-                    slug={doc?.raw?.slug}
                   />
                 </div>
 
@@ -269,7 +267,9 @@ const DocumentHeader = ({
                   )}
                   <ReferenceProjectsUpsertContextProvider>
                     <SaveToRefManager
-                      unifiedDocument={doc!.unifiedDocument}
+                      unifiedDocumentId={doc!.unifiedDocument!.id}
+                      contentId={doc!.id}
+                      contentType={isPaper(doc) ? "paper" : "post"}
                       unsavedBtnComponent={
                         <IconButton variant="round">
                           <FontAwesomeIcon

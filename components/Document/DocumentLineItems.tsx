@@ -17,8 +17,6 @@ import { useRouter } from "next/router";
 
 const DocumentLineItems = ({
   document,
-  id,
-  slug,
 }: {
   document: GenericDocument;
 }) => {
@@ -29,8 +27,8 @@ const DocumentLineItems = ({
     useState<boolean>(false);
   const [isShowingAllMetadata, setIsShowingAllMetadata] =
     useState<boolean>(false);
-  const basePath = `/${document.type}/${id || router.query.documentId}/${
-    slug || router.query.documentSlug
+  const basePath = `/${document.type}/${document.id || router.query.documentId}/${
+    document.unifiedDocument.document!.slug || router.query.documentSlug
   }`;
 
   const lineItems = [
@@ -46,7 +44,7 @@ const DocumentLineItems = ({
           ) : (
             <span>Not available</span>
           )}
-          {isPaper(document) && (
+          {(isPaper(document) && document.authors.length > 0) && (
             <span
               style={{ marginLeft: 5 }}
               className={css(linkStyles.linkThemeSolidPrimary)}

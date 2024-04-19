@@ -16,7 +16,7 @@ export type AuthorClaimDataProps = {
   authors: Array<AuthorProfile>;
   isOpen: boolean;
   setIsOpen: (flag: boolean) => void;
-  removeProfileClick: () => void;
+  removeProfileClick?: () => void;
 };
 
 const getPrompt = ({

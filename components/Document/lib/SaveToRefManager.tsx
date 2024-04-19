@@ -238,7 +238,7 @@ const SaveToRefManager = ({
   };
 
   return (
-    <>
+    <div>
       <div
         onClick={(e) => {
           e.stopPropagation();
@@ -371,7 +371,7 @@ const SaveToRefManager = ({
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

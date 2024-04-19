@@ -109,7 +109,10 @@ const SearchResults = ({ apiResponse }) => {
       <div className={css(styles.tabsWrapper)}>{renderEntityTabs()}</div>
 
       {searchType === "paper" || searchType === "post" ? (
-        <SearchResultsForDocs apiResponse={apiResponse} />
+        <SearchResultsForDocs
+          apiResponse={apiResponse}
+          entityType={searchType}
+        />
       ) : searchType === "hub" ? (
         <SearchResultsForHubs apiResponse={apiResponse} />
       ) : searchType === "person" ? (
@@ -131,7 +134,7 @@ const styles = StyleSheet.create({
   },
   tabsWrapper: {
     marginBottom: 50,
-    width: "95%",
+    width: "100%",
   },
 });
 
