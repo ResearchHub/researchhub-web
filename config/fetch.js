@@ -5,6 +5,7 @@ import { captureException } from "@sentry/browser";
 import API from "~/config/api";
 import store from "~/redux/configureStore";
 import { ModalConstants } from "~/redux/modals";
+import { v4 as uuidv4 } from "uuid";
 
 export const fetchNotePermissions = ({ noteId }) => {
   return fetch(API.NOTE_PERMISSIONS({ noteId }), API.GET_CONFIG());
@@ -326,6 +327,7 @@ export const supportContent = async ({ contentType, objectId, amount }) => {
     content_type: contentType,
     object_id: objectId,
     amount,
+    transaction_id: uuidv4(),
     purchase_type: "BOOST",
     purchase_method: "OFF_CHAIN",
   };

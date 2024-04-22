@@ -41,6 +41,7 @@ class ContentSupportModal extends Component {
     super(props);
     this.initialState = {
       amount: SUPPORT_DEFAULT_AMOUNT,
+      isSubmitting: false,
       error: false,
     };
     this.state = {
@@ -98,7 +99,9 @@ class ContentSupportModal extends Component {
   handleTransaction = () => {
     const { showMessage, updateUser, modals, auth, onSupport } = this.props;
     const { metaData, count, setCount } = modals.openContentSupportModal.props;
+
     showMessage({ show: true, load: true });
+    this.setState({ isSubmitting: true });
     supportContent({ ...metaData, amount: this.state.amount })
       .then((res) => {
         this.showSuccessMessage();
@@ -111,24 +114,21 @@ class ContentSupportModal extends Component {
           onSupport(res);
         }
       })
-      .catch(this.showErrorMessage);
+      .catch(this.showErrorMessage)
+      .finally(() => {
+        this.setState({ isSubmitting: false });
+      });
   };
 
   confirmTransaction = (e) => {
     e && e.stopPropagation();
     e && e.preventDefault();
 
-    const { alert } = this.props;
     const { amount } = this.state;
 
-    alert.show({
-      text: `Award ${parseInt(amount, 10)} RSC to this post?`,
-      buttonText: "Yes",
-      containerStyle: {
-        zIndex: 20000,
-      },
-      onClick: () => this.handleTransaction(),
-    });
+    if (window.confirm(`Award ${parseInt(amount, 10)} RSC to this post?`)) {
+      this.handleTransaction();
+    }
   };
 
   getAuthorProfile = () => {
@@ -143,7 +143,7 @@ class ContentSupportModal extends Component {
 
   renderInputs = () => {
     const { user } = this.props;
-    const { amount } = this.state;
+    const { amount, isSubmitting } = this.state;
     const recipient = this.getAuthorProfile();
     const researchHubAmount = this.calcResearchHubAmount({
       offeredAmount: amount,
@@ -307,7 +307,7 @@ class ContentSupportModal extends Component {
           <Button
             label="Confirm"
             onClick={this.confirmTransaction}
-            disabled={hasMinRscError || hasMaxRscError}
+            disabled={hasMinRscError || hasMaxRscError || isSubmitting}
           />
         </div>
       </Fragment>
