@@ -321,10 +321,16 @@ export const checkSummaryVote = async ({ summaryId }, callback) => {
     });
 };
 
-export const supportContent = async ({ contentType, objectId, amount }) => {
+export const supportContent = async ({
+  contentType,
+  objectId,
+  amount,
+  clientId,
+}) => {
   const PAYLOAD = {
     content_type: contentType,
     object_id: objectId,
+    client_id: clientId,
     amount,
     purchase_type: "BOOST",
     purchase_method: "OFF_CHAIN",
