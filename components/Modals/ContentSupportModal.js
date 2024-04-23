@@ -35,6 +35,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import { withExchangeRate } from "../contexts/ExchangeRateContext";
+import { v4 as uuidv4 } from "uuid";
 
 class ContentSupportModal extends Component {
   constructor(props) {
@@ -43,6 +44,7 @@ class ContentSupportModal extends Component {
       amount: SUPPORT_DEFAULT_AMOUNT,
       isSubmitting: false,
       error: false,
+      clientId: uuidv4(),
     };
     this.state = {
       ...this.initialState,
@@ -102,7 +104,11 @@ class ContentSupportModal extends Component {
 
     showMessage({ show: true, load: true });
     this.setState({ isSubmitting: true });
-    supportContent({ ...metaData, amount: this.state.amount })
+    supportContent({
+      ...metaData,
+      amount: this.state.amount,
+      clientId: this.state.clientId,
+    })
       .then((res) => {
         this.showSuccessMessage();
         const updatedCount = Number(count) + Number(this.state.amount);
