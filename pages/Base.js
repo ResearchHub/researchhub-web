@@ -6,6 +6,7 @@ import { isDevEnv } from "~/config/utils/env";
 import { NewPostButtonContext } from "~/components/contexts/NewPostButtonContext.ts";
 import { NavigationContextProvider } from "~/components/contexts/NavigationContext";
 import { SavedCitationsContextProvider } from "~/components/contexts/SavedCitationsContext";
+import { ReferenceManagerSettingsProvider } from "~/components/contexts/ReferenceManagerSettings";
 import { NotificationActions } from "~/redux/notification";
 import { StyleSheet, css } from "aphrodite";
 import { TransactionActions } from "../redux/transaction";
@@ -208,51 +209,53 @@ function Base({
           </Script>
         </>
       )}
-      <OrganizationContextProvider user={auth.user}>
-        <SavedCitationsContextProvider>
-          <NavigationContextProvider>
-            <ExchangeRateContextProvider>
-              <WagmiConfig config={config}>
-                <NavbarContext.Provider
-                  value={{
-                    numNavInteractions,
-                    setNumNavInteractions,
-                    numProfileDeletes,
-                    setNumProfileDeletes,
-                  }}
-                >
-                  <NewPostButtonContext.Provider
+      <ReferenceManagerSettingsProvider>
+        <OrganizationContextProvider user={auth.user}>
+          <SavedCitationsContextProvider>
+            <NavigationContextProvider>
+              <ExchangeRateContextProvider>
+                <WagmiConfig config={config}>
+                  <NavbarContext.Provider
                     value={{
-                      values: newPostButtonValues,
-                      setValues: setNewPostButtonValues,
+                      numNavInteractions,
+                      setNumNavInteractions,
+                      numProfileDeletes,
+                      setNumProfileDeletes,
                     }}
                   >
-                    {isDevEnv() && SPEC__reloadClientSideData()}
-                    <div className={css(styles.pageWrapper)}>
-                      <DynamicPermissionNotification />
-                      <DynamicMessage />
-                      {withSidebar && (
-                        <RootLeftSidebar
-                          rootLeftSidebarForceMin={rootLeftSidebarForceMin}
-                        />
-                      )}
-                      <div className={css(styles.main)}>
-                        {withNavbar && <DynamicNavbar />}
-                        <Component {...pageProps} {...appProps} />
+                    <NewPostButtonContext.Provider
+                      value={{
+                        values: newPostButtonValues,
+                        setValues: setNewPostButtonValues,
+                      }}
+                    >
+                      {isDevEnv() && SPEC__reloadClientSideData()}
+                      <div className={css(styles.pageWrapper)}>
+                        <DynamicPermissionNotification />
+                        <DynamicMessage />
+                        {withSidebar && (
+                          <RootLeftSidebar
+                            rootLeftSidebarForceMin={rootLeftSidebarForceMin}
+                          />
+                        )}
+                        <div className={css(styles.main)}>
+                          {withNavbar && <DynamicNavbar />}
+                          <Component {...pageProps} {...appProps} />
+                        </div>
                       </div>
-                    </div>
-                    <ToastContainer transition={fadeTransition} />
-                  </NewPostButtonContext.Provider>
-                </NavbarContext.Provider>
-              </WagmiConfig>
-              <Web3Modal
-                projectId={projectId}
-                ethereumClient={ethereumClient}
-              />
-            </ExchangeRateContextProvider>
-          </NavigationContextProvider>
-        </SavedCitationsContextProvider>
-      </OrganizationContextProvider>
+                      <ToastContainer transition={fadeTransition} />
+                    </NewPostButtonContext.Provider>
+                  </NavbarContext.Provider>
+                </WagmiConfig>
+                <Web3Modal
+                  projectId={projectId}
+                  ethereumClient={ethereumClient}
+                />
+              </ExchangeRateContextProvider>
+            </NavigationContextProvider>
+          </SavedCitationsContextProvider>
+        </OrganizationContextProvider>
+      </ReferenceManagerSettingsProvider>
     </AlertProvider>
   );
 }

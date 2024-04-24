@@ -22,6 +22,9 @@ import {
   parseSavedCitation,
   savedCitationsContext,
 } from "~/components/contexts/SavedCitationsContext";
+import {
+  referenceManagerSettingsContext
+} from "~/components/contexts/ReferenceManagerSettings";
 import { genClientId } from "~/config/utils/id";
 
 interface Props {
@@ -85,6 +88,13 @@ const SaveToRefManager = ({
   savedBtnComponent,
 }: Props) => {
   const { savedCitations, setSavedCitations } = savedCitationsContext();
+  const {
+    lastUsedOrganizationId,
+    lastUsedProjectId,
+    setLastUsedOrganizationId,
+    setLastUsedProjectId,
+  } = referenceManagerSettingsContext();
+
   const [orgProjects, setOrgProjects] = useState([]);
   const [isFetchingProjects, setIsFetchingProjects] = useState(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -126,17 +136,10 @@ const SaveToRefManager = ({
   }, [selectedOrg, isOpen]);
 
   useEffect(() => {
-    if (orgs && orgs.length > 0 && !selectedOrg) {
-      // If this document appears in a saved org already, default to that org.
-      const orgIdWhichCitationIsSavedTo = savedCitations.find(
-        (citation) => citation.relatedUnifiedDocumentId === unifiedDocumentId
-      )?.organizationId;
-      const selectedOrg =
-        orgs.find((org) => org.id === orgIdWhichCitationIsSavedTo) || orgs[0];
-
-      setSelectedOrg(selectedOrg);
+    if (!selectedOrg) {
+      autoPickDefaultOrg();
     }
-  }, [orgs]);
+  }, [orgs, selectedOrg]);
 
   useEffectHandleClick({
     ref: btnRef,
@@ -204,6 +207,9 @@ const SaveToRefManager = ({
   };
 
   const handleSelectProject = (project) => {
+
+    setLastUsedProjectId(project.id);
+
     if (savedInProjectIds.includes(project.id)) {
       // @ts-ignore
       const citationIdsToRemove = savedCitations
@@ -237,6 +243,29 @@ const SaveToRefManager = ({
     }
   };
 
+  const autoPickDefaultOrg = () => {
+    if (orgs && orgs.length) {
+
+      const orgIdWhichCitationIsSavedTo = savedCitations.find(
+        (citation) => citation.relatedUnifiedDocumentId === unifiedDocumentId
+        )?.organizationId;
+        
+      // If this document appears in a saved org already, default to that org.
+      if (orgIdWhichCitationIsSavedTo) {
+        const selectedOrg =
+          orgs.find((org) => org.id === orgIdWhichCitationIsSavedTo) || orgs[0];
+        setSelectedOrg(selectedOrg);
+      }
+      // If not saved already, default to the organization last used
+      else if (lastUsedOrganizationId) {
+        const lastUsedOrg = orgs.find((org) => org.id === lastUsedOrganizationId);
+        if (lastUsedOrg) {
+          setSelectedOrg(lastUsedOrg);
+        }
+      }
+    }
+  }    
+
   return (
     <div>
       <div
@@ -269,7 +298,10 @@ const SaveToRefManager = ({
             modalMessage="edit document"
             permissionKey="UpdatePaper"
             loginRequired={true}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => {
+              autoPickDefaultOrg();
+              setIsOpen(!isOpen)
+            }}
             hideRipples={true}
           >
             <div ref={btnRef}>
@@ -309,6 +341,7 @@ const SaveToRefManager = ({
                         <div
                           className={css(styles.orgSelect)}
                           onClick={() => {
+                            setLastUsedOrganizationId(org.id);
                             setSelectedOrg(org);
                             // @ts-ignore
                             setCurrentOrg(org);
