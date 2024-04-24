@@ -32,7 +32,6 @@ export const ReferenceManagerSettingsProvider = ({ children }) => {
   const [lastUsedOrganizationId, _setLastUsedOrganizationId] = useState<ID | null>(null);
 
   const setLastUsedProjectId = (projectId: ID|null) => {
-    // store in local storage
     if (projectId) {
       localStorage.setItem(PROJ_ID_KEY, projectId.toString());
       _setLastUsedProjectId(projectId);
@@ -40,7 +39,6 @@ export const ReferenceManagerSettingsProvider = ({ children }) => {
   }
 
   const setLastUsedOrganizationId = (organizationId: ID|null) => {
-    // store in local storage
     if (organizationId) {
       localStorage.setItem(ORG_ID_KEY, organizationId.toString());
       _setLastUsedOrganizationId(organizationId);
