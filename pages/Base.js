@@ -39,6 +39,10 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import { ToastContainer, cssTransition } from "react-toastify";
+import {
+  HistoryManagerProvider,
+  useHistoryManager,
+} from "~/components/contexts/HistoryManagerContext";
 LEFT_SIDEBAR_MIN_WIDTH;
 // WalletConnect project ID
 const projectId = "a3e8904e258fe256bf772b764d3acfab";
@@ -128,6 +132,7 @@ function Base({
     isOpen: false,
     paperID: null,
   });
+  const historyManager = useHistoryManager();
 
   useEffect(() => {
     const originalFetch = window.fetch;
@@ -209,53 +214,55 @@ function Base({
           </Script>
         </>
       )}
-      <ReferenceManagerSettingsProvider>
-        <OrganizationContextProvider user={auth.user}>
-          <SavedCitationsContextProvider>
-            <NavigationContextProvider>
-              <ExchangeRateContextProvider>
-                <WagmiConfig config={config}>
-                  <NavbarContext.Provider
-                    value={{
-                      numNavInteractions,
-                      setNumNavInteractions,
-                      numProfileDeletes,
-                      setNumProfileDeletes,
-                    }}
-                  >
-                    <NewPostButtonContext.Provider
+      <HistoryManagerProvider value={historyManager}>
+        <ReferenceManagerSettingsProvider>
+          <OrganizationContextProvider user={auth.user}>
+            <SavedCitationsContextProvider>
+              <NavigationContextProvider>
+                <ExchangeRateContextProvider>
+                  <WagmiConfig config={config}>
+                    <NavbarContext.Provider
                       value={{
-                        values: newPostButtonValues,
-                        setValues: setNewPostButtonValues,
+                        numNavInteractions,
+                        setNumNavInteractions,
+                        numProfileDeletes,
+                        setNumProfileDeletes,
                       }}
                     >
-                      {isDevEnv() && SPEC__reloadClientSideData()}
-                      <div className={css(styles.pageWrapper)}>
-                        <DynamicPermissionNotification />
-                        <DynamicMessage />
-                        {withSidebar && (
-                          <RootLeftSidebar
-                            rootLeftSidebarForceMin={rootLeftSidebarForceMin}
-                          />
-                        )}
-                        <div className={css(styles.main)}>
-                          {withNavbar && <DynamicNavbar />}
-                          <Component {...pageProps} {...appProps} />
+                      <NewPostButtonContext.Provider
+                        value={{
+                          values: newPostButtonValues,
+                          setValues: setNewPostButtonValues,
+                        }}
+                      >
+                        {isDevEnv() && SPEC__reloadClientSideData()}
+                        <div className={css(styles.pageWrapper)}>
+                          <DynamicPermissionNotification />
+                          <DynamicMessage />
+                          {withSidebar && (
+                            <RootLeftSidebar
+                              rootLeftSidebarForceMin={rootLeftSidebarForceMin}
+                            />
+                          )}
+                          <div className={css(styles.main)}>
+                            {withNavbar && <DynamicNavbar />}
+                            <Component {...pageProps} {...appProps} />
+                          </div>
                         </div>
-                      </div>
-                      <ToastContainer transition={fadeTransition} />
-                    </NewPostButtonContext.Provider>
-                  </NavbarContext.Provider>
-                </WagmiConfig>
-                <Web3Modal
-                  projectId={projectId}
-                  ethereumClient={ethereumClient}
-                />
-              </ExchangeRateContextProvider>
-            </NavigationContextProvider>
-          </SavedCitationsContextProvider>
-        </OrganizationContextProvider>
-      </ReferenceManagerSettingsProvider>
+                        <ToastContainer transition={fadeTransition} />
+                      </NewPostButtonContext.Provider>
+                    </NavbarContext.Provider>
+                  </WagmiConfig>
+                  <Web3Modal
+                    projectId={projectId}
+                    ethereumClient={ethereumClient}
+                  />
+                </ExchangeRateContextProvider>
+              </NavigationContextProvider>
+            </SavedCitationsContextProvider>
+          </OrganizationContextProvider>
+        </ReferenceManagerSettingsProvider>
+      </HistoryManagerProvider>
     </AlertProvider>
   );
 }

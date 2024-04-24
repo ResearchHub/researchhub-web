@@ -4,34 +4,27 @@ import { faArrowLeftLong } from "@fortawesome/pro-regular-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useHistory } from "../contexts/HistoryManagerContext";
 
 const BackBtn = ({
   label,
-  href,
+  href = "/",  // Default to home page if no specific href provided
   labelStyle,
 }: {
   label: string;
-  href: string;
+  href?: string;
   labelStyle?: any;
 }) => {
   const router = useRouter();
-  const [canGoBack, setCanGoBack] = useState(false);
-
-  useEffect(() => {
-    const referrer = document.referrer;
-    const currentDomain = window.location.origin;
-    const isSameDomain = referrer.startsWith(currentDomain);
-    const hasHistory = window.history.length > 2 && isSameDomain;
-
-    setCanGoBack(hasHistory);
-  }, []);
+  const historyManager = useHistory();
+  
 
   const handleBackClick = (e) => {
     e.preventDefault();
-    if (canGoBack) {
+    if (historyManager.canGoBack()) {
       router.back();
     } else {
-      router.push(href);  // Redirect to homepage or a default route
+      router.push(href);
     }
   };
 
