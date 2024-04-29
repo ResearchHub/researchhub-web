@@ -176,6 +176,9 @@ export default function RhSearchBar(): ReactElement {
                   setIsSuggestionsDrawerOpen(false);
                 }}
                 handleAllResultsSelect={() => {
+                  // Cancel in-flight request to fetch suggestions
+                  debouncedHandleInputChange.cancel();
+                  
                   pushSearchToUrlAndTrack(searchStringRef.current);
                   setIsSuggestionsDrawerOpen(false);
                 }}
