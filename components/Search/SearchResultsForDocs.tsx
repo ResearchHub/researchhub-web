@@ -231,6 +231,9 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }: Props) => {
                   created_date={paper.paper_publish_date}
                   discussion_count={paper.discussion_count}
                   document={paper}
+                  // Skip stripping HTML since highlighting properties creates react components instead of strings.
+                  // The highlighted properties are already santizied prior to converting to react components.
+                  shouldStripHTML={false}
                   formattedDocType={"paper"}
                   index={index}
                   key={`paper-${paper.id}`}
