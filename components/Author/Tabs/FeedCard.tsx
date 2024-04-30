@@ -99,6 +99,7 @@ export type FeedCardProps = {
   fundraise?: Fundraise;
   citations?: number;
   unifiedDocumentId: ID;
+  shouldStripHTML: boolean
 };
 
 const documentIcons = {
@@ -145,6 +146,7 @@ function FeedCard({
   fundraise,
   citations,
   unifiedDocumentId,
+  shouldStripHTML,
 }: FeedCardProps) {
   let parsedDoc: null | Paper | Post = null;
   let authors: AuthorProfile[] = [];
@@ -152,7 +154,7 @@ function FeedCard({
   try {
     // This should not fail, but just for in case, we don't want to break the whole feed.
     parsedDoc =
-      formattedDocType === "paper" ? parsePaper(document) : parsePost(document);
+      formattedDocType === "paper" ? parsePaper(document, shouldStripHTML) : parsePost(document);
     authors =
       formattedDocType === "question"
         ? [parsedDoc!.createdBy!.authorProfile]

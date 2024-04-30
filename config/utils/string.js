@@ -28,8 +28,7 @@ export const isString = (str) => {
 };
 
 export const stripHTML = (str) => {
-  if (typeof str !== "string") return str;
-  return str.replace(/(<([^>]+)>)/gi, "");
+  return (str || "").replace(/(<([^>]+)>)/gi, "");
 };
 
 export const snakeCaseToNormalCase = (str) => {

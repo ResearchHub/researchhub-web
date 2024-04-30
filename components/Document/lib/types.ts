@@ -190,18 +190,20 @@ export const parseGenericDocument = (raw: any): GenericDocument => {
   return parsed;
 };
 
-export const parsePaper = (raw: any): Paper => {
+export const parsePaper = (raw: any, shouldStripHTML = true): Paper => {
   const commonAttributes = parseGenericDocument(raw);
+  const title = raw.paper_title || raw.title;
+
   const parsed: Paper = {
     ...commonAttributes,
-    title: stripHTML(raw.paper_title || raw.title),
+    title: shouldStripHTML ? stripHTML(title) : title,
     authors: parsePaperAuthors(raw),
     journal: raw.external_source,
     isOpenAccess: Boolean(raw.is_open_access),
-    laymanTitle: stripHTML(raw.title),
+    laymanTitle: shouldStripHTML ? stripHTML(raw.title) : raw.title,
     publishedDate: formatDateStandard(raw.paper_publish_date, "MMM D, YYYY"),
     externalUrl: raw.url,
-    abstract: stripHTML(raw.abstract),
+    abstract: shouldStripHTML ? stripHTML(raw.abstract) : raw.abstract,
     abstractHtml: raw.abstract_src_markdown,
     type: "paper",
     apiDocumentType: "paper",
