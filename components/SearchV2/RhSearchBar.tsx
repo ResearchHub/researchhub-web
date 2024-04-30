@@ -176,11 +176,13 @@ export default function RhSearchBar(): ReactElement {
                   setIsSuggestionsDrawerOpen(false);
                 }}
                 handleAllResultsSelect={() => {
-                  // Cancel in-flight request to fetch suggestions
-                  debouncedHandleInputChange.cancel();
-                  
-                  pushSearchToUrlAndTrack(searchStringRef.current);
-                  setIsSuggestionsDrawerOpen(false);
+                  // Timeout is meant to give debonced requests a chance to finish
+                  setTimeout(() => {
+                    // Cancel in-flight request to fetch suggestions
+                    debouncedHandleInputChange.cancel();
+                    pushSearchToUrlAndTrack(searchStringRef.current);
+                    setIsSuggestionsDrawerOpen(false);
+                  }, 300)
                 }}
               />
             </div>

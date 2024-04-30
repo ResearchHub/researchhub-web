@@ -245,6 +245,10 @@ const Filters = ({
           </p>
           <div style={{ padding: "0px 15px" }}>
             <SimpleSlider
+              marks={[
+                { value: 0, label: "Least cited" },
+                { value: 100, label: "Most cited" },
+              ]}
               start={0}
               end={100}
               initial={50}
@@ -446,7 +450,7 @@ const styles = StyleSheet.create({
   verticalFilters: {
     display: "flex",
     flexDirection: "column",
-    rowGap: 10,
+    rowGap: 15,
   },
   filterWrapper: {},
   filtersWrapper: {
