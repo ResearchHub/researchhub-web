@@ -61,8 +61,6 @@ const VerificationFormSelectAuthorStep = ({
     }
     if (!isValidEmail(email)) {
       return { isValid: false, error: "INVALID_EMAIL_ERROR" };
-    } else if (isCommonEmailExt(email)) {
-      return { isValid: false, error: "COMMON_EMAIL_ERROR" };
     } else {
       return { isValid: true, error: null };
     }
