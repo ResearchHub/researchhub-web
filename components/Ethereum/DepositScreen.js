@@ -11,7 +11,7 @@ import {
   useAccount,
   // eslint-disable-next-line
 } from "wagmi";
-import { goerli, mainnet } from "wagmi/chains";
+import { sepolia, mainnet } from "wagmi/chains";
 
 // Component
 import Button from "~/components/Form/Button";
@@ -25,7 +25,7 @@ import { captureEvent } from "~/config/utils/events";
 
 const isProduction = process.env.REACT_APP_ENV === "production";
 
-const CHAIN_ID = isProduction ? mainnet.id : goerli.id;
+const CHAIN_ID = isProduction ? mainnet.id : sepolia.id;
 
 // Constants
 const RSCContractAddress = isProduction
