@@ -185,23 +185,23 @@ export default function RscBalanceHistoryDropContent({
       </div>
       <div className={css(styles.ctaWrapper)}>
         <div
-          className={css(styles.withdrawButtonDisabled)}
-          // onClick={(event: SyntheticEvent): void => {
-          //   event.preventDefault();
-          //   closeDropdown();
-          //   dispatch(ModalActions.openWithdrawalModal(true));
-          // }}
+          className={css(styles.withdrawButton)}
+          onClick={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            closeDropdown();
+            dispatch(ModalActions.openWithdrawalModal(true));
+          }}
         >
           {"Withdraw RSC"}
         </div>
 
         <div
-          className={css(styles.depositButtonDisabled)}
-          // onClick={(event: SyntheticEvent): void => {
-          //   event.preventDefault();
-          //   closeDropdown();
-          //   dispatch(ModalActions.openWithdrawalModal(true, true));
-          // }}
+          className={css(styles.depositButton)}
+          onClick={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            closeDropdown();
+            dispatch(ModalActions.openWithdrawalModal(true, true));
+          }}
         >
           {"Deposit RSC"}
         </div>
@@ -312,17 +312,6 @@ const styles = StyleSheet.create({
     padding: "10px 15px",
     borderTop: `1px solid ${colors.LIGHT_GREY_BORDER}`,
   },
-  withdrawButtonDisabled: {
-    alignItems: "center",
-    background: colors.GREY(),
-    borderRadius: 4,
-    color: "#fff",
-    display: "flex",
-    fontSize: 16,
-    justifyContent: "center",
-    padding: "10px 15px",
-    borderTop: `1px solid ${colors.LIGHT_GREY_BORDER}`,
-  },
   trade: {
     borderColor: "rgb(251, 17, 142)",
     color: "rgb(251, 17, 142)",
@@ -347,17 +336,6 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     color: colors.NEW_BLUE(),
     cursor: "pointer",
-    display: "flex",
-    fontSize: 16,
-    justifyContent: "center",
-    padding: "10px 15px",
-    marginTop: 7,
-  },
-  depositButtonDisabled: {
-    alignItems: "center",
-    border: `1px solid ${colors.GREY()}`,
-    borderRadius: 4,
-    color: colors.GREY(),
     display: "flex",
     fontSize: 16,
     justifyContent: "center",
