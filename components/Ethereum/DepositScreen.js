@@ -11,7 +11,7 @@ import {
   useAccount,
   // eslint-disable-next-line
 } from "wagmi";
-import { goerli, mainnet } from "wagmi/chains";
+import { sepolia, mainnet } from "wagmi/chains";
 
 // Component
 import Button from "~/components/Form/Button";
@@ -25,16 +25,16 @@ import { captureEvent } from "~/config/utils/events";
 
 const isProduction = process.env.REACT_APP_ENV === "production";
 
-const CHAIN_ID = isProduction ? mainnet.id : goerli.id;
+const CHAIN_ID = isProduction ? mainnet.id : sepolia.id;
 
 // Constants
 const RSCContractAddress = isProduction
   ? "0xd101dcc414f310268c37eeb4cd376ccfa507f571"
-  : "0x7D7b31439eFe004eDC1c5632222f818369aADdEE";
+  : "0xEe8D932a66aDA39E4EF08046734F601D04B6a3DA";
 
 const HOTWALLET = isProduction
-  ? "0x76835CA5Ebc7935CedBB1e0AA3d322e704b1b7B1"
-  : "0xc49b1eC975b687259750D9da7BfCC82eEaA2eF19";
+  ? "0x7F57d306a9422ee8175aDc25898B1b2EBF1010cb"
+  : "0xA8ebEc7ec4BDd36b603C1Bb46C92B8Cc93616e8F";
 
 const CONTRACT_ABI = isProduction ? contractABI : stagingContractABI;
 export function DepositScreen(props) {
