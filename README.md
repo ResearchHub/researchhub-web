@@ -22,7 +22,6 @@ We believe that by empowering scientists to independently fund, create, and publ
 💡 Got an idea or request? [Open issue on Github](https://github.com/ResearchHub/researchhub-web/issues).  
 🐛 Found a bug? [Report it here](https://github.com/ResearchHub/researchhub-web/issues).  
 ➕ Want to contribute to this project? [Introduce yourself in our Discord community](https://discord.gg/ZcCYgcnUp5)  
-🔨 [See what we are working on](https://github.com/orgs/ResearchHub/projects/2)  
 📰 Read the [ResearchCoin White Paper](https://www.researchhub.com/paper/819400/the-researchcoin-whitepaper)
 
 ## Setup
