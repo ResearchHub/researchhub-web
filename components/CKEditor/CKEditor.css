@@ -460,14 +460,8 @@ h3 {
 .eln .ck-editor__editable_inline {
   padding-top: 25px !important;
   padding-bottom: 200px !important;
-  margin-left: calc(max((100% - 900px) / 2, 60px)) !important;
-  margin-right: calc(max((100% - 900px) / 2, 60px)) !important;
-}
-
-@media only screen and (max-width: 900px) {
-  .eln .ck-editor__editable_inline {
-    padding: 0px 30px 225px 30px !important;
-  }
+  margin-left: calc(max((100% - 900px) / 2, 15px)) !important;
+  margin-right: calc(max((100% - 900px) / 2, 15px)) !important;
 }
 
 .ck-presence-list__counter {
