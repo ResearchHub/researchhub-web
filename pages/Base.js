@@ -43,6 +43,8 @@ import {
   HistoryManagerProvider,
   useHistoryManager,
 } from "~/components/contexts/HistoryManagerContext";
+import showSiteUpdatesToast from "~/components/Notifications/lib/showSiteUpdatesToast";
+
 LEFT_SIDEBAR_MIN_WIDTH;
 // WalletConnect project ID
 const projectId = "a3e8904e258fe256bf772b764d3acfab";
@@ -133,6 +135,16 @@ function Base({
     paperID: null,
   });
   const historyManager = useHistoryManager();
+
+  useEffect(() => {
+    showSiteUpdatesToast({
+      content: (
+        <span>
+          New profile pages, revamped RSC rewards, author expertise and more.
+        </span>
+      ),
+    });
+  }, []);
 
   useEffect(() => {
     const originalFetch = window.fetch;

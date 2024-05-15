@@ -10,9 +10,11 @@ type Props = {
   iconStyle: StyleDeclarationValue;
   white?: boolean;
   withText?: boolean;
+  width?: number;
+  height?: number;
 };
 
-export default function RHLogo({ iconStyle, white, withText }: Props) {
+export default function RHLogo({ iconStyle, white, withText, height = 40, width = 40 }: Props) {
   const [animationPlaying, setAnimationPlaying] = useState(false);
   const lottieRef = useRef();
   const defaultOptions = {
@@ -44,8 +46,8 @@ export default function RHLogo({ iconStyle, white, withText }: Props) {
           options={defaultOptions}
           isStopped={!animationPlaying}
           ref={lottieRef}
-          height={40}
-          width={40}
+          height={height}
+          width={width}
           eventListeners={[
             {
               eventName: "complete",
