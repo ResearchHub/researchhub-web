@@ -46,7 +46,6 @@ const fetchPostFromS3 = async ({ s3Url, cleanIntroEmptyContent = true }: Props):
       },
       transformTags: {
         'iframe': function(tagName, attribs) {
-            console.log("we're here")
             const src = attribs.src || '';
             const allowedDomains = ['https://www.youtube.com'];
             const isAllowed = allowedDomains.some(domain => src.startsWith(domain));
