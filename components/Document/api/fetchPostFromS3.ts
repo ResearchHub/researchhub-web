@@ -44,6 +44,26 @@ const fetchPostFromS3 = async ({ s3Url, cleanIntroEmptyContent = true }: Props):
         iframe: ["src", "width", "height", "frameborder", "allowfullscreen"],
         '*': ["class", "style"],
       },
+      transformTags: {
+        'iframe': function(tagName, attribs) {
+            console.log("we're here")
+            const src = attribs.src || '';
+            const allowedDomains = ['https://www.youtube.com'];
+            const isAllowed = allowedDomains.some(domain => src.startsWith(domain));
+
+            if (!isAllowed) {
+                return {
+                    tagName: 'div',
+                    text: 'Blocked iframe'
+                };
+            }
+
+            return {
+                tagName: 'iframe',
+                attribs: attribs
+            };
+        }
+      },
     });
 
     if (cleanIntroEmptyContent) {
