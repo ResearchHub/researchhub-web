@@ -41,6 +41,7 @@ const fetchPostFromS3 = async ({ s3Url, cleanIntroEmptyContent = true }: Props):
           "width",
         ],
         source: ["src", "type"],
+        iframe: ["src", "width", "height", "frameborder", "allowfullscreen"],
         '*': ["class", "style"],
       },
     });
