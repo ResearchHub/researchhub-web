@@ -21,7 +21,7 @@ const fetchPostFromS3 = async ({ s3Url, cleanIntroEmptyContent = true }: Props):
         "a", "abbr", "address", "article", "aside", "b", "bdi", "bdo",
         "blockquote", "br", "caption", "cite", "code", "col", "colgroup",
         "data", "dd", "dfn", "div", "dl", "dt", "em", "figcaption", "figure",
-        "h1", "h2", "h3", "h4", "h5", "h6", "hgroup", "hr", "i", "img", "kbd",
+        "h1", "h2", "h3", "h4", "h5", "h6", "hgroup", "hr", "i", "iframe", "img", "kbd",
         "li", "main", "mark", "ol", "p", "pre", "q", "rb", "rp", "rt", "rtc",
         "ruby", "s", "samp", "section", "small", "source", "span", "strong",
         "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "time",
@@ -41,7 +41,27 @@ const fetchPostFromS3 = async ({ s3Url, cleanIntroEmptyContent = true }: Props):
           "width",
         ],
         source: ["src", "type"],
+        iframe: ["src", "width", "height", "frameborder", "allowfullscreen"],
         '*': ["class", "style"],
+      },
+      transformTags: {
+        'iframe': function(tagName, attribs) {
+            const src = attribs.src || '';
+            const allowedDomains = ['https://www.youtube.com'];
+            const isAllowed = allowedDomains.some(domain => src.startsWith(domain));
+
+            if (!isAllowed) {
+                return {
+                    tagName: 'div',
+                    text: 'Blocked iframe'
+                };
+            }
+
+            return {
+                tagName: 'iframe',
+                attribs: attribs
+            };
+        }
       },
     });
 
