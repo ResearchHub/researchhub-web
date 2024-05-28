@@ -1,7 +1,5 @@
 import {
-  AuthorProfile,
   ID,
-  parseAuthorProfile,
 } from "~/config/types/root_types";
 
 export type Institution = {

@@ -8,6 +8,8 @@ import {
   parseAuthorProfile,
 } from "~/config/types/root_types";
 
+export type Achievement = "CITED_AUTHOR" | "OPEN_ACCESS";
+
 export type FullAuthorProfile = {
   id: ID;
   firstName: string;
@@ -24,7 +26,7 @@ export type FullAuthorProfile = {
     worksCount: number;
     citationCount: number;
   }>;
-  achievements: Array<string>;
+  achievements: Array<Achievement>;
   openAccessPct: number;
   hIndex: number;
   i10Index: number;
