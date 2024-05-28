@@ -240,6 +240,7 @@ function RootLeftSidebar({
         "referral",
         "search",
         "user",
+        "author",
       ].includes(pathname.split("/")[1]) !== true;
     // if (onSpecficHubPage) {
     //   setIsMinimized(isForceMinimized);
