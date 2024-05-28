@@ -22,7 +22,7 @@ const Histogram: React.FC<HistogramProps> = ({ data }) => {
           <div className={css(styles.histogramKey)}>{d.key}</div>
 
           <Tooltip
-              title={`Publications in ${d.key}: ${d.value}`}
+              title={`${d.key}: ${d.value}`}
               placement="right"
               arrow
             >

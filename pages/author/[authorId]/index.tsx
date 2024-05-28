@@ -6,14 +6,45 @@ import { GoogleScholarIcon, LinkedInIcon, OrcidIcon, XIcon } from "~/config/icon
 import { CitedAuthorAchievementIcon, OpenAccessAchievementIcon } from "~/config/icons/AchievementIcons";
 import { ReactElement } from 'react';
 import { getDocumentCard } from "~/components/UnifiedDocFeed/utils/getDocumentCard";
-import Avatar from "@mui/material/Avatar/Avatar";
+import Avatar from "@mui/material/Avatar";
 import { isEmpty } from "~/config/utils/nullchecks";
 import Histogram from "~/components/shared/Histogram";
+import HorizontalTabBar, { Tab } from "~/components/HorizontalTabBar";
 
 type Args = {
   profile: any;
   overview: any;
 };
+
+const buildAuthorTabs = ({ authorId }: { authorId: string }): Tab[] => {
+  return [{
+    label: "Overview",
+    value: "overview",
+    href: `/author/${authorId}`,
+    isSelected: true,
+  },{
+    label: "Works",
+    value: "works",
+    href: `/author/${authorId}`,
+    isSelected: false,
+  }, {
+    label: "Peer Reviews",
+    value: "peer-reviews",
+    href: `/author/${authorId}`,
+    isSelected: false,
+  }, {
+    label: "Comments",
+    value: "comments",
+    href: `/author/${authorId}`,
+    isSelected: false,
+  }, {
+    label: "Bounties",
+    value: "bounties",
+    href: `/author/${authorId}`,
+    isSelected: false,
+  }]
+}
+
 
 const getAchievmentDetails = ({ achievement, fullAuthorProfile }: { achievement: Achievement, fullAuthorProfile: FullAuthorProfile }): { icon: ReactElement, title: string, details: string } => {
   if (achievement === "CITED_AUTHOR") {
@@ -46,6 +77,7 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview }) => {
     return <div>Loading...</div>;
   }
 
+  const authorTabs = buildAuthorTabs({ authorId: profile.id });
   const fullAuthorProfile = parseFullAuthorProfile(profile);
   const publicationHistogram = fullAuthorProfile.activityByYear
   .map((activity) => ({
@@ -53,6 +85,13 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview }) => {
     value: activity.worksCount,
   }))
   .sort((a, b) => parseInt(a.key) - parseInt(b.key));
+
+  const citationHistogram = fullAuthorProfile.activityByYear
+  .map((activity) => ({
+    key: String(activity.year),
+    value: activity.citationCount,
+  }))
+  .sort((a, b) => parseInt(a.key) - parseInt(b.key));  
 
 
   return (
@@ -112,18 +151,38 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview }) => {
         </div>
       </div>
 
+      <HorizontalTabBar tabs={authorTabs} />
       <div>
         <div>Top Works</div>
         <div>
           {/* @ts-ignore */}
           {getDocumentCard({ unifiedDocumentData: overview.results })}
         </div>
+
+        <div>
+          <div>Coauthors</div>
+          <div>
+            {fullAuthorProfile.coauthors.map((coauthor) => (
+              <div key={coauthor.id}>
+                <Avatar src={coauthor.profileImage} sx={{ width: 48, height: 48, fontSize: 24 }}>
+                  {isEmpty(coauthor.profileImage) && ((coauthor?.firstName?.[0] ?? "") + (coauthor.lastName?.[0] ?? ""))}
+                </Avatar>
+                <div>{coauthor.firstName} {coauthor.lastName}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
 
       <div style={{ width: "50%", height: 150}}>
         <div>Activity</div>
         <Histogram data={publicationHistogram} />
       </div>
+      <div style={{ width: "50%", height: 150}}>
+        <div>Activity</div>
+        <Histogram data={citationHistogram} />
+      </div>      
 
     </div>
   );
