@@ -55,7 +55,7 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
     isHubEditor: raw.is_hub_editor,
     openAlexIds: raw.openalex_ids || [],
     achievements: raw.achievements || [],
-    openAccessPct: raw.open_access_pct,
+    openAccessPct: Math.round((raw.open_access_pct || 0) * 100),
     hIndex: raw.h_index,
     i10Index: raw.i10_index,
     createdDate: raw.created_date,
