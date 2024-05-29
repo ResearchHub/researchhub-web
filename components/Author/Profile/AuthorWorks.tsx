@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     border: "1px solid #F5F5F9",
     padding: 20,
     minWidth: 245,
+    marginLeft: 20,
     height: "max-content",
   }
   

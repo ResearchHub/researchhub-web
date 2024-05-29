@@ -9,9 +9,10 @@ type DataPoint = {
 
 type HistogramProps = {
   data: DataPoint[];
+  histogramBarStyle?: any;
 };
 
-const Histogram: React.FC<HistogramProps> = ({ data }) => {
+const Histogram: React.FC<HistogramProps> = ({ data, histogramBarStyle }) => {
   // Find the maximum value in the dataset to scale the bars
   const maxValue = Math.max(...data.map(d => d.value));
 
@@ -27,7 +28,7 @@ const Histogram: React.FC<HistogramProps> = ({ data }) => {
               arrow
             >
               <div
-                className={css(styles.histogramBar)}
+                className={css(styles.histogramBar, histogramBarStyle)}
                 style={{
                   height: `${Math.max((d.value / maxValue) * 100, 5)}%`, // Ensure minimum height for non-zero values
                 }}

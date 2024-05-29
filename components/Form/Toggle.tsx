@@ -41,14 +41,14 @@ const styles = StyleSheet.create({
     display: "flex",
     background: "#3971FF1A",
     borderRadius: 50,
-    padding: 5,
+    padding: 3,
   },
   "option": {
     color: colors.NEW_BLUE(),
     fontWeight: 500,
     borderRadius: 50,
-    fontSize: 14,
-    padding: "6px 12px",
+    fontSize: 12,
+    padding: "4px 8px",
     cursor: "pointer",
     ":hover": {
       opacity: 0.9

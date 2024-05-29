@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
   },
   activityWrapper: {
     width: 700,
+    marginTop: 20,
   },
   mainContentWrapper: {
     margin: "0 auto",
