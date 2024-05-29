@@ -42,7 +42,7 @@ const AuthorHeaderAchievements = ({ profile }: { profile: FullAuthorProfile }) =
         const achivementDetails = getAchievmentDetails({ achievement, profile })
         return (
           <Tooltip title={getTooltipContent(achievement)}>
-            <div key={achievement} className={css(styles.achievement)} data-tip="reputation-tool-tip">
+            <div key={achievement} className={css(styles.achievement)}>
               <div>{achivementDetails.icon}</div>
               <div>{achivementDetails.title}</div>
             </div>

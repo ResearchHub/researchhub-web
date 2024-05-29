@@ -23,8 +23,8 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview }) => {
     return <div>Loading...</div>;
   }
 
-  const authorTabs = buildAuthorTabs({ profile, router });
   const fullAuthorProfile = parseFullAuthorProfile(profile);
+  const authorTabs = buildAuthorTabs({ profile: fullAuthorProfile, router });
 
   return (
     <div className={css(styles.profilePage)}>

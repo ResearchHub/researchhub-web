@@ -29,7 +29,7 @@ const FeedCardActivity = ({
   unifiedDocumentId: ID;
   docUrl: string;
   discussionCount: number;
-  citationCount: number;
+  citationCount: string | number;
   reviewScore: number;
 }) => {
   return (
@@ -52,7 +52,7 @@ const FeedCardActivity = ({
             <div className={css(styles.divider)} />
           </>
         )}
-        {citationCount > 0 && (
+        {citationCount && (
           <>
             <Link href={docUrl}>
               <IconButton variant="round" overrideStyle={styles.iconButton}>

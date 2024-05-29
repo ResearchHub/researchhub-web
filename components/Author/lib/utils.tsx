@@ -37,6 +37,7 @@ export const buildAuthorTabs = ({ router, profile }: { router: any, profile: Ful
     value: "works",
     href: `/author/${profile.id}`,
     isSelected: false,
+    pillContent: profile.summaryStats.worksCount.toLocaleString(),
   }, {
     label: "Peer Reviews",
     value: "peer-reviews",
