@@ -4,14 +4,11 @@ import { css, StyleSheet } from "aphrodite";
 const AuthorInstitutions = ({ institutions }: { institutions: AuthorInstitution[] }) => {
   return (
     <div>
-      <div>Institutions</div>
-      <div>
-        {institutions.map((authorInstitution) => (
-          <div key={authorInstitution.id}>
-            {authorInstitution.institution.displayName}
-          </div>
-        ))}
-      </div>
+      {institutions.map((authorInstitution) => (
+        <div key={authorInstitution.id}>
+          {authorInstitution.institution.displayName}
+        </div>
+      ))}
     </div>
   )
 }

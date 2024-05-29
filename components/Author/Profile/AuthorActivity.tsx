@@ -1,4 +1,5 @@
 import Histogram from "~/components/shared/Histogram";
+import { css, StyleSheet } from "aphrodite";
 
 const AuthorActivity = ({
   activity
@@ -24,17 +25,23 @@ const AuthorActivity = ({
     .sort((a, b) => parseInt(a.key) - parseInt(b.key));
 
   return (
-    <div>
-      <div style={{ width: "50%", height: 150 }}>
+    <div className={css(styles.histogramWrapper)}>
+      <div style={{ width: "100%", height: 150 }}>
         <div>Activity</div>
         <Histogram data={publicationHistogram} />
       </div>
-      <div style={{ width: "50%", height: 150 }}>
+      {/* <div style={{ width: "50%", height: 150 }}>
         <div>Activity</div>
         <Histogram data={citationHistogram} />
-      </div>
+      </div> */}
     </div>
   )
 }
+
+const styles = StyleSheet.create({
+  histogramWrapper: {
+    display: "flex",
+  }  
+})
 
 export default AuthorActivity;

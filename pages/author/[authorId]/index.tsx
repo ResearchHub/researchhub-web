@@ -1,60 +1,18 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { fetchAuthorProfile, fetchAuthorOverview } from "~/components/Author/lib/api";
-import { FullAuthorProfile, parseFullAuthorProfile } from "~/components/Author/lib/types";
-import Avatar from "@mui/material/Avatar";
-import { isEmpty } from "~/config/utils/nullchecks";
-import HorizontalTabBar, { Tab } from "~/components/HorizontalTabBar";
-import AuthorHeaderKeyStats from "~/components/Author/Profile/AuthorHeaderKeyStats";
-import AuthorInstitutions from "~/components/Author/Profile/AuthorInstitutions";
-import AuthorHeaderAchievements from "~/components/Author/Profile/AuthorHeaderAchievements";
-import AuthorHeaderExpertise from "~/components/Author/Profile/AuthorHeaderExpertise";
+import { parseFullAuthorProfile } from "~/components/Author/lib/types";
+import HorizontalTabBar from "~/components/HorizontalTabBar";
 import AuthorWorks from "~/components/Author/Profile/AuthorWorks";
-import AuthorSocialMediaIcons from "~/components/Author/Profile/AuthorSocialMediaIcons";
 import { css, StyleSheet } from "aphrodite";
 import AuthorActivity from "~/components/Author/Profile/AuthorActivity";
 import { buildAuthorTabs } from "~/components/Author/lib/utils";
 import { useRouter } from "next/router";
+import AuthorProfileHeader from "~/components/Author/Profile/AuthorProfileHeader";
 
 type Args = {
   profile: any;
   overview: any;
 };
-
-const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
-  return (
-    <div>
-      <Avatar src={profile.profileImage} sx={{ width: 128, height: 128, fontSize: 48 }}>
-        {isEmpty(profile.profileImage) && profile.firstName?.[0] + profile.lastName?.[0]}
-      </Avatar>
-
-      <div>
-        <div>{profile.firstName} {profile.lastName}</div>
-        <div>{profile.headline}</div>
-
-        <AuthorInstitutions institutions={profile.institutions} />
-
-        <div>{profile.description}</div>
-
-        <div>
-          <AuthorSocialMediaIcons profile={profile} />
-        </div>
-      </div>
-
-      <div>
-        <AuthorHeaderKeyStats profile={profile} />
-      </div>
-
-      <div>
-        <AuthorHeaderAchievements profile={profile} />
-      </div>      
-
-      <div>
-        <AuthorHeaderExpertise profile={profile} />
-      </div>
-    </div>
-  )
-}
-
 
 const AuthorProfilePage: NextPage<Args> = ({ profile, overview }) => {
 
@@ -69,16 +27,47 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview }) => {
   const fullAuthorProfile = parseFullAuthorProfile(profile);
 
   return (
-    <div>
-      <AuthorProfileHeader profile={fullAuthorProfile} />
-      <HorizontalTabBar tabs={authorTabs} />
-      <AuthorWorks works={overview.results} coauthors={fullAuthorProfile.coauthors} />
-      <AuthorActivity activity={fullAuthorProfile.activityByYear} />
+    <div className={css(styles.profilePage)}>
+      <div className={css(styles.profileContent)}>
+        <AuthorProfileHeader profile={fullAuthorProfile} />
+      </div>
+      <div className={css(styles.tabsWrapper)}>
+        <HorizontalTabBar tabs={authorTabs} />
+      </div>
+      <div className={css(styles.mainContentWrapper)}>
+        <div className={css(styles.mainContent)}>
+          <AuthorWorks works={overview.results} coauthors={fullAuthorProfile.coauthors} />
+          <AuthorActivity activity={fullAuthorProfile.activityByYear} />
+        </div>
+      </div>
     </div>
   );
 };
 
 const styles = StyleSheet.create({
+  profilePage: {
+    backgroundColor: "rgb(250, 250, 250)",
+  },
+  profileContent: {
+    width: "1000px",
+    margin: "0 auto",
+  },
+  mainContentWrapper: {
+    margin: "0 auto",
+    backgroundColor: "rgb(255, 255, 255)",
+    borderTop: "1px solid #DEDEE6",
+    border: "1px solid #F5F5F9",
+    padding: 20,    
+  },
+  mainContent: {
+    width: "1000px",
+    margin: "0 auto",
+  },
+  tabsWrapper: {
+    width: "1000px",
+    margin: "0 auto",
+    marginTop: 20,
+  },
 });
 
 export const getStaticProps: GetStaticProps = async (ctx) => {

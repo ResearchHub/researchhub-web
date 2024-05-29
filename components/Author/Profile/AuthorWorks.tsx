@@ -5,19 +5,37 @@ import { css, StyleSheet } from "aphrodite";
 
 const AuthorWorks = ({ works, coauthors }: { works: any, coauthors: AuthorProfile[] }) => {
   return (
-    <div>
+    <div className={css(styles.wrapper)}>
       <div>Top Works</div>
-      <div>
-        {/* @ts-ignore */}
-        {getDocumentCard({ unifiedDocumentData: works })}
-      </div>
+      <div className={css(styles.contentWrapper)}>
+        <div>
+          {/* @ts-ignore */}
+          {getDocumentCard({ unifiedDocumentData: works })}
+        </div>
 
-      <CoAuthors coauthors={coauthors} />
+        <div className={css(styles.coauthorsSection)}>
+          <CoAuthors coauthors={coauthors} />
+        </div>
+      </div>
     </div>
   )
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+  },
+  contentWrapper: {
+    display: "flex",
+  },
+  coauthorsSection: {
+    backgroundColor: "rgb(250, 250, 250)",
+    borderRadius: 20,
+    border: "1px solid #F5F5F9",
+    padding: 20,
+    minWidth: 245,
+    height: "max-content",
+  }
+  
 })
 
 export default AuthorWorks;

@@ -9,8 +9,8 @@ const CoAuthors = ({ coauthors }: { coauthors: AuthorProfile[] }) => {
       <div>Coauthors</div>
       <div>
         {coauthors.map((coauthor) => (
-          <div key={coauthor.id}>
-            <Avatar src={coauthor.profileImage} sx={{ width: 48, height: 48, fontSize: 24 }}>
+          <div key={coauthor.id} className={css(styles.author)}>
+            <Avatar src={coauthor.profileImage} sx={{ width: 25, height: 25, fontSize: 13, }}>
               {isEmpty(coauthor.profileImage) && ((coauthor?.firstName?.[0] ?? "") + (coauthor.lastName?.[0] ?? ""))}
             </Avatar>
             <div>{coauthor.firstName} {coauthor.lastName}</div>
@@ -22,6 +22,15 @@ const CoAuthors = ({ coauthors }: { coauthors: AuthorProfile[] }) => {
 }
 
 const styles = StyleSheet.create({
+  author: {
+    display: "flex",
+    alignItems: "center",
+    columnGap: "10px",
+    marginBottom: 10,
+    ":last-child": {
+      marginBottom: 0,
+    }    
+  }
 })
 
 export default CoAuthors;
