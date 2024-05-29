@@ -6,7 +6,7 @@ import { css, StyleSheet } from "aphrodite";
 const AuthorWorks = ({ works, coauthors }: { works: any, coauthors: AuthorProfile[] }) => {
   return (
     <div className={css(styles.wrapper)}>
-      <div>Top Works</div>
+      <div className={css(styles.sectionHeader)}>Top Works</div>
       <div className={css(styles.contentWrapper)}>
         <div>
           {/* @ts-ignore */}
@@ -27,6 +27,18 @@ const styles = StyleSheet.create({
   contentWrapper: {
     display: "flex",
   },
+  sectionHeader: {
+    color: "rgb(139, 137, 148, 1)",
+    textTransform: "uppercase",
+    fontWeight: 500,
+    letterSpacing: "1.2px",
+    fontSize: 12,
+    display: "flex",
+    alignItems: "center",
+    gap: 5,
+    marginBottom: 20,
+    marginTop: 20,
+  },  
   coauthorsSection: {
     backgroundColor: "rgb(250, 250, 250)",
     borderRadius: 20,

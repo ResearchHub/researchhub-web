@@ -4,18 +4,18 @@ import { ReactElement } from "react";
 import { Tab } from "~/components/HorizontalTabBar";
 
 export const getAchievmentDetails = ({ achievement, profile }: { achievement: Achievement, profile: FullAuthorProfile }): { icon: ReactElement, title: string, details: string } => {
-  if (achievement === "CITED_AUTHOR") {
+  if (achievement === "OPEN_ACCESS") {
     return {
-      icon: <CitedAuthorAchievementIcon active />,
-      title: "Cited Author",
-      details: `Cited ${profile.summaryStats.citationCount} times`,
+      icon: <OpenAccessAchievementIcon active height={30} width={30} />,
+      title: "Open Access Advocate",
+      details: `${profile.openAccessPct}% of works are open access`,
     };
   }
-  else if (achievement === "OPEN_ACCESS") {
+  else if (achievement === "CITED_AUTHOR") {
     return {
-      icon: <OpenAccessAchievementIcon active />,
-      title: "Open Access",
-      details: `${profile.openAccessPct}% of works are open access`,
+      icon: <CitedAuthorAchievementIcon active height={30} width={30} />,
+      title: "Cited Author",
+      details: `Cited ${profile.summaryStats.citationCount} times`,
     };
   }
 

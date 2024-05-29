@@ -8,6 +8,7 @@ import { isEmpty } from "~/config/utils/nullchecks";
 import { css, StyleSheet } from "aphrodite";
 import { FullAuthorProfile } from "../lib/types";
 import AuthorClaimProfileNotification from "~/components/Author/Profile/AuthorClaimProfileNotification";
+import Pill from "~/components/shared/Pill";
 
 const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
   return (
@@ -38,14 +39,24 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
 
       <div className={css(styles.subSections)}>
         <div className={css(styles.section, styles.subSection)}>
+          <div className={css(styles.sectionHeader)}>
+            Achievements
+            <Pill text={String(profile.achievements.length)} />
+          </div>
           <AuthorHeaderAchievements profile={profile} />
         </div>
 
         <div className={css(styles.section, styles.subSection)}>
+          <div className={css(styles.sectionHeader)}>
+            Key Stats
+          </div>
           <AuthorHeaderKeyStats profile={profile} />
         </div>
 
         <div className={css(styles.section, styles.subSection)}>
+          <div className={css(styles.sectionHeader)}>
+            Expertise
+          </div>          
           <AuthorHeaderExpertise profile={profile} />
         </div>
       </div>
@@ -54,6 +65,17 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
 }
 
 const styles = StyleSheet.create({
+  sectionHeader: {
+    color: "rgb(139, 137, 148, 1)",
+    textTransform: "uppercase",
+    fontWeight: 500,
+    letterSpacing: "1.2px",
+    fontSize: 12,
+    display: "flex",
+    alignItems: "center",
+    gap: 5,
+    marginBottom: 20,
+  },
   claimSection: {
     marginTop: 20,
     backgroundColor: "rgb(240, 240, 240)",
@@ -86,6 +108,7 @@ const styles = StyleSheet.create({
     display: "flex",
     gap: 20,
     marginTop: 20,
+    height: 190,
   },
   subSection: {
     width: "33%",

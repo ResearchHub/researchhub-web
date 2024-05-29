@@ -6,7 +6,7 @@ import { css, StyleSheet } from "aphrodite";
 const CoAuthors = ({ coauthors }: { coauthors: AuthorProfile[] }) => {
   return (
     <div>
-      <div>Coauthors</div>
+      <div className={css(styles.sectionHeader)}>Coauthors</div>
       <div>
         {coauthors.map((coauthor) => (
           <div key={coauthor.id} className={css(styles.author)}>
@@ -22,6 +22,17 @@ const CoAuthors = ({ coauthors }: { coauthors: AuthorProfile[] }) => {
 }
 
 const styles = StyleSheet.create({
+  sectionHeader: {
+    color: "rgb(139, 137, 148, 1)",
+    textTransform: "uppercase",
+    fontWeight: 500,
+    letterSpacing: "1.2px",
+    fontSize: 12,
+    display: "flex",
+    alignItems: "center",
+    gap: 5,
+    marginBottom: 20,
+  },    
   author: {
     display: "flex",
     alignItems: "center",

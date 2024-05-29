@@ -43,6 +43,10 @@ const styles = StyleSheet.create({
   showMore: {
     color: colors.NEW_BLUE(),
     cursor: "pointer",
+    marginLeft: 5,
+    ":hover": {
+      textDecoration: "underline",
+    }
   }
 });
 
