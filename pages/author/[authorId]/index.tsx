@@ -1,192 +1,85 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { fetchAuthorProfile, fetchAuthorOverview } from "~/components/Author/lib/api";
-import { Achievement, FullAuthorProfile, parseFullAuthorProfile } from "~/components/Author/lib/types";
-import { parseAuthorProfile } from "~/config/types/root_types";
-import { GoogleScholarIcon, LinkedInIcon, OrcidIcon, XIcon } from "~/config/icons/SocialMediaIcons";
-import { CitedAuthorAchievementIcon, OpenAccessAchievementIcon } from "~/config/icons/AchievementIcons";
-import { ReactElement } from 'react';
-import { getDocumentCard } from "~/components/UnifiedDocFeed/utils/getDocumentCard";
+import { FullAuthorProfile, parseFullAuthorProfile } from "~/components/Author/lib/types";
 import Avatar from "@mui/material/Avatar";
 import { isEmpty } from "~/config/utils/nullchecks";
-import Histogram from "~/components/shared/Histogram";
 import HorizontalTabBar, { Tab } from "~/components/HorizontalTabBar";
+import AuthorHeaderKeyStats from "~/components/Author/Profile/AuthorHeaderKeyStats";
+import AuthorInstitutions from "~/components/Author/Profile/AuthorInstitutions";
+import AuthorHeaderAchievements from "~/components/Author/Profile/AuthorHeaderAchievements";
+import AuthorHeaderExpertise from "~/components/Author/Profile/AuthorHeaderExpertise";
+import AuthorWorks from "~/components/Author/Profile/AuthorWorks";
+import AuthorSocialMediaIcons from "~/components/Author/Profile/AuthorSocialMediaIcons";
+import { css, StyleSheet } from "aphrodite";
+import AuthorActivity from "~/components/Author/Profile/AuthorActivity";
+import { buildAuthorTabs } from "~/components/Author/lib/utils";
+import { useRouter } from "next/router";
 
 type Args = {
   profile: any;
   overview: any;
 };
 
-const buildAuthorTabs = ({ authorId }: { authorId: string }): Tab[] => {
-  return [{
-    label: "Overview",
-    value: "overview",
-    href: `/author/${authorId}`,
-    isSelected: true,
-  },{
-    label: "Works",
-    value: "works",
-    href: `/author/${authorId}`,
-    isSelected: false,
-  }, {
-    label: "Peer Reviews",
-    value: "peer-reviews",
-    href: `/author/${authorId}`,
-    isSelected: false,
-  }, {
-    label: "Comments",
-    value: "comments",
-    href: `/author/${authorId}`,
-    isSelected: false,
-  }, {
-    label: "Bounties",
-    value: "bounties",
-    href: `/author/${authorId}`,
-    isSelected: false,
-  }]
-}
+const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
+  return (
+    <div>
+      <Avatar src={profile.profileImage} sx={{ width: 128, height: 128, fontSize: 48 }}>
+        {isEmpty(profile.profileImage) && profile.firstName?.[0] + profile.lastName?.[0]}
+      </Avatar>
 
+      <div>
+        <div>{profile.firstName} {profile.lastName}</div>
+        <div>{profile.headline}</div>
 
-const getAchievmentDetails = ({ achievement, fullAuthorProfile }: { achievement: Achievement, fullAuthorProfile: FullAuthorProfile }): { icon: ReactElement, title: string, details: string } => {
-  if (achievement === "CITED_AUTHOR") {
-    return {
-      icon: <CitedAuthorAchievementIcon active />,
-      title: "Cited Author",
-      details: `Cited ${fullAuthorProfile.summaryStats.citationCount} times`,
-    };
-  }
-  else if (achievement === "OPEN_ACCESS") {
-    return {
-      icon: <OpenAccessAchievementIcon active />,
-      title: "Open Access",
-      details: `${fullAuthorProfile.openAccessPct}% of works are open access`,
-    };
-  }
+        <AuthorInstitutions institutions={profile.institutions} />
 
-  return {
-    icon: <></>,
-    title: "",
-    details: "",
-  };
+        <div>{profile.description}</div>
+
+        <div>
+          <AuthorSocialMediaIcons profile={profile} />
+        </div>
+      </div>
+
+      <div>
+        <AuthorHeaderKeyStats profile={profile} />
+      </div>
+
+      <div>
+        <AuthorHeaderAchievements profile={profile} />
+      </div>      
+
+      <div>
+        <AuthorHeaderExpertise profile={profile} />
+      </div>
+    </div>
+  )
 }
 
 
 const AuthorProfilePage: NextPage<Args> = ({ profile, overview }) => {
+
+  const router = useRouter();
 
   if (!profile || !overview) {
     // TODO: Need a skeleton loading state
     return <div>Loading...</div>;
   }
 
-  const authorTabs = buildAuthorTabs({ authorId: profile.id });
+  const authorTabs = buildAuthorTabs({ profile, router });
   const fullAuthorProfile = parseFullAuthorProfile(profile);
-  const publicationHistogram = fullAuthorProfile.activityByYear
-  .map((activity) => ({
-    key: String(activity.year),
-    value: activity.worksCount,
-  }))
-  .sort((a, b) => parseInt(a.key) - parseInt(b.key));
-
-  const citationHistogram = fullAuthorProfile.activityByYear
-  .map((activity) => ({
-    key: String(activity.year),
-    value: activity.citationCount,
-  }))
-  .sort((a, b) => parseInt(a.key) - parseInt(b.key));  
-
 
   return (
     <div>
-      <div>
-
-        <Avatar src={fullAuthorProfile.profileImage} sx={{ width: 128, height: 128, fontSize: 48 }}>
-          {isEmpty(fullAuthorProfile.profileImage) && fullAuthorProfile.firstName?.[0] + fullAuthorProfile.lastName?.[0]}
-        </Avatar>
-
-        <div>
-          <div>{fullAuthorProfile.firstName} {fullAuthorProfile.lastName}</div>
-          <div>{fullAuthorProfile.headline}</div>
-
-          <div>
-            Institutions:
-            {fullAuthorProfile.institutions.map((institution) => (
-              <div key={institution.id}>
-                {institution.institution.displayName}
-              </div>
-            ))}
-          </div>
-
-          <div>{fullAuthorProfile.description}</div>
-
-          <div>
-            <OrcidIcon externalUrl={fullAuthorProfile.orcidUrl} width={35} height={35} />
-            <LinkedInIcon externalUrl={fullAuthorProfile.linkedInUrl} width={35} height={35} />
-            <XIcon externalUrl={fullAuthorProfile.xUrl} width={35} height={35} />
-            <GoogleScholarIcon externalUrl={fullAuthorProfile.googleScholarUrl} width={35} height={35} />
-          </div>
-        </div>
-
-        <div>
-          <div>Achivements</div>
-          {fullAuthorProfile.achievements.map((achievement) => {
-            const achivementDetails = getAchievmentDetails({ achievement, fullAuthorProfile })
-            return (
-              <div key={achievement}>
-                <div>{achivementDetails.icon}</div>
-                <div>{achivementDetails.title}</div>
-              </div>
-            )
-          })}
-        </div>
-
-        <div>
-          <div>Key stats</div>
-          <div>Works count: {fullAuthorProfile.summaryStats.worksCount.toLocaleString()} ({fullAuthorProfile.openAccessPct}% Open Access)</div>
-          <div>Cited by: {fullAuthorProfile.summaryStats.citationCount.toLocaleString()}</div>
-          <div>h-index: {fullAuthorProfile.hIndex}</div>
-          <div>i10-index: {fullAuthorProfile.i10Index}</div>
-        </div>
-
-        <div>
-          <div>Expertise</div>
-        </div>
-      </div>
-
+      <AuthorProfileHeader profile={fullAuthorProfile} />
       <HorizontalTabBar tabs={authorTabs} />
-      <div>
-        <div>Top Works</div>
-        <div>
-          {/* @ts-ignore */}
-          {getDocumentCard({ unifiedDocumentData: overview.results })}
-        </div>
-
-        <div>
-          <div>Coauthors</div>
-          <div>
-            {fullAuthorProfile.coauthors.map((coauthor) => (
-              <div key={coauthor.id}>
-                <Avatar src={coauthor.profileImage} sx={{ width: 48, height: 48, fontSize: 24 }}>
-                  {isEmpty(coauthor.profileImage) && ((coauthor?.firstName?.[0] ?? "") + (coauthor.lastName?.[0] ?? ""))}
-                </Avatar>
-                <div>{coauthor.firstName} {coauthor.lastName}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-      </div>
-
-      <div style={{ width: "50%", height: 150}}>
-        <div>Activity</div>
-        <Histogram data={publicationHistogram} />
-      </div>
-      <div style={{ width: "50%", height: 150}}>
-        <div>Activity</div>
-        <Histogram data={citationHistogram} />
-      </div>      
-
+      <AuthorWorks works={overview.results} coauthors={fullAuthorProfile.coauthors} />
+      <AuthorActivity activity={fullAuthorProfile.activityByYear} />
     </div>
   );
 };
+
+const styles = StyleSheet.create({
+});
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
   const profile = await fetchAuthorProfile({ authorId: ctx!.params!.authorId as string })
