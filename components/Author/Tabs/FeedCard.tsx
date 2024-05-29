@@ -527,7 +527,7 @@ function FeedCard({
                           formattedDocType === "paper" ? "paper" : "post"
                         }
                         discussionCount={discussion_count}
-                        citationCount={citations ? citations.toLocaleString() : 0}
+                        citationCount={citations}
                         reviewScore={reviews?.avg}
                       />
                     </div>

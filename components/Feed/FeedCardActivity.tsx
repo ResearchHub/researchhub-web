@@ -29,9 +29,10 @@ const FeedCardActivity = ({
   unifiedDocumentId: ID;
   docUrl: string;
   discussionCount: number;
-  citationCount: string | number;
+  citationCount?: number;
   reviewScore: number;
 }) => {
+console.log('citationCount', citationCount)
   return (
     <div className={css(styles.wrapper)} onClick={(e) => {
       e.preventDefault();
@@ -52,7 +53,7 @@ const FeedCardActivity = ({
             <div className={css(styles.divider)} />
           </>
         )}
-        {citationCount && (
+        {Boolean(citationCount && citationCount > 0) && (
           <>
             <Link href={docUrl}>
               <IconButton variant="round" overrideStyle={styles.iconButton}>
@@ -66,7 +67,7 @@ const FeedCardActivity = ({
                     height={15}
                     src={"/static/citation.svg"}
                   />
-                  <span>{citationCount}</span>
+                  <span>{citationCount?.toLocaleString() ?? 0}</span>
                 </div>
               </IconButton>
             </Link>
