@@ -32,7 +32,7 @@ const FeedCardActivity = ({
   citationCount?: number;
   reviewScore: number;
 }) => {
-console.log('citationCount', citationCount)
+
   return (
     <div className={css(styles.wrapper)} onClick={(e) => {
       e.preventDefault();
