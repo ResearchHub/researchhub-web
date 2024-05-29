@@ -4,16 +4,20 @@ import { css, StyleSheet } from "aphrodite";
 
 const AuthorSocialMediaIcons = ({ profile }: { profile: FullAuthorProfile }) => {
   return (
-    <div>
-      <OrcidIcon externalUrl={profile.orcidUrl} width={35} height={35} />
-      <LinkedInIcon externalUrl={profile.linkedInUrl} width={35} height={35} />
-      <XIcon externalUrl={profile.xUrl} width={35} height={35} />
-      <GoogleScholarIcon externalUrl={profile.googleScholarUrl} width={35} height={35} />
+    <div className={css(styles.iconsWrapper)}>
+      <OrcidIcon externalUrl={profile.orcidUrl} width={25} height={25} />
+      <LinkedInIcon externalUrl={profile.linkedInUrl} width={25} height={25} />
+      <XIcon externalUrl={profile.xUrl} width={25} height={25} />
+      <GoogleScholarIcon externalUrl={profile.googleScholarUrl} width={25} height={25} />
     </div>
   )
 }
 
 const styles = StyleSheet.create({
+  iconsWrapper: {
+    display: "flex",
+    columnGap: "10px",
+  }
 })
 
 export default AuthorSocialMediaIcons;

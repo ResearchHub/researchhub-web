@@ -27,7 +27,7 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
 
           <div>{profile.description}</div>
 
-          <div>
+          <div className={css(styles.authorSocialMedia)}>
             <AuthorSocialMediaIcons profile={profile} />
           </div>
         </div>
@@ -51,6 +51,9 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
 }
 
 const styles = StyleSheet.create({
+  authorSocialMedia: {
+    marginTop: 10,
+  },
   headline: {
     marginTop: 10,
   },
