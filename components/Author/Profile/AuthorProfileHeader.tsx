@@ -18,10 +18,9 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
 
         <div>
           <div className={css(styles.name)}>{profile.firstName} {profile.lastName}</div>
-          <div>{profile.headline}</div>
+          <div className={css(styles.headline)}>{profile.headline}</div>
 
-          <div>
-            Institutions: 
+          <div className={css(styles.institutions)}>
             <AuthorInstitutions institutions={profile.institutions} />
           </div>
           
@@ -52,6 +51,12 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
 }
 
 const styles = StyleSheet.create({
+  headline: {
+    marginTop: 10,
+  },
+  institutions: {
+    marginTop: 10,
+  },
   profilePage: {
     width: "1000px",
     margin: "0 auto",
