@@ -266,7 +266,11 @@ function FeedCard({
   };
 
   const getBody = () => {
-    return abstract || renderableText;
+    const bodyWithoutHtml = sanitizeHtml(abstract || renderableText, {
+      allowedTags: [], // No tags are allowed, so all will be stripped
+      allowedAttributes: {}, // No attributes are allowed
+    });    
+    return bodyWithoutHtml;
   };
 
   const user = uploaded_by || created_by;
@@ -523,7 +527,7 @@ function FeedCard({
                           formattedDocType === "paper" ? "paper" : "post"
                         }
                         discussionCount={discussion_count}
-                        citationCount={citations ?? 0}
+                        citationCount={citations ? citations.toLocaleString() : 0}
                         reviewScore={reviews?.avg}
                       />
                     </div>
