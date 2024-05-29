@@ -7,10 +7,14 @@ import Avatar from "@mui/material/Avatar";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { css, StyleSheet } from "aphrodite";
 import { FullAuthorProfile } from "../lib/types";
+import AuthorClaimProfileNotification from "~/components/Author/Profile/AuthorClaimProfileNotification";
 
 const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
   return (
     <div>
+      <div className={css(styles.section, styles.claimSection)}>
+        <AuthorClaimProfileNotification profile={profile} />
+      </div>
       <div className={css(styles.bioSection, styles.section)}>
         <Avatar src={profile.profileImage} sx={{ width: 128, height: 128, fontSize: 48 }}>
           {isEmpty(profile.profileImage) && profile.firstName?.[0] + profile.lastName?.[0]}
@@ -23,7 +27,6 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
           <div className={css(styles.institutions)}>
             <AuthorInstitutions institutions={profile.institutions} />
           </div>
-          
 
           <div>{profile.description}</div>
 
@@ -51,6 +54,10 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
 }
 
 const styles = StyleSheet.create({
+  claimSection: {
+    marginTop: 20,
+    backgroundColor: "rgb(240, 240, 240)",
+  },
   authorSocialMedia: {
     marginTop: 10,
   },
@@ -67,6 +74,7 @@ const styles = StyleSheet.create({
   bioSection: {
     columnGap: "20px",
     display: "flex",
+    marginTop: 20,
   },
   section: {
     backgroundColor: "rgb(255, 255, 255)",

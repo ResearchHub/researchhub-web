@@ -37,7 +37,9 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview }) => {
       <div className={css(styles.mainContentWrapper)}>
         <div className={css(styles.mainContent)}>
           <AuthorWorks works={overview.results} coauthors={fullAuthorProfile.coauthors} />
-          <AuthorActivity activity={fullAuthorProfile.activityByYear} />
+          <div className={css(styles.activityWrapper)}>
+            <AuthorActivity activity={fullAuthorProfile.activityByYear} />
+          </div>
         </div>
       </div>
     </div>
@@ -51,6 +53,9 @@ const styles = StyleSheet.create({
   profileContent: {
     width: "1000px",
     margin: "0 auto",
+  },
+  activityWrapper: {
+    width: 700,
   },
   mainContentWrapper: {
     margin: "0 auto",

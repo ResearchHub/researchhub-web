@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     height: '100%', // Make sure the container height is 100% of the parent
   },
   histogramBar: {
-    width: '60px',
+    width: '40px',
     backgroundColor: '#3498db',
     display: 'flex',
     alignItems: 'flex-end',
