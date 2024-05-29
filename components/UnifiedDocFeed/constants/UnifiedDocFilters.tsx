@@ -59,10 +59,11 @@ export const feedTypeOpts = {
     value: "question",
     label: "Questions",
   },
-  bounty: {
-    value: "bounty",
-    label: "Bounties",
-  },
+  // Temporarily remove bounty filter:
+  // bounty: {
+  //   value: "bounty",
+  //   label: "Bounties",
+  // },
 };
 
 export const sortOpts = {
@@ -79,29 +80,30 @@ export const sortOpts = {
       feedTypeOpts["question"].value,
     ],
   },
-  most_rsc: {
-    value: "most_rsc",
-    label: "RSC Offered",
-    selectedLabel: "RSC Offered",
-    icon: (
-      <ResearchCoinIcon
-        version={4}
-        height={16}
-        width={16}
-        overrideStyle={undefined}
-      />
-    ),
-    disableScope: true,
-    availableFor: [feedTypeOpts["bounty"].value],
-  },
-  expiring_soon: {
-    value: "expiring_soon",
-    label: "Expiring Soon",
-    selectedLabel: "Expiring Soon",
-    icon: <FontAwesomeIcon icon={faClock}></FontAwesomeIcon>,
-    disableScope: true,
-    availableFor: [feedTypeOpts["bounty"].value],
-  },
+  // Temporarily remove bounty filter:
+  // most_rsc: {
+  //   value: "most_rsc",
+  //   label: "RSC Offered",
+  //   selectedLabel: "RSC Offered",
+  //   icon: (
+  //     <ResearchCoinIcon
+  //       version={4}
+  //       height={16}
+  //       width={16}
+  //       overrideStyle={undefined}
+  //     />
+  //   ),
+  //   disableScope: true,
+  //   availableFor: [feedTypeOpts["bounty"].value],
+  // },
+  // expiring_soon: {
+  //   value: "expiring_soon",
+  //   label: "Expiring Soon",
+  //   selectedLabel: "Expiring Soon",
+  //   icon: <FontAwesomeIcon icon={faClock}></FontAwesomeIcon>,
+  //   disableScope: true,
+  //   availableFor: [feedTypeOpts["bounty"].value],
+  // },
   new: {
     value: "new",
     label: "Newest",
@@ -113,7 +115,8 @@ export const sortOpts = {
       feedTypeOpts["paper"].value,
       feedTypeOpts["post"].value,
       feedTypeOpts["question"].value,
-      feedTypeOpts["bounty"].value,
+      // Temporarily remove bounty filter:
+      //feedTypeOpts["bounty"].value,
     ],
   },
   discussed: {
@@ -127,7 +130,8 @@ export const sortOpts = {
       feedTypeOpts["paper"].value,
       feedTypeOpts["post"].value,
       feedTypeOpts["question"].value,
-      feedTypeOpts["bounty"].value,
+      // Temporarily remove bounty filter:
+      //feedTypeOpts["bounty"].value,
     ],
   },
   upvoted: {
@@ -141,7 +145,8 @@ export const sortOpts = {
       feedTypeOpts["paper"].value,
       feedTypeOpts["post"].value,
       feedTypeOpts["question"].value,
-      feedTypeOpts["bounty"].value,
+      // Temporarily remove bounty filter:
+      //feedTypeOpts["bounty"].value,
     ],
   },
 };
