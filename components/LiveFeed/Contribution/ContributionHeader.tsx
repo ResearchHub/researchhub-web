@@ -54,6 +54,8 @@ const ContributionHeader = ({ entry, context }: Args) => {
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
 
+  
+
   let contentBadgeLabel: ReactNode | string;
   let actionLabel = <>{` posted `}</>;
   let unifiedDocument: UnifiedDocument;
@@ -102,6 +104,7 @@ const ContributionHeader = ({ entry, context }: Args) => {
 
     contentBadgeLabel = item.amount + " RSC";
   } else if (contentType.name === "rsc_support") {
+    item.recipient = undefined
     item = item as RscSupportContributionItem;
     contentBadgeLabel = item.amount + " RSC";
     unifiedDocument = item.source.unifiedDocument;
@@ -165,8 +168,8 @@ const ContributionHeader = ({ entry, context }: Args) => {
                   overrideTargetStyle={styles.userTooltip}
                   targetContent={
                     <ALink
-                      href={`/user/${item.parent.createdBy.authorProfile?.id}/overview`}
-                      key={`/user/${item.parent.createdBy.authorProfile?.id}/overview-key`}
+                      href={`/user/${item.parent?.createdBy?.authorProfile?.id}/overview`}
+                      key={`/user/${item.parent?.createdBy?.authorProfile?.id}/overview-key`}
                     >
                       {item.parent.createdBy.firstName}{" "}
                       {item.parent.createdBy.lastName}
@@ -207,15 +210,15 @@ const ContributionHeader = ({ entry, context }: Args) => {
               overrideTargetStyle={styles.userTooltip}
               targetContent={
                 <ALink
-                  href={`/user/${createdBy.authorProfile?.id}/overview`}
-                  key={`/user/${createdBy.authorProfile?.id}/overview-key`}
+                  href={`/user/${createdBy?.authorProfile?.id}/overview`}
+                  key={`/user/${createdBy?.authorProfile?.id}/overview-key`}
                 >
-                  {createdBy.authorProfile.firstName}{" "}
-                  {createdBy.authorProfile.lastName}
+                  {createdBy?.authorProfile?.firstName}{" "}
+                  {createdBy?.authorProfile?.lastName}
                 </ALink>
               }
             />
-            {createdBy.authorProfile.isVerified && (
+            {createdBy?.authorProfile?.isVerified && (
               <VerifiedBadge height={18} width={18} />
             )}
             {actionLabel}
