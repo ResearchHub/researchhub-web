@@ -200,54 +200,57 @@ function FlaggedContentDashboard({
 
   const resultCards = () => {
     return results.map((r) => {
-      const isOneLineAction =
-        r?.flaggedBy &&
-        r?.flaggedBy?.authorProfile?.id ===
+      try {
+
+
+        const isOneLineAction =
+          r?.flaggedBy &&
+          r?.flaggedBy?.authorProfile?.id ===
           r?.verdict?.createdBy?.authorProfile?.id;
 
-      const cardActions = [
-        {
-          html: (
-            <FlagButtonV2
-              modalHeaderText="Flag and Remove"
-              flagIconOverride={styles.flagIcon}
-              iconOverride={<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
-              defaultReason={r.reason}
-              successMsgText="Flagged Content removed"
-              errorMsgText="Failed to remove flagged content"
-              subHeaderText="I am removing this content because of:"
-              primaryButtonLabel="Remove content"
-              onSubmit={(
-                verdict: KeyOf<typeof FLAG_REASON>,
-                renderErrorMsg,
-                renderSuccessMsg
-              ) => {
-                removeFlaggedContent({
-                  apiParams: {
-                    flagIds: [r.id],
-                    // @ts-ignore
-                    verdictChoice: verdict,
-                  },
-                  onError: renderErrorMsg,
-                  onSuccess: () => {
-                    renderSuccessMsg();
-                    setResults(results.filter((res) => res.id !== r.id));
-                    setNumNavInteractions(numNavInteractions - 1);
-                  },
-                });
-              }}
-            >
-              <IconButton>
-                <span style={{ color: colors.RED() }}>Remove content</span>
-              </IconButton>
-            </FlagButtonV2>
-          ),
-          label: "Remove Content",
-          style: styles.flagAndRemove,
-          isActive: appliedFilters.verdict === "OPEN",
-        },
-        r.contentType.name === "paper"
-          ? {
+        const cardActions = [
+          {
+            html: (
+              <FlagButtonV2
+                modalHeaderText="Flag and Remove"
+                flagIconOverride={styles.flagIcon}
+                iconOverride={<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
+                defaultReason={r.reason}
+                successMsgText="Flagged Content removed"
+                errorMsgText="Failed to remove flagged content"
+                subHeaderText="I am removing this content because of:"
+                primaryButtonLabel="Remove content"
+                onSubmit={(
+                  verdict: KeyOf<typeof FLAG_REASON>,
+                  renderErrorMsg,
+                  renderSuccessMsg
+                ) => {
+                  removeFlaggedContent({
+                    apiParams: {
+                      flagIds: [r.id],
+                      // @ts-ignore
+                      verdictChoice: verdict,
+                    },
+                    onError: renderErrorMsg,
+                    onSuccess: () => {
+                      renderSuccessMsg();
+                      setResults(results.filter((res) => res.id !== r.id));
+                      setNumNavInteractions(numNavInteractions - 1);
+                    },
+                  });
+                }}
+              >
+                <IconButton>
+                  <span style={{ color: colors.RED() }}>Remove content</span>
+                </IconButton>
+              </FlagButtonV2>
+            ),
+            label: "Remove Content",
+            style: styles.flagAndRemove,
+            isActive: appliedFilters.verdict === "OPEN",
+          },
+          r.contentType.name === "paper"
+            ? {
               html: (
                 <FlagButtonV2
                   modalHeaderText="Flag and Remove PDF"
@@ -291,73 +294,123 @@ function FlaggedContentDashboard({
               style: styles.flagAndRemove,
               isActive: appliedFilters.verdict === "OPEN",
             }
-          : undefined,
-        {
-          html: (
-            <IconButton
-              className={css(
-                styles.bulkAction,
-                styles.checkIcon,
-                styles.bulkActionApprove
-              )}
-              onClick={() => {
-                if (confirm("Dismiss flag?")) {
-                  dismissFlaggedContent({
-                    apiParams: {
-                      flagIds: [r.id],
-                      // @ts-ignore
-                      verdictChoice: r.reasonChoice,
-                    },
-                    onSuccess: () => {
-                      setMessage("Flag dismissed");
-                      showMessage({ show: true, error: false });
-                      setResults(results.filter((res) => res.id !== r.id));
-                      setNumNavInteractions(numNavInteractions - 1);
-                    },
-                    onError: () => {
-                      setMessage("Failed. Flag likely already dismissed.");
-                      showMessage({ show: true, error: true });
-                    },
-                  });
-                }
-              }}
-            >
-              Dismiss Flag
-            </IconButton>
-          ),
-          label: "Dismiss Flag",
-          // style: styles.flagAndRemove,
-          isActive: appliedFilters.verdict === "OPEN",
-        },
-      ].filter((a) => a);
-
-      return (
-        <div className={css(styles.result)} key={r.id}>
-          {r.verdict && !isOneLineAction && (
-            <>
-              <div
+            : undefined,
+          {
+            html: (
+              <IconButton
                 className={css(
-                  styles.actionDetailsRow,
-                  styles.verdictActionDetailsRow
+                  styles.bulkAction,
+                  styles.checkIcon,
+                  styles.bulkActionApprove
                 )}
+                onClick={() => {
+                  if (confirm("Dismiss flag?")) {
+                    dismissFlaggedContent({
+                      apiParams: {
+                        flagIds: [r.id],
+                        // @ts-ignore
+                        verdictChoice: r.reasonChoice,
+                      },
+                      onSuccess: () => {
+                        setMessage("Flag dismissed");
+                        showMessage({ show: true, error: false });
+                        setResults(results.filter((res) => res.id !== r.id));
+                        setNumNavInteractions(numNavInteractions - 1);
+                      },
+                      onError: () => {
+                        setMessage("Failed. Flag likely already dismissed.");
+                        showMessage({ show: true, error: true });
+                      },
+                    });
+                  }
+                }}
               >
-                <div className={css(styles.avatarContainer)}>
-                  {/* @ts-ignore */}
-                  <AuthorAvatar
-                    size={25}
-                    author={r.verdict.createdBy?.authorProfile}
-                  />
+                Dismiss Flag
+              </IconButton>
+            ),
+            label: "Dismiss Flag",
+            // style: styles.flagAndRemove,
+            isActive: appliedFilters.verdict === "OPEN",
+          },
+        ].filter((a) => a);
+
+        return (
+          <div className={css(styles.result)} key={r.id}>
+            {r.verdict && !isOneLineAction && (
+              <>
+                <div
+                  className={css(
+                    styles.actionDetailsRow,
+                    styles.verdictActionDetailsRow
+                  )}
+                >
+                  <div className={css(styles.avatarContainer)}>
+                    {/* @ts-ignore */}
+                    <AuthorAvatar
+                      size={25}
+                      author={r.verdict.createdBy?.authorProfile}
+                    />
+                  </div>
+                  <span className={css(styles.actionContainer)}>
+                    {/* @ts-ignore */}
+                    <ALink
+                      href={`/user/${r.verdict.createdBy?.authorProfile.id}/overview`}
+                    >
+                      {r.verdict.createdBy?.authorProfile.firstName}{" "}
+                      {r.verdict.createdBy?.authorProfile.lastName}
+                    </ALink>
+                    <span className={css(styles.flagText)}>
+                      {appliedFilters.verdict === "APPROVED" ? (
+                        <>
+                          <span className={css(styles.icon)}>
+                            &nbsp;
+                            {<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
+                          </span>
+                          &nbsp;dismissed flag
+                        </>
+                      ) : (
+                        <>
+                          <span className={css(styles.icon, styles.trashIcon)}>
+                            &nbsp;
+                            {<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
+                          </span>
+                          &nbsp;removed this content due to{" "}
+                          <span className={css(styles.reason)}>
+                            {FLAG_REASON[r.verdict.verdictChoice]}
+                          </span>
+                        </>
+                      )}
+                    </span>
+                  </span>
+                  <span className={css(styles.dot)}> • </span>
+                  <span className={css(styles.timestamp)}>
+                    {timeSince(r.verdict.createdDate)}
+                  </span>
                 </div>
-                <span className={css(styles.actionContainer)}>
-                  {/* @ts-ignore */}
+                <div className={css(styles.timelineSeperator)}></div>
+              </>
+            )}
+            <div className={css(styles.actionDetailsRow)}>
+              <div className={css(styles.avatarContainer)}>
+                {/* @ts-ignore */}
+                <AuthorAvatar size={25} author={r?.flaggedBy?.authorProfile} />
+              </div>
+              <span className={css(styles.actionContainer)}>
+                {/* @ts-ignore */}
+                {r?.flaggedBy?.authorProfile ? (
                   <ALink
-                    href={`/user/${r.verdict.createdBy?.authorProfile.id}/overview`}
+                    href={`/user/${r?.flaggedBy?.authorProfile?.id}/overview`}
                   >
-                    {r.verdict.createdBy?.authorProfile.firstName}{" "}
-                    {r.verdict.createdBy?.authorProfile.lastName}
+                    {/* @ts-ignore */}
+                    {r?.flaggedBy?.authorProfile?.firstName} {/* @ts-ignore */}
+                    {r?.flaggedBy?.authorProfile?.lastName}
                   </ALink>
-                  <span className={css(styles.flagText)}>
-                    {appliedFilters.verdict === "APPROVED" ? (
+                ) : (
+                  <span>User N/A</span>
+                )}
+                <span className={css(styles.flagText)}>
+                  {isOneLineAction ? (
+                    appliedFilters.verdict === "APPROVED" ? (
                       <>
                         <span className={css(styles.icon)}>
                           &nbsp;
@@ -371,107 +424,62 @@ function FlaggedContentDashboard({
                           &nbsp;
                           {<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
                         </span>
+                        {/* @ts-ignore */}
                         &nbsp;removed this content due to{" "}
                         <span className={css(styles.reason)}>
+                          {/* @ts-ignore */}
                           {FLAG_REASON[r.verdict.verdictChoice]}
                         </span>
                       </>
-                    )}
-                  </span>
-                </span>
-                <span className={css(styles.dot)}> • </span>
-                <span className={css(styles.timestamp)}>
-                  {timeSince(r.verdict.createdDate)}
-                </span>
-              </div>
-              <div className={css(styles.timelineSeperator)}></div>
-            </>
-          )}
-          <div className={css(styles.actionDetailsRow)}>
-            <div className={css(styles.avatarContainer)}>
-              {/* @ts-ignore */}
-              <AuthorAvatar size={25} author={r?.flaggedBy?.authorProfile} />
-            </div>
-            <span className={css(styles.actionContainer)}>
-              {/* @ts-ignore */}
-              {r?.flaggedBy?.authorProfile ? (
-                <ALink
-                  href={`/user/${r?.flaggedBy?.authorProfile?.id}/overview`}
-                >
-                  {/* @ts-ignore */}
-                  {r?.flaggedBy?.authorProfile?.firstName} {/* @ts-ignore */}
-                  {r?.flaggedBy?.authorProfile?.lastName}
-                </ALink>
-              ) : (
-                <span>User N/A</span>
-              )}
-              <span className={css(styles.flagText)}>
-                {isOneLineAction ? (
-                  appliedFilters.verdict === "APPROVED" ? (
-                    <>
-                      <span className={css(styles.icon)}>
-                        &nbsp;
-                        {<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
-                      </span>
-                      &nbsp;dismissed flag
-                    </>
+                    )
                   ) : (
                     <>
-                      <span className={css(styles.icon, styles.trashIcon)}>
-                        &nbsp;
-                        {<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
+                      <span className={css(styles.icon)}>
+                        &nbsp;{<FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
                       </span>
-                      {/* @ts-ignore */}
-                      &nbsp;removed this content due to{" "}
+                      &nbsp;flagged this content as{" "}
                       <span className={css(styles.reason)}>
                         {/* @ts-ignore */}
-                        {FLAG_REASON[r.verdict.verdictChoice]}
+                        {FLAG_REASON[r.reason] ?? FLAG_REASON["NOT_SPECIFIED"]}
                       </span>
                     </>
-                  )
-                ) : (
-                  <>
-                    <span className={css(styles.icon)}>
-                      &nbsp;{<FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
-                    </span>
-                    &nbsp;flagged this content as{" "}
-                    <span className={css(styles.reason)}>
-                      {/* @ts-ignore */}
-                      {FLAG_REASON[r.reason] ?? FLAG_REASON["NOT_SPECIFIED"]}
-                    </span>
-                  </>
-                )}
+                  )}
+                </span>
               </span>
-            </span>
-            <span className={css(styles.dot)}> • </span>
-            <span className={css(styles.timestamp)}>
-              {timeSince(r.createdDate)}
-            </span>
-          </div>
-          <div className={css(styles.entryContainer)}>
-            <div className={`${css(styles.checkbox)} cbx`}>
-              <CheckBox
-                key={`${r.contentType}-${r.id}`}
-                label=""
-                isSquare
-                // @ts-ignore
-                id={r.id}
-                active={selectedResultIds.includes(r.id)}
-                onChange={(id) => handleResultSelect(id)}
-                labelStyle={undefined}
-              />
+              <span className={css(styles.dot)}> • </span>
+              <span className={css(styles.timestamp)}>
+                {timeSince(r.createdDate)}
+              </span>
             </div>
-            <div className={css(styles.entry)}>
-              <ContributionEntry
-                entry={r}
-                actions={cardActions}
-                setHubsDropdownOpenForKey={setHubsDropdownOpenForKey}
-                hubsDropdownOpenForKey={hubsDropdownOpenForKey}
-              />
+            <div className={css(styles.entryContainer)}>
+              <div className={`${css(styles.checkbox)} cbx`}>
+                <CheckBox
+                  key={`${r.contentType}-${r.id}`}
+                  label=""
+                  isSquare
+                  // @ts-ignore
+                  id={r.id}
+                  active={selectedResultIds.includes(r.id)}
+                  onChange={(id) => handleResultSelect(id)}
+                  labelStyle={undefined}
+                />
+              </div>
+              <div className={css(styles.entry)}>
+                <ContributionEntry
+                  entry={r}
+                  actions={cardActions}
+                  setHubsDropdownOpenForKey={setHubsDropdownOpenForKey}
+                  hubsDropdownOpenForKey={hubsDropdownOpenForKey}
+                />
+              </div>
             </div>
           </div>
-        </div>
-      );
+        );
+      } catch (e) {
+        // We want to catch any errors that occur in the loop and continue
+        // since we don't want to break the entire page if an error occurs on one entry
+        console.error(e);
+      }
     });
   };
 
