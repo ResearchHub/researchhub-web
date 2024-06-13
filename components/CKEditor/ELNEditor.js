@@ -138,8 +138,6 @@ const ELNEditor = ({
     };
   };
 
-  console.log(currentNote.latest_version?.src);
-
   return (
     <div className={css(styles.container)}>
       <NotebookHeader
