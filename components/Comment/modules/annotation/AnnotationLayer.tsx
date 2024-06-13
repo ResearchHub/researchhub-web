@@ -1519,11 +1519,11 @@ const styles = StyleSheet.create({
   anchorLayer: {
     "mix-blend-mode": "multiply",
     position: "relative",
-    zIndex: 4,
+    zIndex: 3,
   },
   threadsLayer: {
     position: "relative",
-    zIndex: 4,
+    zIndex: 3,
   },
   commentsContainer: {},
   avatarsContainer: {
