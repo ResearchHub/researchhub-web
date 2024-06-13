@@ -8,6 +8,8 @@ const ALLOWED_ORIGINS = [
   "localhost:8000",
   "ws://localhost:8000",
   "ws://localhost:8000/",
+  "backend.prod.researchhub.com",
+  "wss://backend.prod.researchhub.com",
   "backend.staging.researchhub.com",
   "wss://backend.staging.researchhub.com",
   "researchhub.com",
