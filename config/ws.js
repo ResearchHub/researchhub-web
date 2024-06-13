@@ -9,7 +9,7 @@ export const ROUTES = {
 
 function setBaseUrl() {
   if (process.env.REACT_APP_ENV === "staging") {
-    return "wss://backend.staging.researchhub.com/ws/";
+    return "wss://backend.prod.researchhub.com/ws/"; // FIXME: Change to staging after testing!
   } else if (process.env.NODE_ENV === "production") {
     return "wss://ws.researchhub.com/ws/";
   } else {
