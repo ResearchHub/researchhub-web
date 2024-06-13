@@ -487,3 +487,15 @@ hr {
   height: 1px;
   background: #e5e7eb;
 }
+
+#postBody table {
+  border-spacing: 0px;
+  border-collapse: collapse;
+  border: 1px double #b3b3b3;
+}
+
+#postBody td {
+  min-width: 2em;
+  padding: 0.4em;
+  border: 1px solid #bfbfbf;
+}

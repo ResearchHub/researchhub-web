@@ -21,14 +21,20 @@ import {
   LEFT_SIDEBAR_MIN_WIDTH,
 } from "~/components/Home/sidebar/RootLeftSidebar";
 import { breakpoints } from "~/config/themes/screen";
-import DocumentViewer, {
-  ZoomAction,
-} from "~/components/Document/DocumentViewer";
+import { ZoomAction } from "~/components/Document/DocumentViewer";
 import CommentFeed from "~/components/Comment/CommentFeed";
 import { COMMENT_TYPES } from "~/components/Comment/lib/types";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import colors from "~/config/themes/colors";
 import EditQuestionModal from "./EditQuestionModal";
+import dynamic from "next/dynamic";
+
+const DocumentViewer = dynamic(
+  () => import("~/components/Document/DocumentViewer"),
+  {
+    ssr: false,
+  }
+);
 
 interface Args {
   documentData?: any;
