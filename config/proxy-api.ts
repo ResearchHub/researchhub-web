@@ -6,7 +6,7 @@ const getBaseUrl = (): string => {
     return "https://proxy.staging.researchhub.com";
   }
   if (process.env.NODE_ENV === "production") {
-    return "https://proxy.researchhub.com";
+    return "https://proxy.prod.researchhub.com";
   }
   return "https://proxy.staging.researchhub.com";
 };
