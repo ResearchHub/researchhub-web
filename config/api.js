@@ -6,7 +6,7 @@ import { convertToBackendFilters } from "~/components/UnifiedDocFeed/utils/conve
 
 export const apiRoot = {
   production: "backend.researchhub.com",
-  staging: "backend.prod.researchhub.com", // FIXME: Change to staging after testing!
+  staging: "backend.staging.researchhub.com",
   dev: "localhost:8000",
 };
 
