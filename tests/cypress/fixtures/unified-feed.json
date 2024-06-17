@@ -1,6 +1,6 @@
 {
   "count": 1751,
-  "next": "https://backend.researchhub.com/api/researchhub_unified_document/get_unified_documents/?end_date__lte=1629047539&ordering=top_rated&page=2&start_date__gte=1546232400&subscribed_hubs=true&type=all",
+  "next": "https://backend.prod.researchhub.com/api/researchhub_unified_document/get_unified_documents/?end_date__lte=1629047539&ordering=top_rated&page=2&start_date__gte=1546232400&subscribed_hubs=true&type=all",
   "previous": null,
   "results": [{
     "documents": {
