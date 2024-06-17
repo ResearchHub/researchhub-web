@@ -42,7 +42,7 @@ function setOrcidRedirect() {
   if (process.env.REACT_APP_ENV === "staging") {
     return "https://backend.staging.researchhub.com/api/auth/orcid/login/callback/";
   } else if (process.env.NODE_ENV === "production") {
-    return "https://backend.researchhub.com/api/auth/orcid/login/callback/";
+    return "https://backend.prod.researchhub.com/api/auth/orcid/login/callback/";
   } else {
     return "http://localhost:8000/api/auth/orcid/login/callback/";
   }
