@@ -28,10 +28,6 @@ import Base from "./Base";
 import nookies from "nookies";
 import { useRouter } from "next/router";
 import withRedux from "next-redux-wrapper";
-import RHLogo from "~/components/Home/RHLogo";
-import { StyleSheet, css } from "aphrodite";
-import { ClipLoader } from "react-spinners";
-import colors from "~/config/themes/colors";
 
 if (process.env.ELASTIC_APM_URL) {
   initApm({
@@ -180,7 +176,7 @@ const MyApp = ({
 
   return (
     <Provider store={store}>
-      {/* <Base
+      <Base
         Component={Component}
         pageProps={pageProps}
         appProps={appProps}
@@ -188,25 +184,7 @@ const MyApp = ({
         withNavbar={withNavbar}
         rootLeftSidebarForceMin={rootLeftSidebarForceMin}
       />
-      <Analytics /> */}
-
-      <div>
-        <div className={css(styles.wrapper)}>
-          <RHLogo withText={true} iconStyle={styles.icon} />
-          <div className={css(styles.description)}>
-            Please hang tight while we complete our scheduled maintenance .
-            We'll be back shortly.
-          </div>
-          <div className={css(styles.loaderWrapper)}>
-            <ClipLoader
-              sizeUnit={"px"}
-              size={48}
-              color={colors.NEW_BLUE()}
-              loading={true}
-            />
-          </div>
-        </div>
-      </div>
+      <Analytics />
     </Provider>
   );
 };
@@ -220,6 +198,7 @@ MyApp.getInitialProps = async (appContext) => {
     "/live",
     "/hubs",
     "/user/[authorId]/[tabName]",
+    "/author/[authorId]",
     "/[orgSlug]/notebook/[noteId]",
     "/[orgSlug]/notebook",
     "/hubs/[slug]",
@@ -253,27 +232,5 @@ MyApp.getInitialProps = async (appContext) => {
     };
   }
 };
-
-const styles = StyleSheet.create({
-  icon: {
-    height: 60,
-  },
-  wrapper: {
-    margin: "0 auto",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
-    gap: 20,
-    marginTop: 200,
-  },
-  description: {
-    fontSize: 20,
-    textAlign: "center",
-  },
-  loaderWrapper: {
-    marginTop: 30,
-  },
-});
 
 export default withRedux(configureStore)(MyApp);
