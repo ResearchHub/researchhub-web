@@ -3,7 +3,7 @@ const getBaseUrl = (): string => {
     return process.env.REACT_APP_PROXY_API_ROOT;
   }
   if (process.env.REACT_APP_ENV === "staging") {
-    return "https://proxy.prod.researchhub.com"; // FIXME: Change to staging after testing!
+    return "https://proxy.staging.researchhub.com";
   }
   if (process.env.NODE_ENV === "production") {
     return "https://proxy.researchhub.com";
