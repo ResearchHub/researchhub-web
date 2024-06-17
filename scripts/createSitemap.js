@@ -98,7 +98,7 @@ const writeFile = () => {
         .get(
           next
             ? next
-            : `https://backend.researchhub.com/api/paper/?limit=${LIMIT}&offset=${
+            : `https://backend.prod.researchhub.com/api/paper/?limit=${LIMIT}&offset=${
                 offset ? offset : 0
               }&ignore_apm=true`
         )
@@ -149,7 +149,7 @@ const writeFile = () => {
         .get(
           next
             ? next
-            : "https://backend.researchhub.com/api/hub/?page_limit=1000&ignore_apm=true"
+            : "https://backend.prod.researchhub.com/api/hub/?page_limit=1000&ignore_apm=true"
         )
         .then((res) => {
           next = res.data.next;

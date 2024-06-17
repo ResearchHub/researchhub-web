@@ -5,8 +5,8 @@ import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "./utils/getUnifiedDocType";
 import { convertToBackendFilters } from "~/components/UnifiedDocFeed/utils/converToBackendFilters";
 
 export const apiRoot = {
-  production: "backend.researchhub.com",
-  staging: "backend.prod.researchhub.com", // FIXME: Change to staging after testing!
+  production: "backend.prod.researchhub.com",
+  staging: "backend.staging.researchhub.com",
   dev: "localhost:8000",
 };
 
