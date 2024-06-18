@@ -264,7 +264,6 @@ function NotePublishModal({
 
     return fetch(API.RESEARCHHUB_POST({}), API.POST_CONFIG(params))
       .then(async (res) => {
-        console.log('res', res)
         if (!res.ok) {
           throw res;
         }

@@ -37,7 +37,7 @@ type FormError = {
   title: boolean;
 };
 
-const MIN_TITLE_LENGTH = 10;
+const MIN_TITLE_LENGTH = 20;
 const MAX_TITLE_LENGTH = 250;
 
 function validateFormField(fieldID: string, value: any): boolean {
@@ -107,7 +107,26 @@ function AskQuestionForm({ post, user, onExit }: AskQuestionFormProps) {
         postType: "QUESTION",
       },
       currentUser,
-      onError: (_err: Error): void => setIsSubmitting(false),
+      onError: async (_err: any) => {
+        // @ts-ignore
+        const errorBody = await _err?.json();
+
+        alert.show(
+          {
+            // @ts-ignore
+            text: (
+              <div>
+                {errorBody.msg || `There was an error creating your question. Please try again later.`}
+              </div>
+            ),
+            buttonText: "OK",
+            onClick: () => {},
+          },
+          { withCancel: false }
+        );
+
+        setIsSubmitting(false)
+      },
       onSuccess: (response: any): void => {
         const isEditingPost = Boolean(post?.id);
         if (isEditingPost) {

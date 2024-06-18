@@ -18,7 +18,7 @@ type PostPayload = {
 };
 
 interface Props {
-  onError?: (error: Error) => void;
+  onError?: (error: any) => void;
   onSuccess?: (response: any) => void;
   payload: PostPayload;
   currentUser: RHUser | null;
@@ -98,23 +98,26 @@ export const createOrUpdatePostApi = ({
 }: Props) => {
   return fetch(
     API.RESEARCHHUB_POST({ post_id: payload.postId }),
-    API.POST_CONFIG(toApiPayload(payload))
-  )
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((res) => {
+    API.POST_CONFIG(toApiPayload(payload)))
+    .then(async (res) => {
+      if (!res.ok) {
+        onError && onError(res);
+      }
+
+      const response = await res.json();
+
       // @ts-ignore
-      const isCreated = Boolean(res?.id);
+      const isCreated = Boolean(response?.id);
       logEmpEvent({
         isCreated,
-        apiResponse: res,
+        apiResponse: response,
         currentUser,
         postType: payload.postType,
       });
-      onSuccess && onSuccess(res);
+      onSuccess && onSuccess(response);
       return res;
     })
     .catch((error) => {
       onError && onError(error);
-    });
+    })
 };
