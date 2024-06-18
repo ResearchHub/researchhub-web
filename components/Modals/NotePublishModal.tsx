@@ -211,14 +211,15 @@ function NotePublishModal({
             setLoading(false);
           });
         })
-        .catch((err) => {
+        .catch(async (err) => {
+          const errorBody = await err.json()
           setLoading(false);
-          console.log(err);
-          if (err.response?.status === 402) {
+        
+          if (err?.status === 402) {
             setMessage("Not enough coins in balance");
             showMessage({ show: true, error: true });
           } else {
-            setMessage("Something went wrong, please try again");
+            setMessage(errorBody?.msg || "Something went wrong");
             showMessage({ show: true, error: true });
           }
           setIsSubmitting(false);
@@ -262,15 +263,20 @@ function NotePublishModal({
     }
 
     return fetch(API.RESEARCHHUB_POST({}), API.POST_CONFIG(params))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
+      .then(async (res) => {
+        console.log('res', res)
+        if (!res.ok) {
+          throw res;
+        }
+
+        const body = await res.json();
+
         if (publishedType === "UNPUBLISHED") {
           const payload = {
             event_type: "create_post",
             time: +new Date(),
             user_id: currentUser.id,
-            insert_id: `post_${res.id}`,
+            insert_id: `post_${body.id}`,
             event_properties: {
               interaction: "Post created",
             },
@@ -278,7 +284,7 @@ function NotePublishModal({
           sendAmpEvent(payload);
         }
 
-        return res;
+        return body;
       });
   };
 
