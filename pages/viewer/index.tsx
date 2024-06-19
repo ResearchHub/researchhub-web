@@ -1,5 +1,4 @@
 import { NextPage } from "next/types";
-import DocumentViewer from "~/components/Document/DocumentViewer";
 import { useRouter } from "next/router";
 import { fetchDocumentByType } from "~/components/Document/lib/fetchDocumentByType";
 import { useEffect, useState } from "react";
@@ -16,6 +15,7 @@ import DocumentPlaceholder from "~/components/Document/lib/Placeholders/Document
 import config from "~/components/Document/lib/config";
 import { fetchCitation } from "~/components/ReferenceManager/lib/api";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
+import DocumentViewer from "~/components/Document/DocumentViewer";
 
 interface Props {}
 

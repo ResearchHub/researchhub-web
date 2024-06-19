@@ -68,7 +68,6 @@ import { grey } from "@mui/material/colors";
 import ReferenceProjectsUpsertModal from "../references/reference_organizer/ReferenceProjectsUpsertModal";
 import RefManagerCallouts from "../onboarding/RefManagerCallouts";
 import { storeToCookie } from "~/config/utils/storeToCookie";
-import DocumentViewer from "~/components/Document/DocumentViewer";
 import ReferenceImportLibraryModal from "./reference_import_library_modal/ReferenceImportLibraryModal";
 import {
   downloadBibliography,
@@ -89,6 +88,7 @@ import {
   DocumentPreferences,
 } from "~/components/Document/lib/DocumentContext";
 import { breakpoints } from "~/config/themes/screen";
+import DocumentViewer, { ZoomAction } from "~/components/Document/DocumentViewer";
 
 interface Props {
   showMessage: ({ show, load }) => void;

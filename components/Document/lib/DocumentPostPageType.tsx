@@ -21,9 +21,7 @@ import {
   LEFT_SIDEBAR_MIN_WIDTH,
 } from "~/components/Home/sidebar/RootLeftSidebar";
 import { breakpoints } from "~/config/themes/screen";
-import DocumentViewer, {
-  ZoomAction,
-} from "~/components/Document/DocumentViewer";
+import DocumentViewer, { ZoomAction } from "~/components/Document/DocumentViewer";
 import CommentFeed from "~/components/Comment/CommentFeed";
 import { COMMENT_TYPES } from "~/components/Comment/lib/types";
 import useCacheControl from "~/config/hooks/useCacheControl";
