@@ -11,6 +11,7 @@ import {
   faMedium,
   faDiscord,
   faXTwitter,
+  faGithub,
 } from "@fortawesome/free-brands-svg-icons";
 import { faChartSimple } from "@fortawesome/pro-regular-svg-icons";
 import { faBook } from "@fortawesome/pro-duotone-svg-icons";
@@ -513,6 +514,13 @@ function RootLeftSidebar({
                 {<FontAwesomeIcon icon={faDiscord}></FontAwesomeIcon>}
               </ALink>
               <ALink
+                href="https://github.com/ResearchHub"
+                overrideStyle={styles.leftSidebarFooterIcon}
+                target="__blank"
+              >
+                {<FontAwesomeIcon icon={faGithub}></FontAwesomeIcon>}
+              </ALink>              
+              <ALink
                 href="https://medium.com/researchhub"
                 overrideStyle={
                   (styles.leftSidebarFooterIcon, styles.mediumIconOverride)
@@ -535,6 +543,13 @@ function RootLeftSidebar({
               >
                 {"Privacy"}
               </ALink>
+              <ALink
+                href="https://github.com/ResearchHub/issues/issues/new/choose"
+                target="__blank"
+                overrideStyle={styles.leftSidebarFooterBotItem}
+              >
+                {"Issues"}
+              </ALink>              
               <ALink
                 href="https://researchhub.notion.site/ResearchHub-a2a87270ebcf43ffb4b6050e3b766ba0"
                 overrideStyle={styles.leftSidebarFooterBotItem}

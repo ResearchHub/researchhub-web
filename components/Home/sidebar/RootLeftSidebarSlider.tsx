@@ -3,6 +3,7 @@ import {
   faMedium,
   faDiscord,
   faXTwitter,
+  faGithub,
 } from "@fortawesome/free-brands-svg-icons";
 import { AuthActions } from "~/redux/auth";
 import { breakpoints } from "~/config/themes/screen";
@@ -165,6 +166,13 @@ function RootLeftSidebarSlider({
             >
               {<FontAwesomeIcon icon={faDiscord}></FontAwesomeIcon>}
             </ALink>
+            <ALink
+              href="https://github.com/ResearchHub"
+              overrideStyle={styles.leftSidebarSliderFooterIcon}
+              target="__blank"
+            >
+              {<FontAwesomeIcon icon={faGithub}></FontAwesomeIcon>}
+            </ALink>            
             <ALink
               href="https://medium.com/researchhub"
               overrideStyle={
