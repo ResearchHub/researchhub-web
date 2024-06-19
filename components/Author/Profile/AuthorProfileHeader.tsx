@@ -9,8 +9,22 @@ import { css, StyleSheet } from "aphrodite";
 import { FullAuthorProfile } from "../lib/types";
 import AuthorClaimProfileNotification from "~/components/Author/Profile/AuthorClaimProfileNotification";
 import Pill from "~/components/shared/Pill";
+import colors from "~/config/themes/colors";
+import { Tooltip } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle, faQuestionCircle } from "@fortawesome/pro-solid-svg-icons";
+
 
 const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
+
+  const getExpertiseTooltipContent = () => {
+    return (
+      <div className={css(styles.expertiseContent)}>
+        <div className={css(styles.expertiseContentBody)}>The expertise shown below is only an estimate because the author has not yet verified the works in their profile.</div>
+      </div>      
+    )    
+  }
+
   return (
     <div>
       <div className={css(styles.section, styles.claimSection)}>
@@ -53,9 +67,27 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
           <AuthorHeaderKeyStats profile={profile} />
         </div>
 
-        <div className={css(styles.section, styles.subSection)}>
+        <div className={css(styles.section, styles.subSection, styles.expertiseSectionUnverified)}>
           <div className={css(styles.sectionHeader)}>
-            Expertise
+            <div>
+              {!profile.hasVerifiedWorks &&
+                <Tooltip title={getExpertiseTooltipContent()} componentsProps={{
+                  tooltip: {
+                    sx: {
+                      bgcolor: 'black',
+                    },
+                  },
+                }}>
+                  <div className={css(styles.expertiseHeader)}>
+                    Expertise
+                    <FontAwesomeIcon fontSize={18} icon={faExclamationCircle} color={colors.YELLOW2()} />
+                  </div>
+                </Tooltip>                
+              }
+            </div>
+            <div className={css(styles.repScore)}>
+              {profile.reputation.score.toLocaleString()}
+            </div>
           </div>          
           <AuthorHeaderExpertise profile={profile} />
         </div>
@@ -63,6 +95,7 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
     </div>
   )
 }
+
 
 const styles = StyleSheet.create({
   sectionHeader: {
@@ -75,6 +108,36 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 5,
     marginBottom: 20,
+    justifyContent: "space-between",
+  },
+  expertiseHeader: {
+    columnGap: "5px",
+    display: "flex",
+    alignItems: "center",
+    cursor: "pointer",
+  },
+  expertiseContentWrapper: {
+    background: "black",  
+  },
+  expertiseContent: {
+    background: "black",
+  },
+  expertiseContentTitle: {
+    fontSize: 16,
+    fontWeight: 500,
+    marginBottom: 5,
+  },
+  expertiseContentBody: {
+    fontSize: 14,
+  },
+  expertiseSectionUnverified: {
+    border: `1px solid ${colors.YELLOW2()}`,
+    backgroundColor: "rgb(255, 252, 241)",
+  },
+  repScore: {
+    fontWeight: 500,
+    fontSize: 15,
+    color: colors.BLACK()
   },
   claimSection: {
     marginTop: 20,
@@ -108,7 +171,7 @@ const styles = StyleSheet.create({
     display: "flex",
     gap: 20,
     marginTop: 20,
-    height: 190,
+    height: 230,
   },
   subSection: {
     width: "33%",

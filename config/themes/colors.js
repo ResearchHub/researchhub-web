@@ -25,6 +25,7 @@ const colors = {
   LIGHT_GRAY_BACKGROUND: (opacity = 1) => `rgba(250, 250, 250, ${opacity})`,
   LIGHT_BLUE: (opacity = 1) => `rgba(237, 238, 254, ${opacity})`,
   LIGHT_BLUE2: (opacity = 1) => `rgba(241, 245, 255, ${opacity})`,
+  LIGHT_BLUE3: (opacity = 1) => `rgba(189, 223, 255, ${opacity})`,
   LIGHT_GREEN: (opacity = 1) => `rgba(236, 249, 235, ${opacity})`,
   LIGHT_GREY_BACKGROUND: "#EDEDED",
   LIGHT_GREY_BORDER: "rgba(39, 39, 39, 0.07)",
@@ -61,6 +62,7 @@ const colors = {
   TOOLTIP_BACKGROUND_BLACK: "#E69A8DFF",
   TOOLTIP_TEXT_COLOR_WHITE: "5F4B8BFF",
   YELLOW: (opacity = 1) => `rgba(240, 182, 65, ${opacity})`,
+  YELLOW2: (opacity = 1) => `rgba(232, 181, 4, ${opacity})`,
 };
 
 export const bountyColors = {

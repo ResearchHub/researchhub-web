@@ -2,6 +2,7 @@ import {
   AuthorInstitution,
   parseInstitution,
 } from "~/components/Institution/lib/types";
+import { Hub, parseHub } from "~/config/types/hub";
 import {
   AuthorProfile,
   ID,
@@ -15,6 +16,7 @@ export type FullAuthorProfile = {
   firstName: string;
   lastName: string;
   isVerified: boolean;
+  hasVerifiedWorks: boolean;
   profileImage?: string;
   headline?: string;
   description?: string;
@@ -40,11 +42,33 @@ export type FullAuthorProfile = {
     citationCount: number;
     twoYearMeanCitedness: number;
   };
+  reputation: Reputation;
+  reputationList: Array<Reputation>;
 };
+
+export type Reputation = {
+  score: number;
+  bins: Array<Array<number>>;
+  hub: Hub;
+
+};
+
+export const parseReputation = (raw: any): Reputation => {
+  return {
+    score: raw.score,
+    bins: raw.bins,
+    hub: parseHub(raw.hub),
+  }
+}
+
+export const parseReputationList = (raw: any): Array<Reputation> => {
+  return raw.map((rep) => parseReputation(rep));
+}
 
 export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
   const parsed = {
     id: raw.id,
+    hasVerifiedWorks: false,
     profileImage: raw.profile_image,
     firstName: raw.first_name,
     lastName: raw.last_name,
@@ -77,6 +101,8 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
         years: inst.years,
       };
     }),
+    reputation: parseReputation(raw.reputation),
+    reputationList: parseReputationList(raw.reputation_list),
   };
 
   return parsed;
