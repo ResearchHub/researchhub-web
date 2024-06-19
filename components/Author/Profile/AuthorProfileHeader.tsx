@@ -9,6 +9,7 @@ import { css, StyleSheet } from "aphrodite";
 import { FullAuthorProfile } from "../lib/types";
 import AuthorClaimProfileNotification from "~/components/Author/Profile/AuthorClaimProfileNotification";
 import Pill from "~/components/shared/Pill";
+import colors from "~/config/themes/colors";
 
 const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
   return (
@@ -56,6 +57,7 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
         <div className={css(styles.section, styles.subSection)}>
           <div className={css(styles.sectionHeader)}>
             Expertise
+            <div className={css(styles.repScore)}>{profile.reputation.score.toLocaleString()}</div>
           </div>          
           <AuthorHeaderExpertise profile={profile} />
         </div>
@@ -75,6 +77,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 5,
     marginBottom: 20,
+    justifyContent: "space-between",
+  },
+  repScore: {
+    fontWeight: 500,
+    fontSize: 15,
+    color: colors.BLACK()
   },
   claimSection: {
     marginTop: 20,
@@ -108,7 +116,7 @@ const styles = StyleSheet.create({
     display: "flex",
     gap: 20,
     marginTop: 20,
-    height: 190,
+    height: 230,
   },
   subSection: {
     width: "33%",

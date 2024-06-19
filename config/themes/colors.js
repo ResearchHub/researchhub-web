@@ -25,6 +25,7 @@ const colors = {
   LIGHT_GRAY_BACKGROUND: (opacity = 1) => `rgba(250, 250, 250, ${opacity})`,
   LIGHT_BLUE: (opacity = 1) => `rgba(237, 238, 254, ${opacity})`,
   LIGHT_BLUE2: (opacity = 1) => `rgba(241, 245, 255, ${opacity})`,
+  LIGHT_BLUE3: (opacity = 1) => `rgba(189, 223, 255, ${opacity})`,
   LIGHT_GREEN: (opacity = 1) => `rgba(236, 249, 235, ${opacity})`,
   LIGHT_GREY_BACKGROUND: "#EDEDED",
   LIGHT_GREY_BORDER: "rgba(39, 39, 39, 0.07)",
