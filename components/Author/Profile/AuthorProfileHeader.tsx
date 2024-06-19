@@ -12,7 +12,7 @@ import Pill from "~/components/shared/Pill";
 import colors from "~/config/themes/colors";
 import { Tooltip } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faExclamationCircle, faQuestionCircle } from "@fortawesome/pro-solid-svg-icons";
 
 
 const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
@@ -79,13 +79,15 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
                   },
                 }}>
                   <div className={css(styles.expertiseHeader)}>
-                    <FontAwesomeIcon fontSize={16} icon={faExclamationCircle} color={colors.YELLOW2()} />
                     Expertise
+                    <FontAwesomeIcon fontSize={18} icon={faExclamationCircle} color={colors.YELLOW2()} />
                   </div>
                 </Tooltip>                
               }
             </div>
-            <div className={css(styles.repScore)}>{profile.reputation.score.toLocaleString()} </div>
+            <div className={css(styles.repScore)}>
+              {profile.reputation.score.toLocaleString()}
+            </div>
           </div>          
           <AuthorHeaderExpertise profile={profile} />
         </div>
@@ -93,6 +95,7 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
     </div>
   )
 }
+
 
 const styles = StyleSheet.create({
   sectionHeader: {

@@ -1,26 +1,33 @@
 import colors from "~/config/themes/colors";
-import { FullAuthorProfile, Reputation } from "../lib/types";
+import { FullAuthorProfile } from "../lib/types";
 import { css, StyleSheet } from "aphrodite";
 import ReputationGauge from "../lib/ReputationGauge";
+import { useState } from "react";
+import ExpertiseModal from "../lib/ExpertiseModal";
+
+const REP_GAUGES_TO_SHOW = 3;
 
 const AuthorHeaderExpertise = ({ profile }: { profile: FullAuthorProfile }) => {
   
-  const REP_GAUGES_TO_SHOW = 3;
+  const [isExpertiseModalOpen, setIsExpertiseModalOpen] = useState(false);
 
   return (
     <div>
+      <ExpertiseModal profile={profile} isModalOpen={isExpertiseModalOpen} handleModalClose={() => setIsExpertiseModalOpen(false)} />
       {profile.reputationList.slice(0, REP_GAUGES_TO_SHOW).map((rep, index) => (
         <div className={css(styles.reputation)}>
           <div className={css(styles.reputationHubLabel)}>{rep.hub.name}</div>
           <ReputationGauge reputation={rep} key={`reputation-` + index} />
         </div>
       ))}
-      <div className={css(styles.showMore)}>
+      <div className={css(styles.showMore)} onClick={() => setIsExpertiseModalOpen(true)}>
         Show more
       </div>
     </div>
   )
 }
+
+
 
 const styles = StyleSheet.create({
   reputation: {
