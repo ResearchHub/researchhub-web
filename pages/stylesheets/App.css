@@ -492,6 +492,7 @@ hr {
   border-spacing: 0px;
   border-collapse: collapse;
   border: 1px double #b3b3b3;
+  margin: 0 auto;
 }
 
 #postBody td {

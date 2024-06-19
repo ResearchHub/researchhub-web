@@ -88,14 +88,7 @@ import {
   DocumentPreferences,
 } from "~/components/Document/lib/DocumentContext";
 import { breakpoints } from "~/config/themes/screen";
-import dynamic from "next/dynamic";
-
-const DocumentViewer = dynamic(
-  () => import("~/components/Document/DocumentViewer"),
-  {
-    ssr: false,
-  }
-);
+import DocumentViewer, { ZoomAction } from "~/components/Document/DocumentViewer";
 
 interface Props {
   showMessage: ({ show, load }) => void;
