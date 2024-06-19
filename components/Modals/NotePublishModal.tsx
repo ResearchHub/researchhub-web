@@ -66,6 +66,8 @@ function getDefaultHubs(currentNote: any): any {
       return {
         label: hub.name,
         value: hub.id,
+        name: hub.name,
+        id: hub.id,
       };
     }) ?? []
   );
