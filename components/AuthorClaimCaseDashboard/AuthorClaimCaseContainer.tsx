@@ -42,6 +42,7 @@ const useEffectHandleCaseFetch = ({
       ),
       onSuccess: ({ claimCases, page, hasMore }: formattedResult): void => {
         appendClaimCases(claimCases);
+
         setPaginationInfo({
           caseStatus,
           hasMore,

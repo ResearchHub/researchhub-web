@@ -65,40 +65,48 @@ export function getCases({
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then(({ count: _count, next, results }: any): void => {
-      console.log("results", results);
 
       onSuccess({
-        claimCases: (results || []).map((resultData: any): AuthorClaimCase => {
-          const requestingUser = parseUser(resultData.requestor);
-
-          const {
-            created_date,
-            id,
-            status,
-            updated_date,
-            paper,
-            target_author_name,
-            target_paper_title,
-            target_paper_doi,
-          } = resultData;
-          return {
-            caseData: {
-              createdDate: created_date,
+        claimCases: (results || []).map((resultData: any): AuthorClaimCase | null => {
+          try {
+            const requestingUser = parseUser(resultData.requestor);
+  
+            const {
+              created_date,
               id,
               status,
-              updatedDate: updated_date,
+              updated_date,
               paper,
-              targetAuthorName: target_author_name,
-              targetPaperTitle: target_paper_title,
-              targetPaperDOI: target_paper_doi,
-              providedEmail: resultData.provided_email,
-            },
-            requestor: requestingUser,
-          };
-        }),
+              target_author_name,
+              target_paper_title,
+              target_paper_doi,
+            } = resultData;
+  
+            return {
+              caseData: {
+                createdDate: created_date,
+                id,
+                status,
+                updatedDate: updated_date,
+                paper,
+                targetAuthorName: target_author_name,
+                targetPaperTitle: target_paper_title,
+                targetPaperDOI: target_paper_doi,
+                providedEmail: resultData.provided_email,
+              },
+              requestor: requestingUser,
+            };
+          }
+          catch(error) {
+            return null
+          }
+        }).filter((claimCase) => claimCase !== null),
         hasMore: !isEmpty(next),
         page,
       });
     })
-    .catch((e) => onError(e));
+    .catch((e) => {
+      console.error(e)
+      onError(e)
+    });
 }
