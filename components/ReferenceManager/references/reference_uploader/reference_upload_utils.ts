@@ -73,7 +73,7 @@ export function parseDoiSearchResultOntoValueSet({
       date: !isEmpty(issued) ? moment(issued).format("MM-DD-YYYY") : "",
       DOI: doi,
       title: formattedTitle,
-      ISSN: issn.join(", "),
+      ISSN: Array.isArray(issn) ? issn.join(", ") : "",  // ensure issn is an array
       pdf_url: pdf_url,
       URL: landing_page_url,
       signed_pdf_url,
@@ -84,7 +84,7 @@ export function parseDoiSearchResultOntoValueSet({
     },
     required: referenceSchemaValueSet.required,
   };
-
+  
   setReferenceSchemaValueSet(schemaSet);
 }
 
