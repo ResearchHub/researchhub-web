@@ -84,7 +84,6 @@ export function parseDoiSearchResultOntoValueSet({
     },
     required: referenceSchemaValueSet.required,
   };
-  
   setReferenceSchemaValueSet(schemaSet);
 }
 
