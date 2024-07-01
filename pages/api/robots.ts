@@ -6,7 +6,7 @@ const robotsTxtDisallowCrawling = `User-agent: *
 Disallow: /`;
 
 function handler(_: NextApiRequest, res: NextApiResponse): void {
-  const isProduction = process.env.NODE_ENV === "production";
+  const isProduction = process.env.REACT_APP_ENV === "production";
   const robotsTxt = isProduction
     ? robotsTxtAllowCrawling
     : robotsTxtDisallowCrawling;
