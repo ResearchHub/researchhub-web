@@ -125,6 +125,15 @@ const nextConfig = {
       },
     ];
   },
+
+  async rewrites() {
+    return [
+      {
+        source: "/robots.txt",
+        destination: "/api/robots",
+      },
+    ];
+  },
 };
 
 // module.exports = withTM({ ...nextConfig });
