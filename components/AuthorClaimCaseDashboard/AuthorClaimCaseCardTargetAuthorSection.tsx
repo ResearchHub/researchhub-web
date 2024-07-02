@@ -17,7 +17,7 @@ const getPaperUrl = (caseData: any) => {
   if (caseData?.paper) {
     return `/paper/${caseData?.paper?.id}/${caseData?.paper?.slug}`;
   } else {
-    if (caseData?.targetPaperDOI.indexOf("doi.org") > -1) {
+    if (caseData?.targetPaperDOI?.indexOf("doi.org") > -1) {
       return caseData?.targetPaperDOI;
     }
     return "https://doi.org/" + caseData?.targetPaperDOI;
@@ -30,7 +30,6 @@ export default function AuthorClaimCaseCardTargetAuthorSection({
   requestor,
 }: Props): ReactElement<"div"> {
   const paperUrl = getPaperUrl(caseData);
-  console.log("requestor", requestor);
   return (
     <div className={css(styles.targetAuthorSection)}>
       <div className={css(styles.caseDetails)}>

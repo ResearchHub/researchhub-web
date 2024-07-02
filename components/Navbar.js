@@ -256,6 +256,7 @@ const styles = StyleSheet.create({
   signUpBtn: {
     width: 90,
     fontSize: 16,
+    marginRight: 16,
   },
   navbarContainer: {
     alignItems: "center",
@@ -270,6 +271,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     left: 0,
     padding: "0 0px 0 28px",
+
     position: "sticky",
     top: 0,
     width: "100%",
