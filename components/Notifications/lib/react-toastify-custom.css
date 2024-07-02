@@ -23,7 +23,3 @@
 .fade-out {
   animation: fade_out 0.6s forwards;
 }
-
-.Toastify__toast-container {
-  z-index: 9999999999; /* Adjust the z-index as needed */
-}

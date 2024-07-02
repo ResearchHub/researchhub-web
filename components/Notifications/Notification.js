@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
 import { breakpoints } from "~/config/themes/screen";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 // Component
 import withWebSocket from "~/components/withWebSocket";
@@ -17,6 +18,7 @@ import { NotificationActions } from "~/redux/notification";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import colors, { mainNavIcons } from "~/config/themes/colors";
 import { NAVBAR_HEIGHT } from "../Navbar";
+import showGenericToast from "./lib/showGenericToast";
 
 class Notification extends Component {
   constructor(props) {
@@ -50,6 +52,18 @@ class Notification extends Component {
       const { wsResponse, addNotification, notifications } = this.props;
       const response = JSON.parse(wsResponse);
       const notification = response.data;
+
+      if (
+        this.props.auth?.isLoggedIn &&
+        notification.notification_type === "PUBLICATIONS_ADDED"
+      ) {
+        showGenericToast({
+          href: `/author/${this.props.auth?.user?.author_profile?.id}`,
+          label: "View",
+          body: "Profile is ready",
+        });
+      }
+
       addNotification(notification);
       let newNotifications = [notification, ...notifications];
       this.setState({

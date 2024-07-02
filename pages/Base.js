@@ -249,7 +249,10 @@ function Base({
                             <Component {...pageProps} {...appProps} />
                           </div>
                         </div>
-                        <ToastContainer transition={fadeTransition} />
+                        <ToastContainer
+                          transition={fadeTransition}
+                          style={{ zIndex: 99999999999 }}
+                        />
                       </NewPostButtonContext.Provider>
                     </NavbarContext.Provider>
                   </WagmiConfig>
