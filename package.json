@@ -87,6 +87,7 @@
     "nuka-carousel": "^4.6.6",
     "numeral": "^2.0.6",
     "pdfjs-dist": "^3.6.172",
+    "persona-react": "^5.1.0",
     "quill": "^1.3.7",
     "quill-delta-to-html": "^0.12.1",
     "quill-magic-url": "^4.1.4",
