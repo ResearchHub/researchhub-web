@@ -85,10 +85,24 @@ export type OpenAlexWork = {
   concepts: OpenAlexConcept[];
 };
 
+export type OpenAlexAuthor = {
+  id: string;
+  displayName: string;
+}
+
 export type OpenAlexSummaryStats = {
   hIndex: number;
   i10Index: number;
 };
+
+export const parseOpenAlexAuthor = (raw: any): OpenAlexAuthor => {
+  // We only want the last part of the ID. e.g. "https://openalex.org/W2561674923"
+
+  return {
+    id: (raw.id || "").split("/").slice(-1)[0],
+    displayName: raw.display_name,
+  };
+}
 
 export const parseOpenAlexSummaryStats = (raw: any): OpenAlexSummaryStats => {
   return {
