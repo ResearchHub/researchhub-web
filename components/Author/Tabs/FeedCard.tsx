@@ -257,20 +257,29 @@ function FeedCard({
       return titleAsHtml;
     }
 
-    const titleWithoutHtml = sanitizeHtml(title, {
-      allowedTags: [], // No tags are allowed, so all will be stripped
-      allowedAttributes: {}, // No attributes are allowed
-    });
+    if (title && shouldStripHTML) {
+      const titleWithoutHtml = sanitizeHtml(title, {
+        allowedTags: [], // No tags are allowed, so all will be stripped
+        allowedAttributes: {}, // No attributes are allowed
+      });
+      return titleWithoutHtml;
+    }
 
-    return titleWithoutHtml;
+    return title;
   };
 
   const getBody = () => {
-    const bodyWithoutHtml = sanitizeHtml(abstract || renderableText, {
-      allowedTags: [], // No tags are allowed, so all will be stripped
-      allowedAttributes: {}, // No attributes are allowed
-    });    
-    return bodyWithoutHtml;
+
+    if (shouldStripHTML) {
+      const bodyWithoutHtml = sanitizeHtml(abstract || renderableText, {
+        allowedTags: [], // No tags are allowed, so all will be stripped
+        allowedAttributes: {}, // No attributes are allowed
+      });    
+      return bodyWithoutHtml;
+    }
+
+    return abstract || renderableText;
+
   };
 
   const user = uploaded_by || created_by;
