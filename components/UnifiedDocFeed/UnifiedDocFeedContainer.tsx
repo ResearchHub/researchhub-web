@@ -22,6 +22,8 @@ import FeedMenu from "./FeedMenu/FeedMenu";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import { getSelectedUrlFilters } from "./utils/getSelectedUrlFilters";
 import ResearchHubBanner from "~/components/ResearchHubBanner";
+import { ROUTES as WS_ROUTES } from "~/config/ws";
+import AddPublicationsModal from "../Publication/AddPublicationsModal";
 const FeedInfoCard = dynamic(() => import("./FeedInfoCard"), {
   ssr: false,
 });
@@ -158,6 +160,12 @@ function UnifiedDocFeedContainer({
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
+      {/* <AddPublicationsModal
+        // @ts-ignore legacy
+        wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
+        // @ts-ignore legacy
+        wsAuth
+      /> */}
       {isHomePage || isEmpty(hub) ? null : (
         <FeedInfoCard
           hub={hub}

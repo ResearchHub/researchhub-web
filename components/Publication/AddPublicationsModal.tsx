@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { useState } from "react";
 import FormInput from "../Form/FormInput";
 import { StyleSheet, css } from "aphrodite";
-import { fetchPublicationsByDoi } from "./lib/api";
+import { fetchPublicationsByDoi, addPublicationsToAuthor } from "./lib/api";
 import { ID, parseUser } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { useSelector, useDispatch } from "react-redux";
@@ -19,6 +19,9 @@ import IconButton from "../Icons/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/pro-light-svg-icons";
 import { CloseIcon } from "~/config/themes/icons";
+import VerificationPaperResult from "../Verification/VerificationPaperResult";
+import sample from "./lib/sample.json"
+import CheckBox from "~/components//Form/CheckBox";
 
 type STEP = "DOI" | "NEEDS_AUTHOR_CONFIRMATION" |  "RESULTS";
 type ERROR_TYPE = "DOI_NOT_FOUND" | "GENERIC_ERROR" | null;
@@ -36,6 +39,7 @@ const AddPublicationModal = ({ wsResponse }) => {
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
+  const [selectedPaperIds, setSelectedPaperIds] = useState<Array<string>>([]);
 
   
 
@@ -81,8 +85,6 @@ const AddPublicationModal = ({ wsResponse }) => {
     value: author.id,
     id: author.id,
   }))
-
-
 
   return (
     <BaseModal
@@ -166,9 +168,56 @@ const AddPublicationModal = ({ wsResponse }) => {
     {step === "RESULTS" && (
       <div>
         <div>Results</div>
-        {publications.map((publication) => (
-          <div key={publication.id}>{publication.title}</div>
-        ))}
+        <div className={css(styles.selectAll)}>
+          <CheckBox
+            active={selectedPaperIds.length === publications.length}
+            isSquare={true}
+            small={true}
+            onChange={(a, b) => {
+              if (selectedPaperIds.length === publications.length) {
+                setSelectedPaperIds([]);
+              } else {
+                setSelectedPaperIds(publications.map((publication) => publication.id));
+              }
+            }}
+            label={undefined}
+            labelStyle={undefined}
+          />
+          Select All
+        </div>
+
+
+        <div className={css(styles.publicationWrapper)}>
+          {publications.map((publication) => (
+            <>
+              <CheckBox
+                active={selectedPaperIds.includes(publication.id)}
+                isSquare={true}
+                small={true}
+                onChange={() => {
+                  selectedPaperIds.includes(publication.id) ? setSelectedPaperIds(selectedPaperIds.filter((id) => id !== publication.id)) : setSelectedPaperIds([...selectedPaperIds, publication.id]);
+                }}
+                label={undefined}
+                labelStyle={undefined}
+                />
+              <VerificationPaperResult result={publication} />
+            </>
+          ))}
+        </div>
+        <div className={css(styles.buttonsWrapper)}>
+          <Button variant="text">
+            Do this later
+          </Button>
+          <Button
+            disabled={selectedPaperIds.length === 0}
+            onClick={() => addPublicationsToAuthor({
+              authorId: currentUser?.authorProfile.id,
+              openAlexPublicationIds: selectedPaperIds,
+              openAlexAuthorId: selectedAuthorId
+            })}>
+              Add Publications
+          </Button>
+        </div>
       </div>
     )}
 
@@ -179,6 +228,18 @@ const AddPublicationModal = ({ wsResponse }) => {
 }
 
 const styles = StyleSheet.create({
+  buttonsWrapper: {
+    display: "flex",
+  },
+  publicationWrapper: {
+    maxHeight: 200,
+    overflowY: "scroll",
+  },
+  selectAll: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: 10,
+  },
   inputContainer: {
     marginBottom: 0,
   },

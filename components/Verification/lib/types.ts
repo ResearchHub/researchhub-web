@@ -87,6 +87,7 @@ export type OpenAlexWork = {
 
 export type OpenAlexAuthor = {
   id: string;
+  longId: string;
   displayName: string;
 }
 
@@ -100,6 +101,7 @@ export const parseOpenAlexAuthor = (raw: any): OpenAlexAuthor => {
 
   return {
     id: (raw.id || "").split("/").slice(-1)[0],
+    longId: raw.id,
     displayName: raw.display_name,
   };
 }
@@ -133,7 +135,8 @@ export const parseOpenAlexWork = (
 ): OpenAlexWork => {
   const parsed = {
     title: raw.title,
-    id: raw.id,
+    id: (raw.id || "").split("/").slice(-1)[0],
+    longId: raw.id,
     publishedDate: formatDateStandard(raw.publication_date, "MMM D, YYYY"),
     authors: raw.authorships.map(
       (authorship) => authorship.author.display_name

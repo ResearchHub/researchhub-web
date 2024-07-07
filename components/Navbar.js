@@ -25,7 +25,7 @@ import Login from "./Login/Login";
 import Button from "./Form/Button";
 import BackBtn from "./shared/BackBtn";
 import { navContext } from "./contexts/NavigationContext";
-import AddPublicationsModal from "./Publication/AddPublicationsModal";
+// import AddPublicationsModal from "./Publication/AddPublicationsModal";
 
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
@@ -152,12 +152,12 @@ const Navbar = (props) => {
   const isProfilePage = router.pathname === "/user/[authorId]/[tabName]";
   return (
     <Fragment>
-      <AddPublicationsModal
+      {/* <AddPublicationsModal
         // @ts-ignore legacy
         wsUrl={WS_ROUTES.NOTIFICATIONS(user?.id)}
         // @ts-ignore legacy
         wsAuth
-      />
+      /> */}
       <DndModal />
       <FirstVoteModal auth={auth} updateUser={updateUser} />
       {props.modals.openLoginModal && <LoginModal isOpen={true} />}

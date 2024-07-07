@@ -16,7 +16,7 @@ type PublicationsByDoiResponse = {
 
 const parsePublicationsByDoi = (data: any): PublicationsByDoiResponse => {
   return {
-    works: data.works.map(parseOpenAlexWork),
+    works: data.works.map((w) => parseOpenAlexWork(w, true)),
     availableAuthors: data.available_authors.map(parseOpenAlexAuthor),
     selectedAuthorId: data.selected_author_id,
   };
@@ -36,3 +36,16 @@ export const fetchPublicationsByDoi = ({ doi, authorId }: Props): Promise<Public
       return parsePublicationsByDoi(resp);
     })
 };
+
+export const addPublicationsToAuthor = ({ authorId, openAlexPublicationIds, openAlexAuthorId }: {
+  authorId: ID,
+  openAlexPublicationIds: ID[],
+  openAlexAuthorId?: ID,
+} ) => {
+  const url = generateApiUrl(`author/${authorId}/add_publications`);
+  return fetch(url, API.POST_CONFIG({
+    openalex_ids: openAlexPublicationIds,
+    openalex_author_id: openAlexAuthorId,
+  }))
+    .then(Helpers.parseJSON)
+}
