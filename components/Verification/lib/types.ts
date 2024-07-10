@@ -89,6 +89,7 @@ export type OpenAlexAuthor = {
   id: string;
   longId: string;
   displayName: string;
+  initials: string;
 }
 
 export type OpenAlexSummaryStats = {
@@ -99,10 +100,12 @@ export type OpenAlexSummaryStats = {
 export const parseOpenAlexAuthor = (raw: any): OpenAlexAuthor => {
   // We only want the last part of the ID. e.g. "https://openalex.org/W2561674923"
 
+  const nameParts = raw.display_name.split(" ");
   return {
     id: (raw.id || "").split("/").slice(-1)[0],
     longId: raw.id,
     displayName: raw.display_name,
+    initials: (nameParts[0] || "").charAt(0) + (nameParts.length > 0 ? (nameParts[nameParts.length - 1] || "").charAt(0) : ""),
   };
 }
 

@@ -23,6 +23,7 @@ import VerificationPaperResult from "../Verification/VerificationPaperResult";
 import sample from "./lib/sample.json"
 import CheckBox from "~/components//Form/CheckBox";
 import { AuthorClaimError, AuthorClaimErrorReason } from "./lib/types";
+import { Avatar } from "@mui/material";
 
 type STEP = "DOI" | "NEEDS_AUTHOR_CONFIRMATION" | "RESULTS" | "ERROR";
 type ERROR_TYPE = "DOI_NOT_FOUND" | "GENERIC_ERROR" | "ALREADY_CLAIMED_BY_CURRENT_USER" | "ALREADY_CLAIMED_BY_ANOTHER_USER" | null;
@@ -72,6 +73,7 @@ const AddPublicationModal = ({ wsResponse, children }) => {
     value: author.id,
     id: author.id,
   }))
+  const selectedAuthor = availableAuthors.find((author) => author.id === selectedAuthorId);
 
   return (
     <>
@@ -163,7 +165,19 @@ const AddPublicationModal = ({ wsResponse, children }) => {
       )}
       {step === "RESULTS" && (
         <div>
-          <div>Results</div>
+          <div>Showing results for
+            {selectedAuthor && (
+              <div className={css(styles.authorWrapper)}>
+                <div className={css(styles.author)}>
+                  <Avatar sx={{ height: 24, width: 24, fontSize: 14 }}>{selectedAuthor.initials}</Avatar>
+                  {selectedAuthor.displayName}
+                </div>
+                <span className={css(styles.changeAuthor)} onClick={() => setStep("NEEDS_AUTHOR_CONFIRMATION")}>
+                  (Change)
+                </span>
+              </div>
+            )}
+          </div>
           <div className={css(styles.selectAll)}>
             <CheckBox
               active={selectedPaperIds.length === publications.length}
@@ -252,6 +266,16 @@ const AddPublicationModal = ({ wsResponse, children }) => {
 }
 
 const styles = StyleSheet.create({
+  author: {
+    display: "flex",
+  },
+  authorWrapper: {
+    display: "flex",
+  },
+  changeAuthor: {
+    color: colors.NEW_BLUE(),
+    cursor: "pointer",
+  },
   modalStyle: {
     padding: "20px 20px",
   },
