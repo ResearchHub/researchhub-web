@@ -18,8 +18,6 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview }) => {
 
   const router = useRouter();
 
-  
-  
   if (!profile || !overview) {
     // TODO: Need a skeleton loading state
     return <div>Loading...</div>;

@@ -24,8 +24,7 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
       </div>      
     )    
   }
-  console.log('profile', profile)
-
+  
   return (
     <div>
       <div className={css(styles.section, styles.claimSection)}>
