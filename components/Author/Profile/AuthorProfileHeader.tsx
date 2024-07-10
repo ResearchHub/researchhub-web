@@ -24,6 +24,7 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
       </div>      
     )    
   }
+  console.log('profile', profile)
 
   return (
     <div>
