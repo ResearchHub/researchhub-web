@@ -30,7 +30,7 @@ const ORDERED_STEPS: Array<STEP> = ["DOI", "NEEDS_AUTHOR_CONFIRMATION", "RESULTS
 
 const AddPublicationModal = ({ wsResponse, children }) => {
   const [paperDoi, setPaperDoi] = useState("");
-  const [selectedAuthorId, setSelectedAuthorId] = useState<null|ID>(null);
+  const [selectedAuthorId, setSelectedAuthorId] = useState<null|undefined|ID>(null);
   const [availableAuthors, setAvailableAuthors] = useState<OpenAlexAuthor[]>([]);
   const [publications, setPublications] = useState<OpenAlexWork[]>(sample);
   const [error, setError] = useState<ERROR_TYPE>(null);
@@ -42,7 +42,7 @@ const AddPublicationModal = ({ wsResponse, children }) => {
   const [selectedPaperIds, setSelectedPaperIds] = useState<Array<string>>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const handleFetchPublications = async ({ doi, authorId }: { doi: string, authorId?: string|null }) => {
+  const handleFetchPublications = async ({ doi, authorId }: { doi: string, authorId?: null|undefined|ID }) => {
     try {
       const response = await fetchPublicationsByDoi({ doi, authorId })
       setPublications(response.works);
@@ -145,7 +145,6 @@ const AddPublicationModal = ({ wsResponse, children }) => {
           <FormSelect
             onChange={(_type: string, authorDatum: OpenAlexAuthor): void => {
               setSelectedAuthorId(authorDatum.id);
-              handleFetchPublications({ doi: paperDoi, authorId: authorDatum.id });
             }}
             id="author"
             label="Claiming author"
@@ -154,7 +153,12 @@ const AddPublicationModal = ({ wsResponse, children }) => {
             required={true}
             type="select"
             value={authorDropdownOptions.find((author) => author.id === selectedAuthorId)}
-          />        
+          />  
+          <Button variant="text" onClick={() => {
+              handleFetchPublications({ doi: paperDoi, authorId: selectedAuthorId })
+          }}>
+            Next
+          </Button>                
         </div>
       )}
       {step === "RESULTS" && (

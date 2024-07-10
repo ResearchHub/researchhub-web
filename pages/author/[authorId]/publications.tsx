@@ -8,6 +8,13 @@ import { useRouter } from "next/router";
 import AuthorProfileHeader from "~/components/Author/Profile/AuthorProfileHeader";
 import { useState } from "react";
 import { getDocumentCard } from "~/components/UnifiedDocFeed/utils/getDocumentCard";
+import AddPublicationsModal from "~/components/Publication/AddPublicationsModal";
+import { ROUTES as WS_ROUTES } from "~/config/ws";
+import { useSelector } from "react-redux";
+import Button from "~/components/Form/Button";
+import { parseUser } from "~/config/types/root_types";
+import { RootState } from "~/redux";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 type Args = {
   profile: any;
@@ -27,7 +34,11 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, publicationsResponse }) =>
   const [_publicationsResponse, setPublicationsResponse] = useState<PaginatedPublicationResponse>(parsePublicationResponse(publicationsResponse));
   const fullAuthorProfile = parseFullAuthorProfile(profile);
   const authorTabs = buildAuthorTabs({ profile: fullAuthorProfile, router });
-
+  const auth = useSelector((state: any) => state.auth);
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
+    
   return (
     <div className={css(styles.profilePage)}>
       <div className={css(styles.profileContent)}>
@@ -41,6 +52,17 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, publicationsResponse }) =>
           
           <div className={css(styles.wrapper)}>
             <div className={css(styles.sectionHeader)}>Publications</div>
+            {currentUser?.authorProfile?.id === fullAuthorProfile.id && (
+              // @ts-ignore legacy
+              <AddPublicationsModal
+                // @ts-ignore legacy
+                wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
+                // @ts-ignore legacy
+                wsAuth
+              >
+                  <Button>Add Publications</Button>
+              </AddPublicationsModal>
+            )}
             <div className={css(styles.contentWrapper)}>
               <div>
                 {/* @ts-ignore */}
@@ -48,8 +70,6 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, publicationsResponse }) =>
               </div>
             </div>
           </div>
-
-
         </div>
       </div>
     </div>
