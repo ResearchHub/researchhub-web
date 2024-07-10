@@ -58,6 +58,7 @@ export default function withWebSocket(
 
     function configureWebSocket() {
       let token = null;
+
       if (props.wsAuth) {
         try {
           token = Cookies.get(AUTH_TOKEN);

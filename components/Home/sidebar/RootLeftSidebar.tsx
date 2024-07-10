@@ -41,13 +41,15 @@ import RootLeftSidebarItem, {
   Props as RootLeftSidebarItemProps,
 } from "./sidebar_items/RootLeftSidebarItem";
 import { ModalActions } from "~/redux/modals";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import RhTextTag from "~/components/shared/RhTextTag";
 import VerificationModal from "~/components/Verification/VerificationModal";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import NewPostButton from "~/components/NewPostButton";
 import NewPostModal from "~/components/Modals/NewPostModal";
+import { ROUTES as WS_ROUTES } from "~/config/ws";
+import AddPublicationsModal from "~/components/Publication/AddPublicationsModal";
 
 type Props = {
   openLoginModal: any;
@@ -197,6 +199,7 @@ function RootLeftSidebar({
   rootLeftSidebarForceMin: isForceMinimized,
   currentUser,
 }: Props): ReactElement {
+  const auth = useSelector((state: any) => state.auth);
   const router = useRouter();
   const { pathname = "" } = router ?? {};
   const { organization_slug = "", id } = currentUser ?? {};
@@ -483,7 +486,22 @@ function RootLeftSidebar({
                   </>
                 )}
               </span>
+
             </span>
+
+            {process.env.REACT_APP_ENV !== "production" && 
+              <span className={css(formattedFooterTxtItem)}>
+                {/* @ts-ignore */}
+                <AddPublicationsModal
+                  // @ts-ignore legacy
+                  wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
+                  // @ts-ignore legacy
+                  wsAuth
+                >
+                    {"Verify Identity (v2)"}
+                </AddPublicationsModal>
+              </span>
+            }    
             <ALink
               href="/leaderboard/users"
               overrideStyle={formattedFooterTxtItem}

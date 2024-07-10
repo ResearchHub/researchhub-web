@@ -85,10 +85,26 @@ export type OpenAlexWork = {
   concepts: OpenAlexConcept[];
 };
 
+export type OpenAlexAuthor = {
+  id: string;
+  longId: string;
+  displayName: string;
+}
+
 export type OpenAlexSummaryStats = {
   hIndex: number;
   i10Index: number;
 };
+
+export const parseOpenAlexAuthor = (raw: any): OpenAlexAuthor => {
+  // We only want the last part of the ID. e.g. "https://openalex.org/W2561674923"
+
+  return {
+    id: (raw.id || "").split("/").slice(-1)[0],
+    longId: raw.id,
+    displayName: raw.display_name,
+  };
+}
 
 export const parseOpenAlexSummaryStats = (raw: any): OpenAlexSummaryStats => {
   return {
@@ -119,7 +135,8 @@ export const parseOpenAlexWork = (
 ): OpenAlexWork => {
   const parsed = {
     title: raw.title,
-    id: raw.id,
+    id: (raw.id || "").split("/").slice(-1)[0],
+    longId: raw.id,
     publishedDate: formatDateStandard(raw.publication_date, "MMM D, YYYY"),
     authors: raw.authorships.map(
       (authorship) => authorship.author.display_name

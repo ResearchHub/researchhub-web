@@ -1,0 +1,501 @@
+[
+    {
+        "title": "Identifying the determinants of housing prices in China using spatial regression and the geographical detector technique",
+        "id": "W2561674923",
+        "publishedDate": "Feb 1, 2017",
+        "authors": [
+            "Yang Wang",
+            "Shaojian Wang",
+            "Guangdong Li",
+            "Hongou Zhang",
+            "Lixia Jin",
+            "Yongxian Su",
+            "Kegong Wu"
+        ],
+        "doiUrl": "https://doi.org/10.1016/j.apgeog.2016.12.003",
+        "concepts": [
+            {
+                "displayName": "Cartography",
+                "level": 1,
+                "relevancyScore": 0.47542122
+            },
+            {
+                "displayName": "Economic geography",
+                "level": 1,
+                "relevancyScore": 0.4269405
+            },
+            {
+                "displayName": "Econometrics",
+                "level": 1,
+                "relevancyScore": 0.3729427
+            }
+        ],
+        "doi": "10.1016/j.apgeog.2016.12.003"
+    },
+    {
+        "title": "Coal power overcapacity and investment bubble in China during 2015–2020",
+        "id": "W2490425535",
+        "publishedDate": "Oct 1, 2016",
+        "authors": [
+            "Jiahai Yuan",
+            "Peng Li",
+            "Yang Wang",
+            "Qian Liu",
+            "Xinyi Shen",
+            "Kai Zhang",
+            "Liansai Dong"
+        ],
+        "doiUrl": "https://doi.org/10.1016/j.enpol.2016.07.009",
+        "concepts": [
+            {
+                "displayName": "Natural resource economics",
+                "level": 1,
+                "relevancyScore": 0.51130176
+            },
+            {
+                "displayName": "Environmental economics",
+                "level": 1,
+                "relevancyScore": 0.39325577
+            },
+            {
+                "displayName": "Waste management",
+                "level": 1,
+                "relevancyScore": 0.27564812
+            }
+        ],
+        "doi": "10.1016/j.enpol.2016.07.009"
+    },
+    {
+        "title": "Spatial differences and driving forces of land urbanization in China",
+        "id": "W1976312685",
+        "publishedDate": "Mar 29, 2015",
+        "authors": [
+            "Xueqin Lin",
+            "Yang Wang",
+            "Shaojian Wang",
+            "Dai Wang"
+        ],
+        "doiUrl": "https://doi.org/10.1007/s11442-015-1186-7",
+        "concepts": [
+            {
+                "displayName": "Economic geography",
+                "level": 1,
+                "relevancyScore": 0.4782221
+            },
+            {
+                "displayName": "Physical geography",
+                "level": 1,
+                "relevancyScore": 0.3393124
+            },
+            {
+                "displayName": "Economic growth",
+                "level": 1,
+                "relevancyScore": 0.19229394
+            }
+        ],
+        "doi": "10.1007/s11442-015-1186-7"
+    },
+    {
+        "title": "A Review of Active Management for Distribution Networks: Current Status and Future Development Trends",
+        "id": "W1985355269",
+        "publishedDate": "Feb 5, 2014",
+        "authors": [
+            "Junhui Zhao",
+            "Caisheng Wang",
+            "Bo Zhao",
+            "Feng Lin",
+            "Quan Zhou",
+            "Yang Wang"
+        ],
+        "doiUrl": "https://doi.org/10.1080/15325008.2013.862325",
+        "concepts": [
+            {
+                "displayName": "Risk analysis (engineering)",
+                "level": 1,
+                "relevancyScore": 0.34788668
+            },
+            {
+                "displayName": "Systems engineering",
+                "level": 1,
+                "relevancyScore": 0.34530425
+            },
+            {
+                "displayName": "Telecommunications",
+                "level": 1,
+                "relevancyScore": 0.32416123
+            }
+        ],
+        "doi": "10.1080/15325008.2013.862325"
+    },
+    {
+        "title": "Spatial distribution of fluoride in drinking water and health risk assessment of children in typical fluorosis areas in north China",
+        "id": "W2971943380",
+        "publishedDate": "Jan 1, 2020",
+        "authors": [
+            "Lei Zhang",
+            "Liang Zhao",
+            "Qiang Zeng",
+            "Gang Fu",
+            "Baojia Feng",
+            "Xiaohui Lin",
+            "Zhonghui Liu",
+            "Yang Wang",
+            "Chunmei Hou"
+        ],
+        "doiUrl": "https://doi.org/10.1016/j.chemosphere.2019.124811",
+        "concepts": [
+            {
+                "displayName": "Environmental health",
+                "level": 1,
+                "relevancyScore": 0.6156587
+            },
+            {
+                "displayName": "Water resource management",
+                "level": 1,
+                "relevancyScore": 0.41031203
+            },
+            {
+                "displayName": "Environmental engineering",
+                "level": 1,
+                "relevancyScore": 0.36848003
+            }
+        ],
+        "doi": "10.1016/j.chemosphere.2019.124811"
+    },
+    {
+        "title": "Evaluation of three-dimensional urban expansion: A case study of Yangzhou City, Jiangsu Province, China",
+        "id": "W1927774049",
+        "publishedDate": "Nov 24, 2014",
+        "authors": [
+            "Jing Qin",
+            "Chuanglin Fang",
+            "Yang Wang",
+            "Guangdong Li",
+            "Shuanjin Wang"
+        ],
+        "doiUrl": "https://doi.org/10.1007/s11769-014-0728-8",
+        "concepts": [
+            {
+                "displayName": "Physical geography",
+                "level": 1,
+                "relevancyScore": 0.4278708
+            },
+            {
+                "displayName": "Economic geography",
+                "level": 1,
+                "relevancyScore": 0.3670456
+            },
+            {
+                "displayName": "Cartography",
+                "level": 1,
+                "relevancyScore": 0.34284177
+            }
+        ],
+        "doi": "10.1007/s11769-014-0728-8"
+    },
+    {
+        "title": "The Frontiers and Hotspots of Global Judo in the Last Decade: A CiteSpace-Based Visualization Analysis",
+        "id": "W4392873257",
+        "publishedDate": "Jan 1, 2024",
+        "authors": [
+            "Wei Shan",
+            "Yang Wang",
+            "Chen Li-yuan",
+            "Xiang Li",
+            "Hongyuan Yan"
+        ],
+        "doiUrl": "https://doi.org/10.25236/fsr.2024.060102",
+        "concepts": [
+            {
+                "displayName": "Regional science",
+                "level": 1,
+                "relevancyScore": 0.3684632
+            },
+            {
+                "displayName": "Data science",
+                "level": 1,
+                "relevancyScore": 0.3607595
+            },
+            {
+                "displayName": "Economic geography",
+                "level": 1,
+                "relevancyScore": 0.34768227
+            }
+        ],
+        "doi": "10.25236/fsr.2024.060102"
+    },
+    {
+        "title": "Governmentality and Spatial Strategies: Towards Formalization of Street Vendors in Guangzhou, China",
+        "id": "W2910210332",
+        "publishedDate": "Jan 7, 2019",
+        "authors": [
+            "Guo‐Shing Huang",
+            "Dayuan Xue",
+            "Yang Wang"
+        ],
+        "doiUrl": "https://doi.org/10.1111/1468-2427.12730",
+        "concepts": [
+            {
+                "displayName": "Epistemology",
+                "level": 1,
+                "relevancyScore": 0.390044
+            },
+            {
+                "displayName": "Law",
+                "level": 1,
+                "relevancyScore": 0.20252573
+            },
+            {
+                "displayName": "Microeconomics",
+                "level": 1,
+                "relevancyScore": 0.11133316
+            }
+        ],
+        "doi": "10.1111/1468-2427.12730"
+    },
+    {
+        "title": "Dopamine receptor D2 gene polymorphism, urine fluoride, and intelligence impairment of children in China: A school-based cross-sectional study",
+        "id": "W2891841112",
+        "publishedDate": "Dec 1, 2018",
+        "authors": [
+            "Yushan Cui",
+            "Bin Zhang",
+            "Jing Ma",
+            "Yang Wang",
+            "Liang Zhao",
+            "Chunmei Hou",
+            "Jingwen Yu",
+            "Yang Zhao",
+            "Zushan Zhang",
+            "Junyan Nie",
+            "Tongning Gao",
+            "Guoli Zhou",
+            "Hongliang Liu"
+        ],
+        "doiUrl": "https://doi.org/10.1016/j.ecoenv.2018.09.018",
+        "concepts": [
+            {
+                "displayName": "Internal medicine",
+                "level": 1,
+                "relevancyScore": 0.36198765
+            },
+            {
+                "displayName": "Genetics",
+                "level": 1,
+                "relevancyScore": 0.26344466
+            },
+            {
+                "displayName": "Psychiatry",
+                "level": 1,
+                "relevancyScore": 0.115190655
+            }
+        ],
+        "doi": "10.1016/j.ecoenv.2018.09.018"
+    },
+    {
+        "title": "Railways and the Local Economy: Evidence from Qingzang Railway",
+        "id": "W3124183968",
+        "publishedDate": "Apr 1, 2015",
+        "authors": [
+            "Yang Wang",
+            "Binzhen Wu"
+        ],
+        "doiUrl": "https://doi.org/10.1086/680091",
+        "concepts": [
+            {
+                "displayName": "Economy",
+                "level": 1,
+                "relevancyScore": 0.3265885
+            },
+            {
+                "displayName": "Economic geography",
+                "level": 1,
+                "relevancyScore": 0.32186955
+            },
+            {
+                "displayName": "Demography",
+                "level": 1,
+                "relevancyScore": 0.071994215
+            }
+        ],
+        "doi": "10.1086/680091"
+    },
+    {
+        "title": "Spatial Distribution and Typological Classification of Heritage Buildings in Southern China",
+        "id": "W4385708666",
+        "publishedDate": "Aug 9, 2023",
+        "authors": [
+            "Han Gao",
+            "Yang Wang",
+            "Hongou Zhang",
+            "Jinyu Huang",
+            "Xiaoli Yue",
+            "Cheng Fan"
+        ],
+        "doiUrl": "https://doi.org/10.3390/buildings13082025",
+        "concepts": [
+            {
+                "displayName": "Economic geography",
+                "level": 1,
+                "relevancyScore": 0.4337601
+            },
+            {
+                "displayName": "Cartography",
+                "level": 1,
+                "relevancyScore": 0.38723788
+            },
+            {
+                "displayName": "Archaeology",
+                "level": 1,
+                "relevancyScore": 0.21123898
+            }
+        ],
+        "doi": "10.3390/buildings13082025"
+    },
+    {
+        "title": "Relationship Between the Built Environment and the Location Choice of High-Tech Firms: Evidence from the Pearl River Delta",
+        "id": "W2954460367",
+        "publishedDate": "Jul 5, 2019",
+        "authors": [
+            "Kegong Wu",
+            "Yang Wang",
+            "Yuyao Ye",
+            "Hongou Zhang",
+            "Guangqing Huang"
+        ],
+        "doiUrl": "https://doi.org/10.3390/su11133689",
+        "concepts": [
+            {
+                "displayName": "Economic geography",
+                "level": 1,
+                "relevancyScore": 0.5427788
+            },
+            {
+                "displayName": "Industrial organization",
+                "level": 1,
+                "relevancyScore": 0.47891843
+            },
+            {
+                "displayName": "Regional science",
+                "level": 1,
+                "relevancyScore": 0.45866054
+            }
+        ],
+        "doi": "10.3390/su11133689"
+    },
+    {
+        "title": "Cigarette Affordability in Indonesia",
+        "id": "W2883120941",
+        "publishedDate": "May 1, 2018",
+        "authors": [
+            "Rong Zheng",
+            "Patricio V. Marquez",
+            "Abdillah Ahsan",
+            "Xiaofen Hu",
+            "Yang Wang"
+        ],
+        "doiUrl": "https://doi.org/10.1596/30027",
+        "concepts": [],
+        "doi": "10.1596/30027"
+    },
+    {
+        "title": "The role of FGF9-mediated TGF-β1/Smad signaling in enamel hypoplasia induced by exposure to fluoride and SO2 in rats",
+        "id": "W4384435950",
+        "publishedDate": "Sep 1, 2023",
+        "authors": [
+            "Ying Lv",
+            "Yang Wang",
+            "Yanling Jin",
+            "Jing He",
+            "Chuxia Lin",
+            "Guohui Bai",
+            "Chenglong Tu"
+        ],
+        "doiUrl": "https://doi.org/10.1016/j.ecoenv.2023.115243",
+        "concepts": [
+            {
+                "displayName": "Cell biology",
+                "level": 1,
+                "relevancyScore": 0.4299295
+            },
+            {
+                "displayName": "Internal medicine",
+                "level": 1,
+                "relevancyScore": 0.39507994
+            },
+            {
+                "displayName": "Endocrinology",
+                "level": 1,
+                "relevancyScore": 0.32640582
+            }
+        ],
+        "doi": "10.1016/j.ecoenv.2023.115243"
+    },
+    {
+        "title": "The Distributional Impact of Price Inflation in Pakistan: A Case Study of a New Price Focused Microsimulation Framework, PRICES",
+        "id": "W4387323333",
+        "publishedDate": "Jan 1, 2023",
+        "authors": [
+            "Cathal O’Donoghue",
+            "Beenish Amjad",
+            "Jules Linden",
+            "Nora Lustig",
+            "Denisa Maria Sologon",
+            "Yang Wang"
+        ],
+        "doiUrl": "https://doi.org/10.48550/arxiv.2310.00231",
+        "concepts": [
+            {
+                "displayName": "Macroeconomics",
+                "level": 1,
+                "relevancyScore": 0.37599242
+            },
+            {
+                "displayName": "Econometrics",
+                "level": 1,
+                "relevancyScore": 0.36536825
+            },
+            {
+                "displayName": "Monetary economics",
+                "level": 1,
+                "relevancyScore": 0.3393979
+            }
+        ],
+        "doi": "10.48550/arxiv.2310.00231"
+    },
+    {
+        "title": "Awareness and knowledge of schistosomiasis infection and prevention in the “Three Gorges Dam” reservoir area: A cross-sectional study on local residents and health personnel",
+        "id": "W2052809879",
+        "publishedDate": "Dec 1, 2011",
+        "authors": [
+            "Huan Zeng",
+            "Xiaowei Yang",
+            "Siying Meng",
+            "Hong Wang",
+            "Xiao-jun Tang",
+            "Wenge Tang",
+            "Zeng Shu",
+            "Sandra Jeschke",
+            "Yang Wang"
+        ],
+        "doiUrl": "https://doi.org/10.1016/j.actatropica.2011.09.003",
+        "concepts": [
+            {
+                "displayName": "Environmental health",
+                "level": 1,
+                "relevancyScore": 0.6249958
+            },
+            {
+                "displayName": "Socioeconomics",
+                "level": 1,
+                "relevancyScore": 0.3588183
+            },
+            {
+                "displayName": "Nursing",
+                "level": 1,
+                "relevancyScore": 0.15396324
+            }
+        ],
+        "doi": "10.1016/j.actatropica.2011.09.003"
+    }
+]
