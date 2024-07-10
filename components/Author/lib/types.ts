@@ -75,7 +75,7 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
     url: `/user/${raw.id}/overview`,
     description: raw.description,
     isVerified: raw.is_verified,
-    headline: raw?.headline || "",
+    headline: raw?.headline?.title || "",
     isHubEditor: raw.is_hub_editor,
     openAlexIds: raw.openalex_ids || [],
     achievements: raw.achievements || [],
