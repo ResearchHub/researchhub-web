@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { useState } from "react";
 import FormInput from "../Form/FormInput";
 import { StyleSheet, css } from "aphrodite";
-import { fetchPublicationsByDoi, addPublicationsToAuthor } from "./lib/api";
+import { fetchPublicationsByDoi, claimProfileAndAddPublications } from "./lib/api";
 import { ID, parseUser } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { useSelector, useDispatch } from "react-redux";
@@ -22,17 +22,17 @@ import { CloseIcon } from "~/config/themes/icons";
 import VerificationPaperResult from "../Verification/VerificationPaperResult";
 import sample from "./lib/sample.json"
 import CheckBox from "~/components//Form/CheckBox";
+import { AuthorClaimError, AuthorClaimErrorReason } from "./lib/types";
 
-type STEP = "DOI" | "NEEDS_AUTHOR_CONFIRMATION" |  "RESULTS";
-type ERROR_TYPE = "DOI_NOT_FOUND" | "GENERIC_ERROR" | null;
+type STEP = "DOI" | "NEEDS_AUTHOR_CONFIRMATION" | "RESULTS" | "ERROR";
+type ERROR_TYPE = "DOI_NOT_FOUND" | "GENERIC_ERROR" | "ALREADY_CLAIMED_BY_CURRENT_USER" | "ALREADY_CLAIMED_BY_ANOTHER_USER" | null;
 const ORDERED_STEPS: Array<STEP> = ["DOI", "NEEDS_AUTHOR_CONFIRMATION", "RESULTS"]
 
-const AddPublicationModal = ({ wsResponse }) => {
-
+const AddPublicationModal = ({ wsResponse, children }) => {
   const [paperDoi, setPaperDoi] = useState("");
   const [selectedAuthorId, setSelectedAuthorId] = useState<null|ID>(null);
   const [availableAuthors, setAvailableAuthors] = useState<OpenAlexAuthor[]>([]);
-  const [publications, setPublications] = useState<OpenAlexWork[]>([]);
+  const [publications, setPublications] = useState<OpenAlexWork[]>(sample);
   const [error, setError] = useState<ERROR_TYPE>(null);
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [step, setStep] = useState<STEP>("DOI");
@@ -40,20 +40,7 @@ const AddPublicationModal = ({ wsResponse }) => {
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
   const [selectedPaperIds, setSelectedPaperIds] = useState<Array<string>>([]);
-
-  
-
-  const handleClick = async () => {
-      const url = generateApiUrl(
-        `paper/test`
-      );
-    
-      try {
-        const response = await fetch(url, API.GET_CONFIG());
-      } catch (error) {
-        console.log('error', error)
-      }
-  }
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleFetchPublications = async ({ doi, authorId }: { doi: string, authorId?: string|null }) => {
     try {
@@ -87,147 +74,189 @@ const AddPublicationModal = ({ wsResponse }) => {
   }))
 
   return (
-    <BaseModal
-      isOpen={true}
-      closeModal={() => null}
-      zIndex={1000000001}
-      title={
-
-
-        step == "RESULTS" || step == "NEEDS_AUTHOR_CONFIRMATION" ? (
-          <div
-            className={css(styles.titleWrapper, styles.titleWrapperWithBorder)}
-          >
-
-            <IconButton overrideStyle={styles.backButton}>
-              <FontAwesomeIcon
-                icon={faArrowLeft}
-                onClick={() => {
-                  const indexOfCurrentStep =
-                    ORDERED_STEPS.indexOf(step);
-                  if (indexOfCurrentStep > 0) {
-                    setStep(ORDERED_STEPS[indexOfCurrentStep - 1]);
-                  }
-                }}
-              />
-            </IconButton>
-            <CloseIcon
-              // @ts-ignore
-              overrideStyle={styles.close}
-              color={colors.MEDIUM_GREY()}
-              onClick={() => null}
-            />
-          </div>
-        ) : null        
-      }
-    >
-
-    {step === "DOI" && (
-      <div>
-        <div style={{ fontWeight: 500, }}>Enter a DOI for any paper you authored:</div>
-        <FormInput
-          error={
-            paperDoi &&
-            error &&
-            (error === "GENERIC_ERROR"
-              ? "Please enter a valid DOI."
-              : "Paper not found. Please try another DOI.")
-          }
-          value={paperDoi || ""}
-          placeholder={"e.g. 10.1038/s41586-023-06466-x"}
-          disabled={isFetching}
-          containerStyle={styles.inputContainer}
-          onChange={(name, value) => {
-            setPaperDoi(value.trim());
-          }}
-        />
-
-        <Button onClick={() => handleFetchPublications({ doi: paperDoi })}>Next</Button>
-
+    <>
+      <div onClick={() => setIsOpen(!isOpen)}>
+        {children}
       </div>
-    )}
-    {step === "NEEDS_AUTHOR_CONFIRMATION" && (
-      <div>
-        <div>Please confirm which of these authors you are:</div>
+      <BaseModal
+        isOpen={isOpen}
+        hideClose={true}
+        closeModal={() => setIsOpen(false)}
+        zIndex={1000000001}
+        modalContentStyle={styles.modalStyle}
+        titleStyle={styles.modalTitle}
+        title={
+          step == "RESULTS" || step == "NEEDS_AUTHOR_CONFIRMATION" ? (
+            <div
+              className={css(styles.titleWrapper, styles.titleWrapperWithBorder)}
+            >
 
-        <FormSelect
-          onChange={(_type: string, authorDatum: OpenAlexAuthor): void => {
-            setSelectedAuthorId(authorDatum.id);
-            handleFetchPublications({ doi: paperDoi, authorId: authorDatum.id });
-          }}
-          id="author"
-          label="Claiming author"
-          options={authorDropdownOptions}
-          placeholder="Choose an Author"
-          required={true}
-          type="select"
-          value={authorDropdownOptions.find((author) => author.id === selectedAuthorId)}
-        />        
-      </div>
-    )}
-    {step === "RESULTS" && (
-      <div>
-        <div>Results</div>
-        <div className={css(styles.selectAll)}>
-          <CheckBox
-            active={selectedPaperIds.length === publications.length}
-            isSquare={true}
-            small={true}
-            onChange={(a, b) => {
-              if (selectedPaperIds.length === publications.length) {
-                setSelectedPaperIds([]);
-              } else {
-                setSelectedPaperIds(publications.map((publication) => publication.id));
-              }
-            }}
-            label={undefined}
-            labelStyle={undefined}
-          />
-          Select All
-        </div>
-
-
-        <div className={css(styles.publicationWrapper)}>
-          {publications.map((publication) => (
-            <>
-              <CheckBox
-                active={selectedPaperIds.includes(publication.id)}
-                isSquare={true}
-                small={true}
-                onChange={() => {
-                  selectedPaperIds.includes(publication.id) ? setSelectedPaperIds(selectedPaperIds.filter((id) => id !== publication.id)) : setSelectedPaperIds([...selectedPaperIds, publication.id]);
-                }}
-                label={undefined}
-                labelStyle={undefined}
+              <IconButton overrideStyle={styles.backButton}>
+                <FontAwesomeIcon
+                  icon={faArrowLeft}
+                  onClick={() => {
+                    const indexOfCurrentStep =
+                      ORDERED_STEPS.indexOf(step);
+                    if (indexOfCurrentStep > 0) {
+                      setStep(ORDERED_STEPS[indexOfCurrentStep - 1]);
+                    }
+                  }}
                 />
-              <VerificationPaperResult result={publication} />
-            </>
-          ))}
+              </IconButton>
+              <CloseIcon
+                // @ts-ignore
+                overrideStyle={styles.close}
+                color={colors.MEDIUM_GREY()}
+                onClick={() => null}
+              />
+            </div>
+          ) : null        
+        }
+      >
+
+      {step === "DOI" && (
+        <div>
+          <div style={{ fontWeight: 500, }}>Enter a DOI for any paper you authored:</div>
+          <FormInput
+            error={
+              paperDoi &&
+              error &&
+              (error === "GENERIC_ERROR"
+                ? "Please enter a valid DOI."
+                : "Paper not found. Please try another DOI.")
+            }
+            value={paperDoi || ""}
+            placeholder={"e.g. 10.1038/s41586-023-06466-x"}
+            disabled={isFetching}
+            containerStyle={styles.inputContainer}
+            onChange={(name, value) => {
+              setPaperDoi(value.trim());
+            }}
+          />
+
+          <Button onClick={() => handleFetchPublications({ doi: paperDoi })}>Next</Button>
+
         </div>
-        <div className={css(styles.buttonsWrapper)}>
-          <Button variant="text">
-            Do this later
-          </Button>
-          <Button
-            disabled={selectedPaperIds.length === 0}
-            onClick={() => addPublicationsToAuthor({
-              authorId: currentUser?.authorProfile.id,
-              openAlexPublicationIds: selectedPaperIds,
-              openAlexAuthorId: selectedAuthorId
-            })}>
-              Add Publications
-          </Button>
+      )}
+      {step === "NEEDS_AUTHOR_CONFIRMATION" && (
+        <div>
+          <div>Please confirm which of these authors you are:</div>
+
+          <FormSelect
+            onChange={(_type: string, authorDatum: OpenAlexAuthor): void => {
+              setSelectedAuthorId(authorDatum.id);
+              handleFetchPublications({ doi: paperDoi, authorId: authorDatum.id });
+            }}
+            id="author"
+            label="Claiming author"
+            options={authorDropdownOptions}
+            placeholder="Choose an Author"
+            required={true}
+            type="select"
+            value={authorDropdownOptions.find((author) => author.id === selectedAuthorId)}
+          />        
         </div>
-      </div>
-    )}
+      )}
+      {step === "RESULTS" && (
+        <div>
+          <div>Results</div>
+          <div className={css(styles.selectAll)}>
+            <CheckBox
+              active={selectedPaperIds.length === publications.length}
+              isSquare={true}
+              small={true}
+              onChange={(a, b) => {
+                if (selectedPaperIds.length === publications.length) {
+                  setSelectedPaperIds([]);
+                } else {
+                  setSelectedPaperIds(publications.map((publication) => publication.id));
+                }
+              }}
+              label={undefined}
+              labelStyle={undefined}
+            />
+            Select All
+          </div>
 
 
-      {/* <Button onClick={handleClick}>Trigger</Button> */}
-    </BaseModal>
+          <div className={css(styles.publicationWrapper)}>
+            {publications.map((publication) => (
+              <>
+                <CheckBox
+                  active={selectedPaperIds.includes(publication.id)}
+                  isSquare={true}
+                  small={true}
+                  onChange={() => {
+                    selectedPaperIds.includes(publication.id) ? setSelectedPaperIds(selectedPaperIds.filter((id) => id !== publication.id)) : setSelectedPaperIds([...selectedPaperIds, publication.id]);
+                  }}
+                  label={undefined}
+                  labelStyle={undefined}
+                  />
+                <VerificationPaperResult result={publication} />
+              </>
+            ))}
+          </div>
+          <div className={css(styles.buttonsWrapper)}>
+            <Button variant="text">
+              Do this later
+            </Button>
+            <Button
+              disabled={selectedPaperIds.length === 0}
+              onClick={async () => {
+                try {
+                  const response = await claimProfileAndAddPublications({
+                    authorId: currentUser?.authorProfile.id,
+                    openAlexPublicationIds: selectedPaperIds,
+                    openAlexAuthorId: selectedAuthorId
+                  })
+                }
+                catch(error:any) {
+                  setStep("ERROR");
+                  if (error instanceof AuthorClaimError) {
+                    // @ts-ignore
+                    setError(error.reason);
+                  }
+                  else {
+                    setError("GENERIC_ERROR");
+                  }
+                }
+              }}>
+                Add Publications
+            </Button>
+          </div>
+        </div>
+      )}
+      {step === "ERROR" && (
+        <div>
+            {error === "ALREADY_CLAIMED_BY_ANOTHER_USER" && (
+              <div>This profile has already been claimed by another user</div>
+            )}
+            {error === "ALREADY_CLAIMED_BY_CURRENT_USER" && (
+              <div>This profile has already been claimed you</div>
+            )}
+            {error === "GENERIC_ERROR" && (
+              <div>An error has occured</div>
+            )}          
+        </div>
+      )}
+
+
+        {/* <Button onClick={handleClick}>Trigger</Button> */}
+      </BaseModal>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
+  modalStyle: {
+    padding: "20px 20px",
+  },
+  modalContentStyle: {
+    padding: "10px 20px",
+  },
+  modalTitle: {
+
+  },
   buttonsWrapper: {
     display: "flex",
   },

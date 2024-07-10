@@ -2,6 +2,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { OpenAlexWork, parseOpenAlexWork, parseOpenAlexAuthor, OpenAlexAuthor } from "~/components/Verification/lib/types";
 import API, { generateApiUrl } from "~/config/api";
 import { ID } from "~/config/types/root_types";
+import { AuthorClaimError } from "./types";
 
 interface Props {
   doi: ID;
@@ -37,15 +38,35 @@ export const fetchPublicationsByDoi = ({ doi, authorId }: Props): Promise<Public
     })
 };
 
-export const addPublicationsToAuthor = ({ authorId, openAlexPublicationIds, openAlexAuthorId }: {
+export const addPublicationsToAuthor = ({ authorId, openAlexPublicationIds }: {
   authorId: ID,
   openAlexPublicationIds: ID[],
-  openAlexAuthorId?: ID,
 } ) => {
   const url = generateApiUrl(`author/${authorId}/add_publications`);
   return fetch(url, API.POST_CONFIG({
     openalex_ids: openAlexPublicationIds,
-    openalex_author_id: openAlexAuthorId,
   }))
     .then(Helpers.parseJSON)
+}
+
+export const claimProfileAndAddPublications = ({ authorId, openAlexPublicationIds, openAlexAuthorId }: {
+  authorId: ID,
+  openAlexPublicationIds: ID[],
+  openAlexAuthorId?: ID,
+} ) => {
+  const url = generateApiUrl(`author/${authorId}/claim_profile_and_add_publications`);
+  return fetch(url, API.POST_CONFIG({
+    openalex_ids: openAlexPublicationIds,
+    openalex_author_id: "https://openalex.org/A5068835581",
+  }))
+  .then(async (resp: any) => {
+    const body = await resp.json()
+
+    if (resp.ok) {
+      return body;
+    }
+    else {
+      throw new AuthorClaimError(body.reason);
+    }
+  })
 }
