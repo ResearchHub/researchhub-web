@@ -1,20 +1,14 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import { fetchAuthorProfile, fetchAuthorOverview, PaginatedPublicationResponse, fetchAuthorPublications, parsePublicationResponse } from "~/components/Author/lib/api";
+import { fetchAuthorProfile, fetchAuthorPublications, parsePublicationResponse } from "~/components/Author/lib/api";
 import { parseFullAuthorProfile } from "~/components/Author/lib/types";
-import HorizontalTabBar from "~/components/HorizontalTabBar";
 import { css, StyleSheet } from "aphrodite";
-import { buildAuthorTabs } from "~/components/Author/lib/utils";
-import { useRouter } from "next/router";
 import AuthorProfileHeader from "~/components/Author/Profile/AuthorProfileHeader";
-import { useState } from "react";
-import { getDocumentCard } from "~/components/UnifiedDocFeed/utils/getDocumentCard";
-import AddPublicationsModal from "~/components/Publication/AddPublicationsModal";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { useSelector } from "react-redux";
-import Button from "~/components/Form/Button";
-import { parseUser } from "~/config/types/root_types";
-import { RootState } from "~/redux";
-import { isEmpty } from "~/config/utils/nullchecks";
+import AuthorPublications from "~/components/Author/Profile/AuthorPublications";
+import { AuthorProfileContextProvider } from "~/components/Author/lib/AuthorProfileContext";
+import AuthorNavigation from "~/components/Author/Profile/AuthorNavigation";
+
 
 type Args = {
   profile: any;
@@ -23,56 +17,36 @@ type Args = {
 
 const AuthorProfilePage: NextPage<Args> = ({ profile, publicationsResponse }) => {
 
-  const router = useRouter();
-
-  
   if (!profile || !publicationsResponse) {
     // TODO: Need a skeleton loading state
     return <div>Loading...</div>;
   }
 
-  const [_publicationsResponse, setPublicationsResponse] = useState<PaginatedPublicationResponse>(parsePublicationResponse(publicationsResponse));
   const fullAuthorProfile = parseFullAuthorProfile(profile);
-  const authorTabs = buildAuthorTabs({ profile: fullAuthorProfile, router });
+  const parsedPublicationsResponse = parsePublicationResponse(publicationsResponse);
   const auth = useSelector((state: any) => state.auth);
-  const currentUser = useSelector((state: RootState) =>
-    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
-  );
-    
+
   return (
-    <div className={css(styles.profilePage)}>
-      <div className={css(styles.profileContent)}>
-        <AuthorProfileHeader profile={fullAuthorProfile} />
-      </div>
-      <div className={css(styles.tabsWrapper)}>
-        <HorizontalTabBar tabs={authorTabs} />
-      </div>
-      <div className={css(styles.mainContentWrapper)}>
-        <div className={css(styles.mainContent)}>
-          
-          <div className={css(styles.wrapper)}>
-            <div className={css(styles.sectionHeader)}>Publications</div>
-            {currentUser?.authorProfile?.id === fullAuthorProfile.id && (
+    <AuthorProfileContextProvider fullAuthorProfile={fullAuthorProfile}>
+      <div className={css(styles.profilePage)}>
+        <div className={css(styles.profileContent)}>
+          <AuthorProfileHeader profile={fullAuthorProfile} />
+        </div>            
+        <AuthorNavigation />
+        <div className={css(styles.mainContentWrapper)}>
+          <div className={css(styles.mainContent)}>
+            {/* @ts-ignore */}
+            <AuthorPublications
               // @ts-ignore legacy
-              <AddPublicationsModal
-                // @ts-ignore legacy
-                wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
-                // @ts-ignore legacy
-                wsAuth
-              >
-                  <Button>Add Publications</Button>
-              </AddPublicationsModal>
-            )}
-            <div className={css(styles.contentWrapper)}>
-              <div>
-                {/* @ts-ignore */}
-                {getDocumentCard({ unifiedDocumentData: publicationsResponse.results })}
-              </div>
-            </div>
+              wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
+              // @ts-ignore legacy
+              wsAuth
+              initialPaginatedPublicationsResponse={parsedPublicationsResponse}
+            />
           </div>
         </div>
       </div>
-    </div>
+    </AuthorProfileContextProvider>
   );
 };
 
@@ -99,13 +73,6 @@ const styles = StyleSheet.create({
     width: "1000px",
     margin: "0 auto",
   },
-  tabsWrapper: {
-    width: "1000px",
-    margin: "0 auto",
-    marginTop: 20,
-  },
-
-
   wrapper: {
   },
   contentWrapper: {
