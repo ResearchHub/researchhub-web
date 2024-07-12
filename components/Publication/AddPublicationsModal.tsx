@@ -6,12 +6,25 @@ import IconButton from "../Icons/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/pro-light-svg-icons";
 import { CloseIcon } from "~/config/themes/icons";
-import AddPublicationsForm, { STEP } from "../Author/Profile/AddPublicationsForm";
-import { ORDERED_STEPS } from "../Author/Profile/AddPublicationsForm";
+import AddPublicationsForm, {
+  STEP,
+  ORDERED_STEPS,
+} from "../Author/Profile/AddPublicationsForm";
+import { authorProfileContext } from "../Author/lib/AuthorProfileContext";
 
 const AddPublicationModal = ({ children }) => {
   const [step, setStep] = useState<STEP>("DOI");
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { setIsLoadingPublications } = authorProfileContext();
+
+  const handleStepChange = ({ step }) => {
+    setStep(step);
+    if (step === "FINISHED") {
+      setIsLoadingPublications(true);
+      setIsOpen(false);
+      setStep("DOI");
+    }
+  };
 
   return (
     <>
@@ -53,9 +66,7 @@ const AddPublicationModal = ({ children }) => {
         }
       >
         {/* @ts-ignore legacy */}
-        <AddPublicationsForm onStepChange={({ step }) => {
-          console.log('step changed', step)
-        }} />
+        <AddPublicationsForm onStepChange={handleStepChange} />
       </BaseModal>
     </>
   );
