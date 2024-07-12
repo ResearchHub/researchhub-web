@@ -43,6 +43,8 @@ import {
   HistoryManagerProvider,
   useHistoryManager,
 } from "~/components/contexts/HistoryManagerContext";
+import showGenericToast from "~/components/Notifications/lib/showGenericToast";
+
 LEFT_SIDEBAR_MIN_WIDTH;
 // WalletConnect project ID
 const projectId = "a3e8904e258fe256bf772b764d3acfab";
