@@ -52,6 +52,8 @@ const nextConfig = {
     SIFT_BEACON_KEY: process.env.SIFT_BEACON_KEY,
     ELASTIC_APM_URL: process.env.ELASTIC_APM_URL,
     GA_TRACKING_ID: process.env.GA_TRACKING_ID,
+    WITH_PERSONA_ENVIRONMENT_ID: process.env.WITH_PERSONA_ENVIRONMENT_ID,
+    WITH_PERSONA_TEMPLATE_ID: process.env.WITH_PERSONA_TEMPLATE_ID,
   },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // Load Markdown Configuration
