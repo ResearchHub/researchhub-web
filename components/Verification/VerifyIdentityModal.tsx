@@ -189,6 +189,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
                   <AddPublicationsForm
                     onStepChange={handleStepChangeOfPublicationsFlow}
                     allowDoThisLater
+                    onDoThisLater={() => setIsOpen(false)}
                   />
                 </div>
               </>

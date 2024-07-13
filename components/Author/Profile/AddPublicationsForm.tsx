@@ -45,12 +45,14 @@ export const ORDERED_STEPS: Array<STEP> = [
 interface Props {
   wsResponse: any;
   onStepChange?: ({ step }: { step: STEP }) => void;
+  onDoThisLater?: () => void;
   allowDoThisLater: boolean;
 }
 
 const AddPublicationsForm = ({
   wsResponse,
   onStepChange,
+  onDoThisLater,
   allowDoThisLater,
 }: Props) => {
   const alert = useAlert();
@@ -98,6 +100,7 @@ const AddPublicationsForm = ({
   };
 
   const handleDoThisLater = () => {
+    onDoThisLater && onDoThisLater();
     showGenericToast({
       body: (
         <div style={{ display: "flex", alignItems: "center" }}>
