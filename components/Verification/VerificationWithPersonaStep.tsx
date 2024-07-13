@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import PersonaReact from "persona-react";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
 
 type InterfaceProps = {
-  nextStep: () => void;
+  onComplete: ({ status, inquiryId }) => void;
 };
 
 const VerificationWithPersonaStep = ({
-  nextStep,
+  onComplete,
 }: InterfaceProps): JSX.Element => {
   const [isPersonaLoaded, setIsPersonaLoaded] = useState(false);
+  const currentUser = useCurrentUser();
 
   useEffect(() => {
     const applyIframeStyles = () => {
@@ -23,18 +25,23 @@ const VerificationWithPersonaStep = ({
     }
   }, [isPersonaLoaded]);
 
+  if (!currentUser) {
+    // @ts-ignore
+    return null;
+  }
+
   return (
     <PersonaReact
       templateId={process.env.WITH_PERSONA_TEMPLATE_ID}
       environmentId={process.env.WITH_PERSONA_ENVIRONMENT_ID}
-      referenceId="my-reference-id-1"
+      referenceId={`${currentUser!.id}`}
       onLoad={() => {
         setIsPersonaLoaded(true);
       }}
       onComplete={({ inquiryId, status }) => {
         // FIXME: Remove temporary console logging
         console.log(`Finished inquiry ${inquiryId} with status ${status}`);
-        nextStep();
+        onComplete({ status, inquiryId });
       }}
     />
   );

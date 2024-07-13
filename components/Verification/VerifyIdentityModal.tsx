@@ -14,79 +14,14 @@ import Button from "../Form/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartLine, faUser } from "@fortawesome/pro-solid-svg-icons";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
-
-const VerifyIdentityBreadcrumbs = ({ step }) => {
-  return (
-    <div className={css(s.breadcrumbs)}>
-      <div className={css(s.step)}>
-        <div className={css(s.num)}>
-          <div>1</div>
-        </div>
-        <div>Verify Identity</div>
-      </div>
-      <div className={css(s.line)} style={{ marginRight: -11 }}></div>
-      <div className={css(s.step)}>
-        <div className={css(s.num, s.selectedStep)}>
-          <div>2</div>
-        </div>
-        <div className={css(s.selectedStep)}>Publication History</div>
-      </div>
-      <div className={css(s.line)} style={{ marginLeft: -13 }}></div>
-      <div className={css(s.step)}>
-        <div className={css(s.num)}>
-          <div>3</div>
-        </div>
-        <div>View Rewards</div>
-      </div>
-    </div>
-  );
-};
-
-const s = StyleSheet.create({
-  breadcrumbs: {
-    display: "flex",
-    justifyContent: "space-between",
-    color: "#AAA8B4",
-    alignItems: "center",
-  },
-  step: {
-    fontSize: 12,
-    fontWeight: 500,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  selectedStep: {
-    borderColor: colors.NEW_BLUE(),
-    color: colors.NEW_BLUE(),
-  },
-  line: {
-    width: 34,
-    height: 2,
-    marginTop: -24,
-    backgroundColor: "#DEDEE6",
-  },
-  num: {
-    borderRadius: "50px",
-    padding: 8,
-    border: `1px solid ${colors.LIGHT_GREY()}`,
-    fontSize: 16,
-    fontWeight: 500,
-    height: 16,
-    width: 16,
-    justifyContent: "center",
-    display: "flex",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-});
+import VerifyIdentityBreadcrumbs from "./VerifyIdentityBreadcrumbs";
 
 interface Props {
   wsResponse: any;
   children: any;
 }
 
-type STEP = "IDENTITY" | "PUBLICATIONS" | "SUCCESS";
+export type STEP = "IDENTITY" | "PUBLICATIONS" | "SUCCESS";
 
 const VerificationWithPersonaStep = dynamic(
   () => import("./VerificationWithPersonaStep"),
@@ -96,7 +31,7 @@ const VerificationWithPersonaStep = dynamic(
 );
 
 const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
-  const [step, setStep] = useState<STEP>("PUBLICATIONS");
+  const [step, setStep] = useState<STEP>("IDENTITY");
   const [isOpen, setIsOpen] = useState(true);
   const [notificationsReceived, setNotificationsReceived] = useState<
     Notification[]
@@ -139,8 +74,10 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
           <VerifyIdentityBreadcrumbs step={step} />
           <div className={css(styles.body)}>
             {step === "IDENTITY" && (
-              <div>
-                Placeholder for persona identity verification form
+              <div style={{ height: 650 }}>
+                <VerificationWithPersonaStep onComplete={({ status, inquiryId }) => 
+                  console.log('completed', status, inquiryId)
+                } />
                 <div>
                   <Button onClick={() => setStep("PUBLICATIONS")}>Next</Button>
                 </div>
