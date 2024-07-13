@@ -10,6 +10,7 @@ import colors from "~/config/themes/colors";
 import { StyleSheet, css } from "aphrodite";
 import { connect, useSelector } from "react-redux";
 import Button from "../Form/Button";
+import dynamic from "next/dynamic";
 
 interface Props {
   wsResponse: any;
@@ -17,6 +18,13 @@ interface Props {
 }
 
 type STEP = "IDENTITY" | "PUBLICATIONS" | "SUCCESS";
+
+const VerificationWithPersonaStep = dynamic(
+  () => import("./VerificationWithPersonaStep"),
+  {
+    ssr: false,
+  }
+);
 
 const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
   const [step, setStep] = useState<STEP>("IDENTITY");
@@ -60,10 +68,9 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
       >
         <>
           {step === "IDENTITY" && (
-            <div>
-              Placeholder for persona identity verification form
-              <Button onClick={() => setStep("PUBLICATIONS")}>Next</Button>
-            </div>
+            <VerificationWithPersonaStep
+              nextStep={() => setStep("PUBLICATIONS")}
+            />
           )}
           {step === "PUBLICATIONS" && (
             <div>
