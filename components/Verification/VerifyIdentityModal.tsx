@@ -131,7 +131,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
         isOpen={isOpen}
         hideClose={true}
         closeModal={() => setIsOpen(false)}
-        zIndex={1000000001}
+        zIndex={1000000}
         modalContentStyle={styles.modalStyle}
         titleStyle={styles.modalTitle}
       >
@@ -220,6 +220,7 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     color: colors.BLACK(),
     fontSize: 14,
+    alignItems: "center",
   },
   body: {
     marginTop: 40,

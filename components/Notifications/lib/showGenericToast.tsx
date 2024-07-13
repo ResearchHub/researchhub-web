@@ -5,37 +5,40 @@ import showToast from "./showToast";
 import colors from "~/config/themes/colors";
 
 interface Props {
-  body: any,
-  label: string,
-  href: string,
-  withCloseBtn: boolean,
+  body: any;
+  href?: string;
+  label?: string;
+  closeLabel?: string;
+  withCloseBtn?: boolean;
 }
 
-const showGenericToast = ({ body, label, href, withCloseBtn }: Props) => {
-
+const showGenericToast = ({
+  body,
+  label,
+  href,
+  withCloseBtn,
+  closeLabel = "Close",
+}: Props) => {
   showToast({
     content: (
       <div className={css(toastStyles.root)}>
-        <div className={css(toastStyles.body)}>
-          {body}
-        </div>
+        <div className={css(toastStyles.body)}>{body}</div>
         <div className={css(toastStyles.actionWrapper)}>
           {withCloseBtn && (
-            <IconButton
-              variant="round"
-              overrideStyle={toastStyles.primaryCTA}
-            >
-              <span className={css(toastStyles.viewLabel)}>Close</span>
+            <IconButton variant="round" overrideStyle={toastStyles.primaryCTA}>
+              <span className={css(toastStyles.viewLabel)}>{closeLabel}</span>
             </IconButton>
           )}
-          <Link href={href}>
-            <IconButton
-              variant="round"
-              overrideStyle={toastStyles.primaryCTA}
-            >
-              <span className={css(toastStyles.viewLabel)}>{label}</span>
-            </IconButton>
-          </Link>
+          {label && href && (
+            <Link href={href}>
+              <IconButton
+                variant="round"
+                overrideStyle={toastStyles.primaryCTA}
+              >
+                <span className={css(toastStyles.viewLabel)}>{label}</span>
+              </IconButton>
+            </Link>
+          )}
         </div>
       </div>
     ),
@@ -45,7 +48,6 @@ const showGenericToast = ({ body, label, href, withCloseBtn }: Props) => {
         background: "white",
       },
       closeButton: false,
-      autoClose: false,
     },
   });
 };

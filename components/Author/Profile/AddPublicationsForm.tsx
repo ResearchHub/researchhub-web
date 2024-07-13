@@ -18,6 +18,10 @@ import {
   addPublicationsToAuthor,
 } from "~/components/Publication/lib/api";
 import { useSelector, connect } from "react-redux";
+import { useAlert } from "react-alert";
+import showGenericToast from "~/components/Notifications/lib/showGenericToast";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfo, faInfoCircle } from "@fortawesome/pro-solid-svg-icons";
 
 export type STEP =
   | "DOI"
@@ -49,6 +53,7 @@ const AddPublicationsForm = ({
   onStepChange,
   allowDoThisLater,
 }: Props) => {
+  const alert = useAlert();
   const [paperDoi, setPaperDoi] = useState("");
   const [selectedAuthorId, setSelectedAuthorId] = useState<
     null | undefined | ID
@@ -92,6 +97,23 @@ const AddPublicationsForm = ({
     }
   };
 
+  const handleDoThisLater = () => {
+    showGenericToast({
+      body: (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <FontAwesomeIcon
+            fontSize={24}
+            style={{ color: colors.MEDIUM_GREY(), marginRight: 10 }}
+            icon={faInfoCircle}
+          />
+          Visit the 'Publications' tab on your profile to resume
+        </div>
+      ),
+      closeLabel: "OK",
+      withCloseBtn: true,
+    });
+  };
+
   useEffect(() => {
     if (onStepChange) {
       onStepChange({ step });
@@ -132,6 +154,7 @@ const AddPublicationsForm = ({
           <div className={css(styles.buttonsWrapper)}>
             {allowDoThisLater && (
               <Button
+                onClick={() => handleDoThisLater()}
                 customButtonStyle={styles.doThisLaterButton}
                 variant="text"
               >
