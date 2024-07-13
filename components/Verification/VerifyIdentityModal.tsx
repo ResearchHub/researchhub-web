@@ -15,7 +15,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartLine, faUser } from "@fortawesome/pro-solid-svg-icons";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 
-
 const VerifyIdentityBreadcrumbs = ({ step }) => {
   return (
     <div className={css(s.breadcrumbs)}>
@@ -31,17 +30,17 @@ const VerifyIdentityBreadcrumbs = ({ step }) => {
           <div>2</div>
         </div>
         <div className={css(s.selectedStep)}>Publication History</div>
-      </div>      
+      </div>
       <div className={css(s.line)} style={{ marginLeft: -13 }}></div>
       <div className={css(s.step)}>
         <div className={css(s.num)}>
           <div>3</div>
         </div>
         <div>View Rewards</div>
-      </div>      
+      </div>
     </div>
-  )
-}
+  );
+};
 
 const s = StyleSheet.create({
   breadcrumbs: {
@@ -55,7 +54,7 @@ const s = StyleSheet.create({
     fontWeight: 500,
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
   },
   selectedStep: {
     borderColor: colors.NEW_BLUE(),
@@ -79,8 +78,8 @@ const s = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     marginBottom: 10,
-  }
-})
+  },
+});
 
 interface Props {
   wsResponse: any;
@@ -142,31 +141,54 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
             {step === "IDENTITY" && (
               <div>
                 Placeholder for persona identity verification form
-                <Button onClick={() => setStep("PUBLICATIONS")}>Next</Button>
+                <div>
+                  <Button onClick={() => setStep("PUBLICATIONS")}>Next</Button>
+                </div>
               </div>
             )}
             {step === "PUBLICATIONS" && (
               <>
-
+                <div className={css(styles.title)}>
+                  Let's verify your publication history
+                </div>
+                <div className={css(styles.description)}>
+                  Enter a DOI for any paper you've published and we will fetch
+                  the rest of your works.
+                </div>
                 <div className={css(styles.nextText)}>What happens next</div>
                 <div>
                   <div className={css(styles.lineItem)}>
-                    <FontAwesomeIcon fontSize={20} icon={faUser} color={colors.MEDIUM_GREY2()} />
+                    <FontAwesomeIcon
+                      fontSize={20}
+                      icon={faUser}
+                      color={colors.MEDIUM_GREY2()}
+                    />
                     We will build your researcher profile
-                  </div>  
+                  </div>
                   <div className={css(styles.lineItem)}>
-                    <FontAwesomeIcon fontSize={20} icon={faChartLine} color={colors.MEDIUM_GREY2()} />
+                    <FontAwesomeIcon
+                      fontSize={20}
+                      icon={faChartLine}
+                      color={colors.MEDIUM_GREY2()}
+                    />
                     We will calculate your hub specific reputation
                   </div>
                   <div className={css(styles.lineItem)}>
-                    <ResearchCoinIcon version={4} width={20} height={20} color={colors.MEDIUM_GREY2()} />
-                    We will identify your prior publications that are eligible for rewards
+                    <ResearchCoinIcon
+                      version={4}
+                      width={20}
+                      height={20}
+                      color={colors.MEDIUM_GREY2()}
+                    />
+                    We will identify your prior publications that are eligible
+                    for rewards
                   </div>
                 </div>
                 <div className={css(styles.formWrapper)}>
                   {/* @ts-ignore legacy */}
                   <AddPublicationsForm
                     onStepChange={handleStepChangeOfPublicationsFlow}
+                    allowDoThisLater
                   />
                 </div>
               </>
@@ -179,15 +201,28 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
 };
 
 const styles = StyleSheet.create({
+  title: {
+    fontSize: 26,
+    fontWeight: 500,
+    textAlign: "center",
+  },
+  description: {
+    color: colors.MEDIUM_GREY2(),
+    fontSize: 18,
+    width: 400,
+    textAlign: "center",
+    margin: "10px auto 40px auto",
+  },
   lineItem: {
     display: "flex",
     columnGap: "14px",
-    marginBottom: 14,
+    marginBottom: 12,
     fontWeight: 400,
     color: colors.BLACK(),
+    fontSize: 14,
   },
   body: {
-    marginTop: 60,
+    marginTop: 40,
     width: "100%",
   },
   formWrapper: {
@@ -197,14 +232,13 @@ const styles = StyleSheet.create({
     color: colors.MEDIUM_GREY2(),
     fontWeight: 500,
     textTransform: "uppercase",
-    fontSize: 14,
+    fontSize: 13,
     letterSpacing: "1.5px",
     marginBottom: 20,
   },
   modalStyle: {
     padding: "20px 20px",
     width: 500,
-    height: 500,
   },
   modalContentStyle: {
     padding: "10px 20px",

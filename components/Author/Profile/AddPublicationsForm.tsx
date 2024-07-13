@@ -41,9 +41,14 @@ export const ORDERED_STEPS: Array<STEP> = [
 interface Props {
   wsResponse: any;
   onStepChange?: ({ step }: { step: STEP }) => void;
+  allowDoThisLater: boolean;
 }
 
-const AddPublicationsForm = ({ wsResponse, onStepChange }: Props) => {
+const AddPublicationsForm = ({
+  wsResponse,
+  onStepChange,
+  allowDoThisLater,
+}: Props) => {
   const [paperDoi, setPaperDoi] = useState("");
   const [selectedAuthorId, setSelectedAuthorId] = useState<
     null | undefined | ID
@@ -107,9 +112,6 @@ const AddPublicationsForm = ({ wsResponse, onStepChange }: Props) => {
     <div>
       {step === "DOI" && (
         <div>
-          <div style={{ fontWeight: 500 }}>
-            Enter a DOI for any paper you authored:
-          </div>
           <FormInput
             error={
               paperDoi &&
@@ -119,6 +121,7 @@ const AddPublicationsForm = ({ wsResponse, onStepChange }: Props) => {
                 : "Paper not found. Please try another DOI.")
             }
             value={paperDoi || ""}
+            label="Enter a DOI for any paper you authored:"
             placeholder={"e.g. 10.1038/s41586-023-06466-x"}
             disabled={isFetching}
             containerStyle={styles.inputContainer}
@@ -126,10 +129,25 @@ const AddPublicationsForm = ({ wsResponse, onStepChange }: Props) => {
               setPaperDoi(value.trim());
             }}
           />
-
-          <Button onClick={() => handleFetchPublications({ doi: paperDoi })}>
-            Next
-          </Button>
+          <div className={css(styles.buttonsWrapper)}>
+            {allowDoThisLater && (
+              <Button
+                customButtonStyle={styles.doThisLaterButton}
+                variant="text"
+              >
+                Do this later
+              </Button>
+            )}
+            <div className={css(styles.nextBtnWrapper)}>
+              <Button
+                size="med"
+                fullWidth
+                onClick={() => handleFetchPublications({ doi: paperDoi })}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
         </div>
       )}
       {step === "NEEDS_AUTHOR_CONFIRMATION" && (
@@ -272,6 +290,19 @@ const AddPublicationsForm = ({ wsResponse, onStepChange }: Props) => {
 };
 
 const styles = StyleSheet.create({
+  doThisLaterButton: {
+    color: colors.NEW_BLUE(),
+    fontWeight: 400,
+  },
+  buttonsWrapper: {
+    marginTop: 20,
+    display: "flex",
+    justifyContent: "flex-end",
+    columnGap: "10px",
+  },
+  nextBtnWrapper: {
+    width: 100,
+  },
   author: {
     display: "flex",
   },
@@ -281,9 +312,6 @@ const styles = StyleSheet.create({
   changeAuthor: {
     color: colors.NEW_BLUE(),
     cursor: "pointer",
-  },
-  buttonsWrapper: {
-    display: "flex",
   },
   publicationWrapper: {
     maxHeight: 200,
