@@ -49,7 +49,7 @@ import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import NewPostButton from "~/components/NewPostButton";
 import NewPostModal from "~/components/Modals/NewPostModal";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
-import AddPublicationsModal from "~/components/Publication/AddPublicationsModal";
+import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
 
 type Props = {
   openLoginModal: any;
@@ -454,7 +454,11 @@ function RootLeftSidebar({
             <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
               {"About"}
             </ALink>
-            <ALink href="https://docs.researchhub.com/" target="_blank" overrideStyle={formattedFooterTxtItem}>
+            <ALink
+              href="https://docs.researchhub.com/"
+              target="_blank"
+              overrideStyle={formattedFooterTxtItem}
+            >
               {"Docs"}
             </ALink>
             <ALink
@@ -486,22 +490,21 @@ function RootLeftSidebar({
                   </>
                 )}
               </span>
-
             </span>
 
-            {process.env.REACT_APP_ENV !== "production" && 
+            {process.env.REACT_APP_ENV !== "production" && (
               <span className={css(formattedFooterTxtItem)}>
                 {/* @ts-ignore */}
-                <AddPublicationsModal
+                <VerifyIdentityModal
                   // @ts-ignore legacy
                   wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
                   // @ts-ignore legacy
                   wsAuth
                 >
-                    {"Verify Identity (v2)"}
-                </AddPublicationsModal>
+                  {"Verify Identity (v2)"}
+                </VerifyIdentityModal>
               </span>
-            }    
+            )}
             <ALink
               href="/leaderboard/users"
               overrideStyle={formattedFooterTxtItem}
@@ -537,7 +540,7 @@ function RootLeftSidebar({
                 target="__blank"
               >
                 {<FontAwesomeIcon icon={faGithub}></FontAwesomeIcon>}
-              </ALink>              
+              </ALink>
               <ALink
                 href="https://medium.com/researchhub"
                 overrideStyle={
@@ -567,7 +570,7 @@ function RootLeftSidebar({
                 overrideStyle={styles.leftSidebarFooterBotItem}
               >
                 {"Issues"}
-              </ALink>              
+              </ALink>
               <ALink
                 href="https://researchhub.notion.site/ResearchHub-a2a87270ebcf43ffb4b6050e3b766ba0"
                 overrideStyle={styles.leftSidebarFooterBotItem}

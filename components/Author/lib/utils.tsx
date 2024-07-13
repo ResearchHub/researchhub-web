@@ -27,31 +27,32 @@ export const getAchievmentDetails = ({ achievement, profile }: { achievement: Ac
 }
 
 export const buildAuthorTabs = ({ router, profile }: { router: any, profile: FullAuthorProfile }): Tab[] => {
+
   return [{
     label: "Overview",
     value: "overview",
     href: `/author/${profile.id}`,
-    isSelected: true,
+    isSelected: router.pathname === "/author/[authorId]"
   },{
-    label: "Works",
-    value: "works",
-    href: `/author/${profile.id}`,
-    isSelected: false,
+    label: "Publications",
+    value: "publications",
+    href: `/author/${profile.id}/publications`,
+    isSelected: router.pathname === "/author/[authorId]/publications",
     pillContent: profile.summaryStats.worksCount.toLocaleString(),
   }, {
     label: "Peer Reviews",
     value: "peer-reviews",
     href: `/author/${profile.id}`,
-    isSelected: false,
+    isSelected: router.pathname === "/author/[authorId]/reviews",
   }, {
     label: "Comments",
     value: "comments",
     href: `/author/${profile.id}`,
-    isSelected: false,
+    isSelected: router.pathname === "/author/[authorId]/comments",
   }, {
     label: "Bounties",
     value: "bounties",
     href: `/author/${profile.id}`,
-    isSelected: false,
+    isSelected: router.pathname === "/author/[authorId]/bounties",
   }]
 }

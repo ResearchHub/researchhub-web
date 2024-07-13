@@ -199,6 +199,7 @@ MyApp.getInitialProps = async (appContext) => {
     "/hubs",
     "/user/[authorId]/[tabName]",
     "/author/[authorId]",
+    "/author/[authorId]/publications",
     "/[orgSlug]/notebook/[noteId]",
     "/[orgSlug]/notebook",
     "/hubs/[slug]",

@@ -60,7 +60,7 @@ class Notification extends Component {
         showGenericToast({
           href: `/author/${this.props.auth?.user?.author_profile?.id}`,
           label: "View",
-          body: "Profile is ready",
+          body: "Publications have been added to your profile.",
         });
       }
 

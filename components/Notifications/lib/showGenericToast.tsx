@@ -2,14 +2,16 @@ import Link from "next/link";
 import IconButton from "~/components/Icons/IconButton";
 import { StyleSheet, css } from "aphrodite";
 import showToast from "./showToast";
+import colors from "~/config/themes/colors";
 
 interface Props {
   body: any,
   label: string,
   href: string,
+  withCloseBtn: boolean,
 }
 
-const showGenericToast = ({ body, label, href }: Props) => {
+const showGenericToast = ({ body, label, href, withCloseBtn }: Props) => {
 
   showToast({
     content: (
@@ -18,6 +20,14 @@ const showGenericToast = ({ body, label, href }: Props) => {
           {body}
         </div>
         <div className={css(toastStyles.actionWrapper)}>
+          {withCloseBtn && (
+            <IconButton
+              variant="round"
+              overrideStyle={toastStyles.primaryCTA}
+            >
+              <span className={css(toastStyles.viewLabel)}>Close</span>
+            </IconButton>
+          )}
           <Link href={href}>
             <IconButton
               variant="round"
@@ -32,7 +42,7 @@ const showGenericToast = ({ body, label, href }: Props) => {
     options: {
       toastId: "profile-ready-toast",
       style: {
-        background: "green",
+        background: "white",
       },
       closeButton: false,
       autoClose: false,
@@ -43,14 +53,16 @@ const showGenericToast = ({ body, label, href }: Props) => {
 const toastStyles = StyleSheet.create({
   actionWrapper: {
     marginRight: 10,
+    display: "flex",
+    alignItems: "center",
   },
   root: {
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
     alignItems: "center",
-    color: "white",
     fontSize: 14,
+    color: colors.BLACK(),
   },
   message: {
     marginRight: 10,
@@ -65,12 +77,16 @@ const toastStyles = StyleSheet.create({
     border: "none",
     whiteSpace: "nowrap",
     ":hover": {
-      background: `rgba(255, 255, 255, 0.15)`,
+      background: `rgba(240, 240, 240, 0.65)`,
     },
   },
+  closeButton: {
+    border: "none",
+    marginRight: 10,
+  },
   viewLabel: {
-    fontWeight: 600,
-    color: "rgb(110 141 255)",
+    fontWeight: 500,
+    color: colors.NEW_BLUE(),
   },
 });
 

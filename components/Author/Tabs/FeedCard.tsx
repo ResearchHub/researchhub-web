@@ -51,6 +51,8 @@ import DocumentHubs from "~/components/Document/lib/DocumentHubs";
 import { Fundraise, parseFundraise } from "~/components/Fundraise/lib/types";
 import FundraiseCard from "~/components/Fundraise/FundraiseCard";
 import FeedCardActivity from "~/components/Feed/FeedCardActivity";
+import MathRenderer from "~/components/shared/MathRenderer";
+
 
 const DocumentViewer = dynamic(
   () => import("~/components/Document/DocumentViewer")
@@ -254,7 +256,7 @@ function FeedCard({
 
   const getTitle = () => {
     if (titleAsHtml) {
-      return titleAsHtml;
+      return <MathRenderer content={titleAsHtml}></MathRenderer>
     }
 
     if (title && shouldStripHTML) {
@@ -265,20 +267,21 @@ function FeedCard({
       return titleWithoutHtml;
     }
 
-    return title;
+    return <MathRenderer content={title}></MathRenderer>
+
+    
   };
 
   const getBody = () => {
-
     if (shouldStripHTML) {
       const bodyWithoutHtml = sanitizeHtml(abstract || renderableText, {
         allowedTags: [], // No tags are allowed, so all will be stripped
         allowedAttributes: {}, // No attributes are allowed
       });    
-      return bodyWithoutHtml;
+      return <MathRenderer content={bodyWithoutHtml}></MathRenderer>;
     }
 
-    return abstract || renderableText;
+    return <MathRenderer content={abstract || renderableText}></MathRenderer> ;
 
   };
 

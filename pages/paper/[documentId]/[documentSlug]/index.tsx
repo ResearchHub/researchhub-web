@@ -130,6 +130,7 @@ const DocumentIndexPage: NextPage<Args> = ({
               </div>
             ) : (
               <div className={css(styles.body)}>
+                
                 <PaperPageAbstractSection
                   paper={document.raw}
                   onUpdate={(updated) => {
