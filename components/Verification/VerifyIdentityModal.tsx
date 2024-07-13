@@ -7,9 +7,8 @@ import {
 } from "~/components/Notifications/lib/types";
 import BaseModal from "../Modals/BaseModal";
 import colors from "~/config/themes/colors";
-import { StyleSheet, css } from "aphrodite";
-import { connect, useSelector } from "react-redux";
-import Button from "../Form/Button";
+import { StyleSheet } from "aphrodite";
+import { connect } from "react-redux";
 import dynamic from "next/dynamic";
 
 interface Props {
