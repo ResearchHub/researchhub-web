@@ -78,9 +78,6 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
                 <VerificationWithPersonaStep onComplete={({ status, inquiryId }) => 
                   console.log('completed', status, inquiryId)
                 } />
-                <div>
-                  <Button onClick={() => setStep("PUBLICATIONS")}>Next</Button>
-                </div>
               </div>
             )}
             {step === "PUBLICATIONS" && (
@@ -161,7 +158,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   body: {
-    marginTop: 40,
     width: "100%",
   },
   formWrapper: {
