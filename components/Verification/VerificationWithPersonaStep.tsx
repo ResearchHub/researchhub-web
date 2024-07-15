@@ -15,7 +15,6 @@ const VerificationWithPersonaStep = ({
 
   useEffect(() => {
     const applyIframeStyles = () => {
-
       if (!personaWrapperRef.current) {
         return;
       }
@@ -26,7 +25,6 @@ const VerificationWithPersonaStep = ({
         iframe.style.minWidth = "400px";
         iframe.style.width = "100%";
       }
-
     };
     if (isPersonaLoaded) {
       applyIframeStyles();
@@ -44,6 +42,10 @@ const VerificationWithPersonaStep = ({
         templateId={process.env.WITH_PERSONA_TEMPLATE_ID}
         environmentId={process.env.WITH_PERSONA_ENVIRONMENT_ID}
         referenceId={`${currentUser!.id}`}
+        fields={{
+          nameFirst: currentUser!.firstName,
+          nameLast: currentUser!.lastName,
+        }}
         onLoad={() => {
           setIsPersonaLoaded(true);
         }}
