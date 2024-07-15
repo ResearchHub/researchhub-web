@@ -32,15 +32,6 @@ const nextConfig = {
       "d2ogkcqdn9wsvr.cloudfront.net",
     ],
   },
-  sentry: {
-    // Use `hidden-source-map` rather than `source-map` as the Webpack `devtool`
-    // for client-side builds. (This will be the default starting in
-    // `@sentry/nextjs` version 8.0.0.) See
-    // https://webpack.js.org/configuration/devtool/ and
-    // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/#use-hidden-source-map
-    // for more information.
-    hideSourceMaps: true,
-  },
   env: {
     SENTRY_RELEASE: process.env.SENTRY_RELEASE,
     REACT_APP_ENV: process.env.REACT_APP_ENV,
@@ -145,6 +136,7 @@ const nextConfig = {
 const SentryWebpackPluginOptions = {
   silent: true,
   disableClientWebpackPlugin: false,
+  hideSourceMaps: true,
 };
 
 module.exports = withTM({ ...nextConfig });
