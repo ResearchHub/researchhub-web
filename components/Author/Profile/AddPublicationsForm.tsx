@@ -22,12 +22,16 @@ import { useAlert } from "react-alert";
 import showGenericToast from "~/components/Notifications/lib/showGenericToast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfo, faInfoCircle } from "@fortawesome/pro-solid-svg-icons";
+import { PaperIcon } from "~/config/themes/icons";
+import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
+import UnifiedDocFeedCardPlaceholder from "~/components/UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
 
 export type STEP =
   | "DOI"
   | "NEEDS_AUTHOR_CONFIRMATION"
   | "RESULTS"
   | "ERROR"
+  | "LOADING"
   | "FINISHED";
 type ERROR_TYPE =
   | "DOI_NOT_FOUND"
@@ -39,6 +43,7 @@ export const ORDERED_STEPS: Array<STEP> = [
   "DOI",
   "NEEDS_AUTHOR_CONFIRMATION",
   "RESULTS",
+  "LOADING",
   "FINISHED",
 ];
 
@@ -66,7 +71,7 @@ const AddPublicationsForm = ({
   const [publications, setPublications] = useState<OpenAlexWork[]>([]);
   const [error, setError] = useState<ERROR_TYPE>(null);
   const [isFetching, setIsFetching] = useState<boolean>(false);
-  const [step, setStep] = useState<STEP>("DOI");
+  const [step, setStep] = useState<STEP>("LOADING");
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
@@ -278,7 +283,7 @@ const AddPublicationsForm = ({
               disabled={selectedPaperIds.length === 0}
               onClick={async () => {
                 try {
-                  setStep("FINISHED");
+                  setStep("LOADING");
                   const response = await addPublicationsToAuthor({
                     authorId: currentUser?.authorProfile.id,
                     openAlexPublicationIds: selectedPaperIds,
@@ -297,6 +302,23 @@ const AddPublicationsForm = ({
             >
               Add Publications
             </Button>
+          </div>
+        </div>
+      )}
+      {step === "LOADING" && (
+        <div>
+          <div style={{ display: "flex", justifyContent: "center", }}>
+            <PaperIcon withAnimation width={60} height={60} color={`#aeaeae`} />
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", marginTop: 15,     fontSize: 22,
+    fontWeight: 500,
+    textAlign: "center",
+    marginBottom: 15 }}>
+            Fetching papers...
+          </div>
+          <div style={{ textAlign: "center",     color: colors.MEDIUM_GREY2(),
+    fontSize: 18, }}>
+            This may take a few minutes. We will notify you when the process is complete.
           </div>
         </div>
       )}

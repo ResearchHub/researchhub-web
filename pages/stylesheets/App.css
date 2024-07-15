@@ -1,3 +1,33 @@
+@keyframes downloadAnimation {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+}
+
+@keyframes moveDown {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100px);
+    opacity: 1;
+  }
+}
+
+.withAnimation {
+  animation: downloadAnimation 3s infinite;
+}
+
 :root {
   --zoom-multiplier: 1; /* Initial multiplier value */
   --base-font-size: 18px; /* Base font size */

@@ -66,6 +66,14 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
     setPublicationsSubstep(step);
   };
 
+  useEffect(() => {
+    if (!isOpen) {
+      // Reset modal state
+      setStep("PUBLICATIONS");
+      setPublicationsSubstep("DOI");
+    }
+  }, [isOpen])
+
   return (
     <>
       <div onClick={() => setIsOpen(!isOpen)}>{children}</div>
@@ -74,8 +82,6 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
         hideClose={false}
         closeModal={() => {
           setIsOpen(false);
-          setStep("PUBLICATIONS");
-          setPublicationsSubstep("DOI");
         }}
         zIndex={1000000}
         modalContentStyle={styles.modalStyle}
@@ -199,14 +205,19 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
 
                 </div>
               )}
-                <div className={css(styles.formWrapper)}>
-                  {/* @ts-ignore legacy */}
-                  <AddPublicationsForm
-                    onStepChange={handleStepChangeOfPublicationsFlow}
-                    allowDoThisLater
-                    onDoThisLater={() => setIsOpen(false)}
-                  />
+              <div className={css(styles.formWrapper)}>
+                {/* @ts-ignore legacy */}
+                <AddPublicationsForm
+                  onStepChange={handleStepChangeOfPublicationsFlow}
+                  allowDoThisLater
+                  onDoThisLater={() => setIsOpen(false)}
+                />
+              </div>
+              {publicationsSubstep === "LOADING" && (
+                <div style={{ marginTop: 60, }}>
+                  <Button fullWidth onClick={() => setIsOpen(false)}>Close popup</Button>
                 </div>
+              )}
               </div>
             )}
           </div>
