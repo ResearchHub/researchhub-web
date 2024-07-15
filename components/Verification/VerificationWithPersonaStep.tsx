@@ -45,8 +45,6 @@ const VerificationWithPersonaStep = ({
         environmentId={process.env.WITH_PERSONA_ENVIRONMENT_ID}
         referenceId={`${currentUser!.id}`}
         onLoad={() => {
-
-          console.log('hi')
           setIsPersonaLoaded(true);
         }}
         onComplete={({ inquiryId, status }) => {

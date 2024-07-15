@@ -15,13 +15,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartLine, faUser } from "@fortawesome/pro-solid-svg-icons";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import VerifyIdentityBreadcrumbs from "./VerifyIdentityBreadcrumbs";
+import VerifiedBadge from "./VerifiedBadge";
+import ALink from "../ALink";
+import Image from "next/image";
+import { PaperIcon } from "~/config/themes/icons";
+import { faInfo, faInfoCircle } from "@fortawesome/pro-light-svg-icons";
+import {STEP as PUBLICATION_STEP} from "../Author/Profile/AddPublicationsForm";
 
 interface Props {
   wsResponse: any;
   children: any;
 }
 
-export type STEP = "IDENTITY" | "PUBLICATIONS" | "SUCCESS";
+export type STEP = "INTRO" | "IDENTITY" | "PUBLICATIONS" | "SUCCESS";
 
 const VerificationWithPersonaStep = dynamic(
   () => import("./VerificationWithPersonaStep"),
@@ -31,7 +37,8 @@ const VerificationWithPersonaStep = dynamic(
 );
 
 const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
-  const [step, setStep] = useState<STEP>("IDENTITY");
+  const [step, setStep] = useState<STEP>("PUBLICATIONS");
+  const [publicationsSubstep, setPublicationsSubstep] = useState<PUBLICATION_STEP>("DOI");
   const [isOpen, setIsOpen] = useState(true);
   const [notificationsReceived, setNotificationsReceived] = useState<
     Notification[]
@@ -56,7 +63,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
   }, [wsResponse]);
 
   const handleStepChangeOfPublicationsFlow = ({ step }) => {
-    // Handle this step
+    setPublicationsSubstep(step);
   };
 
   return (
@@ -64,60 +71,134 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
       <div onClick={() => setIsOpen(!isOpen)}>{children}</div>
       <BaseModal
         isOpen={isOpen}
-        hideClose={true}
-        closeModal={() => setIsOpen(false)}
+        hideClose={false}
+        closeModal={() => {
+          setIsOpen(false);
+          setStep("PUBLICATIONS");
+          setPublicationsSubstep("DOI");
+        }}
         zIndex={1000000}
         modalContentStyle={styles.modalStyle}
         titleStyle={styles.modalTitle}
       >
         <>
-          <VerifyIdentityBreadcrumbs step={step} />
+          {step !== "INTRO" && (
+            <VerifyIdentityBreadcrumbs step={step} />
+          )}
           <div className={css(styles.body)}>
-            {step === "IDENTITY" && (
-              <div style={{ height: 650 }}>
-                <VerificationWithPersonaStep onComplete={({ status, inquiryId }) => 
-                  console.log('completed', status, inquiryId)
-                } />
-              </div>
-            )}
-            {step === "PUBLICATIONS" && (
-              <>
+            {step === "INTRO" && (
+              <div style={{ marginTop: 25, }}>
+
+                <div className={css(styles.badgeWrapper)}>
+                  <VerifiedBadge height={50} width={50} />
+                </div>
                 <div className={css(styles.title)}>
-                  Let's verify your publication history
+                  Verify identity to earn RSC rewards on your publications
                 </div>
                 <div className={css(styles.description)}>
-                  Enter a DOI for any paper you've published and we will fetch
-                  the rest of your works.
+                  First authors on Open Access papers are eligible for rewards. Earn rewards whenever your paper gets cited or upvoted.
+                  <p style={{ marginTop: 10, }}>
+                    <ALink theme={"solidPrimary"} href="/">Learn more about our reward algorithm</ALink>
+                  </p>
                 </div>
-                <div className={css(styles.nextText)}>What happens next</div>
+
+                <div className={css(styles.steps)}>
+                  <div className={css(styles.stepExplanation)}>
+
+                    <div className={css(styles.stepIcon)}>
+                      <Image
+                        alt="Scan"
+                        width={36}
+                        height={36}
+                        src={"/static/icons/scan.svg"}
+                      />
+                    </div>
+
+                    Step 1: Verify identity
+                    <span className={css(styles.link)}>Why is this needed <FontAwesomeIcon icon={faInfoCircle} /></span>
+                  </div>  
+                  <div className={css(styles.stepExplanation)}>
+                    <div className={css(styles.stepIcon)}>
+                      <PaperIcon
+                        width={30}
+                        height={30}
+                        color={"#AAA8B4"}
+                        onClick={undefined}
+                      />
+                    </div>
+                    Step 2: Verify identity
+                  </div>
+                  
+                  <div className={css(styles.stepExplanation)}>
+                    <div className={css(styles.stepIcon)}>
+                      <ResearchCoinIcon
+                        version={4}
+                        width={28}
+                        height={28}
+                        color={"#AAA8B4"} />
+                      </div>
+                    Step 3: View rewards
+                  </div>
+                </div>
+                <div className={css(styles.startButtonWrapper)}>
+                  <Button
+                    fullWidth
+                    onClick={() => setStep("IDENTITY")}
+                    theme="solidPrimary"
+                    style={{ width: 200, margin: "20px auto", }}> 
+                    Start
+                    </Button>
+                </div>
+              </div>  
+            )}
+            <div style={{ height: 650, display: step === "IDENTITY" ? "block" : "none" }}>
+              <VerificationWithPersonaStep onComplete={({ status, inquiryId }) => 
+                setStep("PUBLICATIONS")
+              } />
+            </div>
+            {step === "PUBLICATIONS" && (
+              <div className={css(styles.publicationsWrapper)}>
+              {publicationsSubstep === "DOI" && (
                 <div>
-                  <div className={css(styles.lineItem)}>
-                    <FontAwesomeIcon
-                      fontSize={20}
-                      icon={faUser}
-                      color={colors.MEDIUM_GREY2()}
-                    />
-                    We will build your researcher profile
+                  <div className={css(styles.title)}>
+                    Let's verify your publication history
                   </div>
-                  <div className={css(styles.lineItem)}>
-                    <FontAwesomeIcon
-                      fontSize={20}
-                      icon={faChartLine}
-                      color={colors.MEDIUM_GREY2()}
-                    />
-                    We will calculate your hub specific reputation
+                  <div className={css(styles.description)}>
+                    Enter a DOI for any paper you've published and we will fetch
+                    the rest of your works.
                   </div>
-                  <div className={css(styles.lineItem)}>
-                    <ResearchCoinIcon
-                      version={4}
-                      width={20}
-                      height={20}
-                      color={colors.MEDIUM_GREY2()}
-                    />
-                    We will identify your prior publications that are eligible
-                    for rewards
+                  <div className={css(styles.nextText)}>What happens next</div>
+                  <div>
+                    <div className={css(styles.lineItem)}>
+                      <FontAwesomeIcon
+                        fontSize={20}
+                        icon={faUser}
+                        color={colors.MEDIUM_GREY2()}
+                      />
+                      We will build your researcher profile
+                    </div>
+                    <div className={css(styles.lineItem)}>
+                      <FontAwesomeIcon
+                        fontSize={20}
+                        icon={faChartLine}
+                        color={colors.MEDIUM_GREY2()}
+                      />
+                      We will calculate your hub specific reputation
+                    </div>
+                    <div className={css(styles.lineItem)}>
+                      <ResearchCoinIcon
+                        version={4}
+                        width={20}
+                        height={20}
+                        color={colors.MEDIUM_GREY2()}
+                      />
+                      We will identify your prior publications that are eligible
+                      for rewards
+                    </div>
                   </div>
+
                 </div>
+              )}
                 <div className={css(styles.formWrapper)}>
                   {/* @ts-ignore legacy */}
                   <AddPublicationsForm
@@ -126,7 +207,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
                     onDoThisLater={() => setIsOpen(false)}
                   />
                 </div>
-              </>
+              </div>
             )}
           </div>
         </>
@@ -136,6 +217,39 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
 };
 
 const styles = StyleSheet.create({
+  startButtonWrapper: {
+    width: "100%",
+    marginTop: 25,
+  },
+  link: {
+    color: colors.NEW_BLUE(),
+    cursor: "pointer",
+    fontWeight: 400,
+  },
+  steps: {
+    fontWeight: 500,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent : "center",
+  },
+  stepIcon: {
+    width: 40,
+  },
+  stepExplanation: {
+    display: "flex",
+    columnGap: "10px",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  badgeWrapper: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: 20,
+  
+  },
+  publicationsWrapper: {
+    marginTop: 40,
+  },
   title: {
     fontSize: 26,
     fontWeight: 500,
@@ -144,7 +258,7 @@ const styles = StyleSheet.create({
   description: {
     color: colors.MEDIUM_GREY2(),
     fontSize: 18,
-    width: 400,
+    width: "100%",
     textAlign: "center",
     margin: "10px auto 40px auto",
   },
@@ -173,7 +287,7 @@ const styles = StyleSheet.create({
   },
   modalStyle: {
     padding: "20px 20px",
-    width: 500,
+    width: 550,
   },
   modalContentStyle: {
     padding: "10px 20px",
