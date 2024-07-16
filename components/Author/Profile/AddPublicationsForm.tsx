@@ -22,7 +22,7 @@ import { useAlert } from "react-alert";
 import showGenericToast from "~/components/Notifications/lib/showGenericToast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfo, faInfoCircle } from "@fortawesome/pro-solid-svg-icons";
-import { faInfoCircle as faInfoCircleLight  } from "@fortawesome/pro-light-svg-icons";
+import { faInfoCircle as faInfoCircleLight } from "@fortawesome/pro-light-svg-icons";
 import { PaperIcon } from "~/config/themes/icons";
 import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
 import UnifiedDocFeedCardPlaceholder from "~/components/UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
@@ -76,7 +76,7 @@ const AddPublicationsForm = ({
   const [publications, setPublications] = useState<OpenAlexWork[]>(sample);
   const [error, setError] = useState<ERROR_TYPE>(null);
   const [isFetching, setIsFetching] = useState<boolean>(false);
-  const [step, setStep] = useState<STEP>("RESULTS");
+  const [step, setStep] = useState<STEP>("DOI");
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
@@ -102,8 +102,6 @@ const AddPublicationsForm = ({
       console.error(`Failed to parse notification: ${e}`);
     }
   }, [wsResponse]);
-
-
 
   const handleFetchPublications = async ({
     doi,
@@ -227,62 +225,74 @@ const AddPublicationsForm = ({
               (author) => author.id === selectedAuthorId
             )}
           />
-          <Button
-            variant="text"
-            onClick={() => {
-              handleFetchPublications({
-                doi: paperDoi,
-                authorId: selectedAuthorId,
-              });
-            }}
-          >
-            Next
-          </Button>
+          <div style={{ justifyContent: "flex-end", display: "flex" }}>
+            <div className={css(styles.nextBtnWrapper)}>
+              <Button
+                fullWidth
+                onClick={() => {
+                  handleFetchPublications({
+                    doi: paperDoi,
+                    authorId: selectedAuthorId,
+                  });
+                }}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
         </div>
       )}
       {step === "RESULTS" && (
         <div>
-          <div>
-            {selectedAuthor && (
-              <div className={css(styles.authorWrapper)}>
-                <div className={css(styles.author)}>
-                  <Avatar sx={{ height: 24, width: 24, fontSize: 14 }}>
-                    {selectedAuthor.initials}
-                  </Avatar>
-                  {selectedAuthor.displayName}
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div className={css(styles.selectAll)}>
+              <CheckBox
+                active={selectedPaperIds.length === publications.length}
+                isSquare={true}
+                small={true}
+                onChange={(a, b) => {
+                  if (selectedPaperIds.length === publications.length) {
+                    setSelectedPaperIds([]);
+                  } else {
+                    setSelectedPaperIds(
+                      publications.map((publication) => publication.id)
+                    );
+                  }
+                }}
+                label={undefined}
+                labelStyle={undefined}
+              />
+              Select All
+            </div>
+            <div>
+              {selectedAuthor && (
+                <div className={css(styles.authorWrapper)}>
+                  <div className={css(styles.author)}>
+                    <Avatar sx={{ height: 24, width: 24, fontSize: 14 }}>
+                      {selectedAuthor.initials}
+                    </Avatar>
+                    {selectedAuthor.displayName}
+                  </div>
+                  <span
+                    className={css(styles.changeAuthor)}
+                    onClick={() => setStep("NEEDS_AUTHOR_CONFIRMATION")}
+                  >
+                    (Change)
+                  </span>
                 </div>
-                <span
-                  className={css(styles.changeAuthor)}
-                  onClick={() => setStep("NEEDS_AUTHOR_CONFIRMATION")}
-                >
-                  (Change)
-                </span>
-              </div>
-            )}
-          </div>
-          <div className={css(styles.selectAll)}>
-            <CheckBox
-              active={selectedPaperIds.length === publications.length}
-              isSquare={true}
-              small={true}
-              onChange={(a, b) => {
-                if (selectedPaperIds.length === publications.length) {
-                  setSelectedPaperIds([]);
-                } else {
-                  setSelectedPaperIds(
-                    publications.map((publication) => publication.id)
-                  );
-                }
-              }}
-              label={undefined}
-              labelStyle={undefined}
-            />
-            Select All
+              )}
+            </div>
           </div>
 
           <div className={css(styles.publicationsWrapper)}>
             {publications.map((publication) => (
-              <div className={css(styles.publicationWrapper, selectedPaperIds.includes(publication.id) && styles.selectedPublication)}>
+              <div
+                className={css(
+                  styles.publicationWrapper,
+                  selectedPaperIds.includes(publication.id) &&
+                    styles.selectedPublication
+                )}
+              >
                 <CheckBox
                   active={selectedPaperIds.includes(publication.id)}
                   isSquare={true}
@@ -304,12 +314,22 @@ const AddPublicationsForm = ({
               </div>
             ))}
           </div>
-          <div className={css(styles.buttonsWrapper, styles.buttonsWrapperForResults)}>
-
+          <div
+            className={css(
+              styles.buttonsWrapper,
+              styles.buttonsWrapperForResults
+            )}
+          >
             <div className={css(styles.paperMissingText)}>
-              <FontAwesomeIcon fontSize={18} icon={faInfoCircleLight} style={{ marginRight: 5 }} />
-              Don’t see all your papers?<br/>
-              You will have the ability to add additional papers in your author profile.
+              <FontAwesomeIcon
+                fontSize={18}
+                icon={faInfoCircleLight}
+                style={{ marginRight: 5 }}
+              />
+              Don’t see all your papers?
+              <br />
+              You will have the ability to add additional papers in your author
+              profile.
             </div>
 
             <Button
@@ -340,14 +360,21 @@ const AddPublicationsForm = ({
       )}
       {step === "LOADING" && (
         <div>
-          <div style={{ display: "flex", justifyContent: "center", }}>
-            <PaperIcon withAnimation width={60} height={60} color={`#aeaeae`} onClick={undefined} />
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <PaperIcon
+              withAnimation
+              width={60}
+              height={60}
+              color={`#aeaeae`}
+              onClick={undefined}
+            />
           </div>
           <div className={css(styles.loadingTitle)}>
             Adding publications to your profile...
           </div>
           <div className={css(styles.loadingText)}>
-            This may take a few minutes. We will notify you when the process is complete. Feel free to close this popup.
+            This may take a few minutes. We will notify you when the process is
+            complete. Feel free to close this popup.
           </div>
         </div>
       )}
@@ -368,16 +395,19 @@ const AddPublicationsForm = ({
 
 const styles = StyleSheet.create({
   loadingTitle: {
-    display: "flex", justifyContent: "center", marginTop: 15,     fontSize: 22,
+    display: "flex",
+    justifyContent: "center",
+    marginTop: 15,
+    fontSize: 22,
     fontWeight: 500,
     textAlign: "center",
-    marginBottom: 15    
+    marginBottom: 15,
   },
   loadingText: {
     textAlign: "center",
     color: colors.MEDIUM_GREY2(),
     fontSize: 18,
-  },    
+  },
   selectedPublication: {
     border: `1px solid ${colors.NEW_BLUE(1.0)}`,
   },
@@ -399,20 +429,25 @@ const styles = StyleSheet.create({
     columnGap: "10px",
   },
   buttonsWrapperForResults: {
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   nextBtnWrapper: {
     width: 100,
   },
   author: {
     display: "flex",
+    alignItems: "center",
+    columnGap: "5px",
   },
   authorWrapper: {
     display: "flex",
+    alignItems: "center",
+    columnGap: "10px",
   },
   changeAuthor: {
     color: colors.NEW_BLUE(),
     cursor: "pointer",
+    fontSize: 12,
   },
   publicationsWrapper: {
     overflowY: "scroll",

@@ -304,7 +304,7 @@ export const PaperIcon = ({
   onClick,
   width = 16,
   height = 16,
-  withAnimation = true,
+  withAnimation = false,
   overrideStyle = null,
   color = "currentColor",
 }) => {
