@@ -63,7 +63,7 @@ export const addPublicationsToAuthor = ({
     url,
     API.POST_CONFIG({
       openalex_ids: openAlexPublicationIds,
-      openalex_author_id: "https://openalex.org/A5068835581" //openAlexAuthorId,
+      openalex_author_id: openAlexAuthorId,
     })
   );
 };

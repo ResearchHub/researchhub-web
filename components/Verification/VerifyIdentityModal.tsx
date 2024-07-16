@@ -42,7 +42,7 @@ const VerificationWithPersonaStep = dynamic(
 );
 
 const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
-  const [step, setStep] = useState<STEP>("PUBLICATIONS");
+  const [step, setStep] = useState<STEP>("INTRO");
   const [publicationsSubstep, setPublicationsSubstep] =
     useState<PUBLICATION_STEP>("DOI");
   const [isOpen, setIsOpen] = useState(false);
@@ -86,7 +86,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
   useEffect(() => {
     if (!isOpen) {
       // Reset modal state
-      setStep("PUBLICATIONS");
+      setStep("INTRO");
       setPublicationsSubstep("DOI");
     }
   }, [isOpen]);

@@ -26,7 +26,7 @@ import { faArrowLeft, faInfoCircle as faInfoCircleLight } from "@fortawesome/pro
 import { PaperIcon } from "~/config/themes/icons";
 import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
 import UnifiedDocFeedCardPlaceholder from "~/components/UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
-import sample from "~/components/Publication/lib/sample.json";
+
 import {
   Notification,
   parseNotification,
@@ -74,7 +74,7 @@ const AddPublicationsForm = ({
   const [availableAuthors, setAvailableAuthors] = useState<OpenAlexAuthor[]>(
     []
   );
-  const [publications, setPublications] = useState<OpenAlexWork[]>(sample);
+  const [publications, setPublications] = useState<OpenAlexWork[]>([]);
   const [error, setError] = useState<ERROR_TYPE>(null);
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [step, setStep] = useState<STEP>("DOI");
