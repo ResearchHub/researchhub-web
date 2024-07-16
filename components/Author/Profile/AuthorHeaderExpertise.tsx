@@ -4,6 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import ReputationGauge from "../lib/ReputationGauge";
 import { useState } from "react";
 import ExpertiseModal from "../lib/ExpertiseModal";
+import { toTitleCase } from "~/config/utils/string";
 
 const REP_GAUGES_TO_SHOW = 3;
 
@@ -36,6 +37,7 @@ const styles = StyleSheet.create({
   reputationHubLabel: {
     fontSize: 14,
     marginBottom: 5,  
+    textTransform: "capitalize",
   },
   showMore: {
     color: colors.NEW_BLUE(),
