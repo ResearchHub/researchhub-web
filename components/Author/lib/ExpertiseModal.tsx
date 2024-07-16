@@ -26,12 +26,12 @@ const ExpertiseModal = ({ profile, isModalOpen = true, handleModalClose }: {
           Below is the full hub-specific reputation of {profile.firstName} {profile.lastName}.
           Reputation is based on a variety of factors including upvotes and citations. <ALink target="_blank" overrideStyle={styles.link} theme="linkThemeDefault" href="/">Learn more about our reputation algorithm</ALink>
         </div>
-        {profile.reputationList.map((rep, index) => (
-          <div className={css(styles.reputation)}>
-            <div className={css(styles.reputationHubLabel)}>{rep.hub.name}</div>
-            <ReputationGauge reputation={rep} key={`reputation-` + index} />
-          </div>
-        ))}
+          {profile.reputationList.map((rep, index) => (
+            <div className={css(styles.reputation)}>
+              <div className={css(styles.reputationHubLabel)}>{rep.hub.name}</div>
+              <ReputationGauge reputation={rep} key={`reputation-` + index} />
+            </div>
+          ))}
       </div>
 
     </BaseModal>
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   modalStyle: {
-    width: 600,
+    width: 550,
   },
   modalContentStyle: {
     padding: "40px 30px 30px 30px",

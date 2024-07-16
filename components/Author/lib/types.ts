@@ -16,7 +16,7 @@ export type FullAuthorProfile = {
   firstName: string;
   lastName: string;
   isVerified: boolean;
-  hasVerifiedWorks: boolean;
+  hasVerifiedPublications: boolean;
   profileImage?: string;
   headline?: string;
   description?: string;
@@ -68,7 +68,7 @@ export const parseReputationList = (raw: any): Array<Reputation> => {
 export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
   const parsed = {
     id: raw.id,
-    hasVerifiedWorks: false,
+    hasVerifiedPublications: false,
     profileImage: raw.profile_image,
     firstName: raw.first_name,
     lastName: raw.last_name,

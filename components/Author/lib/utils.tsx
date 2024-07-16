@@ -2,6 +2,11 @@ import { CitedAuthorAchievementIcon, OpenAccessAchievementIcon } from "~/config/
 import { Achievement, FullAuthorProfile } from "./types";
 import { ReactElement } from "react";
 import { Tab } from "~/components/HorizontalTabBar";
+import colors from "~/config/themes/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQuestion } from "@fortawesome/pro-solid-svg-icons";
+import { StyleSheet, css } from "aphrodite";
+import Tooltip from "@mui/material/Tooltip";
 
 export const getAchievmentDetails = ({ achievement, profile }: { achievement: Achievement, profile: FullAuthorProfile }): { icon: ReactElement, title: string, details: string } => {
   if (achievement === "OPEN_ACCESS") {
@@ -38,7 +43,21 @@ export const buildAuthorTabs = ({ router, profile }: { router: any, profile: Ful
     value: "publications",
     href: `/author/${profile.id}/publications`,
     isSelected: router.pathname === "/author/[authorId]/publications",
-    pillContent: profile.summaryStats.worksCount.toLocaleString(),
+    pillContentStyle: profile.hasVerifiedPublications ? undefined : styles.unverified,
+    pillContent: profile.hasVerifiedPublications ? (
+      profile.summaryStats.worksCount.toLocaleString()
+    ) : (
+      <Tooltip title={"Publications have not yet been verified by author."} componentsProps={{
+        tooltip: {
+          sx: {
+            fontSize: 14,
+            bgcolor: colors.YELLOW2(),
+          },
+        },
+      }}>
+        <FontAwesomeIcon icon={faQuestion} />
+      </Tooltip>
+    )
   }, {
     label: "Peer Reviews",
     value: "peer-reviews",
@@ -56,3 +75,9 @@ export const buildAuthorTabs = ({ router, profile }: { router: any, profile: Ful
     isSelected: router.pathname === "/author/[authorId]/bounties",
   }]
 }
+
+const styles = StyleSheet.create({
+  unverified: {
+    background: colors.YELLOW2(), color: "white", borderRadius: 4, padding: "4px 8px",
+  }
+})

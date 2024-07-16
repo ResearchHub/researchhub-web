@@ -11,8 +11,7 @@ import AuthorClaimProfileNotification from "~/components/Author/Profile/AuthorCl
 import Pill from "~/components/shared/Pill";
 import colors from "~/config/themes/colors";
 import { Tooltip } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationCircle, faQuestionCircle } from "@fortawesome/pro-solid-svg-icons";
+import PendingBadge from "~/components/shared/PendingBadge";
 
 
 const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
@@ -20,7 +19,7 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
   const getExpertiseTooltipContent = () => {
     return (
       <div className={css(styles.expertiseContent)}>
-        <div className={css(styles.expertiseContentBody)}>The expertise shown below is only an estimate because the author has not yet verified the works in their profile.</div>
+        <div className={css(styles.expertiseContentBody)}>The expertise shown below is only an estimate because the author has not yet verified the publications in their profile.</div>
       </div>      
     )    
   }
@@ -70,23 +69,21 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
         <div className={css(styles.section, styles.subSection, styles.expertiseSectionUnverified)}>
           <div className={css(styles.sectionHeader)}>
             <div>
-              {!profile.hasVerifiedWorks &&
+              {!profile.hasVerifiedPublications &&
                 <Tooltip title={getExpertiseTooltipContent()} componentsProps={{
                   tooltip: {
                     sx: {
-                      bgcolor: 'black',
+                      fontSize: 14,
+                      bgcolor: colors.YELLOW2(),
                     },
                   },
                 }}>
                   <div className={css(styles.expertiseHeader)}>
-                    Expertise
-                    <FontAwesomeIcon fontSize={18} icon={faExclamationCircle} color={colors.YELLOW2()} />
+                    Reputation
+                    <PendingBadge />
                   </div>
                 </Tooltip>                
               }
-            </div>
-            <div className={css(styles.repScore)}>
-              {profile.reputation.score.toLocaleString()}
             </div>
           </div>          
           <AuthorHeaderExpertise profile={profile} />
@@ -95,8 +92,6 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
     </div>
   )
 }
-
-
 const styles = StyleSheet.create({
   sectionHeader: {
     color: "rgb(139, 137, 148, 1)",
@@ -117,10 +112,8 @@ const styles = StyleSheet.create({
     cursor: "pointer",
   },
   expertiseContentWrapper: {
-    background: "black",  
   },
   expertiseContent: {
-    background: "black",
   },
   expertiseContentTitle: {
     fontSize: 16,
