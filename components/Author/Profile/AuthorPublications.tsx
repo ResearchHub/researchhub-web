@@ -1,20 +1,9 @@
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import {
-  fetchAuthorProfile,
-  fetchAuthorOverview,
   PaginatedPublicationResponse,
   fetchAuthorPublications,
   parsePublicationResponse,
 } from "~/components/Author/lib/api";
-import {
-  FullAuthorProfile,
-  parseFullAuthorProfile,
-} from "~/components/Author/lib/types";
-import HorizontalTabBar from "~/components/HorizontalTabBar";
 import { css, StyleSheet } from "aphrodite";
-import { buildAuthorTabs } from "~/components/Author/lib/utils";
-import { useRouter } from "next/router";
-import AuthorProfileHeader from "~/components/Author/Profile/AuthorProfileHeader";
 import { useEffect, useState } from "react";
 import { getDocumentCard } from "~/components/UnifiedDocFeed/utils/getDocumentCard";
 import AddPublicationsModal from "~/components/Publication/AddPublicationsModal";

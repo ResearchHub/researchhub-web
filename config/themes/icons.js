@@ -304,7 +304,7 @@ export const PaperIcon = ({
   onClick,
   width = 16,
   height = 16,
-  withAnimation = true,
+  withAnimation = false,
   overrideStyle = null,
   color = "currentColor",
 }) => {
@@ -323,6 +323,7 @@ export const PaperIcon = ({
         viewBox="0 0 12 14"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        className={withAnimation ? "withAnimation" : ""}
       >
         <path
           fillRule="evenodd"
@@ -518,6 +519,10 @@ export const MedalIcon = ({
 };
 
 const styles = StyleSheet.create({
+  withAnimation: {
+    animation: "downloadAnimation 3s infinite",
+  },
+
   iconWrapper: {
     padding: 8,
     marginLeft: 8,

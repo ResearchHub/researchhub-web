@@ -18,12 +18,27 @@ import {
   addPublicationsToAuthor,
 } from "~/components/Publication/lib/api";
 import { useSelector, connect } from "react-redux";
+import { useAlert } from "react-alert";
+import showGenericToast from "~/components/Notifications/lib/showGenericToast";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfo, faInfoCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faArrowLeft, faInfoCircle as faInfoCircleLight } from "@fortawesome/pro-light-svg-icons";
+import { PaperIcon } from "~/config/themes/icons";
+import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
+import UnifiedDocFeedCardPlaceholder from "~/components/UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
+
+import {
+  Notification,
+  parseNotification,
+} from "~/components/Notifications/lib/types";
+import IconButton from "~/components/Icons/IconButton";
 
 export type STEP =
   | "DOI"
   | "NEEDS_AUTHOR_CONFIRMATION"
   | "RESULTS"
   | "ERROR"
+  | "LOADING"
   | "FINISHED";
 type ERROR_TYPE =
   | "DOI_NOT_FOUND"
@@ -35,15 +50,23 @@ export const ORDERED_STEPS: Array<STEP> = [
   "DOI",
   "NEEDS_AUTHOR_CONFIRMATION",
   "RESULTS",
+  "LOADING",
   "FINISHED",
 ];
 
 interface Props {
   wsResponse: any;
   onStepChange?: ({ step }: { step: STEP }) => void;
+  onDoThisLater?: () => void;
+  allowDoThisLater: boolean;
 }
 
-const AddPublicationsForm = ({ wsResponse, onStepChange }: Props) => {
+const AddPublicationsForm = ({
+  wsResponse,
+  onStepChange,
+  onDoThisLater,
+  allowDoThisLater,
+}: Props) => {
   const [paperDoi, setPaperDoi] = useState("");
   const [selectedAuthorId, setSelectedAuthorId] = useState<
     null | undefined | ID
@@ -59,6 +82,27 @@ const AddPublicationsForm = ({ wsResponse, onStepChange }: Props) => {
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
   const [selectedPaperIds, setSelectedPaperIds] = useState<Array<string>>([]);
+  const [notificationsReceived, setNotificationsReceived] = useState<
+    Notification[]
+  >([]);
+
+  useEffect(() => {
+    if (!wsResponse) return;
+
+    try {
+      const incomingNotification = parseNotification(wsResponse);
+      setNotificationsReceived([
+        ...notificationsReceived,
+        incomingNotification,
+      ]);
+
+      if (incomingNotification.type === "PUBLICATIONS_ADDED") {
+        setStep("FINISHED");
+      }
+    } catch (e) {
+      console.error(`Failed to parse notification: ${e}`);
+    }
+  }, [wsResponse]);
 
   const handleFetchPublications = async ({
     doi,
@@ -87,6 +131,24 @@ const AddPublicationsForm = ({ wsResponse, onStepChange }: Props) => {
     }
   };
 
+  const handleDoThisLater = () => {
+    onDoThisLater && onDoThisLater();
+    showGenericToast({
+      body: (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <FontAwesomeIcon
+            fontSize={24}
+            style={{ color: colors.MEDIUM_GREY(), marginRight: 10 }}
+            icon={faInfoCircle}
+          />
+          Visit the 'Publications' tab on your profile to resume
+        </div>
+      ),
+      closeLabel: "OK",
+      withCloseBtn: true,
+    });
+  };
+
   useEffect(() => {
     if (onStepChange) {
       onStepChange({ step });
@@ -105,11 +167,20 @@ const AddPublicationsForm = ({ wsResponse, onStepChange }: Props) => {
 
   return (
     <div>
+      {(step === "RESULTS" || step === "NEEDS_AUTHOR_CONFIRMATION") && (
+        <IconButton overrideStyle={styles.backButton}>
+          <FontAwesomeIcon
+            icon={faArrowLeft}
+            onClick={() => {
+              if (step === "RESULTS" || step === "NEEDS_AUTHOR_CONFIRMATION") {
+                setStep("DOI");
+              }
+            }}
+          />
+        </IconButton>      
+      )}
       {step === "DOI" && (
         <div>
-          <div style={{ fontWeight: 500 }}>
-            Enter a DOI for any paper you authored:
-          </div>
           <FormInput
             error={
               paperDoi &&
@@ -119,6 +190,7 @@ const AddPublicationsForm = ({ wsResponse, onStepChange }: Props) => {
                 : "Paper not found. Please try another DOI.")
             }
             value={paperDoi || ""}
+            label="Enter a DOI for any paper you authored:"
             placeholder={"e.g. 10.1038/s41586-023-06466-x"}
             disabled={isFetching}
             containerStyle={styles.inputContainer}
@@ -126,10 +198,26 @@ const AddPublicationsForm = ({ wsResponse, onStepChange }: Props) => {
               setPaperDoi(value.trim());
             }}
           />
-
-          <Button onClick={() => handleFetchPublications({ doi: paperDoi })}>
-            Next
-          </Button>
+          <div className={css(styles.buttonsWrapper)}>
+            {allowDoThisLater && (
+              <Button
+                onClick={() => handleDoThisLater()}
+                customButtonStyle={styles.doThisLaterButton}
+                variant="text"
+              >
+                Do this later
+              </Button>
+            )}
+            <div className={css(styles.nextBtnWrapper)}>
+              <Button
+                size="med"
+                fullWidth
+                onClick={() => handleFetchPublications({ doi: paperDoi })}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
         </div>
       )}
       {step === "NEEDS_AUTHOR_CONFIRMATION" && (
@@ -150,63 +238,74 @@ const AddPublicationsForm = ({ wsResponse, onStepChange }: Props) => {
               (author) => author.id === selectedAuthorId
             )}
           />
-          <Button
-            variant="text"
-            onClick={() => {
-              handleFetchPublications({
-                doi: paperDoi,
-                authorId: selectedAuthorId,
-              });
-            }}
-          >
-            Next
-          </Button>
+          <div style={{ justifyContent: "flex-end", display: "flex" }}>
+            <div className={css(styles.nextBtnWrapper)}>
+              <Button
+                fullWidth
+                onClick={() => {
+                  handleFetchPublications({
+                    doi: paperDoi,
+                    authorId: selectedAuthorId,
+                  });
+                }}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
         </div>
       )}
       {step === "RESULTS" && (
         <div>
-          <div>
-            Showing results for
-            {selectedAuthor && (
-              <div className={css(styles.authorWrapper)}>
-                <div className={css(styles.author)}>
-                  <Avatar sx={{ height: 24, width: 24, fontSize: 14 }}>
-                    {selectedAuthor.initials}
-                  </Avatar>
-                  {selectedAuthor.displayName}
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div className={css(styles.selectAll)}>
+              <CheckBox
+                active={selectedPaperIds.length === publications.length}
+                isSquare={true}
+                small={true}
+                onChange={(a, b) => {
+                  if (selectedPaperIds.length === publications.length) {
+                    setSelectedPaperIds([]);
+                  } else {
+                    setSelectedPaperIds(
+                      publications.map((publication) => publication.id)
+                    );
+                  }
+                }}
+                label={undefined}
+                labelStyle={undefined}
+              />
+              Select All
+            </div>
+            <div>
+              {selectedAuthor && (
+                <div className={css(styles.authorWrapper)}>
+                  <div className={css(styles.author)}>
+                    <Avatar sx={{ height: 24, width: 24, fontSize: 14 }}>
+                      {selectedAuthor.initials}
+                    </Avatar>
+                    {selectedAuthor.displayName}
+                  </div>
+                  <span
+                    className={css(styles.changeAuthor)}
+                    onClick={() => setStep("NEEDS_AUTHOR_CONFIRMATION")}
+                  >
+                    (Change)
+                  </span>
                 </div>
-                <span
-                  className={css(styles.changeAuthor)}
-                  onClick={() => setStep("NEEDS_AUTHOR_CONFIRMATION")}
-                >
-                  (Change)
-                </span>
-              </div>
-            )}
-          </div>
-          <div className={css(styles.selectAll)}>
-            <CheckBox
-              active={selectedPaperIds.length === publications.length}
-              isSquare={true}
-              small={true}
-              onChange={(a, b) => {
-                if (selectedPaperIds.length === publications.length) {
-                  setSelectedPaperIds([]);
-                } else {
-                  setSelectedPaperIds(
-                    publications.map((publication) => publication.id)
-                  );
-                }
-              }}
-              label={undefined}
-              labelStyle={undefined}
-            />
-            Select All
+              )}
+            </div>
           </div>
 
-          <div className={css(styles.publicationWrapper)}>
+          <div className={css(styles.publicationsWrapper)}>
             {publications.map((publication) => (
-              <>
+              <div
+                className={css(
+                  styles.publicationWrapper,
+                  selectedPaperIds.includes(publication.id) &&
+                    styles.selectedPublication
+                )}
+              >
                 <CheckBox
                   active={selectedPaperIds.includes(publication.id)}
                   isSquare={true}
@@ -225,16 +324,32 @@ const AddPublicationsForm = ({ wsResponse, onStepChange }: Props) => {
                   labelStyle={undefined}
                 />
                 <VerificationPaperResult result={publication} />
-              </>
+              </div>
             ))}
           </div>
-          <div className={css(styles.buttonsWrapper)}>
-            <Button variant="text">Do this later</Button>
+          <div
+            className={css(
+              styles.buttonsWrapper,
+              styles.buttonsWrapperForResults
+            )}
+          >
+            <div className={css(styles.paperMissingText)}>
+              <FontAwesomeIcon
+                fontSize={18}
+                icon={faInfoCircleLight}
+                style={{ marginRight: 5 }}
+              />
+              Don’t see all your papers?
+              <br />
+              You will have the ability to add additional papers in your author
+              profile.
+            </div>
+
             <Button
               disabled={selectedPaperIds.length === 0}
               onClick={async () => {
                 try {
-                  setStep("FINISHED");
+                  setStep("LOADING");
                   const response = await addPublicationsToAuthor({
                     authorId: currentUser?.authorProfile.id,
                     openAlexPublicationIds: selectedPaperIds,
@@ -256,6 +371,26 @@ const AddPublicationsForm = ({ wsResponse, onStepChange }: Props) => {
           </div>
         </div>
       )}
+      {step === "LOADING" && (
+        <div>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <PaperIcon
+              withAnimation
+              width={60}
+              height={60}
+              color={`#aeaeae`}
+              onClick={undefined}
+            />
+          </div>
+          <div className={css(styles.loadingTitle)}>
+            Adding publications to your profile...
+          </div>
+          <div className={css(styles.loadingText)}>
+            This may take a few minutes. We will notify you when the process is
+            complete. Feel free to close this popup.
+          </div>
+        </div>
+      )}
       {step === "ERROR" && (
         <div>
           {error === "ALREADY_CLAIMED_BY_ANOTHER_USER" && (
@@ -272,27 +407,79 @@ const AddPublicationsForm = ({ wsResponse, onStepChange }: Props) => {
 };
 
 const styles = StyleSheet.create({
+  loadingTitle: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: 15,
+    fontSize: 22,
+    fontWeight: 500,
+    textAlign: "center",
+    marginBottom: 15,
+  },
+  loadingText: {
+    textAlign: "center",
+    color: colors.MEDIUM_GREY2(),
+    fontSize: 18,
+  },
+  selectedPublication: {
+    border: `1px solid ${colors.NEW_BLUE(1.0)}`,
+  },
+  paperMissingText: {
+    color: "#7C7989",
+    display: "flex",
+    width: 300,
+    fontSize: 14,
+    columnGap: "10px",
+  },
+  doThisLaterButton: {
+    color: colors.NEW_BLUE(),
+    fontWeight: 400,
+  },
+  buttonsWrapper: {
+    marginTop: 20,
+    display: "flex",
+    justifyContent: "flex-end",
+    columnGap: "10px",
+  },
+  buttonsWrapperForResults: {
+    justifyContent: "space-between",
+  },
+  nextBtnWrapper: {
+    width: 100,
+  },
   author: {
     display: "flex",
+    alignItems: "center",
+    columnGap: "5px",
   },
   authorWrapper: {
     display: "flex",
+    alignItems: "center",
+    columnGap: "10px",
   },
   changeAuthor: {
     color: colors.NEW_BLUE(),
     cursor: "pointer",
+    fontSize: 12,
   },
-  buttonsWrapper: {
-    display: "flex",
-  },
-  publicationWrapper: {
-    maxHeight: 200,
+  publicationsWrapper: {
     overflowY: "scroll",
   },
-  selectAll: {
+  publicationWrapper: {
+    border: `1px solid ${colors.LIGHT_GREY()}`,
     display: "flex",
-    alignItems: "center",
+    padding: 10,
+    alignItems: "baseline",
     marginBottom: 10,
+  },
+  selectAll: {
+    alignItems: "center",
+    marginBottom: 20,
+    marginLeft: 0,
+    // backgroundColor: colors.LIGHT_GREY(1.0),
+    borderRadius: "4px",
+    display: "inline-flex",
+    // padding: "10px 20px",
   },
   inputContainer: {
     marginBottom: 0,
