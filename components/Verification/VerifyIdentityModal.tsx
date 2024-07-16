@@ -38,7 +38,7 @@ const VerificationWithPersonaStep = dynamic(
 
 const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
   const [step, setStep] = useState<STEP>("PUBLICATIONS");
-  const [publicationsSubstep, setPublicationsSubstep] = useState<PUBLICATION_STEP>("DOI");
+  const [publicationsSubstep, setPublicationsSubstep] = useState<PUBLICATION_STEP>("LOADING");
   const [isOpen, setIsOpen] = useState(true);
   const [notificationsReceived, setNotificationsReceived] = useState<
     Notification[]
@@ -157,13 +157,13 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
                 </div>
               </div>  
             )}
-            <div style={{ height: 650, display: step === "IDENTITY" ? "block" : "none" }}>
+            <div style={{  display: step === "IDENTITY" ? "block" : "none" }}>
               <VerificationWithPersonaStep onComplete={({ status, inquiryId }) => 
                 setStep("PUBLICATIONS")
               } />
             </div>
             {step === "PUBLICATIONS" && (
-              <div className={css(styles.publicationsWrapper)}>
+              <div className={css(styles.publicationsWrapper)} style={{ minHeight: publicationsSubstep === "RESULTS" ? 600 : "auto" }}>
               {publicationsSubstep === "DOI" && (
                 <div>
                   <div className={css(styles.title)}>
@@ -202,8 +202,17 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
                       for rewards
                     </div>
                   </div>
-
                 </div>
+              )}
+              {publicationsSubstep === "RESULTS" && (
+                  <div>
+                    <div className={css(styles.title)}>
+                      Review your publication history
+                    </div>
+                    <div className={css(styles.description)}>
+                      We fetched some of your publications. We may have mislabeled a paper or two so please select only the ones that you have authored or co-authored.
+                    </div>
+                  </div>
               )}
               <div className={css(styles.formWrapper)}>
                 {/* @ts-ignore legacy */}

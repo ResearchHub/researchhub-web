@@ -22,9 +22,11 @@ import { useAlert } from "react-alert";
 import showGenericToast from "~/components/Notifications/lib/showGenericToast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfo, faInfoCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faInfoCircle as faInfoCircleLight  } from "@fortawesome/pro-light-svg-icons";
 import { PaperIcon } from "~/config/themes/icons";
 import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
 import UnifiedDocFeedCardPlaceholder from "~/components/UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
+import sample from "~/components/Publication/lib/sample.json";
 
 export type STEP =
   | "DOI"
@@ -68,10 +70,10 @@ const AddPublicationsForm = ({
   const [availableAuthors, setAvailableAuthors] = useState<OpenAlexAuthor[]>(
     []
   );
-  const [publications, setPublications] = useState<OpenAlexWork[]>([]);
+  const [publications, setPublications] = useState<OpenAlexWork[]>(sample);
   const [error, setError] = useState<ERROR_TYPE>(null);
   const [isFetching, setIsFetching] = useState<boolean>(false);
-  const [step, setStep] = useState<STEP>("LOADING");
+  const [step, setStep] = useState<STEP>("RESULTS");
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
@@ -215,7 +217,6 @@ const AddPublicationsForm = ({
       {step === "RESULTS" && (
         <div>
           <div>
-            Showing results for
             {selectedAuthor && (
               <div className={css(styles.authorWrapper)}>
                 <div className={css(styles.author)}>
@@ -253,9 +254,9 @@ const AddPublicationsForm = ({
             Select All
           </div>
 
-          <div className={css(styles.publicationWrapper)}>
+          <div className={css(styles.publicationsWrapper)}>
             {publications.map((publication) => (
-              <>
+              <div className={css(styles.publicationWrapper, selectedPaperIds.includes(publication.id) && styles.selectedPublication)}>
                 <CheckBox
                   active={selectedPaperIds.includes(publication.id)}
                   isSquare={true}
@@ -274,11 +275,17 @@ const AddPublicationsForm = ({
                   labelStyle={undefined}
                 />
                 <VerificationPaperResult result={publication} />
-              </>
+              </div>
             ))}
           </div>
-          <div className={css(styles.buttonsWrapper)}>
-            <Button variant="text">Do this later</Button>
+          <div className={css(styles.buttonsWrapper, styles.buttonsWrapperForResults)}>
+
+            <div className={css(styles.paperMissingText)}>
+              <FontAwesomeIcon fontSize={18} icon={faInfoCircleLight} style={{ marginRight: 5 }} />
+              Don’t see all your papers?<br/>
+              You will have the ability to add additional papers in your author profile.
+            </div>
+
             <Button
               disabled={selectedPaperIds.length === 0}
               onClick={async () => {
@@ -308,17 +315,13 @@ const AddPublicationsForm = ({
       {step === "LOADING" && (
         <div>
           <div style={{ display: "flex", justifyContent: "center", }}>
-            <PaperIcon withAnimation width={60} height={60} color={`#aeaeae`} />
+            <PaperIcon withAnimation width={60} height={60} color={`#aeaeae`} onClick={undefined} />
           </div>
-          <div style={{ display: "flex", justifyContent: "center", marginTop: 15,     fontSize: 22,
-    fontWeight: 500,
-    textAlign: "center",
-    marginBottom: 15 }}>
-            Fetching papers...
+          <div className={css(styles.loadingTitle)}>
+            Adding publications to your profile...
           </div>
-          <div style={{ textAlign: "center",     color: colors.MEDIUM_GREY2(),
-    fontSize: 18, }}>
-            This may take a few minutes. We will notify you when the process is complete.
+          <div className={css(styles.loadingText)}>
+            This may take a few minutes. We will notify you when the process is complete. Feel free to close this popup.
           </div>
         </div>
       )}
@@ -338,6 +341,27 @@ const AddPublicationsForm = ({
 };
 
 const styles = StyleSheet.create({
+  loadingTitle: {
+    display: "flex", justifyContent: "center", marginTop: 15,     fontSize: 22,
+    fontWeight: 500,
+    textAlign: "center",
+    marginBottom: 15    
+  },
+  loadingText: {
+    textAlign: "center",
+    color: colors.MEDIUM_GREY2(),
+    fontSize: 18,    
+  },    
+  selectedPublication: {
+    border: `1px solid ${colors.NEW_BLUE(1.0)}`,
+  },
+  paperMissingText: {
+    color: "#7C7989",
+    display: "flex",
+    width: 300,
+    fontSize: 14,
+    columnGap: "10px",
+  },
   doThisLaterButton: {
     color: colors.NEW_BLUE(),
     fontWeight: 400,
@@ -347,6 +371,9 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-end",
     columnGap: "10px",
+  },
+  buttonsWrapperForResults: {
+    justifyContent: "space-between"
   },
   nextBtnWrapper: {
     width: 100,
@@ -361,14 +388,24 @@ const styles = StyleSheet.create({
     color: colors.NEW_BLUE(),
     cursor: "pointer",
   },
-  publicationWrapper: {
-    maxHeight: 200,
+  publicationsWrapper: {
     overflowY: "scroll",
   },
-  selectAll: {
+  publicationWrapper: {
+    border: `1px solid ${colors.LIGHT_GREY()}`,
     display: "flex",
-    alignItems: "center",
+    padding: 10,
+    alignItems: "baseline",
     marginBottom: 10,
+  },
+  selectAll: {
+    alignItems: "center",
+    marginBottom: 20,
+    marginLeft: 0,
+    // backgroundColor: colors.LIGHT_GREY(1.0),
+    borderRadius: "4px",
+    display: "inline-flex",
+    // padding: "10px 20px",
   },
   inputContainer: {
     marginBottom: 0,

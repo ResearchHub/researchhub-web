@@ -9,14 +9,14 @@ const VerifyIdentityBreadcrumbs = ({ step }: { step: STEP }) => {
         <div className={css(styles.num, step === "IDENTITY" && styles.selectedStep)}>
           <div>1</div>
         </div>
-        <div className={css(step === "IDENTITY" && styles.selectedStep)}>Verify Identity</div>
+        <div className={css(step === "IDENTITY" && styles.selectedStepText)}>Verify Identity</div>
       </div>
       <div className={css(styles.line)} style={{ marginRight: -11 }}></div>
       <div className={css(styles.step)}>
         <div className={css(styles.num, step === "PUBLICATIONS" && styles.selectedStep)}>
           <div>2</div>
         </div>
-        <div className={css( step === "PUBLICATIONS" && styles.selectedStep)}>Publication History</div>
+        <div className={css( step === "PUBLICATIONS" && styles.selectedStepText)}>Publication History</div>
       </div>
       <div className={css(styles.line)} style={{ marginLeft: -13 }}></div>
       <div className={css(styles.step)}>
@@ -46,6 +46,9 @@ const styles = StyleSheet.create({
   selectedStep: {
     borderColor: colors.NEW_BLUE(),
     color: colors.NEW_BLUE(),
+  },
+  selectedStepText: {
+    color: colors.BLACK(),
   },
   line: {
     width: 34,

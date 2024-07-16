@@ -3,10 +3,10 @@ import colors from "~/config/themes/colors";
 import { PaperIcon } from "~/config/themes/icons";
 import { HubBadge } from "../Hubs/HubTag";
 import Link from "next/link";
-import { VerificationPaperResult } from "./lib/types";
+import { VerificationPaperResult as VerificationPaperResultType  } from "./lib/types";
 
 interface Props {
-  result: VerificationPaperResult;
+  result: VerificationPaperResultType;
 }
 
 const VerificationPaperResult = ({ result }: Props) => {
@@ -133,7 +133,6 @@ const styles = StyleSheet.create({
     display: "flex",
     columnGap: "10px",
     marginBottom: 15,
-    border: `1px solid ${colors.LIGHT_GREY()}`,
     padding: 12,
     borderRadius: 4,
   },
@@ -142,6 +141,7 @@ const styles = StyleSheet.create({
     columnGap: "10px",
     marginTop: 8,
     flexWrap: "wrap",
+    rowGap: "5px",
   },
   metaWrapper: {
     display: "flex",
