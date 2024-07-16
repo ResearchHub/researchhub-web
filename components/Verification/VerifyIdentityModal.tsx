@@ -21,10 +21,11 @@ import VerifiedBadge from "./VerifiedBadge";
 import ALink from "../ALink";
 import Image from "next/image";
 import { PaperIcon } from "~/config/themes/icons";
-import { faInfo, faInfoCircle } from "@fortawesome/pro-light-svg-icons";
+import { faArrowLeft, faInfo, faInfoCircle } from "@fortawesome/pro-light-svg-icons";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { useRouter } from "next/router";
+import IconButton from "../Icons/IconButton";
 
 interface Props {
   wsResponse: any;
@@ -41,7 +42,7 @@ const VerificationWithPersonaStep = dynamic(
 );
 
 const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
-  const [step, setStep] = useState<STEP>("INTRO");
+  const [step, setStep] = useState<STEP>("PUBLICATIONS");
   const [publicationsSubstep, setPublicationsSubstep] =
     useState<PUBLICATION_STEP>("DOI");
   const [isOpen, setIsOpen] = useState(false);
@@ -85,7 +86,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
   useEffect(() => {
     if (!isOpen) {
       // Reset modal state
-      setStep("INTRO");
+      setStep("PUBLICATIONS");
       setPublicationsSubstep("DOI");
     }
   }, [isOpen]);
@@ -104,7 +105,11 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
         titleStyle={styles.modalTitle}
       >
         <>
-          {step !== "INTRO" && <VerifyIdentityBreadcrumbs step={step} />}
+          {step !== "INTRO" && (
+            <div className={css(styles.breadcrumbsWrapper)}>
+              <VerifyIdentityBreadcrumbs step={step} />
+            </div>
+          )}
           <div className={css(styles.body)}>
             {step === "INTRO" && (
               <div style={{ marginTop: 25 }}>
@@ -187,6 +192,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
                   minHeight: publicationsSubstep === "RESULTS" ? 600 : "auto",
                 }}
               >
+
                 {publicationsSubstep === "DOI" && (
                   <div>
                     <div className={css(styles.title)}>
@@ -270,6 +276,9 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
 };
 
 const styles = StyleSheet.create({
+  breadcrumbsWrapper: {
+    marginTop: 20,
+  },
   startButtonWrapper: {
     width: "100%",
     marginTop: 25,

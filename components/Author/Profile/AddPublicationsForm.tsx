@@ -22,7 +22,7 @@ import { useAlert } from "react-alert";
 import showGenericToast from "~/components/Notifications/lib/showGenericToast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfo, faInfoCircle } from "@fortawesome/pro-solid-svg-icons";
-import { faInfoCircle as faInfoCircleLight } from "@fortawesome/pro-light-svg-icons";
+import { faArrowLeft, faInfoCircle as faInfoCircleLight } from "@fortawesome/pro-light-svg-icons";
 import { PaperIcon } from "~/config/themes/icons";
 import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
 import UnifiedDocFeedCardPlaceholder from "~/components/UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
@@ -31,6 +31,7 @@ import {
   Notification,
   parseNotification,
 } from "~/components/Notifications/lib/types";
+import IconButton from "~/components/Icons/IconButton";
 
 export type STEP =
   | "DOI"
@@ -166,6 +167,18 @@ const AddPublicationsForm = ({
 
   return (
     <div>
+      {(step === "RESULTS" || step === "NEEDS_AUTHOR_CONFIRMATION") && (
+        <IconButton overrideStyle={styles.backButton}>
+          <FontAwesomeIcon
+            icon={faArrowLeft}
+            onClick={() => {
+              if (step === "RESULTS" || step === "NEEDS_AUTHOR_CONFIRMATION") {
+                setStep("DOI");
+              }
+            }}
+          />
+        </IconButton>      
+      )}
       {step === "DOI" && (
         <div>
           <FormInput
