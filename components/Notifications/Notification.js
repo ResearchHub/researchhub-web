@@ -19,6 +19,7 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import colors, { mainNavIcons } from "~/config/themes/colors";
 import { NAVBAR_HEIGHT } from "../Navbar";
 import showGenericToast from "./lib/showGenericToast";
+import { revalidateAuthorProfile } from "~/config/hooks/useCacheControl";
 
 class Notification extends Component {
   constructor(props) {
@@ -62,6 +63,8 @@ class Notification extends Component {
           label: "View",
           body: "Publications have been added to your profile.",
         });
+
+        revalidateAuthorProfile(this.props.auth?.user?.author_profile?.id);
       }
 
       addNotification(notification);
