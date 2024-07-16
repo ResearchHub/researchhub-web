@@ -27,6 +27,10 @@ import { PaperIcon } from "~/config/themes/icons";
 import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
 import UnifiedDocFeedCardPlaceholder from "~/components/UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
 import sample from "~/components/Publication/lib/sample.json";
+import {
+  Notification,
+  parseNotification,
+} from "~/components/Notifications/lib/types";
 
 export type STEP =
   | "DOI"
@@ -62,7 +66,6 @@ const AddPublicationsForm = ({
   onDoThisLater,
   allowDoThisLater,
 }: Props) => {
-  const alert = useAlert();
   const [paperDoi, setPaperDoi] = useState("");
   const [selectedAuthorId, setSelectedAuthorId] = useState<
     null | undefined | ID
@@ -78,6 +81,29 @@ const AddPublicationsForm = ({
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
   const [selectedPaperIds, setSelectedPaperIds] = useState<Array<string>>([]);
+  const [notificationsReceived, setNotificationsReceived] = useState<
+    Notification[]
+  >([]);
+
+  useEffect(() => {
+    if (!wsResponse) return;
+
+    try {
+      const incomingNotification = parseNotification(wsResponse);
+      setNotificationsReceived([
+        ...notificationsReceived,
+        incomingNotification,
+      ]);
+
+      if (incomingNotification.type === "PUBLICATIONS_ADDED") {
+        setStep("FINISHED");
+      }
+    } catch (e) {
+      console.error(`Failed to parse notification: ${e}`);
+    }
+  }, [wsResponse]);
+
+
 
   const handleFetchPublications = async ({
     doi,
@@ -350,7 +376,7 @@ const styles = StyleSheet.create({
   loadingText: {
     textAlign: "center",
     color: colors.MEDIUM_GREY2(),
-    fontSize: 18,    
+    fontSize: 18,
   },    
   selectedPublication: {
     border: `1px solid ${colors.NEW_BLUE(1.0)}`,

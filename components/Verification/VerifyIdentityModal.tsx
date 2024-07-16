@@ -21,6 +21,9 @@ import Image from "next/image";
 import { PaperIcon } from "~/config/themes/icons";
 import { faInfo, faInfoCircle } from "@fortawesome/pro-light-svg-icons";
 import {STEP as PUBLICATION_STEP} from "../Author/Profile/AddPublicationsForm";
+import { ROUTES as WS_ROUTES } from "~/config/ws";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
+import { useRouter } from "next/router";
 
 interface Props {
   wsResponse: any;
@@ -43,6 +46,10 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
   const [notificationsReceived, setNotificationsReceived] = useState<
     Notification[]
   >([]);
+  const auth = useSelector((state: any) => state.auth);
+  const router = useRouter();
+  const currentUser = useCurrentUser()
+
 
   useEffect(() => {
     if (!wsResponse) return;
@@ -64,6 +71,11 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
 
   const handleStepChangeOfPublicationsFlow = ({ step }) => {
     setPublicationsSubstep(step);
+
+    if (step === "FINISHED") {
+      setIsOpen(false);
+      router.push("/author/[authorId]", `/author/${currentUser?.authorProfile.id}`);
+    }
   };
 
   useEffect(() => {
@@ -215,11 +227,15 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
                   </div>
               )}
               <div className={css(styles.formWrapper)}>
-                {/* @ts-ignore legacy */}
+                {/* @ts-ignore */}
                 <AddPublicationsForm
                   onStepChange={handleStepChangeOfPublicationsFlow}
                   allowDoThisLater
                   onDoThisLater={() => setIsOpen(false)}
+                  // @ts-ignore legacy
+                  wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
+                  // @ts-ignore legacy
+                  wsAuth
                 />
               </div>
               {publicationsSubstep === "LOADING" && (
