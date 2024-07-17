@@ -467,32 +467,8 @@ function RootLeftSidebar({
             >
               {isMinimized ? "Comm.." : "Community"}
             </ALink>
-            <span className={css(formattedFooterTxtItem)}>
-              <VerificationModal
-                isModalOpen={isVerificationModalOpen}
-                handleModalClose={() => setIsVerificationModalOpen(false)}
-              />
-              <span
-                className={css(styles.referralProgramItem)}
-                onClick={() => setIsVerificationModalOpen(true)}
-              >
-                {isMinimized ? (
-                  "Verify"
-                ) : (
-                  <>
-                    {"Verify Authorship"}
-                    <VerifiedBadge
-                      height={20}
-                      width={20}
-                      variation="grey"
-                      showTooltipOnHover={false}
-                    />
-                  </>
-                )}
-              </span>
-            </span>
 
-            {process.env.REACT_APP_ENV !== "production" && (
+            {process.env.REACT_APP_ENV !== "production" ? (
               <span className={css(formattedFooterTxtItem)}>
                 {/* @ts-ignore */}
                 <VerifyIdentityModal
@@ -501,8 +477,48 @@ function RootLeftSidebar({
                   // @ts-ignore legacy
                   wsAuth
                 >
-                  {"Verify Identity (v2)"}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      columnGap: 5,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {"Verify Identity"}
+                    <VerifiedBadge
+                      height={20}
+                      width={20}
+                      variation="grey"
+                      showTooltipOnHover={false}
+                    />
+                  </div>
                 </VerifyIdentityModal>
+              </span>
+            ) : (
+              <span className={css(formattedFooterTxtItem)}>
+                <VerificationModal
+                  isModalOpen={isVerificationModalOpen}
+                  handleModalClose={() => setIsVerificationModalOpen(false)}
+                />
+                <span
+                  className={css(styles.referralProgramItem)}
+                  onClick={() => setIsVerificationModalOpen(true)}
+                >
+                  {isMinimized ? (
+                    "Verify"
+                  ) : (
+                    <>
+                      {"Verify Authorship"}
+                      <VerifiedBadge
+                        height={20}
+                        width={20}
+                        variation="grey"
+                        showTooltipOnHover={false}
+                      />
+                    </>
+                  )}
+                </span>
               </span>
             )}
             <ALink

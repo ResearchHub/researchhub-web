@@ -21,7 +21,11 @@ import VerifiedBadge from "./VerifiedBadge";
 import ALink from "../ALink";
 import Image from "next/image";
 import { PaperIcon } from "~/config/themes/icons";
-import { faArrowLeft, faInfo, faInfoCircle } from "@fortawesome/pro-light-svg-icons";
+import {
+  faArrowLeft,
+  faInfo,
+  faInfoCircle,
+} from "@fortawesome/pro-light-svg-icons";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { useRouter } from "next/router";
@@ -42,7 +46,7 @@ const VerificationWithPersonaStep = dynamic(
 );
 
 const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
-  const [step, setStep] = useState<STEP>("PUBLICATIONS");
+  const [step, setStep] = useState<STEP>("INTRO");
   const [publicationsSubstep, setPublicationsSubstep] =
     useState<PUBLICATION_STEP>("DOI");
   const [isOpen, setIsOpen] = useState(false);
@@ -86,7 +90,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
   useEffect(() => {
     if (!isOpen) {
       // Reset modal state
-      setStep("PUBLICATIONS");
+      setStep("INTRO");
       setPublicationsSubstep("DOI");
     }
   }, [isOpen]);
@@ -120,7 +124,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
                   Verify identity to earn RSC rewards on your publications
                 </div>
                 <div className={css(styles.description)}>
-                  First authors on Open Access papers are eligible for rewards.
+                  First authors of open access papers are eligible for rewards.
                   Earn rewards whenever your paper gets cited or upvoted.
                   <p style={{ marginTop: 10 }}>
                     <ALink theme={"solidPrimary"} href="/">
@@ -153,7 +157,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
                         onClick={undefined}
                       />
                     </div>
-                    Step 2: Verify identity
+                    Step 2: Import publication history
                   </div>
 
                   <div className={css(styles.stepExplanation)}>
@@ -192,7 +196,6 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
                   minHeight: publicationsSubstep === "RESULTS" ? 600 : "auto",
                 }}
               >
-
                 {publicationsSubstep === "DOI" && (
                   <div>
                     <div className={css(styles.title)}>
