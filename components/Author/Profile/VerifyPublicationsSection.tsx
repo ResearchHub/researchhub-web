@@ -24,7 +24,7 @@ const VerifyPublicationsSection = () => {
         <div className={css(styles.verifyPublicationsDescription)}>Please confirm you have authored or co-authored the publications listed below. Once confirmed the <div style={{ display: "inline-flex", marginTop: 5, }}><PendingBadge /></div> will be removed.</div>
       </div>
       <div style={{ width: 150 }}>
-        <Button onClick={() => setIsPublicationsModalOpen(true)} fullWidth>Looks good</Button>
+        <Button variant="outlined" onClick={() => setIsPublicationsModalOpen(true)} fullWidth>Looks good</Button>
       </div>
     </div>    
   )

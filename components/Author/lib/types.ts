@@ -42,7 +42,7 @@ export type FullAuthorProfile = {
     citationCount: number;
     twoYearMeanCitedness: number;
   };
-  reputation: Reputation;
+  reputation: Reputation | null;
   reputationList: Array<Reputation>;
 };
 
@@ -101,7 +101,7 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
         years: inst.years,
       };
     }),
-    reputation: parseReputation(raw.reputation),
+    reputation: raw.reputation ? parseReputation(raw.reputation) : null,
     reputationList: parseReputationList(raw.reputation_list),
   };
 

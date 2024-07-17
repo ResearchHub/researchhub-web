@@ -37,7 +37,9 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, publicationsResponse }) =>
         <AuthorNavigation />
         <div className={css(styles.mainContentWrapper)}>
           <div className={css(styles.mainContent)}>
-            <VerifyPublicationsSection />
+            <div className={css(styles.addPublicationsWrapper)}>
+              <VerifyPublicationsSection />
+            </div>
             {/* @ts-ignore */}
             <AuthorPublications
               // @ts-ignore legacy
@@ -54,6 +56,9 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, publicationsResponse }) =>
 };
 
 const styles = StyleSheet.create({
+  addPublicationsWrapper: {
+    marginBottom: 20,
+  },
   profilePage: {
     backgroundColor: "rgb(250, 250, 250)",
   },

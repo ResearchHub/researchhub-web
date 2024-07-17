@@ -20,6 +20,8 @@ import {
   parseNotification,
 } from "~/components/Notifications/lib/types";
 import { authorProfileContext } from "../lib/AuthorProfileContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-light-svg-icons";
 
 const AuthorPublications = ({
   initialPaginatedPublicationsResponse,
@@ -83,18 +85,23 @@ const AuthorPublications = ({
       )}
 
       <div className={css(styles.wrapper)}>
-        <div className={css(styles.sectionHeader)}>Publications</div>
-        {currentUser?.authorProfile?.id === fullAuthorProfile.id && (
-          // @ts-ignore legacy
-          <AddPublicationsModal
+        <div className={css(styles.publicationsHeader)}>
+          <div className={css(styles.sectionHeader)}>Publications</div>
+          {currentUser?.authorProfile?.id === fullAuthorProfile.id && (
             // @ts-ignore legacy
-            wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
-            // @ts-ignore legacy
-            wsAuth
-          >
-            <Button>Add Publications</Button>
-          </AddPublicationsModal>
-        )}
+            <AddPublicationsModal
+              // @ts-ignore legacy
+              wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
+              // @ts-ignore legacy
+              wsAuth
+            >
+              <Button>
+                <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10, fontWeight: 400, fontSize: 18 }} />
+                Add Publications
+              </Button>
+            </AddPublicationsModal>
+          )}
+        </div>
         <div className={css(styles.contentWrapper)}>
           <div>
             {
@@ -111,6 +118,10 @@ const AuthorPublications = ({
 };
 
 const styles = StyleSheet.create({
+  publicationsHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
   profilePage: {
     backgroundColor: "rgb(250, 250, 250)",
   },

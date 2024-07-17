@@ -22,7 +22,7 @@ const ExpertiseModal = ({
       zIndex={1000000001}
       modalStyle={styles.modalStyle}
       modalContentStyle={styles.modalContentStyle}
-      title={`Expertise of ${profile.firstName} ${profile.lastName}`}
+      title={`Reputation of ${profile.firstName} ${profile.lastName}`}
     >
       <div className={css(styles.reputationWrapper)}>
         <div className={css(styles.description)}>
