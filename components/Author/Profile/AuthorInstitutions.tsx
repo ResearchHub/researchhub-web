@@ -20,9 +20,11 @@ const AuthorInstitutions = ({ institutions }: { institutions: AuthorInstitution[
           </span>
         ))}
       </div>
-      <div className={css(styles.showMore)} onClick={() => setIsShowingAll(!isShowingAll)}>
-        {isShowingAll ? "Show less" : `+ ${institutions.length - visibleInstitutions.length} more`}
-      </div>
+      {institutions.length > 3 && (
+        <div className={css(styles.showMore)} onClick={() => setIsShowingAll(!isShowingAll)}>
+          {isShowingAll ? "Show less" : `+ ${institutions.length - visibleInstitutions.length} more`}
+        </div>
+      )}
     </div>
   )
 }
