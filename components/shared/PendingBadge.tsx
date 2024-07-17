@@ -8,9 +8,9 @@ const PendingBadge = () => {
     <div className={css(styles.badge)}>
       <FontAwesomeIcon icon={faExclamationCircle} style={{ marginRight: 5 }} />
       <span>pending</span>
-    </div>    
-  )
-}
+    </div>
+  );
+};
 
 const styles = StyleSheet.create({
   badge: {
@@ -20,10 +20,10 @@ const styles = StyleSheet.create({
     textTransform: "lowercase",
     color: "white",
     borderRadius: "4px",
-    padding: "2px 4px",
+    padding: "2px 6px",
     fontWeight: 500,
-    fontSize: 12
-  }
-})
+    fontSize: 12,
+  },
+});
 
 export default PendingBadge;
