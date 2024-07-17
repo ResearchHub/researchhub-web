@@ -12,9 +12,13 @@ import Pill from "~/components/shared/Pill";
 import colors from "~/config/themes/colors";
 import { Tooltip } from "@mui/material";
 import PendingBadge from "~/components/shared/PendingBadge";
+import { authorProfileContext } from "../lib/AuthorProfileContext";
 
 
-const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
+const AuthorProfileHeader = () => {
+  const {
+    fullAuthorProfile: profile,
+  } = authorProfileContext();
 
   const getExpertiseTooltipContent = () => {
     return (
@@ -66,9 +70,14 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
           <AuthorHeaderKeyStats profile={profile} />
         </div>
 
-        <div className={css(styles.section, styles.subSection, styles.expertiseSectionUnverified)}>
+        <div className={css(styles.section, styles.subSection, !profile.hasVerifiedPublications && styles.expertiseSectionUnverified)}>
           <div className={css(styles.sectionHeader)}>
             <div>
+              {profile.hasVerifiedPublications && (
+                <div className={css(styles.expertiseHeader)}>
+                  Reputation
+                </div>
+              )}
               {!profile.hasVerifiedPublications &&
                 <Tooltip title={getExpertiseTooltipContent()} componentsProps={{
                   tooltip: {
@@ -78,7 +87,7 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
                     },
                   },
                 }}>
-                  <div className={css(styles.expertiseHeader)}>
+                  <div className={css(styles.expertiseHeader, styles.expertiseHeaderPending)}>
                     Reputation
                     <PendingBadge />
                   </div>
@@ -109,6 +118,8 @@ const styles = StyleSheet.create({
     columnGap: "5px",
     display: "flex",
     alignItems: "center",
+  },
+  expertiseHeaderPending: {
     cursor: "pointer",
   },
   expertiseContentWrapper: {

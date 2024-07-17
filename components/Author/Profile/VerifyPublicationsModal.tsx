@@ -5,10 +5,40 @@ import CheckBox from "~/components/Form/CheckBox";
 import Button from "~/components/Form/Button";
 import { useState } from "react";
 import colors from "~/config/themes/colors";
+import { authorProfileContext } from "../lib/AuthorProfileContext";
+import showGenericToast from "~/components/Notifications/lib/showGenericToast";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
 
 const VerifyPublicationsModal = ({ isOpen, setIsOpen }) => {
   const [isStatement1Checked, setIsStatement1Checked] = useState(false);
   const [isStatement2Checked, setIsStatement2Checked] = useState(false);
+  const {
+    setFullAuthorProfile,
+    fullAuthorProfile,
+  } = authorProfileContext();
+
+  const handleConfirmStatements = () => {
+    setFullAuthorProfile({
+      ...fullAuthorProfile,
+      hasVerifiedPublications: true,
+    })
+
+    showGenericToast({
+      body: (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <FontAwesomeIcon
+            fontSize={24}
+            style={{ color: colors.MEDIUM_GREY(), marginRight: 10 }}
+            icon={faCheckCircle}
+          />
+          Thank you for verifying your publications
+        </div>
+      ),
+      closeLabel: "OK",
+      withCloseBtn: true,
+    });    
+  }
 
   return (
     <>
@@ -51,6 +81,7 @@ const VerifyPublicationsModal = ({ isOpen, setIsOpen }) => {
           </div>
           <div>
             <Button
+              onClick={() => handleConfirmStatements()}
               disabled={!(isStatement1Checked && isStatement2Checked)}
               fullWidth
             >

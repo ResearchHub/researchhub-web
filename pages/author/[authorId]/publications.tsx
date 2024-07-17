@@ -6,14 +6,9 @@ import AuthorProfileHeader from "~/components/Author/Profile/AuthorProfileHeader
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { useSelector } from "react-redux";
 import AuthorPublications from "~/components/Author/Profile/AuthorPublications";
-import { AuthorProfileContextProvider } from "~/components/Author/lib/AuthorProfileContext";
+import { AuthorProfileContextProvider, authorProfileContext } from "~/components/Author/lib/AuthorProfileContext";
 import AuthorNavigation from "~/components/Author/Profile/AuthorNavigation";
-import colors from "~/config/themes/colors";
-import Button from "~/components/Form/Button";
-import PendingBadge from "~/components/shared/PendingBadge";
-import VerifyPublicationsModal from "~/components/Author/Profile/VerifyPublicationsModal";
-import { useState } from "react";
-
+import VerifyPublicationsSection from "~/components/Author/Profile/VerifyPublicationsSection";
 
 
 type Args = {
@@ -31,27 +26,18 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, publicationsResponse }) =>
   const fullAuthorProfile = parseFullAuthorProfile(profile);
   const parsedPublicationsResponse = parsePublicationResponse(publicationsResponse);
   const auth = useSelector((state: any) => state.auth);
-  const [isPublicationsModalOpen, setIsPublicationsModalOpen] = useState(false);
 
+  
   return (
     <AuthorProfileContextProvider fullAuthorProfile={fullAuthorProfile}>
-      <VerifyPublicationsModal isOpen={isPublicationsModalOpen} setIsOpen={setIsPublicationsModalOpen} />
       <div className={css(styles.profilePage)}>
         <div className={css(styles.profileContent)}>
-          <AuthorProfileHeader profile={fullAuthorProfile} />
+          <AuthorProfileHeader />
         </div>            
         <AuthorNavigation />
         <div className={css(styles.mainContentWrapper)}>
           <div className={css(styles.mainContent)}>
-            <div className={css(styles.verifyPublications)}>
-              <div>
-                <div className={css(styles.verifyPublicationsTitle)}>Is this accurate?</div>
-                <div className={css(styles.verifyPublicationsDescription)}>Please confirm you have authored or co-authored the publications listed below. Once confirmed the <div style={{ display: "inline-flex", marginTop: 5,}}><PendingBadge /></div> will be removed.</div>
-              </div>
-              <div style={{ width: 150 }}>
-                <Button onClick={() => setIsPublicationsModalOpen(true)} fullWidth>Looks good</Button>
-              </div>
-            </div>
+            <VerifyPublicationsSection />
             {/* @ts-ignore */}
             <AuthorPublications
               // @ts-ignore legacy
@@ -68,25 +54,6 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, publicationsResponse }) =>
 };
 
 const styles = StyleSheet.create({
-  verifyPublications: {
-    border: `1px solid ${colors.YELLOW2()}`,
-    borderRadius: 8,
-    display: "flex",
-    padding: "15px 20px",
-    justifyContent: "space-between",
-    alignItems: "center",
-    columnGap: "100px",
-  },
-  verifyPublicationsTitle: {
-    fontSize: 18,
-    fontWeight: 500,
-    marginBottom: 3
-  },
-  verifyPublicationsDescription: {
-    color: colors.MEDIUM_GREY2(),
-    fontSize: 15,
-    lineHeight: "18px"
-  },
   profilePage: {
     backgroundColor: "rgb(250, 250, 250)",
   },
