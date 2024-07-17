@@ -4,9 +4,12 @@ import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import colors from "~/config/themes/colors";
 import { useState } from "react";
 
-const WelcomeToProfileBanner = ({ profile }: { profile: FullAuthorProfile }) => {
-
-  const [isVisible, setIsVisible] = useState(true)
+const WelcomeToProfileBanner = ({
+  profile,
+}: {
+  profile: FullAuthorProfile;
+}) => {
+  const [isVisible, setIsVisible] = useState(true);
 
   if (!isVisible) {
     return null;
@@ -20,13 +23,20 @@ const WelcomeToProfileBanner = ({ profile }: { profile: FullAuthorProfile }) => 
           View your rewards
         </div>
         <div className={css(styles.descriptionWrapper)}>
-          ResearchHub is incentivizing healthy research behavior. At this time, first authors of open access papers are eligible for rewards. Visit the publications tab to view eligible publications.
+          ResearchHub is incentivizing healthy research behavior. At this time,
+          first authors of open access papers are eligible for rewards. Visit
+          the publications tab to view eligible publications.
         </div>
-        <div className={css(styles.dismissBtn)} onClick={() => setIsVisible(false)}>Got it</div>
+        <div
+          className={css(styles.dismissBtn)}
+          onClick={() => setIsVisible(false)}
+        >
+          Got it
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   dismissBtn: {
@@ -39,8 +49,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     borderRadius: 20,
-    // border: `1px solid ${colors.NEW_BLUE()}`,
-    background: "rgb(240, 240, 240)",
+    border: `1px solid #cecece`,
+    background: "rgb(242, 242, 242)",
     padding: 20,
   },
   btn: {
@@ -62,9 +72,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 10,
   },
-  rscIcon: {
-
-  },
+  rscIcon: {},
   badge: {
     borderRadius: "6px",
     fontWeight: 400,
@@ -74,7 +82,7 @@ const styles = StyleSheet.create({
   rscTextWrapper: {
     display: "inline-flex",
     alignItems: "center",
-  }
-})
+  },
+});
 
 export default WelcomeToProfileBanner;

@@ -90,6 +90,14 @@ export type ReviewSummary = {
   averageRating: number;
 };
 
+export type Authorship = {
+  id: ID;
+  authorId: ID;
+  authorPosition: "first" | "last" | "middle";
+  isCorresponding: boolean;
+  rawAuthorName: string;
+};
+
 export interface GenericDocument {
   srcUrl: string;
   id: ID;
@@ -124,6 +132,7 @@ export type Paper = GenericDocument & {
   pdfUrl?: string;
   proxyPdfUrl?: string;
   pdfCopyrightAllowsDisplay?: boolean;
+  authorships: Authorship[];
 };
 
 export type Post = GenericDocument & {
@@ -152,6 +161,16 @@ export const parseNote = (raw: any): Note => {
   return {
     id: raw.id,
     organization: parseOrganization(raw.organization),
+  };
+};
+
+export const parseAuthorship = (raw: any): Authorship => {
+  return {
+    id: raw.id,
+    authorId: raw.author_id,
+    authorPosition: raw.author_position,
+    isCorresponding: raw.is_corresponding,
+    rawAuthorName: raw.raw_author_name,
   };
 };
 
@@ -210,6 +229,7 @@ export const parsePaper = (raw: any, shouldStripHTML = true): Paper => {
     pdfUrl: raw.pdf_url,
     proxyPdfUrl: raw.pdf_url ? proxyApi.generateProxyUrl(raw.pdf_url) : null,
     pdfCopyrightAllowsDisplay: Boolean(raw.pdf_copyright_allows_display),
+    authorships: (raw.authorships || []).map((a: any) => parseAuthorship(a)),
     ...(raw.pdf_license && { license: raw.pdf_license }),
   };
 

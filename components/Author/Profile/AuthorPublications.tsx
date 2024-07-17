@@ -5,14 +5,17 @@ import {
 } from "~/components/Author/lib/api";
 import { css, StyleSheet } from "aphrodite";
 import { useEffect, useState } from "react";
-import { getDocumentCard } from "~/components/UnifiedDocFeed/utils/getDocumentCard";
+import {
+  UnifiedCard,
+  getDocumentCard,
+} from "~/components/UnifiedDocFeed/utils/getDocumentCard";
 import AddPublicationsModal from "~/components/Publication/AddPublicationsModal";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { useSelector, connect } from "react-redux";
 import Button from "~/components/Form/Button";
 import { parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
-import { isEmpty } from "~/config/utils/nullchecks";
+import { filterNull, isEmpty } from "~/config/utils/nullchecks";
 import UnifiedDocFeedCardPlaceholder from "~/components/UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
 import withWebSocket from "~/components/withWebSocket";
 import {
@@ -22,7 +25,21 @@ import {
 import { authorProfileContext } from "../lib/AuthorProfileContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/pro-light-svg-icons";
-
+import {
+  RESEARCHHUB_POST_DOCUMENT_TYPES,
+  getFEUnifiedDocType,
+} from "~/config/utils/getUnifiedDocType";
+import FeedCard from "../Tabs/FeedCard";
+import {
+  Authorship,
+  parseAuthorship,
+  parseGenericDocument,
+  parsePaper,
+} from "~/components/Document/lib/types";
+import { Button as Btn, IconButton } from "@mui/material";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
+import colors from "~/config/themes/colors";
+import MoreHoriz from "@mui/icons-material/MoreHoriz";
 const AuthorPublications = ({
   initialPaginatedPublicationsResponse,
   wsResponse,
@@ -74,6 +91,7 @@ const AuthorPublications = ({
     }
   }, [wsResponse]);
 
+  const unifiedDocumentData = publicationsResponse.results;
   return (
     <div>
       {isLoadingPublications && (
@@ -96,7 +114,10 @@ const AuthorPublications = ({
               wsAuth
             >
               <Button>
-                <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10, fontWeight: 400, fontSize: 18 }} />
+                <FontAwesomeIcon
+                  icon={faPlus}
+                  style={{ marginRight: 10, fontWeight: 400, fontSize: 18 }}
+                />
                 Add Publications
               </Button>
             </AddPublicationsModal>
@@ -104,12 +125,107 @@ const AuthorPublications = ({
         </div>
         <div className={css(styles.contentWrapper)}>
           <div>
-            {
-              // @ts-ignore
-              getDocumentCard({
-                unifiedDocumentData: publicationsResponse.results,
-              })
-            }
+            {filterNull(unifiedDocumentData).map(
+              (uniDoc: any, arrIndex: number): UnifiedCard => {
+                const formattedDocType = getFEUnifiedDocType(
+                  uniDoc?.document_type ?? null
+                );
+                const docTypeLabel =
+                  (uniDoc?.document_type ?? "").toLowerCase() ?? null;
+                const formattedDocLabel =
+                  docTypeLabel === "hypothesis"
+                    ? "Meta-Study"
+                    : docTypeLabel === "discussion"
+                    ? "post"
+                    : docTypeLabel;
+                const targetDoc = !RESEARCHHUB_POST_DOCUMENT_TYPES.includes(
+                  formattedDocType
+                )
+                  ? uniDoc.documents
+                  : uniDoc.documents[0];
+                const docID = targetDoc.id;
+
+                const authorships: Authorship[] =
+                  targetDoc.authorships.map(parseAuthorship);
+                const isFirstAuthor = authorships.find(
+                  (authorship) =>
+                    authorship.authorPosition === "first" &&
+                    authorship.authorId === fullAuthorProfile.id
+                );
+
+                return (
+                  <div className={css(styles.wrapper)}>
+                    <div className={css(styles.docControls)}>
+                      {isFirstAuthor && (
+                        <>
+                          <Button
+                            size="small"
+                            variant="contained"
+                            customButtonStyle={styles.claimButton}
+                          >
+                            <div
+                              style={{
+                                color: colors.NEW_GREEN(),
+                                display: "flex",
+                                alignItems: "center",
+                                columnGap: 10,
+                              }}
+                            >
+                              <ResearchCoinIcon
+                                version={4}
+                                color={colors.NEW_GREEN()}
+                              />{" "}
+                              Claim rewards
+                            </div>
+                          </Button>
+                          <div style={{ display: "inline-flex" }}>
+                            <IconButton
+                              aria-label="more"
+                              id="long-button"
+                              aria-haspopup="true"
+                              onClick={() => null}
+                            >
+                              <MoreHoriz />
+                            </IconButton>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    <FeedCard
+                      {...targetDoc}
+                      unifiedDocumentId={uniDoc.id}
+                      document={targetDoc}
+                      documentFilter={uniDoc.document_filter}
+                      formattedDocType={formattedDocType}
+                      formattedDocLabel={formattedDocLabel}
+                      index={arrIndex}
+                      twitterScore={targetDoc.twitter_score}
+                      key={`${formattedDocType}-${docID}-${arrIndex}`}
+                      paper={uniDoc.documents}
+                      hubs={uniDoc.hubs}
+                      vote={uniDoc.user_vote}
+                      score={uniDoc.score}
+                      featured={uniDoc.featured}
+                      reviews={uniDoc.reviews}
+                      hasAcceptedAnswer={uniDoc?.document_filter?.answered}
+                      fundraise={uniDoc.fundraise}
+                      voteCallback={(
+                        arrIndex: number,
+                        currPaper: any
+                      ): void => {
+                        const [currUniDoc, newUniDocs] = [
+                          { ...uniDoc },
+                          [...unifiedDocumentData],
+                        ];
+                        currUniDoc.documents.user_vote = currPaper.user_vote;
+                        currUniDoc.documents.score = currPaper.score;
+                        newUniDocs[arrIndex] = currUniDoc;
+                      }}
+                    />
+                  </div>
+                );
+              }
+            )}
           </div>
         </div>
       </div>
@@ -118,9 +234,20 @@ const AuthorPublications = ({
 };
 
 const styles = StyleSheet.create({
+  docControls: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  claimButton: {
+    background: colors.NEW_GREEN(0.1),
+    border: `1px solid ${colors.NEW_GREEN()}`,
+    marginTop: 20,
+    marginBottom: 5,
+  },
   publicationsHeader: {
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
   },
   profilePage: {
     backgroundColor: "rgb(250, 250, 250)",
