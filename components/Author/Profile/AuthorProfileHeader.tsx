@@ -7,12 +7,12 @@ import Avatar from "@mui/material/Avatar";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { css, StyleSheet } from "aphrodite";
 import { FullAuthorProfile } from "../lib/types";
-import AuthorClaimProfileNotification from "~/components/Author/Profile/AuthorClaimProfileNotification";
 import Pill from "~/components/shared/Pill";
 import colors from "~/config/themes/colors";
 import { Tooltip } from "@mui/material";
 import PendingBadge from "~/components/shared/PendingBadge";
 import { authorProfileContext } from "../lib/AuthorProfileContext";
+import WelcomeToProfileBanner from "./WelcomeToProfileBanner";
 
 
 const AuthorProfileHeader = () => {
@@ -30,8 +30,8 @@ const AuthorProfileHeader = () => {
   
   return (
     <div>
-      <div className={css(styles.section, styles.claimSection)}>
-        <AuthorClaimProfileNotification profile={profile} />
+      <div className={css(styles.bannerSection)}>
+        <WelcomeToProfileBanner profile={profile} />
       </div>
       <div className={css(styles.bioSection, styles.section)}>
         <Avatar src={profile.profileImage} sx={{ width: 128, height: 128, fontSize: 48 }}>
@@ -143,9 +143,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.BLACK()
   },
-  claimSection: {
+  bannerSection: {
     marginTop: 20,
-    backgroundColor: "rgb(240, 240, 240)",
   },
   authorSocialMedia: {
     marginTop: 10,
