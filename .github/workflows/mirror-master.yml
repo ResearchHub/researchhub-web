@@ -20,7 +20,7 @@ jobs:
 
       - name: Mirror master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
           git fetch origin master
           git update-ref refs/heads/master-mirror refs/remotes/origin/master
