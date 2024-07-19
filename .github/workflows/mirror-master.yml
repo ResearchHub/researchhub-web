@@ -1,0 +1,27 @@
+name: Mirror Master Branch
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.no-reply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - name: Mirror master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          git fetch origin master
+          git update-ref refs/heads/master-mirror refs/remotes/origin/master
+          git push --force origin master-mirror
