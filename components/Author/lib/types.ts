@@ -68,7 +68,7 @@ export const parseReputationList = (raw: any): Array<Reputation> => {
 export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
   const parsed = {
     id: raw.id,
-    hasVerifiedPublications: false,
+    hasVerifiedPublications: true, // Temporarily hard-coding this until we decide whether verfication is necessary
     profileImage: raw.profile_image,
     firstName: raw.first_name,
     lastName: raw.last_name,
