@@ -75,34 +75,6 @@ export const getEducationalCarouselElements = () => [
   {
     title: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
-        {/* <span style={{ marginRight: 8, marginTop: 3 }}>
-          <RSC style={styles.RSC} />
-        </span> */}
-        {" ResearchHub Reference Manager"}
-      </div>
-    ),
-    body: (
-      <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
-        Introducing ResearchHub's all-new reference manager: your partner in
-        scholarly research. Streamline your academic workflow with its
-        multiplayer features, effortlessly organizing and citing references
-        across various formats.
-        <div className={css(DEFAULT_ITEM_STYLE.learnMore)}>
-          <ALink
-            theme="solidPrimary"
-            overrideStyle={[DEFAULT_ITEM_STYLE.link]}
-            href="https://docs.google.com/forms/d/e/1FAIpQLSc51K8cm7QrAwzTknDspqJ7MQ6k6GYBImehEgp8-ajRvQaa7A/viewform"
-            target="_blank"
-          >
-            {"Join the waitlist."}
-          </ALink>
-        </div>
-      </div>
-    ),
-  },
-  {
-    title: (
-      <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
         <span style={{ marginRight: 8, fontSize: "20px" }}>
           {/* @ts-ignore FontAwesome faulty ts error */}
           <FontAwesomeIcon icon={faPeopleGroup} color={colors.BLUE()} />
