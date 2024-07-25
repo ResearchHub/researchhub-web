@@ -58,7 +58,7 @@ export const addPublicationsToAuthor = ({
   openAlexPublicationIds: ID[];
   openAlexAuthorId?: ID;
 }) => {
-  const url = generateApiUrl(`author/${authorId}/add_publications`);
+  const url = generateApiUrl(`author/${authorId}/publications`);
   return fetch(
     url,
     API.POST_CONFIG({
