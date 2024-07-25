@@ -40,6 +40,8 @@ import { Button as Btn, IconButton } from "@mui/material";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import colors from "~/config/themes/colors";
 import MoreHoriz from "@mui/icons-material/MoreHoriz";
+import ClaimRewardsModal from "~/components/ResearchCoin/ClaimRewardsModal";
+
 const AuthorPublications = ({
   initialPaginatedPublicationsResponse,
   wsResponse,
@@ -55,6 +57,10 @@ const AuthorPublications = ({
     useState<PaginatedPublicationResponse>(
       initialPaginatedPublicationsResponse
     );
+
+  const [rewardsModalOpenForPaperId, setRewardsModalOpenForPaperId] =
+    useState<null | ID>(null);
+
   const [notificationsReceived, setNotificationsReceived] = useState<
     Notification[]
   >([]);
@@ -94,6 +100,11 @@ const AuthorPublications = ({
   const unifiedDocumentData = publicationsResponse.results;
   return (
     <div>
+      <ClaimRewardsModal
+        isOpen={rewardsModalOpenForPaperId !== null}
+        closeModal={() => setRewardsModalOpenForPaperId(null)}
+      />
+
       {isLoadingPublications && (
         <>
           {Array.from({ length: 10 }).map((_, i) => (
@@ -162,6 +173,9 @@ const AuthorPublications = ({
                             size="small"
                             variant="contained"
                             customButtonStyle={styles.claimButton}
+                            onClick={() =>
+                              setRewardsModalOpenForPaperId(targetDoc.id)
+                            }
                           >
                             <div
                               style={{
