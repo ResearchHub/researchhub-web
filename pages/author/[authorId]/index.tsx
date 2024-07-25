@@ -8,6 +8,7 @@ import AuthorActivity from "~/components/Author/Profile/AuthorActivity";
 import { buildAuthorTabs } from "~/components/Author/lib/utils";
 import { useRouter } from "next/router";
 import AuthorProfileHeader from "~/components/Author/Profile/AuthorProfileHeader";
+import { AuthorProfileContextProvider, authorProfileContext } from "~/components/Author/lib/AuthorProfileContext";
 
 type Args = {
   profile: any;
@@ -27,22 +28,24 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview }) => {
   const authorTabs = buildAuthorTabs({ profile: fullAuthorProfile, router });
 
   return (
-    <div className={css(styles.profilePage)}>
-      <div className={css(styles.profileContent)}>
-        <AuthorProfileHeader profile={fullAuthorProfile} />
-      </div>
-      <div className={css(styles.tabsWrapper)}>
-        <HorizontalTabBar tabs={authorTabs} />
-      </div>
-      <div className={css(styles.mainContentWrapper)}>
-        <div className={css(styles.mainContent)}>
-          <AuthorWorks works={overview.results} coauthors={fullAuthorProfile.coauthors} />
-          <div className={css(styles.activityWrapper)}>
-            <AuthorActivity activity={fullAuthorProfile.activityByYear} />
+    <AuthorProfileContextProvider fullAuthorProfile={fullAuthorProfile}>
+      <div className={css(styles.profilePage)}>
+        <div className={css(styles.profileContent)}>
+          <AuthorProfileHeader />
+        </div>
+        <div className={css(styles.tabsWrapper)}>
+          <HorizontalTabBar tabs={authorTabs} />
+        </div>
+        <div className={css(styles.mainContentWrapper)}>
+          <div className={css(styles.mainContent)}>
+            <AuthorWorks works={overview.results} coauthors={fullAuthorProfile.coauthors} />
+            <div className={css(styles.activityWrapper)}>
+              <AuthorActivity activity={fullAuthorProfile.activityByYear} />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </AuthorProfileContextProvider>
   );
 };
 

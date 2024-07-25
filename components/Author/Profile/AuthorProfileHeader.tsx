@@ -7,28 +7,31 @@ import Avatar from "@mui/material/Avatar";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { css, StyleSheet } from "aphrodite";
 import { FullAuthorProfile } from "../lib/types";
-import AuthorClaimProfileNotification from "~/components/Author/Profile/AuthorClaimProfileNotification";
 import Pill from "~/components/shared/Pill";
 import colors from "~/config/themes/colors";
 import { Tooltip } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationCircle, faQuestionCircle } from "@fortawesome/pro-solid-svg-icons";
+import PendingBadge from "~/components/shared/PendingBadge";
+import { authorProfileContext } from "../lib/AuthorProfileContext";
+import WelcomeToProfileBanner from "./WelcomeToProfileBanner";
 
 
-const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
+const AuthorProfileHeader = () => {
+  const {
+    fullAuthorProfile: profile,
+  } = authorProfileContext();
 
   const getExpertiseTooltipContent = () => {
     return (
       <div className={css(styles.expertiseContent)}>
-        <div className={css(styles.expertiseContentBody)}>The expertise shown below is only an estimate because the author has not yet verified the works in their profile.</div>
+        <div className={css(styles.expertiseContentBody)}>The expertise shown below is only an estimate because the author has not yet verified the publications in their profile.</div>
       </div>      
     )    
   }
   
   return (
     <div>
-      <div className={css(styles.section, styles.claimSection)}>
-        <AuthorClaimProfileNotification profile={profile} />
+      <div className={css(styles.bannerSection)}>
+        <WelcomeToProfileBanner profile={profile} />
       </div>
       <div className={css(styles.bioSection, styles.section)}>
         <Avatar src={profile.profileImage} sx={{ width: 128, height: 128, fontSize: 48 }}>
@@ -67,26 +70,29 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
           <AuthorHeaderKeyStats profile={profile} />
         </div>
 
-        <div className={css(styles.section, styles.subSection, styles.expertiseSectionUnverified)}>
+        <div className={css(styles.section, styles.subSection, !profile.hasVerifiedPublications && styles.expertiseSectionUnverified)}>
           <div className={css(styles.sectionHeader)}>
             <div>
-              {!profile.hasVerifiedWorks &&
+              {profile.hasVerifiedPublications && (
+                <div className={css(styles.expertiseHeader)}>
+                  Reputation
+                </div>
+              )}
+              {!profile.hasVerifiedPublications &&
                 <Tooltip title={getExpertiseTooltipContent()} componentsProps={{
                   tooltip: {
                     sx: {
-                      bgcolor: 'black',
+                      fontSize: 14,
+                      bgcolor: colors.YELLOW2(),
                     },
                   },
                 }}>
-                  <div className={css(styles.expertiseHeader)}>
-                    Expertise
-                    <FontAwesomeIcon fontSize={18} icon={faExclamationCircle} color={colors.YELLOW2()} />
+                  <div className={css(styles.expertiseHeader, styles.expertiseHeaderPending)}>
+                    Reputation
+                    <PendingBadge />
                   </div>
                 </Tooltip>                
               }
-            </div>
-            <div className={css(styles.repScore)}>
-              {profile.reputation.score.toLocaleString()}
             </div>
           </div>          
           <AuthorHeaderExpertise profile={profile} />
@@ -95,8 +101,6 @@ const AuthorProfileHeader = ({ profile }: { profile: FullAuthorProfile }) => {
     </div>
   )
 }
-
-
 const styles = StyleSheet.create({
   sectionHeader: {
     color: "rgb(139, 137, 148, 1)",
@@ -114,13 +118,13 @@ const styles = StyleSheet.create({
     columnGap: "5px",
     display: "flex",
     alignItems: "center",
+  },
+  expertiseHeaderPending: {
     cursor: "pointer",
   },
   expertiseContentWrapper: {
-    background: "black",  
   },
   expertiseContent: {
-    background: "black",
   },
   expertiseContentTitle: {
     fontSize: 16,
@@ -139,9 +143,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.BLACK()
   },
-  claimSection: {
+  bannerSection: {
     marginTop: 20,
-    backgroundColor: "rgb(240, 240, 240)",
   },
   authorSocialMedia: {
     marginTop: 10,

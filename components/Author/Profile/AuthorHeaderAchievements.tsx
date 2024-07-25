@@ -49,9 +49,11 @@ const AuthorHeaderAchievements = ({ profile }: { profile: FullAuthorProfile }) =
           </Tooltip>
         )
       })}
-      <div className={css(styles.showMore)}>
-        Show more
-      </div>      
+      {profile.achievements.length > 3 && (
+        <div className={css(styles.showMore)}>
+          Show more
+        </div>      
+      )}
     </div>
   )
 }

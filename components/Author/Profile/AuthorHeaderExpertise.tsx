@@ -20,9 +20,15 @@ const AuthorHeaderExpertise = ({ profile }: { profile: FullAuthorProfile }) => {
           <ReputationGauge reputation={rep} key={`reputation-` + index} />
         </div>
       ))}
-      <div className={css(styles.showMore)} onClick={() => setIsExpertiseModalOpen(true)}>
-        Show more
-      </div>
+      <div className={css(styles.links)}>
+        <div className={css(styles.showMore, styles.link)} onClick={() => setIsExpertiseModalOpen(true)}>
+          Show more
+        </div>
+        <div className={css(styles.divider)}></div>
+        <div className={css(styles.link)} onClick={() => setIsExpertiseModalOpen(true)}>
+          How is this calculated?
+        </div>
+      </div>      
     </div>
   )
 }
@@ -30,14 +36,26 @@ const AuthorHeaderExpertise = ({ profile }: { profile: FullAuthorProfile }) => {
 
 
 const styles = StyleSheet.create({
+  links: {
+    display: "flex",
+    marginTop: 0,
+  
+  },
   reputation: {
     marginTop: 10,
   },
   reputationHubLabel: {
     fontSize: 14,
     marginBottom: 5,  
+    textTransform: "capitalize",
   },
-  showMore: {
+  divider: {
+    borderRight: "1px solid #999999",
+    height: "16px",
+    marginTop: 10,
+    marginLeft: 5,
+  },
+  link: {
     color: colors.NEW_BLUE(),
     cursor: "pointer",
     marginLeft: 5,
@@ -45,7 +63,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     ":hover": {
       textDecoration: "underline",
-    }  
+    }
+  },
+  showMore: {
+      marginTop: 10,
+      marginLeft: 0,
   }
 });
 

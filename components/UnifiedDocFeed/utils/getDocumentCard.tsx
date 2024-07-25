@@ -14,6 +14,7 @@ export function getDocumentCard({
   setUnifiedDocuments,
   unifiedDocumentData,
 }): UnifiedCard[] {
+  console.log("unifiedDocumentData", unifiedDocumentData);
 
   return filterNull(unifiedDocumentData).map(
     (uniDoc: any, arrIndex: number): UnifiedCard => {

@@ -22,6 +22,7 @@ export type Tab = {
   selectedIcon?: React.ReactNode;
   hoverIcon?: React.ReactNode;
   pillContent?: React.ReactNode | string;
+  pillContentStyle?: any;
   showNewFeatureIndicator?: boolean;
   isExternal?: boolean;
 };
@@ -72,6 +73,7 @@ const HorizontalTabBar = ({
       icon,
       selectedIcon,
       pillContent,
+      pillContentStyle,
       href,
       showNewFeatureIndicator,
       isExternal,
@@ -103,7 +105,7 @@ const HorizontalTabBar = ({
           {isSelected && selectedIcon ? selectedIcon : icon}
           {label}
           {!showNewFeatureIndicator && pillContent !== undefined && (
-            <div className={css(styles.pillContent)}>{pillContent}</div>
+            <div className={css(styles.pillContent, pillContentStyle )}>{pillContent}</div>
           )}
           {showNewFeatureIndicator && (
             <span className={css(styles.new)}>

@@ -6,8 +6,9 @@ import AuthorProfileHeader from "~/components/Author/Profile/AuthorProfileHeader
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { useSelector } from "react-redux";
 import AuthorPublications from "~/components/Author/Profile/AuthorPublications";
-import { AuthorProfileContextProvider } from "~/components/Author/lib/AuthorProfileContext";
+import { AuthorProfileContextProvider, authorProfileContext } from "~/components/Author/lib/AuthorProfileContext";
 import AuthorNavigation from "~/components/Author/Profile/AuthorNavigation";
+import VerifyPublicationsSection from "~/components/Author/Profile/VerifyPublicationsSection";
 
 
 type Args = {
@@ -26,15 +27,19 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, publicationsResponse }) =>
   const parsedPublicationsResponse = parsePublicationResponse(publicationsResponse);
   const auth = useSelector((state: any) => state.auth);
 
+  
   return (
     <AuthorProfileContextProvider fullAuthorProfile={fullAuthorProfile}>
       <div className={css(styles.profilePage)}>
         <div className={css(styles.profileContent)}>
-          <AuthorProfileHeader profile={fullAuthorProfile} />
+          <AuthorProfileHeader />
         </div>            
         <AuthorNavigation />
         <div className={css(styles.mainContentWrapper)}>
           <div className={css(styles.mainContent)}>
+            <div className={css(styles.addPublicationsWrapper)}>
+              <VerifyPublicationsSection />
+            </div>
             {/* @ts-ignore */}
             <AuthorPublications
               // @ts-ignore legacy
@@ -51,6 +56,9 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, publicationsResponse }) =>
 };
 
 const styles = StyleSheet.create({
+  addPublicationsWrapper: {
+    marginBottom: 20,
+  },
   profilePage: {
     backgroundColor: "rgb(250, 250, 250)",
   },

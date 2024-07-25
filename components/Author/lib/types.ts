@@ -16,7 +16,7 @@ export type FullAuthorProfile = {
   firstName: string;
   lastName: string;
   isVerified: boolean;
-  hasVerifiedWorks: boolean;
+  hasVerifiedPublications: boolean;
   profileImage?: string;
   headline?: string;
   description?: string;
@@ -42,7 +42,7 @@ export type FullAuthorProfile = {
     citationCount: number;
     twoYearMeanCitedness: number;
   };
-  reputation: Reputation;
+  reputation: Reputation | null;
   reputationList: Array<Reputation>;
 };
 
@@ -68,7 +68,7 @@ export const parseReputationList = (raw: any): Array<Reputation> => {
 export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
   const parsed = {
     id: raw.id,
-    hasVerifiedWorks: false,
+    hasVerifiedPublications: true, // Temporarily hard-coding this until we decide whether verfication is necessary
     profileImage: raw.profile_image,
     firstName: raw.first_name,
     lastName: raw.last_name,
@@ -101,7 +101,7 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
         years: inst.years,
       };
     }),
-    reputation: parseReputation(raw.reputation),
+    reputation: raw.reputation ? parseReputation(raw.reputation) : null,
     reputationList: parseReputationList(raw.reputation_list),
   };
 
