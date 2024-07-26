@@ -2,7 +2,6 @@ import { StyleSheet, css } from "aphrodite";
 import BaseModal from "../Modals/BaseModal";
 import colors from "~/config/themes/colors";
 import { useState } from "react";
-import { STEP, ORDERED_STEPS } from "./ClaimRewardsForm";
 import ProgressStepper, {
   ProgressStepperStep,
 } from "../shared/ProgressStepper";
@@ -13,11 +12,30 @@ import {
   faArrowLeft,
   faInfoCircle as faInfoCircleLight,
 } from "@fortawesome/pro-light-svg-icons";
+import { submitRewardsClaim } from "./lib/api";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
+import { ID } from "~/config/types/root_types";
 
 interface Props {
   isOpen: boolean;
+  paperId: ID;
   closeModal: () => void;
 }
+
+export type STEP =
+  | "INTRO"
+  | "OPEN_ACCESS"
+  | "OPEN_DATA"
+  | "PREREGRISTRATION"
+  | "CLAIM_SUBMITTED";
+
+export const ORDERED_STEPS: STEP[] = [
+  "INTRO",
+  "OPEN_ACCESS",
+  "OPEN_DATA",
+  "PREREGRISTRATION",
+  "CLAIM_SUBMITTED",
+];
 
 const stepperSteps: ProgressStepperStep[] = [
   {
@@ -37,11 +55,22 @@ const stepperSteps: ProgressStepperStep[] = [
   },
 ];
 
-const ClaimRewardsModal = ({ isOpen, closeModal }: Props) => {
+const ClaimRewardsModal = ({ paperId, isOpen, closeModal }: Props) => {
   const [step, setStep] = useState<STEP>("INTRO");
+  const currentUser = useCurrentUser()
 
   const handleSubmitClaim = () => {
-    alert("claim submitted");
+
+    if (!currentUser) {
+      return;
+    }
+
+    // @ts-ignore Temporarily ignoring due to hard-coding 
+    submitRewardsClaim({
+      paperId,
+      authorshipId: 1762,
+      userId: currentUser.id,
+    })
   };
 
   const currentStepPos = ORDERED_STEPS.indexOf(step);

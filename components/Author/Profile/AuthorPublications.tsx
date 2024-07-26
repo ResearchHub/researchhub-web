@@ -101,6 +101,7 @@ const AuthorPublications = ({
   return (
     <div>
       <ClaimRewardsModal
+        paperId={rewardsModalOpenForPaperId}
         isOpen={rewardsModalOpenForPaperId !== null}
         closeModal={() => setRewardsModalOpenForPaperId(null)}
       />

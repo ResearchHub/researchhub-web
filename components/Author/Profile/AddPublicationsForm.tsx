@@ -177,7 +177,7 @@ const AddPublicationsForm = ({
               }
             }}
           />
-        </IconButton>      
+        </IconButton>
       )}
       {step === "DOI" && (
         <div>
