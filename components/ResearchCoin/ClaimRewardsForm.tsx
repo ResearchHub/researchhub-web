@@ -4,8 +4,16 @@ export type STEP =
   | "INTRO"
   | "OPEN_ACCESS"
   | "OPEN_DATA"
-  | "PREREGISTRATION"
+  | "PREREGRISTRATION"
   | "CLAIM_SUBMITTED";
+
+export const ORDERED_STEPS: STEP[] = [
+  "INTRO",
+  "OPEN_ACCESS",
+  "OPEN_DATA",
+  "PREREGRISTRATION",
+  "CLAIM_SUBMITTED",
+];
 
 interface Props {
   onStepChange?: ({ step }: { step: STEP }) => void;
