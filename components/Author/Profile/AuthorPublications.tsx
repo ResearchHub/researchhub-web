@@ -40,6 +40,8 @@ import { Button as Btn, IconButton } from "@mui/material";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import colors from "~/config/themes/colors";
 import MoreHoriz from "@mui/icons-material/MoreHoriz";
+import ClaimRewardsModal from "~/components/ResearchCoin/ClaimRewardsModal";
+
 const AuthorPublications = ({
   initialPaginatedPublicationsResponse,
   wsResponse,
@@ -55,6 +57,28 @@ const AuthorPublications = ({
     useState<PaginatedPublicationResponse>(
       initialPaginatedPublicationsResponse
     );
+
+  const [rewardsModalState, setRewardsModalState] = useState<{
+    isOpen: boolean;
+    paperId: string | null;
+    paperTitle: string;
+    authorship: Authorship | null;
+  }>({
+    isOpen: false,
+    paperId: null,
+    paperTitle: "",
+    authorship: null,
+  });
+
+  const resetRewardsModalState = () => {
+    setRewardsModalState({
+      isOpen: false,
+      paperId: null,
+      paperTitle: "",
+      authorship: null,
+    });
+  };
+
   const [notificationsReceived, setNotificationsReceived] = useState<
     Notification[]
   >([]);
@@ -94,6 +118,14 @@ const AuthorPublications = ({
   const unifiedDocumentData = publicationsResponse.results;
   return (
     <div>
+      <ClaimRewardsModal
+        paperId={rewardsModalState.paperId}
+        isOpen={rewardsModalState.isOpen}
+        paperTitle={rewardsModalState.paperTitle}
+        authorship={rewardsModalState.authorship}
+        closeModal={() => resetRewardsModalState()}
+      />
+
       {isLoadingPublications && (
         <>
           {Array.from({ length: 10 }).map((_, i) => (
@@ -162,6 +194,19 @@ const AuthorPublications = ({
                             size="small"
                             variant="contained"
                             customButtonStyle={styles.claimButton}
+                            onClick={() =>
+                              setRewardsModalState({
+                                paperId: targetDoc.id,
+                                paperTitle: targetDoc.title,
+                                authorship:
+                                  authorships.find(
+                                    (authorship) =>
+                                      authorship.authorId ===
+                                      fullAuthorProfile.id
+                                  ) || null,
+                                isOpen: true,
+                              })
+                            }
                           >
                             <div
                               style={{

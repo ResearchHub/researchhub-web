@@ -16,7 +16,9 @@ import Button from "../Form/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartLine, faUser } from "@fortawesome/pro-solid-svg-icons";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
-import VerifyIdentityBreadcrumbs from "./VerifyIdentityBreadcrumbs";
+import VerifyIdentityBreadcrumbs, {
+  ProgressStepperStep,
+} from "../shared/ProgressStepper";
 import VerifiedBadge from "./VerifiedBadge";
 import ALink from "../ALink";
 import Image from "next/image";
@@ -37,6 +39,24 @@ interface Props {
 }
 
 export type STEP = "INTRO" | "IDENTITY" | "PUBLICATIONS" | "SUCCESS";
+
+const stepperSteps: ProgressStepperStep[] = [
+  {
+    title: "Verify Identity",
+    number: 1,
+    value: "IDENTITY",
+  },
+  {
+    title: "Publication History",
+    number: 2,
+    value: "PUBLICATIONS",
+  },
+  {
+    title: "View Rewards",
+    number: 3,
+    value: "SUCCESS",
+  },
+];
 
 const VerificationWithPersonaStep = dynamic(
   () => import("./VerificationWithPersonaStep"),
@@ -111,7 +131,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
         <>
           {step !== "INTRO" && (
             <div className={css(styles.breadcrumbsWrapper)}>
-              <VerifyIdentityBreadcrumbs step={step} />
+              <VerifyIdentityBreadcrumbs selected={step} steps={stepperSteps} />
             </div>
           )}
           <div className={css(styles.body)}>
