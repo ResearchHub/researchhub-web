@@ -1,7 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 import BaseModal from "../Modals/BaseModal";
 import colors from "~/config/themes/colors";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProgressStepper, {
   ProgressStepperStep,
 } from "../shared/ProgressStepper";
@@ -12,13 +12,17 @@ import {
   faArrowLeft,
   faInfoCircle as faInfoCircleLight,
 } from "@fortawesome/pro-light-svg-icons";
-import { submitRewardsClaim } from "./lib/api";
+import { submitRewardsClaim, fetchEligiblePaperRewards } from "./lib/api";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { ID } from "~/config/types/root_types";
+import { Authorship } from "../Document/lib/types";
+import { RewardSummary, parseRewardSummary } from "./lib/types";
 
 interface Props {
   isOpen: boolean;
   paperId: ID;
+  paperTitle: string;
+  authorship: Authorship | null;
   closeModal: () => void;
 }
 
@@ -27,14 +31,15 @@ export type STEP =
   | "OPEN_ACCESS"
   | "OPEN_DATA"
   | "PREREGRISTRATION"
-  | "CLAIM_SUBMITTED";
+  | "CLAIM_SUBMITTED"
+  | "CLAIM_ERROR";
 
 export const ORDERED_STEPS: STEP[] = [
   "INTRO",
   "OPEN_ACCESS",
   "OPEN_DATA",
   "PREREGRISTRATION",
-  "CLAIM_SUBMITTED",
+  "CLAIM_ERROR",
 ];
 
 const stepperSteps: ProgressStepperStep[] = [
@@ -55,23 +60,39 @@ const stepperSteps: ProgressStepperStep[] = [
   },
 ];
 
-const ClaimRewardsModal = ({ paperId, isOpen, closeModal }: Props) => {
+const ClaimRewardsModal = ({
+  paperId,
+  paperTitle,
+  authorship,
+  isOpen,
+  closeModal,
+}: Props) => {
   const [step, setStep] = useState<STEP>("INTRO");
-  const currentUser = useCurrentUser()
+  const currentUser = useCurrentUser();
+  const [rewardSummary, setRewardSummary] = useState<RewardSummary | null>(
+    null
+  );
 
   const handleSubmitClaim = () => {
-
     if (!currentUser) {
       return;
     }
 
-    // @ts-ignore Temporarily ignoring due to hard-coding 
+    // @ts-ignore Temporarily ignoring due to hard-coding
     submitRewardsClaim({
       paperId,
-      authorshipId: 1762,
+      authorshipId: authorship!.id,
       userId: currentUser.id,
-    })
+    });
   };
+
+  useEffect(() => {
+    (async () => {
+      const response = await fetchEligiblePaperRewards({ paperId });
+      const rewardSummary = parseRewardSummary(response);
+      setRewardSummary(rewardSummary);
+    })();
+  }, []);
 
   const currentStepPos = ORDERED_STEPS.indexOf(step);
   return (
@@ -100,7 +121,10 @@ const ClaimRewardsModal = ({ paperId, isOpen, closeModal }: Props) => {
             />
           </IconButton>
         )}
-
+        <div>Reward Summary: ${rewardSummary?.baseRewards}</div>
+        <div>Authorship ID: {authorship?.id}</div>
+        <div>Paper title: {paperTitle}</div>
+        <div>Paper ID: {paperId}</div>
         {step === "INTRO" && (
           <>
             <div className={css(styles.slide)}>Intro placeholder</div>

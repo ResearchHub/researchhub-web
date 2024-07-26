@@ -58,8 +58,26 @@ const AuthorPublications = ({
       initialPaginatedPublicationsResponse
     );
 
-  const [rewardsModalOpenForPaperId, setRewardsModalOpenForPaperId] =
-    useState<null | ID>(null);
+  const [rewardsModalState, setRewardsModalState] = useState<{
+    isOpen: boolean;
+    paperId: string | null;
+    paperTitle: string;
+    authorship: Authorship | null;
+  }>({
+    isOpen: false,
+    paperId: null,
+    paperTitle: "",
+    authorship: null,
+  });
+
+  const resetRewardsModalState = () => {
+    setRewardsModalState({
+      isOpen: false,
+      paperId: null,
+      paperTitle: "",
+      authorship: null,
+    });
+  };
 
   const [notificationsReceived, setNotificationsReceived] = useState<
     Notification[]
@@ -101,9 +119,11 @@ const AuthorPublications = ({
   return (
     <div>
       <ClaimRewardsModal
-        paperId={rewardsModalOpenForPaperId}
-        isOpen={rewardsModalOpenForPaperId !== null}
-        closeModal={() => setRewardsModalOpenForPaperId(null)}
+        paperId={rewardsModalState.paperId}
+        isOpen={rewardsModalState.isOpen}
+        paperTitle={rewardsModalState.paperTitle}
+        authorship={rewardsModalState.authorship}
+        closeModal={() => resetRewardsModalState()}
       />
 
       {isLoadingPublications && (
@@ -175,7 +195,17 @@ const AuthorPublications = ({
                             variant="contained"
                             customButtonStyle={styles.claimButton}
                             onClick={() =>
-                              setRewardsModalOpenForPaperId(targetDoc.id)
+                              setRewardsModalState({
+                                paperId: targetDoc.id,
+                                paperTitle: targetDoc.title,
+                                authorship:
+                                  authorships.find(
+                                    (authorship) =>
+                                      authorship.authorId ===
+                                      fullAuthorProfile.id
+                                  ) || null,
+                                isOpen: true,
+                              })
                             }
                           >
                             <div
