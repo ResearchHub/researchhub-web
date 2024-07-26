@@ -40,34 +40,6 @@ const ProgressStepper = ({ steps, selected }) => {
   );
 };
 
-export default ProgressStepper;
-
-// const VerifyIdentityBreadcrumbs = ({ step }: { step: STEP }) => {
-//   return (
-//     <div className={css(styles.breadcrumbs)}>
-//       <div className={css(styles.step)}>
-//         <div className={css(styles.num, step === "IDENTITY" && styles.selectedStep)}>
-//           <div>1</div>
-//         </div>
-//         <div className={css(step === "IDENTITY" && styles.selectedStepText)}>Verify Identity</div>
-//       </div>
-//       <div className={css(styles.line)} style={{ marginRight: -11 }}></div>
-//       <div className={css(styles.step)}>
-//         <div className={css(styles.num, step === "PUBLICATIONS" && styles.selectedStep)}>
-//           <div>2</div>
-//         </div>
-//         <div className={css( step === "PUBLICATIONS" && styles.selectedStepText)}>Publication History</div>
-//       </div>
-//       <div className={css(styles.line)} style={{ marginLeft: -13 }}></div>
-//       <div className={css(styles.step)}>
-//         <div className={css(styles.num)}>
-//           <div>3</div>
-//         </div>
-//         <div>View Rewards</div>
-//       </div>
-//     </div>
-//   );
-// };
 
 const styles = StyleSheet.create({
   breadcrumbs: {
@@ -111,3 +83,5 @@ const styles = StyleSheet.create({
     margin: "0 15px",
   },
 });
+
+export default ProgressStepper;
