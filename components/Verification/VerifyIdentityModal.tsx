@@ -38,7 +38,7 @@ interface Props {
   children: any;
 }
 
-export type STEP = "INTRO" | "IDENTITY" | "PUBLICATIONS" | "SUCCESS";
+export type STEP = "INTRO" | "IDENTITY" | "IDENTITY_VERIFIED_SUCCESSFULLY" | "PUBLICATIONS" | "SUCCESS";
 
 const stepperSteps: ProgressStepperStep[] = [
   {
@@ -87,8 +87,8 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
         incomingNotification,
       ]);
 
-      if (incomingNotification.type === "IDENTITY_VERIFIED") {
-        // TODO: Send user to next step
+      if (incomingNotification.type === "IDENTITY_VERIFICATION_UPDATED") {
+        setStep("IDENTITY_VERIFIED_SUCCESSFULLY");
       }
     } catch (e) {
       console.error(`Failed to parse notification: ${e}`);
@@ -131,7 +131,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
         <>
           {step !== "INTRO" && (
             <div className={css(styles.breadcrumbsWrapper)}>
-              <VerifyIdentityBreadcrumbs selected={step} steps={stepperSteps} />
+              <VerifyIdentityBreadcrumbs selected={step === "IDENTITY_VERIFIED_SUCCESSFULLY" ? "IDENTITY" : step} steps={stepperSteps} />
             </div>
           )}
           <div className={css(styles.body)}>
@@ -205,10 +205,33 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
               </div>
             )}
             <div style={{ display: step === "IDENTITY" ? "block" : "none" }}>
-              <VerificationWithPersonaStep
-                onComplete={({ status, inquiryId }) => setStep("PUBLICATIONS")}
-              />
+              <VerificationWithPersonaStep />
             </div>
+            {step === "IDENTITY_VERIFIED_SUCCESSFULLY" && (
+              <div style={{ marginTop: 25, display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: 400,  }}>
+                <div>
+                  <div className={css(styles.badgeWrapper)}>
+                    <VerifiedBadge height={75} width={75} />
+                  </div>
+                  <div className={css(styles.title)} style={{ marginTop: 25, }}>
+                    Identity has been verified successfully
+                  </div>
+                  <div className={css(styles.description)}>
+                    A Verified badge will now appear next to your avatar throughout the platform. 
+                  </div>
+                </div>
+                <div className={css(styles.startButtonWrapper)}>
+                  <Button
+                    fullWidth
+                    onClick={() => setStep("PUBLICATIONS")}
+                    theme="solidPrimary"
+                    style={{ width: 200, margin: "20px auto" }}
+                  >
+                    Next: Import Publication History
+                  </Button>
+                </div>
+              </div>
+            )}            
             {step === "PUBLICATIONS" && (
               <div
                 className={css(styles.publicationsWrapper)}
@@ -357,6 +380,7 @@ const styles = StyleSheet.create({
   },
   body: {
     width: "100%",
+    minHeight: 650,
   },
   formWrapper: {
     marginTop: 40,

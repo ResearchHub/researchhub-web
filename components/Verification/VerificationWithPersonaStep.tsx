@@ -3,11 +3,11 @@ import PersonaReact from "persona-react";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
 
 type InterfaceProps = {
-  onComplete: ({ status, inquiryId }) => void;
+
 };
 
 const VerificationWithPersonaStep = ({
-  onComplete,
+  
 }: InterfaceProps): JSX.Element => {
   const [isPersonaLoaded, setIsPersonaLoaded] = useState(false);
   const currentUser = useCurrentUser();
@@ -48,11 +48,6 @@ const VerificationWithPersonaStep = ({
         }}
         onLoad={() => {
           setIsPersonaLoaded(true);
-        }}
-        onComplete={({ inquiryId, status }) => {
-          // FIXME: Remove temporary console logging
-          console.log(`Finished inquiry ${inquiryId} with status ${status}`);
-          onComplete({ status, inquiryId });
         }}
       />
     </div>
