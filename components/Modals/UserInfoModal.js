@@ -42,7 +42,6 @@ class UserInfoModal extends Component {
   }
 
   componentDidMount = async () => {
-    console.log("this.props", this.props);
     if (this.props.auth.isLoggedIn) {
       if (!this.props.author) {
         await this.props.getAuthor({
