@@ -5,8 +5,10 @@ import {
 import { Hub, parseHub } from "~/config/types/hub";
 import {
   AuthorProfile,
+  Education,
   ID,
   parseAuthorProfile,
+  parseEducation,
 } from "~/config/types/root_types";
 
 export type Achievement = "CITED_AUTHOR" | "OPEN_ACCESS";
@@ -28,6 +30,7 @@ export type FullAuthorProfile = {
     worksCount: number;
     citationCount: number;
   }>;
+  education: Array<Education>;
   achievements: Array<Achievement>;
   openAccessPct: number;
   hIndex: number;
@@ -79,6 +82,7 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
     isHubEditor: raw.is_hub_editor,
     openAlexIds: raw.openalex_ids || [],
     achievements: raw.achievements || [],
+    education: Array.isArray(raw.education) ? raw.education.map(edu => parseEducation(edu)) : [],
     openAccessPct: Math.round((raw.open_access_pct || 0) * 100),
     hIndex: raw.h_index,
     i10Index: raw.i10_index,
