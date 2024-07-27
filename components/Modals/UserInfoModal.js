@@ -26,7 +26,6 @@ import { Helpers } from "@quantfive/js-web-config";
 class UserInfoModal extends Component {
   constructor(props) {
     super(props);
-
     this.initialState = this.mapStateFromProps();
     this.state = {
       ...this.initialState,
@@ -43,6 +42,7 @@ class UserInfoModal extends Component {
   }
 
   componentDidMount = async () => {
+    console.log("this.props", this.props);
     if (this.props.auth.isLoggedIn) {
       if (!this.props.author) {
         await this.props.getAuthor({
@@ -211,6 +211,7 @@ class UserInfoModal extends Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        this.props.onSave && this.props.onSave();
         if (!silent) {
           showMessage({ show: false });
           setMessage("Updates made successfully");
