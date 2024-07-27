@@ -53,14 +53,22 @@ export type Reputation = {
   score: number;
   bins: Array<Array<number>>;
   hub: Hub;
-
+  percentile: number;
 };
 
 export const parseReputation = (raw: any): Reputation => {
+
+  let percentile = 0;
+  if (Array.isArray(raw.bins)) {
+    percentile = (raw.score / raw.bins[raw.bins.length - 1][1]) * 100
+  }
+
+
   return {
     score: raw.score,
     bins: raw.bins,
     hub: parseHub(raw.hub),
+    percentile,
   }
 }
 
