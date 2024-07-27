@@ -19,13 +19,13 @@ const WelcomeToProfileBanner = ({
     <div className={css(styles.rootWrapper)}>
       <div>
         <div className={css(styles.header)}>
-          <ResearchCoinIcon version={4} color="#999999" />
-          View your rewards
+          <ResearchCoinIcon version={4} color={colors.NEW_GREEN()} />
+          Healthy Research Rewards
         </div>
         <div className={css(styles.descriptionWrapper)}>
           ResearchHub is incentivizing healthy research behavior. At this time,
           first authors of open access papers are eligible for rewards. Visit
-          the publications tab to view eligible publications.
+          the publications tab to view your eligible publications.
         </div>
         <div
           className={css(styles.dismissBtn)}
@@ -49,8 +49,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     borderRadius: 20,
-    border: `1px solid #cecece`,
-    background: "rgb(242, 242, 242)",
+    border: "1px solid rgb(10 174 66)",
+    background: "rgb(243 255 247)",
     padding: 20,
   },
   btn: {
@@ -64,13 +64,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: 500,
     gap: 10,
-    color: colors.BLACK(),
+    color: "rgb(10 174 66)",
   },
   descriptionWrapper: {
     display: "flex",
     alignItems: "center",
     fontSize: 16,
     marginTop: 10,
+    color: colors.BLACK(0.9),
   },
   rscIcon: {},
   badge: {
