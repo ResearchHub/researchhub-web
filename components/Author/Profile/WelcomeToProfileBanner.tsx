@@ -3,15 +3,26 @@ import { FullAuthorProfile } from "../lib/types";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import colors from "~/config/themes/colors";
 import { useState } from "react";
+import { RootState } from "~/redux";
+import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
+import { useSelector } from "react-redux";
 
 const WelcomeToProfileBanner = ({
   profile,
 }: {
   profile: FullAuthorProfile;
 }) => {
+  const auth = useSelector((state: RootState) => state.auth);
+  const {
+    isDismissed,
+    dismissFeature,
+    dismissStatus
+  } = useDismissableFeature({ auth, featureName: "research-rewards-banner" })
+
+
   const [isVisible, setIsVisible] = useState(true);
 
-  if (!isVisible) {
+  if (!isVisible || dismissStatus === "unchecked" || (dismissStatus === "checked" && isDismissed)) {
     return null;
   }
 
@@ -29,7 +40,10 @@ const WelcomeToProfileBanner = ({
         </div>
         <div
           className={css(styles.dismissBtn)}
-          onClick={() => setIsVisible(false)}
+          onClick={() => {
+            setIsVisible(false)
+            dismissFeature();
+          }}
         >
           Got it
         </div>
