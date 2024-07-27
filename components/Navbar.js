@@ -60,6 +60,7 @@ const Navbar = (props) => {
   const [stickyNavbar, setStickyNavbar] = useState(true);
   const { open, close } = useWeb3Modal();
 
+  const isAuthor = ["author"].includes(router.pathname.split("/")[1]);
   const isPost = ["post"].includes(router.pathname.split("/")[1]);
   const isPaper = ["paper"].includes(router.pathname.split("/")[1]);
   const isQuestion = ["question"].includes(router.pathname.split("/")[1]);
@@ -79,6 +80,10 @@ const Navbar = (props) => {
     "Lab Notebook"
   ) : pathname.includes("leaderboard") ? (
     "Leaderboard"
+  ) : isAuthor ? (
+    <div className={css(styles.backBtnWrapper)}>
+      <BackBtn label={"Author"} href="/" />
+    </div>
   ) : isRefManager ? (
     <div style={{ display: "flex", alignItems: "center" }}>
       <div
