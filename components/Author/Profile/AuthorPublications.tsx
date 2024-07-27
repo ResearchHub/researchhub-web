@@ -36,11 +36,10 @@ import {
   parseGenericDocument,
   parsePaper,
 } from "~/components/Document/lib/types";
-import { Button as Btn, IconButton } from "@mui/material";
-import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
-import colors from "~/config/themes/colors";
 import MoreHoriz from "@mui/icons-material/MoreHoriz";
 import ClaimRewardsModal from "~/components/ResearchCoin/ClaimRewardsModal";
+import ClaimRewardsButton from "~/components/shared/ClaimRewardsButton";
+import { getRewardsEligibilityInfo } from "~/components/ResearchCoin/lib/rewardsUtil";
 
 const AuthorPublications = ({
   initialPaginatedPublicationsResponse,
@@ -129,7 +128,7 @@ const AuthorPublications = ({
       {isLoadingPublications && (
         <>
           {Array.from({ length: 10 }).map((_, i) => (
-            <UnifiedDocFeedCardPlaceholder color="#efefef" />
+            <UnifiedDocFeedCardPlaceholder color="#efefef" key={i} />
           ))}
         </>
       )}
@@ -138,11 +137,8 @@ const AuthorPublications = ({
         <div className={css(styles.publicationsHeader)}>
           <div className={css(styles.sectionHeader)}>Publications</div>
           {currentUser?.authorProfile?.id === fullAuthorProfile.id && (
-            // @ts-ignore legacy
             <AddPublicationsModal
-              // @ts-ignore legacy
               wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
-              // @ts-ignore legacy
               wsAuth
             >
               <Button>
@@ -179,62 +175,30 @@ const AuthorPublications = ({
 
                 const authorships: Authorship[] =
                   targetDoc.authorships.map(parseAuthorship);
-                const isFirstAuthor = authorships.find(
-                  (authorship) =>
-                    authorship.authorPosition === "first" &&
-                    authorship.authorId === fullAuthorProfile.id
-                );
+
+
+                const rewardEligibilityInfo = getRewardsEligibilityInfo({ authorships, fullAuthorProfile, targetDoc });
+
 
                 return (
-                  <div className={css(styles.wrapper)}>
+                  <div className={css(styles.wrapper)} key={`doc-${docID}`}>
                     <div className={css(styles.docControls)}>
-                      {isFirstAuthor && (
-                        <>
-                          <Button
-                            size="small"
-                            variant="contained"
-                            customButtonStyle={styles.claimButton}
-                            onClick={() =>
-                              setRewardsModalState({
-                                paperId: targetDoc.id,
-                                paperTitle: targetDoc.title,
-                                authorship:
-                                  authorships.find(
-                                    (authorship) =>
-                                      authorship.authorId ===
-                                      fullAuthorProfile.id
-                                  ) || null,
-                                isOpen: true,
-                              })
-                            }
-                          >
-                            <div
-                              style={{
-                                color: colors.NEW_GREEN(),
-                                display: "flex",
-                                alignItems: "center",
-                                columnGap: 10,
-                              }}
-                            >
-                              <ResearchCoinIcon
-                                version={4}
-                                color={colors.NEW_GREEN()}
-                              />{" "}
-                              Claim rewards
-                            </div>
-                          </Button>
-                          <div style={{ display: "inline-flex" }}>
-                            <IconButton
-                              aria-label="more"
-                              id="long-button"
-                              aria-haspopup="true"
-                              onClick={() => null}
-                            >
-                              <MoreHoriz />
-                            </IconButton>
-                          </div>
-                        </>
-                      )}
+                      <ClaimRewardsButton
+                        handleClick={() => {
+                          setRewardsModalState({
+                            paperId: targetDoc.id,
+                            paperTitle: targetDoc.title,
+                            authorship:
+                              authorships.find(
+                                (authorship) =>
+                                  authorship.authorId ===
+                                  fullAuthorProfile.id
+                              ) || null,
+                            isOpen: true,
+                          })                          
+                        }}
+                        rewardEligibilityInfo={rewardEligibilityInfo}
+                      />
                     </div>
                     <FeedCard
                       {...targetDoc}
@@ -283,12 +247,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
   },
-  claimButton: {
-    background: colors.NEW_GREEN(0.1),
-    border: `1px solid ${colors.NEW_GREEN()}`,
-    marginTop: 20,
-    marginBottom: 5,
-  },
   publicationsHeader: {
     display: "flex",
     justifyContent: "space-between",
@@ -321,7 +279,6 @@ const styles = StyleSheet.create({
     margin: "0 auto",
     marginTop: 20,
   },
-
   wrapper: {},
   contentWrapper: {
     display: "flex",
