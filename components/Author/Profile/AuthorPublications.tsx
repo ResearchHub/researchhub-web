@@ -24,7 +24,7 @@ import {
 } from "~/components/Notifications/lib/types";
 import { authorProfileContext } from "../lib/AuthorProfileContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/pro-light-svg-icons";
+import { faPlus, faTrash } from "@fortawesome/pro-light-svg-icons";
 import {
   RESEARCHHUB_POST_DOCUMENT_TYPES,
   getFEUnifiedDocType,
@@ -40,6 +40,10 @@ import MoreHoriz from "@mui/icons-material/MoreHoriz";
 import ClaimRewardsModal from "~/components/ResearchCoin/ClaimRewardsModal";
 import ClaimRewardsButton from "~/components/shared/ClaimRewardsButton";
 import { getRewardsEligibilityInfo } from "~/components/ResearchCoin/lib/rewardsUtil";
+import GenericMenu, { MenuOption } from "~/components/shared/GenericMenu";
+import IconButton from "~/components/Icons/IconButton";
+import { faEllipsis } from "@fortawesome/pro-solid-svg-icons";
+import colors from "~/config/themes/colors";
 
 const AuthorPublications = ({
   initialPaginatedPublicationsResponse,
@@ -138,6 +142,7 @@ const AuthorPublications = ({
           <div className={css(styles.sectionHeader)}>Publications</div>
           {currentUser?.authorProfile?.id === fullAuthorProfile.id && (
             <AddPublicationsModal
+              // @ts-ignore legacy hook
               wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
               wsAuth
             >
@@ -180,6 +185,15 @@ const AuthorPublications = ({
                 const rewardEligibilityInfo = getRewardsEligibilityInfo({ authorships, fullAuthorProfile, targetDoc });
 
 
+                const menuOptions = [          {
+                  label: "Remove",
+                  icon: <FontAwesomeIcon icon={faTrash} />,
+                  value: "remove-from-feed",
+                  onClick: () => {
+        alert('hi')
+                  },
+                },]
+
                 return (
                   <div className={css(styles.wrapper)} key={`doc-${docID}`}>
                     <div className={css(styles.docControls)}>
@@ -199,6 +213,18 @@ const AuthorPublications = ({
                         }}
                         rewardEligibilityInfo={rewardEligibilityInfo}
                       />
+
+                      <GenericMenu
+                              softHide={true}
+                              options={menuOptions}
+                              width={200}
+                              id={"options-for-doc-" + docID}
+                              direction="bottom-right"
+                            >
+                              <IconButton overrideStyle={styles.btnDots}>
+                                <FontAwesomeIcon icon={faEllipsis} />
+                              </IconButton>
+                            </GenericMenu>                      
                     </div>
                     <FeedCard
                       {...targetDoc}
@@ -243,6 +269,18 @@ const AuthorPublications = ({
 };
 
 const styles = StyleSheet.create({
+  btnDots: {
+    fontSize: 22,
+    borderRadius: "50px",
+    color: colors.BLACK(1.0),
+    background: colors.LIGHTER_GREY(),
+    border: `1px solid ${colors.LIGHTER_GREY()}`,
+    padding: "6px 12px",
+    ":hover": {
+      background: colors.DARKER_GREY(0.2),
+      transition: "0.2s",
+    },
+  },  
   docControls: {
     display: "flex",
     justifyContent: "space-between",
