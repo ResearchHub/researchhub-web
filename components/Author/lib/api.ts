@@ -59,3 +59,22 @@ export const fetchAuthorPublications = ({
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
+
+export const removePublicationFromAuthorProfile = ({
+  authorId,
+  paperIds,
+}: {
+  authorId: ID;
+  paperIds: ID[];
+}) => {
+  const url = generateApiUrl(`author/${authorId}/publications`);
+
+  return fetch(
+    url,
+    API.DELETE_CONFIG_WITH_BODY({
+      paper_ids: paperIds,
+    })
+  )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};

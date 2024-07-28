@@ -149,6 +149,16 @@ export const API = (TOKEN) => {
         headers: headers,
       };
     },
+    DELETE_CONFIG_WITH_BODY: (data, overrideToken, additionalHeaders = {}) => {
+      // authorization token
+      var headers = setupRequestHeaders(null, TOKEN, overrideToken);
+      headers = { ...headers, ...additionalHeaders };
+      return {
+        method: DELETE,
+        body: JSON.stringify(data),
+        headers: headers,
+      };
+    },
   };
 };
 
