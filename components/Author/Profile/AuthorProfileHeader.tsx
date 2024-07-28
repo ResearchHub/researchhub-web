@@ -61,15 +61,25 @@ const AuthorProfileHeader = () => {
         <Avatar src={profile.profileImage} sx={{ width: 128, height: 128, fontSize: 48 }}>
           {isEmpty(profile.profileImage) && profile.firstName?.[0] + profile.lastName?.[0]}
         </Avatar>
-        <div>
+        <div className={css(styles.lineItems)}>
           <div className={css(styles.name)}>{profile.firstName} {profile.lastName}</div>
           <div className={css(styles.headline)}>{profile.headline}</div>
-
-          <div className={css(styles.institutions)}>
-            <AuthorInstitutions institutions={profile.institutions} />
+          <div className={css(styles.inlineLineItem)}>
+            <div className={css(styles.label)}>Education:</div>
+            {profile.education.map((edu, index) => (
+              <div>{edu.summary} {index < profile.education.length  ? "" : ", "}</div>
+            ))}
           </div>
 
-          <div>{profile.description}</div>
+          {/* Kobe 07-27-24: Temporarily disabling rendering of new institutions */}
+          {/* <div className={css(styles.institutions)}>
+            <AuthorInstitutions institutions={profile.institutions} />
+          </div> */}
+
+          <div className={css(styles.inlineLineItem)}>
+            <div className={css(styles.label)}>About:</div>
+            <div className={css(styles.description)}>{profile.description}</div>
+          </div>
 
           <div className={css(styles.authorSocialMedia)}>
             <AuthorSocialMediaIcons profile={profile} />
@@ -128,6 +138,22 @@ const AuthorProfileHeader = () => {
   )
 }
 const styles = StyleSheet.create({
+  lineItems: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 4,
+  },
+  inlineLineItem: {
+    display: "flex",
+    columnGap: "5px",
+    color: colors.BLACK(0.9),
+  },
+  label: {
+    fontWeight: 500,
+    color: colors.BLACK(1.0),
+  },
+  description: {
+  },
   textBtn: {
     cursor: "pointer",
     color: colors.NEW_BLUE(),
@@ -185,7 +211,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   headline: {
-    marginTop: 10,
+    fontSize: 18,
+    marginBottom: 10,
+    color: colors.BLACK(0.9),
   },
   institutions: {
     marginTop: 10,

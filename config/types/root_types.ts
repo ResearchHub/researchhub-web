@@ -272,7 +272,7 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   return parsed;
 };
 
-type Education = {
+export type Education = {
   city?: string;
   country?: string;
   state?: string;

@@ -17,6 +17,7 @@ const AuthorHeaderExpertise = ({ profile }: { profile: FullAuthorProfile }) => {
       {profile.reputationList.slice(0, REP_GAUGES_TO_SHOW).map((rep, index) => (
         <div className={css(styles.reputation)}>
           <div className={css(styles.reputationHubLabel)}>{rep.hub.name}</div>
+          {/* {rep.percentile} */}
           <ReputationGauge reputation={rep} key={`reputation-` + index} />
         </div>
       ))}

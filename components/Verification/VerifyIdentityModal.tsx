@@ -217,7 +217,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
                     Identity has been verified successfully
                   </div>
                   <div className={css(styles.description)}>
-                    A Verified badge will now appear next to your avatar throughout the platform. 
+                    A Verified badge will now appear next to your name throughout the platform. 
                   </div>
                 </div>
                 <div className={css(styles.startButtonWrapper)}>
