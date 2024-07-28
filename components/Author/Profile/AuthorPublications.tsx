@@ -193,6 +193,9 @@ const AuthorPublications = ({
                   targetDoc,
                 });
 
+                const showDocControls =
+                  currentUser?.authorProfile?.id === fullAuthorProfile.id;
+
                 const menuOptions = [
                   {
                     label: "Remove",
@@ -229,8 +232,8 @@ const AuthorPublications = ({
                               setPublicationsResponse(updatedResponse);
                             })
                             .catch(() => {
-                              // @ts-ignore
                               dispatch(
+                                // @ts-ignore
                                 MessageActions.showMessage({
                                   error: true,
                                   show: true,
@@ -250,35 +253,37 @@ const AuthorPublications = ({
 
                 return (
                   <div className={css(styles.wrapper)} key={`doc-${docID}`}>
-                    <div className={css(styles.docControls)}>
-                      <ClaimRewardsButton
-                        handleClick={() => {
-                          setRewardsModalState({
-                            paperId: targetDoc.id,
-                            paperTitle: targetDoc.title,
-                            authorship:
-                              authorships.find(
-                                (authorship) =>
-                                  authorship.authorId === fullAuthorProfile.id
-                              ) || null,
-                            isOpen: true,
-                          });
-                        }}
-                        rewardEligibilityInfo={rewardEligibilityInfo}
-                      />
+                    {showDocControls && (
+                      <div className={css(styles.docControls)}>
+                        <ClaimRewardsButton
+                          handleClick={() => {
+                            setRewardsModalState({
+                              paperId: targetDoc.id,
+                              paperTitle: targetDoc.title,
+                              authorship:
+                                authorships.find(
+                                  (authorship) =>
+                                    authorship.authorId === fullAuthorProfile.id
+                                ) || null,
+                              isOpen: true,
+                            });
+                          }}
+                          rewardEligibilityInfo={rewardEligibilityInfo}
+                        />
 
-                      <GenericMenu
-                        softHide={true}
-                        options={menuOptions}
-                        width={200}
-                        id={"options-for-doc-" + docID}
-                        direction="bottom-right"
-                      >
-                        <IconButton overrideStyle={styles.btnDots}>
-                          <FontAwesomeIcon icon={faEllipsis} />
-                        </IconButton>
-                      </GenericMenu>
-                    </div>
+                        <GenericMenu
+                          softHide={true}
+                          options={menuOptions}
+                          width={200}
+                          id={"options-for-doc-" + docID}
+                          direction="bottom-right"
+                        >
+                          <IconButton overrideStyle={styles.btnDots}>
+                            <FontAwesomeIcon icon={faEllipsis} />
+                          </IconButton>
+                        </GenericMenu>
+                      </div>
+                    )}
                     <FeedCard
                       {...targetDoc}
                       unifiedDocumentId={uniDoc.id}
