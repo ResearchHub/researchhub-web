@@ -43,10 +43,12 @@ import ClaimRewardsButton from "~/components/shared/ClaimRewardsButton";
 import { getRewardsEligibilityInfo } from "~/components/ResearchCoin/lib/rewardsUtil";
 import GenericMenu, { MenuOption } from "~/components/shared/GenericMenu";
 import IconButton from "~/components/Icons/IconButton";
-import { faEllipsis } from "@fortawesome/pro-solid-svg-icons";
+import { faEllipsis, faWarning } from "@fortawesome/pro-solid-svg-icons";
 import colors from "~/config/themes/colors";
 import { MessageActions } from "~/redux/message";
 import { useAlert } from "react-alert";
+import { Tooltip } from "@mui/material";
+import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
 
 const AuthorPublications = ({
   initialPaginatedPublicationsResponse,
@@ -125,6 +127,7 @@ const AuthorPublications = ({
   }, [wsResponse]);
 
   const unifiedDocumentData = publicationsResponse.results;
+
   return (
     <div>
       <ClaimRewardsModal
@@ -146,7 +149,77 @@ const AuthorPublications = ({
       <div className={css(styles.wrapper)}>
         <div className={css(styles.publicationsHeader)}>
           <div className={css(styles.sectionHeader)}>Publications</div>
-          {currentUser?.authorProfile?.id === fullAuthorProfile.id && (
+          {true ? (
+            <>
+              <Tooltip
+                componentsProps={{
+                  tooltip: {
+                    sx: {
+                      fontSize: 14,
+                      bgcolor: "#F3F3F3",
+                      color: colors.BLACK(),
+                    },
+                  },
+                }}
+                title={
+                  <div className={css(styles.addPublicationTooltip)}>
+                    <div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignContent: "center",
+                          alignItems: "center",
+                          gap: 15,
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          fontSize="26"
+                          icon={faWarning}
+                          color={colors.MEDIUM_GREY2()}
+                        />
+                        <div
+                          style={{ display: "flex", flexDirection: "column" }}
+                        >
+                          Identity verification is required to add publications.
+                          {/* @ts-ignore */}
+                          <VerifyIdentityModal
+                            // @ts-ignore legacy
+                            wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
+                            // @ts-ignore legacy
+                            wsAuth
+                          >
+                            <div
+                              style={{
+                                color: colors.NEW_BLUE(),
+                                textDecoration: "underline",
+                                cursor: "pointer",
+                                marginTop: 5,
+                              }}
+                            >
+                              Learn more
+                            </div>
+                          </VerifyIdentityModal>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              >
+                <div>
+                  <Button disabled={true}>
+                    <FontAwesomeIcon
+                      icon={faPlus}
+                      style={{ marginRight: 10, fontWeight: 400, fontSize: 18 }}
+                    />
+                    Add Publications
+                  </Button>
+                </div>
+              </Tooltip>
+            </>
+          ) : (
+            <></>
+          )}
+          {/* {currentUser?.authorProfile?.id === fullAuthorProfile.id && (
             <AddPublicationsModal
               // @ts-ignore legacy hook
               wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
@@ -160,7 +233,7 @@ const AuthorPublications = ({
                 Add Publications
               </Button>
             </AddPublicationsModal>
-          )}
+          )} */}
         </div>
         <div className={css(styles.contentWrapper)}>
           <div>
@@ -327,6 +400,14 @@ const AuthorPublications = ({
 };
 
 const styles = StyleSheet.create({
+  addPublicationTooltip: {
+    padding: 6,
+    flexDirection: "column",
+    display: "flex",
+    gap: 10,
+    fontSize: 14,
+    fontWeight: 400,
+  },
   btnDots: {
     fontSize: 22,
     borderRadius: "50px",
