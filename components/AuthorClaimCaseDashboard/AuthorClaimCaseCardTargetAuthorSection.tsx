@@ -70,6 +70,12 @@ export default function AuthorClaimCaseCardTargetAuthorSection({
           </span>
         </div>
         <div className={css(styles.marginBottom)}>
+          <span className={css(styles.fontGrey)}>{"Primary hub - "}</span>
+          <span>
+            {caseData?.paper?.primary_hub}
+          </span>
+        </div>          
+        <div className={css(styles.marginBottom)}>
           <span className={css(styles.fontGrey)}>{"Preregistration - "}</span>
           <Link
             href={caseData?.preregistrationUrl || ""}
@@ -96,7 +102,7 @@ export default function AuthorClaimCaseCardTargetAuthorSection({
           <span className={css(styles.citations)}>
             + {caseData?.paperReward?.citationChange}
           </span>
-        </div>
+        </div>      
       </div>
     </div>
   );
