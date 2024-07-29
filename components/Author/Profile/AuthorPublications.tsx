@@ -149,91 +149,96 @@ const AuthorPublications = ({
       <div className={css(styles.wrapper)}>
         <div className={css(styles.publicationsHeader)}>
           <div className={css(styles.sectionHeader)}>Publications</div>
-          {false ? (
-            <>
-              <Tooltip
-                componentsProps={{
-                  tooltip: {
-                    sx: {
-                      fontSize: 14,
-                      bgcolor: "#F3F3F3",
-                      color: colors.BLACK(),
+          {!currentUser?.isVerified &&
+            currentUser?.authorProfile?.id === fullAuthorProfile.id && (
+              <>
+                <Tooltip
+                  componentsProps={{
+                    tooltip: {
+                      sx: {
+                        fontSize: 14,
+                        bgcolor: "#F3F3F3",
+                        color: colors.BLACK(),
+                      },
                     },
-                  },
-                }}
-                title={
-                  <div className={css(styles.addPublicationTooltip)}>
-                    <div>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignContent: "center",
-                          alignItems: "center",
-                          gap: 15,
-                        }}
-                      >
-                        <FontAwesomeIcon
-                          fontSize="26"
-                          icon={faWarning}
-                          color={colors.MEDIUM_GREY2()}
-                        />
+                  }}
+                  title={
+                    <div className={css(styles.addPublicationTooltip)}>
+                      <div>
                         <div
-                          style={{ display: "flex", flexDirection: "column" }}
+                          style={{
+                            display: "flex",
+                            alignContent: "center",
+                            alignItems: "center",
+                            gap: 15,
+                          }}
                         >
-                          Identity verification is required to add publications.
-                          {/* @ts-ignore */}
-                          <VerifyIdentityModal
-                            // @ts-ignore legacy
-                            wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
-                            // @ts-ignore legacy
-                            wsAuth
+                          <FontAwesomeIcon
+                            fontSize="26"
+                            icon={faWarning}
+                            color={colors.MEDIUM_GREY2()}
+                          />
+                          <div
+                            style={{ display: "flex", flexDirection: "column" }}
                           >
-                            <div
-                              style={{
-                                color: colors.NEW_BLUE(),
-                                textDecoration: "underline",
-                                cursor: "pointer",
-                                marginTop: 5,
-                              }}
+                            Identity verification is required to add
+                            publications.
+                            {/* @ts-ignore */}
+                            <VerifyIdentityModal
+                              // @ts-ignore legacy
+                              wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
+                              // @ts-ignore legacy
+                              wsAuth
                             >
-                              Learn more
-                            </div>
-                          </VerifyIdentityModal>
+                              <div
+                                style={{
+                                  color: colors.NEW_BLUE(),
+                                  textDecoration: "underline",
+                                  cursor: "pointer",
+                                  marginTop: 5,
+                                }}
+                              >
+                                Learn more
+                              </div>
+                            </VerifyIdentityModal>
+                          </div>
                         </div>
                       </div>
                     </div>
+                  }
+                >
+                  <div>
+                    <Button disabled={true}>
+                      <FontAwesomeIcon
+                        icon={faPlus}
+                        style={{
+                          marginRight: 10,
+                          fontWeight: 400,
+                          fontSize: 18,
+                        }}
+                      />
+                      Add Publications
+                    </Button>
                   </div>
-                }
+                </Tooltip>
+              </>
+            )}
+          {currentUser?.isVerified &&
+            currentUser?.authorProfile?.id === fullAuthorProfile.id && (
+              <AddPublicationsModal
+                // @ts-ignore legacy hook
+                wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
+                wsAuth
               >
-                <div>
-                  <Button disabled={true}>
-                    <FontAwesomeIcon
-                      icon={faPlus}
-                      style={{ marginRight: 10, fontWeight: 400, fontSize: 18 }}
-                    />
-                    Add Publications
-                  </Button>
-                </div>
-              </Tooltip>
-            </>
-          ) : (
-            <></>
-          )}
-          {currentUser?.authorProfile?.id === fullAuthorProfile.id && (
-            <AddPublicationsModal
-              // @ts-ignore legacy hook
-              wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
-              wsAuth
-            >
-              <Button>
-                <FontAwesomeIcon
-                  icon={faPlus}
-                  style={{ marginRight: 10, fontWeight: 400, fontSize: 18 }}
-                />
-                Add Publications
-              </Button>
-            </AddPublicationsModal>
-          )}
+                <Button>
+                  <FontAwesomeIcon
+                    icon={faPlus}
+                    style={{ marginRight: 10, fontWeight: 400, fontSize: 18 }}
+                  />
+                  Add Publications
+                </Button>
+              </AddPublicationsModal>
+            )}
         </div>
         <div className={css(styles.contentWrapper)}>
           <div>

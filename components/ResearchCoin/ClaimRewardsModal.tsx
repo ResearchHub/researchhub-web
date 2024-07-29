@@ -62,37 +62,58 @@ const stepperSteps: ProgressStepperStep[] = [
     title: "Submit Claim",
     number: 3,
     value: "CLAIM_SUBMITTED",
-  },  
+  },
 ];
 
-const YesNoBlock = ({ selection, label, handleClick } : { selection: "YES" | "NO" | null, label: string, handleClick: Function }) => {
+const YesNoBlock = ({
+  selection,
+  label,
+  handleClick,
+}: {
+  selection: "YES" | "NO" | null;
+  label: string;
+  handleClick: Function;
+}) => {
   return (
     <div className={css(blockStyles.yesNoBlock)}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, justifyContent: "space-between"}}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          justifyContent: "space-between",
+        }}
+      >
         <div className={css(blockStyles.yesNoLabel)}>{label}</div>
         <div className={css(blockStyles.buttonsWrapper)}>
           <div className={css(blockStyles.btnWrapper)}>
-            <Button fullWidth onClick={() => handleClick("YES")} variant={selection === "YES" ? "contained" : "outlined" }>
+            <Button
+              fullWidth
+              onClick={() => handleClick("YES")}
+              variant={selection === "YES" ? "contained" : "outlined"}
+            >
               Yes
             </Button>
           </div>
           <div className={css(blockStyles.btnWrapper)}>
-            <Button fullWidth onClick={() => handleClick("NO")} variant={selection === "NO" ? "contained" : "outlined" }>
+            <Button
+              fullWidth
+              onClick={() => handleClick("NO")}
+              variant={selection === "NO" ? "contained" : "outlined"}
+            >
               No
             </Button>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const blockStyles = StyleSheet.create({
-  yesNoBlock: {
-  },
+  yesNoBlock: {},
   btnWrapper: {
     width: 100,
-    
   },
   yesNoLabel: {
     maxWidth: 350,
@@ -100,8 +121,8 @@ const blockStyles = StyleSheet.create({
   buttonsWrapper: {
     display: "flex",
     gap: 10,
-  }
-})
+  },
+});
 
 const ClaimRewardsModal = ({
   paperId,
@@ -126,16 +147,15 @@ const ClaimRewardsModal = ({
   const handleNext = () => {
     const currentStepPos = ORDERED_STEPS.indexOf(step);
 
-    const isLastStep = (step === "PREREGRISTRATION");
+    const isLastStep = step === "PREREGRISTRATION";
     if (isLastStep) {
       handleSubmitClaim();
       return;
-    }
-    else {
+    } else {
       const nextStep = ORDERED_STEPS[currentStepPos + 1];
       setStep(nextStep);
     }
-  }
+  };
 
   const handleSubmitClaim = async () => {
     if (!currentUser) {
@@ -152,9 +172,11 @@ const ClaimRewardsModal = ({
         openDataUrl,
       });
       setIsFetching(false);
-    }
-    catch(error) {
+    } catch (error) {
       setIsFetching(false);
+      alert(
+        "Failed to submit claim. If a claim has already been submitted, please wait for the review process to complete."
+      );
     }
   };
 
@@ -176,6 +198,7 @@ const ClaimRewardsModal = ({
       modalContentStyle={styles.modalStyle}
     >
       <div>
+        {/* FIXME: Temporariy turnign off breadcrumbs until we support open access PDF upload */}
         {/* {!["CLAIM_SUBMITTED", "INTRO"].includes(step) && (
           <div className={css(styles.breadcrumbsWrapper)}>
             <ProgressStepper selected={step} steps={stepperSteps} />
@@ -197,21 +220,27 @@ const ClaimRewardsModal = ({
         {step === "INTRO" && (
           <>
             <div className={css(styles.introTitle)}>
-              <ResearchCoinIcon height={40} width={40} color={colors.NEW_GREEN()} version={4} />
-              Claim RSC rewards on your paper 
+              <ResearchCoinIcon
+                height={40}
+                width={40}
+                color={colors.NEW_GREEN()}
+                version={4}
+              />
+              Claim RSC rewards on your paper
             </div>
             <div className={css(styles.slide)}>
               <div className={css(styles.introText)}>
-                At ResearchHub, we use RSC rewards to encourage the creation of high-quality research outputs. To us this means science that is:  
+                At ResearchHub, we use RSC rewards to encourage the creation of
+                high-quality research outputs. To us this means science that is:
               </div>
               <div className={css(styles.introLineItems)}>
                 <div className={css(styles.introLineItem)}>
                   <FontAwesomeIcon icon={faLockOpen} fontSize={20} />
-                  Open access  
+                  Open access
                 </div>
                 <div className={css(styles.introLineItem)}>
                   <FontAwesomeIcon icon={faChartPie} fontSize={20} />
-                  Accompanied by open data  
+                  Accompanied by open data
                 </div>
                 <div className={css(styles.introLineItem)}>
                   <Image
@@ -220,9 +249,8 @@ const ClaimRewardsModal = ({
                     height={30}
                     src={"/static/icons/blueprint_gray.svg"}
                   />
-                  Preregistered  
-                </div>                
-
+                  Preregistered
+                </div>
               </div>
             </div>
           </>
@@ -234,17 +262,26 @@ const ClaimRewardsModal = ({
               Open Data
             </div>
             <div className={css(styles.description)}>
-                Open data allows the scientific community to audit the claims made in the paper by examining the data and reproducing the results. By providing a link to the open data set associated with this paper, your paper will be eligible for additional RSC rewards.
+              Open data allows the scientific community to audit the claims made
+              in the paper by examining the data and reproducing the results. By
+              providing a link to the open data set associated with this paper,
+              your paper will be eligible for additional RSC rewards.
             </div>
             <YesNoBlock
-              selection={isOpenData ? "YES" : isOpenData === false ? "NO" : null}
+              selection={
+                isOpenData ? "YES" : isOpenData === false ? "NO" : null
+              }
               label="Is there an open data set freely and publicly available?"
-              handleClick={(selection) => setIsOpenData(selection === "YES" ? true : false)}
+              handleClick={(selection) =>
+                setIsOpenData(selection === "YES" ? true : false)
+              }
             />
             <div style={{ display: isOpenData ? "block" : "none" }}>
               <FormInput
                 error={
-                  openDataUrl && !isValidURL(openDataUrl) && "Please enter a valid URL"
+                  openDataUrl &&
+                  !isValidURL(openDataUrl) &&
+                  "Please enter a valid URL"
                 }
                 value={openDataUrl || ""}
                 label="Provide the URL to the publication's dataset:"
@@ -269,17 +306,30 @@ const ClaimRewardsModal = ({
               Preregistration
             </div>
             <div className={css(styles.description)}>
-              Preregistration is important to us. It maintains the purity of the research by outlining the intentions of the author(s) which leads to more reproducible science. By providing a preregistration, your paper will be eligible for additional RSC rewards.
+              Preregistration is important to us. It maintains the purity of the
+              research by outlining the intentions of the author(s) which leads
+              to more reproducible science. By providing a preregistration, your
+              paper will be eligible for additional RSC rewards.
             </div>
             <YesNoBlock
-              selection={isPreregistered ? "YES" : isPreregistered === false ? "NO" : null}
+              selection={
+                isPreregistered
+                  ? "YES"
+                  : isPreregistered === false
+                  ? "NO"
+                  : null
+              }
               label="Was this paper preregistered prior to publication?"
-              handleClick={(selection) => setIsPreregistered(selection === "YES" ? true : false)}
+              handleClick={(selection) =>
+                setIsPreregistered(selection === "YES" ? true : false)
+              }
             />
             <div style={{ display: isPreregistered ? "block" : "none" }}>
               <FormInput
                 error={
-                  preregistrationUrl && !isValidURL(preregistrationUrl) && "Please enter a valid URL"
+                  preregistrationUrl &&
+                  !isValidURL(preregistrationUrl) &&
+                  "Please enter a valid URL"
                 }
                 value={preregistrationUrl || ""}
                 label="Provide the URL to the publication's preregistration:"
@@ -301,43 +351,43 @@ const ClaimRewardsModal = ({
             style={{ width: 200, margin: "20px auto" }}
           >
             Let's Start
-          </Button>                  
+          </Button>
         )}
 
         {!["CLAIM_SUBMITTED", "INTRO"].includes(step) && (
           <div className={css(styles.footer)}>
-            <div>
-              Paper: {paperTitle}
-            </div>
+            <div>Paper: {paperTitle}</div>
             <ClaimRewardSummary
               baseReward={rewardSummary?.baseRewards || 0}
               isOpenAccess={true}
               isOpenData={openDataUrl !== null}
               isPreregistered={preregistrationUrl !== null}
-              preregistrationMultiplier={rewardSummary?.preregistrationMultiplier}
+              preregistrationMultiplier={
+                rewardSummary?.preregistrationMultiplier
+              }
               openDataMultiplier={rewardSummary?.openDataMultiplier}
             />
             <Button
               fullWidth
-              disabled={(step === "OPEN_DATA" && isOpenData && !openDataUrl) || (step === "PREREGRISTRATION" && isPreregistered && !preregistrationUrl) || isFetching}
+              disabled={
+                (step === "OPEN_DATA" && isOpenData && !openDataUrl) ||
+                (step === "PREREGRISTRATION" &&
+                  isPreregistered &&
+                  !preregistrationUrl) ||
+                isFetching
+              }
               onClick={() => handleNext()}
               theme="solidPrimary"
               style={{ width: 200, margin: "20px auto" }}
             >
               {isFetching ? (
-                <ClipLoader
-                  loading={true}
-                  size={24}
-                  color={colors.WHITE()}
-                />
-              ) : (  
+                <ClipLoader loading={true} size={24} color={colors.WHITE()} />
+              ) : (
                 <>{step === "PREREGRISTRATION" ? "Submit" : "Next"}</>
-              )}              
-            </Button>        
+              )}
+            </Button>
           </div>
         )}
-
-
       </div>
     </BaseModal>
   );
@@ -371,9 +421,7 @@ const styles = StyleSheet.create({
     maxWidth: 400,
     marginBottom: 25,
   },
-  inputContainer: {
-
-  },
+  inputContainer: {},
   footer: {
     borderTop: `1px solid ${colors.GREY(0.5)}`,
     marginTop: 50,
