@@ -400,4 +400,11 @@ export class ErrorWithCode extends Error {
   }
 }
 
+export type PaginatedApiResponse = {
+  count: number;
+  next: NullableString;
+  previous: NullableString;
+  results: any[];
+};
+
 export type SanitizedAndSafeHtml = string; // Used in situations where we have HTML strings that we trust.

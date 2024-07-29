@@ -1,4 +1,7 @@
-import { CitedAuthorAchievementIcon, OpenAccessAchievementIcon } from "~/config/icons/AchievementIcons";
+import {
+  CitedAuthorAchievementIcon,
+  OpenAccessAchievementIcon,
+} from "~/config/icons/AchievementIcons";
 import { Achievement, FullAuthorProfile } from "./types";
 import { ReactElement } from "react";
 import { Tab } from "~/components/HorizontalTabBar";
@@ -8,15 +11,20 @@ import { faQuestion } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import Tooltip from "@mui/material/Tooltip";
 
-export const getAchievmentDetails = ({ achievement, profile }: { achievement: Achievement, profile: FullAuthorProfile }): { icon: ReactElement, title: string, details: string } => {
+export const getAchievmentDetails = ({
+  achievement,
+  profile,
+}: {
+  achievement: Achievement;
+  profile: FullAuthorProfile;
+}): { icon: ReactElement; title: string; details: string } => {
   if (achievement === "OPEN_ACCESS") {
     return {
       icon: <OpenAccessAchievementIcon active height={30} width={30} />,
       title: "Open Access Advocate",
       details: `${profile.openAccessPct}% of works are open access`,
     };
-  }
-  else if (achievement === "CITED_AUTHOR") {
+  } else if (achievement === "CITED_AUTHOR") {
     return {
       icon: <CitedAuthorAchievementIcon active height={30} width={30} />,
       title: "Cited Author",
@@ -26,58 +34,77 @@ export const getAchievmentDetails = ({ achievement, profile }: { achievement: Ac
 
   return {
     icon: <></>,
-      title: "",
+    title: "",
     details: "",
   };
-}
+};
 
-export const buildAuthorTabs = ({ router, profile }: { router: any, profile: FullAuthorProfile }): Tab[] => {
-
-  return [{
-    label: "Overview",
-    value: "overview",
-    href: `/author/${profile.id}`,
-    isSelected: router.pathname === "/author/[authorId]"
-  },{
-    label: "Publications",
-    value: "publications",
-    href: `/author/${profile.id}/publications`,
-    isSelected: router.pathname === "/author/[authorId]/publications",
-    pillContentStyle: profile.hasVerifiedPublications ? undefined : styles.unverified,
-    pillContent: profile.hasVerifiedPublications ? (
-      profile.summaryStats.worksCount.toLocaleString()
-    ) : (
-      <Tooltip title={"Publications have not yet been verified by author."} componentsProps={{
-        tooltip: {
-          sx: {
-            fontSize: 14,
-            bgcolor: colors.YELLOW2(),
-          },
-        },
-      }}>
-        <FontAwesomeIcon icon={faQuestion} />
-      </Tooltip>
-    )
-  }, {
-    label: "Peer Reviews",
-    value: "peer-reviews",
-    href: `/author/${profile.id}`,
-    isSelected: router.pathname === "/author/[authorId]/reviews",
-  }, {
-    label: "Comments",
-    value: "comments",
-    href: `/author/${profile.id}`,
-    isSelected: router.pathname === "/author/[authorId]/comments",
-  }, {
-    label: "Bounties",
-    value: "bounties",
-    href: `/author/${profile.id}`,
-    isSelected: router.pathname === "/author/[authorId]/bounties",
-  }]
-}
+export const buildAuthorTabs = ({
+  router,
+  profile,
+}: {
+  router: any;
+  profile: FullAuthorProfile;
+}): Tab[] => {
+  return [
+    {
+      label: "Overview",
+      value: "overview",
+      href: `/author/${profile.id}`,
+      isSelected: router.pathname === "/author/[authorId]",
+    },
+    {
+      label: "Publications",
+      value: "publications",
+      href: `/author/${profile.id}/publications`,
+      isSelected: router.pathname === "/author/[authorId]/publications",
+      pillContentStyle: profile.hasVerifiedPublications
+        ? undefined
+        : styles.unverified,
+      pillContent: profile.hasVerifiedPublications ? (
+        profile.summaryStats.worksCount.toLocaleString()
+      ) : (
+        <Tooltip
+          title={"Publications have not yet been verified by author."}
+          componentsProps={{
+            tooltip: {
+              sx: {
+                fontSize: 14,
+                bgcolor: colors.YELLOW2(),
+              },
+            },
+          }}
+        >
+          <FontAwesomeIcon icon={faQuestion} />
+        </Tooltip>
+      ),
+    },
+    {
+      label: "Peer Reviews",
+      value: "reviews",
+      href: `/author/${profile.id}/reviews`,
+      isSelected: router.pathname === "/author/[authorId]/reviews",
+    },
+    {
+      label: "Comments",
+      value: "comments",
+      href: `/author/${profile.id}/comments`,
+      isSelected: router.pathname === "/author/[authorId]/comments",
+    },
+    {
+      label: "Bounties",
+      value: "bounties",
+      href: `/author/${profile.id}/bounties`,
+      isSelected: router.pathname === "/author/[authorId]/bounties",
+    },
+  ];
+};
 
 const styles = StyleSheet.create({
   unverified: {
-    background: colors.YELLOW2(), color: "white", borderRadius: 4, padding: "4px 8px",
-  }
-})
+    background: colors.YELLOW2(),
+    color: "white",
+    borderRadius: 4,
+    padding: "4px 8px",
+  },
+});
