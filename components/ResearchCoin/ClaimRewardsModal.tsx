@@ -20,7 +20,7 @@ import { RewardSummary, parseRewardSummary } from "./lib/types";
 import ClaimRewardSummary from "./lib/ClaimRewardSummary";
 import FormInput from "../Form/FormInput";
 import { isValidURL } from "~/config/utils/validation";
-import { faChartPie, faLockOpen } from "@fortawesome/pro-solid-svg-icons";
+import { faChartPie, faCircleCheck, faFlask, faLockOpen } from "@fortawesome/pro-solid-svg-icons";
 import Image from "next/image";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import { ClipLoader } from "react-spinners";
@@ -177,6 +177,9 @@ const ClaimRewardsModal = ({
           "Failed to submit claim. If a claim has already been submitted, please wait for the review process to complete."
         );
       }
+      else {
+        setStep("CLAIM_SUBMITTED");
+      }
 
       setIsFetching(false);
     } catch (error) {
@@ -197,12 +200,23 @@ const ClaimRewardsModal = ({
     })();
   }, [paperId]);
 
+  const resetModal = () => {
+    setStep("INTRO");
+    setOpenDataUrl(null);
+    setPreregistrationUrl(null);
+    setIsOpenData(null);
+    setIsPreregistered(null);
+  }
+
   const currentStepPos = ORDERED_STEPS.indexOf(step);
   return (
     <BaseModal
       isOpen={isOpen}
       hideClose={false}
-      closeModal={closeModal}
+      closeModal={() => {
+        resetModal();
+        closeModal();
+      }}
       zIndex={1000000}
       modalContentStyle={styles.modalStyle}
     >
@@ -228,7 +242,7 @@ const ClaimRewardsModal = ({
 
         {step === "INTRO" && (
           <>
-            <div className={css(styles.introTitle)}>
+            <div className={css(styles.largeTitle)}>
               <ResearchCoinIcon
                 height={40}
                 width={40}
@@ -238,20 +252,20 @@ const ClaimRewardsModal = ({
               Claim RSC rewards on your paper
             </div>
             <div className={css(styles.slide)}>
-              <div className={css(styles.introText)}>
+              <div className={css(styles.largeText)}>
                 At ResearchHub, we use RSC rewards to encourage the creation of
                 high-quality research outputs. To us this means science that is:
               </div>
-              <div className={css(styles.introLineItems)}>
-                <div className={css(styles.introLineItem)}>
+              <div className={css(styles.lineItems)}>
+                <div className={css(styles.lineItem)}>
                   <FontAwesomeIcon icon={faLockOpen} fontSize={20} />
                   Open access
                 </div>
-                <div className={css(styles.introLineItem)}>
+                <div className={css(styles.lineItem)}>
                   <FontAwesomeIcon icon={faChartPie} fontSize={20} />
                   Accompanied by open data
                 </div>
-                <div className={css(styles.introLineItem)}>
+                <div className={css(styles.lineItem)}>
                   <Image
                     alt="Scan"
                     width={30}
@@ -351,6 +365,46 @@ const ClaimRewardsModal = ({
             </div>
           </>
         )}
+        {step === "CLAIM_SUBMITTED" && (
+          <>
+            <div className={css(styles.slide)}>
+              <div className={css(styles.largeTitle)}>
+                <FontAwesomeIcon fontSize="40" icon={faCircleCheck} color={colors.NEW_GREEN()} />
+                You claimed has been submitted!
+              </div>
+              <div className={css(styles.largeText)}>
+                Once approved, RSC will be deposited in your account. We will notify you when the claim has been processed.
+              </div>
+              <div className={css(styles.largeText)}>
+                Here are some of the things you can do with your RSC:
+              </div>
+              <div className={css(styles.lineItems)}>
+                <div className={css(styles.lineItem)}>
+                  <ResearchCoinIcon height={20} width={20} color={colors.MEDIUM_GREY2()} version={4} />
+                  Create a bounty
+                </div>
+                <div className={css(styles.lineItem)}>
+                  <FontAwesomeIcon icon={faFlask} fontSize={20} />
+                  Fund new research
+                </div>
+                <div className={css(styles.lineItem)}>
+                <ResearchCoinIcon height={24} width={24} color={colors.MEDIUM_GREY2()} version={6} />
+                  Tip great content
+                </div>
+              </div>
+            </div>
+
+
+            <div className={css(styles.footer, styles.noBorder)}>
+              <Button fullWidth onClick={() => {
+                resetModal();
+                closeModal();
+              }}>
+                Close
+              </Button>
+            </div>
+          </>
+        )}
 
         {step === "INTRO" && (
           <Button
@@ -403,20 +457,20 @@ const ClaimRewardsModal = ({
 };
 
 const styles = StyleSheet.create({
-  introLineItems: {
+  lineItems: {
     display: "flex",
     flexDirection: "column",
     marginTop: 25,
     width: 260,
     margin: "0 auto",
   },
-  introLineItem: {
+  lineItem: {
     display: "flex",
     gap: 10,
     marginBottom: 10,
     color: colors.MEDIUM_GREY2(),
   },
-  introTitle: {
+  largeTitle: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -425,7 +479,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     alignItems: "center",
   },
-  introText: {
+  largeText: {
     color: colors.MEDIUM_GREY2(),
     maxWidth: 400,
     marginBottom: 25,
@@ -435,6 +489,9 @@ const styles = StyleSheet.create({
     borderTop: `1px solid ${colors.GREY(0.5)}`,
     marginTop: 50,
     paddingTop: 20,
+  },
+  noBorder: {
+    border: "none",
   },
   title: {
     fontSize: 18,
