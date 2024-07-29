@@ -132,7 +132,7 @@ const AuthorPublications = ({
     <div>
       <ClaimRewardsModal
         paperId={rewardsModalState.paperId}
-        isOpen={true}
+        isOpen={rewardsModalState.isOpen}
         paperTitle={rewardsModalState.paperTitle}
         authorship={rewardsModalState.authorship}
         closeModal={() => resetRewardsModalState()}
