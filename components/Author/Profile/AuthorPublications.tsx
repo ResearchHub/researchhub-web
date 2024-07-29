@@ -264,6 +264,7 @@ const AuthorPublications = ({
                   authorships,
                   fullAuthorProfile,
                   targetDoc,
+                  isOpenAccess: targetDoc.is_open_access,
                 });
 
                 const showDocControls =

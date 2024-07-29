@@ -30,6 +30,8 @@ const getTooltipContent = (rewardEligibilityInfo: RewardsEligibilityInfo) => {
             "Only first authors are eligible for rewards at this time."}
           {rewardEligibilityInfo.reason === "NOT_SUPPORTED_TYPE" &&
             "Only primary literature is eligible for rewards at this time."}
+          {rewardEligibilityInfo.reason === "NOT_OPEN_ACCESS" &&
+            "Only open access papers are eligible for rewards at this time."}
         </div>
       </div>
     );
