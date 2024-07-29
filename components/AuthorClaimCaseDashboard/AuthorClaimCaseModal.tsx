@@ -112,11 +112,14 @@ function AuthorClaimModal({
               </div>
             </div>
             <div>
-              <div className={css(customModalStyle.checkListHeader)}>Please verify the following:</div>
+              <div className={css(customModalStyle.checkListHeader)}>
+                Please verify the following:
+              </div>
               <ul className={css(customModalStyle.checkList)}>
-                <li>User's Email address is associated with an academic institution</li>
-                <li>User has profile photo set</li>
-                <li>User's name resembles that of published paper</li>
+                <li>Paper is open access</li>
+                <li>
+                  Paper's citation amount reasonably matches external sources
+                </li>
               </ul>
             </div>
             <div className={css(acceptRejectStyles.buttonContainer)}>
@@ -125,7 +128,7 @@ function AuthorClaimModal({
                   isSubmitting ? (
                     <Loader loading={true} size={16} color={colors.GREY(1)} />
                   ) : (
-                    `${verb} User`
+                    `${verb} Claim`
                   )
                 }
                 disabled={isSubmitting}

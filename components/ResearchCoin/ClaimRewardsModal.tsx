@@ -164,13 +164,20 @@ const ClaimRewardsModal = ({
     setIsFetching(true);
 
     try {
-      await submitRewardsClaim({
+      const response = await submitRewardsClaim({
         paperId,
         authorshipId: authorship!.id,
         userId: currentUser.id,
         preregistrationUrl,
         openDataUrl,
       });
+
+      if (!response.ok) {
+        alert(
+          "Failed to submit claim. If a claim has already been submitted, please wait for the review process to complete."
+        );
+      }
+
       setIsFetching(false);
     } catch (error) {
       setIsFetching(false);
@@ -182,11 +189,13 @@ const ClaimRewardsModal = ({
 
   useEffect(() => {
     (async () => {
-      const response = await fetchEligiblePaperRewards({ paperId });
-      const rewardSummary = parseRewardSummary(response);
-      setRewardSummary(rewardSummary);
+      if (paperId) {
+        const response = await fetchEligiblePaperRewards({ paperId });
+        const rewardSummary = parseRewardSummary(response);
+        setRewardSummary(rewardSummary);
+      }
     })();
-  }, []);
+  }, [paperId]);
 
   const currentStepPos = ORDERED_STEPS.indexOf(step);
   return (
