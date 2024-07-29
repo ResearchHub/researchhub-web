@@ -29,8 +29,8 @@ export default function AuthorClaimCaseCardTargetAuthorSection({
   caseData,
   requestor,
 }: Props): ReactElement<"div"> {
+  console.log('caseData', caseData)
   const paperUrl = getPaperUrl(caseData);
-  console.log("requestor", requestor);
   return (
     <div className={css(styles.targetAuthorSection)}>
       <div className={css(styles.caseDetails)}>

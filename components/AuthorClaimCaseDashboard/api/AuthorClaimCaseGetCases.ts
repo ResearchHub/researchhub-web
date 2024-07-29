@@ -9,6 +9,7 @@ import {
   parseUser,
 } from "../../../config/types/root_types";
 import { AUTHOR_CLAIM_STATUS } from "../constants/AuthorClaimStatus";
+import { Authorship, parseAuthorship } from "~/components/Document/lib/types";
 
 type ApiArgs = {
   caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS>;
@@ -35,6 +36,9 @@ export type CaseData = {
   targetPaperTitle?: NullableString;
   targetPaperDOI?: NullableString;
   providedEmail?: NullableString;
+  authorship: Authorship;
+  preregistrationUrl?: NullableString;
+  openDataUrl?: NullableString;
 };
 export type PaginationInfo = {
   caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS> | null;
@@ -80,6 +84,9 @@ export function getCases({
               target_author_name,
               target_paper_title,
               target_paper_doi,
+              authorship,
+              preregistration_url,
+              open_data_url,
             } = resultData;
   
             return {
@@ -89,10 +96,13 @@ export function getCases({
                 status,
                 updatedDate: updated_date,
                 paper,
+                authorship: parseAuthorship(authorship),
                 targetAuthorName: target_author_name,
                 targetPaperTitle: target_paper_title,
                 targetPaperDOI: target_paper_doi,
                 providedEmail: resultData.provided_email,
+                preregistrationUrl: preregistration_url,
+                openDataUrl: open_data_url
               },
               requestor: requestingUser,
             };
