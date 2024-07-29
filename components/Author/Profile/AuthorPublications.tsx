@@ -132,7 +132,7 @@ const AuthorPublications = ({
     <div>
       <ClaimRewardsModal
         paperId={rewardsModalState.paperId}
-        isOpen={rewardsModalState.isOpen}
+        isOpen={true}
         paperTitle={rewardsModalState.paperTitle}
         authorship={rewardsModalState.authorship}
         closeModal={() => resetRewardsModalState()}
@@ -149,7 +149,7 @@ const AuthorPublications = ({
       <div className={css(styles.wrapper)}>
         <div className={css(styles.publicationsHeader)}>
           <div className={css(styles.sectionHeader)}>Publications</div>
-          {true ? (
+          {false ? (
             <>
               <Tooltip
                 componentsProps={{
@@ -219,7 +219,7 @@ const AuthorPublications = ({
           ) : (
             <></>
           )}
-          {/* {currentUser?.authorProfile?.id === fullAuthorProfile.id && (
+          {currentUser?.authorProfile?.id === fullAuthorProfile.id && (
             <AddPublicationsModal
               // @ts-ignore legacy hook
               wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
@@ -233,7 +233,7 @@ const AuthorPublications = ({
                 Add Publications
               </Button>
             </AddPublicationsModal>
-          )} */}
+          )}
         </div>
         <div className={css(styles.contentWrapper)}>
           <div>
