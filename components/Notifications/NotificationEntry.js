@@ -12,13 +12,18 @@ import VerifiedBadge from "../Verification/VerifiedBadge";
 import { parseUnifiedDocument } from "~/config/types/root_types";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMemoCircleCheck } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faFileCirclePlus,
+  faMemoCircleCheck,
+} from "@fortawesome/pro-solid-svg-icons";
 import { truncateText } from "~/config/utils/string";
+import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
 
 const NotificationEntry = (props) => {
   const { notification, data } = props;
   const [isRead, toggleRead] = useState(data.read);
-
+  const currentUser = useCurrentUser();
   const dispatch = useDispatch();
 
   if (isNullOrUndefined(notification)) {
@@ -82,28 +87,23 @@ const NotificationEntry = (props) => {
       props.closeMenu();
     };
 
-    if (notification_type === "ACCOUNT_VERIFIED") {
-      return "Congratulations! Your account has been verified by the ResearchHub team. ";
-    } else if (notification_type === "PAPER_CLAIMED") {
-      const unifiedDocument = data?.unified_document
-        ? parseUnifiedDocument(data.unified_document)
-        : null;
-      const url = getUrlToUniDoc(unifiedDocument);
+    console.log("notification_type", notification_type);
 
+    if (notification_type === "IDENTITY_VERIFICATION_UPDATED") {
+      return "Congratulations! Your account has been verified by the ResearchHub team. ";
+    } else if (notification_type === "PAPER_CLAIM_PAYOUT") {
+      return "Congratulations! You claim has been approved and RSC has been awarded to your account.";
+    } else if (notification_type === "PUBLICATIONS_ADDED") {
       return (
-        <>
-          <span>
-            Congratulations! You have been verified as an author of {` `}
-          </span>
-          {url && (
-            <HyperLink
-              link={{ href: url }}
-              onClick={onClick}
-              style={styles.link}
-              text={unifiedDocument.document.paperTitle}
-            />
-          )}
-        </>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span>Publications were added to your profile. {` `}</span>
+          <HyperLink
+            link={{ href: currentUser.authorProfile.url + "/publications" }}
+            onClick={onClick}
+            style={styles.link}
+            text={"View publications"}
+          />
+        </div>
       );
     } else if (body == null) {
       return null;
@@ -168,15 +168,22 @@ const NotificationEntry = (props) => {
       onClick={handleNavigation}
     >
       <div className={css(styles.authorAvatar)}>
-        {notificationType === "ACCOUNT_VERIFIED" ? (
+        {notificationType === "IDENTITY_VERIFICATION_UPDATED" ? (
           <div style={{ marginLeft: -3 }}>
             <VerifiedBadge showTooltipOnHover={false} height={40} width={40} />
           </div>
-        ) : notificationType === "PAPER_CLAIMED" ? (
+        ) : notificationType === "PUBLICATIONS_ADDED" ? (
           <FontAwesomeIcon
-            icon={faMemoCircleCheck}
-            style={{ color: colors.NEW_GREEN() }}
+            icon={faFileCirclePlus}
+            style={{ color: colors.NEW_BLUE() }}
             fontSize={30}
+          />
+        ) : notificationType === "PAPER_CLAIM_PAYOUT" ? (
+          <ResearchCoinIcon
+            version={4}
+            height={35}
+            width={35}
+            color={colors.NEW_GREEN()}
           />
         ) : (
           <AuthorAvatar

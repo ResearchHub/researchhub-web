@@ -302,8 +302,10 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
   }
 
   let isVerified = raw.is_verified;
+  let url = `/user/${raw.id}/overview`;
   if (process.env.REACT_APP_ENV !== "production") {
     isVerified = raw.is_verified_v2;
+    url = `/author/${raw.id}`;
   }
 
   const parsed = {
@@ -311,7 +313,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     profileImage: raw.profile_image,
     firstName: raw.first_name,
     lastName: raw.last_name,
-    url: `/user/${raw.id}/overview`,
+    url,
     description: raw.description,
     isVerified: isVerified,
     headline: raw?.headline?.title || "",

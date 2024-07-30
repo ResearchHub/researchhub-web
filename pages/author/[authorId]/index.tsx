@@ -56,7 +56,7 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview, commentApiRespon
                   </div>
                 </ALink>
                 <div className={css(styles.sectionHeader)}>Recent Activity</div>
-                <AuthorComments commentApiResponse={commentApiResponse} />
+                <AuthorComments commentApiResponse={commentApiResponse} withLoadMore={false} />
                 <ALink theme="solidPrimary" href={`/author/${fullAuthorProfile.id}/comments`}>
                   <div className={css(styles.seeMoreLink)}>
                     See more
@@ -144,7 +144,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   const overview = await fetchAuthorOverview({ authorId: ctx!.params!.authorId as string })
   const commentApiResponse:any = await fetchContributionsAPI({
     filters: {
-      contentType: "REVIEW",
+      contentType: "ALL",
     },
   });
 

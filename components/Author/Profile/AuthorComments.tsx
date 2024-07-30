@@ -13,8 +13,10 @@ import fetchContributionsAPI from "~/components/LiveFeed/api/fetchContributionsA
 
 const AuthorComments = ({
   commentApiResponse,
+  withLoadMore = true,
 }: {
   commentApiResponse: PaginatedApiResponse;
+  withLoadMore?: boolean;
 }) => {
   
   const [_commentApiResponse, setCommentApiResponse] = useState<PaginatedApiResponse>(commentApiResponse);
@@ -61,7 +63,7 @@ const AuthorComments = ({
   return (
   <div className={css(styles.commentWrapper)}>
     {resultCards}
-    {_commentApiResponse.next && (
+    {withLoadMore && _commentApiResponse.next && (
         <LoadMore
           onClick={async () => {
             setIsFetchingMore(true);
