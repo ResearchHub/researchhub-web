@@ -65,6 +65,11 @@ class Notification extends Component {
         });
 
         revalidateAuthorProfile(this.props.auth?.user?.author_profile?.id);
+      } else if (
+        this.props.auth?.isLoggedIn &&
+        notification.notification_type === "IDENTITY_VERIFICATION_UPDATED"
+      ) {
+        revalidateAuthorProfile(this.props.auth?.user?.author_profile?.id);
       }
 
       addNotification(notification);
