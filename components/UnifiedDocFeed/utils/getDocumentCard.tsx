@@ -13,6 +13,7 @@ export type UnifiedCard = ReactElement<typeof FeedCard> | null;
 export function getDocumentCard({
   setUnifiedDocuments,
   unifiedDocumentData,
+  noPreview,
 }): UnifiedCard[] {
   return filterNull(unifiedDocumentData).map(
     (uniDoc: any, arrIndex: number): UnifiedCard => {
@@ -39,6 +40,7 @@ export function getDocumentCard({
       return (
         <FeedCard
           {...targetDoc}
+          first_preview={noPreview ? null : targetDoc.first_preview}
           unifiedDocumentId={uniDoc.id}
           document={targetDoc}
           documentFilter={uniDoc.document_filter}

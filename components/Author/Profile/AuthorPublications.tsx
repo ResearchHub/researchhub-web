@@ -432,6 +432,7 @@ const AuthorPublications = ({
                         currUniDoc.documents.score = currPaper.score;
                         newUniDocs[arrIndex] = currUniDoc;
                       }}
+                      first_preview={undefined}
                     />
                   </div>
                 );

@@ -9,7 +9,7 @@ const AuthorWorks = ({ works }: { works: any }) => {
       <div className={css(styles.contentWrapper)}>
         <div>
           {/* @ts-ignore */}
-          {getDocumentCard({ unifiedDocumentData: works })}
+          {getDocumentCard({ unifiedDocumentData: works, noPreview: true})}
         </div>
       </div>
     </div>

@@ -171,6 +171,8 @@ function FeedCard({
   );
   const [score, setScore] = useState<number>(initialScore);
   const [rscBadgeHover, setRSCBadgeHover] = useState(false);
+  console.log('first_preview', first_preview)
+  console.log('first_figure', first_figure)
   const [previews] = useState(
     configurePreview([
       first_preview && first_preview,

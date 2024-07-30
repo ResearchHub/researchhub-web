@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignContent: "center",
+    flexGrow: 1,
   },
   tooltip: {
     padding: 6,
