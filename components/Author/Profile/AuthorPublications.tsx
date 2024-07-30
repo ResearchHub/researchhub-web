@@ -52,6 +52,7 @@ import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
 import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
 import { ClipLoader } from "react-spinners";
 import LoadMore from "~/components/shared/LoadMore";
+import SearchEmpty from "~/components/Search/SearchEmpty";
 
 const AuthorPublications = ({
   initialPaginatedPublicationsResponse,
@@ -165,7 +166,7 @@ const AuthorPublications = ({
           )
         );
       });
-    }
+  }
 
   return (
     <div>
@@ -280,164 +281,174 @@ const AuthorPublications = ({
             )}
         </div>
         <div className={css(styles.contentWrapper)}>
-          <div>
-            {filterNull(unifiedDocumentData).map(
-              (uniDoc: any, arrIndex: number): UnifiedCard => {
-                const formattedDocType = getFEUnifiedDocType(
-                  uniDoc?.document_type ?? null
-                );
-                const docTypeLabel =
-                  (uniDoc?.document_type ?? "").toLowerCase() ?? null;
-                const formattedDocLabel =
-                  docTypeLabel === "hypothesis"
-                    ? "Meta-Study"
-                    : docTypeLabel === "discussion"
-                    ? "post"
-                    : docTypeLabel;
-                const targetDoc = !RESEARCHHUB_POST_DOCUMENT_TYPES.includes(
-                  formattedDocType
-                )
-                  ? uniDoc.documents
-                  : uniDoc.documents[0];
-                const docID = targetDoc.id;
+          {unifiedDocumentData.length === 0 && (
+            <div style={{ minHeight: 250, display: "flex", justifyContent: "center", width: "100%" }}>
+              <SearchEmpty title={"No publications found."} subtitle={Boolean(currentUser?.authorProfile.id === fullAuthorProfile?.id) ? "Add your publications to see if they are eligible for rewards." : ""} />
+            </div>
+          )}
+          {unifiedDocumentData.length > 0 && (
 
-                const authorships: Authorship[] =
-                  targetDoc.authorships.map(parseAuthorship);
 
-                const rewardEligibilityInfo = getRewardsEligibilityInfo({
-                  authorships,
-                  fullAuthorProfile,
-                  targetDoc,
-                  isOpenAccess: targetDoc.is_open_access,
-                });
+            <div>
+              {filterNull(unifiedDocumentData).map(
+                (uniDoc: any, arrIndex: number): UnifiedCard => {
+                  const formattedDocType = getFEUnifiedDocType(
+                    uniDoc?.document_type ?? null
+                  );
+                  const docTypeLabel =
+                    (uniDoc?.document_type ?? "").toLowerCase() ?? null;
+                  const formattedDocLabel =
+                    docTypeLabel === "hypothesis"
+                      ? "Meta-Study"
+                      : docTypeLabel === "discussion"
+                        ? "post"
+                        : docTypeLabel;
+                  const targetDoc = !RESEARCHHUB_POST_DOCUMENT_TYPES.includes(
+                    formattedDocType
+                  )
+                    ? uniDoc.documents
+                    : uniDoc.documents[0];
+                  const docID = targetDoc.id;
 
-                const showDocControls =
-                  currentUser?.authorProfile?.id === fullAuthorProfile.id;
+                  const authorships: Authorship[] =
+                    targetDoc.authorships.map(parseAuthorship);
 
-                const menuOptions = [
-                  {
-                    label: "Remove",
-                    icon: <FontAwesomeIcon icon={faTrash} />,
-                    value: "remove-from-feed",
-                    onClick: () => {
-                      alert.show({
-                        // @ts-ignore
-                        text: <div>{`Remove paper from your profile?`}</div>,
-                        buttonText: "Yes",
-                        onClick: async () => {
-                          removePublicationFromAuthorProfile({
-                            authorId: fullAuthorProfile.id as ID,
-                            paperIds: [targetDoc.id] as ID[],
-                          })
-                            .then((response: any) => {
-                              const indexOfPublication =
-                                publicationsResponse.results.findIndex(
-                                  (publication) => publication.id === uniDoc.id
-                                );
-                              publicationsResponse.results.splice(
-                                indexOfPublication,
-                                1
-                              );
-                              publicationsResponse.total =
-                                publicationsResponse.total - 1;
-                              const updatedResponse = {
-                                ...publicationsResponse,
-                              };
+                  const rewardEligibilityInfo = getRewardsEligibilityInfo({
+                    authorships,
+                    fullAuthorProfile,
+                    targetDoc,
+                    isOpenAccess: targetDoc.is_open_access,
+                  });
 
-                              fullAuthorProfile.summaryStats.worksCount =
-                                fullAuthorProfile.summaryStats.worksCount - 1;
-                              setFullAuthorProfile({ ...fullAuthorProfile });
-                              setPublicationsResponse(updatedResponse);
+                  const showDocControls =
+                    currentUser?.authorProfile?.id === fullAuthorProfile.id;
+
+                  const menuOptions = [
+                    {
+                      label: "Remove",
+                      icon: <FontAwesomeIcon icon={faTrash} />,
+                      value: "remove-from-feed",
+                      onClick: () => {
+                        alert.show({
+                          // @ts-ignore
+                          text: <div>{`Remove paper from your profile?`}</div>,
+                          buttonText: "Yes",
+                          onClick: async () => {
+                            removePublicationFromAuthorProfile({
+                              authorId: fullAuthorProfile.id as ID,
+                              paperIds: [targetDoc.id] as ID[],
                             })
-                            .catch(() => {
-                              dispatch(
-                                // @ts-ignore
-                                MessageActions.showMessage({
-                                  error: true,
-                                  show: true,
-                                })
-                              );
-                              dispatch(
-                                MessageActions.setMessage(
-                                  "Failed to remove publication. Please try again."
-                                )
-                              );
-                            });
-                        },
-                      });
+                              .then((response: any) => {
+                                const indexOfPublication =
+                                  publicationsResponse.results.findIndex(
+                                    (publication) => publication.id === uniDoc.id
+                                  );
+                                publicationsResponse.results.splice(
+                                  indexOfPublication,
+                                  1
+                                );
+                                publicationsResponse.total =
+                                  publicationsResponse.total - 1;
+                                const updatedResponse = {
+                                  ...publicationsResponse,
+                                };
+
+                                fullAuthorProfile.summaryStats.worksCount =
+                                  fullAuthorProfile.summaryStats.worksCount - 1;
+                                setFullAuthorProfile({ ...fullAuthorProfile });
+                                setPublicationsResponse(updatedResponse);
+                              })
+                              .catch(() => {
+                                dispatch(
+                                  // @ts-ignore
+                                  MessageActions.showMessage({
+                                    error: true,
+                                    show: true,
+                                  })
+                                );
+                                dispatch(
+                                  MessageActions.setMessage(
+                                    "Failed to remove publication. Please try again."
+                                  )
+                                );
+                              });
+                          },
+                        });
+                      },
                     },
-                  },
-                ];
+                  ];
 
-                return (
-                  <div className={css(styles.wrapper)} key={`doc-${docID}`}>
-                    {showDocControls && (
-                      <div className={css(styles.docControls)}>
-                        <ClaimRewardsButton
-                          handleClick={() => {
-                            setRewardsModalState({
-                              paperId: targetDoc.id,
-                              paperTitle: targetDoc.title,
-                              authorship:
-                                authorships.find(
-                                  (authorship) =>
-                                    authorship.authorId === fullAuthorProfile.id
-                                ) || null,
-                              isOpen: true,
-                            });
-                          }}
-                          rewardEligibilityInfo={rewardEligibilityInfo}
-                        />
+                  return (
+                    <div className={css(styles.wrapper)} key={`doc-${docID}`}>
+                      {showDocControls && (
+                        <div className={css(styles.docControls)}>
+                          <ClaimRewardsButton
+                            handleClick={() => {
+                              setRewardsModalState({
+                                paperId: targetDoc.id,
+                                paperTitle: targetDoc.title,
+                                authorship:
+                                  authorships.find(
+                                    (authorship) =>
+                                      authorship.authorId === fullAuthorProfile.id
+                                  ) || null,
+                                isOpen: true,
+                              });
+                            }}
+                            rewardEligibilityInfo={rewardEligibilityInfo}
+                          />
 
-                        <GenericMenu
-                          softHide={true}
-                          options={menuOptions}
-                          width={200}
-                          id={"options-for-doc-" + docID}
-                          direction="bottom-right"
-                        >
-                          <IconButton overrideStyle={styles.btnDots}>
-                            <FontAwesomeIcon icon={faEllipsis} />
-                          </IconButton>
-                        </GenericMenu>
-                      </div>
-                    )}
-                    <FeedCard
-                      {...targetDoc}
-                      unifiedDocumentId={uniDoc.id}
-                      document={targetDoc}
-                      documentFilter={uniDoc.document_filter}
-                      formattedDocType={formattedDocType}
-                      formattedDocLabel={formattedDocLabel}
-                      index={arrIndex}
-                      twitterScore={targetDoc.twitter_score}
-                      key={`${formattedDocType}-${docID}-${arrIndex}`}
-                      paper={uniDoc.documents}
-                      hubs={uniDoc.hubs}
-                      vote={uniDoc.user_vote}
-                      score={uniDoc.score}
-                      featured={uniDoc.featured}
-                      reviews={uniDoc.reviews}
-                      hasAcceptedAnswer={uniDoc?.document_filter?.answered}
-                      fundraise={uniDoc.fundraise}
-                      voteCallback={(
-                        arrIndex: number,
-                        currPaper: any
-                      ): void => {
-                        const [currUniDoc, newUniDocs] = [
-                          { ...uniDoc },
-                          [...unifiedDocumentData],
-                        ];
-                        currUniDoc.documents.user_vote = currPaper.user_vote;
-                        currUniDoc.documents.score = currPaper.score;
-                        newUniDocs[arrIndex] = currUniDoc;
-                      }}
-                    />
-                  </div>
-                );
-              }
-            )}
-          </div>
+                          <GenericMenu
+                            softHide={true}
+                            options={menuOptions}
+                            width={200}
+                            id={"options-for-doc-" + docID}
+                            direction="bottom-right"
+                          >
+                            <IconButton overrideStyle={styles.btnDots}>
+                              <FontAwesomeIcon icon={faEllipsis} />
+                            </IconButton>
+                          </GenericMenu>
+                        </div>
+                      )}
+                      <FeedCard
+                        {...targetDoc}
+                        unifiedDocumentId={uniDoc.id}
+                        document={targetDoc}
+                        documentFilter={uniDoc.document_filter}
+                        formattedDocType={formattedDocType}
+                        formattedDocLabel={formattedDocLabel}
+                        index={arrIndex}
+                        twitterScore={targetDoc.twitter_score}
+                        key={`${formattedDocType}-${docID}-${arrIndex}`}
+                        paper={uniDoc.documents}
+                        hubs={uniDoc.hubs}
+                        vote={uniDoc.user_vote}
+                        score={uniDoc.score}
+                        featured={uniDoc.featured}
+                        reviews={uniDoc.reviews}
+                        hasAcceptedAnswer={uniDoc?.document_filter?.answered}
+                        fundraise={uniDoc.fundraise}
+                        voteCallback={(
+                          arrIndex: number,
+                          currPaper: any
+                        ): void => {
+                          const [currUniDoc, newUniDocs] = [
+                            { ...uniDoc },
+                            [...unifiedDocumentData],
+                          ];
+                          currUniDoc.documents.user_vote = currPaper.user_vote;
+                          currUniDoc.documents.score = currPaper.score;
+                          newUniDocs[arrIndex] = currUniDoc;
+                        }}
+                        first_preview={undefined}
+                      />
+                    </div>
+                  );
+                }
+              )}
+            </div>
+          )}
         </div>
 
 
@@ -500,6 +511,7 @@ const styles = StyleSheet.create({
     borderTop: "1px solid #DEDEE6",
     border: "1px solid #F5F5F9",
     padding: 20,
+
   },
   mainContent: {
     width: "1000px",

@@ -16,41 +16,79 @@ import WelcomeToProfileBanner from "./WelcomeToProfileBanner";
 import UserInfoModal from "~/components/Modals/UserInfoModal";
 import { useDispatch } from "react-redux";
 import { ModalActions } from "~/redux/modals";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AuthorActions } from "~/redux/author";
 import { fetchAuthorProfile } from "../lib/api";
+import useCacheControl from "~/config/hooks/useCacheControl";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAddressCard, faBuildingColumns, faEdit, faUserXmark } from "@fortawesome/pro-solid-svg-icons";
+import { truncateText } from "~/config/utils/string";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
+import GenericMenu, { MenuOption } from "~/components/shared/GenericMenu";
+import IconButton from "~/components/Icons/IconButton";
+import {
+  faEllipsis,
+} from "@fortawesome/pro-regular-svg-icons";
 
 const AuthorProfileHeader = () => {
   const dispatch = useDispatch();
-  const {
-    fullAuthorProfile: profile,
-    setFullAuthorProfile,
-  } = authorProfileContext();
+  const { fullAuthorProfile: profile, setFullAuthorProfile } =
+    authorProfileContext();
+
+  const { revalidateAuthorProfile } = useCacheControl();
+  const currentUser = useCurrentUser();
+
+  const authorMenuOptions: MenuOption[] = [
+    {
+      label: "Edit profile",
+      icon: <FontAwesomeIcon icon={faEdit} />,
+      value: "edit",
+      onClick: () => {
+        dispatch(ModalActions.openUserInfoModal(true))
+      },
+    },
+    ...(currentUser?.moderator ? [{
+      label: "Ban user",
+      icon: <FontAwesomeIcon icon={faUserXmark} />,
+      value: "ban",
+      onClick: () => {
+        alert('TBD')
+      },
+    }] : []),
+  ];
 
   const getExpertiseTooltipContent = () => {
     return (
       <div className={css(styles.expertiseContent)}>
-        <div className={css(styles.expertiseContentBody)}>The expertise shown below is only an estimate because the author has not yet verified the publications in their profile.</div>
-      </div>      
-    )    
-  }
+        <div className={css(styles.expertiseContentBody)}>
+          The expertise shown below is only an estimate because the author has
+          not yet verified the publications in their profile.
+        </div>
+      </div>
+    );
+  };
 
   const onProfileSave = async () => {
-    const updatedProfile = await fetchAuthorProfile({ authorId: profile.id as string  })
+    const updatedProfile = await fetchAuthorProfile({
+      authorId: profile.id as string,
+    });
     const parsedUpdatedProfile = parseFullAuthorProfile(updatedProfile);
 
     setFullAuthorProfile(parsedUpdatedProfile);
-  }
+    revalidateAuthorProfile(profile.id);
+  };
 
   useEffect(() => {
     (async () => {
-      // This is necessary in order to have author data appear in the "edit profile" modal 
-      await dispatch(
-        AuthorActions.getAuthor({ authorId: profile.id })
-      );
+      // This is necessary in order to have author data appear in the "edit profile" modal
+      await dispatch(AuthorActions.getAuthor({ authorId: profile.id }));
     })();
-  }, [])
-  
+  }, []);
+
+  const [isShowingAll, setIsShowingAll] = useState(false);
+  const [isShowingFullDescription, setIsShowingFullDescription] = useState(false);
+  const visibleInstitutions = isShowingAll ? profile.education : profile.education.slice(0, 1);
+
   return (
     <div>
       <UserInfoModal onSave={onProfileSave} />
@@ -58,17 +96,30 @@ const AuthorProfileHeader = () => {
         <WelcomeToProfileBanner profile={profile} />
       </div>
       <div className={css(styles.bioSection, styles.section)}>
-        <Avatar src={profile.profileImage} sx={{ width: 128, height: 128, fontSize: 48 }}>
-          {isEmpty(profile.profileImage) && profile.firstName?.[0] + profile.lastName?.[0]}
+        <Avatar
+          src={profile.profileImage}
+          sx={{ width: 128, height: 128, fontSize: 48 }}
+        >
+          {isEmpty(profile.profileImage) &&
+            profile.firstName?.[0] + profile.lastName?.[0]}
         </Avatar>
         <div className={css(styles.lineItems)}>
-          <div className={css(styles.name)}>{profile.firstName} {profile.lastName}</div>
+          <div className={css(styles.name)}>
+            {profile.firstName} {profile.lastName}
+          </div>
           <div className={css(styles.headline)}>{profile.headline}</div>
           <div className={css(styles.inlineLineItem)}>
-            <div className={css(styles.label)}>Education:</div>
-            {profile.education.map((edu, index) => (
-              <div>{edu.summary} {index < profile.education.length  ? "" : ", "}</div>
+            <div className={css(styles.label)}>
+              <FontAwesomeIcon icon={faBuildingColumns} fontSize={20} />
+            </div>
+            {visibleInstitutions.map((edu, index) => (
+              <div>
+                {edu.summary} {index < profile.education.length ? "" : ", "}
+              </div>
             ))}
+            <div className={css(styles.showMore)} onClick={() => setIsShowingAll(!isShowingAll)}>
+              {isShowingAll ? "Show less" : `+ ${profile.education.length - visibleInstitutions.length} more`}
+            </div>
           </div>
 
           {/* Kobe 07-27-24: Temporarily disabling rendering of new institutions */}
@@ -76,17 +127,37 @@ const AuthorProfileHeader = () => {
             <AuthorInstitutions institutions={profile.institutions} />
           </div> */}
 
-          <div className={css(styles.inlineLineItem)}>
-            <div className={css(styles.label)}>About:</div>
-            <div className={css(styles.description)}>{profile.description}</div>
-          </div>
+          {(profile?.description?.length || 0) > 0 && (
+            <div className={css(styles.inlineLineItem, styles.descriptionLineItem)}>
+              <div className={css(styles.description)}>
+                {isShowingFullDescription ? profile.description: truncateText(profile.description, 300)}
+                <div className={css(styles.showMore)} style={{ marginTop: 3, }} onClick={() => setIsShowingFullDescription(!isShowingFullDescription)}>
+                  {isShowingFullDescription ? "Show less" : `Show more`}
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className={css(styles.authorSocialMedia)}>
             <AuthorSocialMediaIcons profile={profile} />
           </div>
-          <div className={css(styles.textBtn, styles.editProfileBtn)} onClick={() => dispatch(ModalActions.openUserInfoModal(true))}>
-            Edit profile
-          </div> 
+
+
+          {currentUser?.authorProfile.id === profile.id && (
+            <div className={css(styles.textBtn, styles.editProfileBtn)}>
+              <GenericMenu
+                softHide={true}
+                options={authorMenuOptions}
+                width={200}
+                id="edit-profile-menu"
+                direction="bottom-right"
+              >
+                <IconButton overrideStyle={styles.btnDots}>
+                  <FontAwesomeIcon icon={faEllipsis} />
+                </IconButton>
+              </GenericMenu>
+            </div>
+          )}
         </div>
       </div>
 
@@ -100,44 +171,76 @@ const AuthorProfileHeader = () => {
         </div>
 
         <div className={css(styles.section, styles.subSection)}>
-          <div className={css(styles.sectionHeader)}>
-            Key Stats
-          </div>
+          <div className={css(styles.sectionHeader)}>Key Stats</div>
           <AuthorHeaderKeyStats profile={profile} />
         </div>
 
-        <div className={css(styles.section, styles.subSection, !profile.hasVerifiedPublications && styles.expertiseSectionUnverified)}>
+        <div
+          className={css(
+            styles.section,
+            styles.subSection,
+            styles.repSubsection,
+            !profile.hasVerifiedPublications &&
+              styles.expertiseSectionUnverified
+          )}
+        >
           <div className={css(styles.sectionHeader)}>
             <div>
               {profile.hasVerifiedPublications && (
-                <div className={css(styles.expertiseHeader)}>
-                  Reputation
-                </div>
+                <div className={css(styles.expertiseHeader)}>Reputation</div>
               )}
-              {!profile.hasVerifiedPublications &&
-                <Tooltip title={getExpertiseTooltipContent()} componentsProps={{
-                  tooltip: {
-                    sx: {
-                      fontSize: 14,
-                      bgcolor: colors.YELLOW2(),
+              {!profile.hasVerifiedPublications && (
+                <Tooltip
+                  title={getExpertiseTooltipContent()}
+                  componentsProps={{
+                    tooltip: {
+                      sx: {
+                        fontSize: 14,
+                        bgcolor: colors.YELLOW2(),
+                      },
                     },
-                  },
-                }}>
-                  <div className={css(styles.expertiseHeader, styles.expertiseHeaderPending)}>
+                  }}
+                >
+                  <div
+                    className={css(
+                      styles.expertiseHeader,
+                      styles.expertiseHeaderPending
+                    )}
+                  >
                     Reputation
                     <PendingBadge />
                   </div>
-                </Tooltip>                
-              }
+                </Tooltip>
+              )}
             </div>
-          </div>          
+          </div>
           <AuthorHeaderExpertise profile={profile} />
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 const styles = StyleSheet.create({
+  btnDots: {
+    fontSize: 22,
+    borderRadius: "50px",
+    color: colors.BLACK(1.0),
+    background: colors.LIGHTER_GREY(),
+    border: `1px solid ${colors.LIGHTER_GREY()}`,
+    padding: "6px 12px",
+    ":hover": {
+      background: colors.DARKER_GREY(0.2),
+      transition: "0.2s",
+    },
+  },  
+  showMore: {
+    color: colors.NEW_BLUE(),
+    cursor: "pointer",
+    fontSize: 14,
+    ":hover": {
+      textDecoration: "underline",
+    }
+  },  
   lineItems: {
     display: "flex",
     flexDirection: "column",
@@ -145,14 +248,22 @@ const styles = StyleSheet.create({
   },
   inlineLineItem: {
     display: "flex",
-    columnGap: "5px",
+    columnGap: "10px",
     color: colors.BLACK(0.9),
+    alignItems: "center",
+    lineHeight: 1.25,
   },
   label: {
     fontWeight: 500,
     color: colors.BLACK(1.0),
   },
   description: {
+    display: "inline-flex",
+    flexWrap: "wrap",
+
+  },
+  descriptionLineItem: {
+    marginTop: 10,
   },
   textBtn: {
     cursor: "pointer",
@@ -162,6 +273,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 20,
     right: 20,
+  },
+  repSubsection: {
+    display: "flex",
+    flexDirection: "column",
   },
   sectionHeader: {
     color: "rgb(139, 137, 148, 1)",
@@ -183,10 +298,8 @@ const styles = StyleSheet.create({
   expertiseHeaderPending: {
     cursor: "pointer",
   },
-  expertiseContentWrapper: {
-  },
-  expertiseContent: {
-  },
+  expertiseContentWrapper: {},
+  expertiseContent: {},
   expertiseContentTitle: {
     fontSize: 16,
     fontWeight: 500,
@@ -202,7 +315,7 @@ const styles = StyleSheet.create({
   repScore: {
     fontWeight: 500,
     fontSize: 15,
-    color: colors.BLACK()
+    color: colors.BLACK(),
   },
   bannerSection: {
     marginTop: 20,
@@ -242,6 +355,9 @@ const styles = StyleSheet.create({
   },
   subSection: {
     width: "33%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
   },
   name: {
     fontSize: 26,

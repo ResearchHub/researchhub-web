@@ -32,6 +32,7 @@ export const revalidateAuthorProfile = (authorId) => {
     basePathV2 + "/publications",
     basePathV2 + "/bounties",
     basePathV2 + "/comments",
+    basePathV2 + "/reviews",
     basePathV2 + "/transactions",
   ]);
 
@@ -42,6 +43,9 @@ export const revalidateAuthorProfile = (authorId) => {
   });
 };
 
+// Alias to avoid infinite recursion below
+const _revalidateAuthorProfile = revalidateAuthorProfile;
+
 const useCacheControl = () => {
   const router = useRouter();
   const revalidateCurrentPath = () => {
@@ -49,7 +53,7 @@ const useCacheControl = () => {
   };
 
   const revalidateAuthorProfile = (authorId) => {
-    return revalidateAuthorProfile(authorId);
+    return _revalidateAuthorProfile(authorId);
   };
 
   const revalidateDocument = (

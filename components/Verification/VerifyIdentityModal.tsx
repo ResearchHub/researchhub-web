@@ -121,13 +121,6 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
     }
   };
 
-  useEffect(() => {
-    if (!isOpen) {
-      // Reset modal state
-      setStep("INTRO");
-      setPublicationsSubstep("DOI");
-    }
-  }, [isOpen]);
 
   return (
     <>

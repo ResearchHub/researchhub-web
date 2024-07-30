@@ -3,7 +3,7 @@ import { FullAuthorProfile } from "../lib/types";
 import { getAchievmentDetails } from "../lib/utils";
 import { css, StyleSheet } from "aphrodite";
 import { Tooltip } from "@mui/material";
-import { faCircleCheck } from "@fortawesome/pro-solid-svg-icons";
+import { faCircleCheck, faTrophy, faTrophyStar } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
@@ -38,6 +38,14 @@ const AuthorHeaderAchievements = ({ profile }: { profile: FullAuthorProfile }) =
 
   return (
     <div className={css(styles.rootWrapper)}>
+      {profile.achievements.length === 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 15}}>
+          <div style={{ display: "flex", justifyContent: "center"}}>
+            <FontAwesomeIcon style={{ textAlign: "center"}} icon={faTrophyStar} fontSize={60} color={colors.GREY()} />
+          </div>
+          <div style={{ color: colors.MEDIUM_GREY2(), textAlign: "center"}}>This user has not unlocked any achievements yet.</div>
+        </div>
+      )}
       {profile.achievements.map((achievement) => {
         const achivementDetails = getAchievmentDetails({ achievement, profile })
         return (
@@ -64,6 +72,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignContent: "center",
+    flexGrow: 1,
   },
   tooltip: {
     padding: 6,

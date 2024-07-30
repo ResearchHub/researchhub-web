@@ -5,14 +5,15 @@ import { Tooltip } from "@mui/material";
 type DataPoint = {
   key: string;
   value: number;
-};
-
-type HistogramProps = {
+  };
+  
+  type HistogramProps = {
+  type: string;
   data: DataPoint[];
   histogramBarStyle?: any;
 };
 
-const Histogram: React.FC<HistogramProps> = ({ data, histogramBarStyle }) => {
+const Histogram: React.FC<HistogramProps> = ({ data, histogramBarStyle, type }) => {
   // Find the maximum value in the dataset to scale the bars
   const maxValue = Math.max(...data.map(d => d.value));
 
@@ -20,10 +21,10 @@ const Histogram: React.FC<HistogramProps> = ({ data, histogramBarStyle }) => {
     <div className={css(styles.histogram)}>
       {data.map((d, index) => (
         <div key={index} className={css(styles.histogramBarContainer)}>
-          <div className={css(styles.histogramKey)}>{d.key}</div>
+          {/* <div className={css(styles.histogramKey)}>{d.key}</div> */}
 
           <Tooltip
-              title={`${d.key}: ${d.value}`}
+              title={`${d.key}: ${d.value} ${type}`}
               placement="right"
               arrow
             >
@@ -55,10 +56,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column-reverse', // Ensure bars grow from bottom to top
     alignItems: 'center',
+    marginRight: 0,
     height: '100%', // Make sure the container height is 100% of the parent
   },
   histogramBar: {
-    width: '40px',
+    width: '15px',
     backgroundColor: '#3498db',
     display: 'flex',
     alignItems: 'flex-end',

@@ -1,6 +1,5 @@
 import Histogram from "~/components/shared/Histogram";
 import { css, StyleSheet } from "aphrodite";
-import Toggle from "~/components/Form/Toggle";
 import { useState } from "react";
 import colors from "~/config/themes/colors";
 
@@ -14,7 +13,7 @@ const AuthorActivity = ({
   }>
 }) => {
 
-  const [selected, setSelected] = useState("publications");
+  const [selected, setSelected] = useState<"publications"|"citations">("publications");
 
   const publicationHistogram = activity
     .map((activity) => ({
@@ -32,33 +31,64 @@ const AuthorActivity = ({
 
   return (
     <div className={css(styles.histogramWrapper)}>
-      <div className={css(styles.toggleWrapper)}>
-        <Toggle options={[{label: "Publications", value: "publications"}, {label: "Citations", value: "citations"}]} onSelect={(selected) => setSelected(selected.value)} selected={selected} />
-      </div>
+      <div className={css(styles.sectionHeader)}>Publications & Citations</div>
       {selected === "publications" && (
         <div style={{ width: "100%", height: 150 }}>
-          <Histogram data={publicationHistogram} />
+          <Histogram type={selected} data={publicationHistogram} />
         </div>
       )}
       {selected === "citations" && (
         <div style={{ width: "100%", height: 150 }}>
-          <Histogram data={citationHistogram} histogramBarStyle={styles.citationBarStyle} />
+          <Histogram type={selected} data={citationHistogram} histogramBarStyle={styles.citationBarStyle} />
         </div>
       )}
+      <div className={css(styles.toggleWrapper)}>
+        <div className={css(styles.toggleOption, selected === "publications" && styles.toggleOptionPublicationsSelected)} onClick={() => setSelected("publications")}>Publications</div>
+        <div className={css(styles.toggleOption, selected === "citations" && styles.toggleOptionCitationSelected)} onClick={() => setSelected("citations")}>Citations</div>
+      </div>
     </div>
   )
 }
 
 const styles = StyleSheet.create({
-  histogramWrapper: {
+  toggleOption: {
+    fontSize: 14,
+    color: colors.MEDIUM_GREY2(),
+    fontWeight: 400,
+    marginRight: 10,
+    cursor: "pointer",
+    ":hover": {
+      textDecoration: "underline",
+    }
   },
+  toggleOptionCitationSelected: {
+    color: colors.NEW_GREEN(),
+    fontWeight: 500,
+  },
+  toggleOptionPublicationsSelected: {
+    color: colors.NEW_BLUE(),
+    fontWeight: 500,
+  },  
   toggleWrapper: {
     display: "inline-flex",  
-    marginBottom: 20,
+    gap: 10,
+  },
+  histogramWrapper: {
   },
   citationBarStyle: {
     backgroundColor: colors.GREEN2(),
-  }
+  },
+  sectionHeader: {
+    color: "rgb(139, 137, 148, 1)",
+    textTransform: "uppercase",
+    fontWeight: 500,
+    letterSpacing: "1.2px",
+    fontSize: 12,
+    display: "flex",
+    alignItems: "center",
+    gap: 5,
+    marginBottom: 20,
+  },     
 })
 
 export default AuthorActivity;

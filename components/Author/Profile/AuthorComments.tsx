@@ -10,11 +10,14 @@ import { css, StyleSheet } from "aphrodite";
 import { useState } from "react";
 import LoadMore from "~/components/shared/LoadMore";
 import fetchContributionsAPI from "~/components/LiveFeed/api/fetchContributionsAPI";
+import SearchEmpty from "~/components/Search/SearchEmpty";
 
 const AuthorComments = ({
   commentApiResponse,
+  withLoadMore = true,
 }: {
   commentApiResponse: PaginatedApiResponse;
+  withLoadMore?: boolean;
 }) => {
   
   const [_commentApiResponse, setCommentApiResponse] = useState<PaginatedApiResponse>(commentApiResponse);
@@ -60,8 +63,14 @@ const AuthorComments = ({
 
   return (
   <div className={css(styles.commentWrapper)}>
+    {resultCards.length === 0 && (
+      <div style={{ minHeight: 250, display: "flex", justifyContent: "center", width: "100%" }}>
+        <SearchEmpty title={"No author activity found in this section."} />
+      </div>
+  )}
+
     {resultCards}
-    {_commentApiResponse.next && (
+    {withLoadMore && _commentApiResponse.next && (
         <LoadMore
           onClick={async () => {
             setIsFetchingMore(true);
