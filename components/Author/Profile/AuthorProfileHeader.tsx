@@ -21,8 +21,14 @@ import { AuthorActions } from "~/redux/author";
 import { fetchAuthorProfile } from "../lib/api";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAddressCard, faBuildingColumns } from "@fortawesome/pro-solid-svg-icons";
+import { faAddressCard, faBuildingColumns, faEdit, faUserXmark } from "@fortawesome/pro-solid-svg-icons";
 import { truncateText } from "~/config/utils/string";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
+import GenericMenu, { MenuOption } from "~/components/shared/GenericMenu";
+import IconButton from "~/components/Icons/IconButton";
+import {
+  faEllipsis,
+} from "@fortawesome/pro-regular-svg-icons";
 
 const AuthorProfileHeader = () => {
   const dispatch = useDispatch();
@@ -30,6 +36,26 @@ const AuthorProfileHeader = () => {
     authorProfileContext();
 
   const { revalidateAuthorProfile } = useCacheControl();
+  const currentUser = useCurrentUser();
+
+  const authorMenuOptions: MenuOption[] = [
+    {
+      label: "Edit profile",
+      icon: <FontAwesomeIcon icon={faEdit} />,
+      value: "edit",
+      onClick: () => {
+        dispatch(ModalActions.openUserInfoModal(true))
+      },
+    },
+    ...(true ? [{
+      label: "Ban user",
+      icon: <FontAwesomeIcon icon={faUserXmark} />,
+      value: "ban",
+      onClick: () => {
+        alert('TBD')
+      },
+    }] : []),
+  ];
 
   const getExpertiseTooltipContent = () => {
     return (
@@ -115,11 +141,21 @@ const AuthorProfileHeader = () => {
           <div className={css(styles.authorSocialMedia)}>
             <AuthorSocialMediaIcons profile={profile} />
           </div>
-          <div
-            className={css(styles.textBtn, styles.editProfileBtn)}
-            onClick={() => dispatch(ModalActions.openUserInfoModal(true))}
-          >
-            Edit profile
+
+
+
+          <div className={css(styles.textBtn, styles.editProfileBtn)}>
+            <GenericMenu
+              softHide={true}
+              options={authorMenuOptions}
+              width={200}
+              id="edit-profile-menu"
+              direction="bottom-right"
+            >
+              <IconButton overrideStyle={styles.btnDots}>
+                <FontAwesomeIcon icon={faEllipsis} />
+              </IconButton>
+            </GenericMenu>
           </div>
         </div>
       </div>
@@ -184,6 +220,18 @@ const AuthorProfileHeader = () => {
   );
 };
 const styles = StyleSheet.create({
+  btnDots: {
+    fontSize: 22,
+    borderRadius: "50px",
+    color: colors.BLACK(1.0),
+    background: colors.LIGHTER_GREY(),
+    border: `1px solid ${colors.LIGHTER_GREY()}`,
+    padding: "6px 12px",
+    ":hover": {
+      background: colors.DARKER_GREY(0.2),
+      transition: "0.2s",
+    },
+  },  
   showMore: {
     color: colors.NEW_BLUE(),
     cursor: "pointer",
