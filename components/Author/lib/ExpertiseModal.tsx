@@ -4,6 +4,7 @@ import ReputationGauge from "../lib/ReputationGauge";
 import { css, StyleSheet } from "aphrodite";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
+import AuthorReputationSection from "./AuthorReputationSection";
 
 const ExpertiseModal = ({
   profile,
@@ -19,7 +20,7 @@ const ExpertiseModal = ({
       offset={"0px"}
       isOpen={isModalOpen}
       closeModal={handleModalClose}
-      zIndex={1000000001}
+      zIndex={1001}
       modalStyle={styles.modalStyle}
       modalContentStyle={styles.modalContentStyle}
       title={`Reputation of ${profile.firstName} ${profile.lastName}`}
@@ -38,28 +39,13 @@ const ExpertiseModal = ({
             Learn more about our reputation algorithm
           </ALink>
         </div>
-        {profile.reputationList.map((rep, index) => (
-          <div className={css(styles.reputation)}>
-            <div className={css(styles.reputationHubLabel)}>
-              <span>
-                {rep.hub.name}
-              </span>
-              <span>
-                {rep.percentile}%
-              </span>
-            </div>
-            <ReputationGauge reputation={rep} key={`reputation-` + index} />
-          </div>
-        ))}
+        <AuthorReputationSection reputationList={profile.reputationList} />
       </div>
     </BaseModal>
   );
 };
 
 const styles = StyleSheet.create({
-  reputation: {
-    marginTop: 10,
-  },
   description: {
     marginBottom: 40,
   },
@@ -69,13 +55,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 500,
-  },
-  reputationHubLabel: {
-    fontSize: 14,
-    marginBottom: 5,
-    textTransform: "capitalize",
-    justifyContent: "space-between",
-    display: "flex"    
   },
   reputationWrapper: {
     width: "100%",
