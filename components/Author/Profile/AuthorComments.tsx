@@ -7,13 +7,19 @@ import ContributionEntry from "~/components/LiveFeed/Contribution/ContributionEn
 import Link from "next/link";
 import colors from "~/config/themes/colors";
 import { css, StyleSheet } from "aphrodite";
+import { useState } from "react";
+import LoadMore from "~/components/shared/LoadMore";
+import fetchContributionsAPI from "~/components/LiveFeed/api/fetchContributionsAPI";
 
 const AuthorComments = ({
   commentApiResponse,
 }: {
   commentApiResponse: PaginatedApiResponse;
 }) => {
-  const commentContributions = commentApiResponse.results.map((r) => {
+  
+  const [_commentApiResponse, setCommentApiResponse] = useState<PaginatedApiResponse>(commentApiResponse);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const commentContributions = _commentApiResponse.results.map((r) => {
     return parseContribution(r);
   });
 
@@ -52,7 +58,37 @@ const AuthorComments = ({
     );
   });
 
-  return <div className={css(styles.commentWrapper)}>{resultCards}</div>;
+  return (
+  <div className={css(styles.commentWrapper)}>
+    {resultCards}
+    {_commentApiResponse.next && (
+        <LoadMore
+          onClick={async () => {
+            setIsFetchingMore(true);
+            try {
+              const response:PaginatedApiResponse = await fetchContributionsAPI({ pageUrl: _commentApiResponse.next });
+              const nextContributions = _commentApiResponse.results.map((r) => {
+                return parseContribution(r);
+              });
+
+              response.results = [
+                ...commentApiResponse.results,
+                ...nextContributions,
+              ]
+
+              setCommentApiResponse(response);
+              setIsFetchingMore(false);
+            }
+            catch (e) {
+              console.error("Error fetching more contributions", e);
+              setIsFetchingMore(false);
+            }
+          }}
+
+          isLoading={isFetchingMore}
+        />
+      )}    
+  </div>);
 };
 
 const styles = StyleSheet.create({

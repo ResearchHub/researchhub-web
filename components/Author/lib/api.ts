@@ -50,10 +50,12 @@ export const parsePublicationResponse = (
 
 export const fetchAuthorPublications = ({
   authorId,
+  nextUrl = null,
 }: {
   authorId: ID;
+  nextUrl?: string | null;
 }): any => {
-  const url = generateApiUrl(`author/${authorId}/publications`);
+  const url = nextUrl || generateApiUrl(`author/${authorId}/publications`);
 
   return fetch(url, API.GET_CONFIG())
     .then(Helpers.checkStatus)

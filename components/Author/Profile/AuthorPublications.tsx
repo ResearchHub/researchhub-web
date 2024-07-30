@@ -49,6 +49,9 @@ import { MessageActions } from "~/redux/message";
 import { useAlert } from "react-alert";
 import { Tooltip } from "@mui/material";
 import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
+import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
+import { ClipLoader } from "react-spinners";
+import LoadMore from "~/components/shared/LoadMore";
 
 const AuthorPublications = ({
   initialPaginatedPublicationsResponse,
@@ -63,6 +66,7 @@ const AuthorPublications = ({
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [publicationsResponse, setPublicationsResponse] =
     useState<PaginatedPublicationResponse>(
       initialPaginatedPublicationsResponse
@@ -127,6 +131,41 @@ const AuthorPublications = ({
   }, [wsResponse]);
 
   const unifiedDocumentData = publicationsResponse.results;
+
+  const handleFetchMorePublications = () => {
+    setIsFetchingMore(true);
+    fetchAuthorPublications({
+      authorId: fullAuthorProfile.id,
+      nextUrl: publicationsResponse.next,
+    })
+      .then((response) => {
+
+        const parsedNextResponse = parsePublicationResponse(response);
+
+        parsedNextResponse.results = [
+          ...publicationsResponse.results,
+          ...parsedNextResponse.results,
+        ];
+
+        setPublicationsResponse(parsedNextResponse);
+        setIsFetchingMore(false);
+      })
+      .catch(() => {
+        setIsFetchingMore(false);
+        dispatch(
+          // @ts-ignore
+          MessageActions.showMessage({
+            error: true,
+            show: true,
+          })
+        );
+        dispatch(
+          MessageActions.setMessage(
+            "Failed to load more publications. Please try again later."
+          )
+        );
+      });
+    }
 
   return (
     <div>
@@ -400,10 +439,19 @@ const AuthorPublications = ({
             )}
           </div>
         </div>
+
+
+        {publicationsResponse.next && (
+          <LoadMore
+            onClick={() => handleFetchMorePublications()}
+            isLoading={isFetchingMore}
+          />
+        )}
       </div>
     </div>
   );
 };
+
 
 const styles = StyleSheet.create({
   addPublicationTooltip: {

@@ -40,8 +40,6 @@ const AuthorHeaderExpertise = ({ profile }: { profile: FullAuthorProfile }) => {
   )
 }
 
-
-
 const styles = StyleSheet.create({
   links: {
     display: "flex",
