@@ -9,6 +9,15 @@ import {
   parseUser,
 } from "../../../config/types/root_types";
 import { AUTHOR_CLAIM_STATUS } from "../constants/AuthorClaimStatus";
+import {
+  Authorship,
+  parseAuthorship,
+  parsePaper,
+} from "~/components/Document/lib/types";
+import {
+  PaperReward,
+  parsePaperReward,
+} from "~/components/ResearchCoin/lib/types";
 
 type ApiArgs = {
   caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS>;
@@ -35,6 +44,10 @@ export type CaseData = {
   targetPaperTitle?: NullableString;
   targetPaperDOI?: NullableString;
   providedEmail?: NullableString;
+  authorship: Authorship;
+  preregistrationUrl?: NullableString;
+  openDataUrl?: NullableString;
+  paperReward?: PaperReward;
 };
 export type PaginationInfo = {
   caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS> | null;
@@ -65,48 +78,56 @@ export function getCases({
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then(({ count: _count, next, results }: any): void => {
-
       onSuccess({
-        claimCases: (results || []).map((resultData: any): AuthorClaimCase | null => {
-          try {
-            const requestingUser = parseUser(resultData.requestor);
-  
-            const {
-              created_date,
-              id,
-              status,
-              updated_date,
-              paper,
-              target_author_name,
-              target_paper_title,
-              target_paper_doi,
-            } = resultData;
-  
-            return {
-              caseData: {
-                createdDate: created_date,
+        claimCases: (results || [])
+          .map((resultData: any): AuthorClaimCase | null => {
+            try {
+              const requestingUser = parseUser(resultData.requestor);
+
+              const {
+                created_date,
                 id,
                 status,
-                updatedDate: updated_date,
+                updated_date,
                 paper,
-                targetAuthorName: target_author_name,
-                targetPaperTitle: target_paper_title,
-                targetPaperDOI: target_paper_doi,
-                providedEmail: resultData.provided_email,
-              },
-              requestor: requestingUser,
-            };
-          }
-          catch(error) {
-            return null
-          }
-        }).filter((claimCase) => claimCase !== null),
+                target_author_name,
+                target_paper_title,
+                target_paper_doi,
+                authorship,
+                preregistration_url,
+                open_data_url,
+                paper_reward,
+              } = resultData;
+
+              return {
+                caseData: {
+                  createdDate: created_date,
+                  id,
+                  status,
+                  updatedDate: updated_date,
+                  paper,
+                  authorship: parseAuthorship(authorship),
+                  paperReward: parsePaperReward(paper_reward),
+                  targetAuthorName: target_author_name,
+                  targetPaperTitle: target_paper_title,
+                  targetPaperDOI: target_paper_doi,
+                  providedEmail: resultData.provided_email,
+                  preregistrationUrl: preregistration_url,
+                  openDataUrl: open_data_url,
+                },
+                requestor: requestingUser,
+              };
+            } catch (error) {
+              return null;
+            }
+          })
+          .filter((claimCase) => claimCase !== null),
         hasMore: !isEmpty(next),
         page,
       });
     })
     .catch((e) => {
-      console.error(e)
-      onError(e)
+      console.error(e);
+      onError(e);
     });
 }

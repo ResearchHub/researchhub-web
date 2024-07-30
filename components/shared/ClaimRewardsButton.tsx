@@ -1,11 +1,14 @@
-import { Button as Btn, IconButton } from "@mui/material";
-import { Tooltip } from "@mui/material";
+import { Button as Btn, IconButton, Tooltip } from "@mui/material";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import colors from "~/config/themes/colors";
 import Button from "~/components/Form/Button";
 import { css, StyleSheet } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck, faCircleXmark, faWarning } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faCircleCheck,
+  faCircleXmark,
+  faWarning,
+} from "@fortawesome/pro-solid-svg-icons";
 import { RewardsEligibilityInfo } from "../ResearchCoin/lib/rewardsUtil";
 
 const getTooltipContent = (rewardEligibilityInfo: RewardsEligibilityInfo) => {
@@ -15,25 +18,33 @@ const getTooltipContent = (rewardEligibilityInfo: RewardsEligibilityInfo) => {
         <div className={css(styles.tooltipLineItem)}>
           <FontAwesomeIcon icon={faCircleCheck} color={colors.GREEN()} />
           This paper meets our healthy research rewards criteria.
-        </div>          
+        </div>
       </div>
-    )
-  }
-  else {
+    );
+  } else {
     return (
       <div className={css(styles.tooltip)}>
         <div className={css(styles.tooltipLineItem)}>
           <FontAwesomeIcon icon={faWarning} color={colors.MEDIUM_GREY2()} />
-          {rewardEligibilityInfo.reason === "NOT_FIRST_AUTHOR" && "Only first authors are eligible for rewards at this time."}
-          {rewardEligibilityInfo.reason === "NOT_SUPPORTED_TYPE" && "Only primary literature is eligible for rewards at this time."}
-        </div>          
+          {rewardEligibilityInfo.reason === "NOT_FIRST_AUTHOR" &&
+            "Only first authors are eligible for rewards at this time."}
+          {rewardEligibilityInfo.reason === "NOT_SUPPORTED_TYPE" &&
+            "Only primary literature is eligible for rewards at this time."}
+          {rewardEligibilityInfo.reason === "NOT_OPEN_ACCESS" &&
+            "Only open access papers are eligible for rewards at this time."}
+        </div>
       </div>
-    )
+    );
   }
-}
+};
 
-
-const ClaimRewardsButton = ({ rewardEligibilityInfo, handleClick }: { rewardEligibilityInfo: RewardsEligibilityInfo, handleClick: Function }) => {
+const ClaimRewardsButton = ({
+  rewardEligibilityInfo,
+  handleClick,
+}: {
+  rewardEligibilityInfo: RewardsEligibilityInfo;
+  handleClick: Function;
+}) => {
   if (rewardEligibilityInfo.isEligibleForRewards) {
     return (
       <Tooltip
@@ -62,8 +73,8 @@ const ClaimRewardsButton = ({ rewardEligibilityInfo, handleClick }: { rewardElig
                 columnGap: 10,
               }}
             >
-              <ResearchCoinIcon version={4} color={colors.NEW_GREEN()} />{" "}
-              Claim rewards
+              <ResearchCoinIcon version={4} color={colors.NEW_GREEN()} /> Claim
+              rewards
             </div>
           </Button>
         </div>
@@ -81,35 +92,32 @@ const ClaimRewardsButton = ({ rewardEligibilityInfo, handleClick }: { rewardElig
               color: colors.BLACK(),
             },
           },
-        }}        
+        }}
       >
         <div>
-        <Button
-          size="small"
-          variant="contained"
-          disabled
-          customButtonStyle={styles.claimButtonNotEligible}
-        >
-          <div
-            style={{
-              color: "rgba(0, 0, 0, 0.40)",
-              display: "flex",
-              alignItems: "center",
-              columnGap: 10,
-            }}
+          <Button
+            size="small"
+            variant="contained"
+            disabled
+            customButtonStyle={styles.claimButtonNotEligible}
           >
-            <ResearchCoinIcon
-              version={4}
-              color={"rgba(0, 0, 0, 0.40)"}
-            />{" "}
-            Claim rewards
-          </div>
-        </Button>
+            <div
+              style={{
+                color: "rgba(0, 0, 0, 0.40)",
+                display: "flex",
+                alignItems: "center",
+                columnGap: 10,
+              }}
+            >
+              <ResearchCoinIcon version={4} color={"rgba(0, 0, 0, 0.40)"} />{" "}
+              Claim rewards
+            </div>
+          </Button>
         </div>
       </Tooltip>
     );
   }
-}
+};
 
 const styles = StyleSheet.create({
   tooltip: {
@@ -117,9 +125,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     display: "flex",
     flexDirection: "column",
-    alignContent: "center", 
+    alignContent: "center",
     gap: 5,
-  },  
+  },
   tooltipEligible: {
     color: colors.BLACK(),
   },
@@ -141,7 +149,7 @@ const styles = StyleSheet.create({
     gap: 8,
     fontSize: 14,
     fontWeight: 400,
-  },  
-})
+  },
+});
 
 export default ClaimRewardsButton;

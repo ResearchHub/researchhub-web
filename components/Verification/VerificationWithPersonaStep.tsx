@@ -2,13 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import PersonaReact from "persona-react";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
 
-type InterfaceProps = {
+type InterfaceProps = {};
 
-};
-
-const VerificationWithPersonaStep = ({
-  
-}: InterfaceProps): JSX.Element => {
+const VerificationWithPersonaStep = ({}: InterfaceProps): JSX.Element => {
   const [isPersonaLoaded, setIsPersonaLoaded] = useState(false);
   const currentUser = useCurrentUser();
   const personaWrapperRef = useRef<HTMLDivElement>(null);
@@ -35,7 +31,7 @@ const VerificationWithPersonaStep = ({
     // @ts-ignore
     return null;
   }
-
+  console.log(process.env.WITH_PERSONA_ENVIRONMENT_ID);
   return (
     <div ref={personaWrapperRef}>
       <PersonaReact

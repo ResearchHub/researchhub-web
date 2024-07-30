@@ -6,8 +6,8 @@ interface Props {
   paperId: ID;
   authorshipId: ID;
   userId: ID;
-  preregistrationUrl: string;
-  openDataUrl: string;
+  preregistrationUrl?: string | null;
+  openDataUrl?: string | null;
 }
 
 export const submitRewardsClaim = ({
@@ -25,8 +25,8 @@ export const submitRewardsClaim = ({
       authorship_id: authorshipId,
       requestor: userId,
       creator: userId,
-      open_data_url: "https://opendata.example.com",
-      preregistration_url: "https://preregistration.example.com",
+      ...(openDataUrl ? {open_data_url: openDataUrl} : {}),
+      ...(preregistrationUrl ? {preregistration_url: preregistrationUrl} : {}),
       case_type: "PAPER_CLAIM",
     })
   );

@@ -22,10 +22,14 @@ import { useAlert } from "react-alert";
 import showGenericToast from "~/components/Notifications/lib/showGenericToast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfo, faInfoCircle } from "@fortawesome/pro-solid-svg-icons";
-import { faArrowLeft, faInfoCircle as faInfoCircleLight } from "@fortawesome/pro-light-svg-icons";
+import {
+  faArrowLeft,
+  faInfoCircle as faInfoCircleLight,
+} from "@fortawesome/pro-light-svg-icons";
 import { PaperIcon } from "~/config/themes/icons";
 import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
 import UnifiedDocFeedCardPlaceholder from "~/components/UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
+import { ClipLoader } from "react-spinners";
 
 import {
   Notification,
@@ -112,7 +116,20 @@ const AddPublicationsForm = ({
     authorId?: null | undefined | ID;
   }) => {
     try {
+      setIsFetching(true);
       const response = await fetchPublicationsByDoi({ doi, authorId });
+
+      // Set publications but put the publication that matches DOI first
+      const foundIdx = response.works.findIndex(
+        (work) => work.doi?.includes(doi) || work.doiUrl?.includes(doi)
+      );
+      if (foundIdx > -1) {
+        const publication = response.works[foundIdx];
+        response.works.splice(foundIdx, 1);
+        response.works.unshift(publication);
+        setSelectedPaperIds([publication.id]);
+      }
+
       setPublications(response.works);
       setSelectedAuthorId(response.selectedAuthorId);
       setAvailableAuthors(response.availableAuthors);
@@ -122,12 +139,14 @@ const AddPublicationsForm = ({
       } else if (selectedAuthorId && response.works.length > 0) {
         setStep("RESULTS");
       }
+      setIsFetching(false);
     } catch (error) {
       if (error instanceof Error && error.message === "404") {
         setError("DOI_NOT_FOUND");
       } else {
         setError("GENERIC_ERROR");
       }
+      setIsFetching(false);
     }
   };
 
@@ -212,9 +231,20 @@ const AddPublicationsForm = ({
               <Button
                 size="med"
                 fullWidth
+                disabled={!paperDoi || isFetching}
                 onClick={() => handleFetchPublications({ doi: paperDoi })}
               >
-                Next
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  {isFetching ? (
+                    <ClipLoader
+                      loading={true}
+                      size={24}
+                      color={colors.WHITE()}
+                    />
+                  ) : (
+                    <>Next</>
+                  )}
+                </div>
               </Button>
             </div>
           </div>
@@ -229,11 +259,12 @@ const AddPublicationsForm = ({
               setSelectedAuthorId(authorDatum.id);
             }}
             id="author"
-            label="Claiming author"
+            label="Author"
             options={authorDropdownOptions}
             placeholder="Choose an Author"
             required={true}
             type="select"
+            reactSelect={{ styles: { menuList: styles.menuListOverride } }}
             value={authorDropdownOptions.find(
               (author) => author.id === selectedAuthorId
             )}
@@ -242,6 +273,7 @@ const AddPublicationsForm = ({
             <div className={css(styles.nextBtnWrapper)}>
               <Button
                 fullWidth
+                disabled={!selectedAuthorId || isFetching}
                 onClick={() => {
                   handleFetchPublications({
                     doi: paperDoi,
@@ -249,7 +281,17 @@ const AddPublicationsForm = ({
                   });
                 }}
               >
-                Next
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  {isFetching ? (
+                    <ClipLoader
+                      loading={true}
+                      size={24}
+                      color={colors.WHITE()}
+                    />
+                  ) : (
+                    <>Next</>
+                  )}
+                </div>
               </Button>
             </div>
           </div>
@@ -276,6 +318,9 @@ const AddPublicationsForm = ({
                 labelStyle={undefined}
               />
               Select All
+              {selectedPaperIds.length > 0 && (
+                <span>&nbsp;({selectedPaperIds.length})</span>
+              )}
             </div>
             <div>
               {selectedAuthor && (
@@ -333,7 +378,7 @@ const AddPublicationsForm = ({
               styles.buttonsWrapperForResults
             )}
           >
-            <div className={css(styles.paperMissingText)}>
+            {/* <div className={css(styles.paperMissingText)}>
               <FontAwesomeIcon
                 fontSize={18}
                 icon={faInfoCircleLight}
@@ -343,18 +388,21 @@ const AddPublicationsForm = ({
               <br />
               You will have the ability to add additional papers in your author
               profile.
-            </div>
+            </div> */}
 
             <Button
-              disabled={selectedPaperIds.length === 0}
+              disabled={selectedPaperIds.length === 0 || isFetching}
+              fullWidth
               onClick={async () => {
                 try {
                   setStep("LOADING");
+                  setIsFetching(true);
                   const response = await addPublicationsToAuthor({
                     authorId: currentUser?.authorProfile.id,
                     openAlexPublicationIds: selectedPaperIds,
                     openAlexAuthorId: selectedAuthorId,
                   });
+                  setIsFetching(false);
                 } catch (error: any) {
                   setStep("ERROR");
                   if (error instanceof AuthorClaimError) {
@@ -363,6 +411,7 @@ const AddPublicationsForm = ({
                   } else {
                     setError("GENERIC_ERROR");
                   }
+                  setIsFetching(false);
                 }
               }}
             >
@@ -392,21 +441,16 @@ const AddPublicationsForm = ({
         </div>
       )}
       {step === "ERROR" && (
-        <div>
-          {error === "ALREADY_CLAIMED_BY_ANOTHER_USER" && (
-            <div>This profile has already been claimed by another user</div>
-          )}
-          {error === "ALREADY_CLAIMED_BY_CURRENT_USER" && (
-            <div>This profile has already been claimed you</div>
-          )}
-          {error === "GENERIC_ERROR" && <div>An error has occured</div>}
-        </div>
+        <div>An unexpected error has occured. Please try again later.</div>
       )}
     </div>
   );
 };
 
 const styles = StyleSheet.create({
+  menuListOverride: {
+    maxHeight: 80,
+  },
   loadingTitle: {
     display: "flex",
     justifyContent: "center",
@@ -441,9 +485,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     columnGap: "10px",
   },
-  buttonsWrapperForResults: {
-    justifyContent: "space-between",
-  },
+  buttonsWrapperForResults: {},
   nextBtnWrapper: {
     width: 100,
   },
@@ -476,6 +518,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
     marginLeft: 0,
+    color: colors.NEW_BLUE(),
+    fontWeight: 500,
     // backgroundColor: colors.LIGHT_GREY(1.0),
     borderRadius: "4px",
     display: "inline-flex",

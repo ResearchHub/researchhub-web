@@ -6,6 +6,8 @@ import Link from "next/link";
 import { CaseData } from "./api/AuthorClaimCaseGetCases";
 import { RHUser } from "~/config/types/root_types";
 import { breakpoints } from "~/config/themes/screen";
+import { formatDateStandard } from "~/config/utils/dates";
+import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 
 type Props = {
   caseCreatedDate: string;
@@ -29,22 +31,14 @@ export default function AuthorClaimCaseCardTargetAuthorSection({
   caseData,
   requestor,
 }: Props): ReactElement<"div"> {
+  console.log("caseData", caseData);
   const paperUrl = getPaperUrl(caseData);
-  console.log("requestor", requestor);
   return (
     <div className={css(styles.targetAuthorSection)}>
       <div className={css(styles.caseDetails)}>
         <div className={css(styles.marginBottom)}>
-          <span className={css(styles.fontGrey)}>{`Claiming Author - `}</span>
-          <span>{caseData.targetAuthorName}</span>
-        </div>
-        <div className={css(styles.marginBottom)}>
-          <span className={css(styles.fontGrey)}>{"Provided Email - "}</span>
-          <span>{caseData.providedEmail}</span>
-        </div>
-        <div className={css(styles.marginBottom)}>
           <span className={css(styles.fontGrey)}>{"Case Opened - "}</span>
-          <span>{caseCreatedDate}</span>
+          <span>{formatDateStandard(caseCreatedDate, "MMM D, YYYY")}</span>
         </div>
         <div className={css(styles.marginBottom)}>
           <span className={css(styles.fontGrey)}>{"Paper - "}</span>
@@ -57,28 +51,73 @@ export default function AuthorClaimCaseCardTargetAuthorSection({
             <span>{caseData?.paper?.title || caseData?.targetPaperTitle}</span>
           </Link>
         </div>
-      </div>
-      <div className={css(styles.userDetails)}>
-        {requestor.authorProfile.education.length > 0 && (
-          <div className={css(styles.marginBottom)}>
-            <span className={css(styles.fontGrey)}>{"User Education - "}</span>
-            <span>{requestor.authorProfile.education[0]?.summary}</span>
-          </div>
-        )}
         <div className={css(styles.marginBottom)}>
           <span className={css(styles.fontGrey)}>{"User Joined - "}</span>
-          <span>{requestor.createdDate}</span>
+          <span>
+            {formatDateStandard(requestor.createdDate, "MMM D, YYYY")}
+          </span>
+        </div>
+      </div>
+      <div className={css(styles.userDetails)}>
+        <div
+          className={css(styles.marginBottom)}
+          style={{ display: "flex", gap: 10 }}
+        >
+          <span className={css(styles.fontGrey)}>{"Reward Amount - "}</span>
+          <span className={css(styles.rsc)}>
+            <ResearchCoinIcon version={4} height={20} width={20} />
+            {caseData?.paperReward?.rewardAmount?.toLocaleString()} RSC
+          </span>
         </div>
         <div className={css(styles.marginBottom)}>
-          <span className={css(styles.fontGrey)}>{"User Rep - "}</span>
-          <span>{requestor.reputation}</span>
+          <span className={css(styles.fontGrey)}>{"Primary hub - "}</span>
+          <span>
+            {caseData?.paper?.primary_hub}
+          </span>
+        </div>          
+        <div className={css(styles.marginBottom)}>
+          <span className={css(styles.fontGrey)}>{"Preregistration - "}</span>
+          <Link
+            href={caseData?.preregistrationUrl || ""}
+            className={css(styles.link)}
+            target="_blank"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span>{caseData?.preregistrationUrl}</span>
+          </Link>
         </div>
+        <div className={css(styles.marginBottom)}>
+          <span className={css(styles.fontGrey)}>{"Open data - "}</span>
+          <Link
+            href={caseData?.openDataUrl || ""}
+            className={css(styles.link)}
+            target="_blank"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span>{caseData?.openDataUrl}</span>
+          </Link>
+        </div>
+        <div className={css(styles.marginBottom)}>
+          <span className={css(styles.fontGrey)}>{"Citation change - "}</span>
+          <span className={css(styles.citations)}>
+            + {caseData?.paperReward?.citationChange}
+          </span>
+        </div>      
       </div>
     </div>
   );
 }
 
 const styles = StyleSheet.create({
+  rsc: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 5,
+    color: colors.ORANGE_DARK(),
+  },
+  citations: {
+    color: colors.GREEN(1),
+  },
   targetAuthorSection: {
     display: "flex",
     [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {

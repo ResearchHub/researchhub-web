@@ -14,7 +14,11 @@ import { StyleSheet, css } from "aphrodite";
 import { connect, useSelector } from "react-redux";
 import Button from "../Form/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChartLine, faUser } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faChartLine,
+  faUser,
+  faWarning,
+} from "@fortawesome/pro-solid-svg-icons";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import VerifyIdentityBreadcrumbs, {
   ProgressStepperStep,
@@ -38,7 +42,13 @@ interface Props {
   children: any;
 }
 
-export type STEP = "INTRO" | "IDENTITY" | "IDENTITY_VERIFIED_SUCCESSFULLY" | "PUBLICATIONS" | "SUCCESS";
+export type STEP =
+  | "INTRO"
+  | "IDENTITY"
+  | "IDENTITY_VERIFIED_SUCCESSFULLY"
+  | "IDENTITY_CANNOT_BE_VERIFIED"
+  | "PUBLICATIONS"
+  | "SUCCESS";
 
 const stepperSteps: ProgressStepperStep[] = [
   {
@@ -88,7 +98,11 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
       ]);
 
       if (incomingNotification.type === "IDENTITY_VERIFICATION_UPDATED") {
-        setStep("IDENTITY_VERIFIED_SUCCESSFULLY");
+        if (incomingNotification.raw?.extra?.status === "APPROVED") {
+          setStep("IDENTITY_VERIFIED_SUCCESSFULLY");
+        } else {
+          setStep("IDENTITY_CANNOT_BE_VERIFIED");
+        }
       }
     } catch (e) {
       console.error(`Failed to parse notification: ${e}`);
@@ -131,7 +145,12 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
         <>
           {step !== "INTRO" && (
             <div className={css(styles.breadcrumbsWrapper)}>
-              <VerifyIdentityBreadcrumbs selected={step === "IDENTITY_VERIFIED_SUCCESSFULLY" ? "IDENTITY" : step} steps={stepperSteps} />
+              <VerifyIdentityBreadcrumbs
+                selected={
+                  step === "IDENTITY_VERIFIED_SUCCESSFULLY" ? "IDENTITY" : step
+                }
+                steps={stepperSteps}
+              />
             </div>
           )}
           <div className={css(styles.body)}>
@@ -208,16 +227,25 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
               <VerificationWithPersonaStep />
             </div>
             {step === "IDENTITY_VERIFIED_SUCCESSFULLY" && (
-              <div style={{ marginTop: 25, display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: 400,  }}>
+              <div
+                style={{
+                  marginTop: 25,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  minHeight: 400,
+                }}
+              >
                 <div>
                   <div className={css(styles.badgeWrapper)}>
                     <VerifiedBadge height={75} width={75} />
                   </div>
-                  <div className={css(styles.title)} style={{ marginTop: 25, }}>
+                  <div className={css(styles.title)} style={{ marginTop: 25 }}>
                     Identity has been verified successfully
                   </div>
                   <div className={css(styles.description)}>
-                    A Verified badge will now appear next to your name throughout the platform. 
+                    A Verified badge will now appear next to your name
+                    throughout the platform.
                   </div>
                 </div>
                 <div className={css(styles.startButtonWrapper)}>
@@ -231,7 +259,46 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
                   </Button>
                 </div>
               </div>
-            )}            
+            )}
+            {step === "IDENTITY_CANNOT_BE_VERIFIED" && (
+              <div style={{ marginTop: 25, justifyContent: "space-between" }}>
+                <div
+                  className={css(styles.title)}
+                  style={{
+                    marginTop: 25,
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <div>
+                    <FontAwesomeIcon
+                      icon={faWarning}
+                      fontSize={75}
+                      color={colors.MEDIUM_GREY2()}
+                    />
+                  </div>
+                  <div style={{ marginTop: 25 }}>
+                    Your identity cannot be verified at this time.
+                  </div>
+                </div>
+                <div className={css(styles.description)}>
+                  Please reach out to support at{" "}
+                  <ALink href="mailto:verification@researchhub.com">
+                    verification@researchhub.com
+                  </ALink>
+                </div>
+                <div className={css(styles.startButtonWrapper)}>
+                  <Button
+                    fullWidth
+                    onClick={() => setIsOpen(false)}
+                    theme="solidPrimary"
+                    style={{ width: 200, margin: "20px auto" }}
+                  >
+                    Close
+                  </Button>
+                </div>
+              </div>
+            )}
             {step === "PUBLICATIONS" && (
               <div
                 className={css(styles.publicationsWrapper)}

@@ -6,12 +6,13 @@ import { ID } from "~/config/types/root_types";
 export type ApiFilters = {
   hubId?: ID | null;
   contentType?: string | null;
+  authorId?: ID | null;
 };
 
 type Args = {
   pageUrl?: string | null | undefined;
   onError?: Function;
-  onSuccess: Function;
+  onSuccess?: Function;
   filters: ApiFilters;
 };
 
@@ -27,7 +28,8 @@ export default function fetchContributionsAPI({
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((response) => {
-      onSuccess(response);
+      onSuccess && onSuccess(response);
+      return response;
     })
     .catch((error) => {
       captureEvent({

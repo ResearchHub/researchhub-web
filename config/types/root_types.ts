@@ -300,6 +300,12 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
   if (typeof raw !== "object") {
     return raw;
   }
+
+  let isVerified = raw.is_verified;
+  if (process.env.REACT_APP_ENV !== "production") {
+    isVerified = raw.is_verified_v2;
+  }
+
   const parsed = {
     id: raw.id,
     profileImage: raw.profile_image,
@@ -307,7 +313,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     lastName: raw.last_name,
     url: `/user/${raw.id}/overview`,
     description: raw.description,
-    isVerified: raw.is_verified,
+    isVerified: isVerified,
     headline: raw?.headline?.title || "",
     isHubEditor: raw.is_hub_editor,
     openAlexIds: raw.openalex_ids || [],
@@ -356,6 +362,11 @@ export const parseUser = (raw: any): RHUser => {
     _raw.last_name = _raw.author_profile.last_name;
   }
 
+  let isVerified = _raw.is_verified;
+  if (process.env.REACT_APP_ENV !== "production") {
+    isVerified = _raw.is_verified_v2;
+  }
+
   const mapped = {
     id: _raw.id,
     firstName: _raw.first_name,
@@ -365,7 +376,7 @@ export const parseUser = (raw: any): RHUser => {
     reputation: _raw.reputation,
     createdAt: _raw.created_date,
     balance: _raw.balance,
-    isVerified: _raw.is_verified,
+    isVerified,
     moderator: _raw.moderator,
     createdDate: _raw.created_date
       ? formatDateStandard(_raw.created_date, "MM-DD-YYYY")
@@ -388,5 +399,12 @@ export class ErrorWithCode extends Error {
     }
   }
 }
+
+export type PaginatedApiResponse = {
+  count: number;
+  next: NullableString;
+  previous: NullableString;
+  results: any[];
+};
 
 export type SanitizedAndSafeHtml = string; // Used in situations where we have HTML strings that we trust.
