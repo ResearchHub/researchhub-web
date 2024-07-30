@@ -16,8 +16,14 @@ const AuthorHeaderExpertise = ({ profile }: { profile: FullAuthorProfile }) => {
       <ExpertiseModal profile={profile} isModalOpen={isExpertiseModalOpen} handleModalClose={() => setIsExpertiseModalOpen(false)} />
       {profile.reputationList.slice(0, REP_GAUGES_TO_SHOW).map((rep, index) => (
         <div className={css(styles.reputation)}>
-          <div className={css(styles.reputationHubLabel)}>{rep.hub.name}</div>
-          {/* {rep.percentile} */}
+          <div className={css(styles.reputationHubLabel)}>
+            <span>
+              {rep.hub.name}
+            </span>
+            <span>
+              {rep.percentile}%
+            </span>
+          </div>
           <ReputationGauge reputation={rep} key={`reputation-` + index} />
         </div>
       ))}
@@ -49,6 +55,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 5,  
     textTransform: "capitalize",
+    justifyContent: "space-between",
+    display: "flex"
   },
   divider: {
     borderRight: "1px solid #999999",

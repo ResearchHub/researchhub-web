@@ -40,7 +40,14 @@ const ExpertiseModal = ({
         </div>
         {profile.reputationList.map((rep, index) => (
           <div className={css(styles.reputation)}>
-            <div className={css(styles.reputationHubLabel)}>{rep.hub.name}</div>
+            <div className={css(styles.reputationHubLabel)}>
+              <span>
+                {rep.hub.name}
+              </span>
+              <span>
+                {rep.percentile}%
+              </span>
+            </div>
             <ReputationGauge reputation={rep} key={`reputation-` + index} />
           </div>
         ))}
@@ -67,6 +74,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 5,
     textTransform: "capitalize",
+    justifyContent: "space-between",
+    display: "flex"    
   },
   reputationWrapper: {
     width: "100%",
