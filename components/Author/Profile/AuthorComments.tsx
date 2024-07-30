@@ -67,12 +67,10 @@ const AuthorComments = ({
             setIsFetchingMore(true);
             try {
               const response:PaginatedApiResponse = await fetchContributionsAPI({ pageUrl: _commentApiResponse.next });
-              const nextContributions = _commentApiResponse.results.map((r) => {
-                return parseContribution(r);
-              });
-
+              
+              const nextContributions = response.results
               response.results = [
-                ...commentApiResponse.results,
+                ..._commentApiResponse.results,
                 ...nextContributions,
               ]
 
