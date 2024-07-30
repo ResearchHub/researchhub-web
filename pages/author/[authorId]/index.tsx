@@ -15,6 +15,8 @@ import CoAuthors from "~/components/Author/Profile/CoAuthors";
 import ALink from "~/components/ALink";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLongArrowAltRight } from "@fortawesome/pro-solid-svg-icons";
+import SearchEmpty from "~/components/Search/SearchEmpty";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
 
 type Args = {
   profile: any;
@@ -33,6 +35,7 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview, commentApiRespon
 
   const fullAuthorProfile = parseFullAuthorProfile(profile);
   const authorTabs = buildAuthorTabs({ profile: fullAuthorProfile, router });
+  const currentUser = useCurrentUser();
 
   return (
     <AuthorProfileContextProvider fullAuthorProfile={fullAuthorProfile}>
@@ -47,6 +50,14 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview, commentApiRespon
           <div className={css(styles.mainContent)}>
             <div style={{ display: "flex",  }}>
               <div className={css(styles.sectionsWrapper)}>
+
+                {overview.results.length === 0 && commentApiResponse.results.length === 0 && (
+                  <div className={css(styles.section)}>
+                    <div style={{ minHeight: 250, display: "flex", justifyContent: "center", width: "100%" }}>
+                      <SearchEmpty title={"No author activity found."} subtitle={Boolean(currentUser?.authorProfile.id === fullAuthorProfile?.id) ? "Add your publications to see if they are eligible for rewards." : ""} />
+                    </div>
+                  </div>
+                )}
                 {overview.results.length > 0 && (
                   <div className={css(styles.section)}>
                     <AuthorWorks works={overview.results} />
@@ -58,16 +69,18 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview, commentApiRespon
                     </ALink>
                   </div>
                 )}
-                <div className={css(styles.section)}>
-                  <div className={css(styles.sectionHeader)}>Recent Activity</div>
-                  <AuthorComments commentApiResponse={commentApiResponse} withLoadMore={false} />
-                  <ALink theme="solidPrimary" href={`/author/${fullAuthorProfile.id}/comments`}>
-                    <div className={css(styles.seeMoreLink)}>
-                      See more
-                      <FontAwesomeIcon icon={faLongArrowAltRight} />
-                    </div>
-                  </ALink>                
-                </div>
+                {commentApiResponse.results.length > 0 && (
+                  <div className={css(styles.section)}>
+                    <div className={css(styles.sectionHeader)}>Recent Activity</div>
+                    <AuthorComments commentApiResponse={commentApiResponse} withLoadMore={false} />
+                    <ALink theme="solidPrimary" href={`/author/${fullAuthorProfile.id}/comments`}>
+                      <div className={css(styles.seeMoreLink)}>
+                        See more
+                        <FontAwesomeIcon icon={faLongArrowAltRight} />
+                      </div>
+                    </ALink>
+                  </div>
+                )}
               </div>
 
               <div className={css(styles.miscSections)}>

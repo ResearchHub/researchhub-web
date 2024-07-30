@@ -10,6 +10,7 @@ import { css, StyleSheet } from "aphrodite";
 import { useState } from "react";
 import LoadMore from "~/components/shared/LoadMore";
 import fetchContributionsAPI from "~/components/LiveFeed/api/fetchContributionsAPI";
+import SearchEmpty from "~/components/Search/SearchEmpty";
 
 const AuthorComments = ({
   commentApiResponse,
@@ -62,6 +63,12 @@ const AuthorComments = ({
 
   return (
   <div className={css(styles.commentWrapper)}>
+    {resultCards.length === 0 && (
+      <div style={{ minHeight: 250, display: "flex", justifyContent: "center", width: "100%" }}>
+        <SearchEmpty title={"No author activity found in this section."} />
+      </div>
+  )}
+
     {resultCards}
     {withLoadMore && _commentApiResponse.next && (
         <LoadMore
