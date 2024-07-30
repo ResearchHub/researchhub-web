@@ -156,7 +156,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
       overview,
       commentApiResponse,
     },
-    revalidate: 86000,
+    revalidate: 10,
   };
 };
 

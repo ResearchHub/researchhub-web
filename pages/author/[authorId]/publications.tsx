@@ -109,7 +109,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
       profile,
       publicationsResponse,
     },
-    revalidate: 86000,
+    revalidate: 10,
   };
 };
 

@@ -87,8 +87,6 @@ const NotificationEntry = (props) => {
       props.closeMenu();
     };
 
-    console.log("notification_type", notification_type);
-
     if (notification_type === "IDENTITY_VERIFICATION_UPDATED") {
       return "Congratulations! Your account has been verified by the ResearchHub team. ";
     } else if (notification_type === "PAPER_CLAIM_PAYOUT") {

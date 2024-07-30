@@ -99,7 +99,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
       profile,
       commentApiResponse,
     },
-    revalidate: 86000,
+    revalidate: 10,
   };
 };
 
