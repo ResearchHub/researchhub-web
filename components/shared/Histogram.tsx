@@ -20,7 +20,7 @@ const Histogram: React.FC<HistogramProps> = ({ data, histogramBarStyle }) => {
     <div className={css(styles.histogram)}>
       {data.map((d, index) => (
         <div key={index} className={css(styles.histogramBarContainer)}>
-          <div className={css(styles.histogramKey)}>{d.key}</div>
+          {/* <div className={css(styles.histogramKey)}>{d.key}</div> */}
 
           <Tooltip
               title={`${d.key}: ${d.value}`}
@@ -55,10 +55,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column-reverse', // Ensure bars grow from bottom to top
     alignItems: 'center',
+    marginRight: 0,
     height: '100%', // Make sure the container height is 100% of the parent
   },
   histogramBar: {
-    width: '40px',
+    width: '15px',
     backgroundColor: '#3498db',
     display: 'flex',
     alignItems: 'flex-end',

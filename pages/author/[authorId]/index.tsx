@@ -70,16 +70,18 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview, commentApiRespon
                 </div>
               </div>
 
-              <div className={css(styles.coauthorsSection)}>
-                <CoAuthors coauthors={fullAuthorProfile.coauthors} />
+              <div className={css(styles.miscSections)}>
+                <div className={css(styles.coauthorsSection, styles.miscSection)}>
+                  <CoAuthors coauthors={fullAuthorProfile.coauthors} />
+                </div>
+                {fullAuthorProfile.activityByYear.length > 0 && (
+                  <div className={css(styles.miscSection, styles.activitySection)}>
+                    <AuthorActivity activity={fullAuthorProfile.activityByYear} />
+                  </div>
+                )}
               </div>
             </div>
 
-            {fullAuthorProfile.activityByYear.length > 0 && (
-              <div className={css(styles.activityWrapper)}>
-                <AuthorActivity activity={fullAuthorProfile.activityByYear} />
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -123,10 +125,6 @@ const styles = StyleSheet.create({
     width: "1000px",
     margin: "0 auto",
   },
-  activityWrapper: {
-    width: 700,
-    marginTop: 20,
-  },
   mainContentWrapper: {
     margin: "0 auto",
     backgroundColor: "rgb(255, 255, 255)",
@@ -151,7 +149,25 @@ const styles = StyleSheet.create({
     minWidth: 245,
     marginLeft: 20,
     height: "max-content",
-  }  
+    display: "flex",
+    flexDirection: "column",
+  },
+  activitySection: {
+  },
+  miscSections: {
+    height: "max-content",
+    display: "flex",
+    flexDirection: "column",
+    gap: 20,
+  },
+  miscSection: {
+    backgroundColor: "rgb(250, 250, 250)",
+    borderRadius: 20,
+    border: "1px solid #F5F5F9",
+    padding: 20,
+    minWidth: 245,
+    marginLeft: 20,
+  },  
 });
 
 export const getStaticProps: GetStaticProps = async (ctx) => {

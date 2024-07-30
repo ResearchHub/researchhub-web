@@ -14,7 +14,7 @@ const AuthorActivity = ({
   }>
 }) => {
 
-  const [selected, setSelected] = useState("publications");
+  const [selected, setSelected] = useState<"publications"|"citations">("publications");
 
   const publicationHistogram = activity
     .map((activity) => ({
@@ -32,9 +32,7 @@ const AuthorActivity = ({
 
   return (
     <div className={css(styles.histogramWrapper)}>
-      <div className={css(styles.toggleWrapper)}>
-        <Toggle options={[{label: "Publications", value: "publications"}, {label: "Citations", value: "citations"}]} onSelect={(selected) => setSelected(selected.value)} selected={selected} />
-      </div>
+      <div className={css(styles.sectionHeader)}>Publication Activity</div>
       {selected === "publications" && (
         <div style={{ width: "100%", height: 150 }}>
           <Histogram data={publicationHistogram} />
@@ -45,20 +43,52 @@ const AuthorActivity = ({
           <Histogram data={citationHistogram} histogramBarStyle={styles.citationBarStyle} />
         </div>
       )}
+      <div className={css(styles.toggleWrapper)}>
+        <div className={css(styles.toggleOption, selected === "publications" && styles.toggleOptionPublicationsSelected)} onClick={() => setSelected("publications")}>Publications</div>
+        <div className={css(styles.toggleOption, selected === "citations" && styles.toggleOptionCitationSelected)} onClick={() => setSelected("citations")}>Citations</div>
+        {/* <Toggle options={[{label: "Publications", value: "publications"}, {label: "Citations", value: "citations"}]} onSelect={(selected) => setSelected(selected.value)} selected={selected} /> */}
+      </div>
     </div>
   )
 }
 
 const styles = StyleSheet.create({
-  histogramWrapper: {
+  toggleOption: {
+    fontSize: 14,
+    color: colors.MEDIUM_GREY2(),
+    fontWeight: 400,
+    marginRight: 10,
+    cursor: "pointer",
   },
+  toggleOptionCitationSelected: {
+    color: colors.NEW_GREEN(),
+    fontWeight: 500,
+  },
+  toggleOptionPublicationsSelected: {
+    color: colors.NEW_BLUE(),
+    fontWeight: 500,
+  },  
   toggleWrapper: {
     display: "inline-flex",  
     marginBottom: 20,
+    gap: 10,
+  },
+  histogramWrapper: {
   },
   citationBarStyle: {
     backgroundColor: colors.GREEN2(),
-  }
+  },
+  sectionHeader: {
+    color: "rgb(139, 137, 148, 1)",
+    textTransform: "uppercase",
+    fontWeight: 500,
+    letterSpacing: "1.2px",
+    fontSize: 12,
+    display: "flex",
+    alignItems: "center",
+    gap: 5,
+    marginBottom: 20,
+  },     
 })
 
 export default AuthorActivity;
