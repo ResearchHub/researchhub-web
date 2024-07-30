@@ -5,10 +5,10 @@ const AuthorHeaderKeyStats = ({ profile }: { profile: FullAuthorProfile }) => {
   return (
     <div className={css(styles.rootWrapper)}>
       <div className={css(styles.lineItem)}>
-        <div className={css(styles.label)}>Works count:</div> {profile.summaryStats.worksCount.toLocaleString()} <div className={css(styles.subText)}>({profile.openAccessPct}% Open Access)</div>
+        <div className={css(styles.label)}>Publication count:</div> {profile.summaryStats.worksCount.toLocaleString()} {profile.summaryStats.worksCount > 0 && (<div className={css(styles.subText)}>({profile.openAccessPct}% Open Access)</div>)}
       </div>
       <div className={css(styles.lineItem)}>
-        <div className={css(styles.label)}>Cited by:</div> {profile.summaryStats.citationCount.toLocaleString()} works
+        <div className={css(styles.label)}>Cited by:</div> {profile.summaryStats.citationCount.toLocaleString()}
       </div>
       <div className={css(styles.lineItem)}>
         <div className={css(styles.label)}>h-index:</div> {profile.hIndex}
