@@ -47,7 +47,7 @@ const AuthorProfileHeader = () => {
         dispatch(ModalActions.openUserInfoModal(true))
       },
     },
-    ...(true ? [{
+    ...(currentUser?.moderator ? [{
       label: "Ban user",
       icon: <FontAwesomeIcon icon={faUserXmark} />,
       value: "ban",
@@ -143,20 +143,21 @@ const AuthorProfileHeader = () => {
           </div>
 
 
-
-          <div className={css(styles.textBtn, styles.editProfileBtn)}>
-            <GenericMenu
-              softHide={true}
-              options={authorMenuOptions}
-              width={200}
-              id="edit-profile-menu"
-              direction="bottom-right"
-            >
-              <IconButton overrideStyle={styles.btnDots}>
-                <FontAwesomeIcon icon={faEllipsis} />
-              </IconButton>
-            </GenericMenu>
-          </div>
+          {currentUser?.authorProfile.id === profile.id && (
+            <div className={css(styles.textBtn, styles.editProfileBtn)}>
+              <GenericMenu
+                softHide={true}
+                options={authorMenuOptions}
+                width={200}
+                id="edit-profile-menu"
+                direction="bottom-right"
+              >
+                <IconButton overrideStyle={styles.btnDots}>
+                  <FontAwesomeIcon icon={faEllipsis} />
+                </IconButton>
+              </GenericMenu>
+            </div>
+          )}
         </div>
       </div>
 

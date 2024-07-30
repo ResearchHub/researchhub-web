@@ -94,9 +94,9 @@ export const LinkedInIcon = ({
 };
 
 export const XIcon = ({ externalUrl, height = 20, width = 20 }: Props) => {
-  let fillColor = "none";
+  let fillColor = "#7C7989";
   if (externalUrl) {
-    fillColor = "#0F1419";
+    fillColor = "#000000";
   }
 
   return (
@@ -110,7 +110,7 @@ export const XIcon = ({ externalUrl, height = 20, width = 20 }: Props) => {
       <g clip-path="url(#clip0_21415_14636)">
         <path
           d="M2.85714 0C1.28125 0 0 1.28125 0 2.85714V17.1429C0 18.7188 1.28125 20 2.85714 20H17.1429C18.7188 20 20 18.7188 20 17.1429V2.85714C20 1.28125 18.7188 0 17.1429 0H2.85714ZM16.1205 3.75L11.4866 9.04464L16.9375 16.25H12.6696L9.33036 11.8795L5.50446 16.25H3.38393L8.33929 10.5848L3.11161 3.75H7.48661L10.5089 7.74554L14 3.75H16.1205ZM14.433 14.9821L6.84821 4.95089H5.58482L13.2545 14.9821H14.4286H14.433Z"
-          fill="#7C7989"
+          fill={fillColor}
         />
       </g>
       <defs>

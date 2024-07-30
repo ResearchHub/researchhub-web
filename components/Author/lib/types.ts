@@ -37,9 +37,9 @@ export type FullAuthorProfile = {
   i10Index: number;
   createdDate: string;
   orcidUrl?: string;
-  xUrl?: string;
   linkedInUrl?: string;
   googleScholarUrl?: string;
+  xUrl?: string;
   userCreatedDate: string;
   summaryStats: {
     worksCount: number;
@@ -95,6 +95,10 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
     i10Index: raw.i10_index,
     createdDate: raw.created_date,
     coauthors: raw.coauthors.map((coauthor) => parseAuthorProfile(coauthor)),
+    orcidUrl: raw.orcid_id,
+    linkedInUrl: raw.linkedin,
+    googleScholarUrl: raw.google_scholar,
+    xUrl: raw.twitter,    
     summaryStats: {
       worksCount: raw.summary_stats.works_count,
       citationCount: raw.summary_stats.citation_count,
