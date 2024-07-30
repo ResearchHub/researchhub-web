@@ -1,6 +1,5 @@
 import Histogram from "~/components/shared/Histogram";
 import { css, StyleSheet } from "aphrodite";
-import Toggle from "~/components/Form/Toggle";
 import { useState } from "react";
 import colors from "~/config/themes/colors";
 
@@ -32,21 +31,20 @@ const AuthorActivity = ({
 
   return (
     <div className={css(styles.histogramWrapper)}>
-      <div className={css(styles.sectionHeader)}>Publication Activity</div>
+      <div className={css(styles.sectionHeader)}>Publications & Citations</div>
       {selected === "publications" && (
         <div style={{ width: "100%", height: 150 }}>
-          <Histogram data={publicationHistogram} />
+          <Histogram type={selected} data={publicationHistogram} />
         </div>
       )}
       {selected === "citations" && (
         <div style={{ width: "100%", height: 150 }}>
-          <Histogram data={citationHistogram} histogramBarStyle={styles.citationBarStyle} />
+          <Histogram type={selected} data={citationHistogram} histogramBarStyle={styles.citationBarStyle} />
         </div>
       )}
       <div className={css(styles.toggleWrapper)}>
         <div className={css(styles.toggleOption, selected === "publications" && styles.toggleOptionPublicationsSelected)} onClick={() => setSelected("publications")}>Publications</div>
         <div className={css(styles.toggleOption, selected === "citations" && styles.toggleOptionCitationSelected)} onClick={() => setSelected("citations")}>Citations</div>
-        {/* <Toggle options={[{label: "Publications", value: "publications"}, {label: "Citations", value: "citations"}]} onSelect={(selected) => setSelected(selected.value)} selected={selected} /> */}
       </div>
     </div>
   )
@@ -59,6 +57,9 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     marginRight: 10,
     cursor: "pointer",
+    ":hover": {
+      textDecoration: "underline",
+    }
   },
   toggleOptionCitationSelected: {
     color: colors.NEW_GREEN(),
@@ -70,7 +71,6 @@ const styles = StyleSheet.create({
   },  
   toggleWrapper: {
     display: "inline-flex",  
-    marginBottom: 20,
     gap: 10,
   },
   histogramWrapper: {

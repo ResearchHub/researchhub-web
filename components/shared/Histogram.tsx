@@ -5,14 +5,15 @@ import { Tooltip } from "@mui/material";
 type DataPoint = {
   key: string;
   value: number;
-};
-
-type HistogramProps = {
+  };
+  
+  type HistogramProps = {
+  type: string;
   data: DataPoint[];
   histogramBarStyle?: any;
 };
 
-const Histogram: React.FC<HistogramProps> = ({ data, histogramBarStyle }) => {
+const Histogram: React.FC<HistogramProps> = ({ data, histogramBarStyle, type }) => {
   // Find the maximum value in the dataset to scale the bars
   const maxValue = Math.max(...data.map(d => d.value));
 
@@ -23,7 +24,7 @@ const Histogram: React.FC<HistogramProps> = ({ data, histogramBarStyle }) => {
           {/* <div className={css(styles.histogramKey)}>{d.key}</div> */}
 
           <Tooltip
-              title={`${d.key}: ${d.value}`}
+              title={`${d.key}: ${d.value} ${type}`}
               placement="right"
               arrow
             >
