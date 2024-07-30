@@ -19,6 +19,7 @@ import { ModalActions } from "~/redux/modals";
 import { useEffect } from "react";
 import { AuthorActions } from "~/redux/author";
 import { fetchAuthorProfile } from "../lib/api";
+import useCacheControl from "~/config/hooks/useCacheControl";
 
 const AuthorProfileHeader = () => {
   const dispatch = useDispatch();
@@ -26,6 +27,10 @@ const AuthorProfileHeader = () => {
     fullAuthorProfile: profile,
     setFullAuthorProfile,
   } = authorProfileContext();
+
+  const {
+    revalidateAuthorProfile
+  } = useCacheControl();
 
   const getExpertiseTooltipContent = () => {
     return (
@@ -40,6 +45,7 @@ const AuthorProfileHeader = () => {
     const parsedUpdatedProfile = parseFullAuthorProfile(updatedProfile);
 
     setFullAuthorProfile(parsedUpdatedProfile);
+    revalidateAuthorProfile(profile.id);
   }
 
   useEffect(() => {
