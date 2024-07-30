@@ -4,11 +4,19 @@ import { isEmpty } from "~/config/utils/nullchecks";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserGroup } from "@fortawesome/pro-duotone-svg-icons";
 
 const CoAuthors = ({ coauthors }: { coauthors: AuthorProfile[] }) => {
   return (
     <div>
       <div className={css(styles.sectionHeader)}>Coauthors</div>
+      {coauthors.length === 0 &&
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", gap: 15 }}>
+          <FontAwesomeIcon icon={faUserGroup} color={colors.GREY()} fontSize={35} />
+          <span style={{ color: colors.MEDIUM_GREY2()}}>No coauthors, yet.</span>
+        </div>
+      }
       <div>
         {coauthors.map((coauthor) => (
           <Link href={`/author/${coauthor.id}`} className={css(styles.author)} key={coauthor.id}>

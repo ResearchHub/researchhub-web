@@ -5,7 +5,7 @@ import { css, StyleSheet } from "aphrodite";
 const AuthorWorks = ({ works }: { works: any }) => {
   return (
     <div className={css(styles.wrapper)}>
-      <div className={css(styles.sectionHeader)}>Top Works</div>
+      <div className={css(styles.sectionHeader)}>Top Publications</div>
       <div className={css(styles.contentWrapper)}>
         <div>
           {/* @ts-ignore */}

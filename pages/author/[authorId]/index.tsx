@@ -34,7 +34,6 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview, commentApiRespon
   const fullAuthorProfile = parseFullAuthorProfile(profile);
   const authorTabs = buildAuthorTabs({ profile: fullAuthorProfile, router });
 
-
   return (
     <AuthorProfileContextProvider fullAuthorProfile={fullAuthorProfile}>
       <div className={css(styles.profilePage)}>
@@ -47,22 +46,28 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview, commentApiRespon
         <div className={css(styles.mainContentWrapper)}>
           <div className={css(styles.mainContent)}>
             <div style={{ display: "flex",  }}>
-              <div>
-                <AuthorWorks works={overview.results} />
-                <ALink theme="solidPrimary" href={`/author/${fullAuthorProfile.id}/publications`}>
-                  <div className={css(styles.seeMoreLink)}>
-                    See more
-                    <FontAwesomeIcon icon={faLongArrowAltRight} />
+              <div className={css(styles.sectionsWrapper)}>
+                {overview.results.length > 0 && (
+                  <div className={css(styles.section)}>
+                    <AuthorWorks works={overview.results} />
+                    <ALink theme="solidPrimary" href={`/author/${fullAuthorProfile.id}/publications`}>
+                      <div className={css(styles.seeMoreLink)}>
+                        See more
+                        <FontAwesomeIcon icon={faLongArrowAltRight} />
+                      </div>
+                    </ALink>
                   </div>
-                </ALink>
-                <div className={css(styles.sectionHeader)}>Recent Activity</div>
-                <AuthorComments commentApiResponse={commentApiResponse} withLoadMore={false} />
-                <ALink theme="solidPrimary" href={`/author/${fullAuthorProfile.id}/comments`}>
-                  <div className={css(styles.seeMoreLink)}>
-                    See more
-                    <FontAwesomeIcon icon={faLongArrowAltRight} />
-                  </div>
-                </ALink>                
+                )}
+                <div className={css(styles.section)}>
+                  <div className={css(styles.sectionHeader)}>Recent Activity</div>
+                  <AuthorComments commentApiResponse={commentApiResponse} withLoadMore={false} />
+                  <ALink theme="solidPrimary" href={`/author/${fullAuthorProfile.id}/comments`}>
+                    <div className={css(styles.seeMoreLink)}>
+                      See more
+                      <FontAwesomeIcon icon={faLongArrowAltRight} />
+                    </div>
+                  </ALink>                
+                </div>
               </div>
 
               <div className={css(styles.coauthorsSection)}>
@@ -70,9 +75,11 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview, commentApiRespon
               </div>
             </div>
 
-            <div className={css(styles.activityWrapper)}>
-              <AuthorActivity activity={fullAuthorProfile.activityByYear} />
-            </div>
+            {fullAuthorProfile.activityByYear.length > 0 && (
+              <div className={css(styles.activityWrapper)}>
+                <AuthorActivity activity={fullAuthorProfile.activityByYear} />
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -92,6 +99,14 @@ const styles = StyleSheet.create({
     gap: 5,
     marginBottom: 20,
     marginTop: 20,
+  },
+  sectionsWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 30,
+  },
+  section: {
+
   },
   seeMoreLink: {
     display: "flex",
