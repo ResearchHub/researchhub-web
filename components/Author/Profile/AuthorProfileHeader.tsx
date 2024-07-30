@@ -16,10 +16,13 @@ import WelcomeToProfileBanner from "./WelcomeToProfileBanner";
 import UserInfoModal from "~/components/Modals/UserInfoModal";
 import { useDispatch } from "react-redux";
 import { ModalActions } from "~/redux/modals";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AuthorActions } from "~/redux/author";
 import { fetchAuthorProfile } from "../lib/api";
 import useCacheControl from "~/config/hooks/useCacheControl";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAddressCard, faBuildingColumns } from "@fortawesome/pro-solid-svg-icons";
+import { truncateText } from "~/config/utils/string";
 
 const AuthorProfileHeader = () => {
   const dispatch = useDispatch();
@@ -56,6 +59,10 @@ const AuthorProfileHeader = () => {
     })();
   }, []);
 
+  const [isShowingAll, setIsShowingAll] = useState(false);
+  const [isShowingFullDescription, setIsShowingFullDescription] = useState(false);
+  const visibleInstitutions = isShowingAll ? profile.education : profile.education.slice(0, 1);
+
   return (
     <div>
       <UserInfoModal onSave={onProfileSave} />
@@ -76,12 +83,17 @@ const AuthorProfileHeader = () => {
           </div>
           <div className={css(styles.headline)}>{profile.headline}</div>
           <div className={css(styles.inlineLineItem)}>
-            <div className={css(styles.label)}>Education:</div>
-            {profile.education.map((edu, index) => (
+            <div className={css(styles.label)}>
+              <FontAwesomeIcon icon={faBuildingColumns} fontSize={20} />
+            </div>
+            {visibleInstitutions.map((edu, index) => (
               <div>
                 {edu.summary} {index < profile.education.length ? "" : ", "}
               </div>
             ))}
+            <div className={css(styles.showMore)} onClick={() => setIsShowingAll(!isShowingAll)}>
+              {isShowingAll ? "Show less" : `+ ${profile.education.length - visibleInstitutions.length} more`}
+            </div>
           </div>
 
           {/* Kobe 07-27-24: Temporarily disabling rendering of new institutions */}
@@ -89,10 +101,16 @@ const AuthorProfileHeader = () => {
             <AuthorInstitutions institutions={profile.institutions} />
           </div> */}
 
-          <div className={css(styles.inlineLineItem)}>
-            <div className={css(styles.label)}>About:</div>
-            <div className={css(styles.description)}>{profile.description}</div>
-          </div>
+          {(profile?.description?.length || 0) > 0 && (
+            <div className={css(styles.inlineLineItem, styles.descriptionLineItem)}>
+              <div className={css(styles.description)}>
+                {isShowingFullDescription ? profile.description: truncateText(profile.description, 300)}
+                <div className={css(styles.showMore)} style={{ marginTop: 3, }} onClick={() => setIsShowingFullDescription(!isShowingFullDescription)}>
+                  {isShowingFullDescription ? "Show less" : `Show more`}
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className={css(styles.authorSocialMedia)}>
             <AuthorSocialMediaIcons profile={profile} />
@@ -166,6 +184,14 @@ const AuthorProfileHeader = () => {
   );
 };
 const styles = StyleSheet.create({
+  showMore: {
+    color: colors.NEW_BLUE(),
+    cursor: "pointer",
+    fontSize: 14,
+    ":hover": {
+      textDecoration: "underline",
+    }
+  },  
   lineItems: {
     display: "flex",
     flexDirection: "column",
@@ -173,14 +199,23 @@ const styles = StyleSheet.create({
   },
   inlineLineItem: {
     display: "flex",
-    columnGap: "5px",
+    columnGap: "10px",
     color: colors.BLACK(0.9),
+    alignItems: "center",
+    lineHeight: 1.25,
   },
   label: {
     fontWeight: 500,
     color: colors.BLACK(1.0),
   },
-  description: {},
+  description: {
+    display: "inline-flex",
+    flexWrap: "wrap",
+
+  },
+  descriptionLineItem: {
+    marginTop: 10,
+  },
   textBtn: {
     cursor: "pointer",
     color: colors.NEW_BLUE(),
