@@ -117,6 +117,7 @@ const blockStyles = StyleSheet.create({
   },
   yesNoLabel: {
     maxWidth: 350,
+    fontWeight: 500,
   },
   buttonsWrapper: {
     display: "flex",
@@ -218,7 +219,7 @@ const ClaimRewardsModal = ({
         closeModal();
       }}
       zIndex={1000000}
-      modalContentStyle={styles.modalStyle}
+      modalContentStyle={["INTRO", "CLAIM_SUBMITTED"].includes(step) ? styles.modalStyleIntro : styles.modalStyle}
     >
       <div>
         {/* FIXME: Temporariy turnign off breadcrumbs until we support open access PDF upload */}
@@ -242,36 +243,44 @@ const ClaimRewardsModal = ({
 
         {step === "INTRO" && (
           <>
-            <div className={css(styles.largeTitle)}>
+            <div className={css(styles.largeTitle, styles.introTitle)}>
               <ResearchCoinIcon
                 height={40}
                 width={40}
                 color={colors.NEW_GREEN()}
                 version={4}
               />
-              Claim RSC rewards on your paper
+              <div style={{ marginTop: 10, }}>
+                Claim RSC rewards on your paper
+              </div>
             </div>
             <div className={css(styles.slide)}>
               <div className={css(styles.largeText)}>
                 At ResearchHub, we use RSC rewards to encourage the creation of
                 high-quality research outputs. To us this means science that is:
               </div>
-              <div className={css(styles.lineItems)}>
+              <div className={css(styles.lineItems, styles.lineItemsForIntro)}>
                 <div className={css(styles.lineItem)}>
-                  <FontAwesomeIcon icon={faLockOpen} fontSize={20} />
+                  <div className={css(styles.lineItemIcon)}>
+                    <FontAwesomeIcon icon={faLockOpen} fontSize={20} />
+                  </div>
                   Open access
                 </div>
                 <div className={css(styles.lineItem)}>
-                  <FontAwesomeIcon icon={faChartPie} fontSize={20} />
+                  <div className={css(styles.lineItemIcon)}>
+                    <FontAwesomeIcon icon={faChartPie} fontSize={20} />
+                  </div>
                   Accompanied by open data
                 </div>
                 <div className={css(styles.lineItem)}>
-                  <Image
-                    alt="Scan"
-                    width={30}
-                    height={30}
-                    src={"/static/icons/blueprint_gray.svg"}
-                  />
+                  <div className={css(styles.lineItemIcon)}>
+                    <Image
+                      alt="Scan"
+                      width={27}
+                      height={27}
+                      src={"/static/icons/blueprint_gray.svg"}
+                    />
+                  </div>
                   Preregistered
                 </div>
               </div>
@@ -280,7 +289,7 @@ const ClaimRewardsModal = ({
         )}
         {step === "OPEN_DATA" && (
           <>
-            <div className={css(styles.title)}>
+            <div className={css(styles.title, styles.sectionTitle)}>
               <FontAwesomeIcon icon={faChartPie} color={colors.NEW_BLUE()} />
               Open Data
             </div>
@@ -319,7 +328,7 @@ const ClaimRewardsModal = ({
         )}
         {step === "PREREGRISTRATION" && (
           <>
-            <div className={css(styles.title)}>
+            <div className={css(styles.title, styles.sectionTitle)}>
               <Image
                 alt="Scan"
                 width={30}
@@ -368,9 +377,9 @@ const ClaimRewardsModal = ({
         {step === "CLAIM_SUBMITTED" && (
           <>
             <div className={css(styles.slide)}>
-              <div className={css(styles.largeTitle)}>
+              <div className={css(styles.largeTitle, styles.introTitle)}>
                 <FontAwesomeIcon fontSize="40" icon={faCircleCheck} color={colors.NEW_GREEN()} />
-                You claimed has been submitted!
+                <div style={{ marginTop: 20, }}>You claimed has been submitted!</div>
               </div>
               <div className={css(styles.largeText)}>
                 Once approved, RSC will be deposited in your account. We will notify you when the claim has been processed.
@@ -411,6 +420,7 @@ const ClaimRewardsModal = ({
             fullWidth
             onClick={() => handleNext()}
             theme="solidPrimary"
+            customButtonStyle={styles.startButton}
             style={{ width: 200, margin: "20px auto" }}
           >
             Let's Start
@@ -419,21 +429,25 @@ const ClaimRewardsModal = ({
 
         {!["CLAIM_SUBMITTED", "INTRO"].includes(step) && (
           <div className={css(styles.footer)}>
-            <div>Paper: {paperTitle}</div>
-            <ClaimRewardSummary
-              baseReward={rewardSummary?.baseRewards || 0}
-              isOpenAccess={true}
-              isOpenData={openDataUrl !== null}
-              isPreregistered={preregistrationUrl !== null}
-              preregistrationMultiplier={
-                rewardSummary?.preregistrationMultiplier
-              }
-              openDataMultiplier={rewardSummary?.openDataMultiplier}
-            />
+            <div><strong>Paper:</strong> {paperTitle}</div>
+            <div style={{ marginTop: 20, marginBottom: 20 }}>
+              <ClaimRewardSummary
+                baseReward={rewardSummary?.baseRewards || 0}
+                isOpenAccess={true}
+                isOpenData={openDataUrl !== null}
+                isPreregistered={preregistrationUrl !== null}
+                preregistrationMultiplier={
+                  rewardSummary?.preregistrationMultiplier
+                }
+                openDataMultiplier={rewardSummary?.openDataMultiplier}
+              />
+            </div>
             <Button
               fullWidth
               disabled={
                 (step === "OPEN_DATA" && isOpenData && !openDataUrl) ||
+                (step === "OPEN_DATA" && isOpenData === null) || 
+                (step === "PREREGRISTRATION" && isPreregistered === null) || 
                 (step === "PREREGRISTRATION" &&
                   isPreregistered &&
                   !preregistrationUrl) ||
@@ -457,18 +471,33 @@ const ClaimRewardsModal = ({
 };
 
 const styles = StyleSheet.create({
+  introTitle: {
+    color: colors.NEW_GREEN(),
+  },
+  startButton: {
+    backgroundColor: colors.NEW_GREEN(),
+    borderColor: colors.NEW_GREEN(),
+  },
   lineItems: {
     display: "flex",
     flexDirection: "column",
     marginTop: 25,
-    width: 260,
+    width: 210,
     margin: "0 auto",
+  },
+  lineItemsForIntro: {
+    width: 280,
   },
   lineItem: {
     display: "flex",
     gap: 10,
     marginBottom: 10,
     color: colors.MEDIUM_GREY2(),
+    alignItems: "center",
+  },
+  lineItemIcon: {
+    width: 30,
+    height: 24,
   },
   largeTitle: {
     display: "flex",
@@ -478,6 +507,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     textAlign: "center",
     alignItems: "center",
+    marginBottom: 25,
   },
   largeText: {
     color: colors.MEDIUM_GREY2(),
@@ -499,16 +529,30 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
   },
+  sectionTitle: {
+    marginTop: 30,
+    fontWeight: 500,
+    gap: 10,
+    fontSize: 20,
+  },
   description: {
-    fontSize: 14,
-    marginBottom: 10,
+    fontSize: 16,
+    marginBottom: 30,
   },
   slide: {
     // minHeight: 300,
     textAlign: "center",
     fontSize: 18,
+    marginBottom: 20,
   },
   modalStyle: {
+    background: "white",
+    padding: "20px 20px",
+    width: 550,
+  },
+  modalStyleIntro: {
+    backgroundColor: colors.NEW_GREEN(0.1),
+    border: `2px solid ${colors.NEW_GREEN()}`,    
     padding: "20px 20px",
     width: 550,
   },
