@@ -488,6 +488,9 @@ const styles = StyleSheet.create({
   docControls: {
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 5,
+    marginTop: 15,
   },
   publicationsHeader: {
     display: "flex",

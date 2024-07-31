@@ -1,3 +1,4 @@
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import { FullAuthorProfile } from "../lib/types";
 import { css, StyleSheet } from "aphrodite";
 
@@ -39,11 +40,20 @@ const AuthorHeaderKeyStats = ({ profile }: { profile: FullAuthorProfile }) => {
         </div>
       </div>
       <div className={css(styles.lineItem)}>
-        <div className={css(styles.label)}>2 mean citedness:</div>{" "}
+        <div className={css(styles.label)}>2-year mean citedness:</div>{" "}
         <div className={css(styles.value)}>
           {profile.summaryStats.twoYearMeanCitedness.toFixed(2)}
         </div>
       </div>
+      {profile.summaryStats.amountFunded > 0 && (
+        <div className={css(styles.lineItem)}>
+          <div className={css(styles.label)}>Amount funded:</div>{" "}
+          <div className={css(styles.value)}>
+            <ResearchCoinIcon version={4} width={15} height={15} />
+            {profile.summaryStats.amountFunded.toLocaleString()}
+          </div>
+        </div>      
+      )}
     </div>
   );
 };

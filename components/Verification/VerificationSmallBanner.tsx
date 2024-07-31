@@ -18,8 +18,7 @@ const VerificationSmallBanner = () => {
       <VerifiedBadge height={32} width={32} showTooltipOnHover={false} />
       <div className={css(styles.title)}>Verify Identity</div>
       <p className={css(styles.description)}>
-        ResearchHub is now rewarding verified authors that participate in
-        healthy research behavior.
+        Verify your identity to stand out and get faster withdraws.
       </p>
 
       {/* @ts-ignore */}
