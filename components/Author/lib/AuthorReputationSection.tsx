@@ -49,7 +49,7 @@ const AuthorReputationSection = ({
                   tooltip: {
                     sx: {
                       fontSize: 14,
-                      bgcolor: colors.GREY(),
+                      bgcolor: colors.LIGHT_GREY(),
                       fontWeight: 400,
                       color: colors.BLACK(1.0),
                     },

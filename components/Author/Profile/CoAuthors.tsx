@@ -21,7 +21,7 @@ const CoAuthors = ({ coauthors }: { coauthors: AuthorProfile[] }) => {
         {coauthors.map((coauthor) => (
           <Link href={`/author/${coauthor.id}`} className={css(styles.author)} key={coauthor.id}>
             <Avatar src={coauthor.profileImage} sx={{ width: 25, height: 25, fontSize: 13, }}>
-              {isEmpty(coauthor.profileImage) && ((coauthor?.firstName?.[0] ?? "") + (coauthor.lastName?.[0] ?? ""))}
+              {isEmpty(coauthor.profileImage) && ((coauthor?.firstName?.[0] ?? ""))}
             </Avatar>
             <div>{coauthor.firstName} {coauthor.lastName}</div>
           </Link>

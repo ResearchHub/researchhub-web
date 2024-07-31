@@ -12,7 +12,6 @@ const AuthorInstitutions = ({ institutions }: { institutions: AuthorInstitution[
   return (
     <div className={css(styles.wrapper)}>
       <div className={css(styles.listWrapper)}>
-      <div className={css(styles.label)}>Institutions:</div>
         {visibleInstitutions.map((authorInstitution, index) => (
           <span key={authorInstitution.id}>
             {authorInstitution.institution.displayName}
@@ -46,6 +45,8 @@ const styles = StyleSheet.create({
     color: colors.NEW_BLUE(),
     cursor: "pointer",
     marginLeft: 5,
+    marginTop: 1,
+    fontSize: 14,
     ":hover": {
       textDecoration: "underline",
     }
