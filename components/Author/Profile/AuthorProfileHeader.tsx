@@ -126,7 +126,7 @@ const AuthorProfileHeader = () => {
               <>
               {visibleInstitutions.map((edu, index) => (
                 <div>
-                  {edu.summary} {index < profile.education.length ? "" : ", "}
+                  {edu.summary} {index < visibleInstitutions.length - 1 ? ", " : ""}
                 </div>
               ))}
               {profile.education.length > 1 && (
@@ -267,6 +267,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.9),
     alignItems: "flex-start",
     lineHeight: 1.25,
+    flexWrap: "wrap",
   },
   label: {
     fontWeight: 500,

@@ -58,6 +58,12 @@ export type Reputation = {
   percentile: number;
 };
 
+export type YearlyActivity = {
+  year: number;
+  worksCount: number;
+  citationCount: number;
+}
+
 export const parseReputation = (raw: any): Reputation => {
   const percentile = Math.ceil(raw.percentile * 100);
   return {
@@ -71,6 +77,29 @@ export const parseReputation = (raw: any): Reputation => {
 export const parseReputationList = (raw: any): Array<Reputation> => {
   return raw.map((rep) => parseReputation(rep));
 };
+
+function ensureSufficientYears(activityData: YearlyActivity[]): YearlyActivity[] {
+  const currentYear = new Date().getFullYear();
+  const yearsRequired = 12;
+  const yearsPresent = new Set(activityData.map((activity) => activity.year));
+  const completedData: YearlyActivity[] = [...activityData];
+
+  for (let i = 0; i < yearsRequired; i++) {
+    const yearToCheck = currentYear - i;
+    if (!yearsPresent.has(yearToCheck)) {
+      completedData.push({
+        worksCount: 0,
+        citationCount: 0,
+        year: yearToCheck,
+      });
+    }
+  }
+
+  // Sort the data by year in descending order
+  completedData.sort((a, b) => b.year - a.year);
+
+  return completedData;
+}  
 
 export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
   const parsed = {
@@ -105,7 +134,7 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
       twoYearMeanCitedness: raw.summary_stats.two_year_mean_citedness,
       upvotesReceived: raw.summary_stats.upvotes_received || 35, // FIXME
     },
-    activityByYear: raw.activity_by_year.map((activity) => ({
+    activityByYear: raw.activity_by_year.map((activity):YearlyActivity => ({
       year: activity.year,
       worksCount: activity.works_count,
       citationCount: activity.citation_count,
@@ -134,6 +163,14 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
     parsed.achievements.push("HIGHLY_UPVOTED_1");
   }
 
+  // Sometimes activity by year includes missing years
+  try {
+    parsed.activityByYear = ensureSufficientYears(parsed.activityByYear);
+  }
+  catch(e) {
+    // Ignore error
+  }
+  
   return parsed;
 };
 
