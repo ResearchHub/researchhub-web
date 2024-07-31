@@ -359,11 +359,6 @@ export const parseUser = (raw: any): RHUser => {
     _raw.last_name = _raw.author_profile.last_name;
   }
 
-  let isVerified = _raw.is_verified;
-  if (process.env.REACT_APP_ENV !== "production") {
-    isVerified = _raw.is_verified_v2;
-  }
-
   const mapped = {
     id: _raw.id,
     firstName: _raw.first_name,
@@ -373,7 +368,7 @@ export const parseUser = (raw: any): RHUser => {
     reputation: _raw.reputation,
     createdAt: _raw.created_date,
     balance: _raw.balance,
-    isVerified,
+    isVerified: _raw.is_verified_v2,
     moderator: _raw.moderator,
     createdDate: _raw.created_date
       ? formatDateStandard(_raw.created_date, "MM-DD-YYYY")
