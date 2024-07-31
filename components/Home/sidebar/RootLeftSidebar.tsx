@@ -468,38 +468,36 @@ function RootLeftSidebar({
               {isMinimized ? "Comm.." : "Community"}
             </ALink>
 
-            {(process.env.REACT_APP_ENV !== "production" || currentUser?.moderator) && (
-              <span className={css(formattedFooterTxtItem)}>
-                {/* @ts-ignore */}
-                <VerifyIdentityModal
-                  // @ts-ignore legacy
-                  wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
-                  // @ts-ignore legacy
-                  wsAuth
+            <span className={css(formattedFooterTxtItem)}>
+              {/* @ts-ignore */}
+              <VerifyIdentityModal
+                // @ts-ignore legacy
+                wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
+                // @ts-ignore legacy
+                wsAuth
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    columnGap: 5,
+                    cursor: "pointer",
+                  }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      columnGap: 5,
-                      cursor: "pointer",
-                    }}
-                  >
-                    {isMinimized ? "Verify" : (
-                      <>
-                        Verify Identity
-                        <VerifiedBadge
-                          height={20}
-                          width={20}
-                          variation="grey"
-                          showTooltipOnHover={false}
-                        />
-                      </>
-                    )}
-                  </div>
-                </VerifyIdentityModal>
-              </span>
-            )}
+                  {isMinimized ? "Verify" : (
+                    <>
+                      Verify Identity
+                      <VerifiedBadge
+                        height={20}
+                        width={20}
+                        variation="grey"
+                        showTooltipOnHover={false}
+                      />
+                    </>
+                  )}
+                </div>
+              </VerifyIdentityModal>
+            </span>
             {/* <ALink
               href="/leaderboard/users"
               overrideStyle={formattedFooterTxtItem}

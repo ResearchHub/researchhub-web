@@ -12,12 +12,11 @@ import colors from "~/config/themes/colors";
 
 type Args = {
   profile: any;
-  commentApiResponse: any;
 };
 
-const AuthorProfilePage: NextPage<Args> = ({ profile, commentApiResponse }) => {
+const AuthorProfilePage: NextPage<Args> = ({ profile }) => {
 
-  if (!profile || !commentApiResponse) {
+  if (!profile) {
     // TODO: Need a skeleton loading state
     return (
       <div style={{
@@ -99,17 +98,9 @@ const styles = StyleSheet.create({
 export const getStaticProps: GetStaticProps = async (ctx) => {
   const profile = await fetchAuthorProfile({ authorId: ctx!.params!.authorId as string })
 
-  const commentApiResponse:any = await fetchContributionsAPI({
-    filters: {
-      contentType: "CONVERSATION",
-      authorId: ctx!.params!.authorId as string,
-    },
-  });
-
   return {
     props: {
       profile,
-      commentApiResponse,
     },
     revalidate: 10,
   };

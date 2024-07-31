@@ -116,24 +116,6 @@ function RootLeftSidebarSlider({
           >
             Community
           </ALink>
-          <span className={css(styles.leftSidebarSliderFooterTxtItem)}>
-            <VerificationModal
-              isModalOpen={isVerificationModalOpen}
-              handleModalClose={() => setIsVerificationModalOpen(false)}
-            />
-            <span
-              className={css(styles.referralProgramItem)}
-              onClick={() => setIsVerificationModalOpen(true)}
-            >
-              {"Verify Authorship"}
-              <VerifiedBadge
-                height={20}
-                width={20}
-                variation="grey"
-                showTooltipOnHover={false}
-              />
-            </span>
-          </span>
           {/* <ALink
             href="/leaderboard/users"
             overrideStyle={styles.leftSidebarSliderFooterTxtItem}

@@ -34,7 +34,7 @@ export default function HomeRightSidebar(): ReactElement {
   return (
     <div className={css(styles.HomeRightSidebar)}>
       <ColumnContainer overrideStyles={styles.HomeRightSidebarContainer}>
-        {process.env.REACT_APP_ENV !== "production" ? (
+        {true /* Temporarily always on */ ? (
           <div className={css(sidebarStyles.bannerWrapper)}>
             <VerificationSmallBanner />
           </div>
