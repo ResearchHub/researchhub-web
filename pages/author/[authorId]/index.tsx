@@ -17,20 +17,31 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLongArrowAltRight } from "@fortawesome/pro-solid-svg-icons";
 import SearchEmpty from "~/components/Search/SearchEmpty";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
+import { ClipLoader } from "react-spinners";
+import colors from "~/config/themes/colors";
 
 type Args = {
   profile: any;
   overview: any;
-  commentApiResponse: any;
 };
 
-const AuthorProfilePage: NextPage<Args> = ({ profile, overview, commentApiResponse }) => {
+const AuthorProfilePage: NextPage<Args> = ({ profile, overview }) => {
   const router = useRouter();
-  
-  if (!profile || !overview || !commentApiResponse) {
+
+  if (!profile || !overview) {
     // TODO: Need a skeleton loading state
-    return <div>Loading...</div>;
-    }  
+    return (
+      <div style={{
+        "display": "flex",
+        "justifyContent": "center",
+        "alignItems": "center",
+        "height": "100%",
+        "width": "100%",
+      }}>
+        <ClipLoader color={colors.NEW_BLUE()} loading={true} size={55} />
+      </div>
+    )
+  }  
 
   const fullAuthorProfile = parseFullAuthorProfile(profile);
   const authorTabs = buildAuthorTabs({ profile: fullAuthorProfile, router });
@@ -50,28 +61,20 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview, commentApiRespon
             <div style={{ display: "flex",  }}>
               <div className={css(styles.sectionsWrapper)}>
 
-                {overview.results.length === 0 && commentApiResponse.results.length === 0 && (
-                  <div className={css(styles.section)}>
-                    <div style={{ minHeight: 250, display: "flex", justifyContent: "center", width: "100%" }}>
-                      <SearchEmpty title={"No author activity found."} subtitle={Boolean(currentUser?.authorProfile.id === fullAuthorProfile?.id) ? "Add your publications to see if they are eligible for rewards." : ""} />
+                  {overview.results.length > 0 && (
+                    <div className={css(styles.section)}>
+                      <AuthorWorks works={overview.results} />
+                      <ALink theme="solidPrimary" href={`/author/${fullAuthorProfile.id}/publications`}>
+                        <div className={css(styles.seeMoreLink)}>
+                          See more
+                          <FontAwesomeIcon icon={faLongArrowAltRight} />
+                        </div>
+                      </ALink>
                     </div>
-                  </div>
-                )}
-                {overview.results.length > 0 && (
-                  <div className={css(styles.section)}>
-                    <AuthorWorks works={overview.results} />
-                    <ALink theme="solidPrimary" href={`/author/${fullAuthorProfile.id}/publications`}>
-                      <div className={css(styles.seeMoreLink)}>
-                        See more
-                        <FontAwesomeIcon icon={faLongArrowAltRight} />
-                      </div>
-                    </ALink>
-                  </div>
-                )}
-                {commentApiResponse.results.length > 0 && (
+                  )}
                   <div className={css(styles.section)}>
                     <div className={css(styles.sectionHeader)}>Recent Activity</div>
-                    <AuthorComments commentApiResponse={commentApiResponse} withLoadMore={false} />
+                    <AuthorComments contentType="ALL" authorId={profile.id} limit={6} withLoadMore={false} />
                     <ALink theme="solidPrimary" href={`/author/${fullAuthorProfile.id}/comments`}>
                       <div className={css(styles.seeMoreLink)}>
                         See more
@@ -79,7 +82,6 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview, commentApiRespon
                       </div>
                     </ALink>
                   </div>
-                )}
               </div>
 
               <div className={css(styles.miscSections)}>
@@ -185,20 +187,11 @@ const styles = StyleSheet.create({
 export const getStaticProps: GetStaticProps = async (ctx) => {
   const profile = await fetchAuthorProfile({ authorId: ctx!.params!.authorId as string })
   const overview = await fetchAuthorOverview({ authorId: ctx!.params!.authorId as string })
-  const commentApiResponse:any = await fetchContributionsAPI({
-    filters: {
-      contentType: "ALL",
-      authorId: ctx!.params!.authorId as string,
-    },
-  });
-
-  commentApiResponse.results = commentApiResponse.results.slice(0, 6);
 
   return {
     props: {
       profile,
       overview,
-      commentApiResponse,
     },
     revalidate: 10,
   };

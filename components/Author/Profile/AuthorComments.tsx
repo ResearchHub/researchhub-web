@@ -1,32 +1,59 @@
-import { PaginatedApiResponse } from "~/config/types/root_types";
+import { ID, PaginatedApiResponse } from "~/config/types/root_types";
 import {
   parseContribution,
   getContributionUrl,
+  Contribution,
 } from "~/config/types/contribution";
 import ContributionEntry from "~/components/LiveFeed/Contribution/ContributionEntry";
 import Link from "next/link";
 import colors from "~/config/themes/colors";
 import { css, StyleSheet } from "aphrodite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoadMore from "~/components/shared/LoadMore";
 import fetchContributionsAPI from "~/components/LiveFeed/api/fetchContributionsAPI";
 import SearchEmpty from "~/components/Search/SearchEmpty";
 
 const AuthorComments = ({
-  commentApiResponse,
   withLoadMore = true,
+  authorId,
+  contentType = "ALL", 
+  limit = null,
 }: {
-  commentApiResponse: PaginatedApiResponse;
   withLoadMore?: boolean;
+  authorId: ID;
+  contentType: "ALL" | "REVIEW" | "CONVERSATION" | "BOUNTY";
+  limit?: number | null;
 }) => {
   
-  const [_commentApiResponse, setCommentApiResponse] = useState<PaginatedApiResponse>(commentApiResponse);
+  const [commentApiResponse, setCommentApiResponse] = useState<PaginatedApiResponse|null>(null);
+  const [parsedContributions, setParsedContributions] = useState<Contribution[]>([]);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
-  const commentContributions = _commentApiResponse.results.map((r) => {
-    return parseContribution(r);
-  });
 
-  const entries = commentContributions
+  useEffect(() => {
+    fetchContributionsAPI({
+      filters: {
+        contentType,
+        authorId,
+      },
+    }).then((commentApiResponse) => {
+      setCommentApiResponse(commentApiResponse);
+    })
+  },[])
+
+  useEffect(() => {
+    if (commentApiResponse === null) {
+      return;
+    }
+
+    const commentContributions = commentApiResponse.results.map((r) => {
+      return parseContribution(r);
+    });
+    setParsedContributions(commentContributions);  
+  }, [commentApiResponse])
+
+
+
+  const entries = parsedContributions
     .map((result, idx) => {
       try {
         const url = getContributionUrl(result);
@@ -48,7 +75,7 @@ const AuthorComments = ({
     })
     .filter((r) => r !== null);
 
-  const resultCards = entries.map((entry, idx) => {
+  let resultCards = entries.map((entry, idx) => {
     return (
       <Link
         href={entry!.url}
@@ -61,6 +88,8 @@ const AuthorComments = ({
     );
   });
 
+  resultCards = limit ? resultCards.slice(0, limit) : resultCards;
+
   return (
   <div className={css(styles.commentWrapper)}>
     {resultCards.length === 0 && (
@@ -70,16 +99,16 @@ const AuthorComments = ({
   )}
 
     {resultCards}
-    {withLoadMore && _commentApiResponse.next && (
+    {withLoadMore && commentApiResponse?.next && (
         <LoadMore
           onClick={async () => {
             setIsFetchingMore(true);
             try {
-              const response:PaginatedApiResponse = await fetchContributionsAPI({ pageUrl: _commentApiResponse.next });
+              const response:PaginatedApiResponse = await fetchContributionsAPI({ pageUrl: commentApiResponse.next });
               
               const nextContributions = response.results
               response.results = [
-                ..._commentApiResponse.results,
+                ...commentApiResponse.results,
                 ...nextContributions,
               ]
 

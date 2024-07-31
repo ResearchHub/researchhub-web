@@ -179,7 +179,8 @@ const AuthorProfileHeader = () => {
         <div className={css(styles.section, styles.subSection)}>
           <div className={css(styles.sectionHeader)}>
             Achievements
-            <Pill text={String(profile.achievements.length)} />
+            {/* FIXME: Uncomment once working */}
+            {/* <Pill text={String(profile.achievements.length)} /> */}
           </div>
           <AuthorHeaderAchievements profile={profile} />
         </div>

@@ -7,18 +7,31 @@ import { AuthorProfileContextProvider } from "~/components/Author/lib/AuthorProf
 import AuthorNavigation from "~/components/Author/Profile/AuthorNavigation";
 import fetchContributionsAPI from "~/components/LiveFeed/api/fetchContributionsAPI";
 import AuthorComments from "~/components/Author/Profile/AuthorComments";
+import { ClipLoader } from "react-spinners";
+import colors from "~/config/themes/colors";
+import { useEffect } from "react";
 
 type Args = {
   profile: any;
-  commentApiResponse: any;
 };
 
-const AuthorProfilePage: NextPage<Args> = ({ profile, commentApiResponse }) => {
+const AuthorProfilePage: NextPage<Args> = ({ profile }) => {
 
-  if (!profile || !commentApiResponse) {
+  if (!profile) {
     // TODO: Need a skeleton loading state
-    return <div>Loading...</div>;
+    return (
+      <div style={{
+        "display": "flex",
+        "justifyContent": "center",
+        "alignItems": "center",
+        "height": "100%",
+        "width": "100%",
+      }}>
+        <ClipLoader color={colors.NEW_BLUE()} loading={true} size={55} />
+      </div>
+    )
   }
+
 
   const fullAuthorProfile = parseFullAuthorProfile(profile);
 
@@ -31,7 +44,7 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, commentApiResponse }) => {
         <AuthorNavigation />
         <div className={css(styles.mainContentWrapper)}>
           <div className={css(styles.mainContent)}>
-            <AuthorComments commentApiResponse={commentApiResponse} />
+            <AuthorComments authorId={profile.id} contentType="REVIEW" />
           </div>
         </div>
       </div>
@@ -87,17 +100,9 @@ const styles = StyleSheet.create({
 export const getStaticProps: GetStaticProps = async (ctx) => {
   const profile = await fetchAuthorProfile({ authorId: ctx!.params!.authorId as string })
 
-  const commentApiResponse:any = await fetchContributionsAPI({
-    filters: {
-      contentType: "REVIEW",
-      authorId: ctx!.params!.authorId as string,
-    },
-  });
-
   return {
     props: {
       profile,
-      commentApiResponse,
     },
     revalidate: 10,
   };
