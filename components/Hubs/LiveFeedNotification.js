@@ -267,8 +267,8 @@ class LiveFeedNotification extends Component {
     return (
       <div className={css(styles.message)}>
         <Link
-          href={"/user/[authorId]/[tabName]"}
-          as={`/user/${authorId}/overview`}
+          href={"/author/[authorId]"}
+          as={`/author/${authorId}`}
           className={css(styles.username)}
           onClick={(e) => e.stopPropagation()}
         >
