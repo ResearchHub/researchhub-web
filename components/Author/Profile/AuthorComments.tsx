@@ -92,7 +92,7 @@ const AuthorComments = ({
 
   return (
   <div className={css(styles.commentWrapper)}>
-    {resultCards.length === 0 && (
+    {(resultCards.length === 0 && !commentApiResponse === null) && (
       <div style={{ minHeight: 250, display: "flex", justifyContent: "center", width: "100%" }}>
         <SearchEmpty title={"No author activity found in this section."} />
       </div>

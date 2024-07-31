@@ -58,6 +58,7 @@ const AuthorHeaderAchievements = ({ profile }: { profile: FullAuthorProfile }) =
       )}
       {profile.achievements.slice(0,3).map((achievement) => {
         const achivementDetails = getAchievmentDetails({ achievement, profile })
+
         return (
           <Tooltip title={getTooltipContent(achievement)}>
             <div key={achievement} className={css(styles.achievement)}>

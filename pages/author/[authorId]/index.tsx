@@ -46,7 +46,7 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview }) => {
   const fullAuthorProfile = parseFullAuthorProfile(profile);
   const authorTabs = buildAuthorTabs({ profile: fullAuthorProfile, router });
   const currentUser = useCurrentUser();
-
+  const hasActivity = fullAuthorProfile.activityByYear.some((a) => a.worksCount > 0)
   return (
     <AuthorProfileContextProvider fullAuthorProfile={fullAuthorProfile}>
       <div className={css(styles.profilePage)}>
@@ -88,7 +88,7 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview }) => {
                 <div className={css(styles.coauthorsSection, styles.miscSection)}>
                   <CoAuthors coauthors={fullAuthorProfile.coauthors} />
                 </div>
-                {fullAuthorProfile.activityByYear.length > 0 && (
+                {fullAuthorProfile.activityByYear.length > 0 && hasActivity && (
                   <div className={css(styles.miscSection, styles.activitySection)}>
                     <AuthorActivity activity={fullAuthorProfile.activityByYear} />
                   </div>
