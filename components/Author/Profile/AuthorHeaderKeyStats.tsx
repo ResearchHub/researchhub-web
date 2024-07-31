@@ -40,7 +40,7 @@ const AuthorHeaderKeyStats = ({ profile }: { profile: FullAuthorProfile }) => {
         </div>
       </div>
       <div className={css(styles.lineItem)}>
-        <div className={css(styles.label)}>2 mean citedness:</div>{" "}
+        <div className={css(styles.label)}>2-year mean citedness:</div>{" "}
         <div className={css(styles.value)}>
           {profile.summaryStats.twoYearMeanCitedness.toFixed(2)}
         </div>

@@ -182,7 +182,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
                         <div className={css(styles.icon)}>
                           <FontAwesomeIcon icon={faCheck} style={{ color: "white"}} fontSize={18} />
                         </div>
-                        Faster withdrawl limits
+                        Faster withdrawal limits
                       </li>
                     </ul>
                   </div>
