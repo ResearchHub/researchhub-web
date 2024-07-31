@@ -121,6 +121,19 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
     reputationList: parseReputationList(raw.reputation_list),
   };
 
+
+  // FIXME:  Temporary fix until we have the correct achievements
+  if (parsed.achievements.find(a => a.includes("EXPERT_PEER_REVIEWER"))) {
+    parsed.achievements = parsed.achievements.filter(a => !a.includes("EXPERT_PEER_REVIEWER"));
+    parsed.achievements.push("EXPERT_PEER_REVIEWER_1");
+  }
+
+  // FIXME:  Temporary fix until we have the correct achievements
+  if (parsed.achievements.find(a => a.includes("HIGHLY_UPVOTED"))) {
+    parsed.achievements = parsed.achievements.filter(a => !a.includes("HIGHLY_UPVOTED"));
+    parsed.achievements.push("HIGHLY_UPVOTED_1");
+  }
+
   return parsed;
 };
 

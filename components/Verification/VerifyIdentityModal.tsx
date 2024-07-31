@@ -221,7 +221,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
               </div>
             )}
             <div style={{ display: step === "IDENTITY" ? "block" : "none" }}>
-              <VerificationWithPersonaStep />
+              {/* <VerificationWithPersonaStep /> */}
             </div>
             {step === "IDENTITY_VERIFIED_SUCCESSFULLY" && (
               <div

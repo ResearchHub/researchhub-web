@@ -26,17 +26,21 @@ type Args = {
 
 const AuthorProfilePage: NextPage<Args> = ({ profile, overview, commentApiResponse }) => {
 
-  const router = useRouter();
 
+  
+  const router = useRouter();
+  
   if (!profile || !overview || !commentApiResponse) {
     // TODO: Need a skeleton loading state
     return <div>Loading...</div>;
-  }
+    }
+
+  
 
   const fullAuthorProfile = parseFullAuthorProfile(profile);
   const authorTabs = buildAuthorTabs({ profile: fullAuthorProfile, router });
   const currentUser = useCurrentUser();
-
+  console.log('profile', fullAuthorProfile.isVerified)
   return (
     <AuthorProfileContextProvider fullAuthorProfile={fullAuthorProfile}>
       <div className={css(styles.profilePage)}>
@@ -193,7 +197,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     },
   });
 
-  commentApiResponse.results = commentApiResponse.results.slice(0, 4);
+  commentApiResponse.results = commentApiResponse.results.slice(0, 6);
 
   return {
     props: {

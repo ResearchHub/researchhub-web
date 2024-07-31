@@ -56,7 +56,7 @@ const AuthorHeaderAchievements = ({ profile }: { profile: FullAuthorProfile }) =
           <div style={{ color: colors.MEDIUM_GREY2(), textAlign: "center"}}>This user has not unlocked any achievements yet.</div>
         </div>
       )}
-      {profile.achievements.map((achievement) => {
+      {profile.achievements.slice(0,3).map((achievement) => {
         const achivementDetails = getAchievmentDetails({ achievement, profile })
         return (
           <Tooltip title={getTooltipContent(achievement)}>
