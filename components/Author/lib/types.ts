@@ -50,6 +50,7 @@ export type FullAuthorProfile = {
     citationCount: number;
     twoYearMeanCitedness: number;
     upvotesReceived: number;
+    amountFunded: number;
   };
   reputation: Reputation | null;
   reputationList: Array<Reputation>;
@@ -134,7 +135,8 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
       worksCount: raw.summary_stats.works_count,
       citationCount: raw.summary_stats.citation_count,
       twoYearMeanCitedness: raw.summary_stats.two_year_mean_citedness,
-      upvotesReceived: raw.summary_stats.upvotes_received || 35, // FIXME
+      upvotesReceived: raw.summary_stats.upvote_count,
+      amountFunded: raw.summary_stats.amount_funded || 0,
     },
     activityByYear: raw.activity_by_year.map((activity):YearlyActivity => ({
       year: activity.year,
