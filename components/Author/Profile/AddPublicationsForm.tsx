@@ -118,7 +118,6 @@ const AddPublicationsForm = ({
     try {
       setIsFetching(true);
       const response = await fetchPublicationsByDoi({ doi, authorId });
-      console.log('111')
       // Set publications but put the publication that matches DOI first
       const foundIdx = response.works.findIndex(
         (work) => work.doi?.includes(doi) || work.doiUrl?.includes(doi)
