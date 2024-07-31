@@ -11,7 +11,7 @@ const AuthorHeaderKeyStats = ({ profile }: { profile: FullAuthorProfile }) => {
         </div>
       </div>
       <div className={css(styles.lineItem)}>
-        <div className={css(styles.label)}>Publication count:</div>{" "}
+        <div className={css(styles.label)}>Publications:</div>{" "}
         <div className={css(styles.value)}>
           {profile.summaryStats.worksCount.toLocaleString()}{" "}
           {profile.summaryStats.worksCount > 0 && (
@@ -70,6 +70,8 @@ const styles = StyleSheet.create({
   value: {
     fontWeight: 400,
     fontSize: 14,
+    display: "flex",
+    gap: 5,
   },
 });
 

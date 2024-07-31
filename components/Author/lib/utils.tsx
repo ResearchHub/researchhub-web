@@ -8,6 +8,7 @@ import { Tab } from "~/components/HorizontalTabBar";
 import colors from "~/config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestion } from "@fortawesome/pro-solid-svg-icons";
+import { faCircleStar, faCircleUp } from "@fortawesome/pro-light-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import Tooltip from "@mui/material/Tooltip";
 
@@ -29,6 +30,18 @@ export const getAchievmentDetails = ({
       icon: <CitedAuthorAchievementIcon active height={30} width={30} />,
       title: "Cited Author",
       details: `Cited ${profile.summaryStats.citationCount} times`,
+    };
+  } else if (achievement.includes("EXPERT_PEER_REVIEWER")) {
+    return {
+      icon: <FontAwesomeIcon style={{ color: "#e77600" }} icon={faCircleStar} fontSize={30} />,
+      title: "Peer Reviewer",
+      details: `Peer reviewed at least 1 publication`,
+    };
+  } else if (achievement.includes("HIGHLY_UPVOTED")) {
+    return {
+      icon: <FontAwesomeIcon style={{ color: colors.NEW_GREEN() }} icon={faCircleUp} fontSize={30} />,
+      title: "Active user",
+      details: `Received at least five upvotes on the platform`,
     };
   }
 

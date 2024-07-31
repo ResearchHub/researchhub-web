@@ -189,6 +189,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   const commentApiResponse:any = await fetchContributionsAPI({
     filters: {
       contentType: "ALL",
+      authorId: ctx!.params!.authorId as string,
     },
   });
 

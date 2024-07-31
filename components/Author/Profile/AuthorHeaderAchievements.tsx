@@ -33,7 +33,17 @@ const AuthorHeaderAchievements = ({ profile }: { profile: FullAuthorProfile }) =
           </div>
         </div>
       )
-    }    
+    }
+    else if (achievement.includes("EXPERT_PEER_REVIEWER")) {
+      return (
+        <div className={css(styles.tooltip)}>
+          <div className={css(styles.tooltipLineItem)}>
+            <FontAwesomeIcon icon={faCircleCheck} color={colors.GREEN()} />
+            Peer reviewed at least 1 publication
+          </div>
+        </div>
+      )
+    }
   }
 
   return (

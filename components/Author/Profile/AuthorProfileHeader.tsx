@@ -29,6 +29,7 @@ import IconButton from "~/components/Icons/IconButton";
 import {
   faEllipsis,
 } from "@fortawesome/pro-regular-svg-icons";
+import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 
 const AuthorProfileHeader = () => {
   const dispatch = useDispatch();
@@ -88,7 +89,7 @@ const AuthorProfileHeader = () => {
   const [isShowingAll, setIsShowingAll] = useState(false);
   const [isShowingFullDescription, setIsShowingFullDescription] = useState(false);
   const visibleInstitutions = isShowingAll ? profile.education : profile.education.slice(0, 1);
-
+  const truncatedDescription = truncateText(profile.description, 300);
   return (
     <div>
       <UserInfoModal onSave={onProfileSave} />
@@ -106,34 +107,47 @@ const AuthorProfileHeader = () => {
         <div className={css(styles.lineItems)}>
           <div className={css(styles.name)}>
             {profile.firstName} {profile.lastName}
+            {profile.isVerified && (
+              <VerifiedBadge height={32} width={32} />
+            )}
           </div>
           <div className={css(styles.headline)}>{profile.headline}</div>
           <div className={css(styles.inlineLineItem)}>
             <div className={css(styles.label)}>
               <FontAwesomeIcon icon={faBuildingColumns} fontSize={20} />
             </div>
-            {visibleInstitutions.map((edu, index) => (
-              <div>
-                {edu.summary} {index < profile.education.length ? "" : ", "}
-              </div>
-            ))}
-            <div className={css(styles.showMore)} onClick={() => setIsShowingAll(!isShowingAll)}>
-              {isShowingAll ? "Show less" : `+ ${profile.education.length - visibleInstitutions.length} more`}
-            </div>
-          </div>
 
-          {/* Kobe 07-27-24: Temporarily disabling rendering of new institutions */}
-          {/* <div className={css(styles.institutions)}>
-            <AuthorInstitutions institutions={profile.institutions} />
-          </div> */}
+            {profile.education.length === 0 ? (
+              <>
+                {/* Kobe 07-27-24: Temporarily disabling rendering of new institutions */}
+                <AuthorInstitutions institutions={profile.institutions} />
+              </>
+            ): (
+              <>
+              {visibleInstitutions.map((edu, index) => (
+                <div>
+                  {edu.summary} {index < profile.education.length ? "" : ", "}
+                </div>
+              ))}
+              {profile.education.length > 1 && (
+                <div className={css(styles.showMore)} onClick={() => setIsShowingAll(!isShowingAll)}>
+                  {isShowingAll ? "Show less" : `+ ${profile.education.length - visibleInstitutions.length} more`}
+                </div>
+              )}
+              </>
+            )}
+
+          </div>
 
           {(profile?.description?.length || 0) > 0 && (
             <div className={css(styles.inlineLineItem, styles.descriptionLineItem)}>
               <div className={css(styles.description)}>
-                {isShowingFullDescription ? profile.description: truncateText(profile.description, 300)}
-                <div className={css(styles.showMore)} style={{ marginTop: 3, }} onClick={() => setIsShowingFullDescription(!isShowingFullDescription)}>
-                  {isShowingFullDescription ? "Show less" : `Show more`}
-                </div>
+                {isShowingFullDescription ? profile.description: truncatedDescription}
+                {(truncatedDescription.length < (profile?.description?.length || 0)) && (
+                  <div className={css(styles.showMore)} style={{ marginTop: 3, }} onClick={() => setIsShowingFullDescription(!isShowingFullDescription)}>
+                    {isShowingFullDescription ? "Show less" : `Show more`}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -236,6 +250,7 @@ const styles = StyleSheet.create({
   showMore: {
     color: colors.NEW_BLUE(),
     cursor: "pointer",
+    marginTop: 1,
     fontSize: 14,
     ":hover": {
       textDecoration: "underline",
@@ -250,7 +265,7 @@ const styles = StyleSheet.create({
     display: "flex",
     columnGap: "10px",
     color: colors.BLACK(0.9),
-    alignItems: "center",
+    alignItems: "flex-start",
     lineHeight: 1.25,
   },
   label: {
@@ -362,6 +377,9 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 26,
     fontWeight: 500,
+    display: "flex",
+    alignItems: "center",
+    gap: 10
   },
 });
 

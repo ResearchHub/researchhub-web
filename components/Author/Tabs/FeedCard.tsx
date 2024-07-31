@@ -41,8 +41,10 @@ import ContentBadge from "~/components/ContentBadge";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import {
+  Authorship,
   Paper,
   Post,
+  parseAuthorship,
   parsePaper,
   parsePost,
 } from "~/components/Document/lib/types";
@@ -52,6 +54,7 @@ import { Fundraise, parseFundraise } from "~/components/Fundraise/lib/types";
 import FundraiseCard from "~/components/Fundraise/FundraiseCard";
 import FeedCardActivity from "~/components/Feed/FeedCardActivity";
 import MathRenderer from "~/components/shared/MathRenderer";
+import { Avatar, AvatarGroup, Tooltip } from "@mui/material";
 
 
 const DocumentViewer = dynamic(
@@ -161,7 +164,7 @@ function FeedCard({
       formattedDocType === "question"
         ? [parsedDoc!.createdBy!.authorProfile]
         : parsedDoc.authors;
-  } catch (error) {}
+  } catch (error) { }
 
   const parsedHubs = (hubs || []).map(parseHub);
   const router = useRouter();
@@ -171,8 +174,7 @@ function FeedCard({
   );
   const [score, setScore] = useState<number>(initialScore);
   const [rscBadgeHover, setRSCBadgeHover] = useState(false);
-  console.log('first_preview', first_preview)
-  console.log('first_figure', first_figure)
+
   const [previews] = useState(
     configurePreview([
       first_preview && first_preview,
@@ -181,13 +183,12 @@ function FeedCard({
   );
 
   // const bounty = bounties?.[0];
-  const feDocUrl = `/${
-    formattedDocType === "question"
+  const feDocUrl = `/${formattedDocType === "question"
       ? "question"
       : RESEARCHHUB_POST_DOCUMENT_TYPES.includes(formattedDocType ?? "")
-      ? "post"
-      : formattedDocType
-  }/${id}/${slug ?? "new"}`;
+        ? "post"
+        : formattedDocType
+    }/${id}/${slug ?? "new"}`;
 
   const dispatch = useDispatch();
 
@@ -271,7 +272,7 @@ function FeedCard({
 
     return <MathRenderer content={title}></MathRenderer>
 
-    
+
   };
 
   const getBody = () => {
@@ -279,11 +280,11 @@ function FeedCard({
       const bodyWithoutHtml = sanitizeHtml(abstract || renderableText, {
         allowedTags: [], // No tags are allowed, so all will be stripped
         allowedAttributes: {}, // No attributes are allowed
-      });    
+      });
       return <MathRenderer content={bodyWithoutHtml}></MathRenderer>;
     }
 
-    return <MathRenderer content={abstract || renderableText}></MathRenderer> ;
+    return <MathRenderer content={abstract || renderableText}></MathRenderer>;
 
   };
 
@@ -293,7 +294,7 @@ function FeedCard({
   const bountyAmount = documentFilter?.bounty_total_amount;
   const hasActiveBounty = documentFilter?.bounty_open;
 
-  let numOfVisibleHubs = 3;
+  let numOfVisibleHubs = 2;
   if (reviews && reviews?.avg > 0 && numOfVisibleHubs > 1) {
     numOfVisibleHubs--;
   }
@@ -303,6 +304,24 @@ function FeedCard({
   if (hasActiveBounty && numOfVisibleHubs > 1) {
     numOfVisibleHubs--;
   }
+
+
+  let authorships: Authorship[] = [];
+
+  if (document?.authorships) {
+    authorships = document.authorships.map(a => parseAuthorship(a));
+  }
+  else if (document?.authors) {
+    authorships = document.authors.map(a => {
+      a.author = {
+        id: a.id,
+        profile_image: a.profile_image,
+      }
+      a.raw_author_name = a.first_name + " " + a.last_name;
+      return parseAuthorship(a)
+    });
+  }
+
 
   return (
     <div
@@ -352,20 +371,56 @@ function FeedCard({
                     <div className={css(styles.cardBody)}>
                       <h2 className={css(styles.title)}>{cardTitle}</h2>
                       <div className={css(styles.subheaderWrapper)}>
-                        {Boolean(authors[0]) && (
-                          <span className={css(styles.authors)}>
-                            {authors[0]?.firstName + " " + authors[0]?.lastName}
-                          </span>
-                        )}
-                        {authors?.length > 1 && <span>{` et al.`}</span>}
-                        {parsedDoc?.createdDate && (
-                          <>
-                            {authors?.length > 0 && (
-                              <span className={css(styles.metaDivider)}></span>
+
+                        <div style={{ display: "flex" }}>
+                          <div style={{ display: "flex", gap: 5, alignItems: "center", width: "100%", }}>
+                            {Boolean(authorships[0]) && (
+                              <span className={css(styles.authors)}>
+                                {authorships[0].rawAuthorName}
+                              </span>
                             )}
-                            {parsedDoc?.createdDate}
-                          </>
-                        )}
+                            {authorships?.length > 1 && <span>{` et al.`}</span>}
+
+                            {parsedDoc?.createdDate && (
+                              <>
+                                {authors?.length > 0 && (
+                                  <span className={css(styles.metaDivider)}></span>
+                                )}
+                                {parsedDoc?.createdDate}
+                              </>
+                            )}
+
+                            <div style={{ alignSelf: "flex-end", marginLeft: "auto", }}>
+                              <AvatarGroup
+                                total={authorships.length}
+                                max={4}
+                                spacing={6}
+                                componentsProps={{
+                                  additionalAvatar: {
+                                    sx: {
+                                      width: 22,
+                                      height: 22,
+                                      fontSize: 13
+                                    }
+                                  }
+                                }}
+                              >
+                                {authorships.map((authorship) => (
+                                  <Tooltip title={authorship.rawAuthorName}>
+                                    <Avatar src={authorship.author.profileImage} sx={{ width: 22, height: 22, fontSize: 13, }}>
+                                      {isEmpty(authorship.author.profileImage) && authorship.rawAuthorName[0]}
+                                    </Avatar>
+                                  </Tooltip>
+                                ))}
+                              </AvatarGroup>
+                            </div>
+
+                          </div>
+                        </div>
+
+
+
+
                       </div>
 
                       {cardBody && (
@@ -572,8 +627,6 @@ function FeedCard({
 
 const styles = StyleSheet.create({
   metaDivider: {
-    marginLeft: 8,
-    marginRight: 8,
     borderLeft: `1px solid ${colors.BLACK(0.6)}`,
     height: 20,
   },

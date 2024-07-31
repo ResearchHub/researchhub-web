@@ -96,6 +96,7 @@ export type Authorship = {
   authorPosition: "first" | "last" | "middle";
   isCorresponding: boolean;
   rawAuthorName: string;
+  author: AuthorProfile;
 };
 
 export interface GenericDocument {
@@ -171,6 +172,7 @@ export const parseAuthorship = (raw: any): Authorship => {
     authorPosition: raw.author_position,
     isCorresponding: raw.is_corresponding,
     rawAuthorName: raw.raw_author_name,
+    author: parseAuthorProfile(raw.author),
   };
 };
 
