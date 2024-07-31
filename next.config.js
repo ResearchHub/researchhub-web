@@ -98,7 +98,27 @@ const nextConfig = {
       },
       {
         source: "/user/:authorId",
-        destination: "/user/:authorId/overview",
+        destination: "/author/:authorId",
+        permanent: true,
+      },
+      {
+        source: "/user/:authorId/overview",
+        destination: "/author/:authorId",
+        permanent: true,
+      },
+      {
+        source: "/user/:authorId/discussions",
+        destination: "/author/:authorId/comments",
+        permanent: true,
+      },
+      {
+        source: "/user/:authorId/authored-papers",
+        destination: "/author/:authorId/publications",
+        permanent: true,
+      },
+      {
+        source: "/user/:authorId/bounties",
+        destination: "/author/:authorId/bounties",
         permanent: true,
       },
       {

@@ -19,7 +19,7 @@ export const getAchievmentDetails = ({
   achievement: Achievement;
   profile: FullAuthorProfile;
 }): { icon: ReactElement; title: string; details: string } => {
-  if (achievement === "OPEN_ACCESS") {
+  if (achievement === "OPEN_SCIENCE_SUPPORTER") {
     return {
       icon: <OpenAccessAchievementIcon active height={30} width={30} />,
       title: "Open Access Advocate",
