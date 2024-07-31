@@ -468,7 +468,7 @@ function RootLeftSidebar({
               {isMinimized ? "Comm.." : "Community"}
             </ALink>
 
-            {process.env.REACT_APP_ENV !== "production" && (
+            {(process.env.REACT_APP_ENV !== "production" || currentUser.moderator) && (
               <span className={css(formattedFooterTxtItem)}>
                 {/* @ts-ignore */}
                 <VerifyIdentityModal
