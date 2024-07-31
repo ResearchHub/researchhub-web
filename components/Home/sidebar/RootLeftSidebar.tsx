@@ -500,12 +500,12 @@ function RootLeftSidebar({
                 </VerifyIdentityModal>
               </span>
             )}
-            <ALink
+            {/* <ALink
               href="/leaderboard/users"
               overrideStyle={formattedFooterTxtItem}
             >
               {isMinimized ? "Top" : "Leaderboard"}
-            </ALink>
+            </ALink> */}
             <ALink
               href="https://researchhub.notion.site/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
               overrideStyle={formattedFooterTxtItem}

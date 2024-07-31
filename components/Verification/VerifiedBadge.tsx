@@ -1,5 +1,4 @@
 import { genClientId } from "~/config/utils/id";
-import VerificationModal from "./VerificationModal";
 import { useState } from "react";
 import Image from "next/image";
 import ReactTooltip from "react-tooltip";
@@ -25,16 +24,6 @@ export const VerifiedBadge = ({
 
   return (
     <>
-      <VerificationModal
-        isModalOpen={isOpen}
-        handleModalClose={(e) => {
-          // stopPropagation is necessary because this component is included various card components with a click action.
-          // We need this stopPropagation to prevent the click action on the card from taking place.
-          e.preventDefault();
-          e.stopPropagation();
-          setIsOpen(false);
-        }}
-      />
       <Image
         src={
           variation === "grey"
@@ -69,7 +58,7 @@ export const VerifiedBadge = ({
             />
           </div>
           <div className={css(verifiedBadgeStyles.learnMoreWrapper)}>
-            <span
+            {/* <span
               className={css(verifiedBadgeStyles.learnMore)}
               onClick={(e) => {
                 // stopPropagation is necessary because this component is included various card components with a click action.
@@ -80,7 +69,7 @@ export const VerifiedBadge = ({
               }}
             >
               Learn More
-            </span>
+            </span> */}
           </div>
         </ReactTooltip>
       )}
