@@ -305,23 +305,25 @@ function FeedCard({
     numOfVisibleHubs--;
   }
 
-
+  // We want to shim all authors into the authorship format so it renders properly.
+  // To properly address, we will need to refactor this component.
   let authorships: Authorship[] = [];
-
-  if (document?.authorships) {
+  if (document?.authorships?.length > 0) {
     authorships = document.authorships.map(a => parseAuthorship(a));
   }
-  else if (document?.authors) {
-    authorships = document.authors.map(a => {
-      a.author = {
+  else if (authors && authors.length > 0) {
+    authorships = authors.map(a => {
+      const rawAuthorship = {
+        raw_author_name: a.firstName + " " + a.lastName,
         id: a.id,
-        profile_image: a.profile_image,
+        author: {
+          profile_image: a.profileImage,
+          id: a.id,
+        }
       }
-      a.raw_author_name = a.first_name + " " + a.last_name;
-      return parseAuthorship(a)
+      return parseAuthorship(rawAuthorship);
     });
   }
-
 
   return (
     <div
