@@ -305,7 +305,23 @@ function FeedCard({
     numOfVisibleHubs--;
   }
 
-  const authorships: Authorship[] = document.authorships.map(a => parseAuthorship(a));
+
+  let authorships: Authorship[] = [];
+
+  if (document?.authorships) {
+    authorships = document.authorships.map(a => parseAuthorship(a));
+  }
+  else if (document?.authors) {
+    authorships = document.authors.map(a => {
+      a.author = {
+        id: a.id,
+        profile_image: a.profile_image,
+      }
+      a.raw_author_name = a.first_name + " " + a.last_name;
+      return parseAuthorship(a)
+    });
+  }
+
 
   return (
     <div
@@ -377,20 +393,21 @@ function FeedCard({
                             <div style={{ alignSelf: "flex-end", marginLeft: "auto", }}>
                               <AvatarGroup
                                 total={authorships.length}
+                                max={4}
                                 spacing={6}
                                 componentsProps={{
                                   additionalAvatar: {
                                     sx: {
-                                      width: 25,
-                                      height: 25,
-                                      fontSize: 14
+                                      width: 22,
+                                      height: 22,
+                                      fontSize: 13
                                     }
                                   }
                                 }}
                               >
                                 {authorships.map((authorship) => (
                                   <Tooltip title={authorship.rawAuthorName}>
-                                    <Avatar src={authorship.author.profileImage} sx={{ width: 25, height: 25, fontSize: 13, }}>
+                                    <Avatar src={authorship.author.profileImage} sx={{ width: 22, height: 22, fontSize: 13, }}>
                                       {isEmpty(authorship.author.profileImage) && authorship.rawAuthorName[0]}
                                     </Avatar>
                                   </Tooltip>

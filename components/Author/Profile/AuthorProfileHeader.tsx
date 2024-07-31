@@ -89,7 +89,7 @@ const AuthorProfileHeader = () => {
   const [isShowingAll, setIsShowingAll] = useState(false);
   const [isShowingFullDescription, setIsShowingFullDescription] = useState(false);
   const visibleInstitutions = isShowingAll ? profile.education : profile.education.slice(0, 1);
-
+  const truncatedDescription = truncateText(profile.description, 300);
   return (
     <div>
       <UserInfoModal onSave={onProfileSave} />
@@ -142,10 +142,12 @@ const AuthorProfileHeader = () => {
           {(profile?.description?.length || 0) > 0 && (
             <div className={css(styles.inlineLineItem, styles.descriptionLineItem)}>
               <div className={css(styles.description)}>
-                {isShowingFullDescription ? profile.description: truncateText(profile.description, 300)}
-                <div className={css(styles.showMore)} style={{ marginTop: 3, }} onClick={() => setIsShowingFullDescription(!isShowingFullDescription)}>
-                  {isShowingFullDescription ? "Show less" : `Show more`}
-                </div>
+                {isShowingFullDescription ? profile.description: truncatedDescription}
+                {(truncatedDescription.length < (profile?.description?.length || 0)) && (
+                  <div className={css(styles.showMore)} style={{ marginTop: 3, }} onClick={() => setIsShowingFullDescription(!isShowingFullDescription)}>
+                    {isShowingFullDescription ? "Show less" : `Show more`}
+                  </div>
+                )}
               </div>
             </div>
           )}
