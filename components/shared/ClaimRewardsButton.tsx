@@ -134,14 +134,10 @@ const styles = StyleSheet.create({
   claimButton: {
     background: colors.NEW_GREEN(0.1),
     border: `1px solid ${colors.NEW_GREEN()}`,
-    marginTop: 20,
-    marginBottom: 5,
   },
   claimButtonNotEligible: {
     background: "rgba(0, 0, 0, 0.12)",
     border: `1px solid rgba(0, 0, 0, 0.12)`,
-    marginTop: 20,
-    marginBottom: 5,
   },
   tooltipLineItem: {
     display: "flex",

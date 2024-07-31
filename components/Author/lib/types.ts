@@ -17,10 +17,14 @@ export type FullAuthorProfile = {
   id: ID;
   firstName: string;
   lastName: string;
-  isVerified: boolean;
   hasVerifiedPublications: boolean;
   profileImage?: string;
   headline?: string;
+  user: {
+    id: ID;
+    createdDate: string;
+    isVerified: boolean;
+  } | null;
   description?: string;
   openAlexIds: Array<string>;
   institutions: Array<AuthorInstitution>;
@@ -102,18 +106,15 @@ function ensureSufficientYears(activityData: YearlyActivity[]): YearlyActivity[]
 }  
 
 export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
-  const parsed = {
+  const parsed:FullAuthorProfile = {
     id: raw.id,
     userCreatedDate: "2024-01-01T00:00:00Z", // FIXME
     hasVerifiedPublications: true, // Temporarily hard-coding this until we decide whether verfication is necessary
     profileImage: raw.profile_image,
     firstName: raw.first_name,
     lastName: raw.last_name,
-    url: `/user/${raw.id}/overview`,
     description: raw.description,
-    isVerified: raw.is_verified,
     headline: raw?.headline?.title || "",
-    isHubEditor: raw.is_hub_editor,
     openAlexIds: raw.openalex_ids || [],
     achievements: raw.achievements || [],
     education: Array.isArray(raw.education)
@@ -128,6 +129,7 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
     linkedInUrl: raw.linkedin,
     googleScholarUrl: raw.google_scholar,
     xUrl: raw.twitter,    
+    user: null,
     summaryStats: {
       worksCount: raw.summary_stats.works_count,
       citationCount: raw.summary_stats.citation_count,
@@ -150,6 +152,13 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
     reputationList: parseReputationList(raw.reputation_list),
   };
 
+  if (raw.user) {
+    parsed.user = {
+      id: raw?.user?.id,
+      createdDate: raw?.user?.created_date,
+      isVerified: raw?.user?.is_verified || false,
+    }
+  }
 
   // FIXME:  Temporary fix until we have the correct achievements
   if (parsed.achievements.find(a => a.includes("EXPERT_PEER_REVIEWER"))) {

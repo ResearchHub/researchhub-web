@@ -107,7 +107,7 @@ const AuthorProfileHeader = () => {
         <div className={css(styles.lineItems)}>
           <div className={css(styles.name)}>
             {profile.firstName} {profile.lastName}
-            {profile.isVerified && (
+            {profile.user?.isVerified && (
               <VerifiedBadge height={32} width={32} />
             )}
           </div>
