@@ -135,8 +135,8 @@ function NavbarRightButtonGroup({
           onClick={(): void => setIsMenuOpen(!isMenuOpen)}
         >
           <Link
-            href={"/user/[authorId]/[tabName]"}
-            as={`/user/${user?.author_profile.id}/overview`}
+            href={"/author/[authorId]"}
+            as={`/author/${user?.author_profile.id}`}
             legacyBehavior
           >
             <div className={css(styles.option)}>

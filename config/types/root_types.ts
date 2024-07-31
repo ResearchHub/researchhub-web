@@ -301,7 +301,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     return raw;
   }
 
-  let url = `/user/${raw.id}/overview`;
+  let url = `/author/${raw.id}`;
 
   const parsed = {
     id: raw.id,
