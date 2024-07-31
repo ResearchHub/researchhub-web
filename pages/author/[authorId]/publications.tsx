@@ -9,6 +9,8 @@ import AuthorPublications from "~/components/Author/Profile/AuthorPublications";
 import { AuthorProfileContextProvider, authorProfileContext } from "~/components/Author/lib/AuthorProfileContext";
 import AuthorNavigation from "~/components/Author/Profile/AuthorNavigation";
 import VerifyPublicationsSection from "~/components/Author/Profile/VerifyPublicationsSection";
+import { ClipLoader } from "react-spinners";
+import colors from "~/config/themes/colors";
 
 
 type Args = {
@@ -20,7 +22,17 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, publicationsResponse }) =>
 
   if (!profile || !publicationsResponse) {
     // TODO: Need a skeleton loading state
-    return <div>Loading...</div>;
+    return (
+      <div style={{
+        "display": "flex",
+        "justifyContent": "center",
+        "alignItems": "center",
+        "height": "100%",
+        "width": "100%",
+      }}>
+        <ClipLoader color={colors.NEW_BLUE()} loading={true} size={55} />
+      </div>
+    )
   }
 
   const fullAuthorProfile = parseFullAuthorProfile(profile);
