@@ -245,15 +245,23 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
                     throughout the platform.
                   </div>
                 </div>
-                <div className={css(styles.startButtonWrapper)}>
+                <div className={css(styles.startButtonWrapper)} style={{ gap: 10, display: "flex", flexDirection: "column"}}>
                   <Button
                     fullWidth
                     onClick={() => setStep("PUBLICATIONS")}
-                    theme="solidPrimary"
                     style={{ width: 200, margin: "20px auto" }}
                   >
-                    Next: Import Publication History
+                    Next: View rewards on my publications
                   </Button>
+                  <Button
+                    fullWidth
+                    variant="text"
+                    theme="solidPrimary"
+                    onClick={() => router.push("/author/[authorId]", `/author/${currentUser?.authorProfile.id}`)}
+                    style={{ width: 200, margin: "20px auto" }}
+                  >
+                    View my profile
+                  </Button>                  
                 </div>
               </div>
             )}
@@ -306,7 +314,7 @@ const VerifyIdentityModal = ({ wsResponse, children }: Props) => {
                 {publicationsSubstep === "DOI" && (
                   <div>
                     <div className={css(styles.title)}>
-                      Let's verify your publication history
+                      Let's find rewards on your publications
                     </div>
                     <div className={css(styles.description)}>
                       Enter a DOI for any paper you've published and we will

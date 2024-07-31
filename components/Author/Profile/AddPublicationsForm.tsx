@@ -118,7 +118,7 @@ const AddPublicationsForm = ({
     try {
       setIsFetching(true);
       const response = await fetchPublicationsByDoi({ doi, authorId });
-
+      console.log('111')
       // Set publications but put the publication that matches DOI first
       const foundIdx = response.works.findIndex(
         (work) => work.doi?.includes(doi) || work.doiUrl?.includes(doi)
@@ -136,7 +136,7 @@ const AddPublicationsForm = ({
 
       if (!response.selectedAuthorId) {
         setStep("NEEDS_AUTHOR_CONFIRMATION");
-      } else if (selectedAuthorId && response.works.length > 0) {
+      } else if (response.selectedAuthorId && response.works.length > 0) {
         setStep("RESULTS");
       }
       setIsFetching(false);
