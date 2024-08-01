@@ -14,8 +14,6 @@ const ALLOWED_ORIGINS = [
   "websocket.staging.researchhub.com",
   "wss://websocket.staging.researchhub.com",
   "researchhub.com",
-  "ws.researchhub.com",
-  "wss://ws.researchhub.com",
 ];
 
 const CLOSE_CODES = {
