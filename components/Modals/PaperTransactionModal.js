@@ -705,8 +705,8 @@ class PaperTransactionModal extends Component {
                 You can view the {isPaper ? "papers" : "posts"} you support on
                 your
                 <Link
-                  href={`/author/${user.author_profile.id}`}
-                  as={`/author/${user.author_profile.id}`}
+                  href={`/user/${user.author_profile.id}/overview`}
+                  as={`/user/${user.author_profile.id}/overview`}
                   className={css(styles.transactionHashLink, styles.marginLeft)}
                 >
                   profile page.
