@@ -92,8 +92,8 @@ const ActivityDescription = (props) => {
     <ClampedText lines={lines} textStyles={styles.textContainer}>
       <span onClick={(e) => e.stopPropagation()}>
         <Link
-          href={"/user/[authorId]/[tabName]"}
-          as={`/user/${authorId}/overview`}
+          href={"/author/[authorId]"}
+          as={`/author/${authorId}`}
           className={css(styles.link, styles.text)}
         >
           {username}

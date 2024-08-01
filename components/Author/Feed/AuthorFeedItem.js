@@ -146,8 +146,8 @@ const AuthorFeedItem = ({
     return (
       <div className={css(styles.action)}>
         <Link
-          href={"/user/[authorId]/[tabName]"}
-          as={`/user/${author.id}/overview`}
+          href={"/author/[authorId]"}
+          as={`/author/${author.id}`}
           className={css(styles.link)}
         >
           {`${author?.first_name} ${author?.last_name} `}

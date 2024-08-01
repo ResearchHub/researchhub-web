@@ -128,8 +128,8 @@ const ContributionHeader = ({ entry, context }: Args) => {
             overrideTargetStyle={styles.userTooltip}
             targetContent={
               <ALink
-                href={`/user/${item.recipient.authorProfile?.id}/overview`}
-                key={`/user/${item.recipient.authorProfile?.id}/overview-key`}
+                href={`/author/${item.recipient.authorProfile?.id}`}
+                key={`/author/${item.recipient.authorProfile?.id}`}
               >
                 {item.recipient.firstName} {item.recipient.lastName}
               </ALink>
@@ -168,8 +168,8 @@ const ContributionHeader = ({ entry, context }: Args) => {
                   overrideTargetStyle={styles.userTooltip}
                   targetContent={
                     <ALink
-                      href={`/user/${item.parent?.createdBy?.authorProfile?.id}/overview`}
-                      key={`/user/${item.parent?.createdBy?.authorProfile?.id}/overview-key`}
+                      href={`/author/${item.parent?.createdBy?.authorProfile?.id}`}
+                      key={`/author/${item.parent?.createdBy?.authorProfile?.id}`}
                     >
                       {item.parent.createdBy.firstName}{" "}
                       {item.parent.createdBy.lastName}
@@ -210,8 +210,8 @@ const ContributionHeader = ({ entry, context }: Args) => {
               overrideTargetStyle={styles.userTooltip}
               targetContent={
                 <ALink
-                  href={`/user/${createdBy?.authorProfile?.id}/overview`}
-                  key={`/user/${createdBy?.authorProfile?.id}/overview-key`}
+                  href={`/author/${createdBy?.authorProfile?.id}`}
+                  key={`/author/${createdBy?.authorProfile?.id}`}
                 >
                   {createdBy?.authorProfile?.firstName}{" "}
                   {createdBy?.authorProfile?.lastName}

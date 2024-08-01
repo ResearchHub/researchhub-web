@@ -122,7 +122,7 @@ const AuthorAvatar = (props) => {
         avatarComponent
       ) : (
         <Link
-          href={`/user/${authorId}/overview`}
+          href={`/author/${authorId}`}
           className={css(styles.atag)}
           rel="noreferrer noopener"
           onClick={(e) => {

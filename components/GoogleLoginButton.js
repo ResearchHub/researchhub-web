@@ -40,8 +40,8 @@ const GoogleLoginButton = (props) => {
 
             // push user to onboarding - will eventually see the orcid modal
             router.push(
-              "/user/[authorId]/onboard?internal=true",
-              `/user/${userAction.user.author_profile.id}/onboard`
+              "/author/[authorId]",
+              `/author/${userAction.user.author_profile.id}`
             );
           }
         });

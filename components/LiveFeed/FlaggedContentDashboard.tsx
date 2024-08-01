@@ -354,7 +354,7 @@ function FlaggedContentDashboard({
                   <span className={css(styles.actionContainer)}>
                     {/* @ts-ignore */}
                     <ALink
-                      href={`/user/${r.verdict.createdBy?.authorProfile.id}/overview`}
+                      href={`/author/${r.verdict.createdBy?.authorProfile.id}`}
                     >
                       {r.verdict.createdBy?.authorProfile.firstName}{" "}
                       {r.verdict.createdBy?.authorProfile.lastName}
@@ -399,7 +399,7 @@ function FlaggedContentDashboard({
                 {/* @ts-ignore */}
                 {r?.flaggedBy?.authorProfile ? (
                   <ALink
-                    href={`/user/${r?.flaggedBy?.authorProfile?.id}/overview`}
+                    href={`/author/${r?.flaggedBy?.authorProfile?.id}`}
                   >
                     {/* @ts-ignore */}
                     {r?.flaggedBy?.authorProfile?.firstName} {/* @ts-ignore */}

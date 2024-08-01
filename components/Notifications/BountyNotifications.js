@@ -34,8 +34,8 @@ const ModeratorBounty = (props) => {
 
   const author = created_by.author_profile;
   const authorLink = {
-    href: "/user/[authorId]/[tabName]",
-    as: `/user/${author.id}/overview`,
+    href: "/author/[authorId]",
+    as: `/author/${author.id}`,
   };
   const paperLink = {
     href: "/paper/[paperId]/[paperName]",

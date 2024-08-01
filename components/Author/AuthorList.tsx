@@ -17,7 +17,7 @@ const Author = ({ author }: { author: AuthorProfile }) => {
     >
       {author.id ? (
         <span>
-          <ALink href={`/user/${author.id}/overview`}>
+          <ALink href={`/author/${author.id}`}>
             <span>
               {author.firstName} {author.lastName}
             </span>
