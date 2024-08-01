@@ -38,11 +38,9 @@ const AuthorCard = (props) => {
   if (authorID) {
     return (
       <Link
-        href={"/user/[authorId]/[tabName]"}
+        href={"/author/[authorId]"}
         // If the profile is already claimed, redirect to UserProfile that has claimed it
-        as={`/user/${
-          is_claimed ? claimed_by_user_author_id : authorID
-        }/overview`}
+        as={`/author/${is_claimed ? claimed_by_user_author_id : authorID}`}
         data-test={`author-${author.id}`}
         className={css(styles.container, styles.hover)}
       >

@@ -104,8 +104,8 @@ export default function EditorDashboardUserCard({
     ));
   return (
     <Link
-      href={"/user/[authorId]/[tabName]"}
-      as={`/user/${authorID}/overview`}
+      href={"/author/[authorId]"}
+      as={`/author/${authorID}`}
       className={css(styles.link)}
     >
       <div className={css(styles.container, index === 0 && styles.borderTop)}>

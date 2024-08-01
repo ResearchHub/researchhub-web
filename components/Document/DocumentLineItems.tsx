@@ -153,8 +153,8 @@ const DocumentLineItems = ({
             title: "Posted by",
             value: (
               <ALink
-                href={`/user/${document.createdBy.authorProfile?.id}/overview`}
-                key={`/user/${document.createdBy.authorProfile?.id}/overview-key`}
+                href={`/author/${document.createdBy.authorProfile?.id}`}
+                key={`/author/${document.createdBy.authorProfile?.id}`}
               >
                 {document.createdBy.authorProfile.firstName}{" "}
                 {document.createdBy.authorProfile.lastName}

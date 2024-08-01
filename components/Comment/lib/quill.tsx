@@ -274,7 +274,7 @@ export const quillDeltaToHtml = ({ ops }: { ops: Array<any> }) => {
         const fullName = hasName
           ? `${user.firstName} ${user.lastName}`
           : "Unknown User";
-        return `<a class="ql-user" href="/user/${user.authorProfileId}/overview">@${fullName}</a>`;
+        return `<a class="ql-user" href="/author/${user.authorProfileId}">@${fullName}</a>`;
       } else {
         // TODO: Add to sentry
         console.error(

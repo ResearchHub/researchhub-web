@@ -26,7 +26,7 @@ class UserBlot extends Embed {
   static buildHTML(user) {
     const hasName = (user.firstName + user.lastName).length > 0;
     const fullName = hasName ? `${user.firstName} ${user.lastName}` : "Unknown User";
-    return `<a class="ql-user" href="/user/${user.authorProfileId}/overview">@${fullName}</a>`
+    return `<a class="ql-user" href="/author/${user.authorProfileId}">@${fullName}</a>`
   }
 }
 
