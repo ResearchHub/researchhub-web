@@ -15,17 +15,26 @@ export const revalidateAuthorProfile = (authorId) => {
   // Deprecated routes
   const basePath = `/user/${authorId}`;
 
+  let pathsToRevalidate = [
+    basePath + "/overview",
+    basePath + "/bounties",
+    basePath + "/discussions",
+    basePath + "/submissions",
+    basePath + "/authored-papers",
+    basePath + "/rsc",
+  ];
+
   // V2
   const basePathV2 = `/author/${authorId}`;
 
-  let pathsToRevalidate = [
+  pathsToRevalidate = pathsToRevalidate.concat([
     basePathV2,
     basePathV2 + "/publications",
     basePathV2 + "/bounties",
     basePathV2 + "/comments",
     basePathV2 + "/reviews",
     basePathV2 + "/transactions",
-  ];
+  ]);
 
   // Next.js doesn't have a way to revalidate multiple paths at once
   // So we need to loops through each path

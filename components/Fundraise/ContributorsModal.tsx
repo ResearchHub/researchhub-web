@@ -153,8 +153,8 @@ const FundraiseContributorsModal = ({
                     createdBy={c.createdBy}
                     targetContent={
                       <ALink
-                        href={`/author/${c.createdBy.authorProfile?.id}`}
-                        key={`/author/${c.createdBy.authorProfile?.id}`}
+                        href={`/user/${c.createdBy.authorProfile?.id}/overview`}
+                        key={`/user/${c.createdBy.authorProfile?.id}/overview-key`}
                       >
                         {c.createdBy.authorProfile.firstName}
                         {c.createdBy.authorProfile.lastName && " "}

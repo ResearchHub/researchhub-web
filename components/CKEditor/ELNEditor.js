@@ -202,7 +202,7 @@ const ELNEditor = ({
               container: presenceListElement,
               onClick: (user) => {
                 const e = window.event;
-                const url = `/author/${user.id}`;
+                const url = `/user/${user.id}/overview`;
                 if (e.metaKey || e.shiftKey) {
                   window.open(url);
                 } else {

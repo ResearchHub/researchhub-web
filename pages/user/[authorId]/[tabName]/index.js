@@ -169,7 +169,7 @@ function AuthorPage(props) {
         {
           href: "overview",
           label: "Overview",
-          value: "",
+          value: "overview",
         },
         {
           href: "bounties",
@@ -215,7 +215,7 @@ function AuthorPage(props) {
     );
     const tabsWithHref = tabsWithSelected.map((tab) => ({
       ...tab,
-      href: `/author/${author.id}/${tab.href}`,
+      href: `/user/${author.id}/${tab.href}`,
     }));
 
     const hasSelected = Boolean(tabsWithHref.find((t) => t.isSelected));
@@ -243,7 +243,7 @@ function AuthorPage(props) {
     } else {
       router.push(
         {
-          pathname: "/author/[authorId]/[tabName]",
+          pathname: "/user/[authorId]/[tabName]",
           query: updatedQuery,
         },
         undefined,

@@ -12,9 +12,9 @@ const ReputationGauge = ({ reputation }: { reputation: Reputation }) => {
       {reputation.bins.map((bin, index) => {
         let binShadePct = 0;
         if (index === 0 && userBinPos === 0) {
-          binShadePct = Math.max(0.05, reputation.score / bin[1]);
+          binShadePct = Math.max(0.5, reputation.score / bin[1]);
         } else if (index < userBinPos) {
-          binShadePct = 1.0;
+          binShadePct = 1;
         } else if (index === userBinPos) {
           binShadePct = reputation.score / reputation.bins[userBinPos][1];
         } else if (index > userBinPos) {

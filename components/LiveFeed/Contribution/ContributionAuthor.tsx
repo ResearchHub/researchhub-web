@@ -11,7 +11,7 @@ const ContributionAuthor = ({ authorProfile }: Args) => {
   return (
     <span className={css(styles.author)}>
       <ALink
-        href={`/author/${authorProfile?.id}`}
+        href={`/user/${authorProfile?.id}/overview`}
         overrideStyle={styles.link}
       >
         {authorProfile?.firstName || "N/A"} {authorProfile?.lastName || "User"}
