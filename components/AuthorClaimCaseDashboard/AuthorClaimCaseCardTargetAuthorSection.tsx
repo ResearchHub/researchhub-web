@@ -19,7 +19,7 @@ const getPaperUrl = (caseData: any) => {
   if (caseData?.paper) {
     return `/paper/${caseData?.paper?.id}/${caseData?.paper?.slug}`;
   } else {
-    if (caseData?.targetPaperDOI.indexOf("doi.org") > -1) {
+    if (caseData?.targetPaperDOI?.indexOf("doi.org") > -1) {
       return caseData?.targetPaperDOI;
     }
     return "https://doi.org/" + caseData?.targetPaperDOI;
