@@ -101,7 +101,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     props: {
       profile,
     },
-    revalidate: 10,
+    revalidate: 86000,
   };
 };
 

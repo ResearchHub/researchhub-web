@@ -193,7 +193,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
       profile,
       overview,
     },
-    revalidate: 10,
+    revalidate: 86000,
   };
 };
 
