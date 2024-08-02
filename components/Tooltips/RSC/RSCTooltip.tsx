@@ -3,11 +3,8 @@ import { StyleSheet, css } from "aphrodite";
 
 // Components
 import ResearchHubPopover from "~/components/ResearchHubPopover";
-import UserPopover from "./UserPopover";
 
 // Utils
-import { RHUser } from "~/config/types/root_types";
-import { genClientId } from "~/config/utils/id";
 import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
 import RSCPopover from "./RSCPopover";
 

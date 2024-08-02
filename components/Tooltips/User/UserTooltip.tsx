@@ -24,7 +24,7 @@ export default function UserTooltip({
   targetContent,
   positions,
   overrideTargetStyle,
-}: UserTooltipProps): ReactElement {
+}: UserTooltipProps): ReactElement | null {
   const [userPopoverOpen, setUserPopoverOpen] = useState(false);
 
   const inPopoverRef = useRef(false);
@@ -32,6 +32,10 @@ export default function UserTooltip({
   const leavePopoverTimeout = useRef(null);
 
   const isMobileScreen = getIsOnMobileScreenSize();
+
+  if (!createdBy?.id) {
+    return null;
+  }
 
   return (
     <ResearchHubPopover
@@ -112,5 +116,5 @@ const styles = StyleSheet.create({
   targetWrapper: {
     padding: 4,
     margin: -4,
-  }
+  },
 });
