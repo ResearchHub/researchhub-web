@@ -1,6 +1,6 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import { fetchAuthorProfile, fetchAuthorPublications, parsePublicationResponse } from "~/components/Author/lib/api";
-import { parseFullAuthorProfile } from "~/components/Author/lib/types";
+import { fetchAuthorProfile, fetchAuthorPublications, fetchProfileData, parsePublicationResponse } from "~/components/Author/lib/api";
+import { parseAuthorAchievements, parseAuthorSummaryStats, parseFullAuthorProfile } from "~/components/Author/lib/types";
 import { css, StyleSheet } from "aphrodite";
 import AuthorProfileHeader from "~/components/Author/Profile/AuthorProfileHeader";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
@@ -16,11 +16,13 @@ import colors from "~/config/themes/colors";
 type Args = {
   profile: any;
   publicationsResponse: any;
+  summary: any;
+  achievements: any;  
 };
 
-const AuthorProfilePage: NextPage<Args> = ({ profile, publicationsResponse }) => {
+const AuthorProfilePage: NextPage<Args> = ({ profile, publicationsResponse, summary, achievements }) => {
 
-  if (!profile || !publicationsResponse) {
+  if (!profile || !publicationsResponse || !summary || !achievements) {
     // TODO: Need a skeleton loading state
     return (
       <div style={{
@@ -36,12 +38,19 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, publicationsResponse }) =>
   }
 
   const fullAuthorProfile = parseFullAuthorProfile(profile);
+  const parsedAchievements = parseAuthorAchievements(achievements);
+  const parsedSummaryStats = parseAuthorSummaryStats(summary);  
   const parsedPublicationsResponse = parsePublicationResponse(publicationsResponse);
   const auth = useSelector((state: any) => state.auth);
 
   
   return (
-    <AuthorProfileContextProvider fullAuthorProfile={fullAuthorProfile}>
+    <AuthorProfileContextProvider
+      fullAuthorProfile={fullAuthorProfile}
+
+      achievements={parsedAchievements}
+      summaryStats={parsedSummaryStats}      
+    >
       <div className={css(styles.profilePage)}>
         <div className={css(styles.profileContent)}>
           <AuthorProfileHeader />
@@ -113,13 +122,15 @@ const styles = StyleSheet.create({
 });
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  const profile = await fetchAuthorProfile({ authorId: ctx!.params!.authorId as string })
+  const [profile, overview, summary, achievements] = await fetchProfileData({ authorId: ctx!.params!.authorId as string });
   const publicationsResponse = await fetchAuthorPublications({ authorId: ctx!.params!.authorId as string })
 
   return {
     props: {
       profile,
       publicationsResponse,
+      summary,
+      achievements,
     },
     revalidate: 86000,
   };

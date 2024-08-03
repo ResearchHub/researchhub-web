@@ -6,8 +6,8 @@ import { css, StyleSheet } from "aphrodite";
 
 const AuthorNavigation = () => {
   const router = useRouter();
-  const { fullAuthorProfile } = authorProfileContext();
-  const authorTabs = buildAuthorTabs({ profile: fullAuthorProfile, router });
+  const { fullAuthorProfile, summaryStats } = authorProfileContext();
+  const authorTabs = buildAuthorTabs({ profile: fullAuthorProfile, summaryStats, router });
 
   return (
     <div className={css(styles.tabsWrapper)}>

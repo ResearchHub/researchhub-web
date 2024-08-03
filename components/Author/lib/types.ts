@@ -29,14 +29,7 @@ export type FullAuthorProfile = {
   openAlexIds: Array<string>;
   institutions: Array<AuthorInstitution>;
   coauthors: Array<AuthorProfile>;
-  activityByYear: Array<{
-    year: number;
-    worksCount: number;
-    citationCount: number;
-  }>;
   education: Array<Education>;
-  achievements: Array<Achievement>;
-  openAccessPct: number;
   hIndex: number;
   i10Index: number;
   createdDate: string;
@@ -44,17 +37,24 @@ export type FullAuthorProfile = {
   linkedInUrl?: string;
   googleScholarUrl?: string;
   xUrl?: string;
-  userCreatedDate: string;
-  summaryStats: {
-    worksCount: number;
-    citationCount: number;
-    twoYearMeanCitedness: number;
-    upvotesReceived: number;
-    amountFunded: number;
-  };
   reputation: Reputation | null;
   reputationList: Array<Reputation>;
-};
+  activityByYear: Array<{
+    year: number;
+    worksCount: number;
+    citationCount: number;
+  }>;  
+  };
+  
+export type AuthorSummaryStats = {
+  openAccessPct: number;
+  worksCount: number;
+  citationCount: number;
+  twoYearMeanCitedness: number;
+  peerReviewCount: number;
+  upvotesReceived: number;
+  amountFunded: number;
+}
 
 export type Reputation = {
   score: number;
@@ -106,10 +106,25 @@ function ensureSufficientYears(activityData: YearlyActivity[]): YearlyActivity[]
   return completedData;
 }  
 
+export const parseAuthorAchievements = (raw: any): Array<Achievement> => {
+  return raw.achievements || [];
+}
+
+export const parseAuthorSummaryStats = (raw: any): AuthorSummaryStats => {
+  return {
+    worksCount: raw.summary_stats.works_count,
+    citationCount: raw.summary_stats.citation_count,
+    twoYearMeanCitedness: raw.summary_stats.two_year_mean_citedness,
+    upvotesReceived: raw.summary_stats.upvote_count,
+    amountFunded: raw.summary_stats.amount_funded || 0,
+    openAccessPct: Math.round((raw.open_access_pct || 0) * 100),
+    peerReviewCount: raw.summary_stats.peer_review_count,
+  }
+}
+
 export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
   const parsed:FullAuthorProfile = {
     id: raw.id,
-    userCreatedDate: "2024-01-01T00:00:00Z", // FIXME
     hasVerifiedPublications: true, // Temporarily hard-coding this until we decide whether verfication is necessary
     profileImage: raw.profile_image,
     firstName: raw.first_name,
@@ -117,11 +132,9 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
     description: raw.description,
     headline: raw?.headline?.title || "",
     openAlexIds: raw.openalex_ids || [],
-    achievements: raw.achievements || [],
     education: Array.isArray(raw.education)
       ? raw.education.map((edu) => parseEducation(edu))
       : [],
-    openAccessPct: Math.round((raw.open_access_pct || 0) * 100),
     hIndex: raw.h_index,
     i10Index: raw.i10_index,
     createdDate: raw.created_date,
@@ -131,14 +144,7 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
     googleScholarUrl: raw.google_scholar,
     xUrl: raw.twitter,    
     user: null,
-    summaryStats: {
-      worksCount: raw.summary_stats.works_count,
-      citationCount: raw.summary_stats.citation_count,
-      twoYearMeanCitedness: raw.summary_stats.two_year_mean_citedness,
-      upvotesReceived: raw.summary_stats.upvote_count,
-      amountFunded: raw.summary_stats.amount_funded || 0,
-    },
-    activityByYear: raw.activity_by_year.map((activity):YearlyActivity => ({
+    activityByYear: (raw.activity_by_year || []).map((activity):YearlyActivity => ({
       year: activity.year,
       worksCount: activity.works_count,
       citationCount: activity.citation_count,
@@ -160,18 +166,6 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
       createdDate: raw?.user?.created_date,
       isVerified: raw?.user?.is_verified || false,
     }
-  }
-
-  // FIXME:  Temporary fix until we have the correct achievements
-  if (parsed.achievements.find(a => a.includes("EXPERT_PEER_REVIEWER"))) {
-    parsed.achievements = parsed.achievements.filter(a => !a.includes("EXPERT_PEER_REVIEWER"));
-    parsed.achievements.push("EXPERT_PEER_REVIEWER_1");
-  }
-
-  // FIXME:  Temporary fix until we have the correct achievements
-  if (parsed.achievements.find(a => a.includes("HIGHLY_UPVOTED"))) {
-    parsed.achievements = parsed.achievements.filter(a => !a.includes("HIGHLY_UPVOTED"));
-    parsed.achievements.push("HIGHLY_UPVOTED_1");
   }
 
   // Sometimes activity by year includes missing years

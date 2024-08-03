@@ -2,7 +2,7 @@ import {
   CitedAuthorAchievementIcon,
   OpenAccessAchievementIcon,
 } from "~/config/icons/AchievementIcons";
-import { Achievement, FullAuthorProfile } from "./types";
+import { Achievement, AuthorSummaryStats, FullAuthorProfile } from "./types";
 import { ReactElement } from "react";
 import { Tab } from "~/components/HorizontalTabBar";
 import colors from "~/config/themes/colors";
@@ -14,22 +14,22 @@ import Tooltip from "@mui/material/Tooltip";
 
 export const getAchievmentDetails = ({
   achievement,
-  profile,
+  summaryStats,
 }: {
   achievement: Achievement;
-  profile: FullAuthorProfile;
+  summaryStats: AuthorSummaryStats;
 }): { icon: ReactElement; title: string; details: string } => {
   if (achievement === "OPEN_SCIENCE_SUPPORTER") {
     return {
       icon: <OpenAccessAchievementIcon active height={30} width={30} />,
       title: "Open Access Advocate",
-      details: `${profile.openAccessPct}% of works are open access`,
+      details: `${summaryStats.openAccessPct}% of works are open access`,
     };
   } else if (achievement === "CITED_AUTHOR") {
     return {
       icon: <CitedAuthorAchievementIcon active height={30} width={30} />,
       title: "Cited Author",
-      details: `Cited ${profile.summaryStats.citationCount} times`,
+      details: `Cited ${summaryStats.citationCount} times`,
     };
   } else if (achievement.includes("EXPERT_PEER_REVIEWER")) {
     return {
@@ -55,10 +55,13 @@ export const getAchievmentDetails = ({
 export const buildAuthorTabs = ({
   router,
   profile,
+  summaryStats,
 }: {
   router: any;
   profile: FullAuthorProfile;
+  summaryStats: AuthorSummaryStats;
 }): Tab[] => {
+
   return [
     {
       label: "Overview",
@@ -75,7 +78,7 @@ export const buildAuthorTabs = ({
         ? undefined
         : styles.unverified,
       pillContent: profile.hasVerifiedPublications ? (
-        profile.summaryStats.worksCount.toLocaleString()
+        summaryStats.worksCount.toLocaleString()
       ) : (
         <Tooltip
           title={"Publications have not yet been verified by author."}
