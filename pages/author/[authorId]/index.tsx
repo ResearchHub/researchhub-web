@@ -1,6 +1,6 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import { fetchAuthorProfile, fetchAuthorOverview } from "~/components/Author/lib/api";
-import { parseFullAuthorProfile } from "~/components/Author/lib/types";
+import { fetchProfileData } from "~/components/Author/lib/api";
+import { parseAuthorAchievements, parseAuthorSummaryStats, parseFullAuthorProfile } from "~/components/Author/lib/types";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import AuthorWorks from "~/components/Author/Profile/AuthorWorks";
 import { css, StyleSheet } from "aphrodite";
@@ -8,27 +8,26 @@ import AuthorActivity from "~/components/Author/Profile/AuthorActivity";
 import { buildAuthorTabs } from "~/components/Author/lib/utils";
 import { useRouter } from "next/router";
 import AuthorProfileHeader from "~/components/Author/Profile/AuthorProfileHeader";
-import { AuthorProfileContextProvider, authorProfileContext } from "~/components/Author/lib/AuthorProfileContext";
-import fetchContributionsAPI from "~/components/LiveFeed/api/fetchContributionsAPI";
+import { AuthorProfileContextProvider } from "~/components/Author/lib/AuthorProfileContext";
 import AuthorComments from "~/components/Author/Profile/AuthorComments";
 import CoAuthors from "~/components/Author/Profile/CoAuthors";
 import ALink from "~/components/ALink";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLongArrowAltRight } from "@fortawesome/pro-solid-svg-icons";
-import SearchEmpty from "~/components/Search/SearchEmpty";
-import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { ClipLoader } from "react-spinners";
 import colors from "~/config/themes/colors";
 
 type Args = {
   profile: any;
   overview: any;
+  summary: any;
+  achievements: any;
 };
 
-const AuthorProfilePage: NextPage<Args> = ({ profile, overview }) => {
+const AuthorProfilePage: NextPage<Args> = ({ profile, overview, summary, achievements }) => {
   const router = useRouter();
 
-  if (!profile || !overview) {
+  if (!profile || !overview || !summary || !achievements) {
     // TODO: Need a skeleton loading state
     return (
       <div style={{
@@ -43,12 +42,18 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview }) => {
     )
   }  
 
+  const parsedAchievements = parseAuthorAchievements(achievements);
+  const parsedSummaryStats = parseAuthorSummaryStats(summary);
   const fullAuthorProfile = parseFullAuthorProfile(profile);
-  const authorTabs = buildAuthorTabs({ profile: fullAuthorProfile, router });
-  const currentUser = useCurrentUser();
+  const authorTabs = buildAuthorTabs({ profile: fullAuthorProfile, summaryStats: parsedSummaryStats, router });
   const hasActivity = fullAuthorProfile.activityByYear.some((a) => a.worksCount > 0)
+
   return (
-    <AuthorProfileContextProvider fullAuthorProfile={fullAuthorProfile}>
+    <AuthorProfileContextProvider
+      fullAuthorProfile={fullAuthorProfile}
+      achievements={parsedAchievements}
+      summaryStats={parsedSummaryStats}
+    >
       <div className={css(styles.profilePage)}>
         <div className={css(styles.profileContent)}>
           <AuthorProfileHeader />
@@ -185,13 +190,14 @@ const styles = StyleSheet.create({
 });
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  const profile = await fetchAuthorProfile({ authorId: ctx!.params!.authorId as string })
-  const overview = await fetchAuthorOverview({ authorId: ctx!.params!.authorId as string })
+  const [profile, overview, summary, achievements] = await fetchProfileData({ authorId: ctx!.params!.authorId as string });
 
   return {
     props: {
       profile,
       overview,
+      summary,
+      achievements,
     },
     revalidate: 86000,
   };

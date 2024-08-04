@@ -33,7 +33,7 @@ import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 
 const AuthorProfileHeader = () => {
   const dispatch = useDispatch();
-  const { fullAuthorProfile: profile, setFullAuthorProfile } =
+  const { fullAuthorProfile: profile, setFullAuthorProfile, summaryStats, achievements } =
     authorProfileContext();
 
   const { revalidateAuthorProfile } = useCacheControl();
@@ -182,12 +182,12 @@ const AuthorProfileHeader = () => {
             {/* FIXME: Uncomment once working */}
             {/* <Pill text={String(profile.achievements.length)} /> */}
           </div>
-          <AuthorHeaderAchievements profile={profile} />
+          <AuthorHeaderAchievements summaryStats={summaryStats} achievements={achievements} />
         </div>
 
         <div className={css(styles.section, styles.subSection)}>
           <div className={css(styles.sectionHeader)}>Key Stats</div>
-          <AuthorHeaderKeyStats profile={profile} />
+          <AuthorHeaderKeyStats summaryStats={summaryStats} profile={profile} />
         </div>
 
         <div

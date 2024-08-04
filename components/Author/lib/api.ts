@@ -37,6 +37,34 @@ export const fetchAuthorOverview = async ({
   return response;
 };
 
+export const fetchAuthorSummary = async ({
+  authorId,
+}: {
+  authorId: string;
+}) => {
+  const url = generateApiUrl(`author/${authorId}/summary_stats`);
+
+  const response = await fetch(url, API.GET_CONFIG()).then((res): any =>
+    Helpers.parseJSON(res)
+  );
+
+  return response;
+};
+
+export const fetchAuthorAchievements = async ({
+  authorId,
+}: {
+  authorId: string;
+}) => {
+  const url = generateApiUrl(`author/${authorId}/achievements`);
+
+  const response = await fetch(url, API.GET_CONFIG()).then((res): any =>
+    Helpers.parseJSON(res)
+  );
+
+  return response;
+};
+
 export const parsePublicationResponse = (
   raw: any
 ): PaginatedPublicationResponse => {
@@ -80,3 +108,12 @@ export const removePublicationFromAuthorProfile = ({
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
+
+export const fetchProfileData = async ({ authorId }: { authorId: string }) => {
+  const profilePromise = fetchAuthorProfile({ authorId });
+  const overviewPromise = fetchAuthorOverview({ authorId });
+  const summaryPromise = fetchAuthorSummary({ authorId });
+  const achievementPromise = fetchAuthorAchievements({ authorId });
+
+  return Promise.all([profilePromise, overviewPromise, summaryPromise, achievementPromise]);
+}

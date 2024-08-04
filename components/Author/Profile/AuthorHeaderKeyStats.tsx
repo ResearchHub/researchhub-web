@@ -1,23 +1,23 @@
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
-import { FullAuthorProfile } from "../lib/types";
+import { AuthorSummaryStats, FullAuthorProfile } from "../lib/types";
 import { css, StyleSheet } from "aphrodite";
 
-const AuthorHeaderKeyStats = ({ profile }: { profile: FullAuthorProfile }) => {
+const AuthorHeaderKeyStats = ({ summaryStats, profile }: { summaryStats: AuthorSummaryStats, profile: FullAuthorProfile }) => {
   return (
     <div className={css(styles.rootWrapper)}>
       <div className={css(styles.lineItem)}>
         <div className={css(styles.label)}>Upvotes received:</div>{" "}
         <div className={css(styles.value)}>
-          {profile.summaryStats.upvotesReceived}
+          {summaryStats.upvotesReceived}
         </div>
       </div>
       <div className={css(styles.lineItem)}>
         <div className={css(styles.label)}>Publications:</div>{" "}
         <div className={css(styles.value)}>
-          {profile.summaryStats.worksCount.toLocaleString()}{" "}
-          {profile.summaryStats.worksCount > 0 && (
+          {summaryStats.worksCount.toLocaleString()}{" "}
+          {summaryStats.worksCount > 0 && (
             <div className={css(styles.subText)}>
-              ({profile.openAccessPct}% Open Access)
+              ({summaryStats.openAccessPct}% Open Access)
             </div>
           )}
         </div>
@@ -25,7 +25,7 @@ const AuthorHeaderKeyStats = ({ profile }: { profile: FullAuthorProfile }) => {
       <div className={css(styles.lineItem)}>
         <div className={css(styles.label)}>Cited by:</div>{" "}
         <div className={css(styles.value)}>
-          {profile.summaryStats.citationCount.toLocaleString()}
+          {summaryStats.citationCount.toLocaleString()}
         </div>
       </div>
       <div style={{ display: "flex", columnGap: "5px" }}>
@@ -42,15 +42,15 @@ const AuthorHeaderKeyStats = ({ profile }: { profile: FullAuthorProfile }) => {
       <div className={css(styles.lineItem)}>
         <div className={css(styles.label)}>2-year mean citedness:</div>{" "}
         <div className={css(styles.value)}>
-          {profile.summaryStats.twoYearMeanCitedness.toFixed(2)}
+          {summaryStats.twoYearMeanCitedness.toFixed(2)}
         </div>
       </div>
-      {profile.summaryStats.amountFunded > 0 && (
+      {summaryStats.amountFunded > 0 && (
         <div className={css(styles.lineItem)}>
           <div className={css(styles.label)}>Amount funded:</div>{" "}
           <div className={css(styles.value)}>
             <ResearchCoinIcon version={4} width={15} height={15} />
-            {profile.summaryStats.amountFunded.toLocaleString()}
+            {summaryStats.amountFunded.toLocaleString()}
           </div>
         </div>      
       )}
