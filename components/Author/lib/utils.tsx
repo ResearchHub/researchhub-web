@@ -7,8 +7,8 @@ import { ReactElement } from "react";
 import { Tab } from "~/components/HorizontalTabBar";
 import colors from "~/config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircle, faHandHoldingHand, faHandsHoldingCircle, faQuestion, faStar } from "@fortawesome/pro-solid-svg-icons";
-import { faCircleStar, faCircleUp, faHandHoldingDollar, faLockOpen, faLockOpenAlt, faUnlock } from "@fortawesome/pro-light-svg-icons";
+import { faQuestion } from "@fortawesome/pro-solid-svg-icons";
+import { faCircleStar, faCircleUp, faHandHoldingDollar } from "@fortawesome/pro-light-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import Tooltip from "@mui/material/Tooltip";
 
