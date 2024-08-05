@@ -12,17 +12,20 @@ import { useEffect, useState } from "react";
 import LoadMore from "~/components/shared/LoadMore";
 import fetchContributionsAPI from "~/components/LiveFeed/api/fetchContributionsAPI";
 import SearchEmpty from "~/components/Search/SearchEmpty";
+import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 
 const AuthorComments = ({
   withLoadMore = true,
   authorId,
   contentType = "ALL", 
   limit = null,
+  loadMoreElement,
 }: {
   withLoadMore?: boolean;
   authorId: ID;
   contentType: "ALL" | "REVIEW" | "CONVERSATION" | "BOUNTY";
   limit?: number | null;
+  loadMoreElement?: React.ReactElement
 }) => {
   
   const [commentApiResponse, setCommentApiResponse] = useState<PaginatedApiResponse|null>(null);
@@ -89,17 +92,34 @@ const AuthorComments = ({
   });
 
   resultCards = limit ? resultCards.slice(0, limit) : resultCards;
+  const isLoadingInitial = resultCards.length === 0 && !commentApiResponse === null;
+
+  if (isLoadingInitial) {
+    return (
+      <div style={{ height: 200 }}>
+        {Array.from({ length: 6 }).map((_, idx) => (
+          <LiveFeedCardPlaceholder key={`load-${idx}`} color="#efefef" />
+        ))}
+      </div>
+    )
+  }
 
   return (
-  <div className={css(styles.commentWrapper)}>
-    {(resultCards.length === 0 && !commentApiResponse === null) && (
-      <div style={{ minHeight: 250, display: "flex", justifyContent: "center", width: "100%" }}>
-        <SearchEmpty title={"No author activity found in this section."} />
-      </div>
-  )}
+    <div className={css(styles.commentWrapper)}>
+      {(resultCards.length === 0 && !commentApiResponse === null) && (
+        <div style={{ minHeight: 250, display: "flex", justifyContent: "center", width: "100%" }}>
+          <SearchEmpty title={"No author activity found in this section."} />
+        </div>
+    )}
 
     {resultCards}
-    {withLoadMore && commentApiResponse?.next && (
+
+    {/* loadMore component supplied by parent component optionally */}
+    {loadMoreElement && (commentApiResponse?.results?.length || 0) > 0 && (
+      loadMoreElement
+    )}
+
+    {!loadMoreElement && withLoadMore && commentApiResponse?.next && (
         <LoadMore
           onClick={async () => {
             setIsFetchingMore(true);

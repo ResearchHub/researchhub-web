@@ -65,7 +65,6 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview, summary, achieve
           <div className={css(styles.mainContent)}>
             <div style={{ display: "flex",  }}>
               <div className={css(styles.sectionsWrapper)}>
-
                   {overview.results.length > 0 && (
                     <div className={css(styles.section)}>
                       <AuthorWorks works={overview.results} />
@@ -79,13 +78,21 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview, summary, achieve
                   )}
                   <div className={css(styles.section)}>
                     <div className={css(styles.sectionHeader)}>Recent Activity</div>
-                    <AuthorComments contentType="ALL" authorId={profile.id} limit={6} withLoadMore={false} />
-                    <ALink theme="solidPrimary" href={`/author/${fullAuthorProfile.id}/comments`}>
-                      <div className={css(styles.seeMoreLink)}>
-                        See more
-                        <FontAwesomeIcon icon={faLongArrowAltRight} />
-                      </div>
-                    </ALink>
+                  <AuthorComments
+                    contentType="ALL"
+                    authorId={profile.id}
+                    limit={6}
+                    withLoadMore={false}
+                    loadMoreElement={
+                      <ALink theme="solidPrimary" href={`/author/${fullAuthorProfile.id}/comments`}>
+                        <div className={css(styles.seeMoreLink)}>
+                          See more
+                          <FontAwesomeIcon icon={faLongArrowAltRight} />
+                        </div>
+                      </ALink>
+                    }
+                  />
+
                   </div>
               </div>
 
@@ -125,6 +132,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     gap: 30,
+    width: "100%",
   },
   section: {
 
