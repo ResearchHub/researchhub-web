@@ -7,10 +7,13 @@ import { ReactElement } from "react";
 import { Tab } from "~/components/HorizontalTabBar";
 import colors from "~/config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQuestion } from "@fortawesome/pro-solid-svg-icons";
-import { faCircleStar, faCircleUp } from "@fortawesome/pro-light-svg-icons";
+import { faCircle, faHandHoldingHand, faHandsHoldingCircle, faQuestion, faStar } from "@fortawesome/pro-solid-svg-icons";
+import { faCircleStar, faCircleUp, faHandHoldingDollar, faLockOpen, faLockOpenAlt, faUnlock } from "@fortawesome/pro-light-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import Tooltip from "@mui/material/Tooltip";
+
+
+type Tier = "bronze" | "silver" | "gold" | "platinum" | "diamond";
 
 export const getAchievmentDetails = ({
   achievement,
@@ -19,29 +22,37 @@ export const getAchievmentDetails = ({
   achievement: Achievement;
   summaryStats: AuthorSummaryStats;
 }): { icon: ReactElement; title: string; details: string } => {
+  const tier = parseInt(achievement.charAt(achievement.length - 1).toUpperCase()) || 0;
+
   if (achievement === "OPEN_SCIENCE_SUPPORTER") {
     return {
-      icon: <OpenAccessAchievementIcon active height={30} width={30} />,
+      icon: <FontAwesomeIcon style={{ color: "black" }} icon={faHandHoldingDollar} fontSize={24} />,
       title: "Open Access Advocate",
-      details: `${summaryStats.openAccessPct}% of works are open access`,
+      details: `Provided funding for open science`,
     };
   } else if (achievement === "CITED_AUTHOR") {
     return {
-      icon: <CitedAuthorAchievementIcon active height={30} width={30} />,
+      icon: <CitedAuthorAchievementIcon height={24} width={24} />,
       title: "Cited Author",
       details: `Cited ${summaryStats.citationCount} times`,
     };
   } else if (achievement.includes("EXPERT_PEER_REVIEWER")) {
     return {
-      icon: <FontAwesomeIcon style={{ color: "#e77600" }} icon={faCircleStar} fontSize={30} />,
+      icon: <FontAwesomeIcon style={{ color: "black" }} icon={faCircleStar} fontSize={24} />,
       title: "Peer Reviewer",
       details: `Peer reviewed at least 1 publication`,
     };
   } else if (achievement.includes("HIGHLY_UPVOTED")) {
     return {
-      icon: <FontAwesomeIcon style={{ color: colors.NEW_GREEN() }} icon={faCircleUp} fontSize={30} />,
+      icon: <FontAwesomeIcon style={{ color: "black" }} icon={faCircleUp} fontSize={24} />,
       title: "Active user",
       details: `Received at least five upvotes on the platform`,
+    };
+  } else if (achievement.includes("OPEN_ACCESS")) {
+    return {
+      icon: <OpenAccessAchievementIcon height={24} width={24} />,
+      title: "Open Access Advocate",
+      details: `At least 50% of papers are open access`,
     };
   }
 
