@@ -107,7 +107,7 @@ function ensureSufficientYears(activityData: YearlyActivity[]): YearlyActivity[]
 }  
 
 export const parseAuthorAchievements = (raw: any): Array<Achievement> => {
-  return raw.achievements || [];
+  return ["OPEN_SCIENCE_SUPPORTER", "HIGHLY_UPVOTED_5", "EXPERT_PEER_REVIEWER_5", "CITED_AUTHOR", "OPEN_ACCESS"]  //raw.achievements || [];
 }
 
 export const parseAuthorSummaryStats = (raw: any): AuthorSummaryStats => {
