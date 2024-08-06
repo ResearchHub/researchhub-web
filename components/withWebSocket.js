@@ -40,6 +40,8 @@ export default function withWebSocket(
 ) {
   return (props) => {
     let url = props.wsUrl || _url;
+
+    // This ensures that "undefined" urls do not get established erroneously.
     if (typeof url === "string" && url.includes("undefined")) {
       url = "";
     }
@@ -66,6 +68,8 @@ export default function withWebSocket(
         try {
           token = Cookies.get(AUTH_TOKEN);
 
+          // Sometimes the .get operation will return undefined instead of throwing an error.
+          // This ensure that websocket connection does not get established with undefined.
           if (!token) {
             throw new Error("Did not find auth token");
           }
@@ -73,9 +77,6 @@ export default function withWebSocket(
           console.error("Did not find auth token");
           return err;
         }
-
-        console.log("TOKEN", token);
-        console.log("URL", url);
 
         const webSocket = new WebSocket(url, ["Token", token]);
         setWs(webSocket);
