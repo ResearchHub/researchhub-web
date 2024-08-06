@@ -166,7 +166,6 @@ export const parseNote = (raw: any): Note => {
 };
 
 export const parseAuthorship = (raw: any): Authorship => {
-  console.log('raw', raw)
   return {
     id: raw.id,
     authorId: raw.author_id,
