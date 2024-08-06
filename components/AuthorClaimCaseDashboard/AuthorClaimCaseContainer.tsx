@@ -36,10 +36,10 @@ const useEffectHandleCaseFetch = ({
   const { caseStatus, page } = paginationInfo;
   useEffect((): void => {
     getCases({
-      caseStatus: nullthrows(
-        caseStatus,
-        "Attempting to get cases without status"
-      ),
+      caseStatus: caseStatus, //nullthrows(
+        // caseStatus,
+        // "Attempting to get cases without status"
+      // ),
       onSuccess: ({ claimCases, page, hasMore }: formattedResult): void => {
         appendClaimCases(claimCases);
 
