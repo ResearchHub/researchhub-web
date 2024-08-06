@@ -21,7 +21,7 @@ import { AuthorActions } from "~/redux/author";
 import { fetchAuthorProfile } from "../lib/api";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAddressCard, faBuildingColumns, faEdit, faUserXmark } from "@fortawesome/pro-solid-svg-icons";
+import { faAddressCard, faBuildingColumns, faEdit, faUserSlash, faUserXmark } from "@fortawesome/pro-solid-svg-icons";
 import { truncateText } from "~/config/utils/string";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
 import GenericMenu, { MenuOption } from "~/components/shared/GenericMenu";
@@ -30,6 +30,7 @@ import {
   faEllipsis,
 } from "@fortawesome/pro-regular-svg-icons";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
+import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 
 const AuthorProfileHeader = () => {
   const dispatch = useDispatch();
@@ -40,15 +41,32 @@ const AuthorProfileHeader = () => {
   const currentUser = useCurrentUser();
 
   const authorMenuOptions: MenuOption[] = [
-    {
+    ...(currentUser?.authorProfile?.id === profile.id ? [{
       label: "Edit profile",
       icon: <FontAwesomeIcon icon={faEdit} />,
       value: "edit",
       onClick: () => {
         dispatch(ModalActions.openUserInfoModal(true))
       },
-    },
+    }] : []),    
     ...(currentUser?.moderator ? [{
+      html: (
+        <ModeratorDeleteButton
+          actionType="user"
+          isModerator={true}
+          containerStyle={styles.moderatorButton}
+          icon={
+            <FontAwesomeIcon icon={faUserSlash} />
+          }
+          iconStyle={styles.moderatorIcon}
+          labelStyle={styles.moderatorLabel}
+          label="Ban User"
+          metaData={{
+            authorId: profile.id as string,
+            isSuspended: false,
+          }}
+        />
+      ),
       label: "Ban user",
       icon: <FontAwesomeIcon icon={faUserXmark} />,
       value: "ban",
@@ -157,7 +175,7 @@ const AuthorProfileHeader = () => {
           </div>
 
 
-          {currentUser?.authorProfile.id === profile.id && (
+          {(currentUser?.authorProfile?.id === profile.id || currentUser?.moderator) && (
             <div className={css(styles.textBtn, styles.editProfileBtn)}>
               <GenericMenu
                 softHide={true}
@@ -236,6 +254,24 @@ const AuthorProfileHeader = () => {
   );
 };
 const styles = StyleSheet.create({
+  moderatorButton: {
+    width: "100%",
+  },
+  moderatorLabel: {
+    color: colors.RED(),
+  },
+  moderatorIcon: {
+    width: 30,
+  },
+  moreOptionsBtn: {
+    border: "none",
+    color: colors.BLACK(0.6),
+    ":hover": {
+      background: colors.NEW_BLUE(0.1),
+      color: colors.NEW_BLUE(1),
+      transition: "0.3s",
+    },
+  },  
   btnDots: {
     fontSize: 22,
     borderRadius: "50px",
