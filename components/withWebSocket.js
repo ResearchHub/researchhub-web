@@ -39,7 +39,11 @@ export default function withWebSocket(
   autoReconnect = true
 ) {
   return (props) => {
-    const url = props.wsUrl || _url;
+    let url = props.wsUrl || _url;
+    if (typeof url === "string" && url.includes("undefined")) {
+      url = "";
+    }
+
     const urlRef = useRef(null);
     const connectAttemptLimit = props.wsConnectAttemptLimit || 5;
 
@@ -61,10 +65,18 @@ export default function withWebSocket(
       if (props.wsAuth) {
         try {
           token = Cookies.get(AUTH_TOKEN);
+
+          if (!token) {
+            throw new Error("Did not find auth token");
+          }
         } catch (err) {
           console.error("Did not find auth token");
           return err;
         }
+
+        console.log("TOKEN", token);
+        console.log("URL", url);
+
         const webSocket = new WebSocket(url, ["Token", token]);
         setWs(webSocket);
       } else {
