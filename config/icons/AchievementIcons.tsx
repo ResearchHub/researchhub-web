@@ -1,13 +1,12 @@
 import colors from "../themes/colors";
 
 type Props = {
-  active: boolean;
   height?: number;
   width?: number;
 }
 
-export const OpenAccessAchievementIcon = ({ active, height = 40, width = 40 }: Props) => {
-  const color = active ? colors.NEW_BLUE() : "#DEDEE6";
+export const OpenAccessAchievementIcon = ({ height = 40, width = 40 }: Props) => {
+  const color = "black";
 
   return (
     <svg width={width} height={height} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -25,8 +24,8 @@ export const OpenAccessAchievementIcon = ({ active, height = 40, width = 40 }: P
   );
 };
 
-export const CitedAuthorAchievementIcon = ({ active, height = 40, width = 40 }: Props) => {
-  const color = active ? colors.NEW_GREEN(): "#DEDEE6";
+export const CitedAuthorAchievementIcon = ({ height = 40, width = 40 }: Props) => {
+  const color = "black";
 
   return (
     <svg width={width} height={height} viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">

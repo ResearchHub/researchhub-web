@@ -34,11 +34,31 @@ const AuthorHeaderAchievements = ({ summaryStats, achievements }: { summaryStats
         </div>
       )
     }
-    else if (achievement.includes("EXPERT_PEER_REVIEWER")) {
+    else if (achievement === "OPEN_SCIENCE_SUPPORTER") {
       return (
         <div className={css(styles.tooltip)}>
           <div className={css(styles.tooltipLineItem)}>
             <FontAwesomeIcon icon={faCircleCheck} color={colors.GREEN()} />
+            Funded open science using RSC
+          </div>
+        </div>
+      )
+    }    
+    else if (achievement.includes("HIGHLY_UPVOTED")) {
+      return (
+        <div className={css(styles.tooltip)}>
+          <div className={css(styles.tooltipLineItem)}>
+            <FontAwesomeIcon icon={faCircleCheck} color={"#B9F2FF"} />
+            Received at least 10 upvotes
+          </div>
+        </div>
+      )
+    }
+    else if (achievement.includes("EXPERT_PEER_REVIEWER")) {
+      return (
+        <div className={css(styles.tooltip)}>
+          <div className={css(styles.tooltipLineItem)}>
+            <FontAwesomeIcon icon={faCircleCheck} color={"#B9F2FF"} />
             Peer reviewed at least 1 publication
           </div>
         </div>
@@ -56,7 +76,7 @@ const AuthorHeaderAchievements = ({ summaryStats, achievements }: { summaryStats
           <div style={{ color: colors.MEDIUM_GREY2(), textAlign: "center"}}>This user has not unlocked any achievements yet.</div>
         </div>
       )}
-      {achievements.slice(0,3).map((achievement) => {
+      {achievements.map((achievement) => {
         const achivementDetails = getAchievmentDetails({ achievement, summaryStats, })
 
         return (
@@ -79,7 +99,7 @@ const AuthorHeaderAchievements = ({ summaryStats, achievements }: { summaryStats
 
 const styles = StyleSheet.create({
   rootWrapper: {
-    rowGap: 10,
+    rowGap: 5,
     display: "flex",
     flexDirection: "column",
     alignContent: "center",
