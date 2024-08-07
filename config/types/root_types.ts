@@ -3,6 +3,7 @@ import { Hub } from "./hub";
 import Bounty from "./bounty";
 import { Purchase } from "./purchase";
 import { formatDateStandard } from "../utils/dates";
+import { Authorship, parseAuthorship } from "~/components/Document/lib/types";
 
 export type ID = string | number | null | undefined;
 export type KeyOf<ObjectType> = keyof ObjectType;
@@ -88,11 +89,12 @@ export type OrcidConnect = {
 
 export type AuthorProfile = {
   firstName?: string;
+  authorship: Authorship;
   id?: ID;
   isClaimed: boolean;
   lastName?: string;
   profileImage?: string;
-  sequence?: "first" | "additional";
+  sequence?: "first" | "additional"; // Legacy. Use authorship instead
   url: string;
   description: string;
   headline: string;
@@ -313,6 +315,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     isVerified: raw.is_verified_v2,
     headline: raw?.headline?.title || "",
     isHubEditor: raw.is_hub_editor,
+    authorship: raw.authorship ? parseAuthorship(raw.authorship) : null,
     openAlexIds: raw.openalex_ids || [],
     ...(raw.sequence && { sequence: raw.sequence }),
     education: (raw?.education || []).map((edu) => parseEducation(edu)),

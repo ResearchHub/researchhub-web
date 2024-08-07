@@ -3,6 +3,7 @@ import ALink from "../ALink";
 import { AuthorProfile } from "~/config/types/root_types";
 import colors from "~/config/themes/colors";
 import { StyleSheet, css } from "aphrodite";
+import { sortAuthorProfiles } from "./lib/utils";
 
 interface Props {
   authors: Array<AuthorProfile>;
@@ -75,6 +76,7 @@ export const CondensedAuthorList = ({
 };
 
 const AuthorList = ({ authors, moreAuthorsBtnStyle }: Props) => {
+  authors = sortAuthorProfiles(authors);
   const [showSecondaryAuthors, setShowSecondaryAuthors] = useState(false);
 
   // If authors list is greater than this, we want to hide "secondary" authors

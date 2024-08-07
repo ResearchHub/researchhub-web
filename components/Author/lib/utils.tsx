@@ -11,6 +11,7 @@ import { faQuestion } from "@fortawesome/pro-solid-svg-icons";
 import { faCircleStar, faCircleUp, faHandHoldingDollar } from "@fortawesome/pro-light-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import Tooltip from "@mui/material/Tooltip";
+import { AuthorProfile } from "~/config/types/root_types";
 
 
 type Tier = "bronze" | "silver" | "gold" | "platinum" | "diamond";
@@ -135,3 +136,38 @@ const styles = StyleSheet.create({
     padding: "4px 8px",
   },
 });
+
+/**  
+  Sorts a list of author profiles by first examining authorship property if available. If not not available, examines legacy sequence property
+*/
+export function sortAuthorProfiles(authors: AuthorProfile[]) {
+  function getPositionValue(author: AuthorProfile) {
+    if (author.authorship) {
+      switch (author.authorship.authorPosition) {
+        case 'first': return 1;
+        case 'middle': return 2;
+        case 'last': return 4; // Higher value to ensure "last" authors are at the end
+      }
+    } else if (author.sequence) {
+      // Fallback scenario 
+      return author.sequence === 'first' ? 1 : 3;
+    }
+    return 3;
+  }
+
+  // Add index to each author to preserve original order
+  const indexedAuthors = authors.map((author, index) => ({ author, index }));
+
+  // Sort the authors array
+  return indexedAuthors.sort((a, b) => {
+    const posA = getPositionValue(a.author);
+    const posB = getPositionValue(b.author);
+
+    if (posA !== posB) {
+      return posA - posB;
+    }
+
+    // If positions are the same, maintain original order
+    return a.index - b.index;
+  }).map(item => item.author);
+}
