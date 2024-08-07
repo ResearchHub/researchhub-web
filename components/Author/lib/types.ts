@@ -24,6 +24,9 @@ export type FullAuthorProfile = {
     id: ID;
     createdDate: string;
     isVerified: boolean;
+    siftUrl: string;
+    isSuspended: boolean;
+    isProbableSpammer: boolean;
   } | null;
   description?: string;
   openAlexIds: Array<string>;
@@ -43,7 +46,7 @@ export type FullAuthorProfile = {
     year: number;
     worksCount: number;
     citationCount: number;
-  }>;  
+  }>;
   };
   
 export type AuthorSummaryStats = {
@@ -162,9 +165,12 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
 
   if (raw.user) {
     parsed.user = {
-      id: raw?.user?.id,
-      createdDate: raw?.user?.created_date,
-      isVerified: raw?.user?.is_verified || false,
+      id: raw.user.id,
+      createdDate: raw.user.created_date,
+      isVerified: raw.user.is_verified || false,
+      siftUrl: raw.user.sift_url,
+      isSuspended: raw.user.is_suspended || false,
+      isProbableSpammer: raw.user.probable_spammer || false,
     }
   }
 

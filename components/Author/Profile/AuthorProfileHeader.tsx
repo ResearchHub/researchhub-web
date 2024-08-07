@@ -31,6 +31,8 @@ import {
 } from "@fortawesome/pro-regular-svg-icons";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
+import { faUser, faUserPlus } from "@fortawesome/pro-light-svg-icons";
+import UserStateBanner from "~/components/Banner/UserStateBanner";
 
 const AuthorProfileHeader = () => {
   const dispatch = useDispatch();
@@ -41,6 +43,14 @@ const AuthorProfileHeader = () => {
   const currentUser = useCurrentUser();
 
   const authorMenuOptions: MenuOption[] = [
+    ...(currentUser?.moderator ? [{
+      label: "Sift profile",
+      icon: <FontAwesomeIcon icon={faUser} />,
+      value: "sift-profile",
+      onClick: () => {
+        window.open(profile.user?.siftUrl, "_blank")
+      },
+    }] : []),
     ...(currentUser?.authorProfile?.id === profile.id ? [{
       label: "Edit profile",
       icon: <FontAwesomeIcon icon={faEdit} />,
@@ -48,8 +58,8 @@ const AuthorProfileHeader = () => {
       onClick: () => {
         dispatch(ModalActions.openUserInfoModal(true))
       },
-    }] : []),    
-    ...(currentUser?.moderator ? [{
+    }] : []),
+    ...((currentUser?.moderator && !profile.user?.isSuspended) ? [{
       html: (
         <ModeratorDeleteButton
           actionType="user"
@@ -63,17 +73,29 @@ const AuthorProfileHeader = () => {
           label="Ban User"
           metaData={{
             authorId: profile.id as string,
-            isSuspended: false,
+            isSuspended: profile.user?.isSuspended,
           }}
         />
       ),
-      label: "Ban user",
-      icon: <FontAwesomeIcon icon={faUserXmark} />,
       value: "ban",
-      onClick: () => {
-        alert('TBD')
-      },
     }] : []),
+    ...((currentUser?.moderator && profile.user?.isSuspended) ? [{
+      html: (
+        <ModeratorDeleteButton
+        actionType="user"
+        containerStyle={styles.moderatorButton}
+        icon={<FontAwesomeIcon icon={faUserPlus}></FontAwesomeIcon>}
+        iconStyle={styles.moderatorIcon}
+        key="user"
+        labelStyle={styles.moderatorLabel}
+        label={"Reinstate User"}
+        metaData={{
+          authorId: profile.id as string,
+          isSuspended: profile.user?.isSuspended,
+        }}
+      />),
+      value: "reinstate",
+    }] : []),    
   ];
 
   const getExpertiseTooltipContent = () => {
@@ -110,6 +132,10 @@ const AuthorProfileHeader = () => {
   const truncatedDescription = truncateText(profile.description, 300);
   return (
     <div>
+      <UserStateBanner
+        probable_spammer={profile.user?.isProbableSpammer}
+        is_suspended={profile.user?.isSuspended}
+      />      
       <UserInfoModal onSave={onProfileSave} />
       <div className={css(styles.bannerSection)}>
         <WelcomeToProfileBanner profile={profile} />

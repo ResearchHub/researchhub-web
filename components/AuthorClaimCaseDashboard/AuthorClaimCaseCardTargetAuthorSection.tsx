@@ -8,6 +8,7 @@ import { RHUser } from "~/config/types/root_types";
 import { breakpoints } from "~/config/themes/screen";
 import { formatDateStandard } from "~/config/utils/dates";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
+import VerifiedBadge from "../Verification/VerifiedBadge";
 
 type Props = {
   caseCreatedDate: string;
@@ -57,6 +58,13 @@ export default function AuthorClaimCaseCardTargetAuthorSection({
             {formatDateStandard(requestor.createdDate, "MMM D, YYYY")}
           </span>
         </div>
+        <div className={css(styles.marginBottom)}>
+          <span className={css(styles.fontGrey)}>{"Verfied name - "}</span>
+          <span>
+            {caseData?.userVerification?.verifiedName || "Not verified"}
+            {caseData?.userVerification?.isVerified && <VerifiedBadge height={15} width={15}  />}
+          </span>
+        </div>        
       </div>
       <div className={css(styles.userDetails)}>
         <div
