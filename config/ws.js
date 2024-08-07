@@ -11,7 +11,7 @@ function setBaseUrl() {
   if (process.env.REACT_APP_ENV === "staging") {
     return "wss://websocket.staging.researchhub.com/ws/";
   } else if (process.env.NODE_ENV === "production") {
-    return "wss://backend.prod.researchhub.com/ws/";
+    return "wss://websocket.prod.researchhub.com/ws/";
   } else {
     return "ws://localhost:8000/ws/";
   }
