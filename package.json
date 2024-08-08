@@ -152,7 +152,7 @@
     "viem": "^1.10.9",
     "wagmi": "^1.4.1",
     "webpack": "^5.93.0",
-    "webpack-bundle-analyzer": "^4.3.0",
+    "webpack-bundle-analyzer": "^4.10.2",
     "yarn": "^1.22.19",
     "yet-another-react-lightbox": "^3.13.1"
   },
