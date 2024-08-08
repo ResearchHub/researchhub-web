@@ -82,7 +82,7 @@
     "next": "^13.1.2",
     "next-compose-plugins": "^2.2.1",
     "next-redux-wrapper": "^4.0.0",
-    "next-transpile-modules": "^10.0.0",
+    "next-transpile-modules": "^10.0.1",
     "nookies": "^2.5.2",
     "nuka-carousel": "^4.6.6",
     "numeral": "^2.0.6",
@@ -151,8 +151,8 @@
     "undux": "^5.2.0",
     "viem": "^1.10.9",
     "wagmi": "^1.4.1",
-    "webpack": "^5.75.0",
-    "webpack-bundle-analyzer": "^4.3.0",
+    "webpack": "^5.93.0",
+    "webpack-bundle-analyzer": "^4.10.2",
     "yarn": "^1.22.19",
     "yet-another-react-lightbox": "^3.13.1"
   },
@@ -179,7 +179,7 @@
     "pretty-quick": "^3.1.1",
     "progress": "^2.0.3",
     "source-map-explorer": "^2.5.2",
-    "webpack-cli": "^4.8.0"
+    "webpack-cli": "^5.1.4"
   },
   "browser": {
     "child_process": false
