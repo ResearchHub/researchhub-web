@@ -151,7 +151,7 @@
     "undux": "^5.2.0",
     "viem": "^1.10.9",
     "wagmi": "^1.4.1",
-    "webpack": "^5.75.0",
+    "webpack": "^5.93.0",
     "webpack-bundle-analyzer": "^4.3.0",
     "yarn": "^1.22.19",
     "yet-another-react-lightbox": "^3.13.1"
