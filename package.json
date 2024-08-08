@@ -82,7 +82,7 @@
     "next": "^13.1.2",
     "next-compose-plugins": "^2.2.1",
     "next-redux-wrapper": "^4.0.0",
-    "next-transpile-modules": "^10.0.0",
+    "next-transpile-modules": "^10.0.1",
     "nookies": "^2.5.2",
     "nuka-carousel": "^4.6.6",
     "numeral": "^2.0.6",
