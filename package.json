@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "HOST=localhost:3000 next dev",
     "inspect": "NODE_OPTIONS='--inspect' next dev",
-    "build": "next build",
+    "build": "NODE_OPTIONS=--max-old-space-size=6144 next build",
     "start": "next start",
     "start-staging": "REACT_APP_ENV=staging next start",
     "sentry": "node ./scripts/sentry.js",
