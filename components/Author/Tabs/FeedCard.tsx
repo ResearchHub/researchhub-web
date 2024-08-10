@@ -24,6 +24,7 @@ import {
   AuthorProfile,
   RhDocumentType,
   UnifiedDocument,
+  parseAuthorProfile,
 } from "~/config/types/root_types";
 import { useState, useEffect, SyntheticEvent } from "react";
 import colors, {
@@ -154,16 +155,16 @@ function FeedCard({
   shouldStripHTML,
 }: FeedCardProps) {
   let parsedDoc: null | Paper | Post = null;
-  let authors: AuthorProfile[] = [];
+  // let authors: AuthorProfile[] = [];
 
   try {
     // This should not fail, but just for in case, we don't want to break the whole feed.
     parsedDoc =
       formattedDocType === "paper" ? parsePaper(document, shouldStripHTML) : parsePost(document);
-    authors =
-      formattedDocType === "question"
-        ? [parsedDoc!.createdBy!.authorProfile]
-        : parsedDoc.authors;
+    // authors =
+    //   formattedDocType === "question"
+    //     ? [parsedDoc!.createdBy!.authorProfile]
+    //     : parsedDoc.authors;
   } catch (error) { }
 
   const parsedHubs = (hubs || []).map(parseHub);
@@ -311,19 +312,10 @@ function FeedCard({
   if (document?.authorships?.length > 0) {
     authorships = document.authorships.map(a => parseAuthorship(a));
   }
-  else if (authors && authors.length > 0) {
-    authorships = authors.map(a => {
-      const rawAuthorship = {
-        raw_author_name: a.firstName + " " + a.lastName,
-        id: a.id,
-        author: {
-          profile_image: a.profileImage,
-          id: a.id,
-        }
-      }
-      return parseAuthorship(rawAuthorship);
-    });
-  }
+
+  const authors:AuthorProfile[] = (document.authors || []).map((author) => parseAuthorProfile(author)); 
+
+  console.log('authors', authors);
 
   return (
     <div
