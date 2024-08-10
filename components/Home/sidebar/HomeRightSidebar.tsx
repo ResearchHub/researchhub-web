@@ -25,24 +25,21 @@ export default function HomeRightSidebar(): ReactElement | null {
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
 
-  carouselElements = currentUser?.isVerified
-    ? carouselElements.slice(1)
-    : carouselElements;
 
 
-    const auth = useSelector((state: RootState) => state.auth);
-    const {
-      isDismissed: isVerificationBannerDismissed,
-      dismissFeature: dismissVerificationBanner,
-      dismissStatus: verificationBannerDismissStatus
-    } = useDismissableFeature({ auth, featureName: "verification-banner" })
+  const auth = useSelector((state: RootState) => state.auth);
+  const {
+    isDismissed: isVerificationBannerDismissed,
+    dismissFeature: dismissVerificationBanner,
+    dismissStatus: verificationBannerDismissStatus
+  } = useDismissableFeature({ auth, featureName: "verification-banner" })
 
 
   if (verificationBannerDismissStatus === "unchecked") {
     return null;
   }
 
-  const isVerificationBannerVisible = verificationBannerDismissStatus === "checked" && !isVerificationBannerDismissed;
+  const isVerificationBannerVisible = !currentUser?.isVerified && (verificationBannerDismissStatus === "checked" && !isVerificationBannerDismissed);
 
 
   return (
