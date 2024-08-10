@@ -35,10 +35,6 @@ export default function HomeRightSidebar(): ReactElement | null {
   } = useDismissableFeature({ auth, featureName: "verification-banner" })
 
 
-  if (verificationBannerDismissStatus === "unchecked") {
-    return null;
-  }
-
   const isVerificationBannerVisible = !currentUser?.isVerified && (verificationBannerDismissStatus === "checked" && !isVerificationBannerDismissed);
 
 
