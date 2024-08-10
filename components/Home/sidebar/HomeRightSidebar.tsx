@@ -8,18 +8,16 @@ import colors from "~/config/themes/colors";
 import ColumnContainer from "../../Paper/SideColumn/ColumnContainer";
 import ExitableBanner from "~/components/Banner/ExitableBanner";
 import HomeSidebarBountiesSection from "./HomeSidebarBountiesSection";
-import HomeSidebarFeaturedDocsSection from "./HomeSidebarFeaturedDocsSection";
 import { css, StyleSheet } from "aphrodite";
 import RhCarousel from "~/components/shared/carousel/RhCarousel";
 import { useSelector } from "react-redux";
 import { RootState } from "~/redux";
 import { parseUser } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
-import Link from "next/link";
-import RHLogo from "../RHLogo";
 import VerificationSmallBanner from "~/components/Verification/VerificationSmallBanner";
+import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
 
-export default function HomeRightSidebar(): ReactElement {
+export default function HomeRightSidebar(): ReactElement | null {
   const [shouldLimitNumCards, setShouldLimitNumCards] = useState<boolean>(true);
   let carouselElements = getEducationalCarouselElements();
 
@@ -31,12 +29,28 @@ export default function HomeRightSidebar(): ReactElement {
     ? carouselElements.slice(1)
     : carouselElements;
 
+
+    const auth = useSelector((state: RootState) => state.auth);
+    const {
+      isDismissed: isVerificationBannerDismissed,
+      dismissFeature: dismissVerificationBanner,
+      dismissStatus: verificationBannerDismissStatus
+    } = useDismissableFeature({ auth, featureName: "verification-banner" })
+
+
+  if (verificationBannerDismissStatus === "unchecked") {
+    return null;
+  }
+
+  const isVerificationBannerVisible = verificationBannerDismissStatus === "checked" && !isVerificationBannerDismissed;
+
+
   return (
     <div className={css(styles.HomeRightSidebar)}>
       <ColumnContainer overrideStyles={styles.HomeRightSidebarContainer}>
-        {true /* Temporarily always on */ ? (
+        {isVerificationBannerVisible ? (
           <div className={css(sidebarStyles.bannerWrapper)}>
-            <VerificationSmallBanner />
+            <VerificationSmallBanner handleDismiss={dismissVerificationBanner} />
           </div>
         ) : (
           <ExitableBanner
