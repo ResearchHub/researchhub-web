@@ -44,7 +44,7 @@ const DocumentLineItems = ({
           ) : (
             <span>Not available</span>
           )}
-          {(isPaper(document) && document.authors.length > 0) && (
+          {/* {(isPaper(document) && document.authors.length > 0) && (
             <span
               style={{ marginLeft: 5 }}
               className={css(linkStyles.linkThemeSolidPrimary)}
@@ -52,7 +52,7 @@ const DocumentLineItems = ({
             >
               Are you the author?
             </span>
-          )}
+          )} */}
         </>
       ),
     },

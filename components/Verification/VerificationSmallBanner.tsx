@@ -7,12 +7,12 @@ import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { useSelector } from "react-redux";
 
-const VerificationSmallBanner = () => {
+const VerificationSmallBanner = ({ handleDismiss }: { handleDismiss: Function }) => {
   const auth = useSelector((state: any) => state.auth);
 
   return (
     <div className={css(styles.wrapper)}>
-      <div className={css(styles.closeButtonWrapper)}>
+      <div className={css(styles.closeButtonWrapper)} onClick={() => handleDismiss()}>
         <CloseIcon color={"white"} onClick={() => null} />
       </div>
       <VerifiedBadge height={32} width={32} showTooltipOnHover={false} />
