@@ -60,8 +60,8 @@ function SubmissionDetails({
             }}
           >
             <ALink
-              href={`/user/${authorProfile?.id}/overview`}
-              key={`/user/${authorProfile?.id}/overview-key`}
+              href={`/author/${authorProfile?.id}`}
+              key={`/author/${authorProfile?.id}`}
               overrideStyle={styles.link}
             >
               <>

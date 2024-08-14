@@ -58,8 +58,8 @@ const CommentHeader = ({
                   createdBy={comment.createdBy}
                   targetContent={
                     <ALink
-                      href={`/user/${authorProfile?.id}/overview`}
-                      key={`/user/${authorProfile?.id}/overview-key`}
+                      href={`/author/${authorProfile?.id}`}
+                      key={`/author/${authorProfile?.id}`}
                       weight={500}
                     >
                       {authorProfile.firstName} {authorProfile.lastName}

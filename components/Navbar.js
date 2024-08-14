@@ -154,7 +154,6 @@ const Navbar = (props) => {
     </Fragment>
   );
 
-  const isProfilePage = router.pathname === "/user/[authorId]/[tabName]";
   return (
     <Fragment>
       {/* <AddPublicationsModal
