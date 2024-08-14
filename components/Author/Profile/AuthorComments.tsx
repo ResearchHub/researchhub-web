@@ -93,7 +93,7 @@ const AuthorComments = ({
   });
 
   resultCards = limit ? resultCards.slice(0, limit) : resultCards;
-  const isLoadingInitial = resultCards.length === 0 && !commentApiResponse === null;
+  const isLoadingInitial = resultCards.length === 0 && commentApiResponse === null;
 
   if (isLoadingInitial) {
     return (
