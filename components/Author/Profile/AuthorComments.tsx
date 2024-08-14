@@ -13,6 +13,7 @@ import LoadMore from "~/components/shared/LoadMore";
 import fetchContributionsAPI from "~/components/LiveFeed/api/fetchContributionsAPI";
 import SearchEmpty from "~/components/Search/SearchEmpty";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
+import { breakpoints } from "~/config/themes/screen";
 
 const AuthorComments = ({
   withLoadMore = true,
@@ -92,7 +93,7 @@ const AuthorComments = ({
   });
 
   resultCards = limit ? resultCards.slice(0, limit) : resultCards;
-  const isLoadingInitial = resultCards.length === 0 && !commentApiResponse === null;
+  const isLoadingInitial = resultCards.length === 0 && commentApiResponse === null;
 
   if (isLoadingInitial) {
     return (
@@ -106,7 +107,7 @@ const AuthorComments = ({
 
   return (
     <div className={css(styles.commentWrapper)}>
-      {(resultCards.length === 0 && !commentApiResponse === null) && (
+      {(resultCards.length === 0 && commentApiResponse !== null) && (
         <div style={{ minHeight: 250, display: "flex", justifyContent: "center", width: "100%" }}>
           <SearchEmpty title={"No author activity found in this section."} />
         </div>
@@ -152,12 +153,15 @@ const styles = StyleSheet.create({
     display: "flex",
     borderBottom: `1px solid ${colors.GREY_LINE(1.0)}`,
     borderRadius: "4px",
-    padding: 16,
+    padding: "16px",
     background: "white",
     ":hover": {
       transition: "0.2s",
       background: colors.LIGHTER_GREY(1.0),
     },
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      padding: "0 0 16px 0",
+    }
   },
   entryWrapper: {
     cursor: "pointer",
@@ -178,10 +182,6 @@ const styles = StyleSheet.create({
   profilePage: {
     backgroundColor: "rgb(250, 250, 250)",
   },
-  profileContent: {
-    width: "1000px",
-    margin: "0 auto",
-  },
   activityWrapper: {
     width: 700,
     marginTop: 20,
@@ -196,11 +196,17 @@ const styles = StyleSheet.create({
   mainContent: {
     width: "1000px",
     margin: "0 auto",
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      width: "100%",
+    },    
   },
   tabsWrapper: {
     width: "1000px",
     margin: "0 auto",
     marginTop: 20,
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      width: "100%",
+    },    
   },
 });
 

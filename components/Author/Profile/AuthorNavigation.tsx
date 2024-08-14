@@ -3,6 +3,7 @@ import { buildAuthorTabs } from "~/components/Author/lib/utils";
 import { useRouter } from "next/router";
 import { authorProfileContext } from "~/components/Author/lib/AuthorProfileContext";
 import { css, StyleSheet } from "aphrodite";
+import { breakpoints } from "~/config/themes/screen";
 
 const AuthorNavigation = () => {
   const router = useRouter();
@@ -21,6 +22,9 @@ const styles = StyleSheet.create({
     width: "1000px",
     margin: "0 auto",
     marginTop: 20,
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      width: "100%",
+    },    
   },
 });
 

@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLongArrowAltRight } from "@fortawesome/pro-solid-svg-icons";
 import { ClipLoader } from "react-spinners";
 import colors from "~/config/themes/colors";
+import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
   profile: any;
@@ -63,7 +64,7 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview, summary, achieve
         </div>
         <div className={css(styles.mainContentWrapper)}>
           <div className={css(styles.mainContent)}>
-            <div style={{ display: "flex",  }}>
+            <div className={css(styles.mainContentSubwrapper)}>
               <div className={css(styles.sectionsWrapper)}>
                   {overview.results.length > 0 && (
                     <div className={css(styles.section)}>
@@ -134,6 +135,13 @@ const styles = StyleSheet.create({
     gap: 30,
     width: "100%",
   },
+  mainContentSubwrapper: {
+    display: "flex",
+    gap: 20,
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      flexDirection: "column",
+    },
+  },
   section: {
 
   },
@@ -147,10 +155,15 @@ const styles = StyleSheet.create({
   },
   profilePage: {
     backgroundColor: "rgb(250, 250, 250)",
+    paddingLeft: 15,
+    paddingRight: 15,    
   },
   profileContent: {
     width: "1000px",
     margin: "0 auto",
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      width: "100%",
+    },
   },
   mainContentWrapper: {
     margin: "0 auto",
@@ -162,11 +175,17 @@ const styles = StyleSheet.create({
   mainContent: {
     width: "1000px",
     margin: "0 auto",
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      width: "100%",
+    },
   },
   tabsWrapper: {
     width: "1000px",
     margin: "0 auto",
     marginTop: 20,
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      width: "100%",
+    },    
   },
   coauthorsSection: {
     backgroundColor: "rgb(250, 250, 250)",
@@ -178,6 +197,9 @@ const styles = StyleSheet.create({
     height: "max-content",
     display: "flex",
     flexDirection: "column",
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      marginLeft: 0,
+    }
   },
   activitySection: {
   },
@@ -186,6 +208,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     gap: 20,
+    // display: "none",
   },
   miscSection: {
     backgroundColor: "rgb(250, 250, 250)",
@@ -194,6 +217,9 @@ const styles = StyleSheet.create({
     padding: 20,
     minWidth: 245,
     marginLeft: 20,
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      marginLeft: 0,
+    }
   },  
 });
 

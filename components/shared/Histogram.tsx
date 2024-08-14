@@ -1,6 +1,7 @@
 import React from 'react';
 import { css, StyleSheet } from 'aphrodite';
 import { Tooltip } from "@mui/material";
+import { breakpoints } from '~/config/themes/screen';
 
 type DataPoint = {
   key: string;
@@ -66,6 +67,16 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'center',
     transition: 'height 0.3s ease',
+    // FIXME: The width of the bars should be responsive and not controlled by media queries but rather by parent container
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      width: 30,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: 20,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      width: 15,
+    }
   },
   histogramBarValue: {
     color: 'white',
