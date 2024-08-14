@@ -107,7 +107,7 @@ const AuthorComments = ({
 
   return (
     <div className={css(styles.commentWrapper)}>
-      {(resultCards.length === 0 && !commentApiResponse === null) && (
+      {(resultCards.length === 0 && commentApiResponse !== null) && (
         <div style={{ minHeight: 250, display: "flex", justifyContent: "center", width: "100%" }}>
           <SearchEmpty title={"No author activity found in this section."} />
         </div>
@@ -182,10 +182,6 @@ const styles = StyleSheet.create({
   profilePage: {
     backgroundColor: "rgb(250, 250, 250)",
   },
-  profileContent: {
-    width: "1000px",
-    margin: "0 auto",
-  },
   activityWrapper: {
     width: 700,
     marginTop: 20,
@@ -200,11 +196,17 @@ const styles = StyleSheet.create({
   mainContent: {
     width: "1000px",
     margin: "0 auto",
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      width: "100%",
+    },    
   },
   tabsWrapper: {
     width: "1000px",
     margin: "0 auto",
     marginTop: 20,
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      width: "100%",
+    },    
   },
 });
 

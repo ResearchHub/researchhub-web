@@ -53,6 +53,7 @@ import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
 import { ClipLoader } from "react-spinners";
 import LoadMore from "~/components/shared/LoadMore";
 import SearchEmpty from "~/components/Search/SearchEmpty";
+import { breakpoints } from "~/config/themes/screen";
 
 const AuthorPublications = ({
   initialPaginatedPublicationsResponse,
@@ -503,6 +504,9 @@ const styles = StyleSheet.create({
   profileContent: {
     width: "1000px",
     margin: "0 auto",
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      width: "100%",
+    },
   },
   activityWrapper: {
     width: 700,

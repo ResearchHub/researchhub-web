@@ -10,6 +10,7 @@ import AuthorComments from "~/components/Author/Profile/AuthorComments";
 import { ClipLoader } from "react-spinners";
 import colors from "~/config/themes/colors";
 import { useEffect } from "react";
+import { breakpoints } from "~/config/themes/screen";
 
 
 type Args = {
@@ -70,6 +71,9 @@ const styles = StyleSheet.create({
   profileContent: {
     width: "1000px",
     margin: "0 auto",
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      width: "100%",
+    },
   },
   activityWrapper: {
     width: 700,
@@ -85,6 +89,9 @@ const styles = StyleSheet.create({
   mainContent: {
     width: "1000px",
     margin: "0 auto",
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      width: "100%",
+    },    
   },
   wrapper: {
   },
