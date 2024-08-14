@@ -15,12 +15,6 @@ import { breakpoints } from "~/config/themes/screen";
 import Link from "next/link";
 
 const UserCard = ({ authorProfile, reputation, styleVariation }) => {
-  const router = useRouter();
-
-  const goToProfile = (id) => {
-    router.push("/user/[authorId]/[tabName]");
-  };
-
   const getName = (authorProfile) =>
     `${get(authorProfile, "first_name", "")} ${get(
       authorProfile,
@@ -33,8 +27,7 @@ const UserCard = ({ authorProfile, reputation, styleVariation }) => {
   return (
     <Link
       key={`person-${authorProfile.id}`}
-      // onClick={() => goToProfile(authorProfile.id)}
-      href={`/user/${authorProfile.id}/overview`}
+      href={`/author/${authorProfile.id}`}
       className={css(styles.card, styleVariation && styles[styleVariation])}
     >
       <div className={css(styles.detailsWrapper)}>

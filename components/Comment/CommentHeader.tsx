@@ -73,8 +73,8 @@ const CommentHeader = ({
                   createdBy={comment.createdBy}
                   targetContent={
                     <ALink
-                      href={`/user/${authorProfile?.id}/overview`}
-                      key={`/user/${authorProfile?.id}/overview-key`}
+                      href={`/author/${authorProfile?.id}`}
+                      key={`/author/${authorProfile?.id}`}
                     >
                       <div
                         style={{
@@ -100,8 +100,8 @@ const CommentHeader = ({
                           createdBy={bountyContributors[0]}
                           targetContent={
                             <ALink
-                              href={`/user/${bountyContributors[0].id}/overview`}
-                              key={`/user/${bountyContributors[0].id}/overview-key`}
+                              href={`/author/${bountyContributors[0].id}`}
+                              key={`/author/${bountyContributors[0].id}`}
                             >
                               {bountyContributors[0].firstName}{" "}
                               {bountyContributors[0].lastName}

@@ -64,8 +64,8 @@ const FeedCardHeader = ({
               createdBy={null}
               targetContent={
                 <ALink
-                  href={`/user/${firstAuthor?.id}/overview`}
-                  key={`/user/${firstAuthor?.id}/overview-key`}
+                  href={`/author/${firstAuthor?.id}`}
+                  key={`/author/${firstAuthor?.id}`}
                 >
                   {firstAuthor?.firstName}
                   {firstAuthor?.lastName && " "}
@@ -82,8 +82,8 @@ const FeedCardHeader = ({
               createdBy={users[0]}
               targetContent={
                 <ALink
-                  href={`/user/${users[0]?.authorProfile?.id}/overview`}
-                  key={`/user/${users[0]?.authorProfile?.id}/overview-key`}
+                  href={`/author/${users[0]?.authorProfile?.id}`}
+                  key={`/author/${users[0]?.authorProfile?.id}`}
                 >
                   {users[0]?.authorProfile?.firstName}
                   {users[0]?.authorProfile?.lastName && " "}
