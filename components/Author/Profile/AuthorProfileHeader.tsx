@@ -335,6 +335,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     lineHeight: 1.25,
     flexWrap: "wrap",
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      flexWrap: "nowrap",
+    }
   },
   label: {
     fontWeight: 500,

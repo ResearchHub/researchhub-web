@@ -120,7 +120,7 @@ export const parseAuthorSummaryStats = (raw: any): AuthorSummaryStats => {
     twoYearMeanCitedness: raw.summary_stats.two_year_mean_citedness,
     upvotesReceived: raw.summary_stats.upvote_count,
     amountFunded: raw.summary_stats.amount_funded || 0,
-    openAccessPct: Math.round((raw.open_access_pct || 0) * 100),
+    openAccessPct: Math.round((raw.summary_stats.open_access_pct || 0) * 100),
     peerReviewCount: raw.summary_stats.peer_review_count,
   }
 }
