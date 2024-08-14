@@ -13,6 +13,7 @@ import LoadMore from "~/components/shared/LoadMore";
 import fetchContributionsAPI from "~/components/LiveFeed/api/fetchContributionsAPI";
 import SearchEmpty from "~/components/Search/SearchEmpty";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
+import { breakpoints } from "~/config/themes/screen";
 
 const AuthorComments = ({
   withLoadMore = true,
@@ -152,12 +153,15 @@ const styles = StyleSheet.create({
     display: "flex",
     borderBottom: `1px solid ${colors.GREY_LINE(1.0)}`,
     borderRadius: "4px",
-    padding: 16,
+    padding: "16px",
     background: "white",
     ":hover": {
       transition: "0.2s",
       background: colors.LIGHTER_GREY(1.0),
     },
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      padding: "0 0 16px 0",
+    }
   },
   entryWrapper: {
     cursor: "pointer",

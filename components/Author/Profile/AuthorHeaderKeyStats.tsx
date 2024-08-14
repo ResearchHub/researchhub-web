@@ -39,12 +39,6 @@ const AuthorHeaderKeyStats = ({ summaryStats, profile }: { summaryStats: AuthorS
           <div className={css(styles.value)}>{profile.i10Index}</div>
         </div>
       </div>
-      <div className={css(styles.lineItem)}>
-        <div className={css(styles.label)}>2-year mean citedness:</div>{" "}
-        <div className={css(styles.value)}>
-          {summaryStats.twoYearMeanCitedness.toFixed(2)}
-        </div>
-      </div>
       {summaryStats.amountFunded > 0 && (
         <div className={css(styles.lineItem)}>
           <div className={css(styles.label)}>Amount funded:</div>{" "}

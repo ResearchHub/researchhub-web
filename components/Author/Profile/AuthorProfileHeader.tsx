@@ -33,6 +33,7 @@ import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import { faUser, faUserPlus } from "@fortawesome/pro-light-svg-icons";
 import UserStateBanner from "~/components/Banner/UserStateBanner";
+import { breakpoints } from "~/config/themes/screen";
 
 const AuthorProfileHeader = () => {
   const dispatch = useDispatch();
@@ -130,6 +131,7 @@ const AuthorProfileHeader = () => {
   const [isShowingFullDescription, setIsShowingFullDescription] = useState(false);
   const visibleInstitutions = isShowingAll ? profile.education : profile.education.slice(0, 1);
   const truncatedDescription = truncateText(profile.description, 300);
+  const hasEducation = profile.education.length > 0 || profile.institutions.length > 0;
   return (
     <div>
       <UserStateBanner
@@ -156,32 +158,34 @@ const AuthorProfileHeader = () => {
             )}
           </div>
           <div className={css(styles.headline)}>{profile.headline}</div>
-          <div className={css(styles.inlineLineItem)}>
-            <div className={css(styles.label)}>
-              <FontAwesomeIcon icon={faBuildingColumns} fontSize={20} />
-            </div>
+          {hasEducation && (
+            <div className={css(styles.inlineLineItem)}>
+              <div className={css(styles.label)}>
+                <FontAwesomeIcon icon={faBuildingColumns} fontSize={20} />
+              </div>
 
-            {profile.education.length === 0 ? (
-              <>
-                {/* Kobe 07-27-24: Temporarily disabling rendering of new institutions */}
-                <AuthorInstitutions institutions={profile.institutions} />
-              </>
-            ): (
-              <>
-              {visibleInstitutions.map((edu, index) => (
-                <div>
-                  {edu.summary} {index < visibleInstitutions.length - 1 ? ", " : ""}
-                </div>
-              ))}
-              {profile.education.length > 1 && (
-                <div className={css(styles.showMore)} onClick={() => setIsShowingAll(!isShowingAll)}>
-                  {isShowingAll ? "Show less" : `+ ${profile.education.length - visibleInstitutions.length} more`}
-                </div>
+              {profile.education.length === 0 ? (
+                <>
+                  {/* Kobe 07-27-24: Temporarily disabling rendering of new institutions */}
+                  <AuthorInstitutions institutions={profile.institutions} />
+                </>
+              ): (
+                <>
+                {visibleInstitutions.map((edu, index) => (
+                  <div>
+                    {edu.summary} {index < visibleInstitutions.length - 1 ? ", " : ""}
+                  </div>
+                ))}
+                {profile.education.length > 1 && (
+                  <div className={css(styles.showMore)} onClick={() => setIsShowingAll(!isShowingAll)}>
+                    {isShowingAll ? "Show less" : `+ ${profile.education.length - visibleInstitutions.length} more`}
+                  </div>
+                )}
+                </>
               )}
-              </>
-            )}
 
-          </div>
+            </div>
+          )}
 
           {(profile?.description?.length || 0) > 0 && (
             <div className={css(styles.inlineLineItem, styles.descriptionLineItem)}>
@@ -356,6 +360,12 @@ const styles = StyleSheet.create({
   repSubsection: {
     display: "flex",
     flexDirection: "column",
+    height: 230,
+    boxSizing: "border-box",
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      width: "100%",
+      flex: "0 0 100%",
+    }
   },
   sectionHeader: {
     color: "rgb(139, 137, 148, 1)",
@@ -419,6 +429,10 @@ const styles = StyleSheet.create({
     display: "flex",
     marginTop: 20,
     position: "relative",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      flexDirection: "column",
+      rowGap: 20,
+    }
   },
   section: {
     backgroundColor: "rgb(255, 255, 255)",
@@ -430,13 +444,29 @@ const styles = StyleSheet.create({
     display: "flex",
     gap: 20,
     marginTop: 20,
-    height: 230,
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      boxSizing: "border-box",
+      flexWrap: "wrap",
+    },    
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      flexDirection: "column",
+    }
   },
   subSection: {
+    height: 230,
     width: "33%",
     display: "flex",
+    boxSizing: "border-box",
     flexDirection: "column",
     justifyContent: "space-between",
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      width: "50%",
+      flex: 1,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "100%",
+      height: "auto",
+    }
   },
   name: {
     fontSize: 26,
