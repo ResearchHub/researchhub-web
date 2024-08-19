@@ -43,7 +43,7 @@ export type CaseData = {
   updatedDate: string;
   targetPaperTitle?: NullableString;
   targetPaperDOI?: NullableString;
-  providedEmail?: NullableString;
+  userEmail?: NullableString;
   authorship: Authorship | null;
   preregistrationUrl?: NullableString;
   openDataUrl?: NullableString;
@@ -119,7 +119,7 @@ export function getCases({
                   targetAuthorName: target_author_name,
                   targetPaperTitle: target_paper_title,
                   targetPaperDOI: target_paper_doi,
-                  providedEmail: resultData.provided_email,
+                  userEmail: resultData.user_email,
                   preregistrationUrl: preregistration_url,
                   openDataUrl: open_data_url,
                 },

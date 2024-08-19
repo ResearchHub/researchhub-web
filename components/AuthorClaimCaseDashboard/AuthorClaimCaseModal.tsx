@@ -111,17 +111,19 @@ function AuthorClaimModal({
                 </span>
               </div>
             </div>
-            <div>
-              <div className={css(customModalStyle.checkListHeader)}>
-                Please verify the following:
+            {openModalType === AUTHOR_CLAIM_STATUS.APPROVED && (
+              <div>
+                <div className={css(customModalStyle.checkListHeader)}>
+                  Please verify the following:
+                </div>
+                <ul className={css(customModalStyle.checkList)}>
+                  <li>Paper is open access</li>
+                  <li>
+                    Paper's citation amount reasonably matches external sources
+                  </li>
+                </ul>
               </div>
-              <ul className={css(customModalStyle.checkList)}>
-                <li>Paper is open access</li>
-                <li>
-                  Paper's citation amount reasonably matches external sources
-                </li>
-              </ul>
-            </div>
+            )}
             <div className={css(acceptRejectStyles.buttonContainer)}>
               <Button
                 label={

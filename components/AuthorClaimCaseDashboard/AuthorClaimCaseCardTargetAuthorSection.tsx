@@ -64,7 +64,13 @@ export default function AuthorClaimCaseCardTargetAuthorSection({
             {caseData?.userVerification?.verifiedName || "Not verified"}
             {caseData?.userVerification?.isVerified && <VerifiedBadge height={15} width={15}  />}
           </span>
-        </div>        
+        </div>
+        <div className={css(styles.marginBottom)}>
+          <span className={css(styles.fontGrey)}>{"Email - "}</span>
+          <span>
+            {caseData?.userEmail || "N/A"}
+          </span>
+        </div>                
       </div>
       <div className={css(styles.userDetails)}>
         <div
