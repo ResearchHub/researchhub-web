@@ -120,6 +120,14 @@ const AuthorProfileHeader = () => {
     revalidateAuthorProfile(profile.id);
   };
 
+  
+  const [isShowingAll, setIsShowingAll] = useState(false);
+  const [shouldSeeSuspensionBanner, setShouldSeeSuspensionBanner] = useState(false);
+  const [isShowingFullDescription, setIsShowingFullDescription] = useState(false);
+  const visibleInstitutions = isShowingAll ? profile.education : profile.education.slice(0, 1);
+  const truncatedDescription = truncateText(profile.description, 300);
+  const hasEducation = profile.education.length > 0 || profile.institutions.length > 0;
+  
   useEffect(() => {
     (async () => {
       // This is necessary in order to have author data appear in the "edit profile" modal
@@ -127,17 +135,24 @@ const AuthorProfileHeader = () => {
     })();
   }, []);
 
-  const [isShowingAll, setIsShowingAll] = useState(false);
-  const [isShowingFullDescription, setIsShowingFullDescription] = useState(false);
-  const visibleInstitutions = isShowingAll ? profile.education : profile.education.slice(0, 1);
-  const truncatedDescription = truncateText(profile.description, 300);
-  const hasEducation = profile.education.length > 0 || profile.institutions.length > 0;
+  useEffect(() => {
+    if (currentUser) {
+      setShouldSeeSuspensionBanner(
+        Boolean(
+          (profile.user?.isProbableSpammer || profile.user?.isSuspended) && (currentUser?.moderator || currentUser?.editorOf)
+        )
+      );
+    }
+  }, [currentUser])
+
   return (
     <div>
-      <UserStateBanner
-        probable_spammer={profile.user?.isProbableSpammer}
-        is_suspended={profile.user?.isSuspended}
-      />      
+      {shouldSeeSuspensionBanner && (
+        <UserStateBanner
+          probable_spammer={profile.user?.isProbableSpammer}
+          is_suspended={profile.user?.isSuspended}
+        />      
+      )}
       <UserInfoModal onSave={onProfileSave} />
       <div className={css(styles.bannerSection)}>
         <WelcomeToProfileBanner profile={profile} />
