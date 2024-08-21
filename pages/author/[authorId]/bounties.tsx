@@ -111,12 +111,15 @@ const styles = StyleSheet.create({
 
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  const [profile, overview, summary, achievements] = await fetchProfileData({ authorId: ctx!.params!.authorId as string });
+  const [profile, summary, achievements] = await fetchProfileData({
+    authorId: ctx!.params!.authorId as string,
+    fetchSummary: true,
+    fetchAchievements: true,
+  });
 
   return {
     props: {
       profile,
-      overview,
       summary,
       achievements,
     },
