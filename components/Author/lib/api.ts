@@ -109,11 +109,36 @@ export const removePublicationFromAuthorProfile = ({
     .then(Helpers.parseJSON);
 };
 
-export const fetchProfileData = async ({ authorId }: { authorId: string }) => {
+export const fetchProfileData = async ({
+  authorId,
+  fetchOverview = false,
+  fetchAchievements = false,
+  fetchSummary = false,
+}: {
+  authorId: string,
+  fetchOverview?: boolean,
+  fetchAchievements?: boolean,
+  fetchSummary?: boolean,
+}) => {
+  const promises:Array<Promise<any>> = [];
+  
   const profilePromise = fetchAuthorProfile({ authorId });
-  // const overviewPromise = fetchAuthorOverview({ authorId });
-  const summaryPromise = fetchAuthorSummary({ authorId });
-  const achievementPromise = fetchAuthorAchievements({ authorId });
+  promises.push(profilePromise);
 
-  return Promise.all([profilePromise, /*overviewPromise, */ summaryPromise, achievementPromise]);
+  if (fetchOverview) {
+    const overviewPromise = fetchAuthorOverview({ authorId });
+    promises.push(overviewPromise);
+  }
+
+  if (fetchSummary) {
+    const summaryPromise = fetchAuthorSummary({ authorId });
+    promises.push(summaryPromise);
+  }
+
+  if (fetchAchievements) {
+    const achievementPromise = fetchAuthorAchievements({ authorId });
+    promises.push(achievementPromise);
+  }
+
+  return Promise.all(promises);
 }
