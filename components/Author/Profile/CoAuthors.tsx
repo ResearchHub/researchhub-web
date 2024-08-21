@@ -19,7 +19,7 @@ const CoAuthors = ({ coauthors }: { coauthors: AuthorProfile[] }) => {
       }
       <div>
         {coauthors.map((coauthor) => (
-          <Link href={`/author/${coauthor.id}`} className={css(styles.author)} key={coauthor.id}>
+          <Link href={`/author/${coauthor.id}`} className={css(styles.author)} key={coauthor.id} prefetch={false}>
             <Avatar src={coauthor.profileImage} sx={{ width: 25, height: 25, fontSize: 13, }}>
               {isEmpty(coauthor.profileImage) && ((coauthor?.firstName?.[0] ?? ""))}
             </Avatar>
