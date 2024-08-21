@@ -1,3 +1,6 @@
+import { FullAuthorProfile } from "~/components/Author/lib/types";
+import { AuthorProfile } from "~/config/types/root_types";
+
 export type ineligibleReason =
   | "NOT_OPEN_ACCESS"
   | "NOT_SUPPORTED_TYPE"
@@ -10,15 +13,20 @@ export type RewardsEligibilityInfo = {
 };
 
 export const getRewardsEligibilityInfo = ({
-  authorships,
+  authors,
   fullAuthorProfile,
   targetDoc,
   isOpenAccess,
+}: {
+  authors: AuthorProfile[];
+  fullAuthorProfile: FullAuthorProfile;
+  targetDoc: any;
+  isOpenAccess: boolean;
 }): RewardsEligibilityInfo => {
-  const isFirstAuthor = authorships.find(
-    (authorship) =>
-      authorship.authorPosition === "first" &&
-      authorship.authorId === fullAuthorProfile.id
+  const isFirstAuthor = authors.find(
+    (author) =>
+      author?.authorship?.authorPosition === "first" &&
+      author.id === fullAuthorProfile.id
   );
   const isSupportedType = ["article", "preprint"].includes(
     targetDoc?.work_type
@@ -34,7 +42,7 @@ export const getRewardsEligibilityInfo = ({
   }
 
   return {
-    isEligibleForRewards: isFirstAuthor && isSupportedType,
+    isEligibleForRewards: Boolean(isFirstAuthor && isSupportedType),
     reason: ineligibleReason,
   };
 };

@@ -3,6 +3,7 @@ import { Hub } from "./hub";
 import Bounty from "./bounty";
 import { Purchase } from "./purchase";
 import { formatDateStandard } from "../utils/dates";
+import { Authorship } from "~/components/Document/lib/types";
 
 export type ID = string | number | null | undefined;
 export type KeyOf<ObjectType> = keyof ObjectType;
@@ -101,6 +102,7 @@ export type AuthorProfile = {
   orcid?: OrcidConnect;
   openAlexIds: Array<string>;
   education: Array<Education>;
+  authorship?: Authorship;
 };
 
 /**
@@ -326,6 +328,12 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
 
   if (!parsed.firstName) {
     parsed.firstName = "N/A";
+  }
+
+  if (raw.authorship) {
+    parsed.authorship = {} as Authorship;
+    parsed.authorship.authorPosition = raw.authorship.position;
+    parsed.authorship.isCorresponding = raw.authorship.is_corresponding;
   }
 
   return parsed;

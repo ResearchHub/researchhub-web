@@ -14,7 +14,7 @@ import AddPublicationsModal from "~/components/Publication/AddPublicationsModal"
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { useSelector, connect, useDispatch } from "react-redux";
 import Button from "~/components/Form/Button";
-import { ID, parseUser } from "~/config/types/root_types";
+import { ID, parseAuthorProfile, parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
 import { filterNull, isEmpty } from "~/config/utils/nullchecks";
 import UnifiedDocFeedCardPlaceholder from "~/components/UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
@@ -33,7 +33,6 @@ import {
 import FeedCard from "../Tabs/FeedCard";
 import {
   Authorship,
-  parseAuthorship,
   parseGenericDocument,
   parsePaper,
 } from "~/components/Document/lib/types";
@@ -304,6 +303,8 @@ const AuthorPublications = ({
                       : docTypeLabel === "discussion"
                         ? "post"
                         : docTypeLabel;
+
+
                   const targetDoc = !RESEARCHHUB_POST_DOCUMENT_TYPES.includes(
                     formattedDocType
                   )
@@ -311,11 +312,11 @@ const AuthorPublications = ({
                     : uniDoc.documents[0];
                   const docID = targetDoc.id;
 
-                  const authorships: Authorship[] =
-                    targetDoc.authorships.map(parseAuthorship);
+
+                  const authors = targetDoc.authors.map(parseAuthorProfile);
 
                   const rewardEligibilityInfo = getRewardsEligibilityInfo({
-                    authorships,
+                    authors,
                     fullAuthorProfile,
                     targetDoc,
                     isOpenAccess: targetDoc.is_open_access,
@@ -389,9 +390,9 @@ const AuthorPublications = ({
                                 paperId: targetDoc.id,
                                 paperTitle: targetDoc.title,
                                 authorship:
-                                  authorships.find(
-                                    (authorship) =>
-                                      authorship.authorId === fullAuthorProfile.id
+                                  authors.find(
+                                    (author) =>
+                                      author.id === fullAuthorProfile.id
                                   ) || null,
                                 isOpen: true,
                               });

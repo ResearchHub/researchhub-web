@@ -44,7 +44,6 @@ import {
   Authorship,
   Paper,
   Post,
-  parseAuthorship,
   parsePaper,
   parsePost,
 } from "~/components/Document/lib/types";
@@ -305,25 +304,7 @@ function FeedCard({
     numOfVisibleHubs--;
   }
 
-  // We want to shim all authors into the authorship format so it renders properly.
-  // To properly address, we will need to refactor this component.
-  let authorships: Authorship[] = [];
-  if (document?.authorships?.length > 0) {
-    authorships = document.authorships.map(a => parseAuthorship(a));
-  }
-  else if (authors && authors.length > 0) {
-    authorships = authors.map(a => {
-      const rawAuthorship = {
-        raw_author_name: a.firstName + " " + a.lastName,
-        id: a.id,
-        author: {
-          profile_image: a.profileImage,
-          id: a.id,
-        }
-      }
-      return parseAuthorship(rawAuthorship);
-    });
-  }
+  console.log('authors', authors)
 
   return (
     <div
@@ -376,12 +357,12 @@ function FeedCard({
 
                         <div style={{ display: "flex" }}>
                           <div style={{ display: "flex", gap: 5, alignItems: "center", width: "100%", }}>
-                            {Boolean(authorships[0]) && (
+                            {Boolean(authors[0]) && (
                               <span className={css(styles.authors)}>
-                                {authorships[0].rawAuthorName}
+                                {authors[0].firstName + " " + authors[0].lastName}
                               </span>
                             )}
-                            {authorships?.length > 1 && <span>{` et al.`}</span>}
+                            {authors?.length > 1 && <span>{` et al.`}</span>}
 
                             {parsedDoc?.createdDate && (
                               <>
@@ -394,7 +375,7 @@ function FeedCard({
 
                             <div style={{ alignSelf: "flex-end", marginLeft: "auto", }}>
                               <AvatarGroup
-                                total={authorships.length}
+                                total={authors.length}
                                 max={4}
                                 spacing={6}
                                 componentsProps={{
@@ -407,10 +388,10 @@ function FeedCard({
                                   }
                                 }}
                               >
-                                {authorships.map((authorship) => (
-                                  <Tooltip title={authorship.rawAuthorName}>
-                                    <Avatar src={authorship.author.profileImage} sx={{ width: 22, height: 22, fontSize: 13, }}>
-                                      {isEmpty(authorship.author.profileImage) && authorship.rawAuthorName[0]}
+                                {authors.map((author) => (
+                                  <Tooltip title={author.firstName + " " + author.lastName}>
+                                    <Avatar src={author.profileImage} sx={{ width: 22, height: 22, fontSize: 13, }}>
+                                      {isEmpty(author.profileImage) && (author.firstName || "")[0]}
                                     </Avatar>
                                   </Tooltip>
                                 ))}
