@@ -3,28 +3,26 @@ import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons";
 import { Fragment, useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-
+import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { MessageActions } from "~/redux/message";
 import { BannerActions } from "~/redux/banner";
 
 import colors from "~/config/themes/colors";
 
 const UserStateBanner = ({ is_suspended, probable_spammer }) => {
+  const currentUser = useCurrentUser();
   const [showBanner, setShowBanner] = useState(false);
-  useEffect(() => {
-    determineBanner();
-  }, []);
 
   useEffect(() => {
-    determineBanner();
-  }, [is_suspended, probable_spammer]);
-
-  const determineBanner = () => {
-    if (is_suspended || probable_spammer) {
-      return setShowBanner(true);
+    if (currentUser) {
+      setShowBanner(
+        Boolean(
+          (probable_spammer || is_suspended) &&
+            (currentUser?.moderator || currentUser?.editorOf)
+        )
+      );
     }
-    return setShowBanner(false);
-  };
+  }, [currentUser]);
 
   const getRootStyle = () => {
     let classNames = [styles.bannerContainer];
