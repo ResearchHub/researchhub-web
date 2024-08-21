@@ -20,15 +20,15 @@ import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
   profile: any;
-  overview: any;
+  // overview: any;
   summary: any;
   achievements: any;
 };
 
-const AuthorProfilePage: NextPage<Args> = ({ profile, overview, summary, achievements }) => {
+const AuthorProfilePage: NextPage<Args> = ({ profile, /*overview,*/ summary, achievements }) => {
   const router = useRouter();
 
-  if (!profile || !overview || !summary || !achievements) {
+  if (!profile /*|| !overview */ || !summary || !achievements) {
     // TODO: Need a skeleton loading state
     return (
       <div style={{
@@ -66,7 +66,7 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview, summary, achieve
           <div className={css(styles.mainContent)}>
             <div className={css(styles.mainContentSubwrapper)}>
               <div className={css(styles.sectionsWrapper)}>
-                  {overview.results.length > 0 && (
+                  {/* {overview.results.length > 0 && (
                     <div className={css(styles.section)}>
                       <AuthorWorks works={overview.results} />
                       <ALink theme="solidPrimary" href={`/author/${fullAuthorProfile.id}/publications`}>
@@ -76,7 +76,7 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, overview, summary, achieve
                         </div>
                       </ALink>
                     </div>
-                  )}
+                  )} */}
                   <div className={css(styles.section)}>
                     <div className={css(styles.sectionHeader)}>Recent Activity</div>
                   <AuthorComments
@@ -224,12 +224,12 @@ const styles = StyleSheet.create({
 });
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  const [profile, overview, summary, achievements] = await fetchProfileData({ authorId: ctx!.params!.authorId as string });
+  const [profile, /*overview,*/ summary, achievements] = await fetchProfileData({ authorId: ctx!.params!.authorId as string });
 
   return {
     props: {
       profile,
-      overview,
+      // overview,
       summary,
       achievements,
     },

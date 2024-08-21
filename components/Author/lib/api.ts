@@ -111,9 +111,9 @@ export const removePublicationFromAuthorProfile = ({
 
 export const fetchProfileData = async ({ authorId }: { authorId: string }) => {
   const profilePromise = fetchAuthorProfile({ authorId });
-  const overviewPromise = fetchAuthorOverview({ authorId });
+  // const overviewPromise = fetchAuthorOverview({ authorId });
   const summaryPromise = fetchAuthorSummary({ authorId });
   const achievementPromise = fetchAuthorAchievements({ authorId });
 
-  return Promise.all([profilePromise, overviewPromise, summaryPromise, achievementPromise]);
+  return Promise.all([profilePromise, /*overviewPromise, */ summaryPromise, achievementPromise]);
 }
