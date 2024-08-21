@@ -23,7 +23,7 @@ const PeerReviewSidebarItem = ({
 
   return (
     <div className={css(styles.reviewSidebarItemContainer)}>
-      <Link style={{ textDecoration: "none" }} href={url}>
+      <Link style={{ textDecoration: "none" }} href={url} prefetch={false}>
         <div className={css(styles.reviewSidebarItem)}>
           <div className={css(styles.reviewSidebarItemHeader)}>
             <UserTooltip

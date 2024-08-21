@@ -35,6 +35,7 @@ const ALink: FunctionComponent<Props> = ({
 }): ReactElement => {
   return (
     <Link
+      prefetch={false}
       href={href}
       as={as}
       className={css(
