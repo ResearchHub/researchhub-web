@@ -90,7 +90,7 @@ const NotificationEntry = (props) => {
     if (notification_type === "IDENTITY_VERIFICATION_UPDATED") {
       return "Congratulations! Your account has been verified by the ResearchHub team. ";
     } else if (notification_type === "PAPER_CLAIM_PAYOUT") {
-      return "Congratulations! You claim has been approved and RSC has been awarded to your account.";
+      return "Congratulations! Your claim has been approved and RSC has been awarded to your account.";
     } else if (notification_type === "PUBLICATIONS_ADDED") {
       return (
         <div style={{ display: "flex", flexDirection: "column" }}>

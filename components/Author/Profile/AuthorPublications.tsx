@@ -8,7 +8,6 @@ import { css, StyleSheet } from "aphrodite";
 import { useEffect, useState } from "react";
 import {
   UnifiedCard,
-  getDocumentCard,
 } from "~/components/UnifiedDocFeed/utils/getDocumentCard";
 import AddPublicationsModal from "~/components/Publication/AddPublicationsModal";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
@@ -31,12 +30,6 @@ import {
   getFEUnifiedDocType,
 } from "~/config/utils/getUnifiedDocType";
 import FeedCard from "../Tabs/FeedCard";
-import {
-  Authorship,
-  parseGenericDocument,
-  parsePaper,
-} from "~/components/Document/lib/types";
-import MoreHoriz from "@mui/icons-material/MoreHoriz";
 import ClaimRewardsModal from "~/components/ResearchCoin/ClaimRewardsModal";
 import ClaimRewardsButton from "~/components/shared/ClaimRewardsButton";
 import { getRewardsEligibilityInfo } from "~/components/ResearchCoin/lib/rewardsUtil";
@@ -48,8 +41,6 @@ import { MessageActions } from "~/redux/message";
 import { useAlert } from "react-alert";
 import { Tooltip } from "@mui/material";
 import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
-import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
-import { ClipLoader } from "react-spinners";
 import LoadMore from "~/components/shared/LoadMore";
 import SearchEmpty from "~/components/Search/SearchEmpty";
 import { breakpoints } from "~/config/themes/screen";
@@ -77,12 +68,10 @@ const AuthorPublications = ({
     isOpen: boolean;
     paperId: string | null;
     paperTitle: string;
-    authorship: Authorship | null;
   }>({
     isOpen: false,
     paperId: null,
     paperTitle: "",
-    authorship: null,
   });
 
   const resetRewardsModalState = () => {
@@ -90,7 +79,6 @@ const AuthorPublications = ({
       isOpen: false,
       paperId: null,
       paperTitle: "",
-      authorship: null,
     });
   };
 
@@ -103,6 +91,8 @@ const AuthorPublications = ({
     setFullAuthorProfile,
     setIsLoadingPublications,
     isLoadingPublications,
+    summaryStats,
+    setSummaryStats,
   } = authorProfileContext();
 
   useEffect(() => {
@@ -174,7 +164,6 @@ const AuthorPublications = ({
         paperId={rewardsModalState.paperId}
         isOpen={rewardsModalState.isOpen}
         paperTitle={rewardsModalState.paperTitle}
-        authorship={rewardsModalState.authorship}
         closeModal={() => resetRewardsModalState()}
       />
 
@@ -355,10 +344,9 @@ const AuthorPublications = ({
                                   ...publicationsResponse,
                                 };
 
-                                fullAuthorProfile.summaryStats.worksCount =
-                                  fullAuthorProfile.summaryStats.worksCount - 1;
-                                setFullAuthorProfile({ ...fullAuthorProfile });
+                                summaryStats.worksCount = summaryStats.worksCount - 1
                                 setPublicationsResponse(updatedResponse);
+                                setSummaryStats({ ...summaryStats });
                               })
                               .catch(() => {
                                 dispatch(
@@ -389,11 +377,6 @@ const AuthorPublications = ({
                               setRewardsModalState({
                                 paperId: targetDoc.id,
                                 paperTitle: targetDoc.title,
-                                authorship:
-                                  authors.find(
-                                    (author) =>
-                                      author.id === fullAuthorProfile.id
-                                  ) || null,
                                 isOpen: true,
                               });
                             }}

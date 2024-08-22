@@ -15,7 +15,6 @@ import {
 import { submitRewardsClaim, fetchEligiblePaperRewards } from "./lib/api";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { ID } from "~/config/types/root_types";
-import { Authorship } from "../Document/lib/types";
 import { RewardSummary, parseRewardSummary } from "./lib/types";
 import ClaimRewardSummary from "./lib/ClaimRewardSummary";
 import FormInput from "../Form/FormInput";
@@ -29,7 +28,6 @@ interface Props {
   isOpen: boolean;
   paperId: ID;
   paperTitle: string;
-  authorship: Authorship | null;
   closeModal: () => void;
 }
 
@@ -128,7 +126,6 @@ const blockStyles = StyleSheet.create({
 const ClaimRewardsModal = ({
   paperId,
   paperTitle,
-  authorship,
   isOpen,
   closeModal,
 }: Props) => {
@@ -167,7 +164,6 @@ const ClaimRewardsModal = ({
     try {
       const response = await submitRewardsClaim({
         paperId,
-        authorshipId: authorship!.id,
         userId: currentUser.id,
         preregistrationUrl,
         openDataUrl,

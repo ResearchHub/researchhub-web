@@ -23,7 +23,6 @@ import { PaperActions } from "~/redux/paper";
 import {
   AuthorProfile,
   RhDocumentType,
-  UnifiedDocument,
 } from "~/config/types/root_types";
 import { useState, useEffect, SyntheticEvent } from "react";
 import colors, {
@@ -41,7 +40,6 @@ import ContentBadge from "~/components/ContentBadge";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import {
-  Authorship,
   Paper,
   Post,
   parsePaper,
@@ -304,8 +302,6 @@ function FeedCard({
     numOfVisibleHubs--;
   }
 
-  console.log('authors', authors)
-
   return (
     <div
       className={css(
@@ -388,13 +384,15 @@ function FeedCard({
                                   }
                                 }}
                               >
-                                {authors.map((author) => (
-                                  <Tooltip title={author.firstName + " " + author.lastName}>
-                                    <Avatar src={author.profileImage} sx={{ width: 22, height: 22, fontSize: 13, }}>
-                                      {isEmpty(author.profileImage) && (author.firstName || "")[0]}
-                                    </Avatar>
-                                  </Tooltip>
-                                ))}
+                                {authors.map((author) => {
+                                  return (
+                                    <Tooltip title={author.firstName + " " + author.lastName}>
+                                      <Avatar src={author.profileImage} sx={{ width: 22, height: 22, fontSize: 13, }}>
+                                        {isEmpty(author.profileImage) && (author.firstName || "")[0]}
+                                      </Avatar>
+                                    </Tooltip>
+                                  )
+                                })}
                               </AvatarGroup>
                             </div>
 
