@@ -8,13 +8,12 @@ import { css, StyleSheet } from "aphrodite";
 import { useEffect, useState } from "react";
 import {
   UnifiedCard,
-  getDocumentCard,
 } from "~/components/UnifiedDocFeed/utils/getDocumentCard";
 import AddPublicationsModal from "~/components/Publication/AddPublicationsModal";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { useSelector, connect, useDispatch } from "react-redux";
 import Button from "~/components/Form/Button";
-import { ID, parseUser } from "~/config/types/root_types";
+import { ID, parseAuthorProfile, parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
 import { filterNull, isEmpty } from "~/config/utils/nullchecks";
 import UnifiedDocFeedCardPlaceholder from "~/components/UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
@@ -31,13 +30,6 @@ import {
   getFEUnifiedDocType,
 } from "~/config/utils/getUnifiedDocType";
 import FeedCard from "../Tabs/FeedCard";
-import {
-  Authorship,
-  parseAuthorship,
-  parseGenericDocument,
-  parsePaper,
-} from "~/components/Document/lib/types";
-import MoreHoriz from "@mui/icons-material/MoreHoriz";
 import ClaimRewardsModal from "~/components/ResearchCoin/ClaimRewardsModal";
 import ClaimRewardsButton from "~/components/shared/ClaimRewardsButton";
 import { getRewardsEligibilityInfo } from "~/components/ResearchCoin/lib/rewardsUtil";
@@ -49,8 +41,6 @@ import { MessageActions } from "~/redux/message";
 import { useAlert } from "react-alert";
 import { Tooltip } from "@mui/material";
 import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
-import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
-import { ClipLoader } from "react-spinners";
 import LoadMore from "~/components/shared/LoadMore";
 import SearchEmpty from "~/components/Search/SearchEmpty";
 import { breakpoints } from "~/config/themes/screen";
@@ -78,12 +68,10 @@ const AuthorPublications = ({
     isOpen: boolean;
     paperId: string | null;
     paperTitle: string;
-    authorship: Authorship | null;
   }>({
     isOpen: false,
     paperId: null,
     paperTitle: "",
-    authorship: null,
   });
 
   const resetRewardsModalState = () => {
@@ -91,7 +79,6 @@ const AuthorPublications = ({
       isOpen: false,
       paperId: null,
       paperTitle: "",
-      authorship: null,
     });
   };
 
@@ -104,6 +91,8 @@ const AuthorPublications = ({
     setFullAuthorProfile,
     setIsLoadingPublications,
     isLoadingPublications,
+    summaryStats,
+    setSummaryStats,
   } = authorProfileContext();
 
   useEffect(() => {
@@ -175,7 +164,6 @@ const AuthorPublications = ({
         paperId={rewardsModalState.paperId}
         isOpen={rewardsModalState.isOpen}
         paperTitle={rewardsModalState.paperTitle}
-        authorship={rewardsModalState.authorship}
         closeModal={() => resetRewardsModalState()}
       />
 
@@ -304,6 +292,8 @@ const AuthorPublications = ({
                       : docTypeLabel === "discussion"
                         ? "post"
                         : docTypeLabel;
+
+
                   const targetDoc = !RESEARCHHUB_POST_DOCUMENT_TYPES.includes(
                     formattedDocType
                   )
@@ -311,11 +301,11 @@ const AuthorPublications = ({
                     : uniDoc.documents[0];
                   const docID = targetDoc.id;
 
-                  const authorships: Authorship[] =
-                    targetDoc.authorships.map(parseAuthorship);
+
+                  const authors = targetDoc.authors.map(parseAuthorProfile);
 
                   const rewardEligibilityInfo = getRewardsEligibilityInfo({
-                    authorships,
+                    authors,
                     fullAuthorProfile,
                     targetDoc,
                     isOpenAccess: targetDoc.is_open_access,
@@ -354,10 +344,9 @@ const AuthorPublications = ({
                                   ...publicationsResponse,
                                 };
 
-                                fullAuthorProfile.summaryStats.worksCount =
-                                  fullAuthorProfile.summaryStats.worksCount - 1;
-                                setFullAuthorProfile({ ...fullAuthorProfile });
+                                summaryStats.worksCount = summaryStats.worksCount - 1
                                 setPublicationsResponse(updatedResponse);
+                                setSummaryStats({ ...summaryStats });
                               })
                               .catch(() => {
                                 dispatch(
@@ -388,11 +377,6 @@ const AuthorPublications = ({
                               setRewardsModalState({
                                 paperId: targetDoc.id,
                                 paperTitle: targetDoc.title,
-                                authorship:
-                                  authorships.find(
-                                    (authorship) =>
-                                      authorship.authorId === fullAuthorProfile.id
-                                  ) || null,
                                 isOpen: true,
                               });
                             }}

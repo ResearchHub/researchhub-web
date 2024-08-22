@@ -4,7 +4,6 @@ import { Helpers } from "@quantfive/js-web-config";
 
 interface Props {
   paperId: ID;
-  authorshipId: ID;
   userId: ID;
   preregistrationUrl?: string | null;
   openDataUrl?: string | null;
@@ -12,7 +11,6 @@ interface Props {
 
 export const submitRewardsClaim = ({
   paperId,
-  authorshipId,
   userId,
   preregistrationUrl,
   openDataUrl,
@@ -22,7 +20,6 @@ export const submitRewardsClaim = ({
     url,
     API.POST_CONFIG({
       target_paper_id: paperId,
-      authorship_id: authorshipId,
       requestor: userId,
       creator: userId,
       ...(openDataUrl ? {open_data_url: openDataUrl} : {}),
