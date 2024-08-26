@@ -27,7 +27,7 @@ export const getAchievmentDetails = ({
   if (achievement === "OPEN_SCIENCE_SUPPORTER") {
     return {
       icon: <FontAwesomeIcon style={{ color: "black" }} icon={faHandHoldingDollar} fontSize={24} />,
-      title: "Open Access Advocate",
+      title: "Open Science Supporter",
       details: `Provided funding for open science`,
     };
   } else if (achievement === "CITED_AUTHOR") {
