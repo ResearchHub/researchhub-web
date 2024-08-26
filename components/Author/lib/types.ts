@@ -109,7 +109,16 @@ function ensureSufficientYears(activityData: YearlyActivity[]): YearlyActivity[]
 }  
 
 export const parseAuthorAchievements = (raw: any): Array<Achievement> => {
-  return Object.keys(raw.achievements).map(key => raw.achievements[key]) || [];
+  let achievements: Achievement[] = [];
+  for (const key in raw.achievements) {
+    if (raw.achievements.hasOwnProperty(key)) {
+      const value = raw.achievements[key];
+      if (value["value"] >= value["milestones"][0]) {
+        achievements.push(key as Achievement);
+      }
+    }
+  }
+  return achievements;
 }
 
 export const parseAuthorSummaryStats = (raw: any): AuthorSummaryStats => {
