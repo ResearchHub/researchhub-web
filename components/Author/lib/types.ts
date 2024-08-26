@@ -11,8 +11,7 @@ import {
   parseEducation,
 } from "~/config/types/root_types";
 
-export type Achievement = "CITED_AUTHOR" | "OPEN_ACCESS" | "OPEN_SCIENCE_SUPPORTER" | "EXPERT_PEER_REVIEWER_1" | "EXPERT_PEER_REVIEWER_2" | "EXPERT_PEER_REVIEWER_3" | "EXPERT_PEER_REVIEWER_4" | "EXPERT_PEER_REVIEWER_5" | "HIGHLY_UPVOTED_1" | "HIGHLY_UPVOTED_2" | "HIGHLY_UPVOTED_3" | "HIGHLY_UPVOTED_4" | "HIGHLY_UPVOTED_5";
-
+export type Achievement = "CITED_AUTHOR" | "OPEN_ACCESS" | "OPEN_SCIENCE_SUPPORTER" | "EXPERT_PEER_REVIEWER" | "HIGHLY_UPVOTED";
 export type FullAuthorProfile = {
   id: ID;
   firstName: string;
@@ -110,7 +109,16 @@ function ensureSufficientYears(activityData: YearlyActivity[]): YearlyActivity[]
 }  
 
 export const parseAuthorAchievements = (raw: any): Array<Achievement> => {
-  return raw.achievements || [];
+  let achievements: Achievement[] = [];
+  for (const key in raw.achievements) {
+    if (raw.achievements.hasOwnProperty(key)) {
+      const achievement = raw.achievements[key];
+      if (achievement["value"] >= achievement["milestones"][0]) {
+        achievements.push(key as Achievement);
+      }
+    }
+  }
+  return achievements;
 }
 
 export const parseAuthorSummaryStats = (raw: any): AuthorSummaryStats => {
