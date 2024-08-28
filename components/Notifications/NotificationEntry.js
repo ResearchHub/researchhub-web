@@ -9,7 +9,6 @@ import colors from "../../config/themes/colors";
 import Ripples from "react-ripples";
 import Router from "next/router";
 import VerifiedBadge from "../Verification/VerifiedBadge";
-import { parseUnifiedDocument } from "~/config/types/root_types";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -19,6 +18,13 @@ import {
 import { truncateText } from "~/config/utils/string";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
+import { RSCIcon } from "~/config/themes/icons";
+import Bounty, { formatBountyAmount } from "~/config/types/bounty";
+import ContentBadge from "~/components/ContentBadge";
+import numeral from "numeral";
+import HubTag from "../Hubs/HubTag";
+import { parseHub } from "~/config/types/hub";
+import { parseUnifiedDocument } from "~/config/types/root_types";
 
 const NotificationEntry = (props) => {
   const { notification, data } = props;
@@ -79,6 +85,10 @@ const NotificationEntry = (props) => {
   };
 
   const formatBody = (notification, data) => {
+    if (!currentUser) {
+      return null;
+    }
+
     const { notification_type } = data;
     const { body } = notification;
     const onClick = (e) => {
@@ -91,6 +101,58 @@ const NotificationEntry = (props) => {
       return "Congratulations! Your account has been verified by the ResearchHub team. ";
     } else if (notification_type === "PAPER_CLAIM_PAYOUT") {
       return "Congratulations! Your claim has been approved and RSC has been awarded to your account.";
+    } else if (notification_type === "BOUNTY_FOR_YOU") {
+      console.log("data", data);
+
+      const rawHub = JSON.parse(data.extra.hub_details);
+      const hub = parseHub(rawHub);
+      const unifiedDocument = parseUnifiedDocument(data.unified_document);
+      const url = getUrlToUniDoc(unifiedDocument);
+
+      return (
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div>
+            A new bounty earning opportunity is recommended for you based on
+            your expertise {` `} on{" "}
+            <HyperLink
+              link={{ href: url + "/bounties" }}
+              onClick={onClick}
+              style={styles.link}
+              text={unifiedDocument.document.title}
+            />
+          </div>
+          <span>
+            <div
+              style={{
+                display: "flex",
+                columnGap: 5,
+                alignItems: "center",
+                marginTop: 6,
+                marginBottom: 6,
+              }}
+            >
+              <HubTag hub={hub} />
+              <ContentBadge
+                badgeOverride={styles.badge}
+                contentType="bounty"
+                bountyAmount={data.extra.amount}
+                label={
+                  <div style={{ display: "flex" }}>
+                    <div style={{ flex: 1 }} className={css(styles.mobile)}>
+                      {numeral(
+                        formatBountyAmount({
+                          amount: data.extra.amount,
+                        })
+                      ).format("0,0a")}{" "}
+                      RSC
+                    </div>
+                  </div>
+                }
+              />
+            </div>
+          </span>
+        </div>
+      );
     } else if (notification_type === "PUBLICATIONS_ADDED") {
       return (
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -170,6 +232,15 @@ const NotificationEntry = (props) => {
           <div style={{ marginLeft: -3 }}>
             <VerifiedBadge showTooltipOnHover={false} height={40} width={40} />
           </div>
+        ) : notificationType === "BOUNTY_FOR_YOU" ? (
+          <div style={{ marginLeft: -3 }}>
+            <ResearchCoinIcon
+              version={2}
+              height={40}
+              width={40}
+              color={colors.ORANGE_DARK2()}
+            />
+          </div>
         ) : notificationType === "PUBLICATIONS_ADDED" ? (
           <FontAwesomeIcon
             icon={faFileCirclePlus}
@@ -196,6 +267,13 @@ const NotificationEntry = (props) => {
 };
 
 const styles = StyleSheet.create({
+  badge: {
+    padding: "4px 12px",
+    fontWeight: 400,
+    marginRight: 10,
+    borderRadius: "50px",
+    fontSize: 13,
+  },
   bold: {
     fontWeight: "bold",
   },

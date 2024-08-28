@@ -12,7 +12,7 @@ import { captureEvent } from "@sentry/browser";
 import { connect, useSelector } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { MessageActions } from "~/redux/message";
-import { ReactElement, useState, useEffect } from "react";
+import { ReactElement, useState, useEffect, useContext } from "react";
 import { trackEvent } from "~/config/utils/analytics";
 import BaseModal from "../Modals/BaseModal";
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
@@ -30,6 +30,9 @@ import { RootState } from "~/redux";
 import { ID, parseUser } from "~/config/types/root_types";
 import FormSelect from "../Form/FormSelect";
 import { COMMENT_TYPES, COMMENT_TYPE_OPTIONS } from "../Comment/lib/types";
+import { Hub, parseHub } from "~/config/types/hub";
+import fetchReputationHubs from "../Hubs/api/fetchReputationHubs";
+import { DocumentContext } from "../Document/lib/DocumentContext";
 
 type Props = {
   isOpen: boolean;
@@ -72,7 +75,10 @@ function BountyModal({
   const [hasMaxRscAlert, setHasMaxRscAlert] = useState(false);
   const [bountyType, setBountyType] = useState<COMMENT_TYPES | null>(null);
   const [success, setSuccess] = useState(false);
+  const [reputationHubs, setReputationHubs] = useState<Array<Hub>>([]);
+  const [selectedReputationHubs, setSelectedReputationHubs] = useState<Array<Hub>>([]);
 
+  const documentContext = useContext(DocumentContext);
   const { rscToUSDDisplay } = useExchangeRate();
 
   useEffect((): void => {
@@ -82,6 +88,15 @@ function BountyModal({
         currentUserBalance < offeredAmount
     );
   }, [currentUserBalance, offeredAmount]);
+
+  useEffect(() => {
+    if (isOpen && reputationHubs.length === 0) {
+      fetchReputationHubs().then((response) => {
+        const hubs = response.map((hub:any) => parseHub(hub));
+        setReputationHubs(hubs);
+      });
+    }
+  }, [isOpen, reputationHubs]);
 
   const handleClose = () => {
     closeModal();
@@ -175,6 +190,14 @@ function BountyModal({
   const showAlertNextToBtn = hasMinRscAlert || hasMaxRscAlert || withPreview;
   const researchHubAmount = calcResearchHubAmount({ offeredAmount });
   const totalAmount = calcTotalAmount({ offeredAmount });
+
+  const repHubDropdownOptions = reputationHubs.map((h: any) => ({
+    label: h.name,
+    value: h.id,
+    valueForApi: h.id,
+  }));
+
+
   return (
     <BaseModal
       closeModal={handleClose}
@@ -348,6 +371,42 @@ function BountyModal({
                   </div>
                 </div>
               </div>
+
+              <div className={css(styles.addBountyContainer)}>
+
+                <FormSelect
+                  id={"Expertise"}
+                  options={repHubDropdownOptions}
+                  containerStyle={[
+                    styles.dropdownContainer,
+                  ]}
+                  inputStyle={[
+                    styles.dropdownInput,
+                  ]}
+                  onChange={(id, value) => {
+                    console.log('value', value)
+                  }}
+                  isSearchable={true}
+                  placeholder={"Demographics"}
+                  reactSelect={{
+                    styles: {
+                      menu: {
+                        // width: direction === "vertical" ? "100%" : "max-content",
+                      },
+                    },
+                  }}
+                  // value={selectedJournals}
+                  isMulti={true}
+                  multiTagStyle={null}
+                  multiTagLabelStyle={null}
+                  isClearable={false}
+                  showCountInsteadOfLabels={true}
+                />
+
+
+              </div>
+
+
               <div className={css(infoSectionStyles.bountyInfo)}>
                 {originalBounty && (
                   <div className={css(infoSectionStyles.infoRow)}>
@@ -504,6 +563,20 @@ const infoSectionStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
+  dropdownContainer: {
+    width: "100%",
+    minHeight: "unset",
+    marginTop: 0,
+    marginBottom: 0,
+    marginRight: 20,
+    // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    //   marginRight: 0,
+    // },
+  },  
+  dropdownInput: {
+    width: "100%",
+    minHeight: "unset",
+  },
   rootContainer: {
     fontSize: 18,
     width: "100%",
