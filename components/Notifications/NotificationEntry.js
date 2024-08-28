@@ -32,7 +32,7 @@ const NotificationEntry = (props) => {
   const currentUser = useCurrentUser();
   const dispatch = useDispatch();
 
-  if (isNullOrUndefined(notification)) {
+  if (isNullOrUndefined(notification) || !currentUser) {
     // if no notification object is passed, dont render anything
     return null;
   }
@@ -85,123 +85,135 @@ const NotificationEntry = (props) => {
   };
 
   const formatBody = (notification, data) => {
-    if (!currentUser) {
-      return null;
-    }
+    try {
+      const { notification_type } = data;
+      const { body } = notification;
+      const onClick = (e) => {
+        e.stopPropagation();
+        markAsRead(data);
+        props.closeMenu();
+      };
 
-    const { notification_type } = data;
-    const { body } = notification;
-    const onClick = (e) => {
-      e.stopPropagation();
-      markAsRead(data);
-      props.closeMenu();
-    };
+      if (notification_type === "IDENTITY_VERIFICATION_UPDATED") {
+        return "Congratulations! Your account has been verified by the ResearchHub team. ";
+      } else if (notification_type === "PAPER_CLAIM_PAYOUT") {
+        return "Congratulations! Your claim has been approved and RSC has been awarded to your account.";
+      } else if (notification_type === "BOUNTY_FOR_YOU") {
+        const rawHub = JSON.parse(data.extra.hub_details);
+        const hub = parseHub(rawHub);
 
-    if (notification_type === "IDENTITY_VERIFICATION_UPDATED") {
-      return "Congratulations! Your account has been verified by the ResearchHub team. ";
-    } else if (notification_type === "PAPER_CLAIM_PAYOUT") {
-      return "Congratulations! Your claim has been approved and RSC has been awarded to your account.";
-    } else if (notification_type === "BOUNTY_FOR_YOU") {
-      console.log("data", data);
+        let unifiedDocument = null;
+        let url = null;
 
-      const rawHub = JSON.parse(data.extra.hub_details);
-      const hub = parseHub(rawHub);
-      const unifiedDocument = parseUnifiedDocument(data.unified_document);
-      const url = getUrlToUniDoc(unifiedDocument);
+        // When websocket fires, it does not include unified_document property.
+        // This property seems to only be included as part of the notification endpoint.
+        if (data.unified_document) {
+          unifiedDocument = parseUnifiedDocument(data.unified_document);
+          url = getUrlToUniDoc(unifiedDocument);
+        }
 
-      return (
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <div>
-            A new bounty earning opportunity is recommended for you based on
-            your expertise {` `} on{" "}
+        return (
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <div>
+              A new bounty earning opportunity is recommended for you based on
+              your expertise {` `}
+              {unifiedDocument?.document && (
+                <>
+                  on{" "}
+                  <HyperLink
+                    link={{ href: url + "/bounties" }}
+                    onClick={onClick}
+                    style={styles.link}
+                    text={unifiedDocument.document?.title}
+                  />
+                </>
+              )}
+            </div>
+            <span>
+              <div
+                style={{
+                  display: "flex",
+                  columnGap: 5,
+                  alignItems: "center",
+                  marginTop: 6,
+                  marginBottom: 6,
+                }}
+              >
+                <HubTag hub={hub} />
+                <ContentBadge
+                  badgeOverride={styles.badge}
+                  contentType="bounty"
+                  bountyAmount={data.extra.amount}
+                  label={
+                    <div style={{ display: "flex" }}>
+                      <div style={{ flex: 1 }} className={css(styles.mobile)}>
+                        {numeral(
+                          formatBountyAmount({
+                            amount: data.extra.amount,
+                          })
+                        ).format("0,0a")}{" "}
+                        RSC
+                      </div>
+                    </div>
+                  }
+                />
+              </div>
+            </span>
+          </div>
+        );
+      } else if (notification_type === "PUBLICATIONS_ADDED") {
+        return (
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <span>Publications were added to your profile. {` `}</span>
             <HyperLink
-              link={{ href: url + "/bounties" }}
+              link={{ href: currentUser.authorProfile.url + "/publications" }}
               onClick={onClick}
               style={styles.link}
-              text={unifiedDocument.document.title}
+              text={"View publications"}
             />
           </div>
-          <span>
-            <div
-              style={{
-                display: "flex",
-                columnGap: 5,
-                alignItems: "center",
-                marginTop: 6,
-                marginBottom: 6,
-              }}
-            >
-              <HubTag hub={hub} />
-              <ContentBadge
-                badgeOverride={styles.badge}
-                contentType="bounty"
-                bountyAmount={data.extra.amount}
-                label={
-                  <div style={{ display: "flex" }}>
-                    <div style={{ flex: 1 }} className={css(styles.mobile)}>
-                      {numeral(
-                        formatBountyAmount({
-                          amount: data.extra.amount,
-                        })
-                      ).format("0,0a")}{" "}
-                      RSC
-                    </div>
-                  </div>
-                }
-              />
-            </div>
-          </span>
-        </div>
-      );
-    } else if (notification_type === "PUBLICATIONS_ADDED") {
+        );
+      } else if (body == null) {
+        return null;
+      }
+
       return (
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <span>Publications were added to your profile. {` `}</span>
-          <HyperLink
-            link={{ href: currentUser.authorProfile.url + "/publications" }}
-            onClick={onClick}
-            style={styles.link}
-            text={"View publications"}
-          />
+        <div>
+          {body.map((element, i) => {
+            const value = truncateText(element.value, 100);
+
+            const extraStyles = formatStyles(element.extra);
+            switch (element.type) {
+              case "link":
+                const link = { href: element.link };
+                return (
+                  <HyperLink
+                    key={i}
+                    link={link}
+                    onClick={onClick}
+                    style={extraStyles}
+                    text={value}
+                  />
+                );
+              case "text":
+                return (
+                  <span key={i} className={css(...extraStyles)}>
+                    {" "}
+                    {value}{" "}
+                  </span>
+                );
+              case "break":
+                return <br key={i}></br>;
+              default:
+                return <span key={i}>ERROR</span>;
+            }
+          })}
         </div>
       );
-    } else if (body == null) {
+    } catch (e) {
+      console.error(e);
       return null;
     }
-
-    return (
-      <div>
-        {body.map((element, i) => {
-          const value = truncateText(element.value, 100);
-
-          const extraStyles = formatStyles(element.extra);
-          switch (element.type) {
-            case "link":
-              const link = { href: element.link };
-              return (
-                <HyperLink
-                  key={i}
-                  link={link}
-                  onClick={onClick}
-                  style={extraStyles}
-                  text={value}
-                />
-              );
-            case "text":
-              return (
-                <span key={i} className={css(...extraStyles)}>
-                  {" "}
-                  {value}{" "}
-                </span>
-              );
-            case "break":
-              return <br key={i}></br>;
-            default:
-              return <span key={i}>ERROR</span>;
-          }
-        })}
-      </div>
-    );
   };
 
   const renderMessage = () => {

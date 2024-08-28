@@ -102,6 +102,7 @@ export default class Bounty {
   _children: Bounty[];
   _relatedItem: RelatedItem | undefined;
   _bountyType: COMMENT_TYPES;
+  _targetHubs: ID[] | undefined;
 
   constructor(raw: any, relatedItem?: RelatedItem | undefined) {
     this._id = raw.id;
@@ -127,6 +128,7 @@ export default class Bounty {
     this._parentId = raw?.parent?.id;
     this._relatedItem = relatedItem;
     this._bountyType = raw.bounty_type;
+    this._targetHubs = raw.target_hubs;
   }
 
   static awardAPI({
@@ -312,6 +314,10 @@ export default class Bounty {
   get relatedItem(): RelatedItem | undefined {
     return this._relatedItem;
   }
+
+  get targetHubs(): ID[] | undefined {
+    return this._targetHubs;
+  }  
 
   get formattedAmount(): string {
     return this._formattedAmount;

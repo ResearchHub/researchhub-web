@@ -119,7 +119,7 @@ function BountyModal({
   const [bountyType, setBountyType] = useState<COMMENT_TYPES | null>(null);
   const [success, setSuccess] = useState(false);
   const [reputationHubs, setReputationHubs] = useState<Array<Hub>>([]);
-  const [selectedReputationHubs, setSelectedReputationHubs] = useState<Array<Hub>>([]);
+  const [selectedReputationHubs, setSelectedReputationHubs] = useState<Array<OptionTypeBase>>([]);
 
   const documentContext = useContext(DocumentContext);
   const { rscToUSDDisplay } = useExchangeRate();
@@ -133,6 +133,13 @@ function BountyModal({
   }, [currentUserBalance, offeredAmount]);
 
   useEffect(() => {
+
+    if (originalBounty) {
+      // This flow is only applicable to "new bounties" not "contributions".
+      // If contribution is being made, we should not allow users to target based on expertise.
+      return;
+    }
+
     if (isOpen && reputationHubs.length === 0) {
       fetchReputationHubs().then((response) => {
         const hubs = response.map((hub:any) => parseHub(hub));
@@ -148,7 +155,7 @@ function BountyModal({
 
       });
     }
-  }, [isOpen, reputationHubs]);
+  }, [isOpen, reputationHubs, originalBounty]);
 
   const handleClose = () => {
     closeModal();
@@ -214,6 +221,7 @@ function BountyModal({
           new Bounty({
             amount: offeredAmount,
             bounty_type: bountyType,
+            ...(selectedReputationHubs.length > 0 && { target_hubs: selectedReputationHubs.map(h => h.value) }),
           })
         );
         closeModal();
@@ -425,7 +433,7 @@ function BountyModal({
                   <div
                     className={css(styles.lineItemText, styles.sectionLabel)}
                   >
-                    <FontAwesomeIcon fontSize={20} style={{ marginRight: 4, }} icon={faUserGroup}></FontAwesomeIcon>
+                    <FontAwesomeIcon fontSize={18} style={{ marginRight: 4, }} icon={faUserGroup}></FontAwesomeIcon>
                     Target Audience <span className={css(styles.optionalLabel)}>- Optional</span>
                   </div>
                   <div className={css(styles.lineItemText, styles.sectionDescription)}>
