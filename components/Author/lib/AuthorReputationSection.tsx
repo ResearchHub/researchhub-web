@@ -22,11 +22,15 @@ const getTooltipText = (percentile) => {
 const AuthorReputationSection = ({
   reputationList,
   limit = -1,
+  hideBelowValue = 0,
 }: {
   reputationList: Reputation[];
   limit?: number;
+  hideBelowValue?: number;
 }) => {
   let repListToRender = reputationList;
+  repListToRender = repListToRender.filter((rep) => rep.percentile > hideBelowValue);
+  
   if (limit > 0) {
     repListToRender = reputationList.slice(0, limit);
   }

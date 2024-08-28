@@ -2,18 +2,16 @@ import {
   CitedAuthorAchievementIcon,
   OpenAccessAchievementIcon,
 } from "~/config/icons/AchievementIcons";
-import { Achievement, AuthorSummaryStats, FullAuthorProfile } from "./types";
+import { Achievement, AuthorSummaryStats, FullAuthorProfile, TIER_COLORS, TIER_INDICES } from "./types";
 import { ReactElement } from "react";
 import { Tab } from "~/components/HorizontalTabBar";
 import colors from "~/config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQuestion } from "@fortawesome/pro-solid-svg-icons";
-import { faCircleStar, faCircleUp, faHandHoldingDollar } from "@fortawesome/pro-light-svg-icons";
+import { faCircleUp, faQuestion, faHandHoldingDollar, faStar, faStarCircle, faUnlock, faLockOpen, faQuoteRight, faHandsHoldingDollar } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import Tooltip from "@mui/material/Tooltip";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 
-
-type Tier = "bronze" | "silver" | "gold" | "platinum" | "diamond";
 
 export const getAchievmentDetails = ({
   achievement,
@@ -21,45 +19,58 @@ export const getAchievmentDetails = ({
 }: {
   achievement: Achievement;
   summaryStats: AuthorSummaryStats;
-}): { icon: ReactElement; title: string; details: string } => {
-  const tier = parseInt(achievement.charAt(achievement.length - 1).toUpperCase()) || 0;
+}): { icon: ReactElement; title: string } => {
+  const tierColor = TIER_COLORS[achievement.currentMilestoneIndex]
 
-  if (achievement === "OPEN_SCIENCE_SUPPORTER") {
+  if (achievement.type === "OPEN_SCIENCE_SUPPORTER") {
     return {
-      icon: <FontAwesomeIcon style={{ color: "black" }} icon={faHandHoldingDollar} fontSize={24} />,
+      icon: (
+        <ResearchCoinIcon version={4} color={tierColor} height={25} width={25} />
+      ),
       title: "Open Science Supporter",
-      details: `Provided funding for open science`,
     };
-  } else if (achievement === "CITED_AUTHOR") {
+  } else if (achievement.type === "CITED_AUTHOR") {
     return {
-      icon: <CitedAuthorAchievementIcon height={24} width={24} />,
+      icon: (
+        <div style={{ background: tierColor, borderRadius: "50%", padding: 3, width: 19, height: 19, display: "flex", alignContent: "center", flexDirection: "column", justifyContent: "center" }}>
+          <FontAwesomeIcon style={{ color: "white" }} icon={faQuoteRight} fontSize={13} />
+        </div>
+      ),
       title: "Cited Author",
-      details: `Cited ${summaryStats.citationCount} times`,
     };
-  } else if (achievement.includes("EXPERT_PEER_REVIEWER")) {
+  } else if (achievement.type === "EXPERT_PEER_REVIEWER") {
     return {
-      icon: <FontAwesomeIcon style={{ color: "black" }} icon={faCircleStar} fontSize={24} />,
+      icon: (
+        <div style={{ background: "white", borderRadius: "50%", }}>
+          <FontAwesomeIcon style={{ color: tierColor }} icon={faStarCircle} fontSize={25} />
+        </div>
+      ),
       title: "Peer Reviewer",
-      details: `Peer reviewed at least 1 publication`,
     };
-  } else if (achievement.includes("HIGHLY_UPVOTED")) {
+  } else if (achievement.type === "HIGHLY_UPVOTED") {
     return {
-      icon: <FontAwesomeIcon style={{ color: "black" }} icon={faCircleUp} fontSize={24} />,
+      icon: (
+        <div style={{ background: "white", borderRadius: "50%", }}>
+          <FontAwesomeIcon style={{ color: tierColor }} icon={faCircleUp} fontSize={25} />
+        </div>        
+      ),
       title: "Active user",
-      details: `Received at least five upvotes on the platform`,
     };
-  } else if (achievement.includes("OPEN_ACCESS")) {
+  } else if (achievement.type === "OPEN_ACCESS") {
     return {
-      icon: <OpenAccessAchievementIcon height={24} width={24} />,
+      icon: (
+        <div style={{ background: tierColor, borderRadius: "50%", padding: 3, width: 19, height: 19, display: "flex", alignContent: "center", flexDirection: "column", justifyContent: "center" }}>
+          <FontAwesomeIcon style={{ color: "white" }} icon={faLockOpen} fontSize={12} />
+        </div>
+      ),
+
       title: "Open Access Advocate",
-      details: `At least 50% of papers are open access`,
     };
   }
 
   return {
     icon: <></>,
     title: "",
-    details: "",
   };
 };
 

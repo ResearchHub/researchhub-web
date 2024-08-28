@@ -39,7 +39,7 @@ const ExpertiseModal = ({
             Learn more about our reputation algorithm
           </ALink>
         </div>
-        <AuthorReputationSection reputationList={profile.reputationList} />
+        <AuthorReputationSection hideBelowValue={1} reputationList={profile.reputationList} />
       </div>
     </BaseModal>
   );

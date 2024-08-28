@@ -11,7 +11,23 @@ import {
   parseEducation,
 } from "~/config/types/root_types";
 
-export type Achievement = "CITED_AUTHOR" | "OPEN_ACCESS" | "OPEN_SCIENCE_SUPPORTER" | "EXPERT_PEER_REVIEWER" | "HIGHLY_UPVOTED";
+export type AchievementType = "CITED_AUTHOR" | "OPEN_ACCESS" | "OPEN_SCIENCE_SUPPORTER" | "EXPERT_PEER_REVIEWER" | "HIGHLY_UPVOTED";
+
+export const TIER_INDICES = ["Bronze", "Silver", "Gold"];
+export const TIER_COLORS = [
+  "rgba(209, 166, 132, 1)", // Bronze
+  "rgba(180, 184, 188, 1)", // Silver
+  "rgba(255, 204, 1, 1)" // Gold
+];
+
+export type Achievement = {
+  type: AchievementType;
+  value: number;
+  currentMilestoneIndex: number;
+  milestones: Array<number>;
+  pctProgress: number;
+}
+
 export type FullAuthorProfile = {
   id: ID;
   firstName: string;
@@ -109,15 +125,40 @@ function ensureSufficientYears(activityData: YearlyActivity[]): YearlyActivity[]
 }  
 
 export const parseAuthorAchievements = (raw: any): Array<Achievement> => {
+
   let achievements: Achievement[] = [];
   for (const key in raw.achievements) {
-    if (raw.achievements.hasOwnProperty(key)) {
-      const achievement = raw.achievements[key];
-      if (achievement["value"] >= achievement["milestones"][0]) {
-        achievements.push(key as Achievement);
+    const rawAchievement = raw.achievements[key];
+    const hasAchievementUnlocked = rawAchievement["value"] >= rawAchievement["milestones"][0];
+    
+    if (hasAchievementUnlocked) {
+      const achievement:any = {};
+      achievement.type = key;
+      achievement.value = rawAchievement["value"];
+      achievement.milestones = rawAchievement["milestones"];
+      achievement.currentMilestoneIndex = 0;
+
+      // Find current milestone user is in
+      for (let i = 0; i < rawAchievement["milestones"].length; i++) {
+        if (achievement.value >= rawAchievement["milestones"][i]) {
+          achievement.currentMilestoneIndex = i;
+        }
       }
+
+      achievement.pctProgress = achievement.value / achievement.milestones[achievement.currentMilestoneIndex + 1]
+
+      achievements.push(achievement as Achievement);
     }
   }
+
+  // Sort achievements by highest tier (currentMilestoneIndex) first, then by percentage progress
+  achievements.sort((a, b) => {
+    if (b.currentMilestoneIndex !== a.currentMilestoneIndex) {
+      return b.currentMilestoneIndex - a.currentMilestoneIndex;
+    }
+    return b.pctProgress - a.pctProgress;
+  });
+
   return achievements;
 }
 
@@ -209,6 +250,7 @@ export const DEMO_BINS: Array<Reputation> = [
       name: "Biology",
       relevancyScore: 0,
       description: "",
+      isUsedForRep: true,
     },
     percentile: 0,
   },
@@ -226,6 +268,7 @@ export const DEMO_BINS: Array<Reputation> = [
       name: "Chemistry",
       relevancyScore: 0,
       description: "",
+      isUsedForRep: true,
     },
     percentile: 0,
   },
@@ -243,6 +286,7 @@ export const DEMO_BINS: Array<Reputation> = [
       name: "Economics",
       relevancyScore: 0,
       description: "",
+      isUsedForRep: true,
     },
     percentile: 0,
   },
