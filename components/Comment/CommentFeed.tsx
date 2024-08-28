@@ -247,12 +247,14 @@ const CommentFeed = ({
     bountyAmount,
     bountyType,
     mentions,
+    targetHubs
   }: {
     content: any;
     commentType: COMMENT_TYPES;
     bountyAmount?: number;
     mentions?: Array<string>;
     bountyType: COMMENT_TYPES;
+    targetHubs?: Array<ID>;
   }) => {
     let comment: CommentType;
     try {
@@ -264,6 +266,7 @@ const CommentFeed = ({
         bountyAmount,
         bountyType,
         mentions,
+        targetHubs,
       });
 
       setRootLevelCommentCount(rootLevelCommentCount + 1);

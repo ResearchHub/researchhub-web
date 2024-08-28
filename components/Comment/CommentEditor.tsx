@@ -211,6 +211,7 @@ const CommentEditor = ({
         ...(interimBounty && {
           bountyAmount: interimBounty.amount,
           bountyType: interimBounty.bountyType,
+          targetHubs: interimBounty.targetHubs,
         }),
       });
 

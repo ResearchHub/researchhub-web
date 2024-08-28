@@ -151,6 +151,7 @@ export const createCommentAPI = async ({
   anchor = null,
   organizationId,
   bountyType,
+  targetHubs,
 }: {
   content: any;
   commentType?: COMMENT_TYPES;
@@ -164,6 +165,7 @@ export const createCommentAPI = async ({
   anchor?: null | SerializedAnchorPosition;
   organizationId?: ID;
   bountyType?: COMMENT_TYPES;
+  targetHubs?: Array<ID>;
 }): Promise<Comment> => {
   const _url = generateApiUrl(
     `${documentType}/${documentId}/comments/` +
@@ -182,6 +184,7 @@ export const createCommentAPI = async ({
         ...(bountyAmount && { amount: bountyAmount, bounty_type: bountyType }),
         ...(anchor && { anchor }),
         ...(threadId && { thread_id: threadId }),
+        ...(targetHubs && { target_hub_ids: targetHubs }),
       },
       undefined,
       organizationId ? { "x-organization-id": organizationId } : undefined
