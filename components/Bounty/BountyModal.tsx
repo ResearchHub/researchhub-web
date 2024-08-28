@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUndo } from "@fortawesome/pro-solid-svg-icons";
+import { faUndo, faUserGroup, faUserPlus, faUsers } from "@fortawesome/pro-solid-svg-icons";
 import { faClock } from "@fortawesome/pro-regular-svg-icons";
 import { faInfoCircle } from "@fortawesome/pro-light-svg-icons";
 import {
@@ -33,6 +33,48 @@ import { COMMENT_TYPES, COMMENT_TYPE_OPTIONS } from "../Comment/lib/types";
 import { Hub, parseHub } from "~/config/types/hub";
 import fetchReputationHubs from "../Hubs/api/fetchReputationHubs";
 import { DocumentContext } from "../Document/lib/DocumentContext";
+import HubTag from "../Hubs/HubTag";
+import Select, { ValueType, OptionTypeBase, components } from "react-select";
+
+
+
+const selectDropdownStyles = {
+  multiTagLabelStyle: {
+    color: colors.NEW_BLUE(1),
+    cursor: "pointer",
+  },
+  multiTagStyle: {
+    padding: "4px 12px",
+    borderRadius: 50,
+    fontSize: 16
+  },
+  option: {
+    textAlign: "left",
+    backgroundColor: "unset",
+    background: "unset",
+    ":hover": {
+      backgroundColor: colors.NEW_BLUE(0.1),
+    },
+  },
+  menuList: {
+  },
+  valueContainer: {
+    padding: "7px 7px 7px 4px",
+  },
+};
+
+const _convertToSelectOption = (hubs: Hub[]): OptionTypeBase[] => {
+  const repHubDropdownOptions = hubs.map((h: any) => ({
+    label: h.name,
+    value: h.id,
+    name: h.name,
+    valueForApi: h.id,
+  }));  
+
+  return repHubDropdownOptions;
+}
+
+
 
 type Props = {
   isOpen: boolean;
@@ -46,6 +88,7 @@ type Props = {
   showMessage: Function;
   setMessage: Function;
 };
+
 
 function BountyModal({
   isOpen,
@@ -94,6 +137,15 @@ function BountyModal({
       fetchReputationHubs().then((response) => {
         const hubs = response.map((hub:any) => parseHub(hub));
         setReputationHubs(hubs);
+
+        if (documentContext.metadata?.hubs) {
+          const repHub = documentContext.metadata?.hubs.find((hub) => hub.isUsedForRep)
+          if (repHub) {
+            const preselectedOption = _convertToSelectOption([repHub]);
+            setSelectedReputationHubs(preselectedOption);
+          }
+        }
+
       });
     }
   }, [isOpen, reputationHubs]);
@@ -191,11 +243,7 @@ function BountyModal({
   const researchHubAmount = calcResearchHubAmount({ offeredAmount });
   const totalAmount = calcTotalAmount({ offeredAmount });
 
-  const repHubDropdownOptions = reputationHubs.map((h: any) => ({
-    label: h.name,
-    value: h.id,
-    valueForApi: h.id,
-  }));
+  const repHubDropdownOptions = _convertToSelectOption(reputationHubs);
 
 
   return (
@@ -372,39 +420,42 @@ function BountyModal({
                 </div>
               </div>
 
-              <div className={css(styles.addBountyContainer)}>
+              {!originalBounty && (
+                <div style={{ marginBottom: 0, padding: "0px 30px 30px 30px", }}>
+                  <div
+                    className={css(styles.lineItemText, styles.sectionLabel)}
+                  >
+                    <FontAwesomeIcon fontSize={20} style={{ marginRight: 4, }} icon={faUserGroup}></FontAwesomeIcon>
+                    Target Audience <span className={css(styles.optionalLabel)}>- Optional</span>
+                  </div>
+                  <div className={css(styles.lineItemText, styles.sectionDescription)}>
+                    Target specific users to help with your bounty. If non is selected, we will automatically match the bounty to relevant users.
+                  </div>
+                  <FormSelect
+                    id={"Expertise"}
+                    isMulti={true}
+                    required={false}
+                    value={selectedReputationHubs}
+                    reactStyles={{}}
+                    inputStyle={styles.inputStyle}
+                    reactSelect={{ styles: selectDropdownStyles }}
+                    showCountInsteadOfLabels={false}
+                    options={repHubDropdownOptions}
+                    containerStyle={[
+                      styles.dropdownContainer,
+                    ]}
+                    onChange={(id, value) => {
+                      setSelectedReputationHubs(value);
+                    }}
+                    isSearchable={true}
+                    placeholder={"Choose Expertise"}    
+                    multiTagStyle={null}
+                    multiTagLabelStyle={null}
+                    isClearable={false}
+                  />
+                </div>
+              )}
 
-                <FormSelect
-                  id={"Expertise"}
-                  options={repHubDropdownOptions}
-                  containerStyle={[
-                    styles.dropdownContainer,
-                  ]}
-                  inputStyle={[
-                    styles.dropdownInput,
-                  ]}
-                  onChange={(id, value) => {
-                    console.log('value', value)
-                  }}
-                  isSearchable={true}
-                  placeholder={"Demographics"}
-                  reactSelect={{
-                    styles: {
-                      menu: {
-                        // width: direction === "vertical" ? "100%" : "max-content",
-                      },
-                    },
-                  }}
-                  // value={selectedJournals}
-                  isMulti={true}
-                  multiTagStyle={null}
-                  multiTagLabelStyle={null}
-                  isClearable={false}
-                  showCountInsteadOfLabels={true}
-                />
-
-
-              </div>
 
 
               <div className={css(infoSectionStyles.bountyInfo)}>
@@ -472,7 +523,7 @@ function BountyModal({
                       You will have a chance to review and cancel before bounty
                       is created
                     </div>
-                  ) : null}
+                  ) : null} 
                   <div className={css(styles.addBtnContainer)}>
                     <Button
                       label={originalBounty ? "Contribute" : "Add bounty"}
@@ -563,6 +614,30 @@ const infoSectionStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
+  sectionLabel: {
+    fontSize: 18,
+    fontWeight: 500,
+    display: "flex",
+    columnGap: "5px",
+    alignItems: "center",
+  },
+  optionalLabel: {
+    fontSize: 18,
+    fontWeight: 400,
+  },
+  sectionDescription: {
+    marginTop: 8,
+    fontSize: 16,
+    color: colors.DARKER_GREY(),
+    marginBottom: 20,
+    textAlign: "left",
+  },
+  tagStyle: {
+    fontSize: 13,
+  },  
+  inputStyle: {
+
+  },
   dropdownContainer: {
     width: "100%",
     minHeight: "unset",
