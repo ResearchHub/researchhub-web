@@ -441,7 +441,7 @@ function BountyModal({
                     Target Audience <span className={css(styles.optionalLabel)}>- Optional</span>
                   </div>
                   <div className={css(styles.lineItemText, styles.sectionDescription)}>
-                    Target specific users to help with your bounty. If non is selected, we will automatically match the bounty to relevant users.
+                    Target specific users for your bounty. If none selected, we'll auto-match relevant users.
                   </div>
                   <FormSelect
                     id={"Expertise"}
