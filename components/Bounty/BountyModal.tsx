@@ -46,7 +46,7 @@ const selectDropdownStyles = {
   multiTagStyle: {
     padding: "4px 12px",
     borderRadius: 50,
-    fontSize: 16
+    fontSize: 15
   },
   option: {
     textAlign: "left",
@@ -146,11 +146,15 @@ function BountyModal({
         setReputationHubs(hubs);
 
         if (documentContext.metadata?.hubs) {
-          const repHub = documentContext.metadata?.hubs.find((hub) => hub.isUsedForRep)
-          if (repHub) {
-            const preselectedOption = _convertToSelectOption([repHub]);
-            setSelectedReputationHubs(preselectedOption);
-          }
+          const repHubs = documentContext.metadata?.hubs.reduce((acc:Hub[], hub) => {
+            if (hub.isUsedForRep) {
+              acc.push(hub);
+            }
+            return acc;
+          }, []);
+
+          const preselectedOption = _convertToSelectOption(repHubs);
+          setSelectedReputationHubs(preselectedOption);
         }
 
       });
