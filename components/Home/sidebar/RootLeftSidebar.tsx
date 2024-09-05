@@ -535,7 +535,7 @@ function RootLeftSidebar({
                 {<FontAwesomeIcon icon={faGithub}></FontAwesomeIcon>}
               </ALink>
               <ALink
-                href="https://www.linkedin.com/company/70966276/"
+                href="https://www.linkedin.com/company/researchhubtechnologies"
                 overrideStyle={styles.leftSidebarFooterIcon}
                 target="__blank"
               >
