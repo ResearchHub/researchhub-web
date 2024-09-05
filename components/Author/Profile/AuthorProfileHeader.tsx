@@ -80,7 +80,7 @@ const AuthorProfileHeader = () => {
       ),
       value: "ban",
     }] : []),
-    ...((currentUser?.moderator && profile.user?.isSuspended) ? [{
+    ...((currentUser?.moderator && (profile.user?.isSuspended || profile.user?.isProbableSpammer)) ? [{
       html: (
         <ModeratorDeleteButton
         actionType="user"
@@ -92,7 +92,7 @@ const AuthorProfileHeader = () => {
         label={"Reinstate User"}
         metaData={{
           authorId: profile.id as string,
-          isSuspended: profile.user?.isSuspended,
+          isSuspended: true,
         }}
       />),
       value: "reinstate",
