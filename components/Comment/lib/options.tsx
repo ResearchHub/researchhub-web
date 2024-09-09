@@ -85,16 +85,16 @@ export const sortOpts = [
 
 export const reviewCategories = {
   overall: {
-    label: "Overall Rating",
+    label: "Overall Assessment",
     value: "overall",
-    description: "What are your overall impressions of this paper?",
+    description: "What is your overall rating of this paper?",
     isDefault: true,
   },
-  impact: {
-    label: "Impact",
-    value: "impact",
+  introduction: {
+    label: "Introduction",
+    value: "introduction",
     description:
-      "Is the research question innovative? Do the study's findings advance the authors' field in a meaningful way?",
+      "Does the introduction clearly articulate the research question and provide adequate context? Is the study's significance within the field convincingly established?",
     isDefault: false,
   },
   methods: {
