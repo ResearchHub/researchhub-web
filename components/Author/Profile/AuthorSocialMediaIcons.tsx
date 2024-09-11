@@ -4,12 +4,6 @@ import { css, StyleSheet } from "aphrodite";
 import Link from "next/link";
 
 const AuthorSocialMediaIcons = ({ profile }: { profile: FullAuthorProfile }) => {
-console.log('profile.orcidUrl', profile.orcidUrl)
-console.log('profile.linkedInUrl', profile.linkedInUrl)
-
-
-
-
   return (
     <div className={css(styles.iconsWrapper)}>
       {profile.orcidUrl ? (
