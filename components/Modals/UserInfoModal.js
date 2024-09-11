@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import React from "react";
 
 // Component
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -22,6 +23,7 @@ import { MessageActions } from "~/redux/message";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import OnboardForm from "../Onboard/OnboardForm";
 
 class UserInfoModal extends Component {
   constructor(props) {
@@ -38,7 +40,10 @@ class UserInfoModal extends Component {
         this.props.author.education &&
         this.props.author.education.length - 1,
       mainIndex: 0,
+      isSaveInProgress: false,
     };
+
+    this.formRef = React.createRef();
   }
 
   componentDidMount = async () => {
@@ -189,6 +194,8 @@ class UserInfoModal extends Component {
   };
 
   saveAuthorChanges = (e, silent = false) => {
+    this.setState({ isSaveInProgress: true });
+
     const { setMessage, showMessage } = this.props;
     e && e.preventDefault();
     !silent && showMessage({ show: true, load: true });
@@ -351,25 +358,6 @@ class UserInfoModal extends Component {
           containerStyle={styles.formInput}
           value={label === "Headline" ? value.title : value}
         />
-        {/* {label === "Headline" && (
-          <div className={css(styles.isPublicContainer)}>
-            <h3
-              className={css(
-                styles.isPublicLabel,
-                value.isPublic && styles.activeLabel
-              )}
-            >
-              {value.isPublic ? "Public" : "Private"}
-            </h3>
-            <Toggle
-              className={"react-toggle"}
-              height={15}
-              value={value.isPublic}
-              checked={value.isPublic}
-              onChange={this.handleIsPublic}
-            />
-          </div>
-        )} */}
       </div>
     );
   };
@@ -385,8 +373,14 @@ class UserInfoModal extends Component {
     );
   };
 
+  save = () => {
+    const saveButton = this.formRef.current;
+    saveButton.click();
+  };
+
   render() {
-    const { hoverAvatar, allowEdit, avatarUploadIsOpen } = this.state;
+    const { hoverAvatar, allowEdit, avatarUploadIsOpen, isSaveInProgress } =
+      this.state;
     const { author, modals } = this.props;
     if (!this.props.auth.isLoggedIn) return null;
     return (
@@ -400,84 +394,20 @@ class UserInfoModal extends Component {
         modalContentStyle={styles.modalContentStyles}
       >
         <div className={css(styles.rootContainer)}>
-          <EducationModal
-            education={this.state.education[this.state.activeIndex]}
-            currentIndex={this.state.activeIndex}
-            onSave={this.onEducationModalSave}
-            onActive={this.setEducationActive}
+          <OnboardForm
+            author={author}
+            submitRef={this.formRef}
+            onAuthorSave={() => {
+              this.props.onSave && this.props.onSave();
+            }}
           />
-          <img
-            src={"/static/icons/close.png"}
-            className={css(styles.closeButton)}
-            onClick={this.closeModal}
-            draggable={false}
-            alt="Close Button"
-          />
-          <div className={css(styles.titleContainer, styles.left)}>
-            <div className={css(styles.title)}>
-              {"Edit your personal information"}
-            </div>
-          </div>
-          <form className={css(styles.form)} onSubmit={this.saveAuthorChanges}>
-            <div className={css(styles.titleHeader)}>
-              <div
-                className={css(
-                  styles.avatarContainer,
-                  author.profile_image && styles.border
-                )}
-                onClick={() => this.toggleAvatarModal(true)}
-                onMouseEnter={this.onMouseEnterAvatar}
-                onMouseLeave={this.onMouseLeaveAvatar}
-                draggable={false}
-              >
-                <AuthorAvatar author={author} disableLink={true} size={120} />
-                {allowEdit && hoverAvatar && (
-                  <div className={css(styles.profilePictureHover)}>Update</div>
-                )}
-              </div>
-              <div className={css(styles.column)}>
-                {this.renderFormInput({
-                  label: "First Name",
-                  id: "first_name",
-                  required: true,
-                  value: this.state.first_name,
-                })}
-                {this.renderFormInput({
-                  label: "Last Name",
-                  id: "last_name",
-                  required: true,
-                  value: this.state.last_name,
-                })}
-              </div>
-            </div>
-            {this.renderFormInput({
-              label: "Headline",
-              id: "headline",
-              subtitle:
-                "This information will be displayed in comments below your name",
-              value: this.state.headline,
-            })}
-            {this.renderEducationList()}
-            {this.renderFormInput({
-              label: "About",
-              id: "description",
-              value: this.state.description,
-            })}
-            <AvatarUpload
-              isOpen={avatarUploadIsOpen}
-              closeModal={() => this.toggleAvatarModal(false)}
-              saveButton={this.renderSaveButton}
-              section={"pictures"}
+          <div className={css(styles.buttonRowContainer)}>
+            <Button
+              label="Save Changes"
+              disabled={isSaveInProgress}
+              onClick={this.save}
             />
-            <div className={css(styles.buttonContainer)}>
-              <Button
-                label={"Save Changes"}
-                customButtonStyle={styles.buttonCustomStyle}
-                rippleClass={styles.rippleClass}
-                type={"submit"}
-              />
-            </div>
-          </form>
+          </div>
         </div>
       </BaseModal>
     );
