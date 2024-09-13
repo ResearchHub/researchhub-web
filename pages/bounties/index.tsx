@@ -14,7 +14,7 @@ import { getUrlToUniDoc } from "~/config/utils/routing";
 import { truncateText } from "~/config/utils/string";
 import CommentAvatars from "~/components/Comment/CommentAvatars";
 import CommentReadOnly from "~/components/Comment/CommentReadOnly";
-import { PaperIcon } from "~/config/themes/icons";
+import { CloseIcon, PaperIcon } from "~/config/themes/icons";
 import { CondensedAuthorList } from "~/components/Author/AuthorList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/pro-light-svg-icons";
@@ -22,6 +22,7 @@ import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import ContentBadge from "~/components/ContentBadge";
 import numeral from "numeral";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 
 type SimpleBounty = {
   id: string;
@@ -162,6 +163,9 @@ const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
           </div>
         </div>
       </div>
+      <div className={css(styles.answerCTA)}>
+        <Button size="small">Answer Bounty</Button>
+      </div>
     </div>
 
   )
@@ -198,8 +202,11 @@ const BountiesPage: NextPage = () => {
         <div className={css(styles.description)}>Earn ResearchCoin by completing science related bounties.</div>
         <div className={css(styles.verifyIdentityBanner)}>
           <VerifiedBadge height={32} width={32} />
-          Verify your identity to see bounty recommendations relevant to you and your research interests.
-          <Button>Verify</Button>
+          Verify identity to see bounty recommendations relevant to your research interests.
+          <div className={css(styles.verifyActions)}>
+            <Button isWhite>Verify</Button>
+            <CloseIcon overrideStyle={styles.closeBtn} color="white" height={20} width={20} />
+          </div>
         </div>
 
         <div className={css(styles.bounties)}>
@@ -212,8 +219,11 @@ const BountiesPage: NextPage = () => {
       </div>
 
       <div className={css(styles.info, styles.infoSection)}>
-        <div className={css(styles.aboutRSC)}>
-          <div className={css(styles.aboutRSCLabel)}>About ResearchHub</div>
+        <div className={css(styles.aboutRSC, styles.infoBlock)}>
+          <div className={css(styles.infoLabel)}>
+            <ResearchCoinIcon version={4} height={25} width={25} />
+            About ResearchCoin
+          </div>
           <div className={css(styles.aboutRSCContent)}>
             ResearchHub is a platform for academics to share their research
             papers, ask questions, and get feedback. We are a community of
@@ -222,8 +232,8 @@ const BountiesPage: NextPage = () => {
           </div>
         </div>
 
-        <div className={css(styles.doingThingsWithRSC, styles.infoSection)}>
-          <div className={css(styles.aboutRSCLabel)}>Doing things with ResearchCoin</div>
+        <div className={css(styles.doingThingsWithRSC, styles.infoBlock)}>
+          <div className={css(styles.infoLabel)}>Doing things with ResearchCoin</div>
           <div className={css(styles.collapsable)}>
             <div className={css(styles.collapsableHeader)}>
               <div className={css(styles.collapsableHeaderTitle)}>
@@ -250,8 +260,8 @@ const BountiesPage: NextPage = () => {
           </div>
         </div>
 
-        <div className={css(styles.doingThingsWithRSC, styles.infoSection)}>
-          <div className={css(styles.aboutRSCLabel)}>Earning ResearchCoin</div>
+        <div className={css(styles.doingThingsWithRSC, styles.infoBlock)}>
+          <div className={css(styles.infoLabel)}>Earning ResearchCoin</div>
           <div className={css(styles.collapsable)}>
             <div className={css(styles.collapsableHeader)}>
               <div className={css(styles.collapsableHeaderTitle)}>
@@ -289,6 +299,15 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     paddingTop: 35,
+    paddingRight: 28,
+    paddingLeft: 28,
+  },
+  closeBtn: {
+    ":hover": {
+      background: "rgba(255, 255, 255, 0.3)",
+      cursor: "pointer",
+    }
+
   },
   bountiesSection: {
     maxWidth: 800,
@@ -312,16 +331,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     padding: 10,
-    border: "1px solid #ccc",
+    // border: "1px solid #ccc",
     borderRadius: 5,
     marginTop: 10,
-    background: colors.NEW_BLUE(0.1),
+    color: "white",
+    background: "#6165D7",
+  },
+  verifyActions: {
+    marginLeft: "auto",
+    display: "flex",
+    gap: 10,
+    alignItems: "center",
+    justifyContent: "space-between"
   },
   title: {
     fontWeight: 500,
     textOverflow: "ellipsis",
     marginBottom: 15,
     textTransform: "capitalize",
+  },
+  answerCTA: {
+    marginTop: 20,
   },
   description: {
     fontSize: 15,
@@ -337,7 +367,7 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
     ":first-child": {
       marginTop: 25,
-    }
+    },
   },
   bountyHeader: {
     marginBottom: 10,
@@ -370,24 +400,37 @@ const styles = StyleSheet.create({
     maxWidth: 320,
   },
   infoSection: {
-    marginTop: 45,
   },
   aboutRSC: {
-
+    border: `1px solid ${colors.BLACK(0.2)}`,
+    borderRadius: 4,
   },
-  aboutRSCLabel: {
+  infoBlock: {
+    border: `1px solid ${colors.BLACK(0.2)}`,
+    borderRadius: 4,
+    marginTop: 25,
+  },
+  infoLabel: {
+    fontWeight: 500,
+    padding: 15,
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    fontSize: 20,
+    borderBottom: `1px solid ${colors.BLACK(0.2)}`,
   },
   aboutRSCContent: {
-
+    padding: 15,
   },
   doingThingsWithRSC: {
 
   },
   collapsable: {
-
+    padding: 15,
+    borderBottom: `1px solid ${colors.BLACK(0.2)}`,
   },
   collapsableHeader: {
-
+    
   },
   collapsableHeaderTitle: {
     justifyContent: "space-between",
@@ -407,6 +450,10 @@ const styles = StyleSheet.create({
     background: "rgba(250, 250, 252, 1)",
     borderRadius: 2,
     padding: 20,
+    ":hover": {
+      transition: "0.2s",
+      background: colors.LIGHTER_GREY(1.0),
+    },    
   },
   iconWrapper: {
     marginRight: 10,
