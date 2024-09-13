@@ -81,6 +81,7 @@ export type UnifiedDocument = {
   documentType: RhDocumentType;
   id: ID;
   isRemoved: boolean;
+  authors: Array<AuthorProfile>;
 };
 
 export type OrcidConnect = {
@@ -233,6 +234,7 @@ export const parseOrganization = (raw: any): Organization => {
 };
 
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
+
   if (typeof raw !== "object") {
     return raw;
   }
@@ -269,6 +271,11 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   if (unparsedInnerDoc.renderable_text) {
     parsed.document["body"] = unparsedInnerDoc.renderable_text;
   }
+
+  if (unparsedInnerDoc.authors) {
+    parsed["authors"] = unparsedInnerDoc.authors.map(parseAuthorProfile);
+  }
+
 
   // @ts-ignore
   return parsed;

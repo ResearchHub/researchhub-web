@@ -252,7 +252,7 @@ export const parseBountyContributionItem = (
     ),
     id: raw.id,
     createdDate: raw.created_date,
-    amount: formatBountyAmount({ amount: raw.item.amount }),
+    amount: formatBountyAmount({ amount: raw.item.amount || raw.item }),
     content: raw?.item?.item?.comment_content_json,
     ...(raw.item.bounty_parent && {
       parent: new Bounty(raw.item.bounty_parent),
