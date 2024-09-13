@@ -49,6 +49,8 @@ if (process.env.ELASTIC_APM_URL) {
 
     // Set service version (required for sourcemap feature)
     serviceVersion: process.env.SENTRY_RELEASE,
+
+    transactionSampleRate: 0.1,
   });
 }
 
