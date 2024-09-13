@@ -7,8 +7,8 @@ type Args = {
   page?: number;
 };
 
-export const fetchBounties = ({ personalized = true, page }: Args): Promise<PaginatedApiResponse> => {
-  const url = generateApiUrl(`bounty`) + (personalized ? `?personalized=true` : '');
+export const fetchBounties = ({ personalized = true, page, status = 'OPEN' }: Args): Promise<PaginatedApiResponse> => {
+  const url = generateApiUrl(`bounty?status=${status}`) + (personalized ? '&personalized=true' : '');
 
   return fetch(url, API.GET_CONFIG())
     .then(Helpers.checkStatus)
