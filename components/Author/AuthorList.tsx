@@ -66,7 +66,7 @@ export const CondensedAuthorList = ({
           ) : (
             <span>{authorName}</span>
           )}
-          {idx < primaryAuthors.length - 1 && <>,</>}
+          {idx < primaryAuthors.length - 1 && <>, </>}
         </>
       ))}
       {showEtAllText && <>, et al.</>}

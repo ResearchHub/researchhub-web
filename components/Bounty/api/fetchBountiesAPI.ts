@@ -1,17 +1,20 @@
-import API from "~/config/api";
-import { buildApiUri } from "~/config/utils/buildApiUri";
+import API, { generateApiUrl } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { PaginatedApiResponse } from "~/config/types/root_types";
 
 type Args = {
-  onError: (error: Error) => void;
-  onSuccess: (response: any) => void;
+  personalized?: boolean;
   page?: number;
 };
 
-export const fetchBounties = ({ onError, onSuccess, page }: Args): void => {
-  fetch(buildApiUri({ apiPath: "bounty/get_bounties" }), API.GET_CONFIG())
+export const fetchBounties = ({ personalized = true, page }: Args): Promise<PaginatedApiResponse> => {
+  const url = generateApiUrl(`bounty`) + (personalized ? `?personalized=true` : '');
+
+  return fetch(url, API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((res: any): void => onSuccess({ res }))
-    .catch(onError);
+    .then((res: any) => {
+      return res;
+    })
 };
+

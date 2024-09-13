@@ -243,6 +243,7 @@ function RootLeftSidebar({
         "hubs",
         "referral",
         "search",
+        "bounties",
         "user",
         "author",
       ].includes(pathname.split("/")[1]) !== true;
