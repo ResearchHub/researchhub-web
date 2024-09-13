@@ -27,14 +27,12 @@ import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 type SimpleBounty = {
   id: string;
   amount: number;
-  content: string;
+  content: any;
   createdBy: any;
   expirationDate: string;
   createdDate: string;
   unifiedDocument: any;
   bountyType: "REVIEW" | "GENERIC_COMMMENT" | "ANSWER";
-  // formattedAmount: string;
-  // formattedTime: string;
 }
 
 const parseSimpleBounty = (raw: any): SimpleBounty => {
@@ -47,8 +45,6 @@ const parseSimpleBounty = (raw: any): SimpleBounty => {
     createdBy: parseUser(raw.created_by),
     expirationDate: raw.expiration_date,
     unifiedDocument: parseUnifiedDocument(raw.unified_document),
-    // formattedAmount: raw.total_amount.toLocaleString(),
-    // formattedtimeToRoundUp(raw.expiration_date)
   }
 }
 
@@ -138,13 +134,15 @@ const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
           <div className={css(styles.lineItemLabel)}>
             Details:
           </div>
-          <div className={css(styles.lineItemValue)} style={{marginTop: 5,}}>
-            <CommentReadOnly
-              content={bounty.content}
-              previewMaxImageLength={1}
-              previewMaxCharLength={400}
-            />
-          </div>
+          {bounty.content?.ops &&
+            <div className={css(styles.lineItemValue)} style={{marginTop: 5,}}>
+              <CommentReadOnly
+                content={bounty.content}
+                previewMaxImageLength={1}
+                previewMaxCharLength={400}
+              />
+            </div>
+          }
         </div>
       </div>
 
@@ -427,7 +425,11 @@ const styles = StyleSheet.create({
   },
   collapsable: {
     padding: 15,
-    borderBottom: `1px solid ${colors.BLACK(0.2)}`,
+    ":hover": {
+      background: colors.LIGHTER_GREY(1.0),
+      cursor: "pointer",
+    }
+    // borderBottom: `1px solid ${colors.BLACK(0.2)}`,
   },
   collapsableHeader: {
     
