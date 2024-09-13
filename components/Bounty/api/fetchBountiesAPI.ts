@@ -5,6 +5,7 @@ import { PaginatedApiResponse } from "~/config/types/root_types";
 type Args = {
   personalized?: boolean;
   page?: number;
+  status?: string;
 };
 
 export const fetchBounties = ({ personalized = true, page, status = 'OPEN' }: Args): Promise<PaginatedApiResponse> => {
