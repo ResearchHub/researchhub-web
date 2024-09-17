@@ -60,7 +60,6 @@ export default function FeedInfoCard({
     const SUBSCRIBE_API = userIsSubscribed
       ? unsubscribeFromHub
       : subscribeToHub;
-    const hubName = hub.name && capitalize(hub.name);
     SUBSCRIBE_API({ hubId: hub.id }).then((_) =>
       userIsSubscribed ? setUserIsSubscribed(false) : setUserIsSubscribed(true)
     );
