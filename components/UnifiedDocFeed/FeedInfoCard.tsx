@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { isEmpty } from "~/config/utils/nullchecks";
-import { ReactElement, ReactNode, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import AuthorFacePile from "../shared/AuthorFacePile";
 import Image from "next/image";
 import { parseHub } from "~/config/types/hub";
@@ -15,23 +15,14 @@ import { formatNumber } from "~/config/utils/number";
 
 type Props = {
   hub: any;
-  hubSubscribeButton?: ReactNode | null;
-  isHomePage: boolean;
   mainHeaderText: string;
 };
 
 export default function FeedInfoCard({
   hub,
-  hubSubscribeButton,
-  isHomePage,
   mainHeaderText,
 }: Props): ReactElement<"div"> | null {
-  const {
-    description,
-    editor_permission_groups = [],
-    hub_image: hubImage,
-    subscriber_count: subCount,
-  } = hub ?? {};
+  const { description, editor_permission_groups = [] } = hub ?? {};
 
   const [userIsSubscribed, setUserIsSubscribed] = useState(false);
   const [hubJoinHovered, setHubJoinedHovered] = useState(false);
