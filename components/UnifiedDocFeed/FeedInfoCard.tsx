@@ -160,7 +160,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     fontSize: 14,
-    // columnGap: "25px",
     color: "#545161",
     marginTop: 15,
   },
@@ -230,15 +229,11 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     ":hover": {
       opacity: 1,
-      // borderColor: "red",
-      // color: "red",
     },
   },
   leaveButtonStyle: {
     ":hover": {
       opacity: 1,
-      // borderColor: "red",
-      // color: "red",
     },
   },
 });
