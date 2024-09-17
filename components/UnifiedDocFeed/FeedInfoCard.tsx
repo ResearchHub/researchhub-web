@@ -1,11 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
+import { isEmpty } from "~/config/utils/nullchecks";
 import { ReactElement, ReactNode, useEffect, useState } from "react";
 import AuthorFacePile from "../shared/AuthorFacePile";
-import colors, { genericCardColors } from "~/config/themes/colors";
 import Image from "next/image";
 import { parseHub } from "~/config/types/hub";
 import { PaperIcon } from "~/config/themes/icons";
@@ -13,7 +11,6 @@ import { faComments } from "@fortawesome/pro-solid-svg-icons";
 import Button from "../Form/Button";
 import api, { generateApiUrl } from "~/config/api";
 import { subscribeToHub, unsubscribeFromHub } from "~/config/fetch";
-import { capitalize } from "~/config/utils/string";
 import { formatNumber } from "~/config/utils/number";
 
 type Props = {
