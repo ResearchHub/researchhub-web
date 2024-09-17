@@ -11,8 +11,7 @@ const ALLOWED_ORIGINS = [
   "backend.prod.researchhub.com",
   "wss://backend.prod.researchhub.com",
   "backend.staging.researchhub.com",
-  "websocket.staging.researchhub.com",
-  "wss://websocket.staging.researchhub.com",
+  "wss://backend.staging.researchhub.com",
   "researchhub.com",
 ];
 
