@@ -14,6 +14,7 @@ import Button from "../Form/Button";
 import api, { generateApiUrl } from "~/config/api";
 import { subscribeToHub, unsubscribeFromHub } from "~/config/fetch";
 import { capitalize } from "~/config/utils/string";
+import { formatNumber } from "~/config/utils/number";
 
 type Props = {
   hub: any;
@@ -42,8 +43,8 @@ export default function FeedInfoCard({
     (editor_group: any): any => editor_group?.user?.author_profile
   );
   const parsedHub = parseHub(hub);
-  const numPapers = parsedHub.numDocs || 0;
-  const numComments = parsedHub.numComments || 0;
+  const numPapers = formatNumber(parsedHub.numDocs || 0);
+  const numComments = formatNumber(parsedHub.numComments || 0);
   const formattedDescription = (description || "").replace(/\.$/, "");
 
   const getUserIsSubscribedToHub = async () => {
