@@ -47,8 +47,6 @@ export const getRewardsEligibilityInfo = ({
   }
   else if (!isPublishedDateWithinFiveYears) {
     ineligibleReason = "OLD_PAPER";
-    console.log('targetDoc?.paper_publish_date', targetDoc?.paper_publish_date)
-    console.log('OLD')
   }
 
   return {
