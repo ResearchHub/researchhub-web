@@ -163,6 +163,8 @@ function FeedCard({
         : parsedDoc.authors;
   } catch (error) { }
 
+  const visibleDate = parsedDoc?.publishedDate || parsedDoc?.createdDate;
+
   const parsedHubs = (hubs || []).map(parseHub);
   const router = useRouter();
   const [isPreviewing, setIsPreviewing] = useState(false);
@@ -360,12 +362,12 @@ function FeedCard({
                             )}
                             {authors?.length > 1 && <span>{` et al.`}</span>}
 
-                            {parsedDoc?.createdDate && (
+                            {visibleDate && (
                               <>
                                 {authors?.length > 0 && (
                                   <span className={css(styles.metaDivider)}></span>
                                 )}
-                                {parsedDoc?.createdDate}
+                                {visibleDate}
                               </>
                             )}
 

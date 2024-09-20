@@ -182,3 +182,11 @@ export function calculateScopeFromSlug(scopeId) {
 
   return scope;
 }
+
+export function isNewerThanFiveYearsAgo(date) {
+  const now = moment();
+  const fiveYearsAgo = now.subtract(5, "year");
+  const dateObj = moment(date);
+
+  return dateObj.isAfter(fiveYearsAgo) || dateObj.isSame(fiveYearsAgo);
+}

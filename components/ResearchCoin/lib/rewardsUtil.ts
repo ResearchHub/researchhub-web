@@ -1,15 +1,17 @@
 import { FullAuthorProfile } from "~/components/Author/lib/types";
 import { AuthorProfile } from "~/config/types/root_types";
+import { isNewerThanFiveYearsAgo } from "~/config/utils/dates";
 
 export type ineligibleReason =
   | "NOT_OPEN_ACCESS"
   | "NOT_SUPPORTED_TYPE"
   | "NOT_FIRST_AUTHOR"
+  | "OLD_PAPER"
   | null;
 
 export type RewardsEligibilityInfo = {
   isEligibleForRewards: boolean;
-  reason: "NOT_OPEN_ACCESS" | "NOT_SUPPORTED_TYPE" | "NOT_FIRST_AUTHOR" | null;
+  reason: ineligibleReason;
 };
 
 export const getRewardsEligibilityInfo = ({
@@ -23,6 +25,7 @@ export const getRewardsEligibilityInfo = ({
   targetDoc: any;
   isOpenAccess: boolean;
 }): RewardsEligibilityInfo => {
+
   const isFirstAuthor = authors.find(
     (author) =>
       author?.authorship?.authorPosition === "first" &&
@@ -32,6 +35,8 @@ export const getRewardsEligibilityInfo = ({
     targetDoc?.work_type
   );
 
+  const isPublishedDateWithinFiveYears = isNewerThanFiveYearsAgo(targetDoc?.paper_publish_date);
+
   let ineligibleReason: ineligibleReason = null;
   if (!isOpenAccess) {
     ineligibleReason = "NOT_OPEN_ACCESS";
@@ -40,9 +45,14 @@ export const getRewardsEligibilityInfo = ({
   } else if (!isSupportedType) {
     ineligibleReason = "NOT_SUPPORTED_TYPE";
   }
+  else if (!isPublishedDateWithinFiveYears) {
+    ineligibleReason = "OLD_PAPER";
+    console.log('targetDoc?.paper_publish_date', targetDoc?.paper_publish_date)
+    console.log('OLD')
+  }
 
   return {
-    isEligibleForRewards: Boolean(isFirstAuthor && isSupportedType),
+    isEligibleForRewards: Boolean(isFirstAuthor && isSupportedType && isOpenAccess && isPublishedDateWithinFiveYears),
     reason: ineligibleReason,
   };
 };
