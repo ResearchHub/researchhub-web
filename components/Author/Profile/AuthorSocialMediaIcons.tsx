@@ -4,32 +4,31 @@ import { css, StyleSheet } from "aphrodite";
 import Link from "next/link";
 
 const AuthorSocialMediaIcons = ({ profile }: { profile: FullAuthorProfile }) => {
-
   return (
     <div className={css(styles.iconsWrapper)}>
       {profile.orcidUrl ? (
-        <Link href={profile.orcidUrl} target="_blank">
+        <Link href={profile.orcidUrl.indexOf("http") === -1 ? `https://${profile.orcidUrl}` : profile.orcidUrl} target="_blank">
           <OrcidIcon externalUrl={profile.orcidUrl} width={25} height={25} />
         </Link>
       ) : (
         <OrcidIcon externalUrl={profile.orcidUrl} width={25} height={25} />
       )}      
       {profile.linkedInUrl ? (
-        <Link href={profile.linkedInUrl} target="_blank">
+        <Link href={profile.linkedInUrl.indexOf("http") === -1 ? `https://${profile.linkedInUrl}` : profile.linkedInUrl} target="_blank">
           <LinkedInIcon externalUrl={profile.linkedInUrl} width={25} height={25} />
         </Link>
       ) : (
         <LinkedInIcon externalUrl={profile.linkedInUrl} width={25} height={25} />
       )}
       {profile.xUrl ? (
-        <Link href={profile.xUrl} target="_blank">
+        <Link href={profile.xUrl.indexOf("http") === -1 ? `https://${profile.xUrl}` : profile.xUrl} target="_blank">
           <XIcon externalUrl={profile.xUrl} width={25} height={25} />
         </Link>
       ) : (
         <XIcon externalUrl={profile.xUrl} width={25} height={25} />
       )}
       {profile.googleScholarUrl ? (
-        <Link href={profile.googleScholarUrl} target="_blank">
+        <Link href={profile.googleScholarUrl.indexOf("http") === -1 ? `https://${profile.googleScholarUrl}` : profile.googleScholarUrl}  target="_blank">
           <GoogleScholarIcon externalUrl={profile.googleScholarUrl} width={25} height={25} />
         </Link>
       ) : (

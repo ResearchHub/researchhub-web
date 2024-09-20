@@ -497,7 +497,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
-    minWidth: 700,
+    maxWidth: 700,
     width: "100%",
     overflow: "visible",
     "@media only screen and (max-width: 936px)": {
