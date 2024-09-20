@@ -24,7 +24,7 @@ const VerificationSmallBanner = ({ handleDismiss }) => {
             className={css(styles.avatar)}
           />
           <span className={css(styles.badgeWrapper)}>
-            <VerifiedBadge height={25} width={25} showTooltipOnHover={false} />
+            <VerifiedBadge height={28} width={28} showTooltipOnHover={false} />
           </span>
         </div>
       </div>
@@ -96,15 +96,15 @@ const styles = StyleSheet.create({
     height: 50,
   },
   avatar: {
-    width: '100%',
-    height: '100%',
+    width: '115%',
+    height: '115%',
     borderRadius: '50%',
     objectFit: 'cover',
   },
   badgeWrapper: {
     position: 'absolute',
-    bottom: -10,
-    right: -10,
+    bottom: -13,
+    right: -13,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
