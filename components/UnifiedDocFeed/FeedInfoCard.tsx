@@ -1,11 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
-import { ReactElement, ReactNode, useEffect, useState } from "react";
+import { isEmpty } from "~/config/utils/nullchecks";
+import { ReactElement, useEffect, useState } from "react";
 import AuthorFacePile from "../shared/AuthorFacePile";
-import colors, { genericCardColors } from "~/config/themes/colors";
 import Image from "next/image";
 import { parseHub } from "~/config/types/hub";
 import { PaperIcon } from "~/config/themes/icons";
@@ -13,27 +11,18 @@ import { faComments } from "@fortawesome/pro-solid-svg-icons";
 import Button from "../Form/Button";
 import api, { generateApiUrl } from "~/config/api";
 import { subscribeToHub, unsubscribeFromHub } from "~/config/fetch";
-import { capitalize } from "~/config/utils/string";
+import { formatNumber } from "~/config/utils/number";
 
 type Props = {
   hub: any;
-  hubSubscribeButton?: ReactNode | null;
-  isHomePage: boolean;
   mainHeaderText: string;
 };
 
 export default function FeedInfoCard({
   hub,
-  hubSubscribeButton,
-  isHomePage,
   mainHeaderText,
 }: Props): ReactElement<"div"> | null {
-  const {
-    description,
-    editor_permission_groups = [],
-    hub_image: hubImage,
-    subscriber_count: subCount,
-  } = hub ?? {};
+  const { description, editor_permission_groups = [] } = hub ?? {};
 
   const [userIsSubscribed, setUserIsSubscribed] = useState(false);
   const [hubJoinHovered, setHubJoinedHovered] = useState(false);
@@ -42,8 +31,8 @@ export default function FeedInfoCard({
     (editor_group: any): any => editor_group?.user?.author_profile
   );
   const parsedHub = parseHub(hub);
-  const numPapers = parsedHub.numDocs || 0;
-  const numComments = parsedHub.numComments || 0;
+  const numPapers = formatNumber(parsedHub.numDocs || 0);
+  const numComments = formatNumber(parsedHub.numComments || 0);
   const formattedDescription = (description || "").replace(/\.$/, "");
 
   const getUserIsSubscribedToHub = async () => {
@@ -62,7 +51,6 @@ export default function FeedInfoCard({
     const SUBSCRIBE_API = userIsSubscribed
       ? unsubscribeFromHub
       : subscribeToHub;
-    const hubName = hub.name && capitalize(hub.name);
     SUBSCRIBE_API({ hubId: hub.id }).then((_) =>
       userIsSubscribed ? setUserIsSubscribed(false) : setUserIsSubscribed(true)
     );
@@ -162,7 +150,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     fontSize: 14,
-    // columnGap: "25px",
     color: "#545161",
     marginTop: 15,
   },
@@ -232,15 +219,11 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     ":hover": {
       opacity: 1,
-      // borderColor: "red",
-      // color: "red",
     },
   },
   leaveButtonStyle: {
     ":hover": {
       opacity: 1,
-      // borderColor: "red",
-      // color: "red",
     },
   },
 });

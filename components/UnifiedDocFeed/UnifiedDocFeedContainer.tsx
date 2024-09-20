@@ -161,8 +161,6 @@ function UnifiedDocFeedContainer({
       {isHomePage || isEmpty(hub) ? null : (
         <FeedInfoCard
           hub={hub}
-          hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
-          isHomePage={isHomePage}
           mainHeaderText={formatMainHeader({
             label: hubName ?? "",
             isHomePage,
