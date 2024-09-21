@@ -30,9 +30,9 @@ const VerificationSmallBanner = ({ handleDismiss }) => {
       </div>
       <div className={css(styles.title)}>Verify & Unlock Perks</div>
       <ul className={css(styles.ctaWrapper)}>
+        <li>Auto-sync <strong>all</strong> of your papers</li>
+        <li>Get a verified badge</li>
         <li>Fast-track your earnings</li>
-        <li>Faster withdraws</li>
-        <li>Exclusive badge</li>
       </ul>
       <VerifyIdentityModal
         wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
