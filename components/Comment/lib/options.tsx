@@ -124,5 +124,6 @@ export const reviewCategories = {
     description:
       "Is the research question innovative? Do the study's findings advance the authors' field in a meaningful way?",
     isDefault: false,
+    hidden: true,
   },
 };
