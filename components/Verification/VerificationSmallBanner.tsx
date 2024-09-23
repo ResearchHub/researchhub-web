@@ -7,6 +7,8 @@ import { CloseIcon } from "~/config/themes/icons";
 import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { useSelector } from "react-redux";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
 const VerificationSmallBanner = ({ handleDismiss }) => {
   const auth = useSelector((state) => state.auth);
@@ -30,9 +32,18 @@ const VerificationSmallBanner = ({ handleDismiss }) => {
       </div>
       <div className={css(styles.title)}>Verify & Unlock Perks</div>
       <ul className={css(styles.ctaWrapper)}>
-        <li>Auto-sync <strong>all</strong> of your papers</li>
-        <li>Get a verified badge</li>
-        <li>Fast-track your earnings</li>
+        <li className={css(styles.listItem)}>
+          <FontAwesomeIcon icon={faCheck} className={css(styles.checkIcon)} />
+          Auto sync all of your papers
+        </li>
+        <li className={css(styles.listItem)}>
+          <FontAwesomeIcon icon={faCheck} className={css(styles.checkIcon)} />
+          Get a verified badge
+        </li>
+        <li className={css(styles.listItem)}>
+          <FontAwesomeIcon icon={faCheck} className={css(styles.checkIcon)} />
+          Fast track your earnings
+        </li>
       </ul>
       <VerifyIdentityModal
         wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
@@ -40,7 +51,7 @@ const VerificationSmallBanner = ({ handleDismiss }) => {
       >
         <div className={css(styles.ctaWrapper)}>
           <Button fullWidth type="primary" variant="outlined" size="med">
-            Verify identity
+            Verify now
           </Button>
         </div>
       </VerifyIdentityModal>
@@ -110,6 +121,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: '50%',
     padding: 2,
+  },
+  listItem: {
+    marginLeft: -30,
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  checkIcon: {
+    marginRight: 10,
+    color: 'white',
+    width: 16,
+    height: 16,
   },
 });
 
