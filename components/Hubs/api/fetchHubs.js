@@ -3,10 +3,11 @@ import { Helpers } from "@quantfive/js-web-config";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 export const getHubs = async ({
-  ordering = "-paper_count,-discussion_count,id",
+  ordering = "-paper_count",
+  namespaceFilter = null,
   page,
 }) => {
-  const url = API.HUB({ ordering, page });
+  const url = API.HUB({ ordering, page, namespace: namespaceFilter });
 
   return fetch(url, API.GET_CONFIG())
     .then(Helpers.checkStatus)

@@ -22,6 +22,7 @@ type HubSelectProps = {
   hubs: any[];
   errorCode?: number;
   count: number;
+  namespace: "journal" | null;
   handleClick?: (event) => void;
   withPagination?: boolean;
   maxCardsPerRow?: number;
@@ -34,6 +35,7 @@ const HubSelect = ({
   hubs,
   handleClick,
   count,
+  namespace,
   withPagination = true,
   maxCardsPerRow,
   selectedHub,
@@ -42,8 +44,8 @@ const HubSelect = ({
 }: HubSelectProps) => {
   const router = useRouter();
   const sortOpts = [
-    { label: "Popular", value: "-paper_count,-discussion_count,id" },
-    { label: "Name", value: "name" },
+    { label: "Name (A-Z)", value: "name" },
+    { label: "Paper count", value: "-paper_count" },
   ];
 
   const [parsedHubs, setParsedHubs] = useState<Hub[]>(
@@ -83,6 +85,8 @@ const HubSelect = ({
     // @ts-ignore
     const { hubs } = await getHubs({
       page,
+      // @ts-ignore
+      namespaceFilter: namespace,
       ordering: sort.value,
     });
     const parsedHubs = hubs.map((hub) => parseHub(hub));
@@ -139,7 +143,7 @@ const HubSelect = ({
       const sortValueChanged = prevSortValue.current.value !== sort.value;
       if (sortValueChanged) {
         // @ts-ignore
-        const { hubs } = await getHubs({ ordering: sort.value });
+        const { hubs } = await getHubs({ ordering: sort.value, namespaceFilter: namespace });
         const parsedHubs = hubs.map((hub) => parseHub(hub));
         setParsedHubs(parsedHubs);
         prevSortValue.current = sort;

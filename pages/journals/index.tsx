@@ -43,40 +43,20 @@ const HubsPage: NextPage<Props> = ({
   const isHubEditor = currentUser?.editorOf && currentUser?.editorOf.length > 0;
   const [_hubs, _setHubs] = useState<Hub[]>(hubs);
 
-  const addHub = (newHub) => {
-    _setHubs([newHub, ..._hubs]);
-  };
-
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.titleContainer)}>
-        <h1 className={css(styles.title) + " clamp2"}>Hubs</h1>
-        {(isModerator || isHubEditor) && (
-          <Button
-            customButtonStyle={styles.createHubButton}
-            label={
-              <div className={css(styles.createHubButtonContainer)}>
-                <FontAwesomeIcon
-                  style={{ marginRight: 8 }}
-                  // @ts-ignore icon prop works with FontAwesome
-                  icon={faPlus}
-                />
-                <div>Create a Hub</div>
-              </div>
-            }
-            onClick={() => {
-              openAddHubModal && openAddHubModal(true);
-            }}
-            isWhite
-          />
-        )}
+        <h1 className={css(styles.title) + " clamp2"}>Journals</h1>
       </div>
       <div className={css(styles.description)}>
-        Hubs are collections of papers that are related to a specific topic. Use
-        this page to explore hubs.
+        Papers from the following journals are available on ResearchHub.
       </div>
-      <HubSelect count={count} hubs={_hubs} canEdit={isModerator || isHubEditor} />
-      <AddHubModal addHub={addHub} />
+      <HubSelect
+        count={count}
+        namespace="journal"
+        hubs={_hubs}
+        canEdit={isModerator || isHubEditor}
+      />
     </div>
   );
 };
@@ -133,7 +113,7 @@ const styles = StyleSheet.create({
 export const getStaticProps: GetStaticProps = async (ctx) => {
   try {
     // @ts-ignore
-    const { hubs, count } = await getHubs({});
+    const { hubs, count } = await getHubs({ namespaceFilter: "journal" });
 
     return {
       props: {
