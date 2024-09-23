@@ -4,6 +4,7 @@ import {
   faArrowRightToLine,
   faGrid2,
   faHouse,
+  faNewspaper,
   faTableTree,
   faWavePulse,
 } from "@fortawesome/pro-solid-svg-icons";
@@ -95,14 +96,14 @@ export const getLeftSidebarItemAttrs = ({
       href: "/live",
       onClick: silentEmptyFnc,
     },
-    {
-      icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
-      label: "Hubs",
-      isActive: ["/hubs"].includes(pathname),
-      isMinimized,
-      href: "/hubs",
-      onClick: silentEmptyFnc,
-    },
+    // {
+    //   icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
+    //   label: "Hubs",
+    //   isActive: ["/hubs"].includes(pathname),
+    //   isMinimized,
+    //   href: "/hubs",
+    //   onClick: silentEmptyFnc,
+    // },
     {
       icon: ["/funding"].includes(pathname) ? (
         <img
@@ -191,6 +192,16 @@ export const getLeftSidebarItemAttrs = ({
       // if user isn't logged in, go to the product page
       href: isLoggedIn ? "/reference-manager" : "/product/reference-manager",
     },
+
+    // {
+    //   icon: <FontAwesomeIcon icon={faWavePulse}></FontAwesomeIcon>,
+    //   label: "Live",
+    //   isMinimized,
+    //   isActive: pathname.includes("live"),
+    //   href: "/live",
+    //   onClick: silentEmptyFnc,
+    // },
+
   ]);
 };
 
@@ -427,6 +438,26 @@ function RootLeftSidebar({
             {leftSidebarItems}
           </div>
         </div>
+
+
+        <div className={css(styles.subheader)}>Browse</div>
+        <RootLeftSidebarItem
+          href="journals"
+          key={`journals`}
+          icon={<FontAwesomeIcon icon={faNewspaper}></FontAwesomeIcon>}
+          isMinimized={false}
+          label={"Journals"}
+          onClick={silentEmptyFnc}
+        />        
+        <RootLeftSidebarItem
+          href="hubs"
+          key={`hubs`}
+          icon={<FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>}
+          isMinimized={false}
+          label={"Hubs"}
+          onClick={silentEmptyFnc}
+        />
+
         <div className={css(styles.leftSidebarFooter)}>
           {!isMinimized && (
             <div className={css(styles.subheader)}>Resources</div>
