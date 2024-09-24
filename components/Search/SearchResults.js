@@ -16,6 +16,7 @@ import { trackEvent } from "~/config/utils/analytics";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGrid2,
+  faNewspaper,
   faSquarePen,
   faStar,
   faUser,
@@ -82,6 +83,11 @@ const SearchResults = ({ apiResponse }) => {
       },
       { type: "hub", label: "Hubs", icon: <FontAwesomeIcon icon={faGrid2} /> },
       {
+        type: "journal",
+        label: "Journals",
+        icon: <FontAwesomeIcon icon={faNewspaper} />,
+      },
+      {
         type: "person",
         label: "People",
         icon: <FontAwesomeIcon icon={faUser} />,
@@ -114,6 +120,8 @@ const SearchResults = ({ apiResponse }) => {
           entityType={searchType}
         />
       ) : searchType === "hub" ? (
+        <SearchResultsForHubs apiResponse={apiResponse} />
+      ) : searchType === "journal" ? (
         <SearchResultsForHubs apiResponse={apiResponse} />
       ) : searchType === "person" ? (
         <SearchResultsForPeople apiResponse={apiResponse} />
