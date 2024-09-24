@@ -124,7 +124,7 @@ const HubSelect = ({
     }
 
     setLoading(true);
-    fetchHubSuggestions(query)
+    fetchHubSuggestions({ query, namespace })
       .then((suggestions) => {
         // @ts-ignore
         setSuggestions(suggestions);

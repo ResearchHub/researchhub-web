@@ -442,7 +442,7 @@ function RootLeftSidebar({
 
         <div className={css(styles.subheader)}>Browse</div>
         <RootLeftSidebarItem
-          href="journals"
+          href="/journals"
           key={`journals`}
           icon={<FontAwesomeIcon icon={faNewspaper}></FontAwesomeIcon>}
           isMinimized={false}
@@ -530,18 +530,6 @@ function RootLeftSidebar({
                 </div>
               </VerifyIdentityModal>
             </span>
-            {/* <ALink
-              href="/leaderboard/users"
-              overrideStyle={formattedFooterTxtItem}
-            >
-              {isMinimized ? "Top" : "Leaderboard"}
-            </ALink> */}
-            <ALink
-              href="https://researchhub.notion.site/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
-              overrideStyle={formattedFooterTxtItem}
-            >
-              {"Jobs"}
-            </ALink>
           </div>
           <div className={css(styles.footer)}>
             <div className={formattedFooterItemsButtonRow}>

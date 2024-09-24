@@ -116,18 +116,6 @@ function RootLeftSidebarSlider({
           >
             Community
           </ALink>
-          {/* <ALink
-            href="/leaderboard/users"
-            overrideStyle={styles.leftSidebarSliderFooterTxtItem}
-          >
-            Leaderboard
-          </ALink> */}
-          <ALink
-            href="https://www.notion.so/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
-            overrideStyle={styles.leftSidebarSliderFooterTxtItem}
-          >
-            {"Jobs"}
-          </ALink>
         </div>
         <div className={css(styles.leftSidebarSliderFooterBottom)}>
           <div

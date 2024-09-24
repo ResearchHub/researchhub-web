@@ -22,6 +22,7 @@ export const buildPageUrlFromSuggestion = (suggestion: Suggestion) => {
       const userSuggestion = suggestion.data as SuggestedUser;
       return `/author/${userSuggestion.authorProfile.id}`;
     case "hub":
+    case "journal":
       const hubSuggestion = suggestion.data as HubSuggestion;
       return `/hubs/${hubSuggestion.hub.slug}`;
     case "question":
