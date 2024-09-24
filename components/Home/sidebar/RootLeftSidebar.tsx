@@ -252,6 +252,7 @@ function RootLeftSidebar({
         "for-you",
         "funding",
         "hubs",
+        "journals",
         "referral",
         "search",
         "bounties",
