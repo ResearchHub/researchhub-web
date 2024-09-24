@@ -4,12 +4,11 @@ import {
   faArrowRightToLine,
   faGrid2,
   faHouse,
-  faNewspaper,
   faTableTree,
   faWavePulse,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
-  faMedium,
+  faLinkedin,
   faDiscord,
   faXTwitter,
   faGithub,
@@ -96,14 +95,14 @@ export const getLeftSidebarItemAttrs = ({
       href: "/live",
       onClick: silentEmptyFnc,
     },
-    // {
-    //   icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
-    //   label: "Hubs",
-    //   isActive: ["/hubs"].includes(pathname),
-    //   isMinimized,
-    //   href: "/hubs",
-    //   onClick: silentEmptyFnc,
-    // },
+    {
+      icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
+      label: "Hubs",
+      isActive: ["/hubs"].includes(pathname),
+      isMinimized,
+      href: "/hubs",
+      onClick: silentEmptyFnc,
+    },
     {
       icon: ["/funding"].includes(pathname) ? (
         <img
@@ -192,16 +191,6 @@ export const getLeftSidebarItemAttrs = ({
       // if user isn't logged in, go to the product page
       href: isLoggedIn ? "/reference-manager" : "/product/reference-manager",
     },
-
-    // {
-    //   icon: <FontAwesomeIcon icon={faWavePulse}></FontAwesomeIcon>,
-    //   label: "Live",
-    //   isMinimized,
-    //   isActive: pathname.includes("live"),
-    //   href: "/live",
-    //   onClick: silentEmptyFnc,
-    // },
-
   ]);
 };
 
@@ -252,7 +241,6 @@ function RootLeftSidebar({
         "for-you",
         "funding",
         "hubs",
-        "journals",
         "referral",
         "search",
         "bounties",
@@ -439,26 +427,6 @@ function RootLeftSidebar({
             {leftSidebarItems}
           </div>
         </div>
-
-
-        <div className={css(styles.subheader)}>Browse</div>
-        <RootLeftSidebarItem
-          href="/journals"
-          key={`journals`}
-          icon={<FontAwesomeIcon icon={faNewspaper}></FontAwesomeIcon>}
-          isMinimized={false}
-          label={"Journals"}
-          onClick={silentEmptyFnc}
-        />        
-        <RootLeftSidebarItem
-          href="hubs"
-          key={`hubs`}
-          icon={<FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>}
-          isMinimized={false}
-          label={"Hubs"}
-          onClick={silentEmptyFnc}
-        />
-
         <div className={css(styles.leftSidebarFooter)}>
           {!isMinimized && (
             <div className={css(styles.subheader)}>Resources</div>
@@ -531,6 +499,18 @@ function RootLeftSidebar({
                 </div>
               </VerifyIdentityModal>
             </span>
+            {/* <ALink
+              href="/leaderboard/users"
+              overrideStyle={formattedFooterTxtItem}
+            >
+              {isMinimized ? "Top" : "Leaderboard"}
+            </ALink> */}
+            <ALink
+              href="https://researchhub.notion.site/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
+              overrideStyle={formattedFooterTxtItem}
+            >
+              {"Jobs"}
+            </ALink>
           </div>
           <div className={css(styles.footer)}>
             <div className={formattedFooterItemsButtonRow}>
@@ -556,13 +536,11 @@ function RootLeftSidebar({
                 {<FontAwesomeIcon icon={faGithub}></FontAwesomeIcon>}
               </ALink>
               <ALink
-                href="https://medium.com/researchhub"
-                overrideStyle={
-                  (styles.leftSidebarFooterIcon, styles.mediumIconOverride)
-                }
+                href="https://www.linkedin.com/company/researchhubtechnologies"
+                overrideStyle={styles.leftSidebarFooterIcon}
                 target="__blank"
               >
-                {<FontAwesomeIcon icon={faMedium}></FontAwesomeIcon>}
+                {<FontAwesomeIcon icon={faLinkedin}></FontAwesomeIcon>}
               </ALink>
             </div>
             <div className={formattedFooterItemsButtonRow}>
@@ -771,7 +749,6 @@ const styles = StyleSheet.create({
       marginLeft: 0,
     },
   },
-  mediumIconOverride: { fontSize: 18, marginTop: "-4px" },
   subheader: {
     borderTop: `1px solid ${colors.GREY_BORDER}`,
     marginTop: 12,
