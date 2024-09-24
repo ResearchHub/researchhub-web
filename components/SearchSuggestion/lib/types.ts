@@ -25,6 +25,14 @@ export type HubSuggestion = {
   value: ID;
 };
 
+export type JournalSuggestion = {
+  id: ID;
+  hub: Hub;
+  name: string;
+  label: string;
+  value: ID;
+};
+
 export type PaperSuggestion = {
   id: ID;
   title: string;
@@ -50,8 +58,8 @@ export type QuestionSuggestion = {
 };
 
 export type Suggestion = {
-  suggestionType: "hub" | "user" | "paper" | "post" | "question";
-  data: HubSuggestion | SuggestedUser | PaperSuggestion | PostSuggestion;
+  suggestionType: "hub" | "user" | "paper" | "post" | "question" | "journal";
+  data: HubSuggestion | SuggestedUser | PaperSuggestion | PostSuggestion | JournalSuggestion;
 };
 
 export const parsePaperSuggestion = (raw: any): PaperSuggestion => {
@@ -116,6 +124,11 @@ export const parseSuggestion = (raw: any): Suggestion => {
       suggestionType: "hub",
       data: parseHubSuggestion(raw._source),
     };
+  } else if (raw._index === "journal") {
+    return {
+      suggestionType: "journal",
+      data: parseJournalSuggestion(raw._source),
+    };
   }
 
   throw new Error(`Invalid suggestion type. Type was ${raw._index}`);
@@ -134,6 +147,17 @@ export const parseUserSuggestion = (raw: any): SuggestedUser => {
 };
 
 export const parseHubSuggestion = (raw: any): HubSuggestion => {
+  const hub = parseHub(raw);
+  return {
+    hub,
+    name: raw.name,
+    id: raw.id,
+    label: raw.name,
+    value: raw.id,
+  };
+};
+
+export const parseJournalSuggestion = (raw: any): JournalSuggestion => {
   const hub = parseHub(raw);
   return {
     hub,

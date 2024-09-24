@@ -6,6 +6,8 @@ import {
   parseHubSuggestion,
   parseSuggestion,
   Suggestion,
+  JournalSuggestion,
+  parseJournalSuggestion,
 } from "./types";
 import { NullableString } from "~/config/types/root_types";
 
@@ -40,10 +42,14 @@ export const fetchAllSuggestions = (
     });
 };
 
-export const fetchHubSuggestions = (
-  query: string
-): Promise<HubSuggestion[]> => {
-  const url = `${API.BASE_URL}search/hubs/suggest/?name_suggest__completion=${query}`;
+export const fetchHubSuggestions = ({
+  query,
+  namespace,
+}: {
+  query: string;
+  namespace?: "journal" | null;
+}): Promise<HubSuggestion[]> => {
+  const url = `${API.BASE_URL}search/${namespace === "journal" ? "journals" : "hubs"}/suggest/?name_suggest__completion=${query}`;
 
   const hubSuggestions: HubSuggestion[] = [];
   return fetch(url, API.GET_CONFIG())
@@ -64,6 +70,37 @@ export const fetchHubSuggestions = (
       });
 
       return hubSuggestions;
+    })
+    .catch((error) => {
+      console.error("Request Failed:", error);
+      return [];
+    });
+};
+
+export const fetchJournalSuggestions = (
+  query: string
+): Promise<JournalSuggestion[]> => {
+  const url = `${API.BASE_URL}search/journal/suggest/?name_suggest__completion=${query}`;
+
+  const journalSuggestions: JournalSuggestion[] = [];
+  return fetch(url, API.GET_CONFIG())
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error("HTTP-Error: " + response.status);
+      }
+    })
+    .then((data) => {
+      const suggestions = data.name_suggest__completion;
+      suggestions.forEach((suggestion) => {
+        suggestion.options.forEach((option) => {
+          const parsed = parseJournalSuggestion(option._source);
+          journalSuggestions.push(parsed);
+        });
+      });
+
+      return journalSuggestions;
     })
     .catch((error) => {
       console.error("Request Failed:", error);

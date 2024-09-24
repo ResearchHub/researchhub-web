@@ -1,18 +1,19 @@
 import colors from "~/config/themes/colors";
 import AuthorAvatar from "../AuthorAvatar";
 import {
-  PaperSuggestion,
+  PaperSuggestion as PaperSuggestionType,
   Suggestion,
-  PostSuggestion,
+  PostSuggestion as PostSuggestionType,
   SuggestedUser,
-  QuestionSuggestion,
-  HubSuggestion,
+  QuestionSuggestion as QuestionSuggestionType,
+  HubSuggestion as HubSuggestionType,
+  JournalSuggestion as JournalSuggestionType,
 } from "./lib/types";
 import { css, StyleSheet } from "aphrodite";
 import { PostIcon, PaperIcon, QuestionIcon } from "~/config/themes/icons";
 import { CondensedAuthorList } from "../Author/AuthorList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGrid2 } from "@fortawesome/pro-solid-svg-icons";
+import { faGrid2, faNewspaper } from "@fortawesome/pro-solid-svg-icons";
 import { toTitleCase } from "~/config/utils/string";
 import { formatNumber } from "~/config/utils/number";
 import { highlightTextInSuggestion } from "./lib/util";
@@ -109,13 +110,13 @@ const SearchSuggestions = ({
           >
             {suggestion.suggestionType === "paper" && (
               <PaperSuggestion
-                suggestion={suggestion.data as PaperSuggestion}
+                suggestion={suggestion.data as PaperSuggestionType}
                 searchString={searchString}
               />
             )}
             {suggestion.suggestionType === "post" && (
               <PostSuggestion
-                suggestion={suggestion.data as PostSuggestion}
+                suggestion={suggestion.data as PostSuggestionType}
                 searchString={searchString}
               />
             )}
@@ -125,15 +126,21 @@ const SearchSuggestions = ({
                 searchString={searchString}
               />
             )}
+            {suggestion.suggestionType === "journal" && (
+              <JournalSuggestion
+                suggestion={suggestion.data as JournalSuggestionType}
+                searchString={searchString}
+              />
+            )}            
             {suggestion.suggestionType === "hub" && (
               <HubSuggestion
-                suggestion={suggestion.data as HubSuggestion}
+                suggestion={suggestion.data as HubSuggestionType}
                 searchString={searchString}
               />
             )}
             {suggestion.suggestionType === "question" && (
               <QuestionSuggestion
-                suggestion={suggestion.data as QuestionSuggestion}
+                suggestion={suggestion.data as QuestionSuggestionType}
                 searchString={searchString}
               />
             )}
@@ -148,7 +155,7 @@ const HubSuggestion = ({
   suggestion,
   searchString,
 }: {
-  suggestion: HubSuggestion;
+  suggestion: HubSuggestionType;
   searchString?: string;
 }) => {
   const hubName = toTitleCase(suggestion.hub.name);
@@ -174,6 +181,45 @@ const HubSuggestion = ({
         />
         <div className={css(styles.metadata)}>
           <div>Hub</div>
+          {suggestion.hub.numDocs && suggestion.hub.numDocs > 0 && (
+            <>
+              <div className={css(styles.divider)} />
+              <div>{formattedNumDocs} papers</div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const JournalSuggestion = ({
+  suggestion,
+  searchString,
+}: {
+  suggestion: HubSuggestionType;
+  searchString?: string;
+}) => {
+  const hubName = toTitleCase(suggestion.hub.name);
+  const titleWithHighlightedPortions = highlightTextInSuggestion(
+    hubName,
+    searchString,
+    css(styles.highlightedPortion)
+  );
+  const formattedNumDocs = formatNumber(suggestion.hub.numDocs || 0);
+
+  return (
+    <div className={css(styles.recordWrapper)}>
+      <div className={css(styles.iconWrapper)}>
+        <FontAwesomeIcon icon={faNewspaper} style={{ fontSize: 20 }}></FontAwesomeIcon>
+      </div>
+      <div className={css(styles.record)}>
+        <div
+          className={css(styles.recordTitle)}
+          dangerouslySetInnerHTML={{ __html: titleWithHighlightedPortions }}
+        />
+        <div className={css(styles.metadata)}>
+          <div>Journal</div>
           {suggestion.hub.numDocs && suggestion.hub.numDocs > 0 && (
             <>
               <div className={css(styles.divider)} />
