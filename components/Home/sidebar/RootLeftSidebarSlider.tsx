@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faMedium,
+  faLinkedin,
   faDiscord,
   faXTwitter,
   faGithub,
@@ -156,13 +156,11 @@ function RootLeftSidebarSlider({
               {<FontAwesomeIcon icon={faGithub}></FontAwesomeIcon>}
             </ALink>            
             <ALink
-              href="https://medium.com/researchhub"
-              overrideStyle={
-                (styles.leftSidebarSliderFooterIcon, styles.mediumIconOverride)
-              }
+              href="https://www.linkedin.com/company/researchhubtechnologies"
+              overrideStyle={styles.leftSidebarSliderFooterIcon}
               target="__blank"
             >
-              {<FontAwesomeIcon icon={faMedium}></FontAwesomeIcon>}
+              {<FontAwesomeIcon icon={faLinkedin}></FontAwesomeIcon>}
             </ALink>
           </div>
           <div className={css(styles.leftSidebarSliderFooterItemsBottomRow)}>
@@ -272,7 +270,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     display: "block",
   },
-  mediumIconOverride: { fontSize: 18, marginTop: "-4px" },
   newPostButtonContainer: {
     width: "100%",
     display: "flex",

@@ -40,7 +40,7 @@ function CommentReviewCategorySelector({ handleSelect }): ReactElement {
         ref={dropdownRef}
       >
         {Object.values(reviewCategories)
-          .filter((cat) => !cat.isDefault)
+          .filter((cat) => !cat.isDefault && !cat.hidden)
           .map((cat) => (
             <div
               className={css(styles.dropdownOpt)}

@@ -85,9 +85,9 @@ export const sortOpts = [
 
 export const reviewCategories = {
   overall: {
-    label: "Overall Rating",
+    label: "Overall Assessment",
     value: "overall",
-    description: "What are your overall impressions of this paper?",
+    description: "What is your overall rating of this paper?",
     isDefault: true,
   },
   impact: {
@@ -96,6 +96,7 @@ export const reviewCategories = {
     description:
       "Is the research question innovative? Do the study's findings advance the authors' field in a meaningful way?",
     isDefault: false,
+    hidden: true,
   },
   methods: {
     label: "Methods",
@@ -108,7 +109,7 @@ export const reviewCategories = {
     label: "Results",
     value: "results",
     description:
-      "Were the study's findings analyzed and interpreted reasonably? Is the resulting data open and auditable?",
+      "Were the study's findings analyzed and interpreted reasonably? Is the resulting data open and auditable? Are the figures of high resolution, describe data appropriately and adequately labelled? Please provide comments - positive or negative on each figure including supplementary ones.",
     isDefault: false,
   },
   discussion: {
@@ -116,6 +117,13 @@ export const reviewCategories = {
     value: "discussion",
     description:
       "Do the results support the authors’ conclusions? Are there any alternative interpretations of the study's findings that the authors should have considered?",
+    isDefault: false,
+  },
+  introduction: {
+    label: "Introduction",
+    value: "introduction",
+    description:
+      "Does the introduction clearly articulate the research question and provide adequate context? Is the study's significance within the field convincingly established?",
     isDefault: false,
   },
 };

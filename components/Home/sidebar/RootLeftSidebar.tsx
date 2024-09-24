@@ -8,7 +8,7 @@ import {
   faWavePulse,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
-  faMedium,
+  faLinkedin,
   faDiscord,
   faXTwitter,
   faGithub,
@@ -536,13 +536,11 @@ function RootLeftSidebar({
                 {<FontAwesomeIcon icon={faGithub}></FontAwesomeIcon>}
               </ALink>
               <ALink
-                href="https://medium.com/researchhub"
-                overrideStyle={
-                  (styles.leftSidebarFooterIcon, styles.mediumIconOverride)
-                }
+                href="https://www.linkedin.com/company/researchhubtechnologies"
+                overrideStyle={styles.leftSidebarFooterIcon}
                 target="__blank"
               >
-                {<FontAwesomeIcon icon={faMedium}></FontAwesomeIcon>}
+                {<FontAwesomeIcon icon={faLinkedin}></FontAwesomeIcon>}
               </ALink>
             </div>
             <div className={formattedFooterItemsButtonRow}>
@@ -751,7 +749,6 @@ const styles = StyleSheet.create({
       marginLeft: 0,
     },
   },
-  mediumIconOverride: { fontSize: 18, marginTop: "-4px" },
   subheader: {
     borderTop: `1px solid ${colors.GREY_BORDER}`,
     marginTop: 12,

@@ -1,3 +1,4 @@
+import React from 'react';
 import { StyleSheet, css } from "aphrodite";
 import Button from "../Form/Button";
 import VerifiedBadge from "./VerifiedBadge";
@@ -6,6 +7,8 @@ import { CloseIcon } from "~/config/themes/icons";
 import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { useSelector } from "react-redux";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
 const VerificationSmallBanner = ({ handleDismiss }: { handleDismiss: Function }) => {
   const auth = useSelector((state: any) => state.auth);
@@ -15,13 +18,33 @@ const VerificationSmallBanner = ({ handleDismiss }: { handleDismiss: Function })
       <div className={css(styles.closeButtonWrapper)} onClick={() => handleDismiss()}>
         <CloseIcon color={"white"} onClick={() => null} />
       </div>
-      <VerifiedBadge height={32} width={32} showTooltipOnHover={false} />
-      <div className={css(styles.title)}>Verify Identity</div>
-      <p className={css(styles.description)}>
-        Verify your identity to stand out and get faster withdraws.
-      </p>
-
-      {/* @ts-ignore */}
+      <div className={css(styles.avatarSection)}>
+         <div className={css(styles.avatarWrapper)}>
+           <img 
+             src="/static/EinsteinAvatar.png" 
+             alt="Einstein Avatar" 
+             className={css(styles.avatar)}
+           />
+           <span className={css(styles.badgeWrapper)}>
+             <VerifiedBadge height={28} width={28} showTooltipOnHover={false} />
+           </span>
+         </div>
+       </div>
+       <div className={css(styles.title)}>Verify & Unlock Perks</div>
+       <ul className={css(styles.ctaWrapper)}>
+         <li className={css(styles.listItem)}>
+           <FontAwesomeIcon icon={faCheck} className={css(styles.checkIcon)} />
+           Auto sync all of your papers
+         </li>
+         <li className={css(styles.listItem)}>
+           <FontAwesomeIcon icon={faCheck} className={css(styles.checkIcon)} />
+           Get a verified badge
+         </li>
+         <li className={css(styles.listItem)}>
+           <FontAwesomeIcon icon={faCheck} className={css(styles.checkIcon)} />
+           Fast track your earnings
+         </li>
+       </ul>
       <VerifyIdentityModal
         // @ts-ignore legacy
         wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
@@ -29,8 +52,8 @@ const VerificationSmallBanner = ({ handleDismiss }: { handleDismiss: Function })
         wsAuth
       >
         <div className={css(styles.ctaWrapper)}>
-          <Button fullWidth type="primary" variant="outlined" size="small">
-            Learn more
+          <Button fullWidth type="primary" variant="outlined" size="med">
+            Verify now
           </Button>
         </div>
       </VerifyIdentityModal>
@@ -48,7 +71,8 @@ const styles = StyleSheet.create({
     color: "white",
   },
   ctaWrapper: {
-    marginTop: 20,
+    marginTop: 10,
+    fontSize: 16,
   },
   wrapper: {
     backgroundImage: "url('/static/background/small-banner-background.png')",
@@ -62,8 +86,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   title: {
-    marginTop: 14,
+    marginTop: 10,
     marginBottom: 2,
+    marginLeft: 10,
     fontSize: 22,
     fontWeight: 500,
     letterSpacing: "0.25px",
@@ -71,11 +96,45 @@ const styles = StyleSheet.create({
       fontSize: 16,
     },
   },
-  description: {
+  avatarSection: {
+    display: 'flex',
+    alignItems: 'center',
     marginTop: 5,
     marginBottom: 10,
-    fontSize: 16,
-    lineHeight: "19px",
+    marginLeft: 10,
+  },
+  avatarWrapper: {
+    position: 'relative',
+    width: 50,
+    height: 50,
+  },
+  avatar: {
+    width: '115%',
+    height: '115%',
+    borderRadius: '50%',
+    objectFit: 'cover',
+  },
+  badgeWrapper: {
+    position: 'absolute',
+    bottom: -13,
+    right: -13,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '50%',
+    padding: 2,
+  },
+  listItem: {
+    marginLeft: -30,
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  checkIcon: {
+    marginRight: 10,
+    color: 'white',
+    width: 16,
+    height: 16,
   },
 });
 
