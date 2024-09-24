@@ -98,6 +98,13 @@ export const reviewCategories = {
     isDefault: false,
     hidden: true,
   },
+  introduction: {
+    label: "Introduction",
+    value: "introduction",
+    description:
+      "Does the introduction clearly articulate the research question and provide adequate context? Is the study's significance within the field convincingly established?",
+    isDefault: false,
+  },  
   methods: {
     label: "Methods",
     value: "methods",
@@ -117,13 +124,6 @@ export const reviewCategories = {
     value: "discussion",
     description:
       "Do the results support the authors’ conclusions? Are there any alternative interpretations of the study's findings that the authors should have considered?",
-    isDefault: false,
-  },
-  introduction: {
-    label: "Introduction",
-    value: "introduction",
-    description:
-      "Does the introduction clearly articulate the research question and provide adequate context? Is the study's significance within the field convincingly established?",
     isDefault: false,
   },
 };
