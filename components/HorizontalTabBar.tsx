@@ -205,6 +205,9 @@ const styles = StyleSheet.create({
     "::-webkit-scrollbar": {
       display: "none",
     },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      maxWidth: "93vw",
+    }
   },
   tab: {
     color: colors.MEDIUM_GREY(1.0),

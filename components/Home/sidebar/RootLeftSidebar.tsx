@@ -3,6 +3,7 @@ import {
   faArrowLeftToLine,
   faArrowRightToLine,
   faGrid2,
+  faHandHoldingDollar,
   faHouse,
   faTableTree,
   faWavePulse,
@@ -50,6 +51,7 @@ import NewPostButton from "~/components/NewPostButton";
 import NewPostModal from "~/components/Modals/NewPostModal";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 
 type Props = {
   openLoginModal: any;
@@ -104,30 +106,17 @@ export const getLeftSidebarItemAttrs = ({
       onClick: silentEmptyFnc,
     },
     {
-      icon: ["/funding"].includes(pathname) ? (
-        <img
-          src="/static/rsc-icon-dark-blue.svg"
-          width="24"
-          height="24"
-          style={{
-            marginLeft: "-2px",
-          }}
-        />
-      ) : (
-        <img
-          src="/static/rsc-icon-gray.svg"
-          width="24"
-          height="24"
-          style={{
-            marginLeft: "-2px",
-          }}
-        />
-      ),
+      icon: <ResearchCoinIcon height={21} width={21} version={4} color={["/bounties"].includes(pathname) ? colors.NEW_BLUE() : "#C1C1CF"}></ResearchCoinIcon>,
+      label: "Bounties",
+      isActive: ["/bounties"].includes(pathname),
+      isMinimized,
+      href: "/bounties",
+      onClick: silentEmptyFnc,
+    },    
+    {
+      icon: <FontAwesomeIcon icon={faHandHoldingDollar}></FontAwesomeIcon>,
       label: "Funding",
       isActive: ["/funding"].includes(pathname),
-      // let's show this for 15 days, after that it'll programmatically be hidden.
-      // if you're seeing this after the date below, please remove this code.
-      showNewFeatureIndicator: new Date() < new Date("2024-03-21"),
       isMinimized,
       href: "/funding",
       onClick: silentEmptyFnc,
@@ -294,9 +283,12 @@ function RootLeftSidebar({
       ind: number
     ): ReactElement<typeof RootLeftSidebarItem> => (
       <>
-        {attrs.label === "Funding" && !isMinimized && (
-          <div className={css(styles.subheader)}>Tools</div>
+        {attrs.label === "Bounties" && !isMinimized && (
+          <div className={css(styles.subheader)}>ResearchCoin</div>
         )}
+        {attrs.label === "Lab Notebook" && !isMinimized && (
+          <div className={css(styles.subheader)}>Tools</div>
+        )}        
         <RootLeftSidebarItem key={`${attrs.label}-${ind}`} {...attrs} />
       </>
     )
@@ -456,13 +448,6 @@ function RootLeftSidebar({
               {"About"}
             </ALink>
             <ALink
-              href="https://docs.researchhub.com/"
-              target="_blank"
-              overrideStyle={formattedFooterTxtItem}
-            >
-              {"Docs"}
-            </ALink>
-            <ALink
               href="https://researchhub.foundation"
               overrideStyle={formattedFooterTxtItem}
             >
@@ -505,12 +490,6 @@ function RootLeftSidebar({
             >
               {isMinimized ? "Top" : "Leaderboard"}
             </ALink> */}
-            <ALink
-              href="https://researchhub.notion.site/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
-              overrideStyle={formattedFooterTxtItem}
-            >
-              {"Jobs"}
-            </ALink>
           </div>
           <div className={css(styles.footer)}>
             <div className={formattedFooterItemsButtonRow}>
@@ -564,10 +543,10 @@ function RootLeftSidebar({
                 {"Issues"}
               </ALink>
               <ALink
-                href="https://researchhub.notion.site/ResearchHub-a2a87270ebcf43ffb4b6050e3b766ba0"
+                href="https://docs.researchhub.com/"
                 overrideStyle={styles.leftSidebarFooterBotItem}
               >
-                {"Help"}
+                {"Docs"}
               </ALink>
             </div>
           </div>

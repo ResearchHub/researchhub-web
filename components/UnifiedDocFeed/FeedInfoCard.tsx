@@ -113,26 +113,7 @@ export default function FeedInfoCard({
             />
           </div>
         )}
-        <div className={css(styles.detailRow, styles.metadata)}>
-          <div className={css(styles.dataPoint)}>
-            {/* @ts-ignore */}
-            <PaperIcon height={13} width={14} color="#918F9B" />
-            <span>
-              {numPapers === 1 ? `${numPapers} Paper` : `${numPapers} Papers`}
-            </span>
-          </div>
-          <div className={css(styles.dataPoint)}>
-            <FontAwesomeIcon
-              icon={faComments}
-              style={{ color: "#918F9B", fontSize: 12 }}
-            />
-            <span>
-              {numComments === 1
-                ? `${numComments} Discussion`
-                : `${numComments} Discussions`}
-            </span>
-          </div>
-        </div>
+
       </div>
     </div>
   );
