@@ -109,9 +109,6 @@ export const getLeftSidebarItemAttrs = ({
       icon: <ResearchCoinIcon height={21} width={21} version={4} color={["/bounties"].includes(pathname) ? colors.NEW_BLUE() : "#C1C1CF"}></ResearchCoinIcon>,
       label: "Bounties",
       isActive: ["/bounties"].includes(pathname),
-      // let's show this for 15 days, after that it'll programmatically be hidden.
-      // if you're seeing this after the date below, please remove this code.
-      showNewFeatureIndicator: new Date() < new Date("2024-03-21"),
       isMinimized,
       href: "/bounties",
       onClick: silentEmptyFnc,
@@ -120,9 +117,6 @@ export const getLeftSidebarItemAttrs = ({
       icon: <FontAwesomeIcon icon={faHandHoldingDollar}></FontAwesomeIcon>,
       label: "Funding",
       isActive: ["/funding"].includes(pathname),
-      // let's show this for 15 days, after that it'll programmatically be hidden.
-      // if you're seeing this after the date below, please remove this code.
-      showNewFeatureIndicator: new Date() < new Date("2024-03-21"),
       isMinimized,
       href: "/funding",
       onClick: silentEmptyFnc,
