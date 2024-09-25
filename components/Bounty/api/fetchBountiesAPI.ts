@@ -4,12 +4,12 @@ import { PaginatedApiResponse } from "~/config/types/root_types";
 
 type Args = {
   personalized?: boolean;
-  page?: number;
+  pageCursor?: string | null;
   status?: string;
 };
 
-export const fetchBounties = ({ personalized = true, page, status = 'OPEN' }: Args): Promise<PaginatedApiResponse> => {
-  const url = generateApiUrl(`bounty?status=${status}`) + (personalized ? '&personalized=true' : '');
+export const fetchBounties = ({ personalized = true, pageCursor = null, status = 'OPEN' }: Args): Promise<PaginatedApiResponse> => {
+  const url = pageCursor || generateApiUrl(`bounty?status=${status}`) + (personalized ? '&personalized=true' : '');
 
   return fetch(url, API.GET_CONFIG())
     .then(Helpers.checkStatus)

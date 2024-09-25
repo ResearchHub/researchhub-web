@@ -25,6 +25,12 @@ import numeral from "numeral";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import { faAngleDown } from "@fortawesome/pro-solid-svg-icons";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
+import { Hub, parseHub } from "~/config/types/hub";
+import HubTag, { HubBadge } from "~/components/Hubs/HubTag";
+import LoadMore from "~/components/shared/LoadMore";
+import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
+import { ROUTES as WS_ROUTES } from "~/config/ws";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
 
 type SimpleBounty = {
   id: string;
@@ -34,6 +40,7 @@ type SimpleBounty = {
   expirationDate: string;
   createdDate: string;
   unifiedDocument: any;
+  hubs: Hub[];
   bountyType: "REVIEW" | "GENERIC_COMMMENT" | "ANSWER";
 }
 
@@ -47,6 +54,7 @@ const parseSimpleBounty = (raw: any): SimpleBounty => {
     createdBy: parseUser(raw.created_by),
     expirationDate: raw.expiration_date,
     unifiedDocument: parseUnifiedDocument(raw.unified_document),
+    hubs: (raw.unified_document?.hubs || []).map(parseHub).filter((hub:Hub) => hub.isUsedForRep === true),
   }
 }
 
@@ -116,14 +124,14 @@ const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
               />
             </div>
           </div>
-        {/* <div className={css(styles.lineItem)}>
+        <div className={css(styles.lineItem)}>
           <div className={css(styles.lineItemLabel)}>
             Bounty type:
           </div>
           <div className={css(styles.lineItemValue)}>
             {bounty.bountyType === "REVIEW" ? "Peer Review" : bounty.bountyType === "ANSWER" ? "Answer to question" : "Other"}
           </div>
-        </div> */}
+        </div>
         <div className={css(styles.lineItem)}>
           <div className={css(styles.lineItemLabel)}>
             Expiration date:
@@ -160,6 +168,13 @@ const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
             {unifiedDocument.authors &&
               <CondensedAuthorList authorNames={unifiedDocument.authors.map(a => a.firstName + " " + a.lastName)} allowAuthorNameToIncludeHtml={false} />
             }
+            {bounty?.hubs && bounty.hubs.length > 0 && (
+              <div className={css(styles.paperHubs)}>
+                {bounty.hubs.map((hub) => (
+                  <HubTag hub={hub} key={hub.id} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -175,18 +190,19 @@ const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
 
 
 const BountiesPage: NextPage = () => {
-  const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(1);
   const [currentBounties, setCurrentBounties] = useState<SimpleBounty[]>([]);
   const [openInfoSections, setOpenInfoSections] = useState<string[]>([]);
+  const [nextPageCursor, setNextPageCursor] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showVerifyBanner, setShowVerifyBanner] = useState<boolean>(true);
-
+  const currentUser = useCurrentUser()
 
   useEffect(() => {
     (async () => {
-      const bounties: any = await fetchBounties({ personalized: true, page: 1 });
+      const bounties: any = await fetchBounties({ personalized: true, pageCursor: nextPageCursor });
 
+      setNextPageCursor(bounties.next);
       const parsedBounties = (bounties?.results || []).map((bounty) => {
         try {
           return parseSimpleBounty(bounty)
@@ -196,7 +212,7 @@ const BountiesPage: NextPage = () => {
         }
       }).filter((bounty) => bounty !== undefined);
 
-      setCurrentBounties(parsedBounties);
+      setCurrentBounties([...currentBounties, ...parsedBounties]);
       setIsLoading(false);
     })();
   }, [currentPage]);
@@ -214,13 +230,24 @@ const BountiesPage: NextPage = () => {
 
       <div className={css(styles.bountiesSection)}>
         <h1 className={css(styles.title)}>Bounties</h1>
-        <div className={css(styles.description)}>Earn ResearchCoin by completing science related bounties.</div>
+        <div className={css(styles.description)}>Earn ResearchCoin by completing research related bounties.</div>
         {showVerifyBanner && (
           <div className={css(styles.verifyIdentityBanner)}>
             <VerifiedBadge height={32} width={32} />
             Verify identity to see bounty recommendations relevant to your research interests.
             <div className={css(styles.verifyActions)}>
-              <Button isWhite>Verify</Button>
+
+              {/* @ts-ignore */}
+              <VerifyIdentityModal
+                // @ts-ignore legacy
+                wsUrl={WS_ROUTES.NOTIFICATIONS(currentUser?.id)}
+                // @ts-ignore legacy
+                wsAuth
+              >
+                <Button isWhite>Verify</Button>
+              </VerifyIdentityModal>
+
+
               <CloseIcon overrideStyle={styles.closeBtn} onClick={() => setShowVerifyBanner(false)} color="white" height={20} width={20} />
             </div>
           </div>
@@ -232,6 +259,16 @@ const BountiesPage: NextPage = () => {
               <BountyCard key={bounty.id} bounty={bounty} />
             </div>
           ))}
+
+          {nextPageCursor && (
+            <LoadMore
+              onClick={async () => {
+                setCurrentPage(currentPage + 1);
+                setIsLoading(true);
+              }}
+              isLoading={isLoading}
+            />          
+          )}
         </div>
         
         {isLoading && (
@@ -343,6 +380,7 @@ const BountiesPage: NextPage = () => {
 
       </div>
 
+
     </div>
   );
 }
@@ -416,11 +454,12 @@ const styles = StyleSheet.create({
     lineHeight: "22px",
   },
   bounty: {
+    border: `1px solid ${colors.LIGHTER_GREY()}`,
+    borderRadius: "4px",
+    padding: 16,
     
   },
   bountyWrapper: {
-    borderBottom: `1px solid ${colors.LIGHTER_GREY()}`,
-    paddingBottom: 25,
     ":first-child": {
       marginTop: 25,
     },
@@ -542,7 +581,12 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.6),
     fontSize: 13,
     marginTop: 3,
-  }
+  },
+  paperHubs: {
+    display: "flex",
+    gap: 5,
+    marginTop: 10,
+  },
 
 
 })
