@@ -127,14 +127,14 @@ const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
               />
             </div>
           </div>
-        <div className={css(styles.lineItem)}>
+        {/* <div className={css(styles.lineItem)}>
           <div className={css(styles.lineItemLabel)}>
             Bounty type:
           </div>
           <div className={css(styles.lineItemValue)}>
             {bounty.bountyType === "REVIEW" ? "Peer Review" : bounty.bountyType === "ANSWER" ? "Answer to question" : "Other"}
           </div>
-        </div>
+        </div> */}
         <div className={css(styles.lineItem)}>
           <div className={css(styles.lineItemLabel)}>
             Expiration date:
