@@ -5,6 +5,7 @@ import {
   faGrid2,
   faHandHoldingDollar,
   faHouse,
+  faNewspaper,
   faTableTree,
   faWavePulse,
 } from "@fortawesome/pro-solid-svg-icons";
@@ -98,14 +99,6 @@ export const getLeftSidebarItemAttrs = ({
       onClick: silentEmptyFnc,
     },
     {
-      icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
-      label: "Hubs",
-      isActive: ["/hubs"].includes(pathname),
-      isMinimized,
-      href: "/hubs",
-      onClick: silentEmptyFnc,
-    },
-    {
       icon: <ResearchCoinIcon height={21} width={21} version={4} color={["/bounties"].includes(pathname) ? colors.NEW_BLUE() : "#C1C1CF"}></ResearchCoinIcon>,
       label: "Bounties",
       isActive: ["/bounties"].includes(pathname),
@@ -121,6 +114,22 @@ export const getLeftSidebarItemAttrs = ({
       href: "/funding",
       onClick: silentEmptyFnc,
     },
+    {
+      icon: <FontAwesomeIcon icon={faNewspaper}></FontAwesomeIcon>,
+      label: "Journals",
+      isActive: ["/journals"].includes(pathname),
+      isMinimized,
+      href: "/journals",
+      onClick: silentEmptyFnc,
+    },
+    {
+      icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
+      label: "Hubs",
+      isActive: ["/hubs"].includes(pathname),
+      isMinimized,
+      href: "/hubs",
+      onClick: silentEmptyFnc,
+    },        
     {
       icon: <FontAwesomeIcon icon={faBook}></FontAwesomeIcon>,
       label: "Lab Notebook",
@@ -283,6 +292,9 @@ function RootLeftSidebar({
       ind: number
     ): ReactElement<typeof RootLeftSidebarItem> => (
       <>
+        {attrs.label === "Journals" && !isMinimized && (
+          <div className={css(styles.subheader)}>Browse</div>
+        )}      
         {attrs.label === "Bounties" && !isMinimized && (
           <div className={css(styles.subheader)}>ResearchCoin</div>
         )}
@@ -444,16 +456,6 @@ function RootLeftSidebar({
                 </span>
               </InviteButton>
             </span> */}
-            <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
-              {"About"}
-            </ALink>
-            <ALink
-              href="https://researchhub.foundation"
-              overrideStyle={formattedFooterTxtItem}
-            >
-              {isMinimized ? "Comm.." : "Community"}
-            </ALink>
-
             <span className={css(formattedFooterTxtItem)}>
               {/* @ts-ignore */}
               <VerifyIdentityModal
@@ -483,7 +485,16 @@ function RootLeftSidebar({
                   )}
                 </div>
               </VerifyIdentityModal>
-            </span>
+            </span>            
+            <ALink
+              href="https://researchhub.foundation"
+              overrideStyle={formattedFooterTxtItem}
+            >
+              {isMinimized ? "Comm.." : "Community"}
+            </ALink>
+            <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
+              {"About"}
+            </ALink>            
             {/* <ALink
               href="/leaderboard/users"
               overrideStyle={formattedFooterTxtItem}
@@ -550,27 +561,6 @@ function RootLeftSidebar({
               </ALink>
             </div>
           </div>
-          {isMinimized ? (
-            <div
-              className={css(styles.arrowRight)}
-              onClick={() => {
-                setGrowMinimized(false);
-                setIsMinimized(false);
-              }}
-            >
-              <FontAwesomeIcon icon={faArrowRightToLine}></FontAwesomeIcon>
-            </div>
-          ) : (
-            <div
-              className={css(styles.arrowRight, styles.arrowLeft)}
-              onClick={() => {
-                setGrowMinimized(true);
-                setIsMinimized(true);
-              }}
-            >
-              <FontAwesomeIcon icon={faArrowLeftToLine}></FontAwesomeIcon>
-            </div>
-          )}
         </div>
       </div>
     </motion.div>
@@ -626,7 +616,7 @@ const styles = StyleSheet.create({
   },
   leftSidebarFooterTxtItem: {
     color: colors.TEXT_GREY(1),
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 400,
     textDecoration: "none",
     margin: "0 30px 12px",
@@ -637,7 +627,7 @@ const styles = StyleSheet.create({
   leftSidebarFooterTxtItemMin: {
     fontSize: 14,
     fontWeight: 300,
-    margin: "0 auto 12px",
+    margin: "0 auto 10px",
   },
   leftSidebarFooterItemsTop: {
     display: "flex",
