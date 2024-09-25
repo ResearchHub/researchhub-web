@@ -57,7 +57,7 @@ export const ORCID_JWKS_URI = "https://orcid.org/oauth/jwks";
 export const ORCID_KID = process.env.ORCID_KID;
 
 export const METATAG_DEFAULT_IMAGE_URL =
-  "https://www.researchhub.com/static/background/facebook-og.jpg";
+  "https://www.researchhub.com/static/background/twitter-card-preview.png";
 
 export function nameToUrl(name) {
   return encodeURIComponent(name);
