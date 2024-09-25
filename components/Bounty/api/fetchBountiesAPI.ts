@@ -9,7 +9,7 @@ type Args = {
 };
 
 export const fetchBounties = ({ personalized = true, pageCursor = null, status = 'OPEN' }: Args): Promise<PaginatedApiResponse> => {
-  const url = pageCursor || generateApiUrl(`bounty?status=${status}`) + (personalized ? '&personalized=true' : '');
+  const url = pageCursor || generateApiUrl(`bounty?status=${status}${personalized ? '&personalized=true' : ''}`);
 
   return fetch(url, API.GET_CONFIG())
     .then(Helpers.checkStatus)
