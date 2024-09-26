@@ -6,7 +6,6 @@ import { formatDateStandard } from '~/config/utils/dates';
 import { getUrlToUniDoc } from '~/config/utils/routing';
 import CommentAvatars from '~/components/Comment/CommentAvatars';
 import Button from '~/components/Form/Button';
-import HubTag from '~/components/Hubs/HubTag';
 import VerifiedBadge from '~/components/Verification/VerifiedBadge';
 import colors from '~/config/themes/colors';
 import ALink from '~/components/ALink';
@@ -25,7 +24,7 @@ type SimpleBounty = {
   expirationDate: string;
   createdDate: string;
   unifiedDocument: any;
-  hubs: Hub[];
+  hubs?: Hub[];
   bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER";
 };
 
@@ -39,6 +38,9 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
   const { createdBy, unifiedDocument, expirationDate, amount, hubs, bountyType, content } = bounty;
   const url = getUrlToUniDoc(unifiedDocument);
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(false);
+
+  console.log('Bounty hubs:', hubs);
+  console.log('Unified document:', unifiedDocument);
 
   const badge = (
     <ContentBadge
@@ -64,7 +66,12 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
     setIsDetailsExpanded(!isDetailsExpanded);
   };
 
-  const parsedHubs = hubs.map((h) => parseHub(h));
+  let parsedHubs = [];
+  if (hubs && Array.isArray(hubs)) {
+    parsedHubs = hubs.map((h) => parseHub(h)).filter((hub: any) => hub.isUsedForRep === true);
+  } else if (unifiedDocument && unifiedDocument.hubs && Array.isArray(unifiedDocument.hubs)) {
+    parsedHubs = unifiedDocument.hubs.map((h) => parseHub(h)).filter((hub: any) => hub.isUsedForRep === true);
+  }
 
   return (
     <div className={css(styles.card)}>
@@ -110,11 +117,15 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         <div className={css(styles.metaItem)}>
           <FontAwesomeIcon icon={faTag} className={css(styles.icon)} />
           <div className={css(styles.hubsContainer)}>
-            <DocumentHubs
-              hubs={parsedHubs}
-              withShowMore={false}
-              hideOnSmallerResolution={false}
-            />
+            {parsedHubs.length > 0 ? (
+              <DocumentHubs
+                hubs={parsedHubs}
+                withShowMore={false}
+                hideOnSmallerResolution={false}
+              />
+            ) : (
+              <span className={css(styles.noHubs)}>No hubs associated</span>
+            )}
           </div>
         </div>
       </div>
@@ -126,7 +137,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
             className={css(styles.readMoreToggle)} 
             onClick={toggleDetails}
           >
-            {isDetailsExpanded ? "Show less " : "Read more "}
+            {isDetailsExpanded ? "Hide " : "Show "}
             <FontAwesomeIcon 
               icon={isDetailsExpanded ? faChevronUp : faChevronDown} 
               className={css(styles.toggleIcon)}
@@ -233,6 +244,11 @@ const styles = StyleSheet.create({
     display: "flex",
     flexWrap: "wrap",
     gap: 8,
+    marginLeft: 8,
+  },
+  noHubs: {
+    fontStyle: 'italic',
+    color: colors.BLACK(0.4),
   },
   details: {
     marginBottom: 20,
