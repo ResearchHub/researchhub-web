@@ -1,8 +1,7 @@
 import React from 'react';
 import { css, StyleSheet } from 'aphrodite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faCoins, faTag } from '@fortawesome/pro-light-svg-icons';
-import numeral from 'numeral';
+import { faClock, faTag } from '@fortawesome/pro-light-svg-icons';
 import { formatDateStandard } from '~/config/utils/dates';
 import { getUrlToUniDoc } from '~/config/utils/routing';
 import CommentAvatars from '~/components/Comment/CommentAvatars';
@@ -13,6 +12,8 @@ import colors from '~/config/themes/colors';
 import ALink from '~/components/ALink';
 import UserTooltip from '~/components/Tooltips/User/UserTooltip';
 import { Hub } from '~/config/types/hub';
+import ContentBadge from '~/components/ContentBadge';
+import { formatBountyAmount } from '~/config/types/bounty';
 
 type SimpleBounty = {
   id: string;
@@ -36,6 +37,28 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
   const { createdBy, unifiedDocument, expirationDate, amount, hubs, bountyType } = bounty;
   const url = getUrlToUniDoc(unifiedDocument);
 
+  const badge = (
+    <ContentBadge
+      contentType="bounty"
+      bountyAmount={amount}
+      badgeContainerOverride={styles.badgeContainer}
+      size="small"
+      badgeOverride={styles.badgeOverride}
+      label={
+        <div style={{ display: "flex", whiteSpace: "pre" }}>
+          <div style={{ flex: 1 }}>
+            {formatBountyAmount({
+              amount: amount,
+            })}{" "}
+            RSC
+          </div>
+        </div>
+      }
+    />
+  );
+
+  const reputationHubs = hubs.filter(hub => hub.isUsedForRep);
+
   return (
     <div className={css(styles.card)}>
       <div className={css(styles.header)}>
@@ -58,12 +81,13 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
                 </ALink>
               }
             />
-            <div className={css(styles.bountyType)}>{bountyTypeLabels[bountyType]}</div>
+            <div className={css(styles.bountyType)}>
+              {bountyTypeLabels[bountyType]}
+              {" opened "}
+              {badge}
+              {" bounty"}
+            </div>
           </div>
-        </div>
-        <div className={css(styles.amount)}>
-          <FontAwesomeIcon icon={faCoins} className={css(styles.icon)} />
-          {numeral(amount).format("0,0")} RSC
         </div>
       </div>
       
@@ -76,21 +100,28 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         </div>
         <div className={css(styles.metaItem)}>
           <FontAwesomeIcon icon={faTag} className={css(styles.icon)} />
-          {hubs && hubs.length > 0 ? (
+          {reputationHubs && reputationHubs.length > 0 ? (
             <div className={css(styles.hubTags)}>
-              {hubs.map((hub) => (
+              {reputationHubs.slice(0, 1).map((hub) => (
                 <HubTag key={hub.id} hub={hub} overrideStyle={styles.hubTag} />
               ))}
+              {reputationHubs.length > 1 && (
+                <span className={css(styles.moreHubs)}>
+                  +{reputationHubs.length - 1} more
+                </span>
+              )}
             </div>
           ) : (
-            "All"
+            "Unknown Hubs"
           )}
         </div>
       </div>
       
-      <ALink href={`${url}/bounties`} className={css(styles.ctaLink)}>
-        <Button customButtonStyle={styles.ctaButton}>Answer Bounty</Button>
-      </ALink>
+      <div className={css(styles.ctaWrapper)}>
+        <ALink href={`${url}/bounties`} className={css(styles.ctaLink)}>
+          <Button customButtonStyle={styles.ctaButton}>Answer Bounty</Button>
+        </ALink>
+      </div>
     </div>
   );
 };
@@ -104,8 +135,8 @@ const styles = StyleSheet.create({
     transition: "all 0.2s ease-in-out",
     border: `1px solid ${colors.LIGHTER_GREY()}`,
     ":hover": {
-      transform: "translateY(-5px)",
-      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+      transform: "translateY(-2px)",
+      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.08)",
     },
   },
   header: {
@@ -133,13 +164,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.BLACK(0.6),
     marginTop: 2,
-  },
-  amount: {
-    fontSize: 18,
-    fontWeight: 600,
-    color: colors.NEW_BLUE(),
     display: "flex",
     alignItems: "center",
+  },
+  badgeContainer: {
+    display: "inline-flex",
+    marginLeft: 4,
+    marginRight: 4,
+  },
+  badgeOverride: {
+    marginRight: 0,
   },
   title: {
     fontSize: 20,
@@ -168,18 +202,26 @@ const styles = StyleSheet.create({
     display: "flex",
     flexWrap: "wrap",
     gap: 8,
+    alignItems: "center",
   },
   hubTag: {
     fontSize: 12,
     padding: "2px 8px",
   },
+  moreHubs: {
+    fontSize: 12,
+    color: colors.BLACK(0.6),
+  },
+  ctaWrapper: {
+    display: "flex",
+    justifyContent: "flex-start",
+  },
   ctaLink: {
     textDecoration: "none",
   },
   ctaButton: {
-    width: "100%",
-    padding: "12px 0",
-    fontSize: 16,
+    padding: "8px 16px",
+    fontSize: 14,
     fontWeight: 600,
     backgroundColor: colors.NEW_BLUE(),
     color: "#ffffff",
