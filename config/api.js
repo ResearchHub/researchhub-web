@@ -1201,9 +1201,6 @@ const routes = (BASE_URL) => {
     DELETE_FIGURE: ({ figureId }) => {
       return BASE_URL + `figure/${figureId}/delete_figure`;
     },
-    PAPER_FILES: ({ paperId }) => {
-      return BASE_URL + `paper/${paperId}/additional_file/`;
-    },
     GATEKEEPER_CURRENT_USER: ({ type }) =>
       BASE_URL + `gatekeeper/check_current_user/?type=${type}`,
     GOOGLE_ANALYTICS: ({ ignorePaper, ignoreUser, manual }) => {
