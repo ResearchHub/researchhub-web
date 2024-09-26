@@ -1,27 +1,21 @@
 import { NextPage } from "next";
-import { useRouter } from "next/router";
 import { css, StyleSheet } from "aphrodite";
 import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI";
 import { useEffect, useState } from "react";
-import { getPlainText } from "~/components/Comment/lib/quill";
 import {
-  parseAuthorProfile,
   parseUnifiedDocument,
   parseUser,
 } from "~/config/types/root_types";
-import Bounty, { formatBountyAmount } from "~/config/types/bounty";
-import UserTooltip from "~/components/Tooltips/User/UserTooltip";
-import ALink from "~/components/ALink";
-import VerifiedBadge from "~/components/Verification/VerifiedBadge";
-import { formatDateStandard, timeSince } from "~/config/utils/dates";
+import { formatDateStandard } from "~/config/utils/dates";
 import { getUrlToUniDoc } from "~/config/utils/routing";
-import { truncateText } from "~/config/utils/string";
 import CommentAvatars from "~/components/Comment/CommentAvatars";
-import CommentReadOnly from "~/components/Comment/CommentReadOnly";
 import { CloseIcon, PaperIcon } from "~/config/themes/icons";
 import { CondensedAuthorList } from "~/components/Author/AuthorList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight, faSort } from "@fortawesome/pro-light-svg-icons";
+import {
+  faAngleRight,
+  faSlidersH,
+} from "@fortawesome/pro-light-svg-icons";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import ContentBadge from "~/components/ContentBadge";
@@ -32,7 +26,7 @@ import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlace
 import { Hub, parseHub } from "~/config/types/hub";
 import HubTag from "~/components/Hubs/HubTag";
 import LoadMore from "~/components/shared/LoadMore";
-import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
+import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { breakpoints } from "~/config/themes/screen";
@@ -40,6 +34,10 @@ import { useSelector } from "react-redux";
 import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
 import FormSelect from "~/components/Form/FormSelect";
 import fetchReputationHubs from "~/components/Hubs/api/fetchReputationHubs";
+import BaseModal from "~/components/Modals/BaseModal";
+import ALink from "~/components/ALink";
+import UserTooltip from "~/components/Tooltips/User/UserTooltip";
+import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
 
 type SimpleBounty = {
   id: string;
@@ -87,7 +85,7 @@ const BOUNTY_TYPE_OPTIONS = [
 ];
 
 const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
-  const { createdBy, unifiedDocument, expirationDate, createdDate } = bounty;
+  const { createdBy, unifiedDocument, expirationDate } = bounty;
   const url = getUrlToUniDoc(unifiedDocument);
   return (
     <div className={css(styles.bounty)}>
@@ -159,12 +157,7 @@ const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
               label={
                 <div style={{ display: "flex" }}>
                   <div style={{ flex: 1 }}>
-                    {numeral(
-                      formatBountyAmount({
-                        amount: bounty.amount,
-                      })
-                    ).format("0,0a")}{" "}
-                    RSC
+                    {numeral(bounty.amount).format("0,0a")} RSC
                   </div>
                 </div>
               }
@@ -224,6 +217,7 @@ const BountiesPage: NextPage = () => {
   const [selectedReputationHubs, setSelectedReputationHubs] = useState<
     Array<any>
   >([]);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (reputationHubs.length === 0) {
@@ -314,55 +308,14 @@ const BountiesPage: NextPage = () => {
           </div>
         )}
 
-        <div className={css(styles.filterSection)}>
-          <div className={css(styles.filterContainer)}>
-            <div className={css(styles.filterLabel)}>Filter by Bounty Type:</div>
-            <div className={css(styles.bountyTypeFilters)}>
-              {BOUNTY_TYPE_OPTIONS.map(({ value, label }) => (
-                <div
-                  key={value}
-                  className={css(
-                    styles.bountyTypeFilter,
-                    selectedBountyTypes.includes(value) &&
-                      styles.bountyTypeFilterActive
-                  )}
-                  onClick={() => {
-                    if (selectedBountyTypes.includes(value)) {
-                      setSelectedBountyTypes(
-                        selectedBountyTypes.filter((type) => type !== value)
-                      );
-                    } else {
-                      setSelectedBountyTypes([...selectedBountyTypes, value]);
-                    }
-                    setCurrentPage(1);
-                    setNextPageCursor(null);
-                    setIsLoading(true);
-                  }}
-                >
-                  {label}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className={css(styles.hubFilterWrapper)}>
-            <FormSelect
-              id="hubFilter"
-              isMulti={true}
-              required={false}
-              value={selectedReputationHubs}
-              options={_convertToSelectOption(reputationHubs)}
-              onChange={(id, value) => {
-                setSelectedReputationHubs(value);
-                setCurrentPage(1);
-                setNextPageCursor(null);
-                setIsLoading(true);
-              }}
-              isSearchable={true}
-              placeholder="Filter by Expertise"
-              containerStyle={styles.hubFilterContainer}
-              inputStyle={styles.hubFilterInput}
-            />
-          </div>
+        <div className={css(styles.filterIconWrapper)}>
+          <Button
+            onClick={() => setIsFilterModalOpen(true)}
+            customButtonStyle={styles.filterButton}
+          >
+            <FontAwesomeIcon icon={faSlidersH} />
+            <span className={css(styles.filterButtonText)}>Filters</span>
+          </Button>
         </div>
 
         <div className={css(styles.bounties)}>
@@ -635,6 +588,77 @@ const BountiesPage: NextPage = () => {
           </div>
         </div>
       </div>
+
+      {isFilterModalOpen && (
+        <BaseModal
+          isOpen={isFilterModalOpen}
+          closeModal={() => setIsFilterModalOpen(false)}
+          title="Filter Bounties"
+          modalContentStyle={styles.filterModalContent}
+          modalStyle={styles.filterModal}
+          zIndex={1000}
+        >
+          <div className={css(styles.filterModalBody)}>
+            <div className={css(styles.filterSectionModal)}>
+              <div className={css(styles.filterLabel)}>Filter by Hubs:</div>
+              <FormSelect
+                id="hubFilter"
+                isMulti={true}
+                required={false}
+                value={selectedReputationHubs}
+                options={_convertToSelectOption(reputationHubs)}
+                onChange={(id, value) => {
+                  setSelectedReputationHubs(value);
+                  setCurrentPage(1);
+                  setNextPageCursor(null);
+                  setIsLoading(true);
+                }}
+                isSearchable={true}
+                placeholder="Select Hubs"
+                containerStyle={styles.hubFilterContainer}
+                inputStyle={styles.hubFilterInput}
+              />
+            </div>
+            <div className={css(styles.filterSectionModal)}>
+              <div className={css(styles.filterLabel)}>Filter by Bounty Type:</div>
+              <div className={css(styles.bountyTypeFiltersModal)}>
+                {BOUNTY_TYPE_OPTIONS.map(({ value, label }) => (
+                  <div
+                    key={value}
+                    className={css(
+                      styles.bountyTypeFilter,
+                      selectedBountyTypes.includes(value) &&
+                        styles.bountyTypeFilterActive
+                    )}
+                    onClick={() => {
+                      if (selectedBountyTypes.includes(value)) {
+                        setSelectedBountyTypes(
+                          selectedBountyTypes.filter((type) => type !== value)
+                        );
+                      } else {
+                        setSelectedBountyTypes([...selectedBountyTypes, value]);
+                      }
+                      setCurrentPage(1);
+                      setNextPageCursor(null);
+                      setIsLoading(true);
+                    }}
+                  >
+                    {label}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className={css(styles.filterModalActions)}>
+              <Button
+                onClick={() => setIsFilterModalOpen(false)}
+                customButtonStyle={styles.applyFilterButton}
+              >
+                Apply Filters
+              </Button>
+            </div>
+          </div>
+        </BaseModal>
+      )}
     </div>
   );
 };
@@ -660,44 +684,26 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 20,
   },
-  filterSection: {
+  filterIconWrapper: {
+    display: "flex",
+    justifyContent: "flex-end",
     marginBottom: 20,
+  },
+  filterButton: {
+    backgroundColor: colors.NEW_BLUE(),
+    color: "#fff",
+    padding: "8px 12px",
+    borderRadius: 4,
     display: "flex",
-    flexDirection: "column",
-    gap: 10,
+    alignItems: "center",
+    gap: 8,
+    ":hover": {
+      backgroundColor: colors.NEW_BLUE(0.8),
+    },
   },
-  filterContainer: {},
-  filterLabel: {
-    fontSize: 15,
-    marginBottom: 5,
-  },
-  bountyTypeFilters: {
-    display: "flex",
-    gap: 10,
-  },
-  bountyTypeFilter: {
-    padding: "6px 10px",
-    border: `1px solid #DEDEE6`,
-    borderRadius: 5,
-    cursor: "pointer",
-    fontWeight: 500,
+  filterButtonText: {
     fontSize: 14,
-    lineHeight: "20px",
-    ":hover": {
-      opacity: 0.7,
-    },
   },
-  bountyTypeFilterActive: {
-    border: `2px solid ${colors.NEW_BLUE()}`,
-    ":hover": {
-      opacity: 1,
-    },
-  },
-  hubFilterWrapper: {},
-  hubFilterContainer: {
-    width: "100%",
-  },
-  hubFilterInput: {},
   hubTag: {
     cursor: "pointer",
     marginRight: 5,
@@ -714,9 +720,10 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     gap: 10,
-    padding: 10,
+    padding: "20px 10px",
     borderRadius: 5,
-    marginTop: 10,
+    marginTop: 20,
+    marginBottom: 20,
     color: "white",
     position: "relative",
     background: "#6165D7",
@@ -767,6 +774,8 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.LIGHTER_GREY()}`,
     borderRadius: "4px",
     padding: 16,
+    backgroundColor: "#fff",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
   },
   bountyWrapper: {
     ":first-child": {
@@ -813,7 +822,7 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.BLACK(0.2)}`,
     borderRadius: 8,
     marginTop: 30,
-    backgroundColor: "rgb(255, 255, 255)",
+    backgroundColor: "#fff",
     ":first-child": {
       marginTop: 0,
     },
@@ -889,11 +898,61 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginTop: 3,
   },
-  paperHubs: {
+  filterModalContent: {
+    padding: 20,
+    width: "100%",
+    maxWidth: 500,
+  },
+  filterModal: {
+    width: "100%",
+  },
+  filterModalBody: {
     display: "flex",
-    gap: 5,
-    marginTop: 10,
+    flexDirection: "column",
+    gap: 20,
+  },
+  filterSectionModal: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 10,
+  },
+  filterLabel: {
+    fontSize: 16,
+    fontWeight: 500,
+  },
+  bountyTypeFiltersModal: {
+    display: "flex",
     flexWrap: "wrap",
+    gap: 10,
+  },
+  bountyTypeFilter: {
+    padding: "6px 10px",
+    border: `1px solid #DEDEE6`,
+    borderRadius: 5,
+    cursor: "pointer",
+    fontWeight: 500,
+    fontSize: 14,
+    lineHeight: "20px",
+    ":hover": {
+      opacity: 0.7,
+    },
+  },
+  bountyTypeFilterActive: {
+    border: `2px solid ${colors.NEW_BLUE()}`,
+    ":hover": {
+      opacity: 1,
+    },
+  },
+  applyFilterButton: {
+    backgroundColor: colors.NEW_BLUE(),
+    color: "#fff",
+    width: "100%",
+    ":hover": {
+      backgroundColor: colors.NEW_BLUE(0.8),
+    },
+  },
+  filterModalActions: {
+    marginTop: 10,
   },
 });
 
