@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { css, StyleSheet } from 'aphrodite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faTag, faChevronDown, faChevronUp } from '@fortawesome/pro-light-svg-icons';
+import { faClock, faChevronDown, faChevronUp } from '@fortawesome/pro-light-svg-icons';
 import { formatDateStandard } from '~/config/utils/dates';
 import { getUrlToUniDoc } from '~/config/utils/routing';
 import CommentAvatars from '~/components/Comment/CommentAvatars';
@@ -10,11 +10,11 @@ import VerifiedBadge from '~/components/Verification/VerifiedBadge';
 import colors from '~/config/themes/colors';
 import ALink from '~/components/ALink';
 import UserTooltip from '~/components/Tooltips/User/UserTooltip';
-import { Hub, parseHub } from '~/config/types/hub';
 import ContentBadge from '~/components/ContentBadge';
 import { formatBountyAmount } from '~/config/types/bounty';
 import CommentReadOnly from '~/components/Comment/CommentReadOnly';
 import DocumentHubs from '~/components/Document/lib/DocumentHubs';
+import { parseHub } from '~/config/types/hub';
 
 type SimpleBounty = {
   id: string;
@@ -24,7 +24,6 @@ type SimpleBounty = {
   expirationDate: string;
   createdDate: string;
   unifiedDocument: any;
-  hubs?: Hub[];
   bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER";
 };
 
@@ -35,9 +34,12 @@ const bountyTypeLabels = {
 };
 
 const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
-  const { createdBy, unifiedDocument, expirationDate, amount, hubs, bountyType, content } = bounty;
+  const { createdBy, unifiedDocument, expirationDate, amount, bountyType, content } = bounty;
   const url = getUrlToUniDoc(unifiedDocument);
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(false);
+
+  const { hubs } = unifiedDocument;
+  const parsedHubs = hubs ? hubs.map((h) => parseHub(h)) : [];
 
   const badge = (
     <ContentBadge
@@ -62,15 +64,6 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
   const toggleDetails = () => {
     setIsDetailsExpanded(!isDetailsExpanded);
   };
-
-  let parsedHubs: Hub[] = [];
-  if (hubs && Array.isArray(hubs)) {
-    parsedHubs = hubs.map((h) => parseHub(h)).filter((hub: Hub) => hub.isUsedForRep === true);
-  }
-  if (unifiedDocument && unifiedDocument.hubs && Array.isArray(unifiedDocument.hubs)) {
-    const documentHubs = unifiedDocument.hubs.map((h) => parseHub(h)).filter((hub: Hub) => hub.isUsedForRep === true);
-    parsedHubs = [...new Set([...parsedHubs, ...documentHubs])];
-  }
 
   return (
     <div className={css(styles.card)}>
@@ -113,21 +106,17 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
           <FontAwesomeIcon icon={faClock} className={css(styles.icon)} />
           Expires {formatDateStandard(expirationDate)}
         </div>
-        <div className={css(styles.metaItem)}>
-          <FontAwesomeIcon icon={faTag} className={css(styles.icon)} />
-          <div className={css(styles.hubsContainer)}>
-            {parsedHubs.length > 0 ? (
-              <DocumentHubs
-                hubs={parsedHubs}
-                withShowMore={false}
-                hideOnSmallerResolution={false}
-              />
-            ) : (
-              <span className={css(styles.noHubs)}>No hubs associated</span>
-            )}
-          </div>
-        </div>
       </div>
+
+      {parsedHubs && parsedHubs.length > 0 && (
+        <div className={css(styles.hubsContainer)}>
+          <DocumentHubs
+            hubs={parsedHubs}
+            withShowMore={false}
+            hideOnSmallerResolution={true}
+          />
+        </div>
+      )}
 
       <div className={css(styles.details)}>
         <div className={css(styles.detailsHeader)}>
@@ -225,8 +214,8 @@ const styles = StyleSheet.create({
   },
   metaInfo: {
     display: "flex",
-    justifyContent: "space-between",
-    marginBottom: 20,
+    justifyContent: "flex-start",
+    marginBottom: 10,
   },
   metaItem: {
     display: "flex",
@@ -240,14 +229,8 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.4),
   },
   hubsContainer: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 8,
-    marginLeft: 8,
-  },
-  noHubs: {
-    fontStyle: 'italic',
-    color: colors.BLACK(0.4),
+    marginTop: 10,
+    marginBottom: 20,
   },
   details: {
     marginBottom: 20,
