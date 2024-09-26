@@ -3,43 +3,67 @@ import { css, StyleSheet } from 'aphrodite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faCoins, faTag } from '@fortawesome/pro-light-svg-icons';
 import numeral from 'numeral';
-
-import ALink from '~/components/ALink';
+import { formatDateStandard } from '~/config/utils/dates';
+import { getUrlToUniDoc } from '~/config/utils/routing';
+import CommentAvatars from '~/components/Comment/CommentAvatars';
 import Button from '~/components/Form/Button';
 import HubTag from '~/components/Hubs/HubTag';
-import UserAvatar from '~/components/User/UserAvatar';
 import VerifiedBadge from '~/components/Verification/VerifiedBadge';
 import colors from '~/config/themes/colors';
-import { getUrlToUniDoc } from '~/config/utils/routing';
-import { formatDateStandard } from '~/config/utils/dates';
-import { SimpleBounty } from '~/types/bounty';
+import ALink from '~/components/ALink';
+import UserTooltip from '~/components/Tooltips/User/UserTooltip';
+import { Hub } from '~/config/types/hub';
 
-const BountyCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
+type SimpleBounty = {
+  id: string;
+  amount: number;
+  content: any;
+  createdBy: any;
+  expirationDate: string;
+  createdDate: string;
+  unifiedDocument: any;
+  hubs: Hub[];
+  bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER";
+};
+
+const bountyTypeLabels = {
+  REVIEW: "Peer Review",
+  ANSWER: "Answer",
+  GENERIC_COMMENT: "Comment",
+};
+
+const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
   const { createdBy, unifiedDocument, expirationDate, amount, hubs, bountyType } = bounty;
   const url = getUrlToUniDoc(unifiedDocument);
-
-  const bountyTypeLabels = {
-    REVIEW: 'Peer Review',
-    ANSWER: 'Answer',
-    GENERIC_COMMENT: 'Comment',
-  };
 
   return (
     <div className={css(styles.card)}>
       <div className={css(styles.header)}>
         <div className={css(styles.userInfo)}>
-          <UserAvatar size={40} user={createdBy} />
+          <CommentAvatars size={40} people={[createdBy]} withTooltip={true} />
           <div className={css(styles.userDetails)}>
-            <div className={css(styles.userName)}>
-              {createdBy.authorProfile.firstName} {createdBy.authorProfile.lastName}
-              {createdBy.authorProfile.isVerified && <VerifiedBadge height={16} width={16} style={{ marginLeft: 4 }} />}
-            </div>
+            <UserTooltip
+              createdBy={createdBy}
+              targetContent={
+                <ALink
+                  href={`/author/${createdBy?.authorProfile?.id}`}
+                  key={`/author/${createdBy?.authorProfile?.id}`}
+                  className={css(styles.userName)}
+                >
+                  {createdBy?.authorProfile?.firstName}{" "}
+                  {createdBy?.authorProfile?.lastName}
+                  {createdBy?.authorProfile?.isVerified && (
+                    <VerifiedBadge height={16} width={16} style={{ marginLeft: 4 }} />
+                  )}
+                </ALink>
+              }
+            />
             <div className={css(styles.bountyType)}>{bountyTypeLabels[bountyType]}</div>
           </div>
         </div>
         <div className={css(styles.amount)}>
           <FontAwesomeIcon icon={faCoins} className={css(styles.icon)} />
-          {numeral(amount).format('0,0')} RSC
+          {numeral(amount).format("0,0")} RSC
         </div>
       </div>
       
@@ -59,7 +83,7 @@ const BountyCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
               ))}
             </div>
           ) : (
-            'No Hubs found'
+            "All"
           )}
         </div>
       </div>
@@ -73,25 +97,26 @@ const BountyCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 12,
     padding: 24,
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
-    transition: 'all 0.2s ease-in-out',
-    ':hover': {
-      transform: 'translateY(-5px)',
-      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.05)",
+    transition: "all 0.2s ease-in-out",
+    border: `1px solid ${colors.LIGHTER_GREY()}`,
+    ":hover": {
+      transform: "translateY(-5px)",
+      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
     },
   },
   header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   userInfo: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
   },
   userDetails: {
     marginLeft: 12,
@@ -100,8 +125,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 600,
     color: colors.BLACK(0.9),
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
+    textDecoration: "none",
   },
   bountyType: {
     fontSize: 14,
@@ -112,8 +138,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 600,
     color: colors.NEW_BLUE(),
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
   },
   title: {
     fontSize: 20,
@@ -123,13 +149,13 @@ const styles = StyleSheet.create({
     lineHeight: 1.3,
   },
   metaInfo: {
-    display: 'flex',
-    justifyContent: 'space-between',
+    display: "flex",
+    justifyContent: "space-between",
     marginBottom: 20,
   },
   metaItem: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     fontSize: 14,
     color: colors.BLACK(0.6),
   },
@@ -139,28 +165,28 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.4),
   },
   hubTags: {
-    display: 'flex',
-    flexWrap: 'wrap',
+    display: "flex",
+    flexWrap: "wrap",
     gap: 8,
   },
   hubTag: {
     fontSize: 12,
-    padding: '2px 8px',
+    padding: "2px 8px",
   },
   ctaLink: {
-    textDecoration: 'none',
+    textDecoration: "none",
   },
   ctaButton: {
-    width: '100%',
-    padding: '12px 0',
+    width: "100%",
+    padding: "12px 0",
     fontSize: 16,
     fontWeight: 600,
     backgroundColor: colors.NEW_BLUE(),
-    color: '#ffffff',
-    ':hover': {
+    color: "#ffffff",
+    ":hover": {
       backgroundColor: colors.NEW_BLUE(0.8),
     },
   },
 });
 
-export default BountyCard;
+export default BountyFeedCard;

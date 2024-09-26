@@ -3,15 +3,28 @@ import { css, StyleSheet } from "aphrodite";
 import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI";
 import { useEffect, useState } from "react";
 import { parseUnifiedDocument, parseUser } from "~/config/types/root_types";
-import { CloseIcon } from "~/config/themes/icons";
+import { formatDateStandard } from "~/config/utils/dates";
+import { getUrlToUniDoc } from "~/config/utils/routing";
+import CommentAvatars from "~/components/Comment/CommentAvatars";
+import { CloseIcon, PaperIcon } from "~/config/themes/icons";
+import { CondensedAuthorList } from "~/components/Author/AuthorList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSlidersH } from "@fortawesome/pro-light-svg-icons";
+import {
+  faAngleRight,
+  faSlidersH,
+  faClock,
+  faCoins,
+  faTag,
+} from "@fortawesome/pro-light-svg-icons";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
+import ContentBadge from "~/components/ContentBadge";
+import numeral from "numeral";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
-import { faAngleDown, faAngleRight } from "@fortawesome/pro-solid-svg-icons";
+import { faAngleDown } from "@fortawesome/pro-solid-svg-icons";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 import { Hub, parseHub } from "~/config/types/hub";
+import HubTag from "~/components/Hubs/HubTag";
 import LoadMore from "~/components/shared/LoadMore";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
@@ -19,11 +32,9 @@ import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { breakpoints } from "~/config/themes/screen";
 import { useSelector } from "react-redux";
 import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
-import FormSelect from "~/components/Form/FormSelect";
-import fetchReputationHubs from "~/components/Hubs/api/fetchReputationHubs";
-import BaseModal from "~/components/Modals/BaseModal";
+import ALink from "~/components/ALink";
+import UserTooltip from "~/components/Tooltips/User/UserTooltip";
 import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
-import BountyFeedCard from "~/components/Bounty/BountyFeedCard";
 
 type SimpleBounty = {
   id: string;
@@ -35,7 +46,6 @@ type SimpleBounty = {
   unifiedDocument: any;
   hubs: Hub[];
   bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER";
-  targetHubs: Hub[];
 };
 
 const parseSimpleBounty = (raw: any): SimpleBounty => {
@@ -51,24 +61,77 @@ const parseSimpleBounty = (raw: any): SimpleBounty => {
     hubs: (raw.unified_document?.hubs || [])
       .map(parseHub)
       .filter((hub: Hub) => hub.isUsedForRep === true),
-    targetHubs: (raw.target_hubs || []).map(parseHub),
   };
 };
 
-const _convertToSelectOption = (hubs: Hub[]) => {
-  return hubs.map((h: any) => ({
-    label: h.name,
-    value: h.id,
-    name: h.name,
-    valueForApi: h.id,
-  }));
+const bountyTypeLabels = {
+  REVIEW: "Peer Review",
+  ANSWER: "Answer",
+  GENERIC_COMMENT: "Comment",
 };
 
-const BOUNTY_TYPE_OPTIONS = [
-  { value: "REVIEW", label: "Peer Review" },
-  { value: "ANSWER", label: "Answer to a Question" },
-  { value: "GENERIC_COMMENT", label: "Other" },
-];
+const BountyFeedCard = ({ bounty }: { bounty: SimpleBounty }) => {
+  const { createdBy, unifiedDocument, expirationDate, amount, hubs, bountyType } = bounty;
+  const url = getUrlToUniDoc(unifiedDocument);
+
+  return (
+    <div className={css(styles.card)}>
+      <div className={css(styles.header)}>
+        <div className={css(styles.userInfo)}>
+          <CommentAvatars size={40} people={[createdBy]} withTooltip={true} />
+          <div className={css(styles.userDetails)}>
+            <UserTooltip
+              createdBy={createdBy}
+              targetContent={
+                <ALink
+                  href={`/author/${createdBy?.authorProfile?.id}`}
+                  key={`/author/${createdBy?.authorProfile?.id}`}
+                  className={css(styles.userName)}
+                >
+                  {createdBy?.authorProfile?.firstName}{" "}
+                  {createdBy?.authorProfile?.lastName}
+                  {createdBy?.authorProfile?.isVerified && (
+                    <VerifiedBadge height={16} width={16} style={{ marginLeft: 4 }} />
+                  )}
+                </ALink>
+              }
+            />
+            <div className={css(styles.bountyType)}>{bountyTypeLabels[bountyType]}</div>
+          </div>
+        </div>
+        <div className={css(styles.amount)}>
+          <FontAwesomeIcon icon={faCoins} className={css(styles.icon)} />
+          {numeral(amount).format("0,0")} RSC
+        </div>
+      </div>
+      
+      <h3 className={css(styles.title)}>{unifiedDocument.document.title}</h3>
+      
+      <div className={css(styles.metaInfo)}>
+        <div className={css(styles.metaItem)}>
+          <FontAwesomeIcon icon={faClock} className={css(styles.icon)} />
+          Expires {formatDateStandard(expirationDate)}
+        </div>
+        <div className={css(styles.metaItem)}>
+          <FontAwesomeIcon icon={faTag} className={css(styles.icon)} />
+          {hubs && hubs.length > 0 ? (
+            <div className={css(styles.hubTags)}>
+              {hubs.map((hub) => (
+                <HubTag key={hub.id} hub={hub} overrideStyle={styles.hubTag} />
+              ))}
+            </div>
+          ) : (
+            "All"
+          )}
+        </div>
+      </div>
+      
+      <ALink href={`${url}/bounties`} className={css(styles.ctaLink)}>
+        <Button customButtonStyle={styles.ctaButton}>Answer Bounty</Button>
+      </ALink>
+    </div>
+  );
+};
 
 const BountiesPage: NextPage = () => {
   const [currentBounties, setCurrentBounties] = useState<SimpleBounty[]>([]);
@@ -87,34 +150,13 @@ const BountiesPage: NextPage = () => {
     featureName: "verification-banner-in-bounties-page",
   });
 
-  const [selectedBountyTypes, setSelectedBountyTypes] = useState<string[]>([]);
-  const [reputationHubs, setReputationHubs] = useState<Array<Hub>>([]);
-  const [selectedReputationHubs, setSelectedReputationHubs] = useState<
-    Array<any>
-  >([]);
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (reputationHubs.length === 0) {
-      fetchReputationHubs().then((response) => {
-        const hubs = response.map((hub: any) => parseHub(hub));
-        setReputationHubs(hubs);
-      });
-    }
-  }, []);
-
   useEffect(() => {
     fetchBountiesData();
-  }, [currentPage, selectedBountyTypes, selectedReputationHubs]);
+  }, [currentPage]);
 
   const fetchBountiesData = async () => {
     setIsLoading(true);
-    const bounties: any = await fetchBounties({
-      personalized: true,
-      pageCursor: nextPageCursor,
-      bountyTypes: selectedBountyTypes,
-      hubs: selectedReputationHubs.map((hub) => hub.value),
-    });
+    const bounties: any = await fetchBounties({ personalized: true, pageCursor: nextPageCursor });
 
     setNextPageCursor(bounties.next);
     const parsedBounties = (bounties?.results || [])
@@ -147,13 +189,6 @@ const BountiesPage: NextPage = () => {
     !currentUser?.isVerified &&
     verificationBannerDismissStatus === "checked" &&
     !isVerificationBannerDismissed;
-
-  const applyFilters = () => {
-    setCurrentPage(1);
-    setNextPageCursor(null);
-    fetchBountiesData();
-    setIsFilterModalOpen(false);
-  };
 
   return (
     <div className={css(styles.pageWrapper)}>
@@ -188,16 +223,6 @@ const BountiesPage: NextPage = () => {
             </div>
           </div>
         )}
-
-        <div className={css(styles.filterIconWrapper)}>
-          <Button
-            onClick={() => setIsFilterModalOpen(true)}
-            customButtonStyle={styles.filterButton}
-          >
-            <FontAwesomeIcon icon={faSlidersH} />
-            <span className={css(styles.filterButtonText)}>Filters</span>
-          </Button>
-        </div>
 
         <div className={css(styles.bounties)}>
           {currentBounties.map((bounty) => (
@@ -378,7 +403,8 @@ const BountiesPage: NextPage = () => {
           <div className={css(styles.collapsable)}>
             <div
               className={css(styles.collapsableHeader)}
-              onClick={() => toggleInfoSection("answer-bounty")}>
+              onClick={() => toggleInfoSection("answer-bounty")}
+            >
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Answer a bounty</div>
                 <div>
@@ -468,71 +494,6 @@ const BountiesPage: NextPage = () => {
           </div>
         </div>
       </div>
-
-      {isFilterModalOpen && (
-        <BaseModal
-          isOpen={isFilterModalOpen}
-          closeModal={() => setIsFilterModalOpen(false)}
-          title="Filter Bounties"
-          modalContentStyle={styles.filterModalContent}
-          modalStyle={styles.filterModal}
-          zIndex={1000}
-        >
-          <div className={css(styles.filterModalBody)}>
-            <div className={css(styles.filterSectionModal)}>
-              <div className={css(styles.filterLabel)}>Filter by Hubs:</div>
-              <FormSelect
-                id="hubFilter"
-                isMulti={true}
-                required={false}
-                value={selectedReputationHubs}
-                options={_convertToSelectOption(reputationHubs)}
-                onChange={(id, value) => {
-                  setSelectedReputationHubs(value);
-                }}
-                isSearchable={true}
-                placeholder="Select Hubs"
-                containerStyle={styles.hubFilterContainer}
-                inputStyle={styles.hubFilterInput}
-              />
-            </div>
-            <div className={css(styles.filterSectionModal)}>
-              <div className={css(styles.filterLabel)}>Filter by Bounty Type:</div>
-              <div className={css(styles.bountyTypeFiltersModal)}>
-                {BOUNTY_TYPE_OPTIONS.map(({ value, label }) => (
-                  <div
-                    key={value}
-                    className={css(
-                      styles.bountyTypeFilter,
-                      selectedBountyTypes.includes(value) &&
-                        styles.bountyTypeFilterActive
-                    )}
-                    onClick={() => {
-                      if (selectedBountyTypes.includes(value)) {
-                        setSelectedBountyTypes(
-                          selectedBountyTypes.filter((type) => type !== value)
-                        );
-                      } else {
-                        setSelectedBountyTypes([...selectedBountyTypes, value]);
-                      }
-                    }}
-                  >
-                    {label}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className={css(styles.filterModalActions)}>
-              <Button
-                onClick={applyFilters}
-                customButtonStyle={styles.applyFilterButton}
-              >
-                Apply Filters
-              </Button>
-            </div>
-          </div>
-        </BaseModal>
-      )}
     </div>
   );
 };
@@ -557,26 +518,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     gap: 20,
-  },
-  filterIconWrapper: {
-    display: "flex",
-    justifyContent: "flex-end",
-    marginBottom: 20,
-  },
-  filterButton: {
-    backgroundColor: colors.NEW_BLUE(),
-    color: "#fff",
-    padding: "8px 12px",
-    borderRadius: 4,
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-    ":hover": {
-      backgroundColor: colors.NEW_BLUE(0.8),
-    },
-  },
-  filterButtonText: {
-    fontSize: 14,
   },
   verifyIdentityBanner: {
     display: "flex",
@@ -694,63 +635,97 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.9),
     fontSize: 14,
   },
-  filterModalContent: {
-    padding: 20,
-    maxWidth: 500,
+  card: {
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    padding: 24,
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.05)",
+    transition: "all 0.2s ease-in-out",
+    border: `1px solid ${colors.LIGHTER_GREY()}`,
+    ":hover": {
+      transform: "translateY(-5px)",
+      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+    },
   },
-  filterModal: {
-    width: "auto",
-  },
-  filterModalBody: {
+  header: {
     display: "flex",
-    flexDirection: "column",
-    gap: 20,
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
   },
-  filterSectionModal: {
+  userInfo: {
     display: "flex",
-    flexDirection: "column",
-    gap: 10,
+    alignItems: "center",
   },
-  filterLabel: {
+  userDetails: {
+    marginLeft: 12,
+  },
+  userName: {
     fontSize: 16,
-    fontWeight: 500,
+    fontWeight: 600,
+    color: colors.BLACK(0.9),
+    display: "flex",
+    alignItems: "center",
+    textDecoration: "none",
   },
-  bountyTypeFiltersModal: {
+  bountyType: {
+    fontSize: 14,
+    color: colors.BLACK(0.6),
+    marginTop: 2,
+  },
+  amount: {
+    fontSize: 18,
+    fontWeight: 600,
+    color: colors.NEW_BLUE(),
+    display: "flex",
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 600,
+    color: colors.BLACK(0.9),
+    marginBottom: 16,
+    lineHeight: 1.3,
+  },
+  metaInfo: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  metaItem: {
+    display: "flex",
+    alignItems: "center",
+    fontSize: 14,
+    color: colors.BLACK(0.6),
+  },
+  icon: {
+    marginRight: 8,
+    fontSize: 16,
+    color: colors.BLACK(0.4),
+  },
+  hubTags: {
     display: "flex",
     flexWrap: "wrap",
-    gap: 10,
+    gap: 8,
   },
-  bountyTypeFilter: {
-    padding: "6px 10px",
-    border: `1px solid #DEDEE6`,
-    borderRadius: 5,
-    cursor: "pointer",
-    fontWeight: 500,
-    fontSize: 14,
-    lineHeight: "20px",
-    ":hover": {
-      opacity: 0.7,
-    },
+  hubTag: {
+    fontSize: 12,
+    padding: "2px 8px",
   },
-  bountyTypeFilterActive: {
-    border: `2px solid ${colors.NEW_BLUE()}`,
-    ":hover": {
-      opacity: 1,
-    },
+  ctaLink: {
+    textDecoration: "none",
   },
-  applyFilterButton: {
-    backgroundColor: colors.NEW_BLUE(),
-    color: "#fff",
+  ctaButton: {
     width: "100%",
+    padding: "12px 0",
+    fontSize: 16,
+    fontWeight: 600,
+    backgroundColor: colors.NEW_BLUE(),
+    color: "#ffffff",
     ":hover": {
       backgroundColor: colors.NEW_BLUE(0.8),
     },
   },
-  filterModalActions: {
-    marginTop: 10,
-  },
-  hubFilterContainer: {},
-  hubFilterInput: {},
 });
 
 export default BountiesPage;
