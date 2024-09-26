@@ -39,9 +39,6 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
   const url = getUrlToUniDoc(unifiedDocument);
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(false);
 
-  console.log('Bounty hubs:', hubs);
-  console.log('Unified document:', unifiedDocument);
-
   const badge = (
     <ContentBadge
       contentType="bounty"
@@ -66,11 +63,13 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
     setIsDetailsExpanded(!isDetailsExpanded);
   };
 
-  let parsedHubs = [];
+  let parsedHubs: Hub[] = [];
   if (hubs && Array.isArray(hubs)) {
-    parsedHubs = hubs.map((h) => parseHub(h)).filter((hub: any) => hub.isUsedForRep === true);
-  } else if (unifiedDocument && unifiedDocument.hubs && Array.isArray(unifiedDocument.hubs)) {
-    parsedHubs = unifiedDocument.hubs.map((h) => parseHub(h)).filter((hub: any) => hub.isUsedForRep === true);
+    parsedHubs = hubs.map((h) => parseHub(h)).filter((hub: Hub) => hub.isUsedForRep === true);
+  }
+  if (unifiedDocument && unifiedDocument.hubs && Array.isArray(unifiedDocument.hubs)) {
+    const documentHubs = unifiedDocument.hubs.map((h) => parseHub(h)).filter((hub: Hub) => hub.isUsedForRep === true);
+    parsedHubs = [...new Set([...parsedHubs, ...documentHubs])];
   }
 
   return (

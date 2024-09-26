@@ -523,7 +523,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: "15px",
-    backgroundColor: colors.NEW_BLUE(0.1),
     borderRadius: "8px 8px 0 0",
     cursor: "pointer",
     ":hover": {
@@ -533,7 +532,7 @@ const styles = StyleSheet.create({
   sidebarHeaderContent: {
     display: "flex",
     alignItems: "center",
-    gap: "10px",
+    gap: "0px",
     fontSize: "18px",
     fontWeight: 500,
   },
