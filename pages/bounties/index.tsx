@@ -3,28 +3,17 @@ import { css, StyleSheet } from "aphrodite";
 import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI";
 import { useEffect, useState } from "react";
 import { parseUnifiedDocument, parseUser } from "~/config/types/root_types";
-import { formatDateStandard } from "~/config/utils/dates";
-import { getUrlToUniDoc } from "~/config/utils/routing";
-import CommentAvatars from "~/components/Comment/CommentAvatars";
-import { CloseIcon, PaperIcon } from "~/config/themes/icons";
-import { CondensedAuthorList } from "~/components/Author/AuthorList";
+import { CloseIcon } from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleRight,
-  faSlidersH,
-  faClock,
-  faCoins,
-  faTag,
+  faAngleDown,
+  faChevronDown,
+  faChevronUp,
 } from "@fortawesome/pro-light-svg-icons";
-import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
-import ContentBadge from "~/components/ContentBadge";
-import numeral from "numeral";
-import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
-import { faAngleDown } from "@fortawesome/pro-solid-svg-icons";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
-import { Hub, parseHub } from "~/config/types/hub";
-import HubTag from "~/components/Hubs/HubTag";
+import { parseHub } from "~/config/types/hub";
 import LoadMore from "~/components/shared/LoadMore";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
@@ -32,9 +21,10 @@ import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { breakpoints } from "~/config/themes/screen";
 import { useSelector } from "react-redux";
 import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
-import ALink from "~/components/ALink";
-import UserTooltip from "~/components/Tooltips/User/UserTooltip";
 import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
+import BountyFeedCard from "~/components/Bounty/BountyFeedCard";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
+import Button from "~/components/Form/Button";
 
 type SimpleBounty = {
   id: string;
@@ -44,7 +34,7 @@ type SimpleBounty = {
   expirationDate: string;
   createdDate: string;
   unifiedDocument: any;
-  hubs: Hub[];
+  hubs: any[];
   bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER";
 };
 
@@ -60,77 +50,8 @@ const parseSimpleBounty = (raw: any): SimpleBounty => {
     unifiedDocument: parseUnifiedDocument(raw.unified_document),
     hubs: (raw.unified_document?.hubs || [])
       .map(parseHub)
-      .filter((hub: Hub) => hub.isUsedForRep === true),
+      .filter((hub: any) => hub.isUsedForRep === true),
   };
-};
-
-const bountyTypeLabels = {
-  REVIEW: "Peer Review",
-  ANSWER: "Answer",
-  GENERIC_COMMENT: "Comment",
-};
-
-const BountyFeedCard = ({ bounty }: { bounty: SimpleBounty }) => {
-  const { createdBy, unifiedDocument, expirationDate, amount, hubs, bountyType } = bounty;
-  const url = getUrlToUniDoc(unifiedDocument);
-
-  return (
-    <div className={css(styles.card)}>
-      <div className={css(styles.header)}>
-        <div className={css(styles.userInfo)}>
-          <CommentAvatars size={40} people={[createdBy]} withTooltip={true} />
-          <div className={css(styles.userDetails)}>
-            <UserTooltip
-              createdBy={createdBy}
-              targetContent={
-                <ALink
-                  href={`/author/${createdBy?.authorProfile?.id}`}
-                  key={`/author/${createdBy?.authorProfile?.id}`}
-                  className={css(styles.userName)}
-                >
-                  {createdBy?.authorProfile?.firstName}{" "}
-                  {createdBy?.authorProfile?.lastName}
-                  {createdBy?.authorProfile?.isVerified && (
-                    <VerifiedBadge height={16} width={16} style={{ marginLeft: 4 }} />
-                  )}
-                </ALink>
-              }
-            />
-            <div className={css(styles.bountyType)}>{bountyTypeLabels[bountyType]}</div>
-          </div>
-        </div>
-        <div className={css(styles.amount)}>
-          <FontAwesomeIcon icon={faCoins} className={css(styles.icon)} />
-          {numeral(amount).format("0,0")} RSC
-        </div>
-      </div>
-      
-      <h3 className={css(styles.title)}>{unifiedDocument.document.title}</h3>
-      
-      <div className={css(styles.metaInfo)}>
-        <div className={css(styles.metaItem)}>
-          <FontAwesomeIcon icon={faClock} className={css(styles.icon)} />
-          Expires {formatDateStandard(expirationDate)}
-        </div>
-        <div className={css(styles.metaItem)}>
-          <FontAwesomeIcon icon={faTag} className={css(styles.icon)} />
-          {hubs && hubs.length > 0 ? (
-            <div className={css(styles.hubTags)}>
-              {hubs.map((hub) => (
-                <HubTag key={hub.id} hub={hub} overrideStyle={styles.hubTag} />
-              ))}
-            </div>
-          ) : (
-            "All"
-          )}
-        </div>
-      </div>
-      
-      <ALink href={`${url}/bounties`} className={css(styles.ctaLink)}>
-        <Button customButtonStyle={styles.ctaButton}>Answer Bounty</Button>
-      </ALink>
-    </div>
-  );
 };
 
 const BountiesPage: NextPage = () => {
@@ -139,6 +60,7 @@ const BountiesPage: NextPage = () => {
   const [nextPageCursor, setNextPageCursor] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState<boolean>(false);
   const currentUser = useCurrentUser();
   const auth = useSelector((state: any) => state.auth);
   const {
@@ -185,6 +107,10 @@ const BountiesPage: NextPage = () => {
     }
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarExpanded(!isSidebarExpanded);
+  };
+
   const showVerifyBanner =
     !currentUser?.isVerified &&
     verificationBannerDismissStatus === "checked" &&
@@ -203,11 +129,8 @@ const BountiesPage: NextPage = () => {
             Verify identity to see bounty recommendations relevant to your
             research interests.
             <div className={css(styles.verifyActions)}>
-              {/* @ts-ignore */}
               <VerifyIdentityModal
-                // @ts-ignore legacy
                 wsUrl={WS_ROUTES.NOTIFICATIONS(currentUser?.id)}
-                // @ts-ignore legacy
                 wsAuth
               >
                 <Button isWhite>Verify</Button>
@@ -254,245 +177,259 @@ const BountiesPage: NextPage = () => {
       </div>
 
       <div className={css(styles.info, styles.infoSection)}>
-        <div className={css(styles.aboutRSC, styles.infoBlock)}>
-          <div className={css(styles.infoLabel)}>
+        <div 
+          className={css(styles.sidebarHeader)} 
+          onClick={toggleSidebar}
+        >
+          <div className={css(styles.sidebarHeaderContent)}>
             <ResearchCoinIcon version={4} height={25} width={25} />
-            About ResearchCoin
+            <span>About ResearchCoin</span>
           </div>
-          <div className={css(styles.aboutRSCContent)}>
-            ResearchCoin (RSC) is a digital currency earned by sharing, curating,
-            and reviewing research on ResearchHub, enabling anyone to contribute
-            and earn within the global scientific community.
-          </div>
+          <FontAwesomeIcon 
+            icon={isSidebarExpanded ? faChevronUp : faChevronDown} 
+            className={css(styles.sidebarToggleIcon)}
+          />
         </div>
+        {isSidebarExpanded && (
+          <>
+            <div className={css(styles.aboutRSC, styles.infoBlock)}>
+              <div className={css(styles.aboutRSCContent)}>
+                ResearchCoin (RSC) is a digital currency earned by sharing, curating,
+                and reviewing research on ResearchHub, enabling anyone to contribute
+                and earn within the global scientific community.
+              </div>
+            </div>
 
-        <div className={css(styles.doingThingsWithRSC, styles.infoBlock)}>
-          <div className={css(styles.infoLabel)}>
-            Doing things with ResearchCoin
-          </div>
-          <div className={css(styles.collapsable)}>
-            <div
-              className={css(styles.collapsableHeader)}
-              onClick={() => toggleInfoSection("create-bounty")}
-            >
-              <div className={css(styles.collapsableHeaderTitle)}>
-                <div>Create a bounty</div>
-                <div>
-                  {openInfoSections.includes("create-bounty") ? (
-                    <FontAwesomeIcon icon={faAngleDown} />
-                  ) : (
-                    <FontAwesomeIcon icon={faAngleRight} />
-                  )}{" "}
+            <div className={css(styles.doingThingsWithRSC, styles.infoBlock)}>
+              <div className={css(styles.infoLabel)}>
+                Doing things with ResearchCoin
+              </div>
+              <div className={css(styles.collapsable)}>
+                <div
+                  className={css(styles.collapsableHeader)}
+                  onClick={() => toggleInfoSection("create-bounty")}
+                >
+                  <div className={css(styles.collapsableHeaderTitle)}>
+                    <div>Create a bounty</div>
+                    <div>
+                      {openInfoSections.includes("create-bounty") ? (
+                        <FontAwesomeIcon icon={faAngleDown} />
+                      ) : (
+                        <FontAwesomeIcon icon={faAngleRight} />
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className={css(
+                    styles.collapsableContent,
+                    openInfoSections.includes("create-bounty") &&
+                      styles.collapsableContentOpen
+                  )}
+                >
+                  <div>
+                    RSC drives ResearchHub's Grant system, linking researchers to
+                    opportunities based on their expertise. Users create bounties for
+                    tasks like data analysis, literature reviews, or paid peer review,
+                    enabling targeted collaboration and efficient knowledge sharing.
+                  </div>
+                </div>
+              </div>
+              <div className={css(styles.collapsable)}>
+                <div
+                  className={css(styles.collapsableHeader)}
+                  onClick={() => toggleInfoSection("reward-contributions")}
+                >
+                  <div className={css(styles.collapsableHeaderTitle)}>
+                    <div>Reward quality contributions</div>
+                    <div>
+                      {openInfoSections.includes("reward-contributions") ? (
+                        <FontAwesomeIcon icon={faAngleDown} />
+                      ) : (
+                        <FontAwesomeIcon icon={faAngleRight} />
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className={css(
+                    styles.collapsableContent,
+                    openInfoSections.includes("reward-contributions") &&
+                      styles.collapsableContentOpen
+                  )}
+                >
+                  <div>
+                    RSC is the incentive layer of the ResearchHub ecosystem, rewarding
+                    actions like peer reviews and advancing research goals like
+                    reproducibility. The community of researchers governs the reward
+                    algorithm, ensuring incentives are aligned with their expertise and
+                    priorities.
+                  </div>
+                </div>
+              </div>
+              <div className={css(styles.collapsable)}>
+                <div
+                  className={css(styles.collapsableHeader)}
+                  onClick={() => toggleInfoSection("fund-open-science")}
+                >
+                  <div className={css(styles.collapsableHeaderTitle)}>
+                    <div>Fund open science</div>
+                    <div>
+                      {openInfoSections.includes("fund-open-science") ? (
+                        <FontAwesomeIcon icon={faAngleDown} />
+                      ) : (
+                        <FontAwesomeIcon icon={faAngleRight} />
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className={css(
+                    styles.collapsableContent,
+                    openInfoSections.includes("fund-open-science") &&
+                      styles.collapsableContentOpen
+                  )}
+                >
+                  <div>
+                    RSC enables community-driven scientific funding through open-access
+                    preregistrations, streamlining proposals and funding for research
+                    projects. This approach encourages updates, reduces admin overhead,
+                    and promotes transparency, fostering more reproducible and
+                    collaborative science.
+                  </div>
                 </div>
               </div>
             </div>
-            <div
-              className={css(
-                styles.collapsableContent,
-                openInfoSections.includes("create-bounty") &&
-                  styles.collapsableContentOpen
-              )}
-            >
-              <div>
-                RSC drives ResearchHub's Grant system, linking researchers to
-                opportunities based on their expertise. Users create bounties for
-                tasks like data analysis, literature reviews, or paid peer review,
-                enabling targeted collaboration and efficient knowledge sharing.
-              </div>
-            </div>
-          </div>
-          <div className={css(styles.collapsable)}>
-            <div
-              className={css(styles.collapsableHeader)}
-              onClick={() => toggleInfoSection("reward-contributions")}
-            >
-              <div className={css(styles.collapsableHeaderTitle)}>
-                <div>Reward quality contributions</div>
-                <div>
-                  {openInfoSections.includes("reward-contributions") ? (
-                    <FontAwesomeIcon icon={faAngleDown} />
-                  ) : (
-                    <FontAwesomeIcon icon={faAngleRight} />
-                  )}{" "}
-                </div>
-              </div>
-            </div>
-            <div
-              className={css(
-                styles.collapsableContent,
-                openInfoSections.includes("reward-contributions") &&
-                  styles.collapsableContentOpen
-              )}
-            >
-              <div>
-                RSC is the incentive layer of the ResearchHub ecosystem, rewarding
-                actions like peer reviews and advancing research goals like
-                reproducibility. The community of researchers governs the reward
-                algorithm, ensuring incentives are aligned with their expertise and
-                priorities.
-              </div>
-            </div>
-          </div>
-          <div className={css(styles.collapsable)}>
-            <div
-              className={css(styles.collapsableHeader)}
-              onClick={() => toggleInfoSection("fund-open-science")}
-            >
-              <div className={css(styles.collapsableHeaderTitle)}>
-                <div>Fund open science</div>
-                <div>
-                  {openInfoSections.includes("fund-open-science") ? (
-                    <FontAwesomeIcon icon={faAngleDown} />
-                  ) : (
-                    <FontAwesomeIcon icon={faAngleRight} />
-                  )}{" "}
-                </div>
-              </div>
-            </div>
-            <div
-              className={css(
-                styles.collapsableContent,
-                openInfoSections.includes("fund-open-science") &&
-                  styles.collapsableContentOpen
-              )}
-            >
-              <div>
-                RSC enables community-driven scientific funding through open-access
-                preregistrations, streamlining proposals and funding for research
-                projects. This approach encourages updates, reduces admin overhead,
-                and promotes transparency, fostering more reproducible and
-                collaborative science.
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <div className={css(styles.doingThingsWithRSC, styles.infoBlock)}>
-          <div className={css(styles.infoLabel)}>Earning ResearchCoin</div>
-          <div className={css(styles.collapsable)}>
-            <div
-              className={css(styles.collapsableHeader)}
-              onClick={() => toggleInfoSection("peer-review")}
-            >
-              <div className={css(styles.collapsableHeaderTitle)}>
-                <div>Share a peer review</div>
-                <div>
-                  {openInfoSections.includes("peer-review") ? (
-                    <FontAwesomeIcon icon={faAngleDown} />
-                  ) : (
-                    <FontAwesomeIcon icon={faAngleRight} />
-                  )}{" "}
+            <div className={css(styles.doingThingsWithRSC, styles.infoBlock)}>
+              <div className={css(styles.infoLabel)}>Earning ResearchCoin</div>
+              <div className={css(styles.collapsable)}>
+                <div
+                  className={css(styles.collapsableHeader)}
+                  onClick={() => toggleInfoSection("peer-review")}
+                >
+                  <div className={css(styles.collapsableHeaderTitle)}>
+                    <div>Share a peer review</div>
+                    <div>
+                      {openInfoSections.includes("peer-review") ? (
+                        <FontAwesomeIcon icon={faAngleDown} />
+                      ) : (
+                        <FontAwesomeIcon icon={faAngleRight} />
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className={css(
+                    styles.collapsableContent,
+                    openInfoSections.includes("peer-review") &&
+                      styles.collapsableContentOpen
+                  )}
+                >
+                  <div>
+                    Researchers can earn RSC by peer reviewing preprints on
+                    ResearchHub. Once you verify your identity and import your
+                    publications, we will surface peer review opportunities for you
+                    here.
+                  </div>
+                </div>
+              </div>
+              <div className={css(styles.collapsable)}>
+                <div
+                  className={css(styles.collapsableHeader)}
+                  onClick={() => toggleInfoSection("answer-bounty")}
+                >
+                  <div className={css(styles.collapsableHeaderTitle)}>
+                    <div>Answer a bounty</div>
+                    <div>
+                      {openInfoSections.includes("answer-bounty") ? (
+                        <FontAwesomeIcon icon={faAngleDown} />
+                      ) : (
+                        <FontAwesomeIcon icon={faAngleRight} />
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className={css(
+                    styles.collapsableContent,
+                    openInfoSections.includes("answer-bounty") &&
+                      styles.collapsableContentOpen
+                  )}
+                >
+                  <div>
+                    Researchers earn RSC by completing bounties on ResearchHub, from
+                    peer-reviewing preprints to troubleshooting and data processing.
+                    This system lets researchers monetize their expertise while
+                    providing valuable assistance to bounty creators.
+                  </div>
+                </div>
+              </div>
+              <div className={css(styles.collapsable)}>
+                <div
+                  className={css(styles.collapsableHeader)}
+                  onClick={() => toggleInfoSection("reproducible")}
+                >
+                  <div className={css(styles.collapsableHeaderTitle)}>
+                    <div>Do reproducible research</div>
+                    <div>
+                      {openInfoSections.includes("reproducible") ? (
+                        <FontAwesomeIcon icon={faAngleDown} />
+                      ) : (
+                        <FontAwesomeIcon icon={faAngleRight} />
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className={css(
+                    styles.collapsableContent,
+                    openInfoSections.includes("reproducible") &&
+                      styles.collapsableContentOpen
+                  )}
+                >
+                  <div>
+                    Researchers earn RSC by conducting and sharing reproducible research.
+                    This includes providing detailed methods, sharing data and code,
+                    and participating in replication studies. ResearchHub rewards
+                    these practices to promote transparency and reliability in science.
+                  </div>
+                </div>
+              </div>
+              <div className={css(styles.collapsable)}>
+                <div
+                  className={css(styles.collapsableHeader)}
+                  onClick={() => toggleInfoSection("upvotes")}
+                >
+                  <div className={css(styles.collapsableHeaderTitle)}>
+                    <div>Get upvotes on your content</div>
+                    <div>
+                      {openInfoSections.includes("upvotes") ? (
+                        <FontAwesomeIcon icon={faAngleDown} />
+                      ) : (
+                        <FontAwesomeIcon icon={faAngleRight} />
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className={css(
+                    styles.collapsableContent,
+                    openInfoSections.includes("upvotes") &&
+                      styles.collapsableContentOpen
+                  )}
+                >
+                  <div>
+                    Researchers earn RSC by contributing to scientific discourse on
+                    ResearchHub, gaining upvotes on comments, posts, reviews, and
+                    papers. By incentivizing open discussions, we aim to foster a more
+                    innovative and dynamic research ecosystem.
+                  </div>
                 </div>
               </div>
             </div>
-            <div
-              className={css(
-                styles.collapsableContent,
-                openInfoSections.includes("peer-review") &&
-                  styles.collapsableContentOpen
-              )}
-            >
-              <div>
-                Researchers can earn RSC by peer reviewing preprints on
-                ResearchHub. Once you verify your identity and import your
-                publications, we will surface peer review opportunities for you
-                here.
-              </div>
-            </div>
-          </div>
-          <div className={css(styles.collapsable)}>
-            <div
-              className={css(styles.collapsableHeader)}
-              onClick={() => toggleInfoSection("answer-bounty")}
-            >
-              <div className={css(styles.collapsableHeaderTitle)}>
-                <div>Answer a bounty</div>
-                <div>
-                  {openInfoSections.includes("answer-bounty") ? (
-                    <FontAwesomeIcon icon={faAngleDown} />
-                  ) : (
-                    <FontAwesomeIcon icon={faAngleRight} />
-                  )}{" "}
-                </div>
-              </div>
-            </div>
-            <div
-              className={css(
-                styles.collapsableContent,
-                openInfoSections.includes("answer-bounty") &&
-                  styles.collapsableContentOpen
-              )}
-            >
-              <div>
-                Researchers earn RSC by completing bounties on ResearchHub, from
-                peer-reviewing preprints to troubleshooting and data processing.
-                This system lets researchers monetize their expertise while
-                providing valuable assistance to bounty creators.
-              </div>
-            </div>
-          </div>
-          <div className={css(styles.collapsable)}>
-            <div
-              className={css(styles.collapsableHeader)}
-              onClick={() => toggleInfoSection("reproducible")}
-            >
-              <div className={css(styles.collapsableHeaderTitle)}>
-                <div>Do reproducible research</div>
-                <div>
-                  {openInfoSections.includes("reproducible") ? (
-                    <FontAwesomeIcon icon={faAngleDown} />
-                  ) : (
-                    <FontAwesomeIcon icon={faAngleRight} />
-                  )}{" "}
-                </div>
-              </div>
-            </div>
-            <div
-              className={css(
-                styles.collapsableContent,
-                openInfoSections.includes("reproducible") &&
-                  styles.collapsableContentOpen
-              )}
-            >
-              <div>
-                Researchers earn RSC by peer-reviewing preprints to troubleshooting
-                and data processing. This system lets researchers monetize their
-                expertise while providing valuable assistance to bounty creators.
-              </div>
-            </div>
-          </div>
-          <div className={css(styles.collapsable)}>
-            <div
-              className={css(styles.collapsableHeader)}
-              onClick={() => toggleInfoSection("upvotes")}
-            >
-              <div className={css(styles.collapsableHeaderTitle)}>
-                <div>Get upvotes on your content</div>
-                <div>
-                  {openInfoSections.includes("upvotes") ? (
-                    <FontAwesomeIcon icon={faAngleDown} />
-                  ) : (
-                    <FontAwesomeIcon icon={faAngleRight} />
-                  )}{" "}
-                </div>
-              </div>
-            </div>
-            <div
-              className={css(
-                styles.collapsableContent,
-                openInfoSections.includes("upvotes") &&
-                  styles.collapsableContentOpen
-              )}
-            >
-              <div>
-                Researchers earn RSC by contributing to scientific discourse on
-                ResearchHub, gaining upvotes on comments, posts, reviews, and
-                papers. By incentivizing open discussions, we aim to foster a more
-                innovative and dynamic research ecosystem.
-              </div>
-            </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -581,6 +518,29 @@ const styles = StyleSheet.create({
     },
   },
   infoSection: {},
+  sidebarHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "15px",
+    backgroundColor: colors.NEW_BLUE(0.1),
+    borderRadius: "8px 8px 0 0",
+    cursor: "pointer",
+    ":hover": {
+      backgroundColor: colors.NEW_BLUE(0.2),
+    },
+  },
+  sidebarHeaderContent: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    fontSize: "18px",
+    fontWeight: 500,
+  },
+  sidebarToggleIcon: {
+    fontSize: "20px",
+    color: colors.NEW_BLUE(),
+  },
   aboutRSC: {
     border: `1px solid ${colors.BLACK(0.2)}`,
     borderRadius: 4,
@@ -634,97 +594,6 @@ const styles = StyleSheet.create({
     },
     color: colors.BLACK(0.9),
     fontSize: 14,
-  },
-  card: {
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    padding: 24,
-    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.05)",
-    transition: "all 0.2s ease-in-out",
-    border: `1px solid ${colors.LIGHTER_GREY()}`,
-    ":hover": {
-      transform: "translateY(-5px)",
-      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-    },
-  },
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  userInfo: {
-    display: "flex",
-    alignItems: "center",
-  },
-  userDetails: {
-    marginLeft: 12,
-  },
-  userName: {
-    fontSize: 16,
-    fontWeight: 600,
-    color: colors.BLACK(0.9),
-    display: "flex",
-    alignItems: "center",
-    textDecoration: "none",
-  },
-  bountyType: {
-    fontSize: 14,
-    color: colors.BLACK(0.6),
-    marginTop: 2,
-  },
-  amount: {
-    fontSize: 18,
-    fontWeight: 600,
-    color: colors.NEW_BLUE(),
-    display: "flex",
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 600,
-    color: colors.BLACK(0.9),
-    marginBottom: 16,
-    lineHeight: 1.3,
-  },
-  metaInfo: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  metaItem: {
-    display: "flex",
-    alignItems: "center",
-    fontSize: 14,
-    color: colors.BLACK(0.6),
-  },
-  icon: {
-    marginRight: 8,
-    fontSize: 16,
-    color: colors.BLACK(0.4),
-  },
-  hubTags: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  hubTag: {
-    fontSize: 12,
-    padding: "2px 8px",
-  },
-  ctaLink: {
-    textDecoration: "none",
-  },
-  ctaButton: {
-    width: "100%",
-    padding: "12px 0",
-    fontSize: 16,
-    fontWeight: 600,
-    backgroundColor: colors.NEW_BLUE(),
-    color: "#ffffff",
-    ":hover": {
-      backgroundColor: colors.NEW_BLUE(0.8),
-    },
   },
 });
 
