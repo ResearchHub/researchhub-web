@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { css, StyleSheet } from "aphrodite";
-import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI";
+import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI"; // Ensure correct import path
 import { useEffect, useState } from "react";
 import { parseUnifiedDocument, parseUser } from "~/config/types/root_types";
 import { CloseIcon } from "~/config/themes/icons";
@@ -13,7 +13,7 @@ import {
 } from "@fortawesome/pro-light-svg-icons";
 import colors from "~/config/themes/colors";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
-import { parseHub } from "~/config/types/hub";
+import { parseHub, Hub } from "~/config/types/hub";
 import LoadMore from "~/components/shared/LoadMore";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
@@ -33,32 +33,42 @@ type SimpleBounty = {
   createdBy: any;
   expirationDate: string;
   createdDate: string;
-  unifiedDocument: any;
-  hubs: any[];
+  unifiedDocument: {
+    document: {
+      title: string;
+      // Add other necessary fields if required
+    };
+    authors: Array<{ firstName: string; lastName: string }>;
+    // Add other necessary fields if required
+  };
+  hubs: Hub[];
   bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER";
 };
 
 const parseSimpleBounty = (raw: any): SimpleBounty => {
   return {
     id: raw.id,
-    amount: raw.total_amount,
+    amount: Number(raw.total_amount), // Ensure amount is a number
     content: raw.item.comment_content_json,
-    bountyType: raw.bounty_type,
+    bountyType:
+      raw.bounty_type === "GENERIC_COMMMENT"
+        ? "GENERIC_COMMENT"
+        : raw.bounty_type, // Fix typo
     createdDate: raw.created_date,
     createdBy: parseUser(raw.created_by),
     expirationDate: raw.expiration_date,
     unifiedDocument: parseUnifiedDocument(raw.unified_document),
     hubs: (raw.unified_document?.hubs || [])
       .map(parseHub)
-      .filter((hub: any) => hub.isUsedForRep === true),
+      .filter((hub: Hub) => hub.isUsedForRep === true),
   };
 };
 
 const BountiesPage: NextPage = () => {
   const [currentBounties, setCurrentBounties] = useState<SimpleBounty[]>([]);
   const [openInfoSections, setOpenInfoSections] = useState<string[]>([]);
-  const [nextPageCursor, setNextPageCursor] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [nextPageCursor, setNextPageCursor] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState<boolean>(false);
   const currentUser = useCurrentUser();
@@ -74,29 +84,40 @@ const BountiesPage: NextPage = () => {
 
   useEffect(() => {
     fetchBountiesData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
   const fetchBountiesData = async () => {
-    setIsLoading(true);
-    const bounties: any = await fetchBounties({ personalized: true, pageCursor: nextPageCursor });
+    try {
+      setIsLoading(true);
+      const response: any = await fetchBounties({
+        personalized: true,
+        pageCursor: nextPageCursor,
+      });
 
-    setNextPageCursor(bounties.next);
-    const parsedBounties = (bounties?.results || [])
-      .map((bounty) => {
-        try {
-          return parseSimpleBounty(bounty);
-        } catch (e) {
-          console.error("error parsing bounty", bounty, e);
-        }
-      })
-      .filter((bounty) => bounty !== undefined);
+      // Assuming response has 'next' and 'results'
+      setNextPageCursor(response.next);
+      const parsedBounties: SimpleBounty[] = (response.results || [])
+        .map((bounty: any) => {
+          try {
+            return parseSimpleBounty(bounty);
+          } catch (e) {
+            console.error("error parsing bounty", bounty, e);
+            return undefined;
+          }
+        })
+        .filter((bounty): bounty is SimpleBounty => bounty !== undefined);
 
-    if (currentPage === 1) {
-      setCurrentBounties(parsedBounties);
-    } else {
-      setCurrentBounties([...currentBounties, ...parsedBounties]);
+      if (currentPage === 1) {
+        setCurrentBounties(parsedBounties);
+      } else {
+        setCurrentBounties((prevBounties) => [...prevBounties, ...parsedBounties]);
+      }
+    } catch (error) {
+      console.error("Error fetching bounties:", error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const toggleInfoSection = (section: string) => {
@@ -118,11 +139,14 @@ const BountiesPage: NextPage = () => {
 
   return (
     <div className={css(styles.pageWrapper)}>
+      {/* Bounties Section */}
       <div className={css(styles.bountiesSection)}>
         <h1 className={css(styles.title)}>Bounties</h1>
         <div className={css(styles.description)}>
-          Earn ResearchCoin by completing research related bounties.
+          Earn ResearchCoin by completing research-related bounties.
         </div>
+
+        {/* Verification Banner */}
         {showVerifyBanner && (
           <div className={css(styles.verifyIdentityBanner)}>
             <VerifiedBadge height={32} width={32} />
@@ -147,6 +171,7 @@ const BountiesPage: NextPage = () => {
           </div>
         )}
 
+        {/* Bounties List */}
         <div className={css(styles.bounties)}>
           {currentBounties.map((bounty) => (
             <div className={css(styles.bountyWrapper)} key={bounty.id}>
@@ -154,10 +179,11 @@ const BountiesPage: NextPage = () => {
             </div>
           ))}
 
+          {/* Load More Button */}
           {nextPageCursor && (
             <LoadMore
               onClick={async () => {
-                setCurrentPage(currentPage + 1);
+                setCurrentPage((prevPage) => prevPage + 1);
                 setIsLoading(true);
               }}
               isLoading={isLoading}
@@ -165,33 +191,37 @@ const BountiesPage: NextPage = () => {
           )}
         </div>
 
+        {/* Loading Placeholders */}
         {isLoading && (
           <div className={css(styles.placeholderWrapper)}>
-            {Array(10)
-              .fill(null)
-              .map((_, idx) => (
-                <LiveFeedCardPlaceholder key={idx} color="#efefef" />
-              ))}
+            {Array.from({ length: 10 }).map((_, idx) => (
+              <LiveFeedCardPlaceholder key={idx} color="#efefef" />
+            ))}
           </div>
         )}
       </div>
 
+      {/* Info Sidebar */}
       <div className={css(styles.info, styles.infoSection)}>
-        <div 
-          className={css(styles.sidebarHeader)} 
+        {/* Sidebar Header */}
+        <div
+          className={css(styles.sidebarHeader)}
           onClick={toggleSidebar}
         >
           <div className={css(styles.sidebarHeaderContent)}>
             <ResearchCoinIcon version={4} height={25} width={25} />
             <span>About ResearchCoin</span>
           </div>
-          <FontAwesomeIcon 
-            icon={isSidebarExpanded ? faChevronUp : faChevronDown} 
+          <FontAwesomeIcon
+            icon={isSidebarExpanded ? faChevronUp : faChevronDown}
             className={css(styles.sidebarToggleIcon)}
           />
         </div>
+
+        {/* Sidebar Content */}
         {isSidebarExpanded && (
           <>
+            {/* About ResearchCoin */}
             <div className={css(styles.aboutRSC, styles.infoBlock)}>
               <div className={css(styles.aboutRSCContent)}>
                 ResearchCoin (RSC) is a digital currency earned by sharing, curating,
@@ -200,10 +230,13 @@ const BountiesPage: NextPage = () => {
               </div>
             </div>
 
+            {/* Doing Things with RSC */}
             <div className={css(styles.doingThingsWithRSC, styles.infoBlock)}>
               <div className={css(styles.infoLabel)}>
                 Doing things with ResearchCoin
               </div>
+
+              {/* Create a Bounty */}
               <div className={css(styles.collapsable)}>
                 <div
                   className={css(styles.collapsableHeader)}
@@ -235,6 +268,8 @@ const BountiesPage: NextPage = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Reward Quality Contributions */}
               <div className={css(styles.collapsable)}>
                 <div
                   className={css(styles.collapsableHeader)}
@@ -267,6 +302,8 @@ const BountiesPage: NextPage = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Fund Open Science */}
               <div className={css(styles.collapsable)}>
                 <div
                   className={css(styles.collapsableHeader)}
@@ -301,8 +338,11 @@ const BountiesPage: NextPage = () => {
               </div>
             </div>
 
+            {/* Earning ResearchCoin */}
             <div className={css(styles.doingThingsWithRSC, styles.infoBlock)}>
               <div className={css(styles.infoLabel)}>Earning ResearchCoin</div>
+
+              {/* Share a Peer Review */}
               <div className={css(styles.collapsable)}>
                 <div
                   className={css(styles.collapsableHeader)}
@@ -334,6 +374,8 @@ const BountiesPage: NextPage = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Answer a Bounty */}
               <div className={css(styles.collapsable)}>
                 <div
                   className={css(styles.collapsableHeader)}
@@ -365,6 +407,8 @@ const BountiesPage: NextPage = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Do Reproducible Research */}
               <div className={css(styles.collapsable)}>
                 <div
                   className={css(styles.collapsableHeader)}
@@ -396,6 +440,8 @@ const BountiesPage: NextPage = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Get Upvotes on Your Content */}
               <div className={css(styles.collapsable)}>
                 <div
                   className={css(styles.collapsableHeader)}
@@ -443,6 +489,10 @@ const styles = StyleSheet.create({
     paddingRight: 28,
     paddingLeft: 28,
     gap: 20,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      flexDirection: "column",
+      alignItems: "center",
+    },
   },
   placeholderWrapper: {
     marginTop: 20,
@@ -450,11 +500,19 @@ const styles = StyleSheet.create({
   bountiesSection: {
     width: 800,
     margin: "0 auto",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      width: "100%",
+    },
   },
   bounties: {
     display: "flex",
     flexDirection: "column",
     gap: 20,
+  },
+  bountyWrapper: {
+    ":first-child": {
+      marginTop: 25,
+    },
   },
   verifyIdentityBanner: {
     display: "flex",
@@ -505,11 +563,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     maxWidth: 790,
     lineHeight: "22px",
-  },
-  bountyWrapper: {
-    ":first-child": {
-      marginTop: 25,
-    },
   },
   info: {
     maxWidth: 320,

@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { css, StyleSheet } from 'aphrodite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faChevronDown, faChevronUp } from '@fortawesome/pro-light-svg-icons';
+import { 
+  faClock, 
+  faChevronDown, 
+  faChevronUp, 
+  faAngleRight // Added faAngleRight
+} from '@fortawesome/pro-light-svg-icons';
 import { formatDateStandard } from '~/config/utils/dates';
 import { getUrlToUniDoc } from '~/config/utils/routing';
 import CommentAvatars from '~/components/Comment/CommentAvatars';
@@ -32,13 +37,13 @@ type SimpleBounty = {
     // Add other necessary fields if required
   };
   hubs: Hub[];
-  bountyType: "REVIEW" | "GENERIC_COMMMENT" | "ANSWER";
+  bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER"; // Fixed typo
 };
 
 const bountyTypeLabels = {
   REVIEW: "Peer Review",
   ANSWER: "Answer",
-  GENERIC_COMMMENT: "Comment",
+  GENERIC_COMMENT: "Comment", // Fixed typo
 };
 
 const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
@@ -153,15 +158,14 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
       {/* Paper Details Section */}
       <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
         <div className={css(styles.iconWrapper, styles.paperIcon)}>
-          {/* Assuming PaperIcon is already imported correctly */}
-          <FontAwesomeIcon icon={faChevronRight} /> {/* Replace with <PaperIcon /> if available */}
+          <FontAwesomeIcon icon={faAngleRight} /> {/* Replaced faChevronRight with faAngleRight */}
         </div>
         <div className={css(styles.paperDetails)}>
           <div className={css(styles.paperTitle)}>
             {unifiedDocument.document.title}
           </div>
           <div className={css(styles.paperAuthors)}>
-            {unifiedDocument.authors &&
+            {unifiedDocument.authors && unifiedDocument.authors.length > 0 && (
               <div className={css(styles.condensedAuthorList)}>
                 {unifiedDocument.authors.map((author, index) => (
                   <span key={index}>
@@ -169,7 +173,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
                   </span>
                 ))}
               </div>
-            }
+            )}
             {hubs.length > 0 && (
               <div className={css(styles.paperHubs)}>
                 {hubs.map((hub) => (
