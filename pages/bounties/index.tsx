@@ -229,38 +229,36 @@ const BountiesPage: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      const bounties: any = await fetchBounties({
-        personalized: true,
-        pageCursor: nextPageCursor,
-        bountyTypes: selectedBountyTypes,
-        hubs: selectedReputationHubs.map((hub) => hub.value),
-      });
+    fetchBountiesData();
+  }, [currentPage, selectedBountyTypes, selectedReputationHubs]);
 
-      setNextPageCursor(bounties.next);
-      const parsedBounties = (bounties?.results || [])
-        .map((bounty) => {
-          try {
-            return parseSimpleBounty(bounty);
-          } catch (e) {
-            console.error("error parsing bounty", bounty, e);
-          }
-        })
-        .filter((bounty) => bounty !== undefined);
+  const fetchBountiesData = async () => {
+    setIsLoading(true);
+    const bounties: any = await fetchBounties({
+      personalized: true,
+      pageCursor: nextPageCursor,
+      bountyTypes: selectedBountyTypes,
+      hubs: selectedReputationHubs.map((hub) => hub.value),
+    });
 
-      if (currentPage === 1) {
-        setCurrentBounties(parsedBounties);
-      } else {
-        setCurrentBounties([...currentBounties, ...parsedBounties]);
-      }
-      setIsLoading(false);
-    })();
-  }, [
-    currentPage,
-    selectedBountyTypes,
-    selectedReputationHubs,
-    nextPageCursor,
-  ]);
+    setNextPageCursor(bounties.next);
+    const parsedBounties = (bounties?.results || [])
+      .map((bounty) => {
+        try {
+          return parseSimpleBounty(bounty);
+        } catch (e) {
+          console.error("error parsing bounty", bounty, e);
+        }
+      })
+      .filter((bounty) => bounty !== undefined);
+
+    if (currentPage === 1) {
+      setCurrentBounties(parsedBounties);
+    } else {
+      setCurrentBounties([...currentBounties, ...parsedBounties]);
+    }
+    setIsLoading(false);
+  };
 
   const toggleInfoSection = (section: string) => {
     if (openInfoSections.includes(section)) {
@@ -274,6 +272,14 @@ const BountiesPage: NextPage = () => {
     !currentUser?.isVerified &&
     verificationBannerDismissStatus === "checked" &&
     !isVerificationBannerDismissed;
+
+  const applyFilters = () => {
+    setCurrentPage(1);
+    setNextPageCursor(null);
+    fetchBountiesData();
+    setIsFilterModalOpen(false);
+  };
+
   return (
     <div className={css(styles.pageWrapper)}>
       <div className={css(styles.bountiesSection)}>
@@ -388,7 +394,7 @@ const BountiesPage: NextPage = () => {
               )}
             >
               <div>
-                RSC drives ResearchHub’s Grant system, linking researchers to
+                RSC drives ResearchHub's Grant system, linking researchers to
                 opportunities based on their expertise. Users create bounties for
                 tasks like data analysis, literature reviews, or paid peer review,
                 enabling targeted collaboration and efficient knowledge sharing.
@@ -609,9 +615,6 @@ const BountiesPage: NextPage = () => {
                 options={_convertToSelectOption(reputationHubs)}
                 onChange={(id, value) => {
                   setSelectedReputationHubs(value);
-                  setCurrentPage(1);
-                  setNextPageCursor(null);
-                  setIsLoading(true);
                 }}
                 isSearchable={true}
                 placeholder="Select Hubs"
@@ -638,9 +641,6 @@ const BountiesPage: NextPage = () => {
                       } else {
                         setSelectedBountyTypes([...selectedBountyTypes, value]);
                       }
-                      setCurrentPage(1);
-                      setNextPageCursor(null);
-                      setIsLoading(true);
                     }}
                   >
                     {label}
@@ -650,7 +650,7 @@ const BountiesPage: NextPage = () => {
             </div>
             <div className={css(styles.filterModalActions)}>
               <Button
-                onClick={() => setIsFilterModalOpen(false)}
+                onClick={applyFilters}
                 customButtonStyle={styles.applyFilterButton}
               >
                 Apply Filters
@@ -953,6 +953,8 @@ const styles = StyleSheet.create({
   filterModalActions: {
     marginTop: 10,
   },
+  hubFilterContainer: {},
+  hubFilterInput: {},
 });
 
 export default BountiesPage;
