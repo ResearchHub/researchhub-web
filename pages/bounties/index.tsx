@@ -2,29 +2,16 @@ import { NextPage } from "next";
 import { css, StyleSheet } from "aphrodite";
 import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI";
 import { useEffect, useState } from "react";
-import {
-  parseUnifiedDocument,
-  parseUser,
-} from "~/config/types/root_types";
-import { formatDateStandard } from "~/config/utils/dates";
-import { getUrlToUniDoc } from "~/config/utils/routing";
-import CommentAvatars from "~/components/Comment/CommentAvatars";
-import { CloseIcon, PaperIcon } from "~/config/themes/icons";
-import { CondensedAuthorList } from "~/components/Author/AuthorList";
+import { parseUnifiedDocument, parseUser } from "~/config/types/root_types";
+import { CloseIcon } from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleRight,
-  faSlidersH,
-} from "@fortawesome/pro-light-svg-icons";
+import { faSlidersH } from "@fortawesome/pro-light-svg-icons";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
-import ContentBadge from "~/components/ContentBadge";
-import numeral from "numeral";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
-import { faAngleDown } from "@fortawesome/pro-solid-svg-icons";
+import { faAngleDown, faAngleRight } from "@fortawesome/pro-solid-svg-icons";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 import { Hub, parseHub } from "~/config/types/hub";
-import HubTag from "~/components/Hubs/HubTag";
 import LoadMore from "~/components/shared/LoadMore";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
@@ -35,9 +22,8 @@ import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
 import FormSelect from "~/components/Form/FormSelect";
 import fetchReputationHubs from "~/components/Hubs/api/fetchReputationHubs";
 import BaseModal from "~/components/Modals/BaseModal";
-import ALink from "~/components/ALink";
-import UserTooltip from "~/components/Tooltips/User/UserTooltip";
 import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
+import BountyFeedCard from "~/components/Bounty/BountyFeedCard";
 
 type SimpleBounty = {
   id: string;
@@ -83,117 +69,6 @@ const BOUNTY_TYPE_OPTIONS = [
   { value: "ANSWER", label: "Answer to a Question" },
   { value: "GENERIC_COMMENT", label: "Other" },
 ];
-
-const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
-  const { createdBy, unifiedDocument, expirationDate } = bounty;
-  const url = getUrlToUniDoc(unifiedDocument);
-  return (
-    <div className={css(styles.bounty)}>
-      <div className={css(styles.bountyHeader)}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            columnGap: "3px",
-            flexWrap: "wrap",
-          }}
-        >
-          <CommentAvatars size={25} people={[createdBy]} withTooltip={true} />
-          <UserTooltip
-            createdBy={createdBy}
-            targetContent={
-              <ALink
-                href={`/author/${createdBy?.authorProfile?.id}`}
-                key={`/author/${createdBy?.authorProfile?.id}`}
-              >
-                {createdBy?.authorProfile?.firstName}{" "}
-                {createdBy?.authorProfile?.lastName}
-              </ALink>
-            }
-          />
-          {createdBy?.authorProfile?.isVerified && (
-            <VerifiedBadge height={18} width={18} />
-          )}
-          <div className={css(styles.action)}>opened a bounty</div>
-        </div>
-      </div>
-
-      <ALink href={url + "/bounties"}>
-        <div className={css(styles.paperWrapper)}>
-          <div className={css(styles.iconWrapper, styles.paperIcon)}>
-            <PaperIcon
-              color="rgba(170, 168, 180, 1)"
-              height={24}
-              width={24}
-              onClick={undefined}
-            />
-          </div>
-          <div className={css(styles.paperDetails)}>
-            <div className={css(styles.paperTitle)}>
-              {unifiedDocument?.document?.title}
-            </div>
-            <div className={css(styles.paperAuthors)}>
-              {unifiedDocument.authors && (
-                <CondensedAuthorList
-                  authorNames={unifiedDocument.authors.map(
-                    (a) => a.firstName + " " + a.lastName
-                  )}
-                  allowAuthorNameToIncludeHtml={false}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-      </ALink>
-
-      <div className={css(styles.lineItems)}>
-        <div className={css(styles.lineItem)} style={{ marginBottom: -2 }}>
-          <div className={css(styles.lineItemLabel)}>Amount:</div>
-          <div className={css(styles.lineItemValue)}>
-            <ContentBadge
-              badgeOverride={styles.badge}
-              contentType="bounty"
-              bountyAmount={bounty.amount}
-              label={
-                <div style={{ display: "flex" }}>
-                  <div style={{ flex: 1 }}>
-                    {numeral(bounty.amount).format("0,0a")} RSC
-                  </div>
-                </div>
-              }
-            />
-          </div>
-        </div>
-        <div className={css(styles.lineItem)}>
-          <div className={css(styles.lineItemLabel)}>Expiration date:</div>
-          <div className={css(styles.lineItemValue)}>
-            {formatDateStandard(bounty.expirationDate)}
-          </div>
-        </div>
-        <div className={css(styles.lineItem)}>
-          <div className={css(styles.lineItemLabel)}>Expertise:</div>
-          <div className={css(styles.lineItemValue)}>
-            {bounty.hubs && bounty.hubs.length > 0
-              ? bounty.hubs.map((hub) => (
-                  <HubTag
-                    overrideStyle={styles.hubTag}
-                    hub={hub}
-                    key={hub.id}
-                  />
-                ))
-              : "All"}
-          </div>
-        </div>
-      </div>
-
-      <ALink href={url + "/bounties"}>
-        <div className={css(styles.answerCTA)}>
-          <Button size="small">Answer Bounty</Button>
-        </div>
-      </ALink>
-    </div>
-  );
-};
 
 const BountiesPage: NextPage = () => {
   const [currentBounties, setCurrentBounties] = useState<SimpleBounty[]>([]);
@@ -327,7 +202,7 @@ const BountiesPage: NextPage = () => {
         <div className={css(styles.bounties)}>
           {currentBounties.map((bounty) => (
             <div className={css(styles.bountyWrapper)} key={bounty.id}>
-              <BountyCard bounty={bounty} />
+              <BountyFeedCard bounty={bounty} />
             </div>
           ))}
 
@@ -503,8 +378,7 @@ const BountiesPage: NextPage = () => {
           <div className={css(styles.collapsable)}>
             <div
               className={css(styles.collapsableHeader)}
-              onClick={() => toggleInfoSection("answer-bounty")}
-            >
+              onClick={() => toggleInfoSection("answer-bounty")}>
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Answer a bounty</div>
                 <div>
@@ -704,18 +578,6 @@ const styles = StyleSheet.create({
   filterButtonText: {
     fontSize: 14,
   },
-  hubTag: {
-    cursor: "pointer",
-    marginRight: 5,
-  },
-  badge: {
-    borderRadius: 25,
-    fontSize: 12,
-    marginLeft: -8,
-    lineHeight: "16px",
-    padding: "3px 10px",
-    background: "white",
-  },
   verifyIdentityBanner: {
     display: "flex",
     alignItems: "center",
@@ -748,7 +610,6 @@ const styles = StyleSheet.create({
       background: "rgba(255, 255, 255, 0.3)",
       cursor: "pointer",
     },
-
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       position: "absolute",
       right: 10,
@@ -761,51 +622,16 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textTransform: "capitalize",
   },
-  answerCTA: {
-    marginTop: 20,
-  },
   description: {
     fontSize: 15,
     marginBottom: 20,
     maxWidth: 790,
     lineHeight: "22px",
   },
-  bounty: {
-    border: `1px solid ${colors.LIGHTER_GREY()}`,
-    borderRadius: "4px",
-    padding: 16,
-    backgroundColor: "#fff",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-  },
   bountyWrapper: {
     ":first-child": {
       marginTop: 25,
     },
-  },
-  bountyHeader: {
-    marginBottom: 10,
-    fontSize: 14,
-  },
-  action: {
-    color: colors.BLACK(0.6),
-  },
-  lineItems: {
-    rowGap: 6,
-    display: "flex",
-    flexDirection: "column",
-  },
-  lineItem: {
-    display: "flex",
-    fontSize: 14,
-    alignItems: "center",
-  },
-  lineItemLabel: {
-    color: colors.BLACK(0.7),
-    width: 120,
-  },
-  lineItemValue: {},
-  detailsLineItem: {
-    display: "block",
   },
   info: {
     maxWidth: 320,
@@ -867,36 +693,6 @@ const styles = StyleSheet.create({
     },
     color: colors.BLACK(0.9),
     fontSize: 14,
-  },
-  paperWrapper: {
-    display: "flex",
-    cursor: "pointer",
-    alignItems: "center",
-    marginTop: 10,
-    background: "rgba(250, 250, 252, 1)",
-    borderRadius: 2,
-    padding: 20,
-    ":hover": {
-      transition: "0.2s",
-      background: colors.LIGHTER_GREY(1.0),
-    },
-  },
-  iconWrapper: {
-    marginRight: 10,
-  },
-  paperIcon: {
-    [`@media only screen and (max-width: 400px)`]: {
-      display: "none",
-    },
-  },
-  paperDetails: {},
-  paperTitle: {
-    fontSize: 16,
-  },
-  paperAuthors: {
-    color: colors.BLACK(0.6),
-    fontSize: 13,
-    marginTop: 3,
   },
   filterModalContent: {
     padding: 20,
