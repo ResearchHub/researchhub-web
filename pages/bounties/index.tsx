@@ -4,7 +4,11 @@ import { css, StyleSheet } from "aphrodite";
 import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI";
 import { useEffect, useState } from "react";
 import { getPlainText } from "~/components/Comment/lib/quill";
-import { parseAuthorProfile, parseUnifiedDocument, parseUser } from "~/config/types/root_types";
+import {
+  parseAuthorProfile,
+  parseUnifiedDocument,
+  parseUser,
+} from "~/config/types/root_types";
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import UserTooltip from "~/components/Tooltips/User/UserTooltip";
 import ALink from "~/components/ALink";
@@ -17,7 +21,7 @@ import CommentReadOnly from "~/components/Comment/CommentReadOnly";
 import { CloseIcon, PaperIcon } from "~/config/themes/icons";
 import { CondensedAuthorList } from "~/components/Author/AuthorList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight } from "@fortawesome/pro-light-svg-icons";
+import { faAngleRight, faSort } from "@fortawesome/pro-light-svg-icons";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import ContentBadge from "~/components/ContentBadge";
@@ -34,6 +38,8 @@ import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { breakpoints } from "~/config/themes/screen";
 import { useSelector } from "react-redux";
 import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
+import FormSelect from "~/components/Form/FormSelect";
+import fetchReputationHubs from "~/components/Hubs/api/fetchReputationHubs";
 
 type SimpleBounty = {
   id: string;
@@ -44,7 +50,8 @@ type SimpleBounty = {
   createdDate: string;
   unifiedDocument: any;
   hubs: Hub[];
-  bountyType: "REVIEW" | "GENERIC_COMMMENT" | "ANSWER";
+  bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER";
+  targetHubs: Hub[];
 };
 
 const parseSimpleBounty = (raw: any): SimpleBounty => {
@@ -60,8 +67,24 @@ const parseSimpleBounty = (raw: any): SimpleBounty => {
     hubs: (raw.unified_document?.hubs || [])
       .map(parseHub)
       .filter((hub: Hub) => hub.isUsedForRep === true),
+    targetHubs: (raw.target_hubs || []).map(parseHub),
   };
 };
+
+const _convertToSelectOption = (hubs: Hub[]) => {
+  return hubs.map((h: any) => ({
+    label: h.name,
+    value: h.id,
+    name: h.name,
+    valueForApi: h.id,
+  }));
+};
+
+const BOUNTY_TYPE_OPTIONS = [
+  { value: "REVIEW", label: "Peer Review" },
+  { value: "ANSWER", label: "Answer to a Question" },
+  { value: "GENERIC_COMMENT", label: "Other" },
+];
 
 const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
   const { createdBy, unifiedDocument, expirationDate, createdDate } = bounty;
@@ -80,7 +103,6 @@ const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
           <CommentAvatars size={25} people={[createdBy]} withTooltip={true} />
           <UserTooltip
             createdBy={createdBy}
-            // overrideTargetStyle={styles.userTooltip}
             targetContent={
               <ALink
                 href={`/author/${createdBy?.authorProfile?.id}`}
@@ -156,16 +178,17 @@ const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
           </div>
         </div>
         <div className={css(styles.lineItem)}>
-          <div className={css(styles.lineItemLabel)}>Topic:</div>
+          <div className={css(styles.lineItemLabel)}>Expertise:</div>
           <div className={css(styles.lineItemValue)}>
-            {bounty.hubs &&
-              bounty.hubs.map((hub) => (
-                <HubTag
-                  overrideStyle={styles.hubTag}
-                  hub={hub}
-                  key={hub.id}
-                />
-              ))}
+            {bounty.targetHubs && bounty.targetHubs.length > 0
+              ? bounty.targetHubs.map((hub) => (
+                  <HubTag
+                    overrideStyle={styles.hubTag}
+                    hub={hub}
+                    key={hub.id}
+                  />
+                ))
+              : "All"}
           </div>
         </div>
       </div>
@@ -196,11 +219,28 @@ const BountiesPage: NextPage = () => {
     featureName: "verification-banner-in-bounties-page",
   });
 
+  const [selectedBountyTypes, setSelectedBountyTypes] = useState<string[]>([]);
+  const [reputationHubs, setReputationHubs] = useState<Array<Hub>>([]);
+  const [selectedReputationHubs, setSelectedReputationHubs] = useState<
+    Array<any>
+  >([]);
+
+  useEffect(() => {
+    if (reputationHubs.length === 0) {
+      fetchReputationHubs().then((response) => {
+        const hubs = response.map((hub: any) => parseHub(hub));
+        setReputationHubs(hubs);
+      });
+    }
+  }, []);
+
   useEffect(() => {
     (async () => {
       const bounties: any = await fetchBounties({
         personalized: true,
         pageCursor: nextPageCursor,
+        bountyTypes: selectedBountyTypes,
+        hubs: selectedReputationHubs.map((hub) => hub.value),
       });
 
       setNextPageCursor(bounties.next);
@@ -214,10 +254,19 @@ const BountiesPage: NextPage = () => {
         })
         .filter((bounty) => bounty !== undefined);
 
-      setCurrentBounties([...currentBounties, ...parsedBounties]);
+      if (currentPage === 1) {
+        setCurrentBounties(parsedBounties);
+      } else {
+        setCurrentBounties([...currentBounties, ...parsedBounties]);
+      }
       setIsLoading(false);
     })();
-  }, [currentPage]);
+  }, [
+    currentPage,
+    selectedBountyTypes,
+    selectedReputationHubs,
+    nextPageCursor,
+  ]);
 
   const toggleInfoSection = (section: string) => {
     if (openInfoSections.includes(section)) {
@@ -265,10 +314,61 @@ const BountiesPage: NextPage = () => {
           </div>
         )}
 
+        <div className={css(styles.filterSection)}>
+          <div className={css(styles.filterContainer)}>
+            <div className={css(styles.filterLabel)}>Filter by Bounty Type:</div>
+            <div className={css(styles.bountyTypeFilters)}>
+              {BOUNTY_TYPE_OPTIONS.map(({ value, label }) => (
+                <div
+                  key={value}
+                  className={css(
+                    styles.bountyTypeFilter,
+                    selectedBountyTypes.includes(value) &&
+                      styles.bountyTypeFilterActive
+                  )}
+                  onClick={() => {
+                    if (selectedBountyTypes.includes(value)) {
+                      setSelectedBountyTypes(
+                        selectedBountyTypes.filter((type) => type !== value)
+                      );
+                    } else {
+                      setSelectedBountyTypes([...selectedBountyTypes, value]);
+                    }
+                    setCurrentPage(1);
+                    setNextPageCursor(null);
+                    setIsLoading(true);
+                  }}
+                >
+                  {label}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className={css(styles.hubFilterWrapper)}>
+            <FormSelect
+              id="hubFilter"
+              isMulti={true}
+              required={false}
+              value={selectedReputationHubs}
+              options={_convertToSelectOption(reputationHubs)}
+              onChange={(id, value) => {
+                setSelectedReputationHubs(value);
+                setCurrentPage(1);
+                setNextPageCursor(null);
+                setIsLoading(true);
+              }}
+              isSearchable={true}
+              placeholder="Filter by Expertise"
+              containerStyle={styles.hubFilterContainer}
+              inputStyle={styles.hubFilterInput}
+            />
+          </div>
+        </div>
+
         <div className={css(styles.bounties)}>
           {currentBounties.map((bounty) => (
-            <div className={css(styles.bountyWrapper)}>
-              <BountyCard key={bounty.id} bounty={bounty} />
+            <div className={css(styles.bountyWrapper)} key={bounty.id}>
+              <BountyCard bounty={bounty} />
             </div>
           ))}
 
@@ -287,8 +387,8 @@ const BountiesPage: NextPage = () => {
           <div className={css(styles.placeholderWrapper)}>
             {Array(10)
               .fill(null)
-              .map(() => (
-                <LiveFeedCardPlaceholder color="#efefef" />
+              .map((_, idx) => (
+                <LiveFeedCardPlaceholder key={idx} color="#efefef" />
               ))}
           </div>
         )}
@@ -301,9 +401,9 @@ const BountiesPage: NextPage = () => {
             About ResearchCoin
           </div>
           <div className={css(styles.aboutRSCContent)}>
-            ResearchCoin (RSC) is a digital currency earned by sharing,
-            curating, and reviewing research on ResearchHub, enabling anyone to
-            contribute and earn within the global scientific community.
+            ResearchCoin (RSC) is a digital currency earned by sharing, curating,
+            and reviewing research on ResearchHub, enabling anyone to contribute
+            and earn within the global scientific community.
           </div>
         </div>
 
@@ -336,10 +436,9 @@ const BountiesPage: NextPage = () => {
             >
               <div>
                 RSC drives ResearchHub’s Grant system, linking researchers to
-                opportunities based on their expertise. Users create bounties
-                for tasks like data analysis, literature reviews, or paid peer
-                review, enabling targeted collaboration and efficient knowledge
-                sharing.
+                opportunities based on their expertise. Users create bounties for
+                tasks like data analysis, literature reviews, or paid peer review,
+                enabling targeted collaboration and efficient knowledge sharing.
               </div>
             </div>
           </div>
@@ -367,11 +466,11 @@ const BountiesPage: NextPage = () => {
               )}
             >
               <div>
-                RSC is the incentive layer of the ResearchHub ecosystem,
-                rewarding actions like peer reviews and advancing research goals
-                like reproducibility. The community of researchers governs the
-                reward algorithm, ensuring incentives are aligned with their
-                expertise and priorities.
+                RSC is the incentive layer of the ResearchHub ecosystem, rewarding
+                actions like peer reviews and advancing research goals like
+                reproducibility. The community of researchers governs the reward
+                algorithm, ensuring incentives are aligned with their expertise and
+                priorities.
               </div>
             </div>
           </div>
@@ -399,11 +498,11 @@ const BountiesPage: NextPage = () => {
               )}
             >
               <div>
-                RSC enables community-driven scientific funding through
-                open-access preregistrations, streamlining proposals and funding
-                for research projects. This approach encourages updates, reduces
-                admin overhead, and promotes transparency, fostering more
-                reproducible and collaborative science.
+                RSC enables community-driven scientific funding through open-access
+                preregistrations, streamlining proposals and funding for research
+                projects. This approach encourages updates, reduces admin overhead,
+                and promotes transparency, fostering more reproducible and
+                collaborative science.
               </div>
             </div>
           </div>
@@ -497,10 +596,9 @@ const BountiesPage: NextPage = () => {
               )}
             >
               <div>
-                Researchers earn RSC by peer-reviewing preprints to
-                troubleshooting and data processing. This system lets
-                researchers monetize their expertise while providing valuable
-                assistance to bounty creators.
+                Researchers earn RSC by peer-reviewing preprints to troubleshooting
+                and data processing. This system lets researchers monetize their
+                expertise while providing valuable assistance to bounty creators.
               </div>
             </div>
           </div>
@@ -530,8 +628,8 @@ const BountiesPage: NextPage = () => {
               <div>
                 Researchers earn RSC by contributing to scientific discourse on
                 ResearchHub, gaining upvotes on comments, posts, reviews, and
-                papers. By incentivizing open discussions, we aim to foster a
-                more innovative and dynamic research ecosystem.
+                papers. By incentivizing open discussions, we aim to foster a more
+                innovative and dynamic research ecosystem.
               </div>
             </div>
           </div>
@@ -562,6 +660,44 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 20,
   },
+  filterSection: {
+    marginBottom: 20,
+    display: "flex",
+    flexDirection: "column",
+    gap: 10,
+  },
+  filterContainer: {},
+  filterLabel: {
+    fontSize: 15,
+    marginBottom: 5,
+  },
+  bountyTypeFilters: {
+    display: "flex",
+    gap: 10,
+  },
+  bountyTypeFilter: {
+    padding: "6px 10px",
+    border: `1px solid #DEDEE6`,
+    borderRadius: 5,
+    cursor: "pointer",
+    fontWeight: 500,
+    fontSize: 14,
+    lineHeight: "20px",
+    ":hover": {
+      opacity: 0.7,
+    },
+  },
+  bountyTypeFilterActive: {
+    border: `2px solid ${colors.NEW_BLUE()}`,
+    ":hover": {
+      opacity: 1,
+    },
+  },
+  hubFilterWrapper: {},
+  hubFilterContainer: {
+    width: "100%",
+  },
+  hubFilterInput: {},
   hubTag: {
     cursor: "pointer",
     marginRight: 5,
@@ -579,7 +715,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     padding: 10,
-    // border: "1px solid #ccc",
     borderRadius: 5,
     marginTop: 10,
     color: "white",
@@ -611,7 +746,6 @@ const styles = StyleSheet.create({
       position: "absolute",
       right: 10,
       top: 10,
-      // display: "none",
     },
   },
   title: {
@@ -699,9 +833,7 @@ const styles = StyleSheet.create({
     lineHeight: "20px",
   },
   doingThingsWithRSC: {},
-  collapsable: {
-    // borderBottom: `1px solid ${colors.BLACK(0.2)}`,
-  },
+  collapsable: {},
   collapsableHeader: {
     userSelect: "none",
     padding: 15,
