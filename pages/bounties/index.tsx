@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "0px",
+    padding: "15px",
     borderRadius: "8px 8px 0 0",
     cursor: "pointer",
     ":hover": {

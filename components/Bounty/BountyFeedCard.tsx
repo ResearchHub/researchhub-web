@@ -13,8 +13,8 @@ import UserTooltip from '~/components/Tooltips/User/UserTooltip';
 import ContentBadge from '~/components/ContentBadge';
 import { formatBountyAmount } from '~/config/types/bounty';
 import CommentReadOnly from '~/components/Comment/CommentReadOnly';
-import DocumentHubs from '~/components/Document/lib/DocumentHubs';
-import { parseHub } from '~/config/types/hub';
+import HubTag from '~/components/Hubs/HubTag'; // Ensure HubTag is correctly imported
+import { Hub } from '~/config/types/hub'; // Ensure Hub type is correctly imported
 
 type SimpleBounty = {
   id: string;
@@ -23,7 +23,14 @@ type SimpleBounty = {
   createdBy: any;
   expirationDate: string;
   createdDate: string;
-  unifiedDocument: any;
+  unifiedDocument: {
+    document: {
+      title: string;
+      // Add other necessary fields if required
+    };
+    // Other fields if necessary
+  };
+  hubs: Hub[];
   bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER";
 };
 
@@ -34,12 +41,9 @@ const bountyTypeLabels = {
 };
 
 const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
-  const { createdBy, unifiedDocument, expirationDate, amount, bountyType, content } = bounty;
+  const { createdBy, unifiedDocument, expirationDate, amount, bountyType, content, hubs } = bounty;
   const url = getUrlToUniDoc(unifiedDocument);
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(false);
-
-  const { hubs } = unifiedDocument;
-  const parsedHubs = hubs ? hubs.map((h) => parseHub(h)) : [];
 
   const badge = (
     <ContentBadge
@@ -80,8 +84,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
                     key={`/author/${createdBy?.authorProfile?.id}`}
                     className={css(styles.userName)}
                   >
-                    {createdBy?.authorProfile?.firstName}{" "}
-                    {createdBy?.authorProfile?.lastName}
+                    {createdBy?.authorProfile?.firstName} {createdBy?.authorProfile?.lastName}
                   </ALink>
                 }
               />
@@ -108,13 +111,11 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         </div>
       </div>
 
-      {parsedHubs && parsedHubs.length > 0 && (
+      {hubs.length > 0 && (
         <div className={css(styles.hubsContainer)}>
-          <DocumentHubs
-            hubs={parsedHubs}
-            withShowMore={false}
-            hideOnSmallerResolution={true}
-          />
+          {hubs.map((hub) => (
+            <HubTag overrideStyle={styles.hubTag} hub={hub} key={hub.id} />
+          ))}
         </div>
       )}
 
@@ -231,6 +232,12 @@ const styles = StyleSheet.create({
   hubsContainer: {
     marginTop: 10,
     marginBottom: 20,
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 5,
+  },
+  hubTag: {
+    cursor: "pointer",
   },
   details: {
     marginBottom: 20,
