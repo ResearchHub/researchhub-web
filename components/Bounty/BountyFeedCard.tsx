@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { css, StyleSheet } from 'aphrodite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faTag } from '@fortawesome/pro-light-svg-icons';
+import { faClock, faTag, faChevronDown, faChevronUp } from '@fortawesome/pro-light-svg-icons';
 import { formatDateStandard } from '~/config/utils/dates';
 import { getUrlToUniDoc } from '~/config/utils/routing';
 import CommentAvatars from '~/components/Comment/CommentAvatars';
@@ -11,9 +11,11 @@ import VerifiedBadge from '~/components/Verification/VerifiedBadge';
 import colors from '~/config/themes/colors';
 import ALink from '~/components/ALink';
 import UserTooltip from '~/components/Tooltips/User/UserTooltip';
-import { Hub } from '~/config/types/hub';
+import { Hub, parseHub } from '~/config/types/hub';
 import ContentBadge from '~/components/ContentBadge';
 import { formatBountyAmount } from '~/config/types/bounty';
+import CommentReadOnly from '~/components/Comment/CommentReadOnly';
+import DocumentHubs from '~/components/Document/lib/DocumentHubs';
 
 type SimpleBounty = {
   id: string;
@@ -34,8 +36,9 @@ const bountyTypeLabels = {
 };
 
 const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
-  const { createdBy, unifiedDocument, expirationDate, amount, hubs, bountyType } = bounty;
+  const { createdBy, unifiedDocument, expirationDate, amount, hubs, bountyType, content } = bounty;
   const url = getUrlToUniDoc(unifiedDocument);
+  const [isDetailsExpanded, setIsDetailsExpanded] = useState(false);
 
   const badge = (
     <ContentBadge
@@ -57,7 +60,11 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
     />
   );
 
-  const reputationHubs = hubs.filter(hub => hub.isUsedForRep);
+  const toggleDetails = () => {
+    setIsDetailsExpanded(!isDetailsExpanded);
+  };
+
+  const parsedHubs = hubs.map((h) => parseHub(h));
 
   return (
     <div className={css(styles.card)}>
@@ -65,27 +72,29 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         <div className={css(styles.userInfo)}>
           <CommentAvatars size={40} people={[createdBy]} withTooltip={true} />
           <div className={css(styles.userDetails)}>
-            <UserTooltip
-              createdBy={createdBy}
-              targetContent={
-                <ALink
-                  href={`/author/${createdBy?.authorProfile?.id}`}
-                  key={`/author/${createdBy?.authorProfile?.id}`}
-                  className={css(styles.userName)}
-                >
-                  {createdBy?.authorProfile?.firstName}{" "}
-                  {createdBy?.authorProfile?.lastName}
-                  {createdBy?.authorProfile?.isVerified && (
-                    <VerifiedBadge height={16} width={16} style={{ marginLeft: 4 }} />
-                  )}
-                </ALink>
-              }
-            />
+            <div className={css(styles.nameAndBounty)}>
+              <UserTooltip
+                createdBy={createdBy}
+                targetContent={
+                  <ALink
+                    href={`/author/${createdBy?.authorProfile?.id}`}
+                    key={`/author/${createdBy?.authorProfile?.id}`}
+                    className={css(styles.userName)}
+                  >
+                    {createdBy?.authorProfile?.firstName}{" "}
+                    {createdBy?.authorProfile?.lastName}
+                  </ALink>
+                }
+              />
+              {createdBy?.authorProfile?.isVerified && (
+                <VerifiedBadge height={16} width={16} style={{ marginLeft: 4 }} />
+              )}
+              <span className={css(styles.openedBounty)}>
+                opened a {badge} bounty
+              </span>
+            </div>
             <div className={css(styles.bountyType)}>
               {bountyTypeLabels[bountyType]}
-              {" opened "}
-              {badge}
-              {" bounty"}
             </div>
           </div>
         </div>
@@ -100,28 +109,44 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         </div>
         <div className={css(styles.metaItem)}>
           <FontAwesomeIcon icon={faTag} className={css(styles.icon)} />
-          {reputationHubs && reputationHubs.length > 0 ? (
-            <div className={css(styles.hubTags)}>
-              {reputationHubs.slice(0, 1).map((hub) => (
-                <HubTag key={hub.id} hub={hub} overrideStyle={styles.hubTag} />
-              ))}
-              {reputationHubs.length > 1 && (
-                <span className={css(styles.moreHubs)}>
-                  +{reputationHubs.length - 1} more
-                </span>
-              )}
-            </div>
-          ) : (
-            "Unknown Hubs"
-          )}
+          <div className={css(styles.hubsContainer)}>
+            <DocumentHubs
+              hubs={parsedHubs}
+              withShowMore={false}
+              hideOnSmallerResolution={false}
+            />
+          </div>
         </div>
       </div>
-      
-      <div className={css(styles.ctaWrapper)}>
-        <ALink href={`${url}/bounties`} className={css(styles.ctaLink)}>
-          <Button customButtonStyle={styles.ctaButton}>Answer Bounty</Button>
-        </ALink>
+
+      <div className={css(styles.details)}>
+        <div className={css(styles.detailsHeader)}>
+          Details: 
+          <span 
+            className={css(styles.readMoreToggle)} 
+            onClick={toggleDetails}
+          >
+            {isDetailsExpanded ? "Show less " : "Read more "}
+            <FontAwesomeIcon 
+              icon={isDetailsExpanded ? faChevronUp : faChevronDown} 
+              className={css(styles.toggleIcon)}
+            />
+          </span>
+        </div>
+        {isDetailsExpanded && (
+          <div className={css(styles.detailsContent)}>
+            <CommentReadOnly
+              content={content}
+              previewMaxImageLength={1}
+              previewMaxCharLength={400}
+            />
+          </div>
+        )}
       </div>
+      
+      <ALink href={`${url}/bounties`} className={css(styles.ctaLink)}>
+        <Button customButtonStyle={styles.ctaButton}>Answer Bounty</Button>
+      </ALink>
     </div>
   );
 };
@@ -152,20 +177,26 @@ const styles = StyleSheet.create({
   userDetails: {
     marginLeft: 12,
   },
+  nameAndBounty: {
+    display: "flex",
+    alignItems: "center",
+    flexWrap: "wrap",
+  },
   userName: {
     fontSize: 16,
     fontWeight: 600,
     color: colors.BLACK(0.9),
-    display: "flex",
-    alignItems: "center",
     textDecoration: "none",
+  },
+  openedBounty: {
+    fontSize: 14,
+    color: colors.BLACK(0.6),
+    marginLeft: 8,
   },
   bountyType: {
     fontSize: 14,
     color: colors.BLACK(0.6),
     marginTop: 2,
-    display: "flex",
-    alignItems: "center",
   },
   badgeContainer: {
     display: "inline-flex",
@@ -198,23 +229,31 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.BLACK(0.4),
   },
-  hubTags: {
+  hubsContainer: {
     display: "flex",
     flexWrap: "wrap",
     gap: 8,
-    alignItems: "center",
   },
-  hubTag: {
-    fontSize: 12,
-    padding: "2px 8px",
+  details: {
+    marginBottom: 20,
   },
-  moreHubs: {
-    fontSize: 12,
-    color: colors.BLACK(0.6),
+  detailsHeader: {
+    fontSize: 14,
+    fontWeight: 600,
+    marginBottom: 8,
   },
-  ctaWrapper: {
-    display: "flex",
-    justifyContent: "flex-start",
+  readMoreToggle: {
+    color: colors.NEW_BLUE(),
+    cursor: "pointer",
+    marginLeft: 8,
+  },
+  toggleIcon: {
+    marginLeft: 4,
+  },
+  detailsContent: {
+    fontSize: 14,
+    lineHeight: 1.5,
+    color: colors.BLACK(0.8),
   },
   ctaLink: {
     textDecoration: "none",
