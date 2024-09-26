@@ -13,8 +13,8 @@ import UserTooltip from '~/components/Tooltips/User/UserTooltip';
 import ContentBadge from '~/components/ContentBadge';
 import { formatBountyAmount } from '~/config/types/bounty';
 import CommentReadOnly from '~/components/Comment/CommentReadOnly';
-import HubTag from '~/components/Hubs/HubTag'; // Ensure HubTag is correctly imported
-import { Hub } from '~/config/types/hub'; // Ensure Hub type is correctly imported
+import HubTag from '~/components/Hubs/HubTag';
+import { Hub } from '~/config/types/hub';
 
 type SimpleBounty = {
   id: string;
@@ -28,16 +28,17 @@ type SimpleBounty = {
       title: string;
       // Add other necessary fields if required
     };
-    // Other fields if necessary
+    authors: Array<{ firstName: string; lastName: string }>;
+    // Add other necessary fields if required
   };
   hubs: Hub[];
-  bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER";
+  bountyType: "REVIEW" | "GENERIC_COMMMENT" | "ANSWER";
 };
 
 const bountyTypeLabels = {
   REVIEW: "Peer Review",
   ANSWER: "Answer",
-  GENERIC_COMMENT: "Comment",
+  GENERIC_COMMMENT: "Comment",
 };
 
 const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
@@ -71,6 +72,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
 
   return (
     <div className={css(styles.card)}>
+      {/* Header Section */}
       <div className={css(styles.header)}>
         <div className={css(styles.userInfo)}>
           <CommentAvatars size={40} people={[createdBy]} withTooltip={true} />
@@ -102,8 +104,10 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         </div>
       </div>
       
+      {/* Title Section */}
       <h3 className={css(styles.title)}>{unifiedDocument.document.title}</h3>
       
+      {/* Meta Information */}
       <div className={css(styles.metaInfo)}>
         <div className={css(styles.metaItem)}>
           <FontAwesomeIcon icon={faClock} className={css(styles.icon)} />
@@ -111,6 +115,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         </div>
       </div>
 
+      {/* Hubs Section */}
       {hubs.length > 0 && (
         <div className={css(styles.hubsContainer)}>
           {hubs.map((hub) => (
@@ -119,6 +124,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         </div>
       )}
 
+      {/* Details Section */}
       <div className={css(styles.details)}>
         <div className={css(styles.detailsHeader)}>
           Details: 
@@ -144,6 +150,38 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         )}
       </div>
       
+      {/* Paper Details Section */}
+      <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
+        <div className={css(styles.iconWrapper, styles.paperIcon)}>
+          {/* Assuming PaperIcon is already imported correctly */}
+          <FontAwesomeIcon icon={faChevronRight} /> {/* Replace with <PaperIcon /> if available */}
+        </div>
+        <div className={css(styles.paperDetails)}>
+          <div className={css(styles.paperTitle)}>
+            {unifiedDocument.document.title}
+          </div>
+          <div className={css(styles.paperAuthors)}>
+            {unifiedDocument.authors &&
+              <div className={css(styles.condensedAuthorList)}>
+                {unifiedDocument.authors.map((author, index) => (
+                  <span key={index}>
+                    {author.firstName} {author.lastName}{index < unifiedDocument.authors.length - 1 ? ', ' : ''}
+                  </span>
+                ))}
+              </div>
+            }
+            {hubs.length > 0 && (
+              <div className={css(styles.paperHubs)}>
+                {hubs.map((hub) => (
+                  <HubTag overrideStyle={styles.hubTag} hub={hub} key={hub.id} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </ALink>
+
+      {/* Call-to-Action Button */}
       <ALink href={`${url}/bounties`} className={css(styles.ctaLink)}>
         <Button customButtonStyle={styles.ctaButton}>Answer Bounty</Button>
       </ALink>
@@ -163,6 +201,9 @@ const styles = StyleSheet.create({
       transform: "translateY(-2px)",
       boxShadow: "0 4px 15px rgba(0, 0, 0, 0.08)",
     },
+    display: "flex",
+    flexDirection: "column",
+    gap: 16,
   },
   header: {
     display: "flex",
@@ -176,6 +217,8 @@ const styles = StyleSheet.create({
   },
   userDetails: {
     marginLeft: 12,
+    display: "flex",
+    flexDirection: "column",
   },
   nameAndBounty: {
     display: "flex",
@@ -246,11 +289,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 600,
     marginBottom: 8,
+    display: "flex",
+    alignItems: "center",
   },
   readMoreToggle: {
     color: colors.NEW_BLUE(),
     cursor: "pointer",
     marginLeft: 8,
+    display: "flex",
+    alignItems: "center",
   },
   toggleIcon: {
     marginLeft: 4,
@@ -260,8 +307,59 @@ const styles = StyleSheet.create({
     lineHeight: 1.5,
     color: colors.BLACK(0.8),
   },
+  paperWrapper: {
+    display: "flex",
+    cursor: "pointer",
+    alignItems: "center",
+    marginTop: 10,
+    background: "rgba(250, 250, 252, 1)",
+    borderRadius: 2,
+    padding: 20,
+    ":hover": {
+      transition: "0.2s",
+      background: colors.LIGHTER_GREY(1.0),
+    },    
+    textDecoration: "none",
+    color: "inherit",
+  },
+  iconWrapper: {
+    marginRight: 10,
+  },
+  paperIcon: {
+    [`@media only screen and (max-width: 400px)`]: {
+      display: "none",
+    }
+  },
+  paperDetails: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  paperTitle: {
+    fontSize: 16,
+    fontWeight: 500,
+    color: colors.BLACK(0.9),
+  },
+  paperAuthors: {
+    color: colors.BLACK(0.6),
+    fontSize: 13,
+    marginTop: 3,
+    display: "flex",
+    flexDirection: "column",
+  },
+  condensedAuthorList: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 4,
+  },
+  paperHubs: {
+    display: "flex",
+    gap: 5,
+    marginTop: 10,
+    flexWrap: "wrap",
+  },
   ctaLink: {
     textDecoration: "none",
+    marginTop: 20,
   },
   ctaButton: {
     padding: "8px 16px",
