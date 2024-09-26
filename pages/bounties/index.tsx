@@ -173,8 +173,8 @@ const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
         <div className={css(styles.lineItem)}>
           <div className={css(styles.lineItemLabel)}>Expertise:</div>
           <div className={css(styles.lineItemValue)}>
-            {bounty.targetHubs && bounty.targetHubs.length > 0
-              ? bounty.targetHubs.map((hub) => (
+            {bounty.hubs && bounty.hubs.length > 0
+              ? bounty.hubs.map((hub) => (
                   <HubTag
                     overrideStyle={styles.hubTag}
                     hub={hub}
@@ -696,7 +696,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     display: "flex",
     alignItems: "center",
-    gap: 8,
+    gap: 12,
     ":hover": {
       backgroundColor: colors.NEW_BLUE(0.8),
     },
@@ -900,11 +900,10 @@ const styles = StyleSheet.create({
   },
   filterModalContent: {
     padding: 20,
-    width: "100%",
     maxWidth: 500,
   },
   filterModal: {
-    width: "100%",
+    width: "auto",
   },
   filterModalBody: {
     display: "flex",
