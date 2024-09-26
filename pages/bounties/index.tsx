@@ -1,3 +1,4 @@
+// index.tsx
 import { NextPage } from "next";
 import { css, StyleSheet } from "aphrodite";
 import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI"; // Ensure correct import path
@@ -42,7 +43,7 @@ type SimpleBounty = {
     // Add other necessary fields if required
   };
   hubs: Hub[];
-  bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER";
+  bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER"; // Fixed typo
 };
 
 const parseSimpleBounty = (raw: any): SimpleBounty => {
@@ -578,8 +579,10 @@ const styles = StyleSheet.create({
     padding: "15px",
     borderRadius: "8px 8px 0 0",
     cursor: "pointer",
+    backgroundColor: colors.NEW_BLUE(), // Match the background color from otherfile.tsx
+    color: "#ffffff", // Ensure text color contrasts with background
     ":hover": {
-      backgroundColor: colors.NEW_BLUE(0.2),
+      backgroundColor: colors.NEW_BLUE(0.8), // Slightly darker on hover
     },
   },
   sidebarHeaderContent: {
@@ -591,11 +594,12 @@ const styles = StyleSheet.create({
   },
   sidebarToggleIcon: {
     fontSize: "20px",
-    color: colors.NEW_BLUE(),
+    color: "#ffffff", // Match the icon color to text color
   },
   aboutRSC: {
     border: `1px solid ${colors.BLACK(0.2)}`,
     borderRadius: 4,
+    backgroundColor: colors.LIGHTER_GREY(0.1), // Match background color from otherfile.tsx
   },
   infoBlock: {
     border: `1px solid ${colors.BLACK(0.2)}`,
@@ -614,6 +618,7 @@ const styles = StyleSheet.create({
     gap: 10,
     fontSize: 18,
     borderBottom: `1px solid ${colors.BLACK(0.2)}`,
+    backgroundColor: colors.NEW_BLUE(0.1), // Match background color from otherfile.tsx
   },
   aboutRSCContent: {
     padding: 15,
@@ -646,6 +651,63 @@ const styles = StyleSheet.create({
     },
     color: colors.BLACK(0.9),
     fontSize: 14,
+  },
+  paperWrapper: {
+    display: "flex",
+    cursor: "pointer",
+    alignItems: "center",
+    marginTop: 10,
+    background: "rgba(250, 250, 252, 1)",
+    borderRadius: 2,
+    padding: 20,
+    ":hover": {
+      transition: "0.2s",
+      background: colors.LIGHTER_GREY(1.0),
+    },    
+    textDecoration: "none",
+    color: "inherit",
+  },
+  iconWrapper: {
+    marginRight: 10,
+  },
+  paperIcon: {
+    [`@media only screen and (max-width: 400px)`]: {
+      display: "none",
+    }
+  },
+  paperDetails: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  paperTitle: {
+    fontSize: 16,
+    fontWeight: 500,
+    color: colors.BLACK(0.9),
+  },
+  paperAuthors: {
+    color: colors.BLACK(0.6),
+    fontSize: 13,
+    marginTop: 3,
+  },
+  paperHubs: {
+    display: "flex",
+    gap: 5,
+    marginTop: 10,
+    flexWrap: "wrap",
+  },
+  ctaLink: {
+    textDecoration: "none",
+    marginTop: 20,
+  },
+  ctaButton: {
+    padding: "8px 16px",
+    fontSize: 14,
+    fontWeight: 600,
+    backgroundColor: colors.NEW_BLUE(),
+    color: "#ffffff",
+    ":hover": {
+      backgroundColor: colors.NEW_BLUE(0.8),
+    },
   },
 });
 

@@ -5,8 +5,10 @@ import {
   faClock, 
   faChevronDown, 
   faChevronUp, 
-  faAngleRight // Added faAngleRight
-} from '@fortawesome/pro-light-svg-icons';
+  faAngleRight // Replaced faChevronRight with faAngleRight
+} from '@fortawesome/pro-light-svg-icons'; // Ensure you have access to this icon set
+// If you don't have pro icons, you can use free-solid icons instead:
+// import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { formatDateStandard } from '~/config/utils/dates';
 import { getUrlToUniDoc } from '~/config/utils/routing';
 import CommentAvatars from '~/components/Comment/CommentAvatars';
@@ -44,6 +46,19 @@ const bountyTypeLabels = {
   REVIEW: "Peer Review",
   ANSWER: "Answer",
   GENERIC_COMMENT: "Comment", // Fixed typo
+};
+
+// Helper function to format authors
+const formatAuthors = (authors: Array<{ firstName: string; lastName: string }>): string => {
+  const numAuthors = authors.length;
+  if (numAuthors <= 2) {
+    return authors.map(a => `${a.firstName.charAt(0)}. ${a.lastName}`).join(', ');
+  } else {
+    const firstAuthor = `${authors[0].firstName.charAt(0)}. ${authors[0].lastName}`;
+    const lastAuthor = `${authors[numAuthors -1].firstName.charAt(0)}. ${authors[numAuthors -1].lastName}`;
+    const middleCount = numAuthors -2;
+    return `${firstAuthor}, +${middleCount}, ${lastAuthor}`;
+  }
 };
 
 const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
@@ -109,9 +124,23 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         </div>
       </div>
       
-      {/* Title Section */}
-      <h3 className={css(styles.title)}>{unifiedDocument.document.title}</h3>
-      
+      {/* Paper Details Section - Moved above metaInfo and removed duplicate title */}
+      <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
+        <div className={css(styles.iconWrapper, styles.paperIcon)}>
+          <FontAwesomeIcon icon={faAngleRight} /> {/* Replaced faChevronRight with faAngleRight */}
+        </div>
+        <div className={css(styles.paperDetails)}>
+          <div className={css(styles.paperTitle)}>
+            {unifiedDocument.document.title}
+          </div>
+          <div className={css(styles.paperAuthors)}>
+            {unifiedDocument.authors && unifiedDocument.authors.length > 0 && (
+              formatAuthors(unifiedDocument.authors)
+            )}
+          </div>
+        </div>
+      </ALink>
+
       {/* Meta Information */}
       <div className={css(styles.metaInfo)}>
         <div className={css(styles.metaItem)}>
@@ -155,36 +184,6 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         )}
       </div>
       
-      {/* Paper Details Section */}
-      <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
-        <div className={css(styles.iconWrapper, styles.paperIcon)}>
-          <FontAwesomeIcon icon={faAngleRight} /> {/* Replaced faChevronRight with faAngleRight */}
-        </div>
-        <div className={css(styles.paperDetails)}>
-          <div className={css(styles.paperTitle)}>
-            {unifiedDocument.document.title}
-          </div>
-          <div className={css(styles.paperAuthors)}>
-            {unifiedDocument.authors && unifiedDocument.authors.length > 0 && (
-              <div className={css(styles.condensedAuthorList)}>
-                {unifiedDocument.authors.map((author, index) => (
-                  <span key={index}>
-                    {author.firstName} {author.lastName}{index < unifiedDocument.authors.length - 1 ? ', ' : ''}
-                  </span>
-                ))}
-              </div>
-            )}
-            {hubs.length > 0 && (
-              <div className={css(styles.paperHubs)}>
-                {hubs.map((hub) => (
-                  <HubTag overrideStyle={styles.hubTag} hub={hub} key={hub.id} />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </ALink>
-
       {/* Call-to-Action Button */}
       <ALink href={`${url}/bounties`} className={css(styles.ctaLink)}>
         <Button customButtonStyle={styles.ctaButton}>Answer Bounty</Button>
@@ -253,12 +252,55 @@ const styles = StyleSheet.create({
   badgeOverride: {
     marginRight: 0,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 600,
+  paperWrapper: {
+    display: "flex",
+    cursor: "pointer",
+    alignItems: "center",
+    marginTop: 10,
+    background: "rgba(250, 250, 252, 1)",
+    borderRadius: 2,
+    padding: 20,
+    ":hover": {
+      transition: "0.2s",
+      background: colors.LIGHTER_GREY(1.0),
+    },    
+    textDecoration: "none",
+    color: "inherit",
+  },
+  iconWrapper: {
+    marginRight: 10,
+  },
+  paperIcon: {
+    [`@media only screen and (max-width: 400px)`]: {
+      display: "none",
+    }
+  },
+  paperDetails: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  paperTitle: {
+    fontSize: 16,
+    fontWeight: 500,
     color: colors.BLACK(0.9),
-    marginBottom: 16,
-    lineHeight: 1.3,
+  },
+  paperAuthors: {
+    color: colors.BLACK(0.6),
+    fontSize: 13,
+    marginTop: 3,
+    display: "flex",
+    flexDirection: "column",
+  },
+  condensedAuthorList: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 4,
+  },
+  paperHubs: {
+    display: "flex",
+    gap: 5,
+    marginTop: 10,
+    flexWrap: "wrap",
   },
   metaInfo: {
     display: "flex",
@@ -310,56 +352,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 1.5,
     color: colors.BLACK(0.8),
-  },
-  paperWrapper: {
-    display: "flex",
-    cursor: "pointer",
-    alignItems: "center",
-    marginTop: 10,
-    background: "rgba(250, 250, 252, 1)",
-    borderRadius: 2,
-    padding: 20,
-    ":hover": {
-      transition: "0.2s",
-      background: colors.LIGHTER_GREY(1.0),
-    },    
-    textDecoration: "none",
-    color: "inherit",
-  },
-  iconWrapper: {
-    marginRight: 10,
-  },
-  paperIcon: {
-    [`@media only screen and (max-width: 400px)`]: {
-      display: "none",
-    }
-  },
-  paperDetails: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  paperTitle: {
-    fontSize: 16,
-    fontWeight: 500,
-    color: colors.BLACK(0.9),
-  },
-  paperAuthors: {
-    color: colors.BLACK(0.6),
-    fontSize: 13,
-    marginTop: 3,
-    display: "flex",
-    flexDirection: "column",
-  },
-  condensedAuthorList: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 4,
-  },
-  paperHubs: {
-    display: "flex",
-    gap: 5,
-    marginTop: 10,
-    flexWrap: "wrap",
   },
   ctaLink: {
     textDecoration: "none",
