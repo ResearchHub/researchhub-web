@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { parseUnifiedDocument, parseUser } from "~/config/types/root_types";
 import { CloseIcon } from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight, faAngleDown, faChevronDown, faChevronUp } from "@fortawesome/pro-light-svg-icons"; // Added faChevronDown and faChevronUp
+import { faAngleRight, faAngleDown, faChevronDown, faChevronUp, faChevronRight } from "@fortawesome/pro-light-svg-icons"; // Added faChevronDown and faChevronUp
 import colors from "~/config/themes/colors";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 import { parseHub, Hub } from "~/config/types/hub";
