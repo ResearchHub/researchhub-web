@@ -5,10 +5,7 @@ import {
   faClock, 
   faChevronDown, 
   faChevronUp, 
-  faAngleRight // Replaced faChevronRight with faAngleRight
 } from '@fortawesome/pro-light-svg-icons'; // Ensure you have access to this icon set
-// If you don't have pro icons, you can use free-solid icons instead:
-// import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { formatDateStandard } from '~/config/utils/dates';
 import { getUrlToUniDoc } from '~/config/utils/routing';
 import CommentAvatars from '~/components/Comment/CommentAvatars';
@@ -126,9 +123,6 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
       
       {/* Paper Details Section - Moved above metaInfo and removed duplicate title */}
       <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
-        <div className={css(styles.iconWrapper, styles.paperIcon)}>
-          <FontAwesomeIcon icon={faAngleRight} /> {/* Replaced faChevronRight with faAngleRight */}
-        </div>
         <div className={css(styles.paperDetails)}>
           <div className={css(styles.paperTitle)}>
             {unifiedDocument.document.title}
@@ -257,18 +251,13 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     alignItems: "center",
     marginTop: 10,
-    background: "rgba(250, 250, 252, 1)",
+    background: "rgba(250, 250, 252, 0.4)",
     borderRadius: 2,
     padding: 20,
     ":hover": {
       transition: "0.2s",
       background: colors.LIGHTER_GREY(1.0),
     },    
-    textDecoration: "none",
-    color: "inherit",
-  },
-  iconWrapper: {
-    marginRight: 10,
   },
   paperIcon: {
     [`@media only screen and (max-width: 400px)`]: {
