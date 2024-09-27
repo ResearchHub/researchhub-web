@@ -49,14 +49,14 @@ const bountyTypeLabels = {
 const formatAuthors = (authors: Array<{ firstName: string; lastName: string }>): string => {
     const numAuthors = authors.length;
     if (numAuthors <= 3) {
-      const remainingAuthors = authors.slice(1); // Remove the first author (grant giver)
+      const remainingAuthors = authors.slice(0); // Remove the first author (grant giver)
       // Map the remaining authors to "F. LastName" format
       return remainingAuthors
         .map(a => `${a.firstName.charAt(0)}. ${a.lastName}`)
         .join(', ');
     } else {
       // More than 3 authors: remove the first author (grant giver)
-      const remainingAuthors = authors.slice(1);
+      const remainingAuthors = authors.slice(0);
       const numRemaining = remainingAuthors.length;
       const firstAuthor = `${remainingAuthors[0].firstName.charAt(0)}. ${remainingAuthors[0].lastName}`;
       const lastAuthor = `${remainingAuthors[numRemaining - 1].firstName.charAt(0)}. ${remainingAuthors[numRemaining - 1].lastName}`;
