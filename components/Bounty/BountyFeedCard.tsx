@@ -57,7 +57,7 @@ const formatAuthors = (authors: Array<{ firstName: string; lastName: string }>):
       return `${firstAuthor}, +${middleCount} authors, ${lastAuthor}`;
     }
   };
-  
+
 
 const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
   const { createdBy, unifiedDocument, expirationDate, amount, bountyType, content, hubs } = bounty;
@@ -111,9 +111,9 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
               {createdBy?.authorProfile?.isVerified && (
                 <VerifiedBadge height={16} width={16} style={{ marginLeft: 4 }} />
               )}
-            <span className={css(styles.openedGrant)}>
-            opened a {badge} grant
-            </span>
+              <span className={css(styles.openedGrant)}>
+                opened a {badge} grant
+              </span>
             </div>
             <div className={css(styles.bountyType)}>
               {bountyTypeLabels[bountyType]}
@@ -131,8 +131,10 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
       
       {/* Paper Details Section - Moved above metaInfo and removed duplicate title */}
       <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
-      {/* <div className={css(styles.paperAuthors)}><strong>Peer review</strong> on</div> */}
-      <span className={css(styles.paperLabel)}>for <strong>{bountyTypeLabels[bountyType] || "expertise"}</strong> on:</span>
+        {/* Use the new paperLabel class here */}
+        <span className={css(styles.paperLabel)}>
+          for <strong>{bountyTypeLabels[bountyType] || "expertise"}</strong> on:
+        </span>
         <div className={css(styles.paperDetails)}>
           <div className={css(styles.paperTitle)}>
             {unifiedDocument.document.title}
@@ -251,11 +253,14 @@ const styles = StyleSheet.create({
   paperWrapper: {
     display: "flex",
     cursor: "pointer",
-    alignItems: "center",
+    alignItems: "flex-start", // Changed from "center" to "flex-start" for better alignment
     marginTop: 2,
     background: "rgba(250, 250, 252, 0.4)",
     borderRadius: 2,
-    padding: 20,
+    paddingTop: 17, // Reduced from 20 to move content up by 3 pixels
+    paddingRight: 20,
+    paddingBottom: 20,
+    paddingLeft: 20,
     ":hover": {
       transition: "0.2s",
       background: colors.LIGHTER_GREY(1.0),
@@ -269,18 +274,21 @@ const styles = StyleSheet.create({
   paperDetails: {
     display: "flex",
     flexDirection: "column",
+    marginLeft: 10, // Optional: add some spacing between label and details
   },
   paperTitle: {
     fontSize: 20,
     fontWeight: 500,
     color: colors.BLACK(0.9),
+    marginTop: 0, // Remove top margin to move up
   },
   paperLabel: {
     color: colors.BLACK(0.6),
     fontSize: 14,
-    marginTop: -6,
+    marginTop: -3, // Adjusted from -6 to -3 for smoother alignment
     marginBottom: 3,
-    display: "inline", // or "inline-block" if you need to apply width/height
+    display: "inline",
+    whiteSpace: "nowrap", // Prevents text from wrapping to multiple lines
   },
   paperAuthors: {
     color: colors.BLACK(0.6),
