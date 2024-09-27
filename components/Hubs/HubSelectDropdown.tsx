@@ -98,7 +98,7 @@ const HubSelectDropdown = ({
 
   const handleHubInputChange = async (value) => {
     if (value.length >= 3) {
-      const suggestions = await fetchHubSuggestions(value);
+      const suggestions = await fetchHubSuggestions({ query: value });
       setSuggestedHubs(suggestions);
     }
   };
