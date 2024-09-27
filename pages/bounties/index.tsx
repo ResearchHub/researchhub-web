@@ -1,39 +1,26 @@
+// index.tsx
 import { NextPage } from "next";
-import { useRouter } from "next/router";
 import { css, StyleSheet } from "aphrodite";
-import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI";
+import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI"; // Ensure correct import path
 import { useEffect, useState } from "react";
-import { getPlainText } from "~/components/Comment/lib/quill";
-import { parseAuthorProfile, parseUnifiedDocument, parseUser } from "~/config/types/root_types";
-import Bounty, { formatBountyAmount } from "~/config/types/bounty";
-import UserTooltip from "~/components/Tooltips/User/UserTooltip";
-import ALink from "~/components/ALink";
-import VerifiedBadge from "~/components/Verification/VerifiedBadge";
-import { formatDateStandard, timeSince } from "~/config/utils/dates";
-import { getUrlToUniDoc } from "~/config/utils/routing";
-import { truncateText } from "~/config/utils/string";
-import CommentAvatars from "~/components/Comment/CommentAvatars";
-import CommentReadOnly from "~/components/Comment/CommentReadOnly";
-import { CloseIcon, PaperIcon } from "~/config/themes/icons";
-import { CondensedAuthorList } from "~/components/Author/AuthorList";
+import { parseUnifiedDocument, parseUser } from "~/config/types/root_types";
+import { CloseIcon } from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight } from "@fortawesome/pro-light-svg-icons";
-import Button from "~/components/Form/Button";
+import {faAngleRight, faAngleDown} from "@fortawesome/pro-light-svg-icons";
 import colors from "~/config/themes/colors";
-import ContentBadge from "~/components/ContentBadge";
-import numeral from "numeral";
-import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
-import { faAngleDown } from "@fortawesome/pro-solid-svg-icons";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
-import { Hub, parseHub } from "~/config/types/hub";
-import HubTag from "~/components/Hubs/HubTag";
+import { parseHub, Hub } from "~/config/types/hub";
 import LoadMore from "~/components/shared/LoadMore";
-import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
+import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { breakpoints } from "~/config/themes/screen";
 import { useSelector } from "react-redux";
 import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
+import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
+import BountyFeedCard from "~/components/Bounty/BountyFeedCard";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
+import Button from "~/components/Form/Button";
 
 type SimpleBounty = {
   id: string;
@@ -42,191 +29,91 @@ type SimpleBounty = {
   createdBy: any;
   expirationDate: string;
   createdDate: string;
-  unifiedDocument: any;
+  unifiedDocument: {
+    document: {
+      title: string;
+      // Add other necessary fields if required
+    };
+    authors: Array<{ firstName: string; lastName: string }>;
+    // Add other necessary fields if required
+  };
   hubs: Hub[];
-  bountyType: "REVIEW" | "GENERIC_COMMMENT" | "ANSWER";
-}
+  bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER"; // Fixed typo
+};
 
 const parseSimpleBounty = (raw: any): SimpleBounty => {
   return {
     id: raw.id,
-    amount: raw.total_amount,
+    amount: Number(raw.total_amount), // Ensure amount is a number
     content: raw.item.comment_content_json,
-    bountyType: raw.bounty_type,
+    bountyType:
+      raw.bounty_type === "GENERIC_COMMMENT"
+        ? "GENERIC_COMMENT"
+        : raw.bounty_type, // Fix typo
     createdDate: raw.created_date,
     createdBy: parseUser(raw.created_by),
     expirationDate: raw.expiration_date,
     unifiedDocument: parseUnifiedDocument(raw.unified_document),
-    hubs: (raw.unified_document?.hubs || []).map(parseHub).filter((hub:Hub) => hub.isUsedForRep === true),
-  }
-}
-
-const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
-
-  const { createdBy, unifiedDocument, expirationDate, createdDate } = bounty;
-  const url = getUrlToUniDoc(unifiedDocument);
-  return (
-
-    <div className={css(styles.bounty)}>
-
-
-      <div className={css(styles.bountyHeader)}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            columnGap: "3px",
-            flexWrap: "wrap",
-          }}
-        >
-          <CommentAvatars size={25} people={[createdBy]} withTooltip={true} />
-          <UserTooltip
-            createdBy={createdBy}
-            // overrideTargetStyle={styles.userTooltip}
-            targetContent={
-              <ALink
-                href={`/author/${createdBy?.authorProfile?.id}`}
-                key={`/author/${createdBy?.authorProfile?.id}`}
-              >
-                {createdBy?.authorProfile?.firstName}{" "}
-                {createdBy?.authorProfile?.lastName}
-              </ALink>
-            }
-          />
-          {createdBy?.authorProfile?.isVerified && (
-            <VerifiedBadge height={18} width={18} />
-          )}
-          <div className={css(styles.action)}>opened a bounty</div>
-        </div>
-      </div>
-
-      <div className={css(styles.lineItems)}>        
-          <div className={css(styles.lineItem)} style={{marginBottom: -2}}>
-            <div className={css(styles.lineItemLabel)}>
-              Amount:
-            </div>
-            <div className={css(styles.lineItemValue)}>
-
-
-              <ContentBadge
-                badgeOverride={styles.badge}
-                contentType="bounty"
-                bountyAmount={bounty.amount}
-                label={
-                  <div style={{ display: "flex" }}>
-                    <div style={{ flex: 1 }}>
-                      {numeral(
-                        formatBountyAmount({
-                          amount: bounty.amount,
-                        })
-                      ).format("0,0a")}{" "}
-                      RSC
-                    </div>
-                  </div>
-                }
-              />
-            </div>
-          </div>
-        {/* <div className={css(styles.lineItem)}>
-          <div className={css(styles.lineItemLabel)}>
-            Bounty type:
-          </div>
-          <div className={css(styles.lineItemValue)}>
-            {bounty.bountyType === "REVIEW" ? "Peer Review" : bounty.bountyType === "ANSWER" ? "Answer to question" : "Other"}
-          </div>
-        </div> */}
-        <div className={css(styles.lineItem)}>
-          <div className={css(styles.lineItemLabel)}>
-            Expiration date:
-          </div>
-          <div className={css(styles.lineItemValue)}>
-            {formatDateStandard(bounty.expirationDate)}
-          </div>
-        </div>
-        <div className={css(styles.lineItem, styles.detailsLineItem)}>
-          <div className={css(styles.lineItemLabel)}>
-            Details:
-          </div>
-          {bounty.content?.ops &&
-            <div className={css(styles.lineItemValue)} style={{marginTop: 5,}}>
-              <CommentReadOnly
-                content={bounty.content}
-                previewMaxImageLength={1}
-                previewMaxCharLength={400}
-              />
-            </div>
-          }
-        </div>
-      </div>
-
-      <ALink href={url + "/bounties"}>
-        <div className={css(styles.paperWrapper)}>
-          <div className={css(styles.iconWrapper, styles.paperIcon)}>
-            <PaperIcon color="rgba(170, 168, 180, 1)" height={24} width={24} onClick={undefined} />
-          </div>
-          <div className={css(styles.paperDetails)}>
-            <div className={css(styles.paperTitle)}>
-              {unifiedDocument?.document?.title}
-            </div>
-            <div className={css(styles.paperAuthors)}>
-              {unifiedDocument.authors &&
-                <CondensedAuthorList authorNames={unifiedDocument.authors.map(a => a.firstName + " " + a.lastName)} allowAuthorNameToIncludeHtml={false} />
-              }
-              {bounty?.hubs && bounty.hubs.length > 0 && (
-                <div className={css(styles.paperHubs)}>
-                  {bounty.hubs.map((hub) => (
-                    <HubTag overrideStyle={styles.hubTag} hub={hub} key={hub.id} />
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </ALink>
-      <ALink href={url + "/bounties"}>
-        <div className={css(styles.answerCTA)}>
-          <Button size="small" >Answer Bounty</Button>
-        </div>
-      </ALink>
-    </div>
-
-  )
-}
-
+    hubs: (raw.unified_document?.hubs || [])
+      .map(parseHub)
+      .filter((hub: Hub) => hub.isUsedForRep === true),
+  };
+};
 
 const BountiesPage: NextPage = () => {
   const [currentBounties, setCurrentBounties] = useState<SimpleBounty[]>([]);
   const [openInfoSections, setOpenInfoSections] = useState<string[]>([]);
-  const [nextPageCursor, setNextPageCursor] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [nextPageCursor, setNextPageCursor] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const currentUser = useCurrentUser()
+  const currentUser = useCurrentUser();
   const auth = useSelector((state: any) => state.auth);
   const {
     isDismissed: isVerificationBannerDismissed,
     dismissFeature: dismissVerificationBanner,
-    dismissStatus: verificationBannerDismissStatus
-  } = useDismissableFeature({ auth, featureName: "verification-banner-in-bounties-page" })
-
+    dismissStatus: verificationBannerDismissStatus,
+  } = useDismissableFeature({
+    auth,
+    featureName: "verification-banner-in-bounties-page",
+  });
 
   useEffect(() => {
-    (async () => {
-      const bounties: any = await fetchBounties({ personalized: true, pageCursor: nextPageCursor });
-
-      setNextPageCursor(bounties.next);
-      const parsedBounties = (bounties?.results || []).map((bounty) => {
-        try {
-          return parseSimpleBounty(bounty)
-        }
-        catch (e) {
-          console.error('error parsing bounty', bounty, e);
-        }
-      }).filter((bounty) => bounty !== undefined);
-
-      setCurrentBounties([...currentBounties, ...parsedBounties]);
-      setIsLoading(false);
-    })();
+    fetchBountiesData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
+
+  const fetchBountiesData = async () => {
+    try {
+      setIsLoading(true);
+      const response: any = await fetchBounties({
+        personalized: true,
+        pageCursor: nextPageCursor,
+      });
+
+      // Assuming response has 'next' and 'results'
+      setNextPageCursor(response.next);
+      const parsedBounties: SimpleBounty[] = (response.results || [])
+        .map((bounty: any) => {
+          try {
+            return parseSimpleBounty(bounty);
+          } catch (e) {
+            console.error("error parsing bounty", bounty, e);
+            return undefined;
+          }
+        })
+        .filter((bounty): bounty is SimpleBounty => bounty !== undefined);
+
+      if (currentPage === 1) {
+        setCurrentBounties(parsedBounties);
+      } else {
+        setCurrentBounties((prevBounties) => [...prevBounties, ...parsedBounties]);
+      }
+    } catch (error) {
+      console.error("Error fetching bounties:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const toggleInfoSection = (section: string) => {
     if (openInfoSections.includes(section)) {
@@ -236,64 +123,76 @@ const BountiesPage: NextPage = () => {
     }
   }
 
-  const showVerifyBanner = !currentUser?.isVerified && (verificationBannerDismissStatus === "checked" && !isVerificationBannerDismissed);
+  const showVerifyBanner =
+    !currentUser?.isVerified &&
+    verificationBannerDismissStatus === "checked" &&
+    !isVerificationBannerDismissed;
+
   return (
     <div className={css(styles.pageWrapper)}>
-
+      {/* Bounties Section */}
       <div className={css(styles.bountiesSection)}>
         <h1 className={css(styles.title)}>Bounties</h1>
-        <div className={css(styles.description)}>Earn ResearchCoin by completing research related bounties.</div>
+        <div className={css(styles.description)}>
+          Earn ResearchCoin by completing research-related bounties.
+        </div>
+
+        {/* Verification Banner */}
         {showVerifyBanner && (
           <div className={css(styles.verifyIdentityBanner)}>
             <VerifiedBadge height={32} width={32} />
-            Verify identity to see bounty recommendations relevant to your research interests.
+            Verify identity to see bounty recommendations relevant to your
+            research interests.
             <div className={css(styles.verifyActions)}>
-
-              {/* @ts-ignore */}
               <VerifyIdentityModal
-                // @ts-ignore legacy
                 wsUrl={WS_ROUTES.NOTIFICATIONS(currentUser?.id)}
-                // @ts-ignore legacy
                 wsAuth
               >
                 <Button isWhite>Verify</Button>
               </VerifyIdentityModal>
 
-
-              <CloseIcon overrideStyle={styles.closeBtn} onClick={() => dismissVerificationBanner()} color="white" height={20} width={20} />
+              <CloseIcon
+                overrideStyle={styles.closeBtn}
+                onClick={() => dismissVerificationBanner()}
+                color="white"
+                height={20}
+                width={20}
+              />
             </div>
           </div>
         )}
 
+        {/* Bounties List */}
         <div className={css(styles.bounties)}>
           {currentBounties.map((bounty) => (
-            <div className={css(styles.bountyWrapper)}>
-              <BountyCard key={bounty.id} bounty={bounty} />
+            <div className={css(styles.bountyWrapper)} key={bounty.id}>
+              <BountyFeedCard bounty={bounty} />
             </div>
           ))}
 
+          {/* Load More Button */}
           {nextPageCursor && (
             <LoadMore
               onClick={async () => {
-                setCurrentPage(currentPage + 1);
+                setCurrentPage((prevPage) => prevPage + 1);
                 setIsLoading(true);
               }}
               isLoading={isLoading}
-            />          
+            />
           )}
         </div>
-        
+
+        {/* Loading Placeholders */}
         {isLoading && (
           <div className={css(styles.placeholderWrapper)}>
-            {Array(10)
-              .fill(null)
-              .map(() => (
-                <LiveFeedCardPlaceholder color="#efefef" />
-              ))}
+            {Array.from({ length: 10 }).map((_, idx) => (
+              <LiveFeedCardPlaceholder key={idx} color="#efefef" />
+            ))}
           </div>
-        )}        
+        )}
       </div>
 
+      {/* Info Sidebar */}
       <div className={css(styles.info, styles.infoSection)}>
         <div className={css(styles.aboutRSC, styles.infoBlock)}>
           <div className={css(styles.infoLabel)}>
@@ -391,11 +290,9 @@ const BountiesPage: NextPage = () => {
         </div>
 
       </div>
-
-
     </div>
   );
-}
+};
 
 const styles = StyleSheet.create({
   pageWrapper: {
@@ -405,6 +302,10 @@ const styles = StyleSheet.create({
     paddingRight: 28,
     paddingLeft: 28,
     gap: 20,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      flexDirection: "column",
+      alignItems: "center",
+    },
   },
   placeholderWrapper: {
     marginTop: 20,
@@ -412,38 +313,35 @@ const styles = StyleSheet.create({
   bountiesSection: {
     width: 800,
     margin: "0 auto",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      width: "100%",
+    },
   },
   bounties: {
     display: "flex",
     flexDirection: "column",
     gap: 20,
   },
-  hubTag: {
-    cursor: "pointer",
-  },
-  badge: {
-    borderRadius: 25,
-    fontSize: 12,
-    marginLeft: -8,
-    lineHeight: "16px",
-    padding: "3px 10px",
-    background: "white",
+  bountyWrapper: {
+    ":first-child": {
+      marginTop: 25,
+    },
   },
   verifyIdentityBanner: {
     display: "flex",
     alignItems: "center",
     gap: 10,
-    padding: 10,
-    // border: "1px solid #ccc",
+    padding: "20px 10px",
     borderRadius: 5,
-    marginTop: 10,
+    marginTop: 20,
+    marginBottom: 20,
     color: "white",
     position: "relative",
     background: "#6165D7",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
       textAlign: "center",
-    }
+    },
   },
   verifyActions: {
     marginLeft: "auto",
@@ -454,73 +352,30 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "center",
       marginLeft: 0,
-    }
+    },
   },
   closeBtn: {
     ":hover": {
       background: "rgba(255, 255, 255, 0.3)",
       cursor: "pointer",
     },
-
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       position: "absolute",
       right: 10,
       top: 10,
-      // display: "none",
-    }    
-  },  
+    },
+  },
   title: {
     fontWeight: 500,
     textOverflow: "ellipsis",
     marginBottom: 15,
     textTransform: "capitalize",
   },
-  answerCTA: {
-    marginTop: 20,
-  },
   description: {
     fontSize: 15,
     marginBottom: 20,
     maxWidth: 790,
     lineHeight: "22px",
-  },
-  bounty: {
-    border: `1px solid ${colors.LIGHTER_GREY()}`,
-    borderRadius: "4px",
-    padding: 16,
-    
-  },
-  bountyWrapper: {
-    ":first-child": {
-      marginTop: 25,
-    },
-  },
-  bountyHeader: {
-    marginBottom: 10,
-    fontSize: 14,
-  },
-  action: {
-    color: colors.BLACK(0.6),
-  },
-  lineItems: {
-    rowGap: 6,
-    display: "flex",
-    flexDirection: "column",
-  },
-  lineItem: {
-    display: "flex",
-    fontSize: 14,
-    alignItems: "center",
-  },
-  lineItemLabel: {
-    color: colors.BLACK(0.7),
-    width: 120,
-  },
-  lineItemValue: {
-
-  },
-  detailsLineItem: {
-    display: "block",
   },
   info: {
     maxWidth: 320,
@@ -601,7 +456,9 @@ const styles = StyleSheet.create({
     ":hover": {
       transition: "0.2s",
       background: colors.LIGHTER_GREY(1.0),
-    },    
+    },
+    textDecoration: "none",
+    color: "inherit",
   },
   iconWrapper: {
     marginRight: 10,
@@ -609,14 +466,16 @@ const styles = StyleSheet.create({
   paperIcon: {
     [`@media only screen and (max-width: 400px)`]: {
       display: "none",
-    }
+    },
   },
   paperDetails: {
-    
+    display: "flex",
+    flexDirection: "column",
   },
   paperTitle: {
     fontSize: 16,
-
+    fontWeight: 500,
+    color: colors.BLACK(0.9),
   },
   paperAuthors: {
     color: colors.BLACK(0.6),
@@ -629,8 +488,20 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexWrap: "wrap",
   },
+  ctaLink: {
+    textDecoration: "none",
+    marginTop: 20,
+  },
+  ctaButton: {
+    padding: "8px 16px",
+    fontSize: 14,
+    fontWeight: 600,
+    backgroundColor: colors.NEW_BLUE(),
+    color: "#ffffff",
+    ":hover": {
+      backgroundColor: colors.NEW_BLUE(0.8),
+    },
+  },
+});
 
-
-})
-
-export default BountiesPage;  
+export default BountiesPage;
