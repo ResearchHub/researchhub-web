@@ -94,7 +94,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         <div className={css(styles.userInfo)}>
           <CommentAvatars size={40} people={[createdBy]} withTooltip={true} />
           <div className={css(styles.userDetails)}>
-            <div className={css(styles.nameAndBounty)}>
+            <div className={css(styles.nameAndGrant)}>
               <UserTooltip
                 createdBy={createdBy}
                 targetContent={
@@ -110,8 +110,8 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
               {createdBy?.authorProfile?.isVerified && (
                 <VerifiedBadge height={16} width={16} style={{ marginLeft: 4 }} />
               )}
-              <span className={css(styles.openedBounty)}>
-                opened a {badge} bounty
+              <span className={css(styles.openedGrant)}>
+                opened a {badge} grant
               </span>
             </div>
             <div className={css(styles.bountyType)}>
@@ -180,7 +180,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
       
       {/* Call-to-Action Button */}
       <ALink href={`${url}/bounties`} className={css(styles.ctaLink)}>
-        <Button customButtonStyle={styles.ctaButton}>Answer Bounty</Button>
+        <Button customButtonStyle={styles.ctaButton}>Check it out</Button>
       </ALink>
     </div>
   );
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
   },
-  nameAndBounty: {
+  nameAndGrant: {
     display: "flex",
     alignItems: "center",
     flexWrap: "wrap",
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.9),
     textDecoration: "none",
   },
-  openedBounty: {
+  openedGrant: {
     fontSize: 14,
     color: colors.BLACK(0.6),
     marginLeft: 8,

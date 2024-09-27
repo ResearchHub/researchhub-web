@@ -141,8 +141,7 @@ const BountiesPage: NextPage = () => {
         {showVerifyBanner && (
           <div className={css(styles.verifyIdentityBanner)}>
             <VerifiedBadge height={32} width={32} />
-            Verify identity to see bounty recommendations relevant to your
-            research interests.
+            Become a verified researcher to get personalized grant opportunities.
             <div className={css(styles.verifyActions)}>
               <VerifyIdentityModal
                 wsUrl={WS_ROUTES.NOTIFICATIONS(currentUser?.id)}
@@ -165,7 +164,7 @@ const BountiesPage: NextPage = () => {
         {/* Bounties List */}
         <div className={css(styles.bounties)}>
           {currentBounties.map((bounty) => (
-            <div className={css(styles.bountyWrapper)} key={bounty.id}>
+            <div className={css(styles.grantWrapper)} key={bounty.id}>
               <BountyFeedCard bounty={bounty} />
             </div>
           ))}
@@ -200,21 +199,23 @@ const BountiesPage: NextPage = () => {
             About ResearchCoin
           </div>
           <div className={css(styles.aboutRSCContent)}>
-            ResearchCoin (RSC) is a digital currency that aims to incentivize individuals that contribute to the scientific ecosystem. Currently, anyone can earn RSC by sharing, curating, and peer reviewing scientific research on ResearchHub.
+          ResearchCoin (RSC) is a digital currency earned by sharing, curating, and reviewing research on ResearchHub, enabling anyone to contribute and earn within the global scientific community.
           </div>
         </div>
 
         <div className={css(styles.doingThingsWithRSC, styles.infoBlock)}>
           <div className={css(styles.infoLabel)}>Doing things with ResearchCoin</div>
           <div className={css(styles.collapsable)}>
-            <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("create-bounty")}>
+            <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("create-grant")}>
               <div className={css(styles.collapsableHeaderTitle)}>
-                <div>Create a bounty</div>
-                <div>{openInfoSections.includes("create-bounty") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
+                <div>Create a grant</div>
+                <div>{openInfoSections.includes("create-grant") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
               </div>
             </div>
-            <div className={css(styles.collapsableContent, openInfoSections.includes("create-bounty") && styles.collapsableContentOpen)}>
-              <div>RSC empowers the Grant system used on ResearchHub, connecting researchers with tailored opportunities specific to their quantifiable expertise. Users can create bounties to engage expert researchers for specific tasks, from processing datasets to conducting literature reviews or conducting paid peer review. This flexible system facilitates targeted collaborations, enabling efficient knowledge exchange and task completion within the scientific community.</div>
+            <div className={css(styles.collapsableContent, openInfoSections.includes("create-grant") && styles.collapsableContentOpen)}>
+              <div>
+              RSC drives ResearchHub's Grant system, linking researchers to opportunities based on their expertise. Users create bounties for tasks like data analysis, literature reviews, or paid peer review, enabling targeted collaboration and efficient knowledge sharing.
+              </div>
             </div>             
           </div>
           <div className={css(styles.collapsable)}>
@@ -225,7 +226,9 @@ const BountiesPage: NextPage = () => {
               </div>
             </div>
             <div className={css(styles.collapsableContent, openInfoSections.includes("reward-contributions") && styles.collapsableContentOpen)}>
-              <div>RSC serves as the underlying incentive layer for the ResearchHub ecosystem, providing targeted incentives for individual actions (e.g. peer reviews) and broader research goals (e.g. increasing reproducibility). Importantly, the reward algorithm is governed entirely by the community of researchers. This bottom-up approach ensures that those with the most relevant expertise—the researchers themselves—determine what should be incentivized in their fields.</div>
+              <div>
+              RSC is the incentive layer of the ResearchHub ecosystem, rewarding actions like peer reviews and advancing research goals like reproducibility. The community of researchers governs the reward algorithm, ensuring incentives are aligned with their expertise and priorities.
+              </div>
             </div>              
           </div>
           <div className={css(styles.collapsable)}>
@@ -236,7 +239,9 @@ const BountiesPage: NextPage = () => {
               </div>
             </div>
             <div className={css(styles.collapsableContent, openInfoSections.includes("fund-open-science") && styles.collapsableContentOpen)}>
-              <div>RSC enables the ResearchHub community to participate in scientific funding. By leveraging preregistrations (i.e. open access grant applications), we streamline the process of proposing and funding open research projects. This approach incentivizes frequent updates, reduces administrative overhead, and promotes transparency—ultimately fostering more reproducible and collaborative science.</div>
+              <div>
+              RSC enables community-driven scientific funding through open-access preregistrations, streamlining proposals and funding for research projects. This approach encourages updates, reduces admin overhead, and promotes transparency, fostering more reproducible and collaborative science.
+              </div>
             </div>
           </div>          
         </div>
@@ -251,18 +256,22 @@ const BountiesPage: NextPage = () => {
               </div>
             </div>
             <div className={css(styles.collapsableContent, openInfoSections.includes("peer-review") && styles.collapsableContentOpen)}>
-              <div>Researchers can earn RSC by peer reviewing preprints on ResearchHub. Once you verify your identity, we will surface peer review opportunities to you here.</div>
+              <div>
+              Researchers can earn RSC by peer reviewing preprints on ResearchHub. Once you verify your identity and import your publications, we will surface peer review opportunities for you here.
+              </div>
             </div>            
           </div>
           <div className={css(styles.collapsable)}>
-            <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("answer-bounty")}>
+            <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("earn-grant")}>
               <div className={css(styles.collapsableHeaderTitle)}>
-                <div>Answer a bounty</div>
-                <div>{openInfoSections.includes("answer-bounty") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
+                <div>Earn a grant</div>
+                <div>{openInfoSections.includes("earn-grant") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
               </div>
             </div>
-            <div className={css(styles.collapsableContent, openInfoSections.includes("answer-bounty") && styles.collapsableContentOpen)}>
-              <div>Researchers can earn RSC by completing bounties on ResearchHub.These tasks range from peer-reviewing preprints from platforms like bioRxiv and arXiv, to providing specialized research troubleshooting and data processing. This flexible system allows researchers to monetize their expertise, offering valuable assistance to bounty creators while receiving fair compensation.</div>
+            <div className={css(styles.collapsableContent, openInfoSections.includes("earn-grant") && styles.collapsableContentOpen)}>
+              <div>
+              Researchers earn RSC by completing grants on ResearchHub, from peer-reviewing preprints to troubleshooting and data processing. This system lets researchers monetize their expertise while providing valuable assistance to grant creators.
+              </div>
             </div>
           </div>
           <div className={css(styles.collapsable)}>
@@ -273,7 +282,9 @@ const BountiesPage: NextPage = () => {
               </div>
             </div>
             <div className={css(styles.collapsableContent, openInfoSections.includes("reproducible") && styles.collapsableContentOpen)}>
-              <div>Researchers can earn RSC by completing bounties on ResearchHub.These tasks range from peer-reviewing preprints from platforms like bioRxiv and arXiv, to providing specialized research troubleshooting and data processing. This flexible system allows researchers to monetize their expertise, offering valuable assistance to bounty creators while receiving fair compensation.</div>
+              <div>
+              Researchers earn RSC by conducting and sharing reproducible research. This includes providing detailed methods, sharing data and code, and participating in replication studies. ResearchHub rewards these practices to promote transparency and reliability in science.
+              </div>
             </div>            
           </div>
           <div className={css(styles.collapsable)}>
@@ -284,7 +295,9 @@ const BountiesPage: NextPage = () => {
               </div>
             </div>
             <div className={css(styles.collapsableContent, openInfoSections.includes("upvotes") && styles.collapsableContentOpen)}>
-              <div>Researchers also earn RSC by contributing to open scientific discourse on ResearchHub, by receiving upvotes on their comments, posts, peer reviews, and papers. We recognize that scientific progress often stems from informal exchanges and critical discussions. We want to incentivize users to have these conversations in the open, as we believe this leads to a more innovative and dynamic research ecosystem.</div>
+              <div>
+              Researchers earn RSC by contributing to scientific discourse on ResearchHub, gaining upvotes on comments, posts, reviews, and papers. By incentivizing open discussions, we aim to foster a more innovative and dynamic research ecosystem.
+              </div>
             </div>                        
           </div>
         </div>
@@ -322,7 +335,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 20,
   },
-  bountyWrapper: {
+  grantWrapper: {
     ":first-child": {
       marginTop: 25,
     },
