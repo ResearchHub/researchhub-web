@@ -11,6 +11,7 @@ type HubEditorCreateArgs = {
 
 export function hubEditorCreate({
   editorEmail,
+  editorType,
   onError,
   onSuccess,
   selectedHubID,
@@ -19,6 +20,7 @@ export function hubEditorCreate({
     API.HUB_NEW_EDITOR,
     API.POST_CONFIG({
       editor_email: editorEmail,
+      editor_type: editorType.value,
       selected_hub_id: selectedHubID,
     })
   )

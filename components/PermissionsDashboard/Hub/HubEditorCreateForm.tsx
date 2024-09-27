@@ -10,30 +10,35 @@ import { ReactElement, SyntheticEvent, useState } from "react";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import Button from "~/components/Form/Button";
 import FormInput from "~/components/Form/FormInput";
+import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import HubSelectDropdown from "~/components/Hubs/HubSelectDropdown";
 import { Hub } from "~/config/types/hub";
 
 type FormState = {
   selectedHub: any;
+  editorType: string;
   editorEmail: string | null;
 };
 
 const DEFAULT_FORM_STATE: FormState = {
   selectedHub: null,
+  editorType: "ASSISTANT_EDITOR",
   editorEmail: null,
 };
 
 export default function HubEditorCreateForm(): ReactElement<"div"> {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [formState, setFormState] = useState<FormState>(DEFAULT_FORM_STATE);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const { selectedHub, editorEmail } = formState;
+  const { selectedHub, editorEmail, editorType } = formState;
   const handleSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
     setIsSubmitting(true);
     hubEditorCreate({
       editorEmail: nullthrows(editorEmail, "Editor email cannot be empty"),
+      editorType: nullthrows(editorType, "Editor type cannot be empty"),
       onSuccess: (): void => {
         setFormState(DEFAULT_FORM_STATE);
         setIsSubmitting(false);
@@ -54,6 +59,12 @@ export default function HubEditorCreateForm(): ReactElement<"div"> {
     });
   };
 
+  const editorOptions = [
+    {value: "ASSISTANT_EDITOR", label: "Assistant Editor"},
+    {value: "ASSOCIATE_EDITOR", label: "Associate Editor"},
+    {value: "SENIOR_EDITOR", label: "Senior Editor"},
+  ];
+
   return (
     <div className={css(styles.formWrap)}>
       <div>
@@ -67,6 +78,18 @@ export default function HubEditorCreateForm(): ReactElement<"div"> {
           onChange={(hubs: Array<Hub>) => {
             setFormState({ ...formState, selectedHub: hubs[0] });
           }}
+        />
+        <FormSelect
+          id={"frequencySelect"}
+          options={editorOptions}
+          label="Editor Type"
+          value={formState.editorType}
+          containerStyle={formGenericStyles.container}
+          isSearchable={false}
+          onChange={(_id: ID, editorType: string): void =>
+            setFormState({ ...formState, editorType })
+          }
+          required
         />
         <FormInput
           containerStyle={formGenericStyles.container}
