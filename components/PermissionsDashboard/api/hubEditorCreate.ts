@@ -4,6 +4,7 @@ import API from "../../../config/api";
 
 type HubEditorCreateArgs = {
   editorEmail: any;
+  editorType: string;
   onError: (error: Error) => void;
   onSuccess: () => void;
   selectedHubID: NonNullable<ID>;
