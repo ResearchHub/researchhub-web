@@ -132,9 +132,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
       {/* Paper Details Section - Moved above metaInfo and removed duplicate title */}
       <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
       {/* <div className={css(styles.paperAuthors)}><strong>Peer review</strong> on</div> */}
-      <span className={css(styles.paperAuthors)}>
-      for <strong>{bountyTypeLabels[bountyType] || "expertise"}</strong> on:
-      </span>
+      <span className={css(styles.paperLabel)}>for <strong>{bountyTypeLabels[bountyType] || "expertise"}</strong> on:</span>
         <div className={css(styles.paperDetails)}>
           <div className={css(styles.paperTitle)}>
             {unifiedDocument.document.title}
@@ -276,6 +274,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 500,
     color: colors.BLACK(0.9),
+  },
+  paperLabel: {
+    color: colors.BLACK(0.6),
+    fontSize: 14,
+    marginTop: 3,
+    display: "inline", // or "inline-block" if you need to apply width/height
   },
   paperAuthors: {
     color: colors.BLACK(0.6),
