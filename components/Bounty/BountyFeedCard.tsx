@@ -63,7 +63,7 @@ const formatAuthors = (authors: Array<{ firstName: string; lastName: string }>):
       // Calculate the number of middle authors
       const middleCount = numRemaining - 2;
   
-      return `${firstAuthor}, +${middleCount}, ${lastAuthor}`;
+      return `${firstAuthor}, +${middleCount} others, ${lastAuthor}`;
     }
   };
   
@@ -279,13 +279,13 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   paperTitle: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 500,
     color: colors.BLACK(0.9),
   },
   paperAuthors: {
     color: colors.BLACK(0.6),
-    fontSize: 13,
+    fontSize: 14,
     marginTop: 3,
     display: "flex",
     flexDirection: "column",
