@@ -111,11 +111,9 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
               {createdBy?.authorProfile?.isVerified && (
                 <VerifiedBadge height={16} width={16} style={{ marginLeft: 4 }} />
               )}
-              <span className={css(styles.openedGrant)}>
-                opened a {badge} grant
-                <br />
-                for <strong>peer review</strong> on:
-              </span>
+            <span className={css(styles.openedGrant)}>
+            opened a {badge} grant
+            </span>
             </div>
             <div className={css(styles.bountyType)}>
               {bountyTypeLabels[bountyType]}
@@ -134,6 +132,10 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
       {/* Paper Details Section - Moved above metaInfo and removed duplicate title */}
       <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
       {/* <div className={css(styles.paperAuthors)}><strong>Peer review</strong> on</div> */}
+      <span className={css(styles.paperAuthors)}>
+      <br />
+      for <strong>{bountyTypeLabels[bountyType] || "expertise"}</strong> on:
+      </span>
         <div className={css(styles.paperDetails)}>
           <div className={css(styles.paperTitle)}>
             {unifiedDocument.document.title}
