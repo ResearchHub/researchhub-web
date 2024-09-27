@@ -132,9 +132,9 @@ const BountiesPage: NextPage = () => {
     <div className={css(styles.pageWrapper)}>
       {/* Bounties Section */}
       <div className={css(styles.bountiesSection)}>
-        <h1 className={css(styles.title)}>Bounties</h1>
+        <h1 className={css(styles.title)}>Grants</h1>
         <div className={css(styles.description)}>
-          Earn ResearchCoin by completing research-related bounties.
+          Earn ResearchCoin by completing grants.
         </div>
 
         {/* Verification Banner */}
@@ -214,7 +214,7 @@ const BountiesPage: NextPage = () => {
             </div>
             <div className={css(styles.collapsableContent, openInfoSections.includes("create-grant") && styles.collapsableContentOpen)}>
               <div>
-              RSC drives ResearchHub's Grant system, linking researchers to opportunities based on their expertise. Users create bounties for tasks like data analysis, literature reviews, or paid peer review, enabling targeted collaboration and efficient knowledge sharing.
+              RSC drives ResearchHub's Grant system, linking researchers to opportunities based on their expertise. Users create grants for tasks like data analysis, literature reviews, or paid peer review, enabling targeted collaboration and efficient knowledge sharing.
               </div>
             </div>             
           </div>

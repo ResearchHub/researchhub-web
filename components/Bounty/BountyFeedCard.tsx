@@ -47,16 +47,26 @@ const bountyTypeLabels = {
 
 // Helper function to format authors
 const formatAuthors = (authors: Array<{ firstName: string; lastName: string }>): string => {
-  const numAuthors = authors.length;
-  if (numAuthors <= 2) {
-    return authors.map(a => `${a.firstName.charAt(0)}. ${a.lastName}`).join(', ');
-  } else {
-    const firstAuthor = `${authors[0].firstName.charAt(0)}. ${authors[0].lastName}`;
-    const lastAuthor = `${authors[numAuthors -1].firstName.charAt(0)}. ${authors[numAuthors -1].lastName}`;
-    const middleCount = numAuthors -2;
-    return `${firstAuthor}, +${middleCount}, ${lastAuthor}`;
-  }
-};
+    const numAuthors = authors.length;
+    if (numAuthors <= 3) {
+      const remainingAuthors = authors.slice(1); // Remove the first author (grant giver)
+      // Map the remaining authors to "F. LastName" format
+      return remainingAuthors
+        .map(a => `${a.firstName.charAt(0)}. ${a.lastName}`)
+        .join(', ');
+    } else {
+      // More than 3 authors: remove the first author (grant giver)
+      const remainingAuthors = authors.slice(1);
+      const numRemaining = remainingAuthors.length;
+      const firstAuthor = `${remainingAuthors[0].firstName.charAt(0)}. ${remainingAuthors[0].lastName}`;
+      const lastAuthor = `${remainingAuthors[numRemaining - 1].firstName.charAt(0)}. ${remainingAuthors[numRemaining - 1].lastName}`;
+      // Calculate the number of middle authors
+      const middleCount = numRemaining - 2;
+  
+      return `${firstAuthor}, +${middleCount}, ${lastAuthor}`;
+    }
+  };
+  
 
 const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
   const { createdBy, unifiedDocument, expirationDate, amount, bountyType, content, hubs } = bounty;
