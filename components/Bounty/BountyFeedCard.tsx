@@ -133,7 +133,6 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
       <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
       {/* <div className={css(styles.paperAuthors)}><strong>Peer review</strong> on</div> */}
       <span className={css(styles.paperAuthors)}>
-      <br />
       for <strong>{bountyTypeLabels[bountyType] || "expertise"}</strong> on:
       </span>
         <div className={css(styles.paperDetails)}>
