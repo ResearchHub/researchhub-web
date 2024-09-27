@@ -80,7 +80,7 @@ export default function HubEditorCreateForm(): ReactElement<"div"> {
           }}
         />
         <FormSelect
-          id={"frequencySelect"}
+          id={"editorSelect"}
           options={editorOptions}
           label="Editor Type"
           value={formState.editorType}
