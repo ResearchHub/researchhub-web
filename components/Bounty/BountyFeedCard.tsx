@@ -54,7 +54,7 @@ const formatAuthors = (authors: Array<{ firstName: string; lastName: string }>):
       const firstAuthor = `${authors[0].firstName} ${authors[0].lastName}`;
       const lastAuthor = `${authors[numAuthors - 1].firstName} ${authors[numAuthors - 1].lastName}`;
       const middleCount = numAuthors - 2;
-      return `${firstAuthor}, +${middleCount} supporting authors, ${lastAuthor}`;
+      return `${firstAuthor}, +${middleCount} authors, ${lastAuthor}`;
     }
   };
   
@@ -131,6 +131,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
       
       {/* Paper Details Section - Moved above metaInfo and removed duplicate title */}
       <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
+      <div className={css(styles.detailsHeader)}>Peer review on</div>
         <div className={css(styles.paperDetails)}>
           <div className={css(styles.paperTitle)}>
             {unifiedDocument.document.title}
@@ -295,6 +296,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     fontSize: 14,
+    marginTop: 10,
     color: colors.BLACK(0.6),
   },
   metaItem: {
