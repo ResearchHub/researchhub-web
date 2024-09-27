@@ -48,22 +48,13 @@ const bountyTypeLabels = {
 // Helper function to format authors
 const formatAuthors = (authors: Array<{ firstName: string; lastName: string }>): string => {
     const numAuthors = authors.length;
-    if (numAuthors <= 3) {
-      const remainingAuthors = authors.slice(0); // Remove the first author (grant giver)
-      // Map the remaining authors to "F. LastName" format
-      return remainingAuthors
-        .map(a => `${a.firstName.charAt(0)}. ${a.lastName}`)
-        .join(', ');
+    if (numAuthors <= 2) {
+      return authors.map(a => `${a.firstName} ${a.lastName}`).join(', ');
     } else {
-      // More than 3 authors: remove the first author (grant giver)
-      const remainingAuthors = authors.slice(0);
-      const numRemaining = remainingAuthors.length;
-      const firstAuthor = `${remainingAuthors[0].firstName.charAt(0)}. ${remainingAuthors[0].lastName}`;
-      const lastAuthor = `${remainingAuthors[numRemaining - 1].firstName.charAt(0)}. ${remainingAuthors[numRemaining - 1].lastName}`;
-      // Calculate the number of middle authors
-      const middleCount = numRemaining - 2;
-  
-      return `${firstAuthor}, +${middleCount} others, ${lastAuthor}`;
+      const firstAuthor = `${authors[0].firstName} ${authors[0].lastName}`;
+      const lastAuthor = `${authors[numAuthors - 1].firstName} ${authors[numAuthors - 1].lastName}`;
+      const middleCount = numAuthors - 2;
+      return `${firstAuthor}, +${middleCount} supporting authors, ${lastAuthor}`;
     }
   };
   
@@ -129,6 +120,13 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
             </div>
           </div>
         </div>
+        {/* Moved Meta Information to Header */}
+        <div className={css(styles.metaInfo)}>
+          <div className={css(styles.metaItem)}>
+            <FontAwesomeIcon icon={faClock} className={css(styles.icon)} />
+            Expires {formatDateStandard(expirationDate)}
+          </div>
+        </div>
       </div>
       
       {/* Paper Details Section - Moved above metaInfo and removed duplicate title */}
@@ -144,14 +142,6 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
           </div>
         </div>
       </ALink>
-
-      {/* Meta Information */}
-      <div className={css(styles.metaInfo)}>
-        <div className={css(styles.metaItem)}>
-          <FontAwesomeIcon icon={faClock} className={css(styles.icon)} />
-          Expires {formatDateStandard(expirationDate)}
-        </div>
-      </div>
 
       {/* Hubs Section */}
       {hubs.length > 0 && (
@@ -214,8 +204,8 @@ const styles = StyleSheet.create({
   },
   header: {
     display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
+    justifyContent: "space-between", // Ensures space between userInfo and metaInfo
+    alignItems: "flex-start", // Align items at the top
     marginBottom: 5,
   },
   userInfo: {
@@ -303,14 +293,13 @@ const styles = StyleSheet.create({
   },
   metaInfo: {
     display: "flex",
-    justifyContent: "flex-start",
-    marginBottom: 10,
+    alignItems: "center",
+    fontSize: 14,
+    color: colors.BLACK(0.6),
   },
   metaItem: {
     display: "flex",
     alignItems: "center",
-    fontSize: 14,
-    color: colors.BLACK(0.6),
   },
   icon: {
     marginRight: 8,
