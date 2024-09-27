@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 5,
   },
   userInfo: {
     display: "flex",
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     display: "flex",
     cursor: "pointer",
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 2,
     background: "rgba(250, 250, 252, 0.4)",
     borderRadius: 2,
     padding: 20,
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
   },
   details: {
-    marginBottom: 20,
+    marginBottom: 5,
   },
   detailsHeader: {
     fontSize: 14,

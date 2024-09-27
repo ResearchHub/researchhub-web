@@ -400,14 +400,12 @@ const styles = StyleSheet.create({
   aboutRSC: {
     border: `1px solid ${colors.BLACK(0.2)}`,
     borderRadius: 4,
-    backgroundColor: colors.LIGHTER_GREY(0.1), // Match background color from reference.tsx
     padding: 0,
   },
   infoBlock: {
     border: `1px solid ${colors.BLACK(0.2)}`,
     borderRadius: 8,
     marginTop: 30,
-    backgroundColor: "#fff",
     ":first-child": {
       marginTop: 0,
     },
@@ -420,7 +418,6 @@ const styles = StyleSheet.create({
     gap: 10,
     fontSize: 18,
     borderBottom: `1px solid ${colors.BLACK(0.2)}`,
-    backgroundColor: colors.NEW_BLUE(0.1), // Match background color from reference.tsx
   },
   aboutRSCContent: {
     padding: 15,
