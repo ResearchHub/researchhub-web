@@ -1,4 +1,4 @@
-// pages/bounties/index.tsx
+// index.tsx
 import { NextPage } from "next";
 import { css, StyleSheet } from "aphrodite";
 import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI"; // Ensure correct import path
@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { parseUnifiedDocument, parseUser } from "~/config/types/root_types";
 import { CloseIcon } from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight, faAngleDown, faChevronDown, faChevronUp, faChevronRight } from "@fortawesome/pro-light-svg-icons"; // Added faChevronDown and faChevronUp
+import {faAngleRight, faAngleDown} from "@fortawesome/pro-light-svg-icons";
 import colors from "~/config/themes/colors";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 import { parseHub, Hub } from "~/config/types/hub";
@@ -121,7 +121,7 @@ const BountiesPage: NextPage = () => {
     } else {
       setOpenInfoSections([...openInfoSections, section]);
     }
-  };
+  }
 
   const showVerifyBanner =
     !currentUser?.isVerified &&
@@ -132,9 +132,9 @@ const BountiesPage: NextPage = () => {
     <div className={css(styles.pageWrapper)}>
       {/* Bounties Section */}
       <div className={css(styles.bountiesSection)}>
-        <h1 className={css(styles.title)}>Grants</h1>
+        <h1 className={css(styles.title)}>Bounties</h1>
         <div className={css(styles.description)}>
-          Earn ResearchCoin by completing research-related grants.
+          Earn ResearchCoin by completing research-related bounties.
         </div>
 
         {/* Verification Banner */}
@@ -193,155 +193,84 @@ const BountiesPage: NextPage = () => {
 
       {/* Info Sidebar */}
       <div className={css(styles.info, styles.infoSection)}>
-        {/* About ResearchCoin Section */}
         <div className={css(styles.aboutRSC, styles.infoBlock)}>
-          <div
-            className={css(styles.infoLabel, styles.collapsibleHeader)}
-            onClick={() => toggleInfoSection("about-rsc")}
-          >
-            <div className={css(styles.infoLabelContent)}>
-              <ResearchCoinIcon version={4} height={25} width={25} />
-              <span>About ResearchCoin</span>
-            </div>
-            <FontAwesomeIcon
-              icon={openInfoSections.includes("about-rsc") ? faChevronUp : faChevronDown}
-              className={css(styles.chevronIcon)}
-            />
+          <div className={css(styles.infoLabel)}>
+            <ResearchCoinIcon version={4} height={25} width={25} />
+            About ResearchCoin
           </div>
-          {openInfoSections.includes("about-rsc") && (
-            <div className={css(styles.aboutRSCContent)}>
-              ResearchCoin (RSC) is a digital currency earned by sharing, curating, and reviewing research on ResearchHub, enabling anyone to contribute and earn within the global scientific community.
-            </div>
-          )}
+          <div className={css(styles.aboutRSCContent)}>
+          ResearchCoin (RSC) is a digital currency earned by sharing, curating, and reviewing research on ResearchHub, enabling anyone to contribute and earn within the global scientific community.
+          </div>
         </div>
 
-        {/* Doing things with ResearchCoin Section */}
         <div className={css(styles.doingThingsWithRSC, styles.infoBlock)}>
           <div className={css(styles.infoLabel)}>Doing things with ResearchCoin</div>
-          {/* Existing collapsible items */}
           <div className={css(styles.collapsable)}>
             <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("create-grant")}>
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Create a grant</div>
-                <div>
-                  {openInfoSections.includes("create-grant") ? (
-                    <FontAwesomeIcon icon={faAngleDown} />
-                  ) : (
-                    <FontAwesomeIcon icon={faAngleRight} />
-                  )}
-                </div>
+                <div>{openInfoSections.includes("create-grant") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
               </div>
             </div>
-            <div
-              className={css(
-                styles.collapsableContent,
-                openInfoSections.includes("create-grant") && styles.collapsableContentOpen
-              )}
-            >
+            <div className={css(styles.collapsableContent, openInfoSections.includes("create-grant") && styles.collapsableContentOpen)}>
               <div>
-                RSC drives ResearchHub's Grant system, linking researchers to opportunities based on their expertise. Users create grants for tasks like data analysis, literature reviews, or paid peer review, enabling targeted collaboration and efficient knowledge sharing.
+              RSC drives ResearchHub's Grant system, linking researchers to opportunities based on their expertise. Users create bounties for tasks like data analysis, literature reviews, or paid peer review, enabling targeted collaboration and efficient knowledge sharing.
               </div>
-            </div>
+            </div>             
           </div>
           <div className={css(styles.collapsable)}>
             <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("reward-contributions")}>
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Reward quality contributions</div>
-                <div>
-                  {openInfoSections.includes("reward-contributions") ? (
-                    <FontAwesomeIcon icon={faAngleDown} />
-                  ) : (
-                    <FontAwesomeIcon icon={faAngleRight} />
-                  )}
-                </div>
+                <div><FontAwesomeIcon icon={faAngleRight} /></div>
               </div>
             </div>
-            <div
-              className={css(
-                styles.collapsableContent,
-                openInfoSections.includes("reward-contributions") && styles.collapsableContentOpen
-              )}
-            >
+            <div className={css(styles.collapsableContent, openInfoSections.includes("reward-contributions") && styles.collapsableContentOpen)}>
               <div>
-                RSC is the incentive layer of the ResearchHub ecosystem, rewarding actions like peer reviews and advancing research goals like reproducibility. The community of researchers governs the reward algorithm, ensuring incentives are aligned with their expertise and priorities.
+              RSC is the incentive layer of the ResearchHub ecosystem, rewarding actions like peer reviews and advancing research goals like reproducibility. The community of researchers governs the reward algorithm, ensuring incentives are aligned with their expertise and priorities.
               </div>
-            </div>
+            </div>              
           </div>
           <div className={css(styles.collapsable)}>
             <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("fund-open-science")}>
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Fund open science</div>
-                <div>
-                  {openInfoSections.includes("fund-open-science") ? (
-                    <FontAwesomeIcon icon={faChevronDown} />
-                  ) : (
-                    <FontAwesomeIcon icon={faChevronRight} />
-                  )}
-                </div>
+                <div>{openInfoSections.includes("fund-open-science") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
               </div>
             </div>
-            <div
-              className={css(
-                styles.collapsableContent,
-                openInfoSections.includes("fund-open-science") && styles.collapsableContentOpen
-              )}
-            >
+            <div className={css(styles.collapsableContent, openInfoSections.includes("fund-open-science") && styles.collapsableContentOpen)}>
               <div>
-                RSC enables community-driven scientific funding through open-access preregistrations, streamlining proposals and funding for research projects. This approach encourages updates, reduces admin overhead, and promotes transparency, fostering more reproducible and collaborative science.
+              RSC enables community-driven scientific funding through open-access preregistrations, streamlining proposals and funding for research projects. This approach encourages updates, reduces admin overhead, and promotes transparency, fostering more reproducible and collaborative science.
               </div>
             </div>
-          </div>
+          </div>          
         </div>
 
-        {/* Earning ResearchCoin Section */}
         <div className={css(styles.doingThingsWithRSC, styles.infoBlock)}>
           <div className={css(styles.infoLabel)}>Earning ResearchCoin</div>
-          {/* Existing collapsible items */}
           <div className={css(styles.collapsable)}>
             <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("peer-review")}>
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Share a peer review</div>
-                <div>
-                  {openInfoSections.includes("peer-review") ? (
-                    <FontAwesomeIcon icon={faAngleDown} />
-                  ) : (
-                    <FontAwesomeIcon icon={faAngleRight} />
-                  )}
-                </div>
+                <div>{openInfoSections.includes("peer-review") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
               </div>
             </div>
-            <div
-              className={css(
-                styles.collapsableContent,
-                openInfoSections.includes("peer-review") && styles.collapsableContentOpen
-              )}
-            >
+            <div className={css(styles.collapsableContent, openInfoSections.includes("peer-review") && styles.collapsableContentOpen)}>
               <div>
-                Researchers can earn RSC by peer reviewing preprints on ResearchHub. Once you verify your identity and import your publications, we will surface peer review opportunities for you here.
+              Researchers can earn RSC by peer reviewing preprints on ResearchHub. Once you verify your identity and import your publications, we will surface peer review opportunities for you here.
               </div>
-            </div>
+            </div>            
           </div>
           <div className={css(styles.collapsable)}>
             <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("earn-grant")}>
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Earn a grant</div>
-                <div>
-                  {openInfoSections.includes("earn-grant") ? (
-                    <FontAwesomeIcon icon={faAngleDown} />
-                  ) : (
-                    <FontAwesomeIcon icon={faAngleRight} />
-                  )}
-                </div>
+                <div>{openInfoSections.includes("earn-grant") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
               </div>
             </div>
-            <div
-              className={css(
-                styles.collapsableContent,
-                openInfoSections.includes("earn-grant") && styles.collapsableContentOpen
-              )}
-            >
+            <div className={css(styles.collapsableContent, openInfoSections.includes("earn-grant") && styles.collapsableContentOpen)}>
               <div>
-                Researchers earn RSC by completing grants on ResearchHub, from peer-reviewing preprints to troubleshooting and data processing. This system lets researchers monetize their expertise while providing valuable assistance to grant creators.
+              Researchers earn RSC by completing grants on ResearchHub, from peer-reviewing preprints to troubleshooting and data processing. This system lets researchers monetize their expertise while providing valuable assistance to grant creators.
               </div>
             </div>
           </div>
@@ -349,51 +278,30 @@ const BountiesPage: NextPage = () => {
             <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("reproducible")}>
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Do reproducible research</div>
-                <div>
-                  {openInfoSections.includes("reproducible") ? (
-                    <FontAwesomeIcon icon={faChevronUp} />
-                  ) : (
-                    <FontAwesomeIcon icon={faChevronDown} />
-                  )}
-                </div>
+                <div>{openInfoSections.includes("reproducible") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
               </div>
             </div>
-            <div
-              className={css(
-                styles.collapsableContent,
-                openInfoSections.includes("reproducible") && styles.collapsableContentOpen
-              )}
-            >
+            <div className={css(styles.collapsableContent, openInfoSections.includes("reproducible") && styles.collapsableContentOpen)}>
               <div>
-                Researchers earn RSC by conducting and sharing reproducible research. This includes providing detailed methods, sharing data and code, and participating in replication studies. ResearchHub rewards these practices to promote transparency and reliability in science.
+              Researchers earn RSC by conducting and sharing reproducible research. This includes providing detailed methods, sharing data and code, and participating in replication studies. ResearchHub rewards these practices to promote transparency and reliability in science.
               </div>
-            </div>
+            </div>            
           </div>
           <div className={css(styles.collapsable)}>
             <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("upvotes")}>
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Get upvotes on your content</div>
-                <div>
-                  {openInfoSections.includes("upvotes") ? (
-                    <FontAwesomeIcon icon={faChevronUp} />
-                  ) : (
-                    <FontAwesomeIcon icon={faChevronDown} />
-                  )}
-                </div>
+                <div>{openInfoSections.includes("upvotes") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
               </div>
             </div>
-            <div
-              className={css(
-                styles.collapsableContent,
-                openInfoSections.includes("upvotes") && styles.collapsableContentOpen
-              )}
-            >
+            <div className={css(styles.collapsableContent, openInfoSections.includes("upvotes") && styles.collapsableContentOpen)}>
               <div>
-                Researchers earn RSC by contributing to scientific discourse on ResearchHub, gaining upvotes on comments, posts, reviews, and papers. By incentivizing open discussions, we aim to foster a more innovative and dynamic research ecosystem.
+              Researchers earn RSC by contributing to scientific discourse on ResearchHub, gaining upvotes on comments, posts, reviews, and papers. By incentivizing open discussions, we aim to foster a more innovative and dynamic research ecosystem.
               </div>
-            </div>
+            </div>                        
           </div>
         </div>
+
       </div>
     </div>
   );
@@ -486,9 +394,11 @@ const styles = StyleSheet.create({
     maxWidth: 320,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
-    },
+    }
+
   },
-  infoSection: {},
+  infoSection: {
+  },
   aboutRSC: {
     border: `1px solid ${colors.BLACK(0.2)}`,
     borderRadius: 4,
@@ -500,7 +410,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(255, 255, 255)",
     ":first-child": {
       marginTop: 0,
-    },
+    }
   },
   infoLabel: {
     fontWeight: 500,
@@ -515,13 +425,12 @@ const styles = StyleSheet.create({
     padding: 15,
     fontSize: 15,
     lineHeight: "20px",
-    background: colors.LIGHTER_GREY(0.1),
-    borderTop: `1px solid ${colors.BLACK(0.1)}`,
   },
-  doingThingsWithRSC: {},
+  doingThingsWithRSC: {
 
+  },
   collapsable: {
-    // You can add styles here if needed
+    // borderBottom: `1px solid ${colors.BLACK(0.2)}`,
   },
   collapsableHeader: {
     userSelect: "none",
@@ -529,15 +438,15 @@ const styles = StyleSheet.create({
     ":hover": {
       background: colors.LIGHTER_GREY(1.0),
       cursor: "pointer",
-    },
+    }
   },
   collapsableHeaderTitle: {
     justifyContent: "space-between",
-    display: "flex",
-    alignItems: "center",
+    display: "flex"
+
   },
   collapsableContent: {
-    display: "none",
+    display: "none"
   },
   collapsableContentOpen: {
     display: "block",
@@ -547,17 +456,50 @@ const styles = StyleSheet.create({
       background: colors.LIGHTER_GREY(0.3),
     },
     color: colors.BLACK(0.9),
-    fontSize: 14,
+    fontSize: 14
   },
-  chevronIcon: {
-    fontSize: 16,
-    color: colors.BLACK(0.6),
-    transition: "transform 0.2s ease-in-out",
-  },
-  infoLabelContent: {
+  paperWrapper: {
     display: "flex",
+    cursor: "pointer",
     alignItems: "center",
-    gap: 10,
+    marginTop: 10,
+    background: "rgba(250, 250, 252, 1)",
+    borderRadius: 2,
+    padding: 20,
+    ":hover": {
+      transition: "0.2s",
+      background: colors.LIGHTER_GREY(1.0),
+    },
+    textDecoration: "none",
+    color: "inherit",
+  },
+  iconWrapper: {
+    marginRight: 10,
+  },
+  paperIcon: {
+    [`@media only screen and (max-width: 400px)`]: {
+      display: "none",
+    },
+  },
+  paperDetails: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  paperTitle: {
+    fontSize: 16,
+    fontWeight: 500,
+    color: colors.BLACK(0.9),
+  },
+  paperAuthors: {
+    color: colors.BLACK(0.6),
+    fontSize: 13,
+    marginTop: 3,
+  },
+  paperHubs: {
+    display: "flex",
+    gap: 5,
+    marginTop: 10,
+    flexWrap: "wrap",
   },
   ctaLink: {
     textDecoration: "none",
