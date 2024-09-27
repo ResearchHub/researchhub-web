@@ -112,35 +112,25 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
                 <VerifiedBadge height={16} width={16} style={{ marginLeft: 4 }} />
               )}
             <span className={css(styles.openedGrant)}>
-            opened a {badge} grant
-            </span>
-            <span className={css(styles.paperLabel)}>for <strong>{bountyTypeLabels[bountyType] || "expertise"}</strong> on:</span>
+            opened a {badge} grant for <strong>{bountyTypeLabels[bountyType] || "expertise"}</strong> on:</span>
             </div>
             <div className={css(styles.bountyType)}>
               {bountyTypeLabels[bountyType]}
             </div>
           </div>
         </div>
-        {/* Removed Meta Information from Header */}
-        {/* <div className={css(styles.metaInfo)}>
+        {/* Moved Meta Information to Header */}
+        <div className={css(styles.metaInfo)}>
           <div className={css(styles.metaItem)}>
             <FontAwesomeIcon icon={faClock} className={css(styles.icon)} />
             Expires {formatDateStandard(expirationDate)}
           </div>
-        </div> */}
+        </div>
       </div>
       
-      {/* Moved Expires Time Above Title and Centered */}
-      <div className={css(styles.expiresContainer)}>
-        <FontAwesomeIcon icon={faClock} className={css(styles.icon)} />
-        <span>Expires {formatDateStandard(expirationDate)}</span>
-      </div>
-      
-      {/* Removed the "For expertise on:" line */}
-      {/* <span className={css(styles.paperLabel)}>for <strong>{bountyTypeLabels[bountyType] || "expertise"}</strong> on:</span> */}
-      
-      {/* Paper Details Section */}
+      {/* Paper Details Section - Moved above metaInfo and removed duplicate title */}
       <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
+      {/* <div className={css(styles.paperAuthors)}><strong>Peer review</strong> on</div> */}
         <div className={css(styles.paperDetails)}>
           <div className={css(styles.paperTitle)}>
             {unifiedDocument.document.title}
@@ -277,22 +267,11 @@ const styles = StyleSheet.create({
   paperDetails: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center", // Center the content horizontally
-    width: "100%", // Ensure it takes full width for centering
   },
   paperTitle: {
     fontSize: 20,
     fontWeight: 500,
     color: colors.BLACK(0.9),
-    textAlign: "center", // Center the title text
-    marginTop: 8, // Add some spacing below the Expires time
-  },
-  paperLabel: {
-    color: colors.BLACK(0.6),
-    fontSize: 14,
-    marginTop: -6,
-    marginBottom: 3,
-    display: "inline", // or "inline-block" if you need to apply width/height
   },
   paperAuthors: {
     color: colors.BLACK(0.6),
@@ -300,7 +279,6 @@ const styles = StyleSheet.create({
     marginTop: 3,
     display: "flex",
     flexDirection: "column",
-    textAlign: "center", // Center the authors text
   },
   condensedAuthorList: {
     display: "flex",
@@ -376,16 +354,6 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: colors.NEW_BLUE(0.8),
     },
-  },
-  
-  // New style for Expires Time
-  expiresContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: 14,
-    color: colors.BLACK(0.6),
-    marginBottom: 8,
   },
 });
 
