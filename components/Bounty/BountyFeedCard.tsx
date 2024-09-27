@@ -113,11 +113,9 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
               )}
               <span className={css(styles.openedGrant)}>
                 opened a {badge} grant
+                <br />
+                for <strong>peer review</strong> on:
               </span>
-              <br />
-                <span>
-                for <strong>peer review</strong> on
-                </span>
             </div>
             <div className={css(styles.bountyType)}>
               {bountyTypeLabels[bountyType]}
