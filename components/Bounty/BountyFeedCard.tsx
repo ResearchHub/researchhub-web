@@ -180,7 +180,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
       
       {/* Call-to-Action Button */}
       <ALink href={`${url}/bounties`} className={css(styles.ctaLink)}>
-        <Button customButtonStyle={styles.ctaButton}>Check it out</Button>
+        <Button customButtonStyle={styles.ctaButton}>View grant</Button>
       </ALink>
     </div>
   );
