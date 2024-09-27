@@ -114,6 +114,10 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
               <span className={css(styles.openedGrant)}>
                 opened a {badge} grant
               </span>
+              <br />
+                <span>
+                for <strong>peer review</strong> on
+                </span>
             </div>
             <div className={css(styles.bountyType)}>
               {bountyTypeLabels[bountyType]}
@@ -131,7 +135,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
       
       {/* Paper Details Section - Moved above metaInfo and removed duplicate title */}
       <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
-      <div className={css(styles.detailsHeader)}>Peer review on</div>
+      {/* <div className={css(styles.paperAuthors)}><strong>Peer review</strong> on</div> */}
         <div className={css(styles.paperDetails)}>
           <div className={css(styles.paperTitle)}>
             {unifiedDocument.document.title}
@@ -296,7 +300,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     fontSize: 14,
-    marginTop: 10,
     color: colors.BLACK(0.6),
   },
   metaItem: {
