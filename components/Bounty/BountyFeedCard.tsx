@@ -278,7 +278,8 @@ const styles = StyleSheet.create({
   paperLabel: {
     color: colors.BLACK(0.6),
     fontSize: 14,
-    marginTop: -3,
+    marginTop: -6,
+    marginBottom: 3,
     display: "inline", // or "inline-block" if you need to apply width/height
   },
   paperAuthors: {
