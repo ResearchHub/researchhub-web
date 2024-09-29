@@ -20,7 +20,6 @@ import CommentReadOnly from '~/components/Comment/CommentReadOnly';
 import HubTag from '~/components/Hubs/HubTag';
 import { Hub } from '~/config/types/hub';
 import { UnifiedDocument } from '~/config/types/root_types';
-import fetchHubFromSlug from '~/pages/hubs/api/fetchHubFromSlug';
 
 type SimpleBounty = {
   id: string;
@@ -141,12 +140,17 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         </div>
       </ALink>
 
-      {/* Hubs Section */}
-      <div className={css(styles.hubsContainer)}>
+      {/* CTA and Hub Section */}
+      <div className={css(styles.ctaAndHubContainer)}>
+        <Button
+          label="View Grant"
+          onClick={() => window.location.href = `${url}/bounties`}
+          customButtonStyle={styles.ctaButton}
+        />
         {firstHub ? (
           <HubTag overrideStyle={styles.hubTag} hub={firstHub} key={firstHub.id} />
         ) : (
-          <div>No Hub</div>
+          <div className={css(styles.noHub)}>No Hub</div>
         )}
       </div>
 
@@ -174,11 +178,6 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
           </div>
         )}
       </div>
-      
-      {/* Call-to-Action Button */}
-      <ALink href={`${url}/bounties`} className={css(styles.ctaLink)}>
-        <Button customButtonStyle={styles.ctaButton}>View grant</Button>
-      </ALink>
     </div>
   );
 };
@@ -303,6 +302,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.BLACK(0.4),
   },
+  ctaAndHubContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginTop: 10,
+    gap: 10,
+  },
+  ctaButton: {
+    padding: "8px 16px",
+    fontSize: 14,
+    fontWeight: 600,
+    backgroundColor: colors.NEW_BLUE(),
+    color: "#ffffff",
+    ":hover": {
+      backgroundColor: colors.NEW_BLUE(0.8),
+    },
+  },
+  noHub: {
+    fontSize: 14,
+    color: colors.MEDIUM_GREY2(),
+  },
   hubsContainer: {
     marginTop: 10,
     marginBottom: 20,
@@ -337,20 +356,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 1.5,
     color: colors.BLACK(0.8),
-  },
-  ctaLink: {
-    textDecoration: "none",
-    marginTop: 20,
-  },
-  ctaButton: {
-    padding: "8px 16px",
-    fontSize: 14,
-    fontWeight: 600,
-    backgroundColor: colors.NEW_BLUE(),
-    color: "#ffffff",
-    ":hover": {
-      backgroundColor: colors.NEW_BLUE(0.8),
-    },
   },
 });
 
