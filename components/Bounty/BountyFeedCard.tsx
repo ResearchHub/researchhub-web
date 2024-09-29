@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { css, StyleSheet } from 'aphrodite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faClock, 
   faChevronDown, 
   faChevronUp, 
-} from '@fortawesome/pro-light-svg-icons'; // Ensure you have access to this icon set
+} from '@fortawesome/pro-light-svg-icons';
 import { formatDateStandard } from '~/config/utils/dates';
 import { getUrlToUniDoc } from '~/config/utils/routing';
 import CommentAvatars from '~/components/Comment/CommentAvatars';
@@ -19,6 +19,8 @@ import { formatBountyAmount } from '~/config/types/bounty';
 import CommentReadOnly from '~/components/Comment/CommentReadOnly';
 import HubTag from '~/components/Hubs/HubTag';
 import { Hub } from '~/config/types/hub';
+import { UnifiedDocument } from '~/config/types/root_types';
+import fetchHubFromSlug from '~/pages/hubs/api/fetchHubFromSlug';
 
 type SimpleBounty = {
   id: string;
@@ -27,42 +29,47 @@ type SimpleBounty = {
   createdBy: any;
   expirationDate: string;
   createdDate: string;
-  unifiedDocument: {
-    document: {
-      title: string;
-      // Add other necessary fields if required
-    };
-    authors: Array<{ firstName: string; lastName: string }>;
-    // Add other necessary fields if required
-  };
-  hubs: Hub[];
-  bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER"; // Fixed typo
+  unifiedDocument: UnifiedDocument;
+  bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER";
 };
 
 const bountyTypeLabels = {
   REVIEW: "Peer Review",
   ANSWER: "Answer",
-  GENERIC_COMMENT: "Comment", // Fixed typo
+  GENERIC_COMMENT: "Comment",
 };
 
-// Helper function to format authors
 const formatAuthors = (authors: Array<{ firstName: string; lastName: string }>): string => {
-    const numAuthors = authors.length;
-    if (numAuthors <= 2) {
-      return authors.map(a => `${a.firstName} ${a.lastName}`).join(', ');
-    } else {
-      const firstAuthor = `${authors[0].firstName} ${authors[0].lastName}`;
-      const lastAuthor = `${authors[numAuthors - 1].firstName} ${authors[numAuthors - 1].lastName}`;
-      const middleCount = numAuthors - 2;
-      return `${firstAuthor}, +${middleCount} authors, ${lastAuthor}`;
-    }
-  };
-  
+  const numAuthors = authors.length;
+  if (numAuthors <= 2) {
+    return authors.map(a => `${a.firstName} ${a.lastName}`).join(', ');
+  } else {
+    const firstAuthor = `${authors[0].firstName} ${authors[0].lastName}`;
+    const lastAuthor = `${authors[numAuthors - 1].firstName} ${authors[numAuthors - 1].lastName}`;
+    const middleCount = numAuthors - 2;
+    return `${firstAuthor}, +${middleCount} authors, ${lastAuthor}`;
+  }
+};
 
 const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
-  const { createdBy, unifiedDocument, expirationDate, amount, bountyType, content, hubs } = bounty;
+  const { createdBy, unifiedDocument, expirationDate, amount, bountyType, content } = bounty;
   const url = getUrlToUniDoc(unifiedDocument);
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(false);
+  const [firstHub, setFirstHub] = useState<Hub | null>(null);
+
+  useEffect(() => {
+    const fetchFirstHub = async () => {
+      if (unifiedDocument?.document?.slug) {
+        const hub = await fetchHubFromSlug({ slug: unifiedDocument.document.slug });
+        if (hub) {
+          setFirstHub(hub);
+        }
+      }
+    };
+
+    fetchFirstHub();
+  }, [unifiedDocument]);
+
 
   const badge = (
     <ContentBadge
@@ -111,15 +118,15 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
               {createdBy?.authorProfile?.isVerified && (
                 <VerifiedBadge height={16} width={16} style={{ marginLeft: 4 }} />
               )}
-            <span className={css(styles.openedGrant)}>
-            opened a {badge} grant for <strong>{bountyTypeLabels[bountyType] || "expertise"}</strong> on:</span>
+              <span className={css(styles.openedGrant)}>
+                opened a {badge} grant for <strong>{bountyTypeLabels[bountyType] || "expertise"}</strong> on:
+              </span>
             </div>
             <div className={css(styles.bountyType)}>
-              {bountyTypeLabels[bountyType]}
+              {bountyTypeLabels[bountyType] || "Unknown Type"}
             </div>
           </div>
         </div>
-        {/* Moved Meta Information to Header */}
         <div className={css(styles.metaInfo)}>
           <div className={css(styles.metaItem)}>
             <FontAwesomeIcon icon={faClock} className={css(styles.icon)} />
@@ -128,12 +135,11 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         </div>
       </div>
       
-      {/* Paper Details Section - Moved above metaInfo and removed duplicate title */}
+      {/* Paper Details Section */}
       <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
-      {/* <div className={css(styles.paperAuthors)}><strong>Peer review</strong> on</div> */}
         <div className={css(styles.paperDetails)}>
           <div className={css(styles.paperTitle)}>
-            {unifiedDocument.document.title}
+            {unifiedDocument.document?.title || 'Untitled'}
           </div>
           <div className={css(styles.paperAuthors)}>
             {unifiedDocument.authors && unifiedDocument.authors.length > 0 && (
@@ -144,11 +150,9 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
       </ALink>
 
       {/* Hubs Section */}
-      {hubs.length > 0 && (
+      {firstHub && (
         <div className={css(styles.hubsContainer)}>
-          {hubs.map((hub) => (
-            <HubTag overrideStyle={styles.hubTag} hub={hub} key={hub.id} />
-          ))}
+          <HubTag overrideStyle={styles.hubTag} hub={firstHub} key={firstHub.id} />
         </div>
       )}
 
