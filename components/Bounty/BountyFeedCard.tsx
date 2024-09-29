@@ -164,9 +164,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
           </div>
         )}
       </div>
-    </div>
-  );
-};
+
       {/* CTA and Hub Section */}
       <div className={css(styles.ctaAndHubContainer)}>
         <Button
@@ -180,6 +178,10 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
           <div className={css(styles.noHub)}>No Hub</div>
         )}
       </div>
+    </div>
+  );
+};
+
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#ffffff",
@@ -198,8 +200,8 @@ const styles = StyleSheet.create({
   },
   header: {
     display: "flex",
-    justifyContent: "space-between", // Ensures space between userInfo and metaInfo
-    alignItems: "flex-start", // Align items at the top
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     marginBottom: 5,
   },
   userInfo: {
