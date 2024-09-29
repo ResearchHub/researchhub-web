@@ -140,20 +140,6 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         </div>
       </ALink>
 
-      {/* CTA and Hub Section */}
-      <div className={css(styles.ctaAndHubContainer)}>
-        <Button
-          label="View Grant"
-          onClick={() => window.location.href = `${url}/bounties`}
-          customButtonStyle={styles.ctaButton}
-        />
-        {firstHub ? (
-          <HubTag overrideStyle={styles.hubTag} hub={firstHub} key={firstHub.id} />
-        ) : (
-          <div className={css(styles.noHub)}>No Hub</div>
-        )}
-      </div>
-
       {/* Details Section */}
       <div className={css(styles.details)}>
         <div className={css(styles.detailsHeader)}>
@@ -181,7 +167,19 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
     </div>
   );
 };
-
+      {/* CTA and Hub Section */}
+      <div className={css(styles.ctaAndHubContainer)}>
+        <Button
+          label="View Grant"
+          onClick={() => window.location.href = `${url}/bounties`}
+          customButtonStyle={styles.ctaButton}
+        />
+        {firstHub ? (
+          <HubTag overrideStyle={styles.hubTag} hub={firstHub} key={firstHub.id} />
+        ) : (
+          <div className={css(styles.noHub)}>No Hub</div>
+        )}
+      </div>
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#ffffff",
