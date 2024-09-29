@@ -58,18 +58,10 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
   const [firstHub, setFirstHub] = useState<Hub | null>(null);
 
   useEffect(() => {
-    const fetchFirstHub = async () => {
-      if (unifiedDocument?.document?.slug) {
-        const hub = await fetchHubFromSlug({ slug: unifiedDocument.document.slug });
-        if (hub) {
-          setFirstHub(hub);
-        }
-      }
-    };
-
-    fetchFirstHub();
+    if (unifiedDocument?.hubs && unifiedDocument.hubs.length > 0) {
+      setFirstHub(unifiedDocument.hubs[0]);
+    }
   }, [unifiedDocument]);
-
 
   const badge = (
     <ContentBadge
@@ -150,34 +142,35 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
       </ALink>
 
       {/* Hubs Section */}
-      {firstHub && (
-        <div className={css(styles.hubsContainer)}>
+      <div className={css(styles.hubsContainer)}>
+        {firstHub ? (
           <HubTag overrideStyle={styles.hubTag} hub={firstHub} key={firstHub.id} />
-        </div>
-      )}
+        ) : (
+          <div>No Hub</div>
+        )}
+      </div>
 
       {/* Details Section */}
       <div className={css(styles.details)}>
         <div className={css(styles.detailsHeader)}>
-          Details: 
-          <span 
-            className={css(styles.readMoreToggle)} 
-            onClick={toggleDetails}
-          >
-            {isDetailsExpanded ? "Hide " : "Show "}
-            <FontAwesomeIcon 
-              icon={isDetailsExpanded ? faChevronUp : faChevronDown} 
-              className={css(styles.toggleIcon)}
-            />
-          </span>
+          Details
+          <div className={css(styles.readMoreToggle)} onClick={toggleDetails}>
+            {isDetailsExpanded ? (
+              <>
+                Read Less
+                <FontAwesomeIcon icon={faChevronUp} className={css(styles.toggleIcon)} />
+              </>
+            ) : (
+              <>
+                Read More
+                <FontAwesomeIcon icon={faChevronDown} className={css(styles.toggleIcon)} />
+              </>
+            )}
+          </div>
         </div>
         {isDetailsExpanded && (
           <div className={css(styles.detailsContent)}>
-            <CommentReadOnly
-              content={content}
-              previewMaxImageLength={1}
-              previewMaxCharLength={400}
-            />
+            <CommentReadOnly content={content} />
           </div>
         )}
       </div>
