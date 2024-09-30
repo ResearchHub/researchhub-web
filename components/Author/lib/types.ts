@@ -201,7 +201,7 @@ export const parseFullAuthorProfile = (raw: any): FullAuthorProfile => {
       worksCount: activity.works_count,
       citationCount: activity.citation_count,
     })),
-    institutions: raw.institutions.map((inst) => {
+    institutions: (raw.institutions || []).map((inst) => {
       return {
         id: inst.id,
         institution: parseInstitution(inst.institution),
