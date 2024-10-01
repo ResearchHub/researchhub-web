@@ -14,7 +14,6 @@ import { PostIcon, PaperIcon, QuestionIcon } from "~/config/themes/icons";
 import { CondensedAuthorList } from "../Author/AuthorList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGrid2, faNewspaper } from "@fortawesome/pro-solid-svg-icons";
-import { toTitleCase } from "~/config/utils/string";
 import { formatNumber } from "~/config/utils/number";
 import { highlightTextInSuggestion } from "./lib/util";
 import { useEffect, useState } from "react";
@@ -158,7 +157,7 @@ const HubSuggestion = ({
   suggestion: HubSuggestionType;
   searchString?: string;
 }) => {
-  const hubName = toTitleCase(suggestion.hub.name);
+  const hubName = suggestion.hub.name;
   const titleWithHighlightedPortions = highlightTextInSuggestion(
     hubName,
     searchString,
@@ -200,7 +199,7 @@ const JournalSuggestion = ({
   suggestion: HubSuggestionType;
   searchString?: string;
 }) => {
-  const hubName = toTitleCase(suggestion.hub.name);
+  const hubName = suggestion.hub.name;
   const titleWithHighlightedPortions = highlightTextInSuggestion(
     hubName,
     searchString,

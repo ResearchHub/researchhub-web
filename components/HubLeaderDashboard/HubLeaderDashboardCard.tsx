@@ -3,7 +3,6 @@ import { buildSlug } from "~/config/utils/buildSlug";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
 import { timeAgo } from "~/config/utils/dates";
-import { toTitleCase } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
 import Image from "next/image";
 import Link from "next/link";
@@ -49,9 +48,7 @@ export default function HubLeaderDashboardCard({
               alt={`${name} Hub`}
               src={hubImage ?? "/static/beaker.svg"}
             />
-            <div className={css(styles.name) + " clamp1"}>
-              {`${toTitleCase(name)}`}
-            </div>
+            <div className={css(styles.name) + " clamp1"}>{name}</div>
           </div>
           <div className={css(styles.contributionSection)}>
             <div className={css(styles.countLabel, styles.submissionLabel)}>

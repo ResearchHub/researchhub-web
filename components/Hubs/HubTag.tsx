@@ -1,4 +1,3 @@
-import { toTitleCase } from "~/config/utils/string";
 import Link from "next/link";
 import { Hub } from "~/config/types/hub";
 import IconButton from "~/components/Icons/IconButton";
@@ -11,7 +10,7 @@ export const HubBadge = ({ name, size }: { name: string; size?: string }) => {
       variant="round"
       overrideStyle={[styles.hubBtn, styles[`hubBtn--${size}`]]}
     >
-      <span className={css(styles.text)}>{toTitleCase(name)}</span>
+      <span className={css(styles.text)}>{name}</span>
     </IconButton>
   );
 };

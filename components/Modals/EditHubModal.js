@@ -14,7 +14,6 @@ import { ModalActions } from "~/redux/modals";
 
 // Config
 import API from "~/config/api";
-import { toTitleCase } from "~/config/utils/string";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../config/themes/colors";
 import FormTextArea from "../Form/FormTextArea";
@@ -40,8 +39,8 @@ class EditHubModal extends Component {
     if (prevHub !== currHub) {
       let hub = this.props.modals.editHubModal.hub;
       this.setState({
-        originalHubName: hub ? toTitleCase(hub.name) : "",
-        hubName: hub ? toTitleCase(hub.name) : "",
+        originalHubName: hub ? hub.name : "",
+        hubName: hub ? hub.name : "",
         hubDescription: hub ? hub.description : "",
       });
     }
@@ -79,7 +78,7 @@ class EditHubModal extends Component {
     ) {
       return;
     }
-    this.setState({ [id]: id === "hubName" ? toTitleCase(value) : value });
+    this.setState({ [id]: value });
   };
 
   UpdateHub = async (hub) => {

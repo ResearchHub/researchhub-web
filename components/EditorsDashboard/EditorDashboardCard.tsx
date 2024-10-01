@@ -5,7 +5,6 @@ import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
 import { timeAgo } from "~/config/utils/dates";
-import { toTitleCase } from "~/config/utils/string";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "~/config/themes/colors";
 import DesktopOnly from "../DesktopOnly";
@@ -90,7 +89,7 @@ export default function EditorDashboardUserCard({
     is_hub_editor_of: isHubEditorOf,
   } = authorProfile;
   const hubNameTags = (isHubEditorOf ?? [])
-    .map((hub: any): string => toTitleCase(hub?.name ?? ""))
+    .map((hub: any): string => hub?.name ?? "")
     .map((hubName: string, index: number) => (
       <UserRoleTag
         backgroundColor={colors.EDITOR_TAG_BACKGROUND}
