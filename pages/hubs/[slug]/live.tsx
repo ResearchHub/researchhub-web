@@ -14,12 +14,12 @@ function Index({ slug, hub, error, isLiveFeed }) {
       <Head
         title={
           hub
-            ? toTitleCase(hub.name) + " on ResearchHub"
+            ? hub.name + " on ResearchHub"
             : toTitleCase(slug) + " on ResearchHub"
         }
         description={
           hub
-            ? "Discuss and Discover " + toTitleCase(hub.name)
+            ? "Discuss and Discover " + hub.name
             : "Discuss and Discover " + toTitleCase(slug)
         }
       />

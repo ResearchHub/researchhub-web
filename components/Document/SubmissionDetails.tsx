@@ -4,7 +4,6 @@ import { RHUser } from "~/config/types/root_types";
 import AuthorAvatar from "../AuthorAvatar";
 import HubDropDown from "../Hubs/HubDropDown";
 import { timeSince } from "~/config/utils/dates";
-import { toTitleCase } from "~/config/utils/string";
 import { StyleSheet, css } from "aphrodite";
 import ALink from "../ALink";
 import colors from "~/config/themes/colors";
@@ -97,7 +96,7 @@ function SubmissionDetails({
             href={`/hubs/${h.slug}`}
             overrideStyle={styles.hubLink}
           >
-            {" " + toTitleCase(h.name)}
+            {" " + h.name}
           </ALink>
           {index < visibleHubs?.length - 1 ? "," : ""}
         </div>
