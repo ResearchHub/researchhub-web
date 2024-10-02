@@ -64,7 +64,7 @@ export type FeedCardProps = {
   created_by: any;
   document: any;
   created_date: any;
-  documentFilter: any;
+  documentFilterdocumentFilter: any;
   discussion_count: number;
   featured: boolean;
   first_figure: any;
@@ -165,7 +165,12 @@ function FeedCard({
 
   const visibleDate = parsedDoc?.publishedDate || parsedDoc?.createdDate;
 
-  const parsedHubs = (hubs || []).map(parseHub);
+  // Sort hubs by displaying ones with isUsedForRep first.
+  // This approach should be deprecated once we introduce "hub" namespace.
+  const parsedHubs = (hubs || []).map(parseHub).sort((a, b) => {
+    return a.isUsedForRep === b.isUsedForRep ? 0 : a.isUsedForRep ? -1 : 1;
+  });
+
   const router = useRouter();
   const [isPreviewing, setIsPreviewing] = useState(false);
   const [voteState, setVoteState] = useState<VoteType | null>(
@@ -450,7 +455,7 @@ function FeedCard({
                       hubs={parsedHubs}
                       withShowMore={false}
                       hideOnSmallerResolution={true}
-                      numOfVisibleHubs={3}
+                      numOfVisibleHubs={2}
                     />
                     {hasActiveBounty && (
                       <ContentBadge
