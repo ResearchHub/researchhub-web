@@ -64,7 +64,7 @@ export type FeedCardProps = {
   created_by: any;
   document: any;
   created_date: any;
-  documentFilterdocumentFilter: any;
+  documentFilter: any;
   discussion_count: number;
   featured: boolean;
   first_figure: any;
@@ -166,7 +166,7 @@ function FeedCard({
   const visibleDate = parsedDoc?.publishedDate || parsedDoc?.createdDate;
 
   // Sort hubs by displaying ones with isUsedForRep first.
-  // This approach should be deprecated once we introduce "hub" namespace.
+  // TODO: This approach should be deprecated once we introduce "hub" namespace.
   const parsedHubs = (hubs || []).map(parseHub).sort((a, b) => {
     return a.isUsedForRep === b.isUsedForRep ? 0 : a.isUsedForRep ? -1 : 1;
   });
