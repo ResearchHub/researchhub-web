@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { css, StyleSheet } from 'aphrodite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faClock, 
-  faChevronDown, 
-  faChevronUp, 
+import {
+  faClock,
+  faChevronDown,
+  faChevronUp,
 } from '@fortawesome/pro-light-svg-icons';
 import { formatDateStandard } from '~/config/utils/dates';
 import { getUrlToUniDoc } from '~/config/utils/routing';
@@ -88,8 +88,19 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
 
   return (
     <div className={css(styles.card)}>
-      {/* Header Section */}
-      <div className={css(styles.header)}>
+      {/* Left Section */}
+      <div className={css(styles.leftSection)}>
+        {badge}
+        <div className={css(styles.bountyTypeLabel)}>{bountyTypeLabels[bountyType] || "Unknown Type"}</div>
+        <Button
+          label="Earn"
+          onClick={() => window.location.href = `${url}/bounties`}
+          customButtonStyle={styles.ctaButton}
+        />
+      </div>
+
+      {/* Right Section */}
+      <div className={css(styles.rightSection)}>
         <div className={css(styles.userInfo)}>
           <CommentAvatars size={40} people={[createdBy]} withTooltip={true} />
           <div className={css(styles.userDetails)}>
@@ -110,11 +121,8 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
                 <VerifiedBadge height={16} width={16} style={{ marginLeft: 4 }} />
               )}
               <span className={css(styles.openedGrant)}>
-                opened a {badge} grant for <strong>{bountyTypeLabels[bountyType] || "expertise"}</strong> on:
+                opened a grant for <strong>{bountyTypeLabels[bountyType] || "expertise"}</strong>
               </span>
-            </div>
-            <div className={css(styles.bountyType)}>
-              {bountyTypeLabels[bountyType] || "Unknown Type"}
             </div>
           </div>
         </div>
@@ -124,58 +132,51 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
             Expires {formatDateStandard(expirationDate)}
           </div>
         </div>
-      </div>
-      
-      {/* Paper Details Section */}
-      <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
-        <div className={css(styles.paperDetails)}>
-          <div className={css(styles.paperTitle)}>
-            {unifiedDocument.document?.title || 'Untitled'}
-          </div>
-          <div className={css(styles.paperAuthors)}>
-            {unifiedDocument.authors && unifiedDocument.authors.length > 0 && (
-              formatAuthors(unifiedDocument.authors)
-            )}
-          </div>
-        </div>
-      </ALink>
 
-      {/* Details Section */}
-      <div className={css(styles.details)}>
-        <div className={css(styles.detailsHeader)}>
-          Details
-          <div className={css(styles.readMoreToggle)} onClick={toggleDetails}>
-            {isDetailsExpanded ? (
-              <>
-                Read Less
-                <FontAwesomeIcon icon={faChevronUp} className={css(styles.toggleIcon)} />
-              </>
-            ) : (
-              <>
-                Read More
-                <FontAwesomeIcon icon={faChevronDown} className={css(styles.toggleIcon)} />
-              </>
-            )}
+        {/* Paper Details Section */}
+        <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
+          <div className={css(styles.paperDetails)}>
+            <div className={css(styles.paperTitle)}>
+              {unifiedDocument.document?.title || 'Untitled'}
+            </div>
+            <div className={css(styles.paperAuthors)}>
+              {unifiedDocument.authors && unifiedDocument.authors.length > 0 && (
+                formatAuthors(unifiedDocument.authors)
+              )}
+            </div>
           </div>
-        </div>
-        {isDetailsExpanded && (
-          <div className={css(styles.detailsContent)}>
-            <CommentReadOnly content={content} />
-          </div>
-        )}
-      </div>
+        </ALink>
 
-      {/* CTA and Hub Section */}
-      <div className={css(styles.ctaAndHubContainer)}>
-        <Button
-          label="View Grant"
-          onClick={() => window.location.href = `${url}/bounties`}
-          customButtonStyle={styles.ctaButton}
-        />
-        {firstHub ? (
-          <HubTag overrideStyle={styles.hubTag} hub={firstHub} key={firstHub.id} />
-        ) : (
-          <div className={css(styles.noHub)}>No Hub</div>
+        {/* Details Section */}
+        <div className={css(styles.details)}>
+          <div className={css(styles.detailsHeader)}>
+            Details
+            <div className={css(styles.readMoreToggle)} onClick={toggleDetails}>
+              {isDetailsExpanded ? (
+                <>
+                  Read Less
+                  <FontAwesomeIcon icon={faChevronUp} className={css(styles.toggleIcon)} />
+                </>
+              ) : (
+                <>
+                  Read More
+                  <FontAwesomeIcon icon={faChevronDown} className={css(styles.toggleIcon)} />
+                </>
+              )}
+            </div>
+          </div>
+          {isDetailsExpanded && (
+            <div className={css(styles.detailsContent)}>
+              <CommentReadOnly content={content} />
+            </div>
+          )}
+        </div>
+
+        {/* Hub Section */}
+        {firstHub && (
+          <div className={css(styles.hubTagContainer)}>
+            <HubTag overrideStyle={styles.hubTag} hub={firstHub} key={firstHub.id} />
+          </div>
         )}
       </div>
     </div>
@@ -195,18 +196,25 @@ const styles = StyleSheet.create({
       boxShadow: "0 4px 15px rgba(0, 0, 0, 0.08)",
     },
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     gap: 16,
   },
-  header: {
+  leftSection: {
+    width: "20%",
     display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
     justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 5,
+  },
+  rightSection: {
+    width: "80%",
+    display: "flex",
+    flexDirection: "column",
   },
   userInfo: {
     display: "flex",
     alignItems: "center",
+    marginBottom: 8,
   },
   userDetails: {
     marginLeft: 12,
@@ -229,10 +237,11 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.6),
     marginLeft: 8,
   },
-  bountyType: {
-    fontSize: 14,
-    color: colors.BLACK(0.6),
-    marginTop: 2,
+  bountyTypeLabel: {
+    fontSize: 16,
+    fontWeight: 500,
+    color: colors.BLACK(0.7),
+    marginTop: 16,
   },
   badgeContainer: {
     display: "inline-flex",
@@ -255,43 +264,28 @@ const styles = StyleSheet.create({
       background: colors.LIGHTER_GREY(1.0),
     },    
   },
-  paperIcon: {
-    [`@media only screen and (max-width: 400px)`]: {
-      display: "none",
-    }
-  },
   paperDetails: {
     display: "flex",
     flexDirection: "column",
   },
   paperTitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 500,
     color: colors.BLACK(0.9),
   },
   paperAuthors: {
     color: colors.BLACK(0.6),
-    fontSize: 14,
+    fontSize: 13,
     marginTop: 3,
     display: "flex",
     flexDirection: "column",
-  },
-  condensedAuthorList: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 4,
-  },
-  paperHubs: {
-    display: "flex",
-    gap: 5,
-    marginTop: 10,
-    flexWrap: "wrap",
   },
   metaInfo: {
     display: "flex",
     alignItems: "center",
     fontSize: 14,
     color: colors.BLACK(0.6),
+    marginBottom: 8,
   },
   metaItem: {
     display: "flex",
@@ -302,12 +296,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.BLACK(0.4),
   },
-  ctaAndHubContainer: {
-    display: "flex",
-    alignItems: "center",
-    marginTop: 10,
-    gap: 10,
-  },
   ctaButton: {
     padding: "8px 16px",
     fontSize: 14,
@@ -317,20 +305,6 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: colors.NEW_BLUE(0.8),
     },
-  },
-  noHub: {
-    fontSize: 14,
-    color: colors.MEDIUM_GREY2(),
-  },
-  hubsContainer: {
-    marginTop: 10,
-    marginBottom: 20,
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 5,
-  },
-  hubTag: {
-    cursor: "pointer",
   },
   details: {
     marginBottom: 5,
@@ -356,6 +330,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 1.5,
     color: colors.BLACK(0.8),
+  },
+  hubTagContainer: {
+    marginTop: 12,
+  },
+  hubTag: {
+    cursor: "pointer",
   },
 });
 
