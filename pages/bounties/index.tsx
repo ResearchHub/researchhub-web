@@ -1,12 +1,11 @@
-// index.tsx
 import { NextPage } from "next";
 import { css, StyleSheet } from "aphrodite";
-import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI"; // Ensure correct import path
-import { useEffect, useState } from "react";
+import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI";
+import { useEffect, useState, useRef } from "react";
 import { parseUnifiedDocument, parseUser } from "~/config/types/root_types";
 import { CloseIcon } from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faAngleRight, faAngleDown} from "@fortawesome/pro-light-svg-icons";
+import { faAngleRight, faAngleDown, faChevronDown, faChevronUp } from "@fortawesome/pro-light-svg-icons";
 import colors from "~/config/themes/colors";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 import { parseHub, Hub } from "~/config/types/hub";
@@ -21,6 +20,8 @@ import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
 import BountyFeedCard from "~/components/Bounty/BountyFeedCard";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import Button from "~/components/Form/Button";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 type SimpleBounty = {
   id: string;
@@ -32,24 +33,22 @@ type SimpleBounty = {
   unifiedDocument: {
     document: {
       title: string;
-      // Add other necessary fields if required
     };
     authors: Array<{ firstName: string; lastName: string }>;
-    // Add other necessary fields if required
   };
   hubs: Hub[];
-  bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER"; // Fixed typo
+  bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER";
 };
 
 const parseSimpleBounty = (raw: any): SimpleBounty => {
   return {
     id: raw.id,
-    amount: Number(raw.total_amount), // Ensure amount is a number
+    amount: Number(raw.total_amount),
     content: raw.item.comment_content_json,
     bountyType:
       raw.bounty_type === "GENERIC_COMMMENT"
         ? "GENERIC_COMMENT"
-        : raw.bounty_type, // Fix typo
+        : raw.bounty_type,
     createdDate: raw.created_date,
     createdBy: parseUser(raw.created_by),
     expirationDate: raw.expiration_date,
@@ -60,14 +59,25 @@ const parseSimpleBounty = (raw: any): SimpleBounty => {
   };
 };
 
+const sortingOptions = [
+  { label: "Recommended", value: "recommended" },
+  { label: "Price", value: "price" },
+  { label: "Latest", value: "latest" },
+];
+
 const BountiesPage: NextPage = () => {
   const [currentBounties, setCurrentBounties] = useState<SimpleBounty[]>([]);
   const [openInfoSections, setOpenInfoSections] = useState<string[]>([]);
   const [nextPageCursor, setNextPageCursor] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [sortBy, setSortBy] = useState<string>("recommended");
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const currentUser = useCurrentUser();
   const auth = useSelector((state: any) => state.auth);
+  const router = useRouter();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   const {
     isDismissed: isVerificationBannerDismissed,
     dismissFeature: dismissVerificationBanner,
@@ -79,18 +89,30 @@ const BountiesPage: NextPage = () => {
 
   useEffect(() => {
     fetchBountiesData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage]);
+  }, [currentPage, sortBy]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const fetchBountiesData = async () => {
     try {
       setIsLoading(true);
       const response: any = await fetchBounties({
-        personalized: true,
+        personalized: sortBy === "recommended",
         pageCursor: nextPageCursor,
+        sortBy: sortBy,
       });
 
-      // Assuming response has 'next' and 'results'
       setNextPageCursor(response.next);
       const parsedBounties: SimpleBounty[] = (response.results || [])
         .map((bounty: any) => {
@@ -123,6 +145,19 @@ const BountiesPage: NextPage = () => {
     }
   }
 
+  const handleSortChange = (value: string) => {
+    setSortBy(value);
+    setIsDropdownOpen(false);
+    setCurrentPage(1);
+    setNextPageCursor(null);
+    
+    // Update URL with new sorting parameter
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, sort: value },
+    }, undefined, { shallow: true });
+  };
+
   const showVerifyBanner =
     !currentUser?.isVerified &&
     verificationBannerDismissStatus === "checked" &&
@@ -135,6 +170,34 @@ const BountiesPage: NextPage = () => {
         <h1 className={css(styles.title)}>Grants</h1>
         <div className={css(styles.description)}>
           Earn ResearchCoin by completing grants.
+        </div>
+
+        {/* Sorting Dropdown */}
+        <div className={css(styles.sortingContainer)} ref={dropdownRef}>
+          <div className={css(styles.sortByLabel)}>Sort by:</div>
+          <div
+            className={css(styles.dropdownButton)}
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          >
+            <span>{sortingOptions.find(option => option.value === sortBy)?.label}</span>
+            <FontAwesomeIcon
+              icon={isDropdownOpen ? faChevronUp : faChevronDown}
+              className={css(styles.dropdownIcon)}
+            />
+          </div>
+          {isDropdownOpen && (
+            <div className={css(styles.dropdownMenu)}>
+              {sortingOptions.map((option) => (
+                <div
+                  key={option.value}
+                  className={css(styles.dropdownItem, option.value === sortBy && styles.dropdownItemSelected)}
+                  onClick={() => handleSortChange(option.value)}
+                >
+                  {option.label}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Verification Banner */}
@@ -174,7 +237,6 @@ const BountiesPage: NextPage = () => {
             <LoadMore
               onClick={async () => {
                 setCurrentPage((prevPage) => prevPage + 1);
-                setIsLoading(true);
               }}
               isLoading={isLoading}
             />
@@ -395,7 +457,6 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     }
-
   },
   infoSection: {
   },
@@ -514,6 +575,53 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: colors.NEW_BLUE(0.8),
     },
+  },
+  sortingContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: 20,
+    position: "relative",
+  },
+  sortByLabel: {
+    fontSize: 16,
+    fontWeight: 500,
+    marginRight: 10,
+  },
+  dropdownButton: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "8px 12px",
+    border: `1px solid ${colors.GREY_BORDER}`,
+    borderRadius: 4,
+    backgroundColor: "white",
+    cursor: "pointer",
+    fontSize: 16,
+    minWidth: 150,
+  },
+  dropdownIcon: {
+    marginLeft: 10,
+  },
+  dropdownMenu: {
+    position: "absolute",
+    top: "100%",
+    left: 70,
+    backgroundColor: "white",
+    border: `1px solid ${colors.GREY_BORDER}`,
+    borderRadius: 4,
+    zIndex: 10,
+    minWidth: 150,
+  },
+  dropdownItem: {
+    padding: "8px 12px",
+    cursor: "pointer",
+    ":hover": {
+      backgroundColor: colors.LIGHTER_GREY(),
+    },
+  },
+  dropdownItemSelected: {
+    backgroundColor: colors.NEW_BLUE(0.1),
+    color: colors.NEW_BLUE(),
   },
 });
 
