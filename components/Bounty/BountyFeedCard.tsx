@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { css, StyleSheet } from 'aphrodite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faClock,
-  faReply,
+import { 
+  faClock, 
+  faChevronDown, 
+  faChevronUp, 
 } from '@fortawesome/pro-light-svg-icons';
 import { formatDateStandard } from '~/config/utils/dates';
 import { getUrlToUniDoc } from '~/config/utils/routing';
-import AuthorAvatar from '~/components/AuthorAvatar';
-import UserTooltip from '~/components/Tooltips/User/UserTooltip';
+import CommentAvatars from '~/components/Comment/CommentAvatars';
 import Button from '~/components/Form/Button';
 import VerifiedBadge from '~/components/Verification/VerifiedBadge';
 import colors from '~/config/themes/colors';
 import ALink from '~/components/ALink';
+import UserTooltip from '~/components/Tooltips/User/UserTooltip';
 import ContentBadge from '~/components/ContentBadge';
 import { formatBountyAmount } from '~/config/types/bounty';
 import CommentReadOnly from '~/components/Comment/CommentReadOnly';
@@ -20,7 +21,6 @@ import HubTag from '~/components/Hubs/HubTag';
 import { Hub } from '~/config/types/hub';
 import { UnifiedDocument } from '~/config/types/root_types';
 
-// Updated SimpleBounty type to include more fields from unifiedDocument
 type SimpleBounty = {
   id: string;
   amount: number;
@@ -30,7 +30,6 @@ type SimpleBounty = {
   createdDate: string;
   unifiedDocument: UnifiedDocument;
   bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER";
-  hubs: Hub[];
 };
 
 const bountyTypeLabels = {
@@ -42,7 +41,7 @@ const bountyTypeLabels = {
 const formatAuthors = (authors: Array<{ firstName: string; lastName: string }>): string => {
   const numAuthors = authors.length;
   if (numAuthors <= 2) {
-    return authors.map((a) => `${a.firstName} ${a.lastName}`).join(', ');
+    return authors.map(a => `${a.firstName} ${a.lastName}`).join(', ');
   } else {
     const firstAuthor = `${authors[0].firstName} ${authors[0].lastName}`;
     const lastAuthor = `${authors[numAuthors - 1].firstName} ${authors[numAuthors - 1].lastName}`;
@@ -52,7 +51,7 @@ const formatAuthors = (authors: Array<{ firstName: string; lastName: string }>):
 };
 
 const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
-  const { createdBy, unifiedDocument, expirationDate, amount, bountyType, content, hubs } = bounty;
+  const { createdBy, unifiedDocument, expirationDate, amount, bountyType, content } = bounty;
   const url = getUrlToUniDoc(unifiedDocument);
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(false);
   const [firstHub, setFirstHub] = useState<Hub | null>(null);
@@ -75,7 +74,8 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
           <div style={{ flex: 1 }}>
             {formatBountyAmount({
               amount: amount,
-            })} RSC
+            })}{" "}
+            RSC
           </div>
         </div>
       }
@@ -91,7 +91,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
       {/* Header Section */}
       <div className={css(styles.header)}>
         <div className={css(styles.userInfo)}>
-          <AuthorAvatar author={createdBy?.authorProfile} size={40} />
+          <CommentAvatars size={40} people={[createdBy]} withTooltip={true} />
           <div className={css(styles.userDetails)}>
             <div className={css(styles.nameAndGrant)}>
               <UserTooltip
@@ -125,7 +125,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
           </div>
         </div>
       </div>
-
+      
       {/* Paper Details Section */}
       <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
         <div className={css(styles.paperDetails)}>
@@ -133,7 +133,9 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
             {unifiedDocument.document?.title || 'Untitled'}
           </div>
           <div className={css(styles.paperAuthors)}>
-            {unifiedDocument.authors && unifiedDocument.authors.length > 0 && formatAuthors(unifiedDocument.authors)}
+            {unifiedDocument.authors && unifiedDocument.authors.length > 0 && (
+              formatAuthors(unifiedDocument.authors)
+            )}
           </div>
         </div>
       </ALink>
@@ -146,12 +148,12 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
             {isDetailsExpanded ? (
               <>
                 Read Less
-                <FontAwesomeIcon icon={faReply} className={css(styles.toggleIcon)} />
+                <FontAwesomeIcon icon={faChevronUp} className={css(styles.toggleIcon)} />
               </>
             ) : (
               <>
                 Read More
-                <FontAwesomeIcon icon={faReply} className={css(styles.toggleIcon)} />
+                <FontAwesomeIcon icon={faChevronDown} className={css(styles.toggleIcon)} />
               </>
             )}
           </div>
@@ -251,7 +253,12 @@ const styles = StyleSheet.create({
     ":hover": {
       transition: "0.2s",
       background: colors.LIGHTER_GREY(1.0),
-    },
+    },    
+  },
+  paperIcon: {
+    [`@media only screen and (max-width: 400px)`]: {
+      display: "none",
+    }
   },
   paperDetails: {
     display: "flex",
@@ -268,6 +275,17 @@ const styles = StyleSheet.create({
     marginTop: 3,
     display: "flex",
     flexDirection: "column",
+  },
+  condensedAuthorList: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 4,
+  },
+  paperHubs: {
+    display: "flex",
+    gap: 5,
+    marginTop: 10,
+    flexWrap: "wrap",
   },
   metaInfo: {
     display: "flex",
@@ -303,6 +321,16 @@ const styles = StyleSheet.create({
   noHub: {
     fontSize: 14,
     color: colors.MEDIUM_GREY2(),
+  },
+  hubsContainer: {
+    marginTop: 10,
+    marginBottom: 20,
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 5,
+  },
+  hubTag: {
+    cursor: "pointer",
   },
   details: {
     marginBottom: 5,
