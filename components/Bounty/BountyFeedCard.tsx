@@ -204,7 +204,8 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
+    gap: "20px",
   },
   rightSection: {
     width: "80%",
@@ -256,13 +257,15 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     alignItems: "center",
     marginTop: 2,
-    background: "rgba(250, 250, 252, 0.4)",
+    background: "rgba(250, 250, 252, 1)",
     borderRadius: 2,
     padding: 20,
     ":hover": {
       transition: "0.2s",
       background: colors.LIGHTER_GREY(1.0),
     },    
+    textDecoration: "none",
+    color: "inherit",
   },
   paperDetails: {
     display: "flex",
@@ -307,6 +310,7 @@ const styles = StyleSheet.create({
     },
   },
   details: {
+    marginTop: 10,
     marginBottom: 5,
   },
   detailsHeader: {
@@ -336,6 +340,7 @@ const styles = StyleSheet.create({
   },
   hubTag: {
     cursor: "pointer",
+    fontSize: 20,
   },
 });
 
