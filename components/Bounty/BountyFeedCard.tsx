@@ -1,26 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { css, StyleSheet } from 'aphrodite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faClock, 
-  faChevronDown, 
-  faChevronUp, 
+import {
+  faClock,
+  faReply,
 } from '@fortawesome/pro-light-svg-icons';
-import { formatDateStandard } from '~/config/utils/dates';
+import { formatDateStandard, timeTo } from '~/config/utils/dates';
 import { getUrlToUniDoc } from '~/config/utils/routing';
-import CommentAvatars from '~/components/Comment/CommentAvatars';
+import AuthorAvatar from '~/components/AuthorAvatar';
+import UserTooltip from '~/components/Tooltips/User/UserTooltip';
 import Button from '~/components/Form/Button';
 import VerifiedBadge from '~/components/Verification/VerifiedBadge';
 import colors from '~/config/themes/colors';
 import ALink from '~/components/ALink';
-import UserTooltip from '~/components/Tooltips/User/UserTooltip';
 import ContentBadge from '~/components/ContentBadge';
 import { formatBountyAmount } from '~/config/types/bounty';
 import CommentReadOnly from '~/components/Comment/CommentReadOnly';
 import HubTag from '~/components/Hubs/HubTag';
 import { Hub } from '~/config/types/hub';
 import { UnifiedDocument } from '~/config/types/root_types';
+import { fetchUnifiedDocFeed } from '~/config/fetch';
+import VoteWidget from '~/components/VoteWidget';
+import { useHistory } from 'react-router-dom';
+import { parseSimpleBounty } from '~/config/utils/parsers';
 
+// Updated SimpleBounty type to include more fields from unifiedDocument
 type SimpleBounty = {
   id: string;
   amount: number;
@@ -29,7 +33,9 @@ type SimpleBounty = {
   expirationDate: string;
   createdDate: string;
   unifiedDocument: UnifiedDocument;
+  hubs: Hub[];
   bountyType: "REVIEW" | "GENERIC_COMMENT" | "ANSWER";
+  score: number; // Added score to properly handle voting mechanism
 };
 
 const bountyTypeLabels = {
@@ -38,145 +44,136 @@ const bountyTypeLabels = {
   GENERIC_COMMENT: "Comment",
 };
 
-const formatAuthors = (authors: Array<{ firstName: string; lastName: string }>): string => {
-  const numAuthors = authors.length;
-  if (numAuthors <= 2) {
-    return authors.map(a => `${a.firstName} ${a.lastName}`).join(', ');
-  } else {
-    const firstAuthor = `${authors[0].firstName} ${authors[0].lastName}`;
-    const lastAuthor = `${authors[numAuthors - 1].firstName} ${authors[numAuthors - 1].lastName}`;
-    const middleCount = numAuthors - 2;
-    return `${firstAuthor}, +${middleCount} authors, ${lastAuthor}`;
-  }
-};
-
 const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
-  const { createdBy, unifiedDocument, expirationDate, amount, bountyType, content } = bounty;
-  const url = getUrlToUniDoc(unifiedDocument);
-  const [isDetailsExpanded, setIsDetailsExpanded] = useState(false);
-  const [firstHub, setFirstHub] = useState<Hub | null>(null);
+  const { createdBy, amount, expirationDate, unifiedDocument, hubs, bountyType, score } = bounty;
+  const [documentData, setDocumentData] = useState<UnifiedDocument | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const history = useHistory();
 
   useEffect(() => {
-    if (unifiedDocument?.hubs && unifiedDocument.hubs.length > 0) {
-      setFirstHub(unifiedDocument.hubs[0]);
-    }
-  }, [unifiedDocument]);
+    (async () => {
+      try {
+        const fetchedData: any = await fetchUnifiedDocFeed({
+          selectedFilters: { type: unifiedDocument?.documentType },
+          hubId: hubs.length > 0 ? hubs[0].id : null,
+          page: 1,
+        });
+        const parsedData = (fetchedData?.results || []).map((doc) => {
+          try {
+            return parseSimpleBounty(doc);
+          } catch (e) {
+            console.error('Error parsing document data', doc, e);
+          }
+        }).filter((doc) => doc !== undefined);
 
-  const badge = (
-    <ContentBadge
-      contentType="bounty"
-      bountyAmount={amount}
-      badgeContainerOverride={styles.badgeContainer}
-      size="small"
-      badgeOverride={styles.badgeOverride}
-      label={
-        <div style={{ display: "flex", whiteSpace: "pre" }}>
-          <div style={{ flex: 1 }}>
-            {formatBountyAmount({
-              amount: amount,
-            })}{" "}
-            RSC
-          </div>
-        </div>
+        if (parsedData.length > 0) {
+          setDocumentData(parsedData[0]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch unified document data", error);
+      } finally {
+        setIsLoading(false);
       }
-    />
-  );
+    })();
+  }, [unifiedDocument, hubs]);
 
-  const toggleDetails = () => {
-    setIsDetailsExpanded(!isDetailsExpanded);
-  };
+  const firstAuthor = useMemo(() => {
+    if (!unifiedDocument.authors || unifiedDocument.authors.length === 0) return null;
+    const first = unifiedDocument.authors.find((a) => a.sequence === "first");
+    if (first) return first;
+    return unifiedDocument.authors[0];
+  }, [unifiedDocument.authors]);
+
+  // Show loading indicator while data is being fetched
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // Show error message if document data failed to load
+  if (!documentData) {
+    return <div>Failed to load document data.</div>;
+  }
 
   return (
     <div className={css(styles.card)}>
-      {/* Header Section */}
+      {/* Header section displaying author and bounty details */}
       <div className={css(styles.header)}>
-        <div className={css(styles.userInfo)}>
-          <CommentAvatars size={40} people={[createdBy]} withTooltip={true} />
-          <div className={css(styles.userDetails)}>
-            <div className={css(styles.nameAndGrant)}>
+        <div className={css(styles.leftContent)}>
+          {firstAuthor && (
+            <>
+              <AuthorAvatar author={firstAuthor} size={24} />
               <UserTooltip
-                createdBy={createdBy}
+                createdBy={null}
                 targetContent={
                   <ALink
-                    href={`/author/${createdBy?.authorProfile?.id}`}
-                    key={`/author/${createdBy?.authorProfile?.id}`}
-                    className={css(styles.userName)}
+                    href={`/author/${firstAuthor?.id}`}
+                    key={`/author/${firstAuthor?.id}`}
                   >
-                    {createdBy?.authorProfile?.firstName} {createdBy?.authorProfile?.lastName}
+                    {firstAuthor?.firstName}
+                    {firstAuthor?.lastName && " "}
+                    {firstAuthor?.lastName}
+                    {unifiedDocument.authors && unifiedDocument.authors.length > 1 && " et al."}
                   </ALink>
                 }
               />
-              {createdBy?.authorProfile?.isVerified && (
-                <VerifiedBadge height={16} width={16} style={{ marginLeft: 4 }} />
-              )}
-              <span className={css(styles.openedGrant)}>
-                opened a {badge} grant for <strong>{bountyTypeLabels[bountyType] || "expertise"}</strong> on:
-              </span>
-            </div>
-            <div className={css(styles.bountyType)}>
-              {bountyTypeLabels[bountyType] || "Unknown Type"}
-            </div>
-          </div>
+            </>
+          )}
+          <span className={css(styles.actionText)}>
+            is offering
+            <ContentBadge
+              contentType="bounty"
+              bountyAmount={amount}
+              size="small"
+              badgeContainerOverride={styles.badgeContainer}
+              label={
+                <div style={{ display: "flex", whiteSpace: "pre" }}>
+                  <div style={{ flex: 1 }}>
+                    {formatBountyAmount({
+                      amount: amount,
+                      withPrecision: false,
+                    })} RSC
+                  </div>
+                </div>
+              }
+            />
+            on
+          </span>
+          <span className={css(styles.actionNoun)}>
+            {unifiedDocument.document && unifiedDocument.document.title ? unifiedDocument.document.title : "Untitled Document"}
+          </span>
         </div>
-        <div className={css(styles.metaInfo)}>
-          <div className={css(styles.metaItem)}>
-            <FontAwesomeIcon icon={faClock} className={css(styles.icon)} />
-            Expires {formatDateStandard(expirationDate)}
-          </div>
+        <div className={css(styles.timeSince)}>
+          {formatDateStandard(expirationDate)}
         </div>
       </div>
-      
-      {/* Paper Details Section */}
-      <ALink href={`${url}/bounties`} className={css(styles.paperWrapper)}>
-        <div className={css(styles.paperDetails)}>
-          <div className={css(styles.paperTitle)}>
-            {unifiedDocument.document?.title || 'Untitled'}
-          </div>
-          <div className={css(styles.paperAuthors)}>
-            {unifiedDocument.authors && unifiedDocument.authors.length > 0 && (
-              formatAuthors(unifiedDocument.authors)
-            )}
-          </div>
-        </div>
-      </ALink>
 
-      {/* Details Section */}
-      <div className={css(styles.details)}>
-        <div className={css(styles.detailsHeader)}>
-          Details
-          <div className={css(styles.readMoreToggle)} onClick={toggleDetails}>
-            {isDetailsExpanded ? (
-              <>
-                Read Less
-                <FontAwesomeIcon icon={faChevronUp} className={css(styles.toggleIcon)} />
-              </>
-            ) : (
-              <>
-                Read More
-                <FontAwesomeIcon icon={faChevronDown} className={css(styles.toggleIcon)} />
-              </>
-            )}
-          </div>
-        </div>
-        {isDetailsExpanded && (
-          <div className={css(styles.detailsContent)}>
-            <CommentReadOnly content={content} />
-          </div>
-        )}
+      {/* Body section displaying bounty content */}
+      <div className={css(styles.body)}>
+        <CommentReadOnly content={bounty.content} />
       </div>
 
-      {/* CTA and Hub Section */}
-      <div className={css(styles.ctaAndHubContainer)}>
-        <Button
-          label="View Grant"
-          onClick={() => window.location.href = `${url}/bounties`}
-          customButtonStyle={styles.ctaButton}
+      {/* Hubs associated with the bounty */}
+      <div className={css(styles.hubs)}>
+        {hubs.map((hub) => (
+          <HubTag key={hub.id} hub={hub} />
+        ))}
+      </div>
+
+      {/* Footer section with VoteWidget and Earn button */}
+      <div className={css(styles.footer)}>
+        <VoteWidget
+          horizontalView={true}
+          onDownvote={() => {}}
+          onUpvote={() => {}}
+          score={score} // Updated score to use the correct value from the bounty
+          upvoteStyleClass={styles.voteIcon}
+          downvoteStyleClass={styles.voteIcon}
         />
-        {firstHub ? (
-          <HubTag overrideStyle={styles.hubTag} hub={firstHub} key={firstHub.id} />
-        ) : (
-          <div className={css(styles.noHub)}>No Hub</div>
-        )}
+        <Button
+          label="Earn"
+          onClick={() => history.push(`${getUrlToUniDoc(unifiedDocument.id)}/bounties`)}
+          customButtonStyle={styles.button}
+        />
       </div>
     </div>
   );
@@ -184,178 +181,72 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    padding: 24,
-    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.05)",
-    transition: "all 0.2s ease-in-out",
-    border: `1px solid ${colors.LIGHTER_GREY()}`,
-    ":hover": {
-      transform: "translateY(-2px)",
-      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.08)",
-    },
-    display: "flex",
-    flexDirection: "column",
-    gap: 16,
+    padding: 20,
+    border: `1px solid ${colors.LIGHT_GREY()}`,
+    borderRadius: 4,
+    marginBottom: 20,
   },
   header: {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 5,
+    alignItems: "center",
+    marginBottom: 12,
   },
-  userInfo: {
+  leftContent: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+  },
+  actionText: {
+    fontSize: 14,
+    color: colors.MEDIUM_GREY2(),
+    whiteSpace: "nowrap",
     display: "flex",
     alignItems: "center",
   },
-  userDetails: {
-    marginLeft: 12,
-    display: "flex",
-    flexDirection: "column",
-  },
-  nameAndGrant: {
-    display: "flex",
-    alignItems: "center",
-    flexWrap: "wrap",
-  },
-  userName: {
+  actionNoun: {
     fontSize: 16,
-    fontWeight: 600,
-    color: colors.BLACK(0.9),
-    textDecoration: "none",
+    color: colors.BLACK_TEXT(),
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "200px",
   },
-  openedGrant: {
+  timeSince: {
     fontSize: 14,
-    color: colors.BLACK(0.6),
-    marginLeft: 8,
+    color: colors.MEDIUM_GREY2(),
   },
-  bountyType: {
-    fontSize: 14,
-    color: colors.BLACK(0.6),
-    marginTop: 2,
+  body: {
+    marginTop: 10,
   },
-  badgeContainer: {
-    display: "inline-flex",
-    marginLeft: 4,
-    marginRight: 4,
-  },
-  badgeOverride: {
-    marginRight: 0,
-  },
-  paperWrapper: {
-    display: "flex",
-    cursor: "pointer",
-    alignItems: "center",
-    marginTop: 2,
-    background: "rgba(250, 250, 252, 0.4)",
-    borderRadius: 2,
-    padding: 20,
-    ":hover": {
-      transition: "0.2s",
-      background: colors.LIGHTER_GREY(1.0),
-    },    
-  },
-  paperIcon: {
-    [`@media only screen and (max-width: 400px)`]: {
-      display: "none",
-    }
-  },
-  paperDetails: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  paperTitle: {
-    fontSize: 20,
-    fontWeight: 500,
-    color: colors.BLACK(0.9),
-  },
-  paperAuthors: {
-    color: colors.BLACK(0.6),
-    fontSize: 14,
-    marginTop: 3,
-    display: "flex",
-    flexDirection: "column",
-  },
-  condensedAuthorList: {
+  hubs: {
     display: "flex",
     flexWrap: "wrap",
-    gap: 4,
-  },
-  paperHubs: {
-    display: "flex",
-    gap: 5,
     marginTop: 10,
-    flexWrap: "wrap",
   },
-  metaInfo: {
+  footer: {
     display: "flex",
+    justifyContent: "space-between",
     alignItems: "center",
+    marginTop: 20,
+  },
+  voteIcon: {
     fontSize: 14,
-    color: colors.BLACK(0.6),
   },
-  metaItem: {
-    display: "flex",
-    alignItems: "center",
-  },
-  icon: {
-    marginRight: 8,
-    fontSize: 16,
-    color: colors.BLACK(0.4),
-  },
-  ctaAndHubContainer: {
-    display: "flex",
-    alignItems: "center",
-    marginTop: 10,
-    gap: 10,
-  },
-  ctaButton: {
-    padding: "8px 16px",
-    fontSize: 14,
-    fontWeight: 600,
+  button: {
     backgroundColor: colors.NEW_BLUE(),
-    color: "#ffffff",
+    color: "#fff",
+    padding: "10px 20px",
+    border: "none",
+    borderRadius: 4,
+    cursor: "pointer",
     ":hover": {
       backgroundColor: colors.NEW_BLUE(0.8),
     },
   },
-  noHub: {
-    fontSize: 14,
-    color: colors.MEDIUM_GREY2(),
-  },
-  hubsContainer: {
-    marginTop: 10,
-    marginBottom: 20,
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 5,
-  },
-  hubTag: {
-    cursor: "pointer",
-  },
-  details: {
-    marginBottom: 5,
-  },
-  detailsHeader: {
-    fontSize: 14,
-    fontWeight: 600,
-    marginBottom: 8,
-    display: "flex",
-    alignItems: "center",
-  },
-  readMoreToggle: {
-    color: colors.NEW_BLUE(),
-    cursor: "pointer",
-    marginLeft: 8,
-    display: "flex",
-    alignItems: "center",
-  },
-  toggleIcon: {
-    marginLeft: 4,
-  },
-  detailsContent: {
-    fontSize: 14,
-    lineHeight: 1.5,
-    color: colors.BLACK(0.8),
+  badgeContainer: {
+    display: "inline",
+    margin: "0 4px",
   },
 });
 
