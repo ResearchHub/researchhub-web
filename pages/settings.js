@@ -8,23 +8,13 @@ import {
   digestSubscriptionPatch,
   emailPreferencePatch,
 } from "~/config/shims";
-import { capitalize } from "~/config/utils/string";
 import { connect } from "react-redux";
 import { createRef, Component } from "react";
 import { css, StyleSheet } from "aphrodite";
-import { defaultStyles, hubStyles, selectStyles } from "~/config/themes/styles";
+import { defaultStyles, selectStyles } from "~/config/themes/styles";
 import { DIGEST_FREQUENCY } from "~/config/constants";
-import {
-  doesNotExist,
-  emptyFncWithMsg,
-  isEmpty,
-} from "~/config/utils/nullchecks";
-import {
-  fetchEmailPreference,
-  subscribeToHub,
-  unsubscribeFromHub,
-  updateEmailPreference,
-} from "~/config/fetch";
+import { doesNotExist, emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { fetchEmailPreference, updateEmailPreference } from "~/config/fetch";
 import { HubActions } from "~/redux/hub";
 import { MessageActions } from "~/redux/message";
 import { postShouldDisplayRscBalanceHome } from "~/components/Home/api/postShouldDisplayRscBalanceHome";
@@ -446,191 +436,6 @@ class UserSettings extends Component {
       });
   };
 
-  renderSubscribedHubs = () => {
-    const subscribedHubIds = {};
-
-    this.props.subscribedHubs.forEach((hub) => {
-      subscribedHubIds[hub.id] = true;
-    });
-
-    const availableHubs = this.props.hubs.filter((hub) => {
-      return !subscribedHubIds[hub.id];
-    });
-
-    return (
-      <div className={css(styles.container)}>
-        <div className={css(hubStyles.list, styles.hubsList)}>
-          <FormSelect
-            id={"hubSelect"}
-            options={this.buildHubOptions(availableHubs)}
-            containerStyle={
-              (selectStyles.container, styles.formSelectContainer)
-            }
-            inputStyle={(selectStyles.input, styles.formSelectInput)}
-            onChange={this.handleHubOnChange}
-            isSearchable={true}
-            placeholder={"Search Hubs"}
-            value={this.buildHubOptions(this.props.subscribedHubs)}
-            isMulti={true}
-            multiTagStyle={styles.multiTagStyle}
-            multiTagLabelStyle={styles.multiTagLabelStyle}
-            isClearable={false}
-          />
-        </div>
-        <div
-          className={css(
-            styles.buttonContainer,
-            !this.props.subscribedHubs.length && styles.hide
-          )}
-        >
-          <div
-            className={css(styles.unsubscribeButton)}
-            onClick={this.confirmUnsubscribeAll}
-          >
-            Leave All
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  renderHub = (hub) => {
-    return (
-      <Ripples
-        onClick={() => this.confirmUnsubscribe(hub)}
-        key={hub.id}
-        className={css(hubStyles.entry, styles.hubEntry)}
-      >
-        {hub.name}
-        <div className={css(styles.closeIcon)}>
-          {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
-        </div>
-      </Ripples>
-    );
-  };
-
-  confirmUnsubscribe = (hub, newState) => {
-    this.props.alert.show({
-      text: (
-        <span>
-          Leave from
-          <span className={css(styles.hubName)}>{` ${hub.name} `}</span>?
-        </span>
-      ),
-      buttonText: "Yes",
-      onClick: () => {
-        return this.handleHubUnsubscribe(hub, newState);
-      },
-    });
-  };
-
-  handleHubUnsubscribe = (hub, newState) => {
-    const hubId = hub.id;
-    const hubName = capitalize(hub.name);
-    unsubscribeFromHub({ hubId })
-      .then((res) => {
-        this.props.dispatch(HubActions.updateSubscribedHubs(newState));
-        this.props.dispatch(MessageActions.setMessage(`Left ${hubName}!`));
-        this.props.dispatch(MessageActions.showMessage({ show: true }));
-      })
-      .catch(this.displayError);
-  };
-
-  confirmUnsubscribeAll = () => {
-    this.props.alert.show({
-      text: <span>Leave from all your hub communities?</span>,
-      buttonText: "Yes",
-      onClick: () => {
-        return this.unsubscribeFromAll();
-      },
-    });
-  };
-
-  unsubscribeFromAll = async () => {
-    this.props.dispatch(MessageActions.showMessage({ show: true, load: true }));
-    await Promise.all(
-      this.props.subscribedHubs.map((hub) => {
-        return unsubscribeFromHub({ hubId: hub.id });
-      })
-    )
-      .then((_) => {
-        this.props.dispatch(HubActions.updateSubscribedHubs([]));
-        this.props.dispatch(MessageActions.showMessage({ show: false }));
-        // this.props.dispatch(
-        //   MessageActions.setMessage("Successfully left all hubs!")
-        // );
-        // this.props.dispatch(MessageActions.showMessage({ show: true }));
-      })
-      .catch(this.displayError);
-  };
-  buildHubOptions = (hubs) => {
-    return (
-      hubs &&
-      hubs.map((hub) => {
-        let hubName =
-          !isEmpty(hub.name) &&
-          hub.name
-            .split(" ")
-            .map((el) => {
-              if (!el[0]) {
-                return "";
-              }
-              return el[0].toUpperCase() + el.slice(1);
-            })
-            .join(" ");
-        let obj = { ...hub };
-        obj.value = hub.id;
-        obj.label = hubName;
-        return obj;
-      })
-    );
-  };
-
-  handleHubOnChange = (id, newHubList) => {
-    const prevState = this.props.subscribedHubs;
-
-    if (doesNotExist(newHubList)) {
-      newHubList = [];
-    }
-
-    if (newHubList.length > prevState.length) {
-      const newHub = newHubList[newHubList.length - 1];
-      this.handleHubSubscribe(newHub, newHubList);
-    } else {
-      const removedHub = this.detectRemovedHub(prevState, newHubList);
-      this.confirmUnsubscribe(removedHub, newHubList);
-    }
-  };
-
-  handleHubSubscribe = (hub, newState) => {
-    const hubName = capitalize(hub.name);
-
-    subscribeToHub({ hubId: hub.id })
-      .then((_) => {
-        // this.props.dispatch(HubActions.updateHub(hubState, { ...res }));
-        this.props.dispatch(HubActions.updateSubscribedHubs(newState));
-        this.props.dispatch(MessageActions.setMessage(`Joined ${hubName}`));
-        this.props.dispatch(MessageActions.showMessage({ show: true }));
-      })
-      .catch(this.displayError);
-  };
-
-  detectRemovedHub = (prevState, newState) => {
-    const cache = {};
-    prevState.forEach((hub) => {
-      cache[hub.id] = hub;
-    });
-
-    for (var i = 0; i < newState.length; i++) {
-      var id = newState[i].value;
-      if (cache[id]) {
-        delete cache[id];
-      }
-    }
-
-    return Object.values(cache)[0];
-  };
-
   renderContentSubscriptions = () => {
     return contentSubscriptionOptions.map((option) => {
       return (
@@ -747,7 +552,6 @@ class UserSettings extends Component {
             this.renderChangePassword()}
           <UserApiTokenInputField />
           {this.renderFrequencySelect()}
-          {/* {this.renderSubscribedHubs()} */}
           <div className={css(styles.container)}>
             <div className={css(styles.listLabel)} id={"hubListTitle"}>
               {"Notifications"}
