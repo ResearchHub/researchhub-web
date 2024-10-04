@@ -21,7 +21,6 @@ import { Hub } from '~/config/types/hub';
 import { UnifiedDocument } from '~/config/types/root_types';
 import { fetchUnifiedDocFeed } from '~/config/fetch';
 import VoteWidget from '~/components/VoteWidget';
-import { useHistory } from 'react-router-dom';
 import { parseSimpleBounty } from '~/config/utils/parsers';
 
 // Updated SimpleBounty type to include more fields from unifiedDocument
@@ -48,8 +47,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
   const { createdBy, amount, expirationDate, unifiedDocument, hubs, bountyType, score } = bounty;
   const [documentData, setDocumentData] = useState<UnifiedDocument | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const history = useHistory();
-
+  
   useEffect(() => {
     (async () => {
       try {
@@ -171,7 +169,7 @@ const BountyFeedCard: React.FC<{ bounty: SimpleBounty }> = ({ bounty }) => {
         />
         <Button
           label="Earn"
-          onClick={() => history.push(`${getUrlToUniDoc(unifiedDocument.id)}/bounties`)}
+          onClick={() => window.location.href = `${getUrlToUniDoc(unifiedDocument.id)}/bounties`}
           customButtonStyle={styles.button}
         />
       </div>
