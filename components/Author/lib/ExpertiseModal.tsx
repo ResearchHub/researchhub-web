@@ -29,15 +29,7 @@ const ExpertiseModal = ({
         <div className={css(styles.description)}>
           Below is the full hub-specific reputation of {profile.firstName}{" "}
           {profile.lastName}. Reputation is based on a variety of factors
-          including upvotes and citations.{" "}
-          <ALink
-            target="_blank"
-            overrideStyle={styles.link}
-            theme="linkThemeDefault"
-            href="https://www.researchhub.com/post/3019/reputation-v2-healthy-research-rewards"
-          >
-            Learn more about our reputation algorithm
-          </ALink>
+          including upvotes and citations.
         </div>
         <AuthorReputationSection hideBelowValue={1} reputationList={profile.reputationList} />
       </div>
