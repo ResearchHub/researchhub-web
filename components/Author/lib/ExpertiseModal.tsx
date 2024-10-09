@@ -34,7 +34,7 @@ const ExpertiseModal = ({
             target="_blank"
             overrideStyle={styles.link}
             theme="linkThemeDefault"
-            href="/"
+            href="https://www.researchhub.com/post/3019/reputation-v2-healthy-research-rewards"
           >
             Learn more about our reputation algorithm
           </ALink>
