@@ -372,19 +372,14 @@ function AuthorPage(props) {
     }
   };
 
-  const downloadCSVFromJSON = (jsonData) => {
-    // Extract CSV data from the JSON object
-    const csvData = jsonData;
-    if (!csvData) {
-      console.error("No CSV data found in the provided JSON.");
+  const downloadCSVFromBlob = (data) => {
+    if (!data) {
+      console.error("No CSV data found.");
       return;
     }
 
-    // Convert the CSV data into a Blob
-    const blob = new Blob([csvData], { type: "text/csv" });
-
     // Create a URL for the Blob
-    const url = URL.createObjectURL(blob);
+    const url = URL.createObjectURL(data);
 
     // Create a temporary anchor element to trigger the download
     const a = document.createElement("a");
@@ -402,8 +397,8 @@ function AuthorPage(props) {
     setDownloading(true);
     const url = generateApiUrl("transactions/list_csv");
     const res = await fetch(url, api.GET_CONFIG());
-    const json = await res.json();
-    downloadCSVFromJSON(json);
+    const blob = await res.blob();
+    downloadCSVFromBlob(blob);
     setDownloading(false);
   };
 
