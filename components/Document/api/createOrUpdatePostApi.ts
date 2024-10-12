@@ -1,6 +1,4 @@
 import API from "~/config/api";
-import { sendAmpEvent } from "~/config/fetch";
-import { Helpers } from "@quantfive/js-web-config";
 import { ID, RHUser } from "~/config/types/root_types";
 import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdown";
 
@@ -74,17 +72,6 @@ const logEmpEvent = ({
         eventProperties.interaction = "Question created";
       }
     }
-
-    const ampPayload = {
-      event_type: eventType,
-      time: +new Date(),
-      user_id: currentUser?.id,
-      insert_id: `post_${apiResponse?.id}`,
-      event_properties: {
-        interaction: "Post created",
-      },
-    };
-    sendAmpEvent(ampPayload);
   } catch (error) {
     console.log("Error logging AMP event", error);
   }

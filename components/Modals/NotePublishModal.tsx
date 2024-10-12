@@ -6,14 +6,13 @@ import FormSelect from "../Form/FormSelect";
 import Modal from "react-modal";
 import colors from "~/config/themes/colors";
 import { AuthActions } from "~/redux/auth";
-import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "~/redux/message";
 import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { captureEvent } from "~/config/utils/events";
 import { connect } from "react-redux";
-import { fetchOrgUsers, sendAmpEvent } from "~/config/fetch";
+import { fetchOrgUsers } from "~/config/fetch";
 import { useRouter } from "next/router";
 import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -271,19 +270,6 @@ function NotePublishModal({
         }
 
         const body = await res.json();
-
-        if (publishedType === "UNPUBLISHED") {
-          const payload = {
-            event_type: "create_post",
-            time: +new Date(),
-            user_id: currentUser.id,
-            insert_id: `post_${body.id}`,
-            event_properties: {
-              interaction: "Post created",
-            },
-          };
-          sendAmpEvent(payload);
-        }
 
         return body;
       });

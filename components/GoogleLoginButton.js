@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { isDevEnv } from "~/config/utils/env";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
-import { sendAmpEvent } from "~/config/fetch";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import * as Sentry from "@sentry/browser";
@@ -28,16 +27,6 @@ const GoogleLoginButton = (props) => {
           props.loginCallback && props.loginCallback();
           props.showSignupBanner && props.removeBanner();
           if (!userAction?.user?.has_completed_onboarding) {
-            sendAmpEvent({
-              event_type: "user_signup",
-              time: +new Date(),
-              user_id: userAction.user.id,
-              insert_id: `user_${userAction.user.id}`,
-              event_properties: {
-                interaction: "User Signup",
-              },
-            });
-
             // push user to onboarding - will eventually see the orcid modal
             router.push(
               "/user/[authorId]/onboard?internal=true",

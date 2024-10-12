@@ -11,9 +11,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { isValidEmail } from "~/config/utils/validation";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
-import { sendAmpEvent } from "~/config/fetch";
 import { StyleSheet, css } from "aphrodite";
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import API from "~/config/api";
@@ -139,17 +137,6 @@ const LoginModal = ({
         }
 
         if (!userAction?.user?.has_completed_onboarding) {
-          let payload = {
-            event_type: "user_signup",
-            time: +new Date(),
-            user_id: userAction.user.id,
-            insert_id: `user_${userAction.user.id}`,
-            event_properties: {
-              interaction: "User Signup",
-            },
-          };
-          sendAmpEvent(payload);
-
           router.push(
             "/user/[authorId]/onboard?internal=true",
             `/user/${userAction.user.author_profile.id}/onboard`

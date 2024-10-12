@@ -4,7 +4,6 @@ import * as shims from "./shims";
 import * as types from "./types";
 import * as actions from "./actions";
 import * as Sentry from "@sentry/browser";
-import { sendAmpEvent } from "~/config/fetch";
 import { handleCatch } from "../utils";
 import { logFetchError } from "~/config/utils/misc";
 import { captureEvent } from "~/config/utils/events";
@@ -25,19 +24,6 @@ export const PaperActions = {
         .then((res) => {
           const vote = shims.vote(res);
           let action = actions.setUserVoteSuccess(vote);
-
-          let payload = {
-            event_type: "create_paper_vote",
-            time: +new Date(),
-            user_id: getState().auth.user
-              ? getState().auth.user.id && getState().auth.user.id
-              : null,
-            insert_id: `paper_vote_${vote.id}`,
-            event_properties: {
-              interaction: "Paper Upvote",
-            },
-          };
-          sendAmpEvent(payload);
 
           return dispatch(action);
         })
@@ -60,19 +46,6 @@ export const PaperActions = {
         .then((res) => {
           const vote = shims.vote(res);
           let action = actions.setUserVoteSuccess(vote);
-
-          let payload = {
-            event_type: "create_paper_vote",
-            time: +new Date(),
-            user_id: getState().auth.user
-              ? getState().auth.user.id && getState().auth.user.id
-              : null,
-            insert_id: `paper_vote_${vote.id}`,
-            event_properties: {
-              interaction: "Paper Downvote",
-            },
-          };
-          sendAmpEvent(payload);
 
           return dispatch(action);
         })
@@ -253,20 +226,6 @@ export const PaperActions = {
         const body = await response.json();
         const paper = shims.paper(body);
 
-        let payload = {
-          event_type: "create_paper",
-          time: +new Date(),
-          user_id: getState().auth.user
-            ? getState().auth.user.id && getState().auth.user.id
-            : null,
-          insert_id: `paper_${paper.id}`,
-          event_properties: {
-            interaction: "Create Paper",
-            is_removed: paper.is_removed,
-          },
-        };
-
-        sendAmpEvent(payload);
         action = actions.setPostPaperSuccess(paper);
       } else {
         logFetchError(response);
@@ -312,20 +271,6 @@ export const PaperActions = {
       }
 
       if (response.ok) {
-        let payload = {
-          event_type: "create_summary",
-          time: +new Date(),
-          user_id: getState().auth.user
-            ? getState().auth.user.id && getState().auth.user.id
-            : null,
-          insert_id: `summary_${response.id}`,
-          event_properties: {
-            paper: body.paperId,
-            interaction: "Paper Summary",
-          },
-        };
-        sendAmpEvent(payload);
-
         action = actions.setPostPaperSummarySuccess();
       } else {
         logFetchError(response);

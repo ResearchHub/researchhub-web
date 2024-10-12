@@ -2,7 +2,6 @@
 import API from "~/config/api";
 import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./InlineCommentAPIConstants";
 import { Helpers } from "@quantfive/js-web-config";
-import { sendAmpEvent } from "~/config/fetch";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 export function saveThreadToBackend({
@@ -27,19 +26,7 @@ export function saveThreadToBackend({
       showMessage({ show: false });
       setMessage("Successfully Saved!");
       showMessage({ show: true });
-      const { id: threadID, is_removed: isRemoved } = resp;
-      const ampEventPayload = {
-        event_type: "create_thread",
-        time: +new Date(),
-        user_id: auth.user ? auth.user.id && auth.user.id : null,
-        insert_id: `thread_${threadID}`,
-        event_properties: {
-          interaction: "Post Thread",
-          paper: params.paper,
-          is_removed: resp.is_removed,
-        },
-      };
-      sendAmpEvent(ampEventPayload);
+      const { id: threadID } = resp;
 
       onSuccess({ threadID });
     })

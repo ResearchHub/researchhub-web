@@ -35,7 +35,6 @@ import {
 } from "react";
 import { uploadNewPaper } from "./api/uploadNewPaper";
 import { ValidCitationType } from "~/components/Hypothesis/Citation/modal/AddNewSourceBodySearch";
-import { sendAmpEvent } from "~/config/fetch";
 
 type ComponentProps = {
   authRedux: any;
@@ -276,24 +275,6 @@ function PaperuploadV2Create({
           setComponentState(defaultComponentState);
           setFormState(defaultFormState);
 
-          const payload = {
-            event_type: "create_paper",
-            time: +new Date(),
-            user_id: authRedux.user,
-            insert_id: `paper_${paperID}`,
-            event_properties: {
-              interaction: "Create Paper",
-              is_removed: false,
-            },
-          };
-
-          sendAmpEvent(payload);
-          if (!isPaperForHypothesis) {
-            router.push(
-              "/paper/[paperId]/[paperName]",
-              `/paper/${paperID}/${paperName}`
-            );
-          }
           if (!isNullOrUndefined(onSubmitComplete)) {
             nullthrows(onSubmitComplete)();
           }
