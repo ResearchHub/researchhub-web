@@ -26,7 +26,6 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import { thread } from "~/redux/discussion/shims";
 import { isQuillDelta } from "~/config/utils/editor";
-import { sendAmpEvent } from "~/config/fetch";
 
 const BULLET_COUNT = 5;
 const LIMITATIONS_COUNT = 5;
@@ -306,7 +305,6 @@ class PaperFeatureModal extends Component {
         if (!res.approved) {
           setMessage("Edits Submitted for Approval!");
         } else {
-          this.ampEvent("summary", res.id);
           let updatedPaper = { ...paper };
           updatedPaper.summary = { ...res };
           updatePaperState(updatedPaper);
@@ -360,7 +358,6 @@ class PaperFeatureModal extends Component {
         newDiscussion = thread(newDiscussion);
         props.setDiscussionThreads([newDiscussion, ...props.threads]);
         props.setCount(props.commentCount + 1);
-        this.ampEvent("comment", resp.id);
         setTimeout(() => {
           showMessage({ show: false });
           setMessage("Successfully Saved!");
@@ -384,41 +381,6 @@ class PaperFeatureModal extends Component {
   paperPdfCancel = () => {
     this.props.removePaperFromState();
     this.closeModal();
-  };
-
-  ampEvent = (type, id) => {
-    let payload;
-
-    if (type === "summary") {
-      payload = {
-        event_type: "create_summary",
-        time: +new Date(),
-        user_id: this.props.auth.user
-          ? this.props.auth.user.id && this.props.auth.user.id
-          : null,
-        insert_id: `summary_${id}`,
-        event_properties: {
-          paper: this.props.paper.id,
-          interaction: "Paper Summary",
-        },
-      };
-    } else if (type === "comment") {
-      // amp events
-      payload = {
-        event_type: "create_thread",
-        time: +new Date(),
-        user_id: this.props.auth.user
-          ? this.props.auth.user.id && this.props.auth.user.id
-          : null,
-        insert_id: `thread_${id}`,
-        event_properties: {
-          interaction: "Post Thread",
-          paper: this.props.paper.id,
-        },
-      };
-    }
-
-    sendAmpEvent(payload);
   };
 
   /**

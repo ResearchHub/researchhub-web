@@ -1,7 +1,7 @@
 import { AuthActions } from "~/redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { ClipLoader } from "react-spinners";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
 import { faExclamationCircle } from "@fortawesome/pro-solid-svg-icons";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
@@ -265,23 +265,23 @@ const LoginModal = ({
           className={css(
             styles.titleWrapper,
             ["VERIFY_EMAIL", "FORGOT_PASSWORD_EMAIL_SENT"].includes(step) ===
-              false && styles.titleWrapperWithBorder
+            false && styles.titleWrapperWithBorder
           )}
         >
           <div style={{}}>
             {(step == "LOGIN_WITH_EMAIL_FORM" ||
               step == "SIGNUP_FORM" ||
               step == "FORGOT_PASSWORD") && (
-              <IconButton
-                overrideStyle={styles.leftBtn}
-                onClick={() => {
-                  resetErrors();
-                  setStep("SELECT_PROVIDER");
-                }}
-              >
-                {<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}
-              </IconButton>
-            )}
+                <IconButton
+                  overrideStyle={styles.leftBtn}
+                  onClick={() => {
+                    resetErrors();
+                    setStep("SELECT_PROVIDER");
+                  }}
+                >
+                  {<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}
+                </IconButton>
+              )}
             {!persistent && (
               <IconButton
                 overrideStyle={styles.closeBtn}
@@ -297,12 +297,12 @@ const LoginModal = ({
             {step === "SELECT_PROVIDER"
               ? title
               : step === "LOGIN_WITH_EMAIL_FORM"
-              ? `Log in`
-              : step === "SIGNUP_FORM"
-              ? `Finish sign up`
-              : step === "FORGOT_PASSWORD"
-              ? `Reset password`
-              : ""}
+                ? `Log in`
+                : step === "SIGNUP_FORM"
+                  ? `Finish sign up`
+                  : step === "FORGOT_PASSWORD"
+                    ? `Reset password`
+                    : ""}
           </div>
         </div>
       }

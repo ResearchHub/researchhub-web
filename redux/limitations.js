@@ -1,7 +1,6 @@
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { handleCatch } from "~/redux/utils";
-import { sendAmpEvent } from "~/config/fetch";
 
 /**********************************
  *        ACTIONS SECTION         *
@@ -75,19 +74,6 @@ export const LimitationsActions = {
         .then((res) => {
           let newLimitation = res;
           let limits = [...prevState.limits, res];
-
-          let payload = {
-            event_type: "create_bulletpoints",
-            time: +new Date(),
-            user_id: getState().auth.user
-              ? getState().auth.user.id && getState().auth.user.id
-              : null,
-            event_properties: {
-              interaction: "Post Limitations",
-              paper: paperId,
-            },
-          };
-          sendAmpEvent(payload);
 
           return dispatch({
             type: LimitationsConstants.POST_SUCCESS,

@@ -283,12 +283,6 @@ export const unsubscribeFromHub = async ({ hubId }) => {
     .then(Helpers.parseJSON);
 };
 
-export const sendAmpEvent = async (payload, cb) => {
-  return fetch(API.AMP_ANALYTICS, API.POST_CONFIG(payload))
-    .then(Helpers.checkStatus)
-    .then((res) => cb && cb(res));
-};
-
 export const bulletVote = async ({ type, bulletId }, callback) => {
   return fetch(API.KEY_TAKEAWAY({ bulletId, route: type }), API.POST_CONFIG())
     .then(Helpers.checkStatus)
