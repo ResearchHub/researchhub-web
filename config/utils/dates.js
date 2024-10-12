@@ -190,3 +190,40 @@ export function isNewerThanFiveYearsAgo(date) {
 
   return dateObj.isAfter(fiveYearsAgo) || dateObj.isSame(fiveYearsAgo);
 }
+
+export function specificTimeSince(date) {
+  const now = moment();
+  const joined = moment(date);
+
+  const years = now.diff(joined, "year");
+  joined.add(years, "year");
+
+  const months = now.diff(joined, "month");
+  joined.add(months, "month");
+
+  const days = now.diff(joined, "day");
+
+  let result = [];
+
+  if (years > 0) {
+    result.push(`${years} year${years > 1 ? "s" : ""}`);
+  }
+
+  if (months > 0) {
+    result.push(`${months} month${months > 1 ? "s" : ""}`);
+  }
+
+  if (days > 0) {
+    result.push(`${days} day${days > 1 ? "s" : ""}`);
+  }
+
+  if (result.length === 0) {
+    return "just joined";
+  } else if (result.length === 1) {
+    return result[0];
+  } else if (result.length === 2) {
+    return `${result[0]} and ${result[1]}`;
+  } else {
+    return `${result[0]}, ${result[1]} and ${result[2]}`;
+  }
+}

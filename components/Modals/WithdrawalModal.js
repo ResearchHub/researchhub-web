@@ -603,19 +603,24 @@ class WithdrawalModal extends Component {
           </div>
         </div>
 
-        {isUnderInvestigation && (
+        {true && (
           <Alert severity="warning" className={css(styles.alert)}>
-            Your account is currently under review. ResearchCoin withdrawal has
-            been temporarily suspended until a moderator reviews your account.
-            Contact us on{" "}
-            <Link
-              href="https://discord.com/invite/ZcCYgcnUp5"
-              style={{ color: colors.NEW_BLUE() }}
-              target="_blank"
-            >
-              Discord
-            </Link>{" "}
-            if you have questions.
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              Your account is currently under review by an administrator.
+            </div>
+            <div style={{ marginTop: 10 }}>
+              Please email&nbsp;
+              <Link
+                href="mailto:support@researchhub.foundation"
+                style={{ color: colors.NEW_BLUE(), display: "inline-block" }}
+                target="_blank"
+              >
+                support@researchhub.foundation
+              </Link>{" "}
+              and include a link to your researchhub profile, email address
+              associated with your account, and a brief description of your
+              issue.
+            </div>
           </Alert>
         )}
 
