@@ -1,9 +1,7 @@
-import { useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 import get from "lodash/get";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import SearchResultsForDocs from "~/components/Search/SearchResultsForDocs";
 import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";
@@ -11,8 +9,6 @@ import SearchResultsForPeople from "~/components/Search/SearchResultsForPeople";
 import SearchBestResults from "~/components/Search/SearchBestResults";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import { breakpoints } from "~/config/themes/screen";
-import { hasNoSearchResults, QUERY_PARAM } from "~/config/utils/search";
-import { trackEvent } from "~/config/utils/analytics";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGrid2,
@@ -21,36 +17,11 @@ import {
   faStar,
   faUser,
 } from "@fortawesome/pro-solid-svg-icons";
-import { PostIcon, PaperIcon } from "~/config/themes/icons";
+import { PaperIcon } from "~/config/themes/icons";
 
 const SearchResults = ({ apiResponse }) => {
   const router = useRouter();
   const searchType = get(router, "query.type");
-  const auth = useSelector((state) => state.auth);
-
-  useEffect(() => {
-    trackEvent({
-      eventType: "search_results_viewed",
-      vendor: "amp",
-      user: get(auth, "isLoggedIn") ? auth.user : null,
-      data: {
-        searchType,
-        query: router.query[QUERY_PARAM],
-      },
-    });
-
-    if (apiResponse && hasNoSearchResults({ searchType, apiResponse })) {
-      trackEvent({
-        eventType: "search_no_results",
-        vendor: "amp",
-        user: get(auth, "isLoggedIn") ? auth.user : null,
-        data: {
-          searchType,
-          query: router.query[QUERY_PARAM],
-        },
-      });
-    }
-  }, [apiResponse]);
 
   const handleTabClick = (tab) => {
     const updatedQuery = {

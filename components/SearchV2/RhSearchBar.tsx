@@ -15,10 +15,9 @@ import {
 } from "react";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { isServer } from "~/config/server/isServer";
-import { NextRouter, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { NullableString } from "~/config/types/root_types";
 import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils/search";
-import { trackEvent } from "~/config/utils/analytics";
 import { useStore } from "react-redux";
 import colors, { mainNavIcons } from "~/config/themes/colors";
 import { fetchAllSuggestions } from "../SearchSuggestion/lib/api";
@@ -118,14 +117,6 @@ export default function RhSearchBar(): ReactElement {
       },
     });
     blurAndCloseDeviceKeyboard();
-    trackEvent({
-      eventType: "search_query_submitted",
-      vendor: "amp",
-      user: auth?.isLoggedIn ? auth.user : null,
-      data: {
-        query: searchString ?? "",
-      },
-    });
   };
 
   const searchProps: SearchProps = {
