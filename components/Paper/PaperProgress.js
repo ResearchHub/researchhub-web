@@ -158,24 +158,9 @@ class PaperProgress extends Component {
       utc: new Date(),
     };
 
-    let ampPayload = {
-      event_type: "paper_progress",
-      user_id: user ? user.id : null,
-      time: +new Date(),
-      event_properties: {
-        interaction,
-        value,
-        paper: paperId,
-      },
-    };
-
     fetch(API.GOOGLE_ANALYTICS({}), API.POST_CONFIG(payload))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON);
-
-    fetch(API.AMP_ANALYTICS, API.POST_CONFIG(ampPayload)).then(
-      Helpers.checkStatus
-    );
   };
 
   calculateProgress = (sections) => {
