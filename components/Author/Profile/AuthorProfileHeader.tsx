@@ -48,16 +48,18 @@ const AuthorProfileHeader = () => {
 
 
   const [userDetailsForModerator, setUserDetailsForModerator] = useState<UserDetailsForModerator | null>(null);
+  const [fetchedUserDetailsForModerator, setFetchedUserDetailsForModerator] = useState<boolean>(false);
+
   useEffect(() => {
     (async() => {
-      if (!profile.user) return;
-
-      const res = await fetchUserDetails({ userId: profile.user.id });
-      const userDetailsForModerator = parseUserDetailsForModerator(res);
-      setUserDetailsForModerator(userDetailsForModerator);
-      console.log('userDetailsForModeratsor', userDetailsForModerator);
+      if (currentUser?.moderator && !fetchedUserDetailsForModerator) {
+        const res = await fetchUserDetails({ userId: currentUser.id });
+        const userDetailsForModerator = parseUserDetailsForModerator(res);
+        setUserDetailsForModerator(userDetailsForModerator);
+        setFetchedUserDetailsForModerator(true);
+      }
     })();
-  }, [profile]);
+  }, [currentUser, fetchedUserDetailsForModerator]);
 
   const authorMenuOptions: MenuOption[] = [
     ...(currentUser?.moderator ? [{
@@ -262,7 +264,7 @@ const AuthorProfileHeader = () => {
                   Email:
                 </div>
                 <div>
-                  {userDetailsForModerator?.email}
+                  {userDetailsForModerator?.email ? userDetailsForModerator?.email : "N/A"}
                 </div>
               </div>
               <div className={css(styles.inlineLineItem)}>
@@ -305,7 +307,7 @@ const AuthorProfileHeader = () => {
                   Verified name:
                 </div>
                 <div>
-                  {userDetailsForModerator?.verification?.firstName} {userDetailsForModerator?.verification?.lastName}
+                  {userDetailsForModerator?.verification ? `${userDetailsForModerator?.verification?.firstName} ${userDetailsForModerator?.verification?.lastName}` : "N/A"}
                 </div>
               </div>            
               <div className={css(styles.inlineLineItem)}>
@@ -313,7 +315,9 @@ const AuthorProfileHeader = () => {
                   Verification via:
                 </div>
                 <div>
-                  {userDetailsForModerator?.verification?.verifiedVia} on {formatDateStandard(userDetailsForModerator?.verification?.createdDate, "MMM D, YYYY")}
+                  {userDetailsForModerator?.verification 
+                  ? `${userDetailsForModerator?.verification?.verifiedVia} on ${formatDateStandard(userDetailsForModerator?.verification?.createdDate, "MMM D, YYYY")}`
+                  : "N/A"}
                 </div>
               </div>
               <div className={css(styles.inlineLineItem)}>
@@ -321,7 +325,7 @@ const AuthorProfileHeader = () => {
                   Verification ID:
                 </div>
                 <div>
-                  {userDetailsForModerator?.verification?.externalId}
+                  {userDetailsForModerator?.verification?.externalId ? userDetailsForModerator?.verification?.externalId : "N/A"}
                 </div>
               </div>
               <div className={css(styles.inlineLineItem)}>
@@ -329,7 +333,7 @@ const AuthorProfileHeader = () => {
                   Verified status:
                 </div>
                 <div>
-                  {userDetailsForModerator?.verification?.status}
+                  {userDetailsForModerator?.verification?.status ? userDetailsForModerator?.verification?.status : "N/A"}
                 </div>
               </div>            
             </div>
