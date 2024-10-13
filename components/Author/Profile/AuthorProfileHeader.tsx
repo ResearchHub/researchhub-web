@@ -155,10 +155,12 @@ const AuthorProfileHeader = () => {
 
   return (
     <div>
-      <UserStateBanner
-        probable_spammer={profile.user?.isProbableSpammer}
-        is_suspended={profile.user?.isSuspended}
-      />      
+      {userDetailsForModerator && (
+        <UserStateBanner
+          probable_spammer={userDetailsForModerator?.isProbableSpammer}
+          is_suspended={userDetailsForModerator?.isSuspended}
+        />
+      )}
       <UserInfoModal onSave={onProfileSave} />
       <div className={css(styles.bannerSection)}>
         <WelcomeToProfileBanner profile={profile} />
