@@ -33,7 +33,6 @@ import { partyPopper } from "~/config/themes/icons";
 import UserStateBanner from "../Banner/UserStateBanner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/pro-regular-svg-icons";
-import Alert from "@mui/material/Alert";
 
 const DepositScreen = dynamic(() => import("../Ethereum/DepositScreen"));
 
@@ -604,19 +603,37 @@ class WithdrawalModal extends Component {
         </div>
 
         {isUnderInvestigation && (
-          <Alert severity="warning" className={css(styles.alert)}>
-            Your account is currently under review. ResearchCoin withdrawal has
-            been temporarily suspended until a moderator reviews your account.
-            Contact us on{" "}
-            <Link
-              href="https://discord.com/invite/ZcCYgcnUp5"
-              style={{ color: colors.NEW_BLUE() }}
-              target="_blank"
+          <div className={css(styles.alert)}>
+            <div style={{ textAlign: "center", fontSize: 28 }}>
+              <FontAwesomeIcon icon={faExclamationTriangle} color={"#FFA500"} />
+            </div>
+            <div
+              style={{
+                textAlign: "center",
+                paddingBottom: 10,
+                borderBottom: "1px solid #dedede",
+                fontWeight: 500,
+              }}
             >
-              Discord
-            </Link>{" "}
-            if you have questions.
-          </Alert>
+              Your account is currently under review by an administrator.
+            </div>
+            <div style={{ marginTop: 10 }}>
+              Please email&nbsp;
+              <Link
+                href="mailto:support@researchhub.foundation"
+                style={{ color: colors.NEW_BLUE(), display: "inline-block" }}
+                target="_blank"
+              >
+                support@researchhub.foundation
+              </Link>{" "}
+              and include
+              <ul style={{ fontSize: 16, paddingLeft: 15, marginTop: 10 }}>
+                <li>A link to your researchhub profile</li>
+                <li>Email address associated with your account</li>
+                <li>A brief description of your issue</li>
+              </ul>
+            </div>
+          </div>
         )}
 
         <div className={css(styles.buttons)}>
@@ -800,6 +817,11 @@ class WithdrawalModal extends Component {
 const styles = StyleSheet.create({
   alert: {
     marginTop: 15,
+    background: "rgb(255, 244, 229)",
+    display: "flex",
+    flexDirection: "column",
+    padding: 15,
+    color: colors.BLACK(0.9),
   },
   banner: {
     backgroundColor: alertColors.warning,

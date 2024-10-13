@@ -21,7 +21,7 @@ import { AuthorActions } from "~/redux/author";
 import { fetchAuthorProfile } from "../lib/api";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAddressCard, faBuildingColumns, faEdit, faUserSlash, faUserXmark } from "@fortawesome/pro-solid-svg-icons";
+import { faAddressCard, faBirthdayCake, faBuildingColumns, faEdit, faUserSlash, faUserXmark } from "@fortawesome/pro-solid-svg-icons";
 import { truncateText } from "~/config/utils/string";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
 import GenericMenu, { MenuOption } from "~/components/shared/GenericMenu";
@@ -34,6 +34,9 @@ import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton"
 import { faUser, faUserPlus } from "@fortawesome/pro-light-svg-icons";
 import UserStateBanner from "~/components/Banner/UserStateBanner";
 import { breakpoints } from "~/config/themes/screen";
+import { fetchUserDetails } from "~/components/Moderator/lib/api";
+import { parseUserDetailsForModerator, UserDetailsForModerator } from "~/components/Moderator/lib/types";
+import { formatDateStandard, specificTimeSince } from "~/config/utils/dates";
 
 const AuthorProfileHeader = () => {
   const dispatch = useDispatch();
@@ -42,6 +45,22 @@ const AuthorProfileHeader = () => {
 
   const { revalidateAuthorProfile } = useCacheControl();
   const currentUser = useCurrentUser();
+
+
+  const [userDetailsForModerator, setUserDetailsForModerator] = useState<UserDetailsForModerator | null>(null);
+  const [fetchedUserDetailsForModerator, setFetchedUserDetailsForModerator] = useState<boolean>(false);
+
+  useEffect(() => {
+    (async() => {
+      if (currentUser?.moderator && profile.user?.id && !fetchedUserDetailsForModerator) {
+
+        const res = await fetchUserDetails({ userId: profile.user?.id });
+        const userDetailsForModerator = parseUserDetailsForModerator(res);
+        setUserDetailsForModerator(userDetailsForModerator);
+        setFetchedUserDetailsForModerator(true);
+      }
+    })();
+  }, [profile, currentUser, fetchedUserDetailsForModerator]);
 
   const authorMenuOptions: MenuOption[] = [
     ...(currentUser?.moderator ? [{
@@ -136,10 +155,12 @@ const AuthorProfileHeader = () => {
 
   return (
     <div>
-      <UserStateBanner
-        probable_spammer={profile.user?.isProbableSpammer}
-        is_suspended={profile.user?.isSuspended}
-      />      
+      {userDetailsForModerator && (
+        <UserStateBanner
+          probable_spammer={userDetailsForModerator?.isProbableSpammer}
+          is_suspended={userDetailsForModerator?.isSuspended}
+        />
+      )}
       <UserInfoModal onSave={onProfileSave} />
       <div className={css(styles.bannerSection)}>
         <WelcomeToProfileBanner profile={profile} />
@@ -161,9 +182,9 @@ const AuthorProfileHeader = () => {
           </div>
           <div className={css(styles.headline)}>{profile.headline}</div>
           {hasEducation && (
-            <div className={css(styles.inlineLineItem)}>
+            <div className={css(styles.inlineLineItem, styles.bioLineItem)}>
               <div className={css(styles.label)}>
-                <FontAwesomeIcon icon={faBuildingColumns} fontSize={20} />
+                <FontAwesomeIcon icon={faBuildingColumns} fontSize={18} />
               </div>
 
               {profile.education.length === 0 ? (
@@ -187,6 +208,15 @@ const AuthorProfileHeader = () => {
               )}
 
             </div>
+          )}
+          {profile.user?.createdDate && (
+            <div className={css(styles.inlineLineItem, styles.bioLineItem)} style={{ marginTop: 2, }}>
+              <div className={css(styles.label)}>
+                <FontAwesomeIcon icon={faBirthdayCake} fontSize={18} />
+              </div>
+              <div>Member for {specificTimeSince(profile.user.createdDate)}</div>
+            </div>
+
           )}
 
           {(profile?.description?.length || 0) > 0 && (
@@ -224,6 +254,96 @@ const AuthorProfileHeader = () => {
           )}
         </div>
       </div>
+
+      {currentUser?.moderator && (
+        <div className={css(styles.section, styles.modSection)}>
+          <div className={css(styles.sectionHeader)}>
+            Moderation
+          </div>
+          <div className={css(styles.lineItemColumns)}>
+            <div className={css(styles.lineItems)}>
+              <div className={css(styles.inlineLineItem)}>
+                <div className={css(styles.label)}>
+                  Email:
+                </div>
+                <div>
+                  {userDetailsForModerator?.email ? userDetailsForModerator?.email : "N/A"}
+                </div>
+              </div>
+              <div className={css(styles.inlineLineItem)}>
+                <div className={css(styles.label)}>
+                  User id:
+                </div>
+                <div>
+                  {userDetailsForModerator?.id ? userDetailsForModerator?.id : "N/A"}
+                </div>
+              </div>          
+              <div className={css(styles.inlineLineItem)}>
+                <div className={css(styles.label)}>
+                  Likely spammer?
+                </div>
+                <div>
+                  {userDetailsForModerator?.isProbableSpammer ? "Yes" : "No"}
+                </div>
+              </div>
+              <div className={css(styles.inlineLineItem)}>
+                <div className={css(styles.label)}>
+                  Suspended?
+                </div>
+                <div>
+                  {userDetailsForModerator?.isSuspended ? "Yes" : "No"}
+                </div>
+              </div>
+              <div className={css(styles.inlineLineItem)}>
+                <div className={css(styles.label)}>
+                  Sift risk score:
+                </div>
+                <div>
+                  {userDetailsForModerator?.riskScore ? userDetailsForModerator?.riskScore : "N/A"}
+                </div>
+              </div>            
+            </div>
+
+            <div className={css(styles.lineItems)}>
+              <div className={css(styles.inlineLineItem)}>
+                <div className={css(styles.label)}>
+                  Verified name:
+                </div>
+                <div>
+                  {userDetailsForModerator?.verification ? `${userDetailsForModerator?.verification?.firstName} ${userDetailsForModerator?.verification?.lastName}` : "N/A"}
+                </div>
+              </div>            
+              <div className={css(styles.inlineLineItem)}>
+                <div className={css(styles.label)}>
+                  Verification via:
+                </div>
+                <div>
+                  {userDetailsForModerator?.verification 
+                  ? `${userDetailsForModerator?.verification?.verifiedVia} on ${formatDateStandard(userDetailsForModerator?.verification?.createdDate, "MMM D, YYYY")}`
+                  : "N/A"}
+                </div>
+              </div>
+              <div className={css(styles.inlineLineItem)}>
+                <div className={css(styles.label)}>
+                  Verification ID:
+                </div>
+                <div>
+                  {userDetailsForModerator?.verification?.externalId ? userDetailsForModerator?.verification?.externalId : "N/A"}
+                </div>
+              </div>
+              <div className={css(styles.inlineLineItem)}>
+                <div className={css(styles.label)}>
+                  Verified status:
+                </div>
+                <div>
+                  {userDetailsForModerator?.verification?.status ? userDetailsForModerator?.verification?.status : "N/A"}
+                </div>
+              </div>            
+            </div>
+
+          </div>
+        </div>
+      )}
 
       <div className={css(styles.subSections)}>
         <div className={css(styles.section, styles.subSection)}>
@@ -325,10 +445,22 @@ const styles = StyleSheet.create({
       textDecoration: "underline",
     }
   },  
+  lineItemColumns: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 40,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      flexDirection: "column",
+      gap: 5,
+    }
+  },
   lineItems: {
     display: "flex",
     flexDirection: "column",
     gap: 4,
+  },
+  bioLineItem: {
+    fontSize: 15,
   },
   inlineLineItem: {
     display: "flex",
@@ -348,7 +480,7 @@ const styles = StyleSheet.create({
   description: {
     display: "inline-flex",
     flexWrap: "wrap",
-
+    fontSize: 15,
   },
   descriptionLineItem: {
     marginTop: 10,
@@ -439,6 +571,10 @@ const styles = StyleSheet.create({
       rowGap: 20,
     }
   },
+  modSection: {
+    marginTop: 20,
+    fontSize: 14,
+  },  
   section: {
     backgroundColor: "rgb(255, 255, 255)",
     borderRadius: 20,

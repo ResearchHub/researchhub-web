@@ -17,6 +17,9 @@ import { faLongArrowAltRight } from "@fortawesome/pro-solid-svg-icons";
 import { ClipLoader } from "react-spinners";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
+import { useEffect } from "react";
+import { fetchUserDetails } from "~/components/Moderator/lib/api";
+import { parseUserDetailsForModerator } from "~/components/Moderator/lib/types";
 
 type Args = {
   profile: any;
