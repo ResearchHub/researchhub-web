@@ -52,14 +52,15 @@ const AuthorProfileHeader = () => {
 
   useEffect(() => {
     (async() => {
-      if (currentUser?.moderator && !fetchedUserDetailsForModerator) {
-        const res = await fetchUserDetails({ userId: currentUser.id });
+      if (currentUser?.moderator && profile.user?.id && !fetchedUserDetailsForModerator) {
+
+        const res = await fetchUserDetails({ userId: profile.user?.id });
         const userDetailsForModerator = parseUserDetailsForModerator(res);
         setUserDetailsForModerator(userDetailsForModerator);
         setFetchedUserDetailsForModerator(true);
       }
     })();
-  }, [currentUser, fetchedUserDetailsForModerator]);
+  }, [profile, currentUser, fetchedUserDetailsForModerator]);
 
   const authorMenuOptions: MenuOption[] = [
     ...(currentUser?.moderator ? [{
