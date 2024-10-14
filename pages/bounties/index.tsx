@@ -4,7 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI";
 import { useEffect, useState } from "react";
 import { getPlainText } from "~/components/Comment/lib/quill";
-import { parseAuthorProfile, parseUnifiedDocument, parseUser } from "~/config/types/root_types";
+import { ID, parseAuthorProfile, parseUnifiedDocument, parseUser } from "~/config/types/root_types";
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import UserTooltip from "~/components/Tooltips/User/UserTooltip";
 import ALink from "~/components/ALink";
@@ -34,6 +34,7 @@ import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { breakpoints } from "~/config/themes/screen";
 import { useSelector } from "react-redux";
 import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
+import HubSelectDropdown from "~/components/Hubs/HubSelectDropdown";
 
 type SimpleBounty = {
   id: string;
@@ -57,11 +58,11 @@ const parseSimpleBounty = (raw: any): SimpleBounty => {
     createdBy: parseUser(raw.created_by),
     expirationDate: raw.expiration_date,
     unifiedDocument: parseUnifiedDocument(raw.unified_document),
-    hubs: (raw.unified_document?.hubs || []).map(parseHub).filter((hub:Hub) => hub.isUsedForRep === true),
+    hubs: (raw?.hubs || []).map(parseHub).filter((hub:Hub) => hub.isUsedForRep === true),
   }
 }
 
-const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
+const BountyCard = ({ bounty, handleHubClick }: { bounty: SimpleBounty, handleHubClick: Function }) => {
 
   const { createdBy, unifiedDocument, expirationDate, createdDate } = bounty;
   const url = getUrlToUniDoc(unifiedDocument);
@@ -175,7 +176,15 @@ const BountyCard = ({ bounty }: { bounty: SimpleBounty }) => {
               {bounty?.hubs && bounty.hubs.length > 0 && (
                 <div className={css(styles.paperHubs)}>
                   {bounty.hubs.map((hub) => (
-                    <HubTag overrideStyle={styles.hubTag} hub={hub} key={hub.id} />
+                    <div
+                      key={hub.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        handleHubClick(hub);
+                    }}>
+                      <HubTag preventLinkClick overrideStyle={styles.hubTag} hub={hub} key={hub.id} />
+                    </div>
                   ))}
                 </div>
               )}
@@ -208,25 +217,43 @@ const BountiesPage: NextPage = () => {
     dismissStatus: verificationBannerDismissStatus
   } = useDismissableFeature({ auth, featureName: "verification-banner-in-bounties-page" })
 
+  const [selectedHubs, setSelectedHubs] = useState<Array<{id: ID, name: string}>>([]);
+
+
+  const _fetchAndParseBounties = async () => {
+    const bounties: any = await fetchBounties({ personalized: true, pageCursor: nextPageCursor, hubIds: selectedHubs.map((hub) => hub.id) });
+  
+    setNextPageCursor(bounties.next);
+    const parsedBounties = (bounties?.results || []).map((bounty) => {
+      try {
+        return parseSimpleBounty(bounty)
+      }
+      catch (e) {
+        console.error('error parsing bounty', bounty, e);
+      }
+    }).filter((bounty) => bounty !== undefined);
+
+    return parsedBounties;
+  }
+
 
   useEffect(() => {
     (async () => {
-      const bounties: any = await fetchBounties({ personalized: true, pageCursor: nextPageCursor });
-
-      setNextPageCursor(bounties.next);
-      const parsedBounties = (bounties?.results || []).map((bounty) => {
-        try {
-          return parseSimpleBounty(bounty)
-        }
-        catch (e) {
-          console.error('error parsing bounty', bounty, e);
-        }
-      }).filter((bounty) => bounty !== undefined);
-
+      const parsedBounties = await _fetchAndParseBounties();
       setCurrentBounties([...currentBounties, ...parsedBounties]);
       setIsLoading(false);
     })();
   }, [currentPage]);
+
+
+  useEffect(() => {
+    (async () => {
+      const parsedBounties = await _fetchAndParseBounties();
+      setCurrentBounties(parsedBounties);
+      setIsLoading(false);
+    })();
+  }, [selectedHubs]);
+
 
   const toggleInfoSection = (section: string) => {
     if (openInfoSections.includes(section)) {
@@ -240,7 +267,15 @@ const BountiesPage: NextPage = () => {
   return (
     <div className={css(styles.pageWrapper)}>
 
+
       <div className={css(styles.bountiesSection)}>
+        <HubSelectDropdown
+          onChange={(hubs) => {
+            setSelectedHubs(hubs);
+          }}
+          selectedHubs={selectedHubs}
+        />
+
         <h1 className={css(styles.title)}>Bounties</h1>
         <div className={css(styles.description)}>Earn ResearchCoin by completing research related bounties.</div>
         {showVerifyBanner && (
@@ -267,8 +302,14 @@ const BountiesPage: NextPage = () => {
 
         <div className={css(styles.bounties)}>
           {currentBounties.map((bounty) => (
-            <div className={css(styles.bountyWrapper)}>
-              <BountyCard key={bounty.id} bounty={bounty} />
+            <div className={css(styles.bountyWrapper)} key={bounty.id}>
+              <BountyCard
+                handleHubClick={(hub:Hub) => {
+                  setSelectedHubs([{id: hub.id, name: hub.name}])
+                }}
+                key={bounty.id}
+                bounty={bounty}
+              />
             </div>
           ))}
 
