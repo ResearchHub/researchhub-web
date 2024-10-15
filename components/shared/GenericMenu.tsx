@@ -29,6 +29,8 @@ interface MenuProps {
   triggerHeight?: number;
   softHide?: boolean;
   selected?: any;
+  closeMenuOnSelect?: boolean;
+  isMultiSelect?: boolean;
   direction?:
     | "bottom-right"
     | "bottom-left"
@@ -47,6 +49,8 @@ const Menu = ({
   direction = "bottom-left",
   softHide = false,
   selected,
+  closeMenuOnSelect = true,
+  isMultiSelect = false,
 }: MenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
@@ -64,7 +68,9 @@ const Menu = ({
       setIsOpen(false);
     },
     onInsideClick: () => {
-      setIsOpen(false);
+      if (closeMenuOnSelect) {
+        setIsOpen(false);
+      }
     },
   });
 
@@ -141,7 +147,7 @@ const Menu = ({
                     html
                   ) : (
                     <>
-                      {selected === value ? (
+                      {isMultiSelect ? selected.includes(value) : selected === value ? (
                         <div className={css(styles.selected)}>
                           {label}
                           <FontAwesomeIcon icon={faCheck} />

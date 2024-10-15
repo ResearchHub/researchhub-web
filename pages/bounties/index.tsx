@@ -35,6 +35,10 @@ import { breakpoints } from "~/config/themes/screen";
 import { useSelector } from "react-redux";
 import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
 import HubSelectDropdown from "~/components/Hubs/HubSelectDropdown";
+import { useExchangeRate } from "~/components/contexts/ExchangeRateContext";
+import GenericMenu, { MenuOption } from "~/components/shared/GenericMenu";
+import IconButton from "~/components/Icons/IconButton";
+import { Checkbox } from "@mui/material";
 
 type SimpleBounty = {
   id: string;
@@ -65,6 +69,8 @@ const parseSimpleBounty = (raw: any): SimpleBounty => {
 const BountyCard = ({ bounty, handleHubClick }: { bounty: SimpleBounty, handleHubClick: Function }) => {
 
   const { createdBy, unifiedDocument, expirationDate, createdDate } = bounty;
+
+  const { rscToUSDDisplay } = useExchangeRate();
   const url = getUrlToUniDoc(unifiedDocument);
   return (
 
@@ -109,33 +115,29 @@ const BountyCard = ({ bounty, handleHubClick }: { bounty: SimpleBounty, handleHu
             <div className={css(styles.lineItemValue)}>
 
 
-              <ContentBadge
-                badgeOverride={styles.badge}
-                contentType="bounty"
-                bountyAmount={bounty.amount}
-                label={
-                  <div style={{ display: "flex" }}>
-                    <div style={{ flex: 1 }}>
-                      {numeral(
-                        formatBountyAmount({
-                          amount: bounty.amount,
-                        })
-                      ).format("0,0a")}{" "}
-                      RSC
-                    </div>
-                  </div>
-                }
-              />
+              <div style={{ display: "flex", alignItems: "center", gap: 10, }}>
+                <div style={{ color: colors.ORANGE_DARK2(), fontSize: 14, gap: 5, fontWeight: 500, display: "flex", alignItems: "center" }}>
+                  <ResearchCoinIcon version={4} height={18} width={18} />
+                  {numeral(
+                    formatBountyAmount({
+                      amount: bounty.amount,
+                    })
+                  ).format("0,0a")}{" "}
+                  RSC
+                </div>
+                <div style={{ color: colors.MEDIUM_GREY2()}}>({rscToUSDDisplay(bounty.amount)})</div>
+              </div>
+
             </div>
           </div>
-        {/* <div className={css(styles.lineItem)}>
+        <div className={css(styles.lineItem)}>
           <div className={css(styles.lineItemLabel)}>
             Bounty type:
           </div>
           <div className={css(styles.lineItemValue)}>
-            {bounty.bountyType === "REVIEW" ? "Peer Review" : bounty.bountyType === "ANSWER" ? "Answer to question" : "Other"}
+            {bounty.bountyType === "REVIEW" ? "Peer Review" : bounty.bountyType === "ANSWER" ? "Answer to question" : "Uncategorized"}
           </div>
-        </div> */}
+        </div>
         <div className={css(styles.lineItem)}>
           <div className={css(styles.lineItemLabel)}>
             Expiration date:
@@ -173,6 +175,11 @@ const BountyCard = ({ bounty, handleHubClick }: { bounty: SimpleBounty, handleHu
               {unifiedDocument.authors &&
                 <CondensedAuthorList authorNames={unifiedDocument.authors.map(a => a.firstName + " " + a.lastName)} allowAuthorNameToIncludeHtml={false} />
               }
+
+              <div className={css(styles.abstract)}>
+                {truncateText(bounty?.unifiedDocument?.document?.abstract, 200)}
+              </div>
+
               {bounty?.hubs && bounty.hubs.length > 0 && (
                 <div className={css(styles.paperHubs)}>
                   {bounty.hubs.map((hub) => (
@@ -217,6 +224,8 @@ const BountiesPage: NextPage = () => {
     dismissStatus: verificationBannerDismissStatus
   } = useDismissableFeature({ auth, featureName: "verification-banner-in-bounties-page" })
 
+
+  const [selectedBountyTypes, setSelectedBountyTypes] = useState<Array<string>>([]);
   const [selectedHubs, setSelectedHubs] = useState<Array<{id: ID, name: string}>>([]);
 
 
@@ -263,21 +272,109 @@ const BountiesPage: NextPage = () => {
     }
   }
 
+  const options:Array<MenuOption> = [{
+    group: "Bounty type",
+    value: "researchhub",
+    preventDefault: true,
+    html: (
+      <div>
+        <Checkbox sx={{ padding: "0px 10px 0px 0px"}} />
+        ResearchHub Foundation    
+      </div>
+    ),
+    onClick: () => {
+      console.log("download");
+    },
+  },{
+    group: "Bounty type",
+    value: "review",
+    preventDefault: true,
+    html: (
+      <div>
+        <Checkbox sx={{ padding: "0px 10px 0px 0px"}} />
+        Peer Review
+      </div>
+    ),
+    onClick: () => {
+      console.log("download");
+    },
+  },{
+    group: "Bounty type",
+    value: "answer",
+    preventDefault: true,
+    html: (
+      <div>
+        <Checkbox sx={{ padding: "0px 10px 0px 0px"}} />
+        Answer to question
+      </div>
+    ),
+    onClick: () => {
+      console.log("download");
+    },
+  },{
+    group: "Bounty type",
+    value: "other",
+    preventDefault: true,
+    html: (
+      <div>
+        <Checkbox sx={{ padding: "0px 10px 0px 0px"}} />
+        Other
+      </div>
+    ),
+    onClick: () => {
+      console.log("download");
+    },
+  }]
+
   const showVerifyBanner = !currentUser?.isVerified && (verificationBannerDismissStatus === "checked" && !isVerificationBannerDismissed);
   return (
     <div className={css(styles.pageWrapper)}>
 
 
       <div className={css(styles.bountiesSection)}>
-        <HubSelectDropdown
-          onChange={(hubs) => {
-            setSelectedHubs(hubs);
-          }}
-          selectedHubs={selectedHubs}
-        />
 
         <h1 className={css(styles.title)}>Bounties</h1>
         <div className={css(styles.description)}>Earn ResearchCoin by completing research related bounties.</div>
+
+        <div style={{ display: "flex", }}>
+          <div style={{ width: 200}}>
+            <HubSelectDropdown
+              onChange={(hubs) => {
+                setSelectedHubs(hubs);
+              }}
+              selectedHubs={selectedHubs}
+            />
+          </div>
+
+          <div style={{ width: 200}}>
+            <GenericMenu
+              softHide={true}
+              options={options}
+              width={250}
+              id="bounty-type-menu"
+              direction="bottom-right"
+              isMultiSelect
+              closeMenuOnSelect={false}
+              onSelect={(option: MenuOption) => {
+                console.log("selected", option);
+
+                if (selectedBountyTypes.includes(option.value)) {
+                  setSelectedBountyTypes(selectedBountyTypes.filter((type) => type !== option.value));
+                }
+                else {
+                  setSelectedBountyTypes([...selectedBountyTypes, option.value]);
+                }
+              }}
+            >
+              <IconButton overrideStyle={styles.btnDots}>
+                Bounty Type
+                <FontAwesomeIcon icon={faAngleDown} />
+              </IconButton>
+            </GenericMenu>
+          </div>
+        </div>
+
+
         {showVerifyBanner && (
           <div className={css(styles.verifyIdentityBanner)}>
             <VerifiedBadge height={32} width={32} />
@@ -446,6 +543,10 @@ const styles = StyleSheet.create({
     paddingRight: 28,
     paddingLeft: 28,
     gap: 20,
+  },
+  abstract: {
+    fontSize: 15,
+    marginTop: 15,
   },
   placeholderWrapper: {
     marginTop: 20,

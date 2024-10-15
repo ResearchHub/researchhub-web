@@ -266,6 +266,7 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   } else if (parsed.documentType === "paper") {
     parsed.documentType = "paper";
     parsed.document["paperTitle"] = unparsedInnerDoc.paper_title;
+    parsed.document["abstract"] = unparsedInnerDoc.abstract;
   }
 
   if (unparsedInnerDoc.renderable_text) {
