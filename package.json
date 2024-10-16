@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "HOST=localhost:3000 next dev",
     "inspect": "NODE_OPTIONS='--inspect' next dev",
-    "build": "next build",
+    "build": "NODE_OPTIONS=--max-old-space-size=6144 next build",
     "start": "next start",
     "start-staging": "REACT_APP_ENV=staging next start",
     "sentry": "node ./scripts/sentry.js",
@@ -79,10 +79,10 @@
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "material-ui-popup-state": "^5.0.9",
-    "next": "^13.1.2",
+    "next": "^13.5.6",
     "next-compose-plugins": "^2.2.1",
     "next-redux-wrapper": "^4.0.0",
-    "next-transpile-modules": "^10.0.0",
+    "next-transpile-modules": "^10.0.1",
     "nookies": "^2.5.2",
     "nuka-carousel": "^4.6.6",
     "numeral": "^2.0.6",
@@ -151,8 +151,8 @@
     "undux": "^5.2.0",
     "viem": "^1.10.9",
     "wagmi": "^1.4.1",
-    "webpack": "^5.75.0",
-    "webpack-bundle-analyzer": "^4.3.0",
+    "webpack": "^5.93.0",
+    "webpack-bundle-analyzer": "^4.10.2",
     "yarn": "^1.22.19",
     "yet-another-react-lightbox": "^3.13.1"
   },
@@ -179,13 +179,13 @@
     "pretty-quick": "^3.1.1",
     "progress": "^2.0.3",
     "source-map-explorer": "^2.5.2",
-    "webpack-cli": "^4.8.0"
+    "webpack-cli": "^5.1.4"
   },
   "browser": {
     "child_process": false
   },
   "engines": {
-    "node": ">=16.0.0",
+    "node": ">=20.0.0",
     "npm": ">=8.0.0"
   },
   "lint-staged": {
