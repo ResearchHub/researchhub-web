@@ -9,7 +9,6 @@ import TextEditor from "../TextEditor";
 import { POST_TYPES } from "../TextEditor/config/postTypes";
 import api from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { sendAmpEvent } from "~/config/fetch";
 import { connect } from "react-redux";
 import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
@@ -79,21 +78,6 @@ const BountyHypothesisComment = ({
         setMessage("");
         showMessage({ show: true, error: false });
         setCommentAddSuccess(true);
-
-        // amp events
-        const payload = {
-          event_type: "create_thread",
-          time: +new Date(),
-          user_id: auth.user ? auth.user.id && auth.user.id : null,
-          insert_id: `thread_${resp.id}`,
-          event_properties: {
-            interaction: "Post Thread",
-            paper: documentId,
-            is_removed: resp.is_removed,
-          },
-        };
-
-        sendAmpEvent(payload);
       })
       .catch((err) => {
         setIsFetching(false);

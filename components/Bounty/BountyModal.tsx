@@ -13,7 +13,6 @@ import { connect, useSelector } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { MessageActions } from "~/redux/message";
 import { ReactElement, useState, useEffect, useContext } from "react";
-import { trackEvent } from "~/config/utils/analytics";
 import BaseModal from "../Modals/BaseModal";
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import BountySuccessScreen from "./BountySuccessScreen";
@@ -194,24 +193,6 @@ function BountyModal({
     );
   };
 
-  const sendBountyCreateAmpEvent = ({ currentUser, createdBounty }) => {
-    const rh_fee = createdBounty?.amount * 0.07;
-    const dao_fee = createdBounty?.amount * 0.02;
-    trackEvent({
-      eventType: "create_bounty",
-      vendor: "amp",
-      user: currentUser,
-      insertId: `bounty_${createdBounty?.id}`,
-      data: {
-        interaction: "Bounty created",
-        expiration_date: createdBounty?.expiration_date,
-        rh_fee: rh_fee,
-        dao_fee: dao_fee,
-        net_fee: rh_fee + dao_fee,
-      },
-    });
-  };
-
   const handleAddBounty = () => {
     if (!bountyType) {
       setMessage("Please select a bounty type before adding a bounty");
@@ -237,7 +218,6 @@ function BountyModal({
           bountyType,
         })
           .then((createdBounty) => {
-            sendBountyCreateAmpEvent({ currentUser, createdBounty });
             handleBountyAdded(createdBounty);
             setSuccess(true);
           })
