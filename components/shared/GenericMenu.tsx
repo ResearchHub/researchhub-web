@@ -56,7 +56,9 @@ const Menu = ({
   const menuRef = useRef(null);
 
   const handleSelect = (option: MenuOption) => {
-    setIsOpen(!isOpen);
+    if (closeMenuOnSelect) {
+      setIsOpen(!isOpen);
+    }
     onSelect && onSelect(option);
     option.onClick && option.onClick(option);
   };

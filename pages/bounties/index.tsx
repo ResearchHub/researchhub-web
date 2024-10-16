@@ -39,6 +39,8 @@ import { useExchangeRate } from "~/components/contexts/ExchangeRateContext";
 import GenericMenu, { MenuOption } from "~/components/shared/GenericMenu";
 import IconButton from "~/components/Icons/IconButton";
 import { Checkbox } from "@mui/material";
+import HubSelectModal from "~/components/Hubs/HubSelectModal";
+import { faComments, faStar, faGrid2 } from "@fortawesome/pro-solid-svg-icons";
 
 type SimpleBounty = {
   id: string;
@@ -226,11 +228,11 @@ const BountiesPage: NextPage = () => {
 
 
   const [selectedBountyTypes, setSelectedBountyTypes] = useState<Array<string>>([]);
-  const [selectedHubs, setSelectedHubs] = useState<Array<{id: ID, name: string}>>([]);
-
+  const [selectedHub, setSelectedHub] = useState<Hub | undefined>(undefined);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const _fetchAndParseBounties = async () => {
-    const bounties: any = await fetchBounties({ personalized: true, pageCursor: nextPageCursor, hubIds: selectedHubs.map((hub) => hub.id) });
+    const bounties: any = await fetchBounties({ personalized: true, pageCursor: nextPageCursor, hubIds: selectedHub ? [selectedHub?.id] : [] });
   
     setNextPageCursor(bounties.next);
     const parsedBounties = (bounties?.results || []).map((bounty) => {
@@ -261,7 +263,7 @@ const BountiesPage: NextPage = () => {
       setCurrentBounties(parsedBounties);
       setIsLoading(false);
     })();
-  }, [selectedHubs]);
+  }, [selectedHub]);
 
 
   const toggleInfoSection = (section: string) => {
@@ -275,10 +277,9 @@ const BountiesPage: NextPage = () => {
   const options:Array<MenuOption> = [{
     group: "Bounty type",
     value: "researchhub",
-    preventDefault: true,
     html: (
       <div>
-        <Checkbox sx={{ padding: "0px 10px 0px 0px"}} />
+        <Checkbox checked={selectedBountyTypes.includes("researchhub")} sx={{ padding: "0px 10px 0px 0px"}} />
         ResearchHub Foundation    
       </div>
     ),
@@ -288,10 +289,9 @@ const BountiesPage: NextPage = () => {
   },{
     group: "Bounty type",
     value: "review",
-    preventDefault: true,
     html: (
       <div>
-        <Checkbox sx={{ padding: "0px 10px 0px 0px"}} />
+        <Checkbox checked={selectedBountyTypes.includes("review")} sx={{ padding: "0px 10px 0px 0px"}} />
         Peer Review
       </div>
     ),
@@ -301,10 +301,9 @@ const BountiesPage: NextPage = () => {
   },{
     group: "Bounty type",
     value: "answer",
-    preventDefault: true,
     html: (
       <div>
-        <Checkbox sx={{ padding: "0px 10px 0px 0px"}} />
+        <Checkbox checked={selectedBountyTypes.includes("answer")} sx={{ padding: "0px 10px 0px 0px"}} />
         Answer to question
       </div>
     ),
@@ -314,10 +313,9 @@ const BountiesPage: NextPage = () => {
   },{
     group: "Bounty type",
     value: "other",
-    preventDefault: true,
     html: (
       <div>
-        <Checkbox sx={{ padding: "0px 10px 0px 0px"}} />
+        <Checkbox checked={selectedBountyTypes.includes("other")} sx={{ padding: "0px 10px 0px 0px"}} />
         Other
       </div>
     ),
@@ -336,17 +334,8 @@ const BountiesPage: NextPage = () => {
         <h1 className={css(styles.title)}>Bounties</h1>
         <div className={css(styles.description)}>Earn ResearchCoin by completing research related bounties.</div>
 
-        <div style={{ display: "flex", }}>
-          <div style={{ width: 200}}>
-            <HubSelectDropdown
-              onChange={(hubs) => {
-                setSelectedHubs(hubs);
-              }}
-              selectedHubs={selectedHubs}
-            />
-          </div>
-
-          <div style={{ width: 200}}>
+        <div style={{ display: "flex", gap: 25 }}>
+          <div>
             <GenericMenu
               softHide={true}
               options={options}
@@ -357,7 +346,7 @@ const BountiesPage: NextPage = () => {
               closeMenuOnSelect={false}
               onSelect={(option: MenuOption) => {
                 console.log("selected", option);
-
+                console.log("selectedBountyTypes", selectedBountyTypes);
                 if (selectedBountyTypes.includes(option.value)) {
                   setSelectedBountyTypes(selectedBountyTypes.filter((type) => type !== option.value));
                 }
@@ -367,10 +356,34 @@ const BountiesPage: NextPage = () => {
               }}
             >
               <IconButton overrideStyle={styles.btnDots}>
+                <ResearchCoinIcon version={4} height={20} width={20} color={colors.MEDIUM_GREY(1.0)} />
                 Bounty Type
+                {selectedBountyTypes.length > 0 && (
+                  <div className={css(styles.badge)}>{selectedBountyTypes.length}</div>
+                )}
                 <FontAwesomeIcon icon={faAngleDown} />
               </IconButton>
             </GenericMenu>
+          </div>
+
+          <div>
+            <HubSelectModal
+              preventLinkClick={true}
+              selectedHub={selectedHub}
+              isModalOpen={isModalOpen}
+              handleModalClose={() => setIsModalOpen(false)}
+              handleSelect={(hub) => {
+                setSelectedHub(hub);
+                setIsModalOpen(false);
+              }}
+            />
+
+            <IconButton onClick={() => setIsModalOpen(true)}>
+              <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>
+                Hubs
+                <div className={css(styles.badge)}>1</div>
+                <FontAwesomeIcon icon={faAngleDown} />
+            </IconButton>
           </div>
         </div>
 
@@ -402,7 +415,7 @@ const BountiesPage: NextPage = () => {
             <div className={css(styles.bountyWrapper)} key={bounty.id}>
               <BountyCard
                 handleHubClick={(hub:Hub) => {
-                  setSelectedHubs([{id: hub.id, name: hub.name}])
+                  setSelectedHub(hub)
                 }}
                 key={bounty.id}
                 bounty={bounty}
@@ -544,6 +557,13 @@ const styles = StyleSheet.create({
     paddingLeft: 28,
     gap: 20,
   },
+  badge: {
+    background: colors.NEW_BLUE(0.1),
+    borderRadius: "5px",
+    padding: "2px 10px",
+    color: colors.NEW_BLUE(1.0),
+    fontSize: 12,    
+  },
   abstract: {
     fontSize: 15,
     marginTop: 15,
@@ -562,14 +582,6 @@ const styles = StyleSheet.create({
   },
   hubTag: {
     cursor: "pointer",
-  },
-  badge: {
-    borderRadius: 25,
-    fontSize: 12,
-    marginLeft: -8,
-    lineHeight: "16px",
-    padding: "3px 10px",
-    background: "white",
   },
   verifyIdentityBanner: {
     display: "flex",
