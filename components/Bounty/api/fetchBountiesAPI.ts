@@ -7,13 +7,17 @@ type Args = {
   pageCursor?: string | null;
   status?: string;
   hubIds?: ID[];
+  bountyTypes?: string[];
 };
 
-export const fetchBounties = ({ personalized = true, pageCursor = null, hubIds = [], status = 'OPEN' }: Args): Promise<PaginatedApiResponse> => {
+export const fetchBounties = ({ personalized = true, pageCursor = null, hubIds = [], bountyTypes =[],  status = 'OPEN' }: Args): Promise<PaginatedApiResponse> => {
 
   let url = `bounty?status=${status}`;
   if (hubIds.length > 0) {
-    url += `&hub_ids=${hubIds.join(',')}`;
+    url += `&hub_ids=${hubIds.join('&hub_ids=')}`;
+  }
+  if (bountyTypes.length > 0) {
+    url += `&bounty_type=${bountyTypes.join('&bounty_type=')}`;
   }
   if (personalized) {
     url += '&personalized=true';

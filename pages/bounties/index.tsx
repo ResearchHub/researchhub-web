@@ -226,13 +226,18 @@ const BountiesPage: NextPage = () => {
     dismissStatus: verificationBannerDismissStatus
   } = useDismissableFeature({ auth, featureName: "verification-banner-in-bounties-page" })
 
-
+  
   const [selectedBountyTypes, setSelectedBountyTypes] = useState<Array<string>>([]);
   const [selectedHub, setSelectedHub] = useState<Hub | undefined>(undefined);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  console.log('selected', selectedBountyTypes)
   const _fetchAndParseBounties = async () => {
-    const bounties: any = await fetchBounties({ personalized: true, pageCursor: nextPageCursor, hubIds: selectedHub ? [selectedHub?.id] : [] });
+    const bounties: any = await fetchBounties({
+      personalized: true,
+      pageCursor: nextPageCursor,
+      hubIds: selectedHub ? [selectedHub?.id] : [],
+      bountyTypes: selectedBountyTypes,
+    });
   
     setNextPageCursor(bounties.next);
     const parsedBounties = (bounties?.results || []).map((bounty) => {
@@ -263,7 +268,7 @@ const BountiesPage: NextPage = () => {
       setCurrentBounties(parsedBounties);
       setIsLoading(false);
     })();
-  }, [selectedHub]);
+  }, [selectedHub, selectedBountyTypes]);
 
 
   const toggleInfoSection = (section: string) => {
@@ -280,12 +285,9 @@ const BountiesPage: NextPage = () => {
     html: (
       <div>
         <Checkbox checked={selectedBountyTypes.includes("researchhub")} sx={{ padding: "0px 10px 0px 0px"}} />
-        ResearchHub Foundation    
+        ResearchHub official    
       </div>
     ),
-    onClick: () => {
-      console.log("download");
-    },
   },{
     group: "Bounty type",
     value: "review",
@@ -295,9 +297,6 @@ const BountiesPage: NextPage = () => {
         Peer Review
       </div>
     ),
-    onClick: () => {
-      console.log("download");
-    },
   },{
     group: "Bounty type",
     value: "answer",
@@ -307,9 +306,6 @@ const BountiesPage: NextPage = () => {
         Answer to question
       </div>
     ),
-    onClick: () => {
-      console.log("download");
-    },
   },{
     group: "Bounty type",
     value: "other",
@@ -319,9 +315,6 @@ const BountiesPage: NextPage = () => {
         Other
       </div>
     ),
-    onClick: () => {
-      console.log("download");
-    },
   }]
 
   const showVerifyBanner = !currentUser?.isVerified && (verificationBannerDismissStatus === "checked" && !isVerificationBannerDismissed);
@@ -345,8 +338,6 @@ const BountiesPage: NextPage = () => {
               isMultiSelect
               closeMenuOnSelect={false}
               onSelect={(option: MenuOption) => {
-                console.log("selected", option);
-                console.log("selectedBountyTypes", selectedBountyTypes);
                 if (selectedBountyTypes.includes(option.value)) {
                   setSelectedBountyTypes(selectedBountyTypes.filter((type) => type !== option.value));
                 }
@@ -381,7 +372,9 @@ const BountiesPage: NextPage = () => {
             <IconButton onClick={() => setIsModalOpen(true)}>
               <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>
                 Hubs
-                <div className={css(styles.badge)}>1</div>
+                {selectedHub && (
+                  <div className={css(styles.badge)}>1</div>
+                )}
                 <FontAwesomeIcon icon={faAngleDown} />
             </IconButton>
           </div>
@@ -412,7 +405,7 @@ const BountiesPage: NextPage = () => {
 
         <div className={css(styles.bounties)}>
           {currentBounties.map((bounty) => (
-            <div className={css(styles.bountyWrapper)} key={bounty.id}>
+            <div className={css(styles.bountyWrapper)} key={"bounty-" + bounty.id}>
               <BountyCard
                 handleHubClick={(hub:Hub) => {
                   setSelectedHub(hub)
