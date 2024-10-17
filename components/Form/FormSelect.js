@@ -56,8 +56,8 @@ const CustomValueContainerWithCount = ({ children, getValue, ...props }) => {
   return (
     <components.ValueContainer {...props}>
       {!props.selectProps.menuIsOpen && (
-        <div>
-          <span>{label}</span>
+        <div className={css(styles.placeholderWrapper)}>
+          <span className={css(styles.placeholderLabel)}>{label}</span>
           {length > 0 && (
             <span className={css(styles.countBadge)}>{length}</span>
           )}
@@ -312,10 +312,11 @@ const styles = StyleSheet.create({
   },
   countBadge: {
     backgroundColor: colors.LIGHT_BLUE(),
-    borderRadius: 20,
+    borderRadius: 4,
     color: colors.BLUE(),
-    padding: "3px 8px",
+    padding: "3px 10px",
     marginLeft: 10,
+    fontSize: 11,
   },
   input: {
     display: "flex",
@@ -350,6 +351,14 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     color: colors.RED(1),
     fontSize: 12,
+  },
+  placeholderLabel: {
+    display: "inline-flex",
+    alignItems: "center",
+  },
+  placeholderWrapper: {
+    display: "flex",
+    alignItems: "center",
   },
 });
 
