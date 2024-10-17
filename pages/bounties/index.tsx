@@ -4,8 +4,16 @@ import { css, StyleSheet } from "aphrodite";
 import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI";
 import { useEffect, useState } from "react";
 import { getPlainText } from "~/components/Comment/lib/quill";
-import { ID, parseAuthorProfile, parseUnifiedDocument, parseUser } from "~/config/types/root_types";
-import Bounty, { formatBountyAmount } from "~/config/types/bounty";
+import {
+  ID,
+  parseAuthorProfile,
+  parseUnifiedDocument,
+  parseUser,
+} from "~/config/types/root_types";
+import Bounty, {
+  formatBountyAmount,
+  BOUNTY_TYPES,
+} from "~/config/types/bounty";
 import UserTooltip from "~/components/Tooltips/User/UserTooltip";
 import ALink from "~/components/ALink";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
@@ -23,7 +31,13 @@ import colors from "~/config/themes/colors";
 import ContentBadge from "~/components/ContentBadge";
 import numeral from "numeral";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
-import { faAngleDown } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faAngleDown,
+  faFilter,
+  faComments,
+  faStar,
+  faGrid2,
+} from "@fortawesome/pro-solid-svg-icons";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 import { Hub, parseHub } from "~/config/types/hub";
 import HubTag from "~/components/Hubs/HubTag";
@@ -34,13 +48,14 @@ import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { breakpoints } from "~/config/themes/screen";
 import { useSelector } from "react-redux";
 import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
-import HubSelectDropdown from "~/components/Hubs/HubSelectDropdown";
+import HubSelectDropdown, {
+  selectDropdownStyles,
+} from "~/components/Hubs/HubSelectDropdown";
 import { useExchangeRate } from "~/components/contexts/ExchangeRateContext";
 import GenericMenu, { MenuOption } from "~/components/shared/GenericMenu";
 import IconButton from "~/components/Icons/IconButton";
 import { Checkbox } from "@mui/material";
 import HubSelectModal from "~/components/Hubs/HubSelectModal";
-import { faComments, faStar, faGrid2 } from "@fortawesome/pro-solid-svg-icons";
 
 type SimpleBounty = {
   id: string;
@@ -51,8 +66,8 @@ type SimpleBounty = {
   createdDate: string;
   unifiedDocument: any;
   hubs: Hub[];
-  bountyType: "REVIEW" | "GENERIC_COMMMENT" | "ANSWER";
-}
+  bountyType: BOUNTY_TYPES;
+};
 
 const parseSimpleBounty = (raw: any): SimpleBounty => {
   return {
@@ -64,21 +79,25 @@ const parseSimpleBounty = (raw: any): SimpleBounty => {
     createdBy: parseUser(raw.created_by),
     expirationDate: raw.expiration_date,
     unifiedDocument: parseUnifiedDocument(raw.unified_document),
-    hubs: (raw?.hubs || []).map(parseHub).filter((hub:Hub) => hub.isUsedForRep === true),
-  }
-}
+    hubs: (raw?.hubs || [])
+      .map(parseHub)
+      .filter((hub: Hub) => hub.isUsedForRep === true),
+  };
+};
 
-const BountyCard = ({ bounty, handleHubClick }: { bounty: SimpleBounty, handleHubClick: Function }) => {
-
+const BountyCard = ({
+  bounty,
+  handleHubClick,
+}: {
+  bounty: SimpleBounty;
+  handleHubClick: Function;
+}) => {
   const { createdBy, unifiedDocument, expirationDate, createdDate } = bounty;
 
   const { rscToUSDDisplay } = useExchangeRate();
   const url = getUrlToUniDoc(unifiedDocument);
   return (
-
     <div className={css(styles.bounty)}>
-
-
       <div className={css(styles.bountyHeader)}>
         <div
           style={{
@@ -109,74 +128,88 @@ const BountyCard = ({ bounty, handleHubClick }: { bounty: SimpleBounty, handleHu
         </div>
       </div>
 
-      <div className={css(styles.lineItems)}>        
-          <div className={css(styles.lineItem)} style={{marginBottom: -2}}>
-            <div className={css(styles.lineItemLabel)}>
-              Amount:
-            </div>
-            <div className={css(styles.lineItemValue)}>
-
-
-              <div style={{ display: "flex", alignItems: "center", gap: 10, }}>
-                <div style={{ color: colors.ORANGE_DARK2(), fontSize: 14, gap: 5, fontWeight: 500, display: "flex", alignItems: "center" }}>
-                  <ResearchCoinIcon version={4} height={18} width={18} />
-                  {numeral(
-                    formatBountyAmount({
-                      amount: bounty.amount,
-                    })
-                  ).format("0,0a")}{" "}
-                  RSC
-                </div>
-                <div style={{ color: colors.MEDIUM_GREY2()}}>({rscToUSDDisplay(bounty.amount)})</div>
-              </div>
-
-            </div>
-          </div>
-        <div className={css(styles.lineItem)}>
-          <div className={css(styles.lineItemLabel)}>
-            Bounty type:
-          </div>
+      <div className={css(styles.lineItems)}>
+        <div className={css(styles.lineItem)} style={{ marginBottom: -2 }}>
+          <div className={css(styles.lineItemLabel)}>Amount:</div>
           <div className={css(styles.lineItemValue)}>
-            {bounty.bountyType === "REVIEW" ? "Peer Review" : bounty.bountyType === "ANSWER" ? "Answer to question" : "Uncategorized"}
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div
+                style={{
+                  color: colors.ORANGE_DARK2(),
+                  fontSize: 14,
+                  gap: 5,
+                  fontWeight: 500,
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <ResearchCoinIcon version={4} height={18} width={18} />
+                {numeral(
+                  formatBountyAmount({
+                    amount: bounty.amount,
+                  })
+                ).format("0,0a")}{" "}
+                RSC
+              </div>
+              <div style={{ color: colors.MEDIUM_GREY2() }}>
+                ({rscToUSDDisplay(bounty.amount)})
+              </div>
+            </div>
           </div>
         </div>
         <div className={css(styles.lineItem)}>
-          <div className={css(styles.lineItemLabel)}>
-            Expiration date:
+          <div className={css(styles.lineItemLabel)}>Bounty type:</div>
+          <div className={css(styles.lineItemValue)}>
+            {bounty.bountyType === "REVIEW"
+              ? "Peer Review"
+              : bounty.bountyType === "ANSWER"
+              ? "Answer to question"
+              : "Uncategorized"}
           </div>
+        </div>
+        <div className={css(styles.lineItem)}>
+          <div className={css(styles.lineItemLabel)}>Expiration date:</div>
           <div className={css(styles.lineItemValue)}>
             {formatDateStandard(bounty.expirationDate)}
           </div>
         </div>
         <div className={css(styles.lineItem, styles.detailsLineItem)}>
-          <div className={css(styles.lineItemLabel)}>
-            Details:
-          </div>
-          {bounty.content?.ops &&
-            <div className={css(styles.lineItemValue)} style={{marginTop: 5,}}>
+          <div className={css(styles.lineItemLabel)}>Details:</div>
+          {bounty.content?.ops && (
+            <div className={css(styles.lineItemValue)} style={{ marginTop: 5 }}>
               <CommentReadOnly
                 content={bounty.content}
                 previewMaxImageLength={1}
                 previewMaxCharLength={400}
               />
             </div>
-          }
+          )}
         </div>
       </div>
 
       <ALink href={url + "/bounties"}>
         <div className={css(styles.paperWrapper)}>
           <div className={css(styles.iconWrapper, styles.paperIcon)}>
-            <PaperIcon color="rgba(170, 168, 180, 1)" height={24} width={24} onClick={undefined} />
+            <PaperIcon
+              color="rgba(170, 168, 180, 1)"
+              height={24}
+              width={24}
+              onClick={undefined}
+            />
           </div>
           <div className={css(styles.paperDetails)}>
             <div className={css(styles.paperTitle)}>
               {unifiedDocument?.document?.title}
             </div>
             <div className={css(styles.paperAuthors)}>
-              {unifiedDocument.authors &&
-                <CondensedAuthorList authorNames={unifiedDocument.authors.map(a => a.firstName + " " + a.lastName)} allowAuthorNameToIncludeHtml={false} />
-              }
+              {unifiedDocument.authors && (
+                <CondensedAuthorList
+                  authorNames={unifiedDocument.authors.map(
+                    (a) => a.firstName + " " + a.lastName
+                  )}
+                  allowAuthorNameToIncludeHtml={false}
+                />
+              )}
 
               <div className={css(styles.abstract)}>
                 {truncateText(bounty?.unifiedDocument?.document?.abstract, 200)}
@@ -191,8 +224,14 @@ const BountyCard = ({ bounty, handleHubClick }: { bounty: SimpleBounty, handleHu
                         e.stopPropagation();
                         e.preventDefault();
                         handleHubClick(hub);
-                    }}>
-                      <HubTag preventLinkClick overrideStyle={styles.hubTag} hub={hub} key={hub.id} />
+                      }}
+                    >
+                      <HubTag
+                        preventLinkClick
+                        overrideStyle={styles.hubTag}
+                        hub={hub}
+                        key={hub.id}
+                      />
                     </div>
                   ))}
                 </div>
@@ -203,14 +242,12 @@ const BountyCard = ({ bounty, handleHubClick }: { bounty: SimpleBounty, handleHu
       </ALink>
       <ALink href={url + "/bounties"}>
         <div className={css(styles.answerCTA)}>
-          <Button size="small" >Answer Bounty</Button>
+          <Button size="small">Answer Bounty</Button>
         </div>
       </ALink>
     </div>
-
-  )
-}
-
+  );
+};
 
 const BountiesPage: NextPage = () => {
   const [currentBounties, setCurrentBounties] = useState<SimpleBounty[]>([]);
@@ -218,40 +255,44 @@ const BountiesPage: NextPage = () => {
   const [nextPageCursor, setNextPageCursor] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const currentUser = useCurrentUser()
+  const currentUser = useCurrentUser();
   const auth = useSelector((state: any) => state.auth);
   const {
     isDismissed: isVerificationBannerDismissed,
     dismissFeature: dismissVerificationBanner,
-    dismissStatus: verificationBannerDismissStatus
-  } = useDismissableFeature({ auth, featureName: "verification-banner-in-bounties-page" })
+    dismissStatus: verificationBannerDismissStatus,
+  } = useDismissableFeature({
+    auth,
+    featureName: "verification-banner-in-bounties-page",
+  });
 
-  
-  const [selectedBountyTypes, setSelectedBountyTypes] = useState<Array<string>>([]);
-  const [selectedHub, setSelectedHub] = useState<Hub | undefined>(undefined);
+  const [selectedBountyTypes, setSelectedBountyTypes] = useState<Array<string>>(
+    []
+  );
+  const [selectedHubs, setSelectedHubs] = useState<Hub[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  console.log('selected', selectedBountyTypes)
+
   const _fetchAndParseBounties = async () => {
     const bounties: any = await fetchBounties({
       personalized: true,
       pageCursor: nextPageCursor,
-      hubIds: selectedHub ? [selectedHub?.id] : [],
+      hubIds: selectedHubs.map((hub) => hub.id),
       bountyTypes: selectedBountyTypes,
     });
-  
+
     setNextPageCursor(bounties.next);
-    const parsedBounties = (bounties?.results || []).map((bounty) => {
-      try {
-        return parseSimpleBounty(bounty)
-      }
-      catch (e) {
-        console.error('error parsing bounty', bounty, e);
-      }
-    }).filter((bounty) => bounty !== undefined);
+    const parsedBounties = (bounties?.results || [])
+      .map((bounty) => {
+        try {
+          return parseSimpleBounty(bounty);
+        } catch (e) {
+          console.error("error parsing bounty", bounty, e);
+        }
+      })
+      .filter((bounty) => bounty !== undefined);
 
     return parsedBounties;
-  }
-
+  };
 
   useEffect(() => {
     (async () => {
@@ -261,15 +302,13 @@ const BountiesPage: NextPage = () => {
     })();
   }, [currentPage]);
 
-
   useEffect(() => {
     (async () => {
       const parsedBounties = await _fetchAndParseBounties();
       setCurrentBounties(parsedBounties);
       setIsLoading(false);
     })();
-  }, [selectedHub, selectedBountyTypes]);
-
+  }, [selectedHubs, selectedBountyTypes]);
 
   const toggleInfoSection = (section: string) => {
     if (openInfoSections.includes(section)) {
@@ -277,116 +316,161 @@ const BountiesPage: NextPage = () => {
     } else {
       setOpenInfoSections([...openInfoSections, section]);
     }
-  }
+  };
 
-  const options:Array<MenuOption> = [{
-    group: "Bounty type",
-    value: "researchhub",
-    html: (
-      <div>
-        <Checkbox checked={selectedBountyTypes.includes("researchhub")} sx={{ padding: "0px 10px 0px 0px"}} />
-        ResearchHub official    
-      </div>
-    ),
-  },{
-    group: "Bounty type",
-    value: "review",
-    html: (
-      <div>
-        <Checkbox checked={selectedBountyTypes.includes("review")} sx={{ padding: "0px 10px 0px 0px"}} />
-        Peer Review
-      </div>
-    ),
-  },{
-    group: "Bounty type",
-    value: "answer",
-    html: (
-      <div>
-        <Checkbox checked={selectedBountyTypes.includes("answer")} sx={{ padding: "0px 10px 0px 0px"}} />
-        Answer to question
-      </div>
-    ),
-  },{
-    group: "Bounty type",
-    value: "other",
-    html: (
-      <div>
-        <Checkbox checked={selectedBountyTypes.includes("other")} sx={{ padding: "0px 10px 0px 0px"}} />
-        Other
-      </div>
-    ),
-  }]
+  const options: Array<MenuOption> = [
+    {
+      group: "Bounty type",
+      value: BOUNTY_TYPES.RESEARCHHUB_OFFICIAL,
+      html: (
+        <div style={{ display: "flex" }}>
+          <Checkbox
+            checked={selectedBountyTypes.includes(
+              BOUNTY_TYPES.RESEARCHHUB_OFFICIAL
+            )}
+            sx={{ padding: "0px 10px 0px 0px" }}
+          />
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            ResearchHub <VerifiedBadge height={20} width={20} />
+          </div>
+        </div>
+      ),
+    },
+    {
+      group: "Bounty type",
+      value: BOUNTY_TYPES.REVIEW,
+      html: (
+        <div>
+          <Checkbox
+            checked={selectedBountyTypes.includes(BOUNTY_TYPES.REVIEW)}
+            sx={{ padding: "0px 10px 0px 0px" }}
+          />
+          Peer Review
+        </div>
+      ),
+    },
+    {
+      group: "Bounty type",
+      value: BOUNTY_TYPES.ANSWER,
+      html: (
+        <div>
+          <Checkbox
+            checked={selectedBountyTypes.includes(BOUNTY_TYPES.ANSWER)}
+            sx={{ padding: "0px 10px 0px 0px" }}
+          />
+          Answer to question
+        </div>
+      ),
+    },
+    {
+      group: "Bounty type",
+      value: BOUNTY_TYPES.OTHER,
+      html: (
+        <div>
+          <Checkbox
+            checked={selectedBountyTypes.includes(BOUNTY_TYPES.OTHER)}
+            sx={{ padding: "0px 10px 0px 0px" }}
+          />
+          Other
+        </div>
+      ),
+    },
+  ];
 
-  const showVerifyBanner = !currentUser?.isVerified && (verificationBannerDismissStatus === "checked" && !isVerificationBannerDismissed);
+  const showVerifyBanner =
+    !currentUser?.isVerified &&
+    verificationBannerDismissStatus === "checked" &&
+    !isVerificationBannerDismissed;
   return (
     <div className={css(styles.pageWrapper)}>
-
-
       <div className={css(styles.bountiesSection)}>
-
         <h1 className={css(styles.title)}>Bounties</h1>
-        <div className={css(styles.description)}>Earn ResearchCoin by completing research related bounties.</div>
+        <div className={css(styles.description)}>
+          Earn ResearchCoin by completing research related bounties.
+        </div>
 
         <div style={{ display: "flex", gap: 25 }}>
+          <div>
+            <div style={{ minWidth: 220, marginTop: -20 }}>
+              <HubSelectDropdown
+                label={null}
+                selectedHubs={selectedHubs}
+                showSelectedHubs={false}
+                showCountInsteadOfLabels={true}
+                dropdownStyles={{
+                  ...selectDropdownStyles,
+                  menu: {
+                    width: 385,
+                  },
+                }}
+                placeholder={
+                  <div className={css(styles.placeholder)}>
+                    <FontAwesomeIcon icon={faFilter}></FontAwesomeIcon>
+                    Keywords
+                    <FontAwesomeIcon icon={faAngleDown} />
+                  </div>
+                }
+                onChange={(hubs) => {
+                  setSelectedHubs(hubs);
+                }}
+              />
+            </div>
+          </div>
+
           <div>
             <GenericMenu
               softHide={true}
               options={options}
               width={250}
               id="bounty-type-menu"
-              direction="bottom-right"
+              direction="bottom-left"
               isMultiSelect
+              menuStyleOverride={styles.menuStyleOverride}
               closeMenuOnSelect={false}
               onSelect={(option: MenuOption) => {
                 if (selectedBountyTypes.includes(option.value)) {
-                  setSelectedBountyTypes(selectedBountyTypes.filter((type) => type !== option.value));
-                }
-                else {
-                  setSelectedBountyTypes([...selectedBountyTypes, option.value]);
+                  setSelectedBountyTypes(
+                    selectedBountyTypes.filter((type) => type !== option.value)
+                  );
+                } else {
+                  setSelectedBountyTypes([
+                    ...selectedBountyTypes,
+                    option.value,
+                  ]);
                 }
               }}
             >
-              <IconButton overrideStyle={styles.btnDots}>
-                <ResearchCoinIcon version={4} height={20} width={20} color={colors.MEDIUM_GREY(1.0)} />
+              <IconButton overrideStyle={styles.bountyDropdownTrigger}>
+                <ResearchCoinIcon
+                  version={4}
+                  height={20}
+                  width={20}
+                  color={colors.MEDIUM_GREY(1.0)}
+                />
                 Bounty Type
                 {selectedBountyTypes.length > 0 && (
-                  <div className={css(styles.badge)}>{selectedBountyTypes.length}</div>
+                  <div className={css(styles.badge)}>
+                    {selectedBountyTypes.length}
+                  </div>
                 )}
                 <FontAwesomeIcon icon={faAngleDown} />
               </IconButton>
             </GenericMenu>
           </div>
-
-          <div>
-            <HubSelectModal
-              preventLinkClick={true}
-              selectedHub={selectedHub}
-              isModalOpen={isModalOpen}
-              handleModalClose={() => setIsModalOpen(false)}
-              handleSelect={(hub) => {
-                setSelectedHub(hub);
-                setIsModalOpen(false);
-              }}
-            />
-
-            <IconButton onClick={() => setIsModalOpen(true)}>
-              <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>
-                Hubs
-                {selectedHub && (
-                  <div className={css(styles.badge)}>1</div>
-                )}
-                <FontAwesomeIcon icon={faAngleDown} />
-            </IconButton>
-          </div>
         </div>
 
+        <div>
+          {selectedHubs.map((hub) => (
+            <HubTag hub={hub} key={hub.id} />
+          ))}
+        </div>
 
         {showVerifyBanner && (
           <div className={css(styles.verifyIdentityBanner)}>
             <VerifiedBadge height={32} width={32} />
-            Verify identity to see bounty recommendations relevant to your research interests.
+            Verify identity to see bounty recommendations relevant to your
+            research interests.
             <div className={css(styles.verifyActions)}>
-
               {/* @ts-ignore */}
               <VerifyIdentityModal
                 // @ts-ignore legacy
@@ -397,18 +481,27 @@ const BountiesPage: NextPage = () => {
                 <Button isWhite>Verify</Button>
               </VerifyIdentityModal>
 
-
-              <CloseIcon overrideStyle={styles.closeBtn} onClick={() => dismissVerificationBanner()} color="white" height={20} width={20} />
+              {/* @ts-ignore */}
+              <CloseIcon
+                overrideStyle={styles.closeBtn}
+                onClick={() => dismissVerificationBanner()}
+                color="white"
+                height={20}
+                width={20}
+              />
             </div>
           </div>
         )}
 
         <div className={css(styles.bounties)}>
           {currentBounties.map((bounty) => (
-            <div className={css(styles.bountyWrapper)} key={"bounty-" + bounty.id}>
+            <div
+              className={css(styles.bountyWrapper)}
+              key={"bounty-" + bounty.id}
+            >
               <BountyCard
-                handleHubClick={(hub:Hub) => {
-                  setSelectedHub(hub)
+                handleHubClick={(hub: Hub) => {
+                  setSelectedHubs([hub]);
                 }}
                 key={bounty.id}
                 bounty={bounty}
@@ -423,10 +516,10 @@ const BountiesPage: NextPage = () => {
                 setIsLoading(true);
               }}
               isLoading={isLoading}
-            />          
+            />
           )}
         </div>
-        
+
         {isLoading && (
           <div className={css(styles.placeholderWrapper)}>
             {Array(10)
@@ -435,7 +528,7 @@ const BountiesPage: NextPage = () => {
                 <LiveFeedCardPlaceholder color="#efefef" />
               ))}
           </div>
-        )}        
+        )}
       </div>
 
       <div className={css(styles.info, styles.infoSection)}>
@@ -445,101 +538,258 @@ const BountiesPage: NextPage = () => {
             About ResearchCoin
           </div>
           <div className={css(styles.aboutRSCContent)}>
-            ResearchCoin (RSC) is a digital currency that aims to incentivize individuals that contribute to the scientific ecosystem. Currently, anyone can earn RSC by sharing, curating, and peer reviewing scientific research on ResearchHub.
+            ResearchCoin (RSC) is a digital currency that aims to incentivize
+            individuals that contribute to the scientific ecosystem. Currently,
+            anyone can earn RSC by sharing, curating, and peer reviewing
+            scientific research on ResearchHub.
           </div>
         </div>
 
         <div className={css(styles.doingThingsWithRSC, styles.infoBlock)}>
-          <div className={css(styles.infoLabel)}>Doing things with ResearchCoin</div>
+          <div className={css(styles.infoLabel)}>
+            Doing things with ResearchCoin
+          </div>
           <div className={css(styles.collapsable)}>
-            <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("create-bounty")}>
+            <div
+              className={css(styles.collapsableHeader)}
+              onClick={() => toggleInfoSection("create-bounty")}
+            >
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Create a bounty</div>
-                <div>{openInfoSections.includes("create-bounty") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
+                <div>
+                  {openInfoSections.includes("create-bounty") ? (
+                    <FontAwesomeIcon icon={faAngleDown} />
+                  ) : (
+                    <FontAwesomeIcon icon={faAngleRight} />
+                  )}{" "}
+                </div>
               </div>
             </div>
-            <div className={css(styles.collapsableContent, openInfoSections.includes("create-bounty") && styles.collapsableContentOpen)}>
-              <div>RSC empowers the Grant system used on ResearchHub, connecting researchers with tailored opportunities specific to their quantifiable expertise. Users can create bounties to engage expert researchers for specific tasks, from processing datasets to conducting literature reviews or conducting paid peer review. This flexible system facilitates targeted collaborations, enabling efficient knowledge exchange and task completion within the scientific community.</div>
-            </div>             
+            <div
+              className={css(
+                styles.collapsableContent,
+                openInfoSections.includes("create-bounty") &&
+                  styles.collapsableContentOpen
+              )}
+            >
+              <div>
+                RSC empowers the Grant system used on ResearchHub, connecting
+                researchers with tailored opportunities specific to their
+                quantifiable expertise. Users can create bounties to engage
+                expert researchers for specific tasks, from processing datasets
+                to conducting literature reviews or conducting paid peer review.
+                This flexible system facilitates targeted collaborations,
+                enabling efficient knowledge exchange and task completion within
+                the scientific community.
+              </div>
+            </div>
           </div>
           <div className={css(styles.collapsable)}>
-            <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("reward-contributions")}>
+            <div
+              className={css(styles.collapsableHeader)}
+              onClick={() => toggleInfoSection("reward-contributions")}
+            >
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Reward quality contributions</div>
-                <div><FontAwesomeIcon icon={faAngleRight} /></div>
+                <div>
+                  <FontAwesomeIcon icon={faAngleRight} />
+                </div>
               </div>
             </div>
-            <div className={css(styles.collapsableContent, openInfoSections.includes("reward-contributions") && styles.collapsableContentOpen)}>
-              <div>RSC serves as the underlying incentive layer for the ResearchHub ecosystem, providing targeted incentives for individual actions (e.g. peer reviews) and broader research goals (e.g. increasing reproducibility). Importantly, the reward algorithm is governed entirely by the community of researchers. This bottom-up approach ensures that those with the most relevant expertise—the researchers themselves—determine what should be incentivized in their fields.</div>
-            </div>              
+            <div
+              className={css(
+                styles.collapsableContent,
+                openInfoSections.includes("reward-contributions") &&
+                  styles.collapsableContentOpen
+              )}
+            >
+              <div>
+                RSC serves as the underlying incentive layer for the ResearchHub
+                ecosystem, providing targeted incentives for individual actions
+                (e.g. peer reviews) and broader research goals (e.g. increasing
+                reproducibility). Importantly, the reward algorithm is governed
+                entirely by the community of researchers. This bottom-up
+                approach ensures that those with the most relevant expertise—the
+                researchers themselves—determine what should be incentivized in
+                their fields.
+              </div>
+            </div>
           </div>
           <div className={css(styles.collapsable)}>
-            <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("fund-open-science")}>
+            <div
+              className={css(styles.collapsableHeader)}
+              onClick={() => toggleInfoSection("fund-open-science")}
+            >
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Fund open science</div>
-                <div>{openInfoSections.includes("fund-open-science") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
+                <div>
+                  {openInfoSections.includes("fund-open-science") ? (
+                    <FontAwesomeIcon icon={faAngleDown} />
+                  ) : (
+                    <FontAwesomeIcon icon={faAngleRight} />
+                  )}{" "}
+                </div>
               </div>
             </div>
-            <div className={css(styles.collapsableContent, openInfoSections.includes("fund-open-science") && styles.collapsableContentOpen)}>
-              <div>RSC enables the ResearchHub community to participate in scientific funding. By leveraging preregistrations (i.e. open access grant applications), we streamline the process of proposing and funding open research projects. This approach incentivizes frequent updates, reduces administrative overhead, and promotes transparency—ultimately fostering more reproducible and collaborative science.</div>
+            <div
+              className={css(
+                styles.collapsableContent,
+                openInfoSections.includes("fund-open-science") &&
+                  styles.collapsableContentOpen
+              )}
+            >
+              <div>
+                RSC enables the ResearchHub community to participate in
+                scientific funding. By leveraging preregistrations (i.e. open
+                access grant applications), we streamline the process of
+                proposing and funding open research projects. This approach
+                incentivizes frequent updates, reduces administrative overhead,
+                and promotes transparency—ultimately fostering more reproducible
+                and collaborative science.
+              </div>
             </div>
-          </div>          
+          </div>
         </div>
 
         <div className={css(styles.doingThingsWithRSC, styles.infoBlock)}>
           <div className={css(styles.infoLabel)}>Earning ResearchCoin</div>
           <div className={css(styles.collapsable)}>
-            <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("peer-review")}>
+            <div
+              className={css(styles.collapsableHeader)}
+              onClick={() => toggleInfoSection("peer-review")}
+            >
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Share a peer review</div>
-                <div>{openInfoSections.includes("peer-review") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
+                <div>
+                  {openInfoSections.includes("peer-review") ? (
+                    <FontAwesomeIcon icon={faAngleDown} />
+                  ) : (
+                    <FontAwesomeIcon icon={faAngleRight} />
+                  )}{" "}
+                </div>
               </div>
             </div>
-            <div className={css(styles.collapsableContent, openInfoSections.includes("peer-review") && styles.collapsableContentOpen)}>
-              <div>Researchers can earn RSC by peer reviewing preprints on ResearchHub. Once you verify your identity, we will surface peer review opportunities to you here.</div>
-            </div>            
+            <div
+              className={css(
+                styles.collapsableContent,
+                openInfoSections.includes("peer-review") &&
+                  styles.collapsableContentOpen
+              )}
+            >
+              <div>
+                Researchers can earn RSC by peer reviewing preprints on
+                ResearchHub. Once you verify your identity, we will surface peer
+                review opportunities to you here.
+              </div>
+            </div>
           </div>
           <div className={css(styles.collapsable)}>
-            <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("answer-bounty")}>
+            <div
+              className={css(styles.collapsableHeader)}
+              onClick={() => toggleInfoSection("answer-bounty")}
+            >
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Answer a bounty</div>
-                <div>{openInfoSections.includes("answer-bounty") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
+                <div>
+                  {openInfoSections.includes("answer-bounty") ? (
+                    <FontAwesomeIcon icon={faAngleDown} />
+                  ) : (
+                    <FontAwesomeIcon icon={faAngleRight} />
+                  )}{" "}
+                </div>
               </div>
             </div>
-            <div className={css(styles.collapsableContent, openInfoSections.includes("answer-bounty") && styles.collapsableContentOpen)}>
-              <div>Researchers can earn RSC by completing bounties on ResearchHub.These tasks range from peer-reviewing preprints from platforms like bioRxiv and arXiv, to providing specialized research troubleshooting and data processing. This flexible system allows researchers to monetize their expertise, offering valuable assistance to bounty creators while receiving fair compensation.</div>
+            <div
+              className={css(
+                styles.collapsableContent,
+                openInfoSections.includes("answer-bounty") &&
+                  styles.collapsableContentOpen
+              )}
+            >
+              <div>
+                Researchers can earn RSC by completing bounties on
+                ResearchHub.These tasks range from peer-reviewing preprints from
+                platforms like bioRxiv and arXiv, to providing specialized
+                research troubleshooting and data processing. This flexible
+                system allows researchers to monetize their expertise, offering
+                valuable assistance to bounty creators while receiving fair
+                compensation.
+              </div>
             </div>
           </div>
           <div className={css(styles.collapsable)}>
-            <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("reproducible")}>
+            <div
+              className={css(styles.collapsableHeader)}
+              onClick={() => toggleInfoSection("reproducible")}
+            >
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Do reproducible research</div>
-                <div>{openInfoSections.includes("reproducible") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
+                <div>
+                  {openInfoSections.includes("reproducible") ? (
+                    <FontAwesomeIcon icon={faAngleDown} />
+                  ) : (
+                    <FontAwesomeIcon icon={faAngleRight} />
+                  )}{" "}
+                </div>
               </div>
             </div>
-            <div className={css(styles.collapsableContent, openInfoSections.includes("reproducible") && styles.collapsableContentOpen)}>
-              <div>Researchers can earn RSC by completing bounties on ResearchHub.These tasks range from peer-reviewing preprints from platforms like bioRxiv and arXiv, to providing specialized research troubleshooting and data processing. This flexible system allows researchers to monetize their expertise, offering valuable assistance to bounty creators while receiving fair compensation.</div>
-            </div>            
+            <div
+              className={css(
+                styles.collapsableContent,
+                openInfoSections.includes("reproducible") &&
+                  styles.collapsableContentOpen
+              )}
+            >
+              <div>
+                Researchers can earn RSC by completing bounties on
+                ResearchHub.These tasks range from peer-reviewing preprints from
+                platforms like bioRxiv and arXiv, to providing specialized
+                research troubleshooting and data processing. This flexible
+                system allows researchers to monetize their expertise, offering
+                valuable assistance to bounty creators while receiving fair
+                compensation.
+              </div>
+            </div>
           </div>
           <div className={css(styles.collapsable)}>
-            <div className={css(styles.collapsableHeader)} onClick={() => toggleInfoSection("upvotes")}>
+            <div
+              className={css(styles.collapsableHeader)}
+              onClick={() => toggleInfoSection("upvotes")}
+            >
               <div className={css(styles.collapsableHeaderTitle)}>
                 <div>Get upvotes on your content</div>
-                <div>{openInfoSections.includes("upvotes") ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} /> } </div>
+                <div>
+                  {openInfoSections.includes("upvotes") ? (
+                    <FontAwesomeIcon icon={faAngleDown} />
+                  ) : (
+                    <FontAwesomeIcon icon={faAngleRight} />
+                  )}{" "}
+                </div>
               </div>
             </div>
-            <div className={css(styles.collapsableContent, openInfoSections.includes("upvotes") && styles.collapsableContentOpen)}>
-              <div>Researchers also earn RSC by contributing to open scientific discourse on ResearchHub, by receiving upvotes on their comments, posts, peer reviews, and papers. We recognize that scientific progress often stems from informal exchanges and critical discussions. We want to incentivize users to have these conversations in the open, as we believe this leads to a more innovative and dynamic research ecosystem.</div>
-            </div>                        
+            <div
+              className={css(
+                styles.collapsableContent,
+                openInfoSections.includes("upvotes") &&
+                  styles.collapsableContentOpen
+              )}
+            >
+              <div>
+                Researchers also earn RSC by contributing to open scientific
+                discourse on ResearchHub, by receiving upvotes on their
+                comments, posts, peer reviews, and papers. We recognize that
+                scientific progress often stems from informal exchanges and
+                critical discussions. We want to incentivize users to have these
+                conversations in the open, as we believe this leads to a more
+                innovative and dynamic research ecosystem.
+              </div>
+            </div>
           </div>
         </div>
-
       </div>
-
-
     </div>
   );
-}
+};
 
 const styles = StyleSheet.create({
   pageWrapper: {
@@ -555,7 +805,7 @@ const styles = StyleSheet.create({
     borderRadius: "5px",
     padding: "2px 10px",
     color: colors.NEW_BLUE(1.0),
-    fontSize: 12,    
+    fontSize: 12,
   },
   abstract: {
     fontSize: 15,
@@ -567,6 +817,23 @@ const styles = StyleSheet.create({
   bountiesSection: {
     width: 800,
     margin: "0 auto",
+  },
+  bountyDropdownTrigger: {
+    borderColor: "hsl(0,0%,80%)",
+    backgroundColor: "#FBFBFD",
+    borderRadius: 2,
+    color: "#8e8d9a",
+    border: `1px solid #E8E8F2`,
+    minHeight: 50,
+    padding: "8px 15px",
+    gap: 8,
+    display: "flex",
+    boxSizing: "border-box",
+    width: 220,
+    justifyContent: "flex-start",
+  },
+  menuStyleOverride: {
+    top: 58,
   },
   bounties: {
     display: "flex",
@@ -590,7 +857,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
       textAlign: "center",
-    }
+    },
   },
   verifyActions: {
     marginLeft: "auto",
@@ -601,7 +868,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "center",
       marginLeft: 0,
-    }
+    },
   },
   closeBtn: {
     ":hover": {
@@ -614,8 +881,8 @@ const styles = StyleSheet.create({
       right: 10,
       top: 10,
       // display: "none",
-    }    
-  },  
+    },
+  },
   title: {
     fontWeight: 500,
     textOverflow: "ellipsis",
@@ -635,7 +902,6 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.LIGHTER_GREY()}`,
     borderRadius: "4px",
     padding: 16,
-    
   },
   bountyWrapper: {
     ":first-child": {
@@ -663,9 +929,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.7),
     width: 120,
   },
-  lineItemValue: {
-
-  },
+  lineItemValue: {},
   detailsLineItem: {
     display: "block",
   },
@@ -673,11 +937,9 @@ const styles = StyleSheet.create({
     maxWidth: 320,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
-    }
-
+    },
   },
-  infoSection: {
-  },
+  infoSection: {},
   aboutRSC: {
     border: `1px solid ${colors.BLACK(0.2)}`,
     borderRadius: 4,
@@ -689,7 +951,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(255, 255, 255)",
     ":first-child": {
       marginTop: 0,
-    }
+    },
   },
   infoLabel: {
     fontWeight: 500,
@@ -705,9 +967,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: "20px",
   },
-  doingThingsWithRSC: {
-
-  },
+  doingThingsWithRSC: {},
   collapsable: {
     // borderBottom: `1px solid ${colors.BLACK(0.2)}`,
   },
@@ -717,15 +977,14 @@ const styles = StyleSheet.create({
     ":hover": {
       background: colors.LIGHTER_GREY(1.0),
       cursor: "pointer",
-    }
+    },
   },
   collapsableHeaderTitle: {
     justifyContent: "space-between",
-    display: "flex"
-
+    display: "flex",
   },
   collapsableContent: {
-    display: "none"
+    display: "none",
   },
   collapsableContentOpen: {
     display: "block",
@@ -735,7 +994,7 @@ const styles = StyleSheet.create({
       background: colors.LIGHTER_GREY(0.3),
     },
     color: colors.BLACK(0.9),
-    fontSize: 14
+    fontSize: 14,
   },
   paperWrapper: {
     display: "flex",
@@ -748,7 +1007,7 @@ const styles = StyleSheet.create({
     ":hover": {
       transition: "0.2s",
       background: colors.LIGHTER_GREY(1.0),
-    },    
+    },
   },
   iconWrapper: {
     marginRight: 10,
@@ -756,14 +1015,11 @@ const styles = StyleSheet.create({
   paperIcon: {
     [`@media only screen and (max-width: 400px)`]: {
       display: "none",
-    }
+    },
   },
-  paperDetails: {
-    
-  },
+  paperDetails: {},
   paperTitle: {
     fontSize: 16,
-
   },
   paperAuthors: {
     color: colors.BLACK(0.6),
@@ -776,8 +1032,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexWrap: "wrap",
   },
+  placeholder: {
+    gap: 10,
+    display: "flex",
+    alignItems: "center",
+    color: "rgb(142, 141, 154)",
+  },
+});
 
-
-})
-
-export default BountiesPage;  
+export default BountiesPage;

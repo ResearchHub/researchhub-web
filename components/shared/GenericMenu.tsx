@@ -7,9 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/pro-regular-svg-icons";
 
 export interface MenuOption {
+  value: any;
   label?: string;
   group?: string;
-  value: any;
   html?: React.ReactElement;
   icon?: React.ReactElement;
   href?: string;
@@ -22,15 +22,16 @@ export interface MenuOption {
 
 interface MenuProps {
   id: string;
+  options: MenuOption[];
+  children?: React.ReactElement;
   width?: number | string;
   onSelect?: Function;
-  children: React.ReactElement;
-  options: MenuOption[];
   triggerHeight?: number;
   softHide?: boolean;
   selected?: any;
   closeMenuOnSelect?: boolean;
   isMultiSelect?: boolean;
+  menuStyleOverride?: any;
   direction?:
     | "bottom-right"
     | "bottom-left"
@@ -51,6 +52,7 @@ const Menu = ({
   selected,
   closeMenuOnSelect = true,
   isMultiSelect = false,
+  menuStyleOverride,
 }: MenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
@@ -110,7 +112,8 @@ const Menu = ({
             css(
               styles.menu,
               softHide && isOpen && styles.softHideOpen,
-              softHide && !isOpen && styles.softHideClosed
+              softHide && !isOpen && styles.softHideClosed,
+              menuStyleOverride
             ) + ` ${id}`
           }
           ref={menuRef}
@@ -149,7 +152,9 @@ const Menu = ({
                     html
                   ) : (
                     <>
-                      {isMultiSelect ? selected.includes(value) : selected === value ? (
+                      {isMultiSelect ? (
+                        selected.includes(value)
+                      ) : selected === value ? (
                         <div className={css(styles.selected)}>
                           {label}
                           <FontAwesomeIcon icon={faCheck} />
@@ -195,7 +200,7 @@ const styles = StyleSheet.create({
     boxShadow: "rgba(129, 148, 167, 0.2) 0px 3px 10px 0px",
   },
   menuItem: {
-    display: "flex",
+    // display: "flex",
     padding: "8px 12px",
     alignItems: "center",
     lineHeight: "19px",
