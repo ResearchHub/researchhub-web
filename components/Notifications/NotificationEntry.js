@@ -121,7 +121,7 @@ const NotificationEntry = (props) => {
                 <>
                   on{" "}
                   <HyperLink
-                    link={{ href: url + "/bounties" }}
+                    link={{ href: url + "/grants" }}
                     onClick={onClick}
                     style={styles.link}
                     text={unifiedDocument.document?.title}

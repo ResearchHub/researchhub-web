@@ -256,7 +256,7 @@ function AskQuestionForm({ post, user, onExit }: AskQuestionFormProps) {
         <div className={css(styles.researchcoinContainer)}>
           <div className={css(styles.researchcoinTitle)}>
             <div style={{ marginBottom: 10,}}>
-              <div className={css(styles.rscLabel)}>ResearchCoin Bounty</div>
+              <div className={css(styles.rscLabel)}>ResearchCoin Grant</div>
               <p style={{ fontSize: 16, marginBottom: 0 }}>
                 Incentivize the community to answer your question by adding RSC.
               </p>
@@ -266,14 +266,14 @@ function AskQuestionForm({ post, user, onExit }: AskQuestionFormProps) {
               <div onClick={() => setWithBounty(false)} style={{ marginTop: 8 }}>
                 <Button size="small" customButtonStyle={styles.removeBountyBtn}>
                   <FontAwesomeIcon icon={faMinus} style={{ marginRight: 4 }} />
-                  Remove Bounty
+                  Remove Grant
                 </Button>
               </div>
             ) : (
               <div onClick={() => setWithBounty(true)}>
                 <Button size="small" customButtonStyle={styles.addBountyBtn}>
                   <FontAwesomeIcon icon={faPlus} style={{ marginRight: 4 }} />
-                  Add Bounty
+                  Add Grant
                 </Button>
               </div>
             )}

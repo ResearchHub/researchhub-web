@@ -188,7 +188,7 @@ const BountyCard = ({
         </div>
       </div>
 
-      <ALink href={url + "/bounties"}>
+      <ALink href={url + "/grants"}>
         <div className={css(styles.paperWrapper)}>
           <div className={css(styles.iconWrapper, styles.paperIcon)}>
             <PaperIcon
@@ -241,7 +241,7 @@ const BountyCard = ({
           </div>
         </div>
       </ALink>
-      <ALink href={url + "/bounties"}>
+      <ALink href={url + "/grants"}>
         <div className={css(styles.answerCTA)}>
           <Button size="small">Answer</Button>
         </div>
