@@ -3,7 +3,6 @@ import { faUndo } from "@fortawesome/pro-solid-svg-icons";
 import { faClock } from "@fortawesome/pro-regular-svg-icons";
 import { faInfoCircle } from "@fortawesome/pro-light-svg-icons";
 import { BOUNTY_RH_PERCENTAGE, MAX_RSC_REQUIRED, MIN_RSC_REQUIRED } from "./config/constants";
-import { trackEvent } from "~/config/utils/analytics";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
@@ -233,32 +232,10 @@ function BountyWizardRSCForm({
     );
   };
 
-  const sendBountyCreateAmpEvent = ({ currentUser, createdBounty }) => {
-    const rh_fee = createdBounty?.amount * 0.07;
-    const dao_fee = createdBounty?.amount * 0.02;
-    trackEvent({
-      eventType: "create_bounty",
-      vendor: "amp",
-      user: currentUser,
-      insertId: `bounty_${createdBounty?.id}`,
-      data: {
-        interaction: "Bounty created",
-        expiration_date: createdBounty?.expiration_date,
-        rh_fee: rh_fee,
-        dao_fee: dao_fee,
-        net_fee: rh_fee + dao_fee,
-      },
-    });
-  };
-
   const handleAddBounty = () => {
     if (!(hasMinRscAlert || hasMaxRscAlert)) {
       const totalBountyAmount = calcTotalAmount({ offeredAmount });
       if (withPreview) {
-        // handleBountyAdded({
-        //   grossBountyAmount: bountyAmount,
-        //   totalBountyAmount: totalBountyAmount,
-        // });
         handleBountyAdded(
           new Bounty({
             amount: offeredAmount,
@@ -280,9 +257,7 @@ function BountyWizardRSCForm({
           effortLevel: effortLevelMap[progress],
         })
           .then((createdBounty) => {
-            sendBountyCreateAmpEvent({ currentUser, createdBounty });
             handleBountyAdded(createdBounty);
-            // setSuccess(true);
           })
           .catch((error) => {
             console.log("error", error);

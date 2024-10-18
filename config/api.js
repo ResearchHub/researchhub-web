@@ -1219,25 +1219,6 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    AMP_ANALYTICS: BASE_URL + "events/amplitude/forward_event/",
-    PROMOTION_STATS: ({ paperId, interaction, route }) => {
-      let url = BASE_URL + "events/paper/";
-
-      if (!doesNotExist(paperId)) {
-        url += `?paper=${paperId}&ordering=-created_date&paper_is_boosted=True&interaction=${interaction}`;
-      } else {
-        let params = {
-          querystring: {},
-          rest: {
-            route: route,
-          },
-        };
-
-        return (url = prepURL(url, params));
-      }
-
-      return url;
-    },
     PROMOTE: BASE_URL + "purchase/",
     PROMOTION: ({ purchaseId }) => {
       let url = BASE_URL + `purchase/${purchaseId}/`;

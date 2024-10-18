@@ -38,7 +38,7 @@ import colors from "~/config/themes/colors";
 
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { endsWithSlash } from "~/config/utils/routing";
-import { sendAmpEvent, saveReview } from "~/config/fetch";
+import { saveReview } from "~/config/fetch";
 import { captureEvent } from "~/config/utils/events";
 import { genClientId } from "~/config/utils/id";
 import { breakpoints } from "~/config/themes/screen";
@@ -506,26 +506,10 @@ const DiscussionTab = (props) => {
           setThreadProp([formattedDiscussion, ...formattedThreads]);
         cancel();
 
-        // amp events
-        let payload = {
-          event_type: "create_thread",
-          time: +new Date(),
-          user_id: props.auth.user
-            ? props.auth.user.id && props.auth.user.id
-            : null,
-          insert_id: `thread_${resp.id}`,
-          event_properties: {
-            interaction: "Post Thread",
-            paper: documentId,
-            is_removed: resp.is_removed,
-          },
-        };
-
         props.setCount(props.calculatedCount + 1);
         props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
         props.getUser();
         setTextEditorKey(genClientId());
-        sendAmpEvent(payload);
 
         if (interimBounty) {
           const bounty = await Bounty.createAPI({

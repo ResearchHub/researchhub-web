@@ -31,7 +31,6 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { RINKEBY_CHAIN_ID } from "../../config/constants";
-import { sendAmpEvent } from "~/config/fetch";
 import {
   sanitizeNumber,
   onKeyDownNumInput,
@@ -337,25 +336,6 @@ class PaperTransactionModal extends Component {
           const item = { ...res };
           this.signTransaction(item);
         } else {
-          // Send AMP Event
-          const payload = {
-            event_type: "create_purchase",
-            time: +new Date(),
-            insert_id: `purchase_${res.id}`,
-            user_id: this.props.auth.user
-              ? this.props.auth.user.id && this.props.auth.user.id
-              : null,
-            event_properties: {
-              interaction: this.state.offChain
-                ? ChainStatus.OFF_CHAIN
-                : ChainStatus.ON_CHAIN,
-              object_id: documentId,
-              content_type: contentType,
-              amount: Number(this.state.value),
-            },
-          };
-          sendAmpEvent(payload);
-
           showMessage({ show: false });
           setMessage("Transaction Successful!");
           showMessage({ show: true });
