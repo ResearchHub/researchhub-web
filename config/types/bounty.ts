@@ -40,6 +40,25 @@ export enum BOUNTY_TYPES {
   OTHER = "GENERIC_COMMENT",
 }
 
+export const BOUNTY_TYPE_MAP = {
+  "RESEARCHHUB": {
+    label: "ResearchHub",
+    value: "RESEARCHHUB",
+  },
+  "REVIEW": {
+    label: "Peer Review",
+    value: "REVIEW",
+  },
+  "ANSWER": {
+    label: "Answer to Question",
+    value: "ANSWER",
+  },
+  "OTHER": {
+    label: "Other",
+    value: "GENERIC_COMMENT",
+  },
+}
+
 export enum BOUNTY_STATUS {
   OPEN = "OPEN",
   EXPIRED = "EXPIRED",

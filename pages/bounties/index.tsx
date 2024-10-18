@@ -12,7 +12,7 @@ import {
 } from "~/config/types/root_types";
 import Bounty, {
   formatBountyAmount,
-  BOUNTY_TYPES,
+  BOUNTY_TYPE_MAP,
 } from "~/config/types/bounty";
 import UserTooltip from "~/components/Tooltips/User/UserTooltip";
 import ALink from "~/components/ALink";
@@ -40,7 +40,7 @@ import {
 } from "@fortawesome/pro-solid-svg-icons";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 import { Hub, parseHub } from "~/config/types/hub";
-import HubTag from "~/components/Hubs/HubTag";
+import HubTag, { HubBadge } from "~/components/Hubs/HubTag";
 import LoadMore from "~/components/shared/LoadMore";
 import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
@@ -56,6 +56,7 @@ import GenericMenu, { MenuOption } from "~/components/shared/GenericMenu";
 import IconButton from "~/components/Icons/IconButton";
 import { Checkbox } from "@mui/material";
 import HubSelectModal from "~/components/Hubs/HubSelectModal";
+import Badge from "~/components/Badge";
 
 type SimpleBounty = {
   id: string;
@@ -66,7 +67,7 @@ type SimpleBounty = {
   createdDate: string;
   unifiedDocument: any;
   hubs: Hub[];
-  bountyType: BOUNTY_TYPES;
+  bountyType: string;
 };
 
 const parseSimpleBounty = (raw: any): SimpleBounty => {
@@ -321,57 +322,57 @@ const BountiesPage: NextPage = () => {
   const options: Array<MenuOption> = [
     {
       group: "Bounty type",
-      value: BOUNTY_TYPES.RESEARCHHUB_OFFICIAL,
+      value: BOUNTY_TYPE_MAP["RESEARCHHUB"].value,
       html: (
         <div style={{ display: "flex" }}>
           <Checkbox
             checked={selectedBountyTypes.includes(
-              BOUNTY_TYPES.RESEARCHHUB_OFFICIAL
+              BOUNTY_TYPE_MAP["RESEARCHHUB"].value
             )}
             sx={{ padding: "0px 10px 0px 0px" }}
           />
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            ResearchHub <VerifiedBadge height={20} width={20} />
+            {BOUNTY_TYPE_MAP["RESEARCHHUB"].label} <VerifiedBadge height={20} width={20} />
           </div>
         </div>
       ),
     },
     {
       group: "Bounty type",
-      value: BOUNTY_TYPES.REVIEW,
+      value: BOUNTY_TYPE_MAP["REVIEW"].value,
       html: (
         <div>
           <Checkbox
-            checked={selectedBountyTypes.includes(BOUNTY_TYPES.REVIEW)}
+            checked={selectedBountyTypes.includes(BOUNTY_TYPE_MAP["REVIEW"].value)}
             sx={{ padding: "0px 10px 0px 0px" }}
           />
-          Peer Review
+          {BOUNTY_TYPE_MAP["REVIEW"].label}
         </div>
       ),
     },
     {
       group: "Bounty type",
-      value: BOUNTY_TYPES.ANSWER,
+      value: BOUNTY_TYPE_MAP["ANSWER"].value,
       html: (
         <div>
           <Checkbox
-            checked={selectedBountyTypes.includes(BOUNTY_TYPES.ANSWER)}
+            checked={selectedBountyTypes.includes(BOUNTY_TYPE_MAP["ANSWER"].value)}
             sx={{ padding: "0px 10px 0px 0px" }}
           />
-          Answer to question
+          {BOUNTY_TYPE_MAP["ANSWER"].label}
         </div>
       ),
     },
     {
       group: "Bounty type",
-      value: BOUNTY_TYPES.OTHER,
+      value: BOUNTY_TYPE_MAP["OTHER"].value,
       html: (
         <div>
           <Checkbox
-            checked={selectedBountyTypes.includes(BOUNTY_TYPES.OTHER)}
+            checked={selectedBountyTypes.includes(BOUNTY_TYPE_MAP["OTHER"].value)}
             sx={{ padding: "0px 10px 0px 0px" }}
           />
-          Other
+          {BOUNTY_TYPE_MAP["OTHER"].label}
         </div>
       ),
     },
@@ -459,9 +460,38 @@ const BountiesPage: NextPage = () => {
           </div>
         </div>
 
-        <div>
+        <div style={{ display: "flex", flexWrap: "wrap",rowGap: 10, }}>
+
+          {selectedBountyTypes.map((bountyType) => (
+            <Badge
+              key={BOUNTY_TYPE_MAP[bountyType].value}
+              id={`type-${BOUNTY_TYPE_MAP[bountyType].value}}`}
+              label={`Type: ${BOUNTY_TYPE_MAP[bountyType].label}`}
+              badgeClassName={styles.appliedFilterBadge}
+              badgeLabelClassName={styles.appliedFilterBadgeLabel}
+              onClick={() =>
+                setSelectedBountyTypes(selectedBountyTypes.filter((b) => bountyType !== b))
+              }
+              onRemove={() =>
+                setSelectedBountyTypes(selectedBountyTypes.filter((b) => bountyType !== b))
+              }
+            />
+          ))}
+
           {selectedHubs.map((hub) => (
-            <HubTag hub={hub} key={hub.id} />
+            <Badge
+              key={hub.id}
+              id={`hub-${hub.id}`}
+              label={`Keyword: ${hub.name}`}
+              badgeClassName={styles.appliedFilterBadge}
+              badgeLabelClassName={styles.appliedFilterBadgeLabel}
+              onClick={() =>
+                setSelectedHubs(selectedHubs.filter((h) => h.id !== hub.id))
+              }
+              onRemove={() =>
+                setSelectedHubs(selectedHubs.filter((h) => h.id !== hub.id))
+              }
+            />
           ))}
         </div>
 
@@ -481,8 +511,8 @@ const BountiesPage: NextPage = () => {
                 <Button isWhite>Verify</Button>
               </VerifyIdentityModal>
 
-              {/* @ts-ignore */}
               <CloseIcon
+                // @ts-ignore
                 overrideStyle={styles.closeBtn}
                 onClick={() => dismissVerificationBanner()}
                 color="white"
@@ -807,6 +837,24 @@ const styles = StyleSheet.create({
     color: colors.NEW_BLUE(1.0),
     fontSize: 12,
   },
+  appliedFilterBadge: {
+    borderRadius: 4,
+    color: colors.BLACK(0.6),
+    background: colors.LIGHTER_GREY(1.0),
+    padding: "2px 8px",
+    letterSpacing: 0,
+    ":hover": {
+      color: colors.NEW_BLUE(),
+      background: colors.LIGHTER_GREY(1.0),
+      cursor: "pointer",
+    },
+  },
+  appliedFilterBadgeLabel: {
+    letterSpacing: 0,
+    display: "flex",
+    alignItems: "center",
+    padding: 0,
+  },  
   abstract: {
     fontSize: 15,
     marginTop: 15,
