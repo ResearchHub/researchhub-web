@@ -46,7 +46,7 @@ export const BOUNTY_TYPE_MAP = {
     label: "Answer to Question",
     value: "ANSWER",
   },
-  "OTHER": {
+  "GENERIC_COMMENT": {
     label: "Other",
     value: "GENERIC_COMMENT",
   },

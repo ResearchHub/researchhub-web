@@ -34,11 +34,13 @@ import Badge from "~/components/Badge";
 import { parseSimpleBounty, SimpleBounty } from "~/components/Bounty/lib/types";
 import BountyCard from "~/components/Bounty/BountyCard";
 import BountyInfoSection from "~/components/Bounty/BountyInfoSection";
+import SearchEmpty from "~/components/Search/SearchEmpty";
 
 const BountiesPage: NextPage = () => {
   const [currentBounties, setCurrentBounties] = useState<SimpleBounty[]>([]);
   const [nextPageCursor, setNextPageCursor] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoadingInitial, setIsLoadingInitial] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const currentUser = useCurrentUser();
   const auth = useSelector((state: any) => state.auth);
@@ -56,10 +58,10 @@ const BountiesPage: NextPage = () => {
   );
   const [selectedHubs, setSelectedHubs] = useState<Hub[]>([]);
 
-  const _fetchAndParseBounties = async () => {
+  const _fetchAndParseBounties = async ({ pageCursor = null }) => {
     const bounties: any = await fetchBounties({
       personalized: true,
-      pageCursor: nextPageCursor,
+      pageCursor,
       hubIds: selectedHubs.map((hub) => hub.id),
       bountyTypes: selectedBountyTypes,
     });
@@ -80,15 +82,17 @@ const BountiesPage: NextPage = () => {
 
   useEffect(() => {
     (async () => {
-      const parsedBounties = await _fetchAndParseBounties();
+      const parsedBounties = await _fetchAndParseBounties({ pageCursor: nextPageCursor });
       setCurrentBounties([...currentBounties, ...parsedBounties]);
       setIsLoading(false);
+      setIsLoadingInitial(false);
     })();
   }, [currentPage]);
 
   useEffect(() => {
+    setNextPageCursor(null);
     (async () => {
-      const parsedBounties = await _fetchAndParseBounties();
+      const parsedBounties = await _fetchAndParseBounties({ pageCursor: null });
       setCurrentBounties(parsedBounties);
       setIsLoading(false);
     })();
@@ -140,14 +144,14 @@ const BountiesPage: NextPage = () => {
     },
     {
       group: "Grant type",
-      value: BOUNTY_TYPE_MAP["OTHER"].value,
+      value: BOUNTY_TYPE_MAP["GENERIC_COMMENT"].value,
       html: (
         <div>
           <Checkbox
-            checked={selectedBountyTypes.includes(BOUNTY_TYPE_MAP["OTHER"].value)}
+            checked={selectedBountyTypes.includes(BOUNTY_TYPE_MAP["GENERIC_COMMENT"].value)}
             sx={{ padding: "0px 10px 0px 0px" }}
           />
-          {BOUNTY_TYPE_MAP["OTHER"].label}
+          {BOUNTY_TYPE_MAP["GENERIC_COMMENT"].label}
         </div>
       ),
     },
@@ -295,6 +299,13 @@ const BountiesPage: NextPage = () => {
                 width={20}
               />
             </div>
+          </div>
+        )}
+
+
+        {(currentBounties.length === 0 && !isLoadingInitial) && (
+          <div style={{ minHeight: 250, display: "flex", justifyContent: "center", width: "100%", marginTop: 50 }}>
+            <SearchEmpty title={"No bounties found."} />
           </div>
         )}
 
