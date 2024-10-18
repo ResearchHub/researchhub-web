@@ -111,7 +111,7 @@ const AuthorComments = ({
         <div style={{ minHeight: 250, display: "flex", justifyContent: "center", width: "100%" }}>
           <SearchEmpty title={"No author activity found in this section."} />
         </div>
-    )}
+      )}
 
     {resultCards}
 

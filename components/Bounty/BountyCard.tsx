@@ -199,6 +199,7 @@ const styles = StyleSheet.create({
   },  
   hubTag: {
     cursor: "pointer",
+    fontSize: 14,
   },
   paperHubs: {
     display: "flex",
