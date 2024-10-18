@@ -66,7 +66,7 @@ function RootLeftSidebarSlider({
         {attrs.label === "Journals" && (
           <div className={css(styles.subheader)}>Browse</div>
         )}
-        {attrs.label === "Bounties" && (
+        {attrs.label === "Grants" && (
           <div className={css(styles.subheader)}>ResearchCoin</div>
         )}      
         {attrs.label === "Lab Notebook" && (

@@ -30,26 +30,14 @@ export const tabs: Array<Tab> = [
         width={18}
       />
     ),
-    label: "Bounties",
-    value: "bounties",
+    label: "Grants",
+    value: "grants",
   },
   {
     icon: <FontAwesomeIcon icon={faStar} />,
     label: "Peer Reviews",
     value: "reviews",
   },
-  // Disabled replicability since we were seeing a lot of spammy votes
-  // and thought that it'd be a net-negative to have this on the platform.
-  // Want to consider more quality/higher-value implementation before re-launching.
-  // {
-  //   icon: <FontAwesomeIcon icon={faCircleCheck} />,
-  //   label: "Replicability",
-  //   value: "replicability",
-  //   // let's show this until 2024 (~30 days since launch)
-  //   // after that it'll programmatically be hidden.
-  //   // if you're seeing this and it's 2024, please remove this code.
-  //   showNewFeatureIndicator: new Date() < new Date("2024-01-01"),
-  // },
 ];
 
 export const getTabs = ({
@@ -75,7 +63,7 @@ export const getTabs = ({
       (tab) =>
         tab.value !== "reviews" &&
         tab.value !== "replicability" &&
-        tab.value !== "bounties"
+        tab.value !== "grants"
     );
   }
 
@@ -149,7 +137,7 @@ const withPillContent = ({
         ...tab,
         pillContent: metadata.discussionCount || undefined,
       });
-    } else if (tab.value === "bounties") {
+    } else if (tab.value === "grants") {
       finalTabs.push({
         ...tab,
         pillContent: metadata.bounties.length || undefined,

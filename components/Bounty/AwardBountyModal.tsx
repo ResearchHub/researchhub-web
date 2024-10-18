@@ -116,7 +116,7 @@ function AwardUserRow({
             className={css(awardUserStyles.awardUser)}
             onClick={awardFullBounty}
           >
-            Award Full Bounty
+            Award Full Grant
           </div>
 
           <div className={css(awardUserStyles.awardColumn)}>
@@ -307,13 +307,13 @@ function AwardBountyModal({
 
   const awardBounty = async () => {
     if (round(remainingAwardAmount, 2) > 0) {
-      setMessage("Award cannot exceed bounty amount.");
+      setMessage("Award cannot exceed grant amount.");
       showMessage({ show: true, error: true });
       return;
     }
 
     if (round(remainingAwardAmount, 2) !== 0) {
-      setMessage("Award your entire bounty to continue.");
+      setMessage("Award your entire grant to continue.");
       showMessage({ show: true, error: true });
       return;
     }
@@ -448,7 +448,7 @@ function AwardBountyModal({
 
         setHasBounties && setHasBounties(false);
         setBountyAwardLoading(false);
-        setMessage("Bounty awarded!");
+        setMessage("Grant awarded!");
         showMessage({ show: true });
         handleClose();
       }
@@ -533,7 +533,7 @@ function AwardBountyModal({
       isOpen={isOpen}
       modalStyle={styles.modalStyle}
       modalContentStyle={styles.modalContentStyle}
-      title={<span className={css(styles.modalTitle)}>Award Bounty</span>}
+      title={<span className={css(styles.modalTitle)}>Award Grant</span>}
     >
       <ReactTooltip className={css(styles.tooltip)} id="distribute">
         <div>
@@ -636,7 +636,7 @@ function AwardBountyModal({
           </div>
         </div>
         <Button
-          label={"Award Bounty"}
+          label={"Award Grant"}
           customButtonStyle={styles.awardButton}
           rippleClass={styles.awardRipple}
           customLabelStyle={styles.labelStyle}

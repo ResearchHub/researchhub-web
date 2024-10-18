@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     boxShadow: "rgba(129, 148, 167, 0.2) 0px 3px 10px 0px",
   },
   menuItem: {
-    // display: "flex",
+    display: "flex",
     padding: "8px 12px",
     alignItems: "center",
     lineHeight: "19px",

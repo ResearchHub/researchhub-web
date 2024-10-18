@@ -269,7 +269,7 @@ function BountyModal({
         success ? null : (
           <span className={css(styles.modalTitle)}>
             {" "}
-            {originalBounty ? "Contribute to" : "Add"} Bounty{" "}
+            {originalBounty ? "Contribute to" : "Add"} Grant{" "}
           </span>
         )
       }
@@ -288,11 +288,11 @@ function BountyModal({
               <div className={css(bountyTooltip.bodyContainer)}>
                 <div className={css(bountyTooltip.desc)}>
                   <div>
-                    • 2% of bounty amount will be used to support the
+                    • 2% of grant amount will be used to support the
                     ResearchHub Community
                   </div>
                   <div>
-                    • 7% of bounty amount will be paid to ResearchHub Inc
+                    • 7% of grant amount will be paid to ResearchHub Inc
                   </div>
                 </div>
               </div>
@@ -319,7 +319,7 @@ function BountyModal({
                   <div
                     className={css(styles.lineItemText, styles.offeringText)}
                   >
-                    What type of bounty do you want to create?
+                    What type of grant do you want to create?
                   </div>
                   <div className={css(styles.bountyTypes)}>
                     {COMMENT_TYPE_OPTIONS.map(
@@ -441,7 +441,7 @@ function BountyModal({
                     Target Audience <span className={css(styles.optionalLabel)}>- Optional</span>
                   </div>
                   <div className={css(styles.lineItemText, styles.sectionDescription)}>
-                    Target specific users for your bounty. If none selected, we'll auto-match relevant users.
+                    Target specific users for your grant. If none selected, we'll auto-match relevant users.
                   </div>
                   <FormSelect
                     id={"Expertise"}
@@ -476,7 +476,7 @@ function BountyModal({
                     <span className={css(infoSectionStyles.infoIcon)}>
                       {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
                     </span>{" "}
-                    The bounty creator will be able to award the full bounty
+                    The grant creator will be able to award the full grant
                     amount including your contribution to a solution they pick.
                   </div>
                 )}
@@ -486,7 +486,7 @@ function BountyModal({
                       {<FontAwesomeIcon icon={faClock}></FontAwesomeIcon>}
                     </span>{" "}
                     <span className={css(infoSectionStyles.infoText)}>
-                      The Bounty will end in 30 days or as soon as you award a
+                      The Grant will end in 30 days or as soon as you award a
                       solution
                     </span>
                   </div>
@@ -496,7 +496,7 @@ function BountyModal({
                     <span className={css(infoSectionStyles.infoIcon)}>
                       {<FontAwesomeIcon icon={faUndo}></FontAwesomeIcon>}
                     </span>{" "}
-                    If no solution satisfies your request, the full bounty
+                    If no solution satisfies your request, the full grant
                     amount (excluding platform fee) will be refunded to you
                   </div>
                 )}
@@ -523,7 +523,7 @@ function BountyModal({
                     <div
                       className={css(alertStyles.alert, alertStyles.rscAlert)}
                     >
-                      Bounty amount cannot exceed 1,000,000 RSC
+                      Grant amount cannot exceed 1,000,000 RSC
                     </div>
                   ) : withPreview ? (
                     <div
@@ -532,13 +532,13 @@ function BountyModal({
                         alertStyles.previewAlert
                       )}
                     >
-                      You will have a chance to review and cancel before bounty
+                      You will have a chance to review and cancel before grant
                       is created
                     </div>
                   ) : null} 
                   <div className={css(styles.addBtnContainer)}>
                     <Button
-                      label={originalBounty ? "Contribute" : "Add bounty"}
+                      label={originalBounty ? "Contribute" : "Add grant"}
                       customButtonStyle={styles.addButton}
                       customLabelStyle={styles.addButtonLabel}
                       size={`small`}

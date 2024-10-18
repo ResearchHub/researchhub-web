@@ -87,12 +87,12 @@ const TransactionCard = (props) => {
     if (transaction.source?.distribution_type?.includes("RhBOUNTY")) {
       return transaction.source?.distribution_type
         .replaceAll("_", " ")
-        .replaceAll("RhBOUNTY", "Bounty")
+        .replaceAll("RhBOUNTY", "Grant")
         .toLocaleLowerCase();
     }
 
     if (transaction.readable_content_type === "bounty") {
-      title = `Bounty #${transaction.source.id}: ${transaction.source.status}`;
+      title = `Grant #${transaction.source.id}: ${transaction.source.status}`;
     } else if (
       transaction.readable_content_type === "bountyfee" ||
       transaction.readable_content_type === "supportfee"

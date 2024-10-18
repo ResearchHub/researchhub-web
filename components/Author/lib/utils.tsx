@@ -130,10 +130,10 @@ export const buildAuthorTabs = ({
       isSelected: router.pathname === "/author/[authorId]/comments",
     },
     {
-      label: "Bounties",
-      value: "bounties",
-      href: `/author/${profile.id}/bounties`,
-      isSelected: router.pathname === "/author/[authorId]/bounties",
+      label: "Grants",
+      value: "grants",
+      href: `/author/${profile.id}/grants`,
+      isSelected: router.pathname === "/author/[authorId]/grants",
     },
   ];
 };

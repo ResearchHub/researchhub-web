@@ -55,7 +55,7 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
         size="small"
         contentType="bounty"
         bountyAmount={openBountyAmount}
-        label={`${openBountyAmountFormatted} RSC Bounty`}
+        label={`${openBountyAmountFormatted} RSC Grant`}
       />
     );
   } else if (closedBounties.length > 0) {
@@ -63,7 +63,7 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
       <ContentBadge
         size="small"
         contentType="closedBounty"
-        label={`${closedBountyAmount} Closed Bounty`}
+        label={`${closedBountyAmount} Closed Grant`}
       />
     );
   }

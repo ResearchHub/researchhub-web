@@ -125,7 +125,7 @@ const BountyCard = ({
           {createdBy?.authorProfile?.isVerified && (
             <VerifiedBadge height={18} width={18} />
           )}
-          <div className={css(styles.action)}>opened a bounty</div>
+          <div className={css(styles.action)}>created a grant</div>
         </div>
       </div>
 
@@ -159,7 +159,7 @@ const BountyCard = ({
           </div>
         </div>
         <div className={css(styles.lineItem)}>
-          <div className={css(styles.lineItemLabel)}>Bounty type:</div>
+          <div className={css(styles.lineItemLabel)}>Grant type:</div>
           <div className={css(styles.lineItemValue)}>
             {bounty.bountyType === "REVIEW"
               ? "Peer Review"
@@ -243,7 +243,7 @@ const BountyCard = ({
       </ALink>
       <ALink href={url + "/bounties"}>
         <div className={css(styles.answerCTA)}>
-          <Button size="small">Answer Bounty</Button>
+          <Button size="small">Answer</Button>
         </div>
       </ALink>
     </div>
@@ -321,7 +321,7 @@ const BountiesPage: NextPage = () => {
 
   const options: Array<MenuOption> = [
     {
-      group: "Bounty type",
+      group: "Grant type",
       value: BOUNTY_TYPE_MAP["RESEARCHHUB"].value,
       html: (
         <div style={{ display: "flex" }}>
@@ -338,7 +338,7 @@ const BountiesPage: NextPage = () => {
       ),
     },
     {
-      group: "Bounty type",
+      group: "Grant type",
       value: BOUNTY_TYPE_MAP["REVIEW"].value,
       html: (
         <div>
@@ -351,7 +351,7 @@ const BountiesPage: NextPage = () => {
       ),
     },
     {
-      group: "Bounty type",
+      group: "Grant type",
       value: BOUNTY_TYPE_MAP["ANSWER"].value,
       html: (
         <div>
@@ -364,7 +364,7 @@ const BountiesPage: NextPage = () => {
       ),
     },
     {
-      group: "Bounty type",
+      group: "Grant type",
       value: BOUNTY_TYPE_MAP["OTHER"].value,
       html: (
         <div>
@@ -385,9 +385,11 @@ const BountiesPage: NextPage = () => {
   return (
     <div className={css(styles.pageWrapper)}>
       <div className={css(styles.bountiesSection)}>
-        <h1 className={css(styles.title)}>Bounties</h1>
+        <h1 className={css(styles.title)}>
+          Grants
+        </h1>
         <div className={css(styles.description)}>
-          Earn ResearchCoin by completing research related bounties.
+          Earn ResearchCoin by completing research related grants.
         </div>
 
         <div style={{ display: "flex", gap: 25 }}>
@@ -401,7 +403,7 @@ const BountiesPage: NextPage = () => {
                 dropdownStyles={{
                   ...selectDropdownStyles,
                   menu: {
-                    width: 385,
+                    width: 465,
                   },
                 }}
                 placeholder={
@@ -448,7 +450,7 @@ const BountiesPage: NextPage = () => {
                   width={20}
                   color={colors.MEDIUM_GREY(1.0)}
                 />
-                Bounty Type
+                Grant Type
                 {selectedBountyTypes.length > 0 && (
                   <div className={css(styles.badge)}>
                     {selectedBountyTypes.length}
@@ -498,7 +500,7 @@ const BountiesPage: NextPage = () => {
         {showVerifyBanner && (
           <div className={css(styles.verifyIdentityBanner)}>
             <VerifiedBadge height={32} width={32} />
-            Verify identity to see bounty recommendations relevant to your
+            Verify identity to see grant recommendations relevant to your
             research interests.
             <div className={css(styles.verifyActions)}>
               {/* @ts-ignore */}
@@ -585,7 +587,7 @@ const BountiesPage: NextPage = () => {
               onClick={() => toggleInfoSection("create-bounty")}
             >
               <div className={css(styles.collapsableHeaderTitle)}>
-                <div>Create a bounty</div>
+                <div>Create a grant</div>
                 <div>
                   {openInfoSections.includes("create-bounty") ? (
                     <FontAwesomeIcon icon={faAngleDown} />
@@ -605,7 +607,7 @@ const BountiesPage: NextPage = () => {
               <div>
                 RSC empowers the Grant system used on ResearchHub, connecting
                 researchers with tailored opportunities specific to their
-                quantifiable expertise. Users can create bounties to engage
+                quantifiable expertise. Users can create grants to engage
                 expert researchers for specific tasks, from processing datasets
                 to conducting literature reviews or conducting paid peer review.
                 This flexible system facilitates targeted collaborations,
@@ -719,7 +721,7 @@ const BountiesPage: NextPage = () => {
               onClick={() => toggleInfoSection("answer-bounty")}
             >
               <div className={css(styles.collapsableHeaderTitle)}>
-                <div>Answer a bounty</div>
+                <div>Answer a grant</div>
                 <div>
                   {openInfoSections.includes("answer-bounty") ? (
                     <FontAwesomeIcon icon={faAngleDown} />
@@ -737,12 +739,12 @@ const BountiesPage: NextPage = () => {
               )}
             >
               <div>
-                Researchers can earn RSC by completing bounties on
-                ResearchHub.These tasks range from peer-reviewing preprints from
+                Researchers can earn RSC by answering grants on
+                ResearchHub. These tasks range from peer-reviewing preprints from
                 platforms like bioRxiv and arXiv, to providing specialized
                 research troubleshooting and data processing. This flexible
                 system allows researchers to monetize their expertise, offering
-                valuable assistance to bounty creators while receiving fair
+                valuable assistance to grant creators while receiving fair
                 compensation.
               </div>
             </div>
@@ -771,12 +773,12 @@ const BountiesPage: NextPage = () => {
               )}
             >
               <div>
-                Researchers can earn RSC by completing bounties on
+                Researchers can earn RSC by completing grants on
                 ResearchHub.These tasks range from peer-reviewing preprints from
                 platforms like bioRxiv and arXiv, to providing specialized
                 research troubleshooting and data processing. This flexible
                 system allows researchers to monetize their expertise, offering
-                valuable assistance to bounty creators while receiving fair
+                valuable assistance to grant creators while receiving fair
                 compensation.
               </div>
             </div>

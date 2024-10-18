@@ -449,12 +449,12 @@ const FeedCardBounty = ({ item }: { item: FeedBountyItem }) => {
               style={{ fontSize: 13, marginRight: 5 }}
               icon={faClock}
             />
-            {`Bounty expiring in ` + timeTo(item.item.expirationDate) + `.  `}
+            {`Grant expiring in ` + timeTo(item.item.expirationDate) + `.  `}
           </span>
           <span>
             <>{`Reply to this ${
               isQuestion ? "question" : "thread"
-            } to be eligible for bounty award.`}</>
+            } to be eligible for grant award.`}</>
           </span>
         </div>
         {
@@ -469,7 +469,7 @@ const FeedCardBounty = ({ item }: { item: FeedBountyItem }) => {
               <FontAwesomeIcon icon={faReply} />
               {` `}
               <span className={css(bountyStyles.bountyBtnText)}>
-                Answer the Bounty
+                Answer the Grant
               </span>
             </div>
           </Button>

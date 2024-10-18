@@ -20,7 +20,7 @@ export const commentTypes = [
     group: "contribute",
     // @ts-ignore
     icon: <FontAwesomeIcon icon={faComments} />,
-    placeholder: "Add a comment or start a bounty",
+    placeholder: "Add a comment or start a grant",
   },
   {
     label: "Peer review",
@@ -56,7 +56,7 @@ export const filterOpts = [
     value: null,
   },
   {
-    label: "Bounties",
+    label: "Grants",
     value: COMMENT_FILTERS.BOUNTY,
   },
   {

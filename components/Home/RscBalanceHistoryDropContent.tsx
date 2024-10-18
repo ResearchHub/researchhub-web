@@ -50,7 +50,7 @@ function RscBalanceHistoryDropContentCard({
         ? "Withdrawal"
         : "";
     if (withdrawal.readable_content_type === "bounty") {
-      title = `Bounty #${withdrawal.source.id}: ${withdrawal.source.status}`;
+      title = `Grant #${withdrawal.source.id}: ${withdrawal.source.status}`;
     } else if (
       withdrawal.readable_content_type === "bountyfee" ||
       withdrawal.readable_content_type === "supportfee"
@@ -61,6 +61,10 @@ function RscBalanceHistoryDropContentCard({
         ?.replaceAll("_", " ")
         .toLocaleLowerCase();
     }
+
+    title = title?.replaceAll("bounty", "grant")
+      .toLocaleLowerCase();    
+
     return toTitleCase(title);
   };
   const displayTitle = getTitle();

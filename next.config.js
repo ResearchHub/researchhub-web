@@ -86,12 +86,6 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: "/scicon2022",
-        destination: "https://researchhubevents.wixsite.com/scicon2022",
-        permanent: true,
-        basePath: false,
-      },
-      {
         source: "/all",
         destination: "/",
         permanent: true,
@@ -122,6 +116,26 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: "/author/:authorId/bounties",
+        destination: "/author/:authorId/grants",
+        permanent: true,
+      },
+      {
+        source: "/paper/:paperId/:slug/bounties",
+        destination: "/paper/:paperId/:slug/grants",
+        permanent: true,
+      },
+      {
+        source: "/post/:postId/:slug/bounties",
+        destination: "/post/:postId/:slug/grants",
+        permanent: true,
+      },
+      {
+        source: "/question/:postId/:slug/bounties",
+        destination: "/question/:postId/:slug/grants",
+        permanent: true,
+      },
+      {
         source: "/referral",
         destination: "/",
         permanent: true,
@@ -134,6 +148,11 @@ const nextConfig = {
       {
         source: "/my-hubs",
         destination: "/for-you",
+        permanent: true,
+      },
+      {
+        source: "/bounties",
+        destination: "/grants",
         permanent: true,
       },
     ];

@@ -31,7 +31,7 @@ const DocumentBadges = ({ document, metadata }: Props) => {
           bountyAmount={openBountyAmount}
           label={`${formatBountyAmount({
             amount: openBountyAmount,
-          })} Bounty`}
+          })} Grant`}
         />
       )}
       {tippedAmount > 0 && (

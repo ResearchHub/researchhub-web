@@ -75,11 +75,11 @@ const BountyInput = ({
     if (_offeredAmount < MIN_RSC_REQUIRED) {
       _hasMinRscError = true;
       _hasMaxRscError = false;
-      _errorMsg = `Minimum bounty must be greater than ${MIN_RSC_REQUIRED} RSC`;
+      _errorMsg = `Minimum grant must be greater than ${MIN_RSC_REQUIRED} RSC`;
     } else if (_offeredAmount > MAX_RSC_REQUIRED) {
       _hasMinRscError = false;
       _hasMaxRscError = true;
-      _errorMsg = "Bounty amount cannot exceed 1,000,000 RSC";
+      _errorMsg = "Grant amount cannot exceed 1,000,000 RSC";
     } else if (_offeredAmount > currentUserBalance) {
       _hasMinRscError = true;
       _hasMaxRscError = false;
@@ -140,10 +140,10 @@ const BountyInput = ({
         <div className={css(bountyTooltip.bodyContainer)}>
           <div className={css(bountyTooltip.desc)}>
             <div>
-              • 2% of bounty amount will be used to support the ResearchHub
+              • 2% of grant amount will be used to support the ResearchHub
               Community
             </div>
-            <div>• 7% of bounty amount will be paid to ResearchHub Inc</div>
+            <div>• 7% of grant amount will be paid to ResearchHub Inc</div>
           </div>
         </div>
       </ReactTooltip>
@@ -167,7 +167,7 @@ const BountyInput = ({
             {withTypeSelection && (
               <>
                 <div className={css(styles.lineItemText, styles.offeringText)}>
-                  What type of bounty do you want to create?
+                  What type of grant do you want to create?
                 </div>
                 <div className={css(styles.bountyTypes)}>
                   {COMMENT_TYPE_OPTIONS.map(({ value, label, icon }, index) => {
@@ -263,7 +263,7 @@ const BountyInput = ({
               <span className={css(infoSectionStyles.infoIcon)}>
                 {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
               </span>{" "}
-              The bounty creator will be able to award the full bounty amount
+              The grant creator will be able to award the full grant amount
               including your contribution to a solution they pick.
             </div>
           )}
@@ -273,7 +273,7 @@ const BountyInput = ({
                 {<FontAwesomeIcon icon={faClock}></FontAwesomeIcon>}
               </span>{" "}
               <span className={css(infoSectionStyles.infoText)}>
-                The Bounty will end in 30 days or as soon as you award a
+                The grant will end in 30 days or as soon as you award a
                 solution
               </span>
             </div>
