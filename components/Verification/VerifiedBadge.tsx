@@ -49,7 +49,7 @@ export const VerifiedBadge = ({
           delayUpdate={500}
         >
           <div className={css(verifiedBadgeStyles.verifiedWrapper)}>
-            <div>Verified Author Account</div>
+            <div>Verified Account</div>
             <Image
               src="/static/verified.svg"
               width={width}

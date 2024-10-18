@@ -126,19 +126,6 @@ const UserPopover = ({ userId }: { userId: ID }): ReactElement | null => {
             {educationSummary}
           </div>
         )}
-
-        <div className={css(styles.row, styles.reputationRow)}>
-          <div className={css(styles.iconColumn)}>
-            <img
-              src="/static/user/user-desc-rsc.png"
-              className={css(styles.rhIcon)}
-              height={18}
-              style={{ marginRight: 5, marginLeft: 3 }}
-              alt="reserachhub-icon"
-            />
-          </div>
-          <div>Lifetime Reputation: {fetchedUser?.reputation}</div>
-        </div>
       </div>
 
       <div style={{ marginTop: 15 }}>

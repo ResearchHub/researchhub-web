@@ -290,7 +290,7 @@ const CommentEditor = ({
                   onClick={() => setInterimBounty(null)}
                 >
                   <ResearchCoinIcon height={18} width={18} />
-                  <span>{interimBounty.formattedAmount} RSC Bounty</span>
+                  <span>{interimBounty.formattedAmount} RSC Grant</span>
                   <FontAwesomeIcon
                     style={{ color: colors.gray }}
                     icon={faTimes}
@@ -314,7 +314,7 @@ const CommentEditor = ({
                           icon={faPlus}
                           style={{ marginRight: 4 }}
                         />
-                        Add Bounty
+                        Add Grant
                       </Button>
                     </div>
                   </CreateBountyBtn>

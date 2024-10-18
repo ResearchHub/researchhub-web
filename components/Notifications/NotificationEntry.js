@@ -115,13 +115,13 @@ const NotificationEntry = (props) => {
         return (
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div>
-              A new bounty earning opportunity is recommended for you based on
+              A new grant earning opportunity is recommended for you based on
               your expertise {` `}
               {unifiedDocument?.document && (
                 <>
                   on{" "}
                   <HyperLink
-                    link={{ href: url + "/bounties" }}
+                    link={{ href: url + "/grants" }}
                     onClick={onClick}
                     style={styles.link}
                     text={unifiedDocument.document?.title}

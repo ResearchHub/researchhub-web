@@ -558,7 +558,7 @@ function BountyWizardRSCForm({
                 {<FontAwesomeIcon icon={faClock}></FontAwesomeIcon>}
               </span>{" "}
               <span className={css(infoSectionStyles.infoText)}>
-                The Bounty will end in 30 days or as soon as you award a
+                The Grant will end in 30 days or as soon as you award a
                 solution
               </span>
             </div>

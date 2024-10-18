@@ -115,7 +115,7 @@ const CommentHeader = ({
                 )}
               </div>
               {hasAnyBounties ? (
-                <div className={css(styles.verb)}>{` opened a bounty`}</div>
+                <div className={css(styles.verb)}>{` created a grant`}</div>
               ) : comment.commentType === COMMENT_TYPES.REVIEW ? (
                 <div className={css(styles.verb)}>{` peer reviewed`}</div>
               ) : (

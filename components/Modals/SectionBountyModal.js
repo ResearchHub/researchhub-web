@@ -94,7 +94,7 @@ class ContentSupportModal extends Component {
     if (amount === 0) {
       text = `Remove bounty for ${sectionName[type]}?`;
     } else {
-      text = `Set a ${parseInt(amount, 10)} RSC bounty for ${
+      text = `Set a ${parseInt(amount, 10)} RSC Grant for ${
         sectionName[type]
       }?`;
     }

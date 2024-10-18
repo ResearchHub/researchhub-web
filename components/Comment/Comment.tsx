@@ -394,14 +394,14 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                           style={{ fontSize: 13, marginRight: 5 }}
                           icon={faClock}
                         />
-                        {`Bounty expiring in ` +
+                        {`Grant expiring in ` +
                           timeTo(openBounties[0].expiration_date) +
                           `.  `}
                       </span>
                       <span>
                         <>{`Reply to this ${
                           isQuestion ? "question" : "thread"
-                        } to be eligible for bounty award.`}</>
+                        } to be eligible for grant award.`}</>
                       </span>
                     </div>
                     {currentUserIsOpenBountyCreator ? (
@@ -432,7 +432,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                                 )}
                               >
                                 {" "}
-                                to bounty
+                                to grant
                               </span>
                             </>
                           </div>
@@ -456,7 +456,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                                 styles.hideForNarrowWidthContexts
                             )}
                           >
-                            Answer the Bounty
+                            Answer
                           </span>
                         </div>
                       </Button>

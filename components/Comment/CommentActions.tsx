@@ -326,7 +326,7 @@ const CommentActions = ({ comment, toggleReply, onBountyAdd }: Args) => {
             >
               <FontAwesomeIcon icon={faPlus} />{" "}
               <span className={css(styles.actionText)}>
-                Contribute to Bounty
+                Contribute to Grant
               </span>
             </CreateBountyBtn>
           </div>

@@ -33,6 +33,25 @@ export const tallyAmounts = ({ bounties }: { bounties: Bounty[] }) => {
   return bounties.reduce((total, b: Bounty) => total + b.amount, 0);
 };
 
+export const BOUNTY_TYPE_MAP = {
+  "RESEARCHHUB": {
+    label: "ResearchHub",
+    value: "RESEARCHHUB",
+  },
+  "REVIEW": {
+    label: "Peer Review",
+    value: "REVIEW",
+  },
+  "ANSWER": {
+    label: "Answer to Question",
+    value: "ANSWER",
+  },
+  "OTHER": {
+    label: "Other",
+    value: "GENERIC_COMMENT",
+  },
+}
+
 export enum BOUNTY_STATUS {
   OPEN = "OPEN",
   EXPIRED = "EXPIRED",
@@ -317,7 +336,7 @@ export default class Bounty {
 
   get targetHubs(): ID[] | undefined {
     return this._targetHubs;
-  }  
+  }
 
   get formattedAmount(): string {
     return this._formattedAmount;

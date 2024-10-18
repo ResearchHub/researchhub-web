@@ -99,13 +99,13 @@ export const getLeftSidebarItemAttrs = ({
       onClick: silentEmptyFnc,
     },
     {
-      icon: <ResearchCoinIcon height={21} width={21} version={4} color={["/bounties"].includes(pathname) ? colors.NEW_BLUE() : "#C1C1CF"}></ResearchCoinIcon>,
-      label: "Bounties",
-      isActive: ["/bounties"].includes(pathname),
+      icon: <ResearchCoinIcon height={21} width={21} version={4} color={["/grants"].includes(pathname) ? colors.NEW_BLUE() : "#C1C1CF"}></ResearchCoinIcon>,
+      label: "Grants",
+      isActive: ["/grants"].includes(pathname),
       isMinimized,
-      href: "/bounties",
+      href: "/grants",
       onClick: silentEmptyFnc,
-    },    
+    },
     {
       icon: <FontAwesomeIcon icon={faHandHoldingDollar}></FontAwesomeIcon>,
       label: "Funding",
@@ -241,6 +241,7 @@ function RootLeftSidebar({
         "hubs",
         "referral",
         "search",
+        "grants",
         "bounties",
         "journals",
         "user",
@@ -296,7 +297,7 @@ function RootLeftSidebar({
         {attrs.label === "Journals" && !isMinimized && (
           <div className={css(styles.subheader)}>Browse</div>
         )}      
-        {attrs.label === "Bounties" && !isMinimized && (
+        {attrs.label === "Grants" && !isMinimized && (
           <div className={css(styles.subheader)}>ResearchCoin</div>
         )}
         {attrs.label === "Lab Notebook" && !isMinimized && (

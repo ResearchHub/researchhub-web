@@ -721,10 +721,6 @@ function AuthorPage(props) {
           alt="reserachhub-icon"
         />
       </span>
-      <div className={css(styles.reputationTitle)}>
-        {"Lifetime Reputation:"}
-      </div>
-      <div className={css(styles.amount)}>{props.author.reputation}</div>
     </div>
   );
 

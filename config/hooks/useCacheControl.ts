@@ -21,7 +21,7 @@ export const revalidateAuthorProfile = (authorId) => {
   let pathsToRevalidate = [
     basePathV2,
     basePathV2 + "/publications",
-    basePathV2 + "/bounties",
+    basePathV2 + "/grants",
     basePathV2 + "/comments",
     basePathV2 + "/reviews",
     basePathV2 + "/transactions",
@@ -61,7 +61,7 @@ const useCacheControl = () => {
     if (revalidateNested) {
       pathsToRevalidate = pathsToRevalidate.concat([
         basePath + "/conversation",
-        basePath + "/bounties",
+        basePath + "/grants",
         basePath + "/reviews",
       ]);
     }

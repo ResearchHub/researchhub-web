@@ -95,9 +95,9 @@ const ContributionHeader = ({ entry, context }: Args) => {
     } else {
       actionLabel = (
         <>
-          {` opened `}
+          {` created `}
           {badge}
-          {` bounty`}
+          {` grant`}
         </>
       );
     }

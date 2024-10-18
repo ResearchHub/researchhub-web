@@ -59,7 +59,7 @@ const contentSubscriptionOptions = [
   },
   {
     id: "weeklyBountyDigestSubscription",
-    label: "Bounty Digest",
+    label: "Grant Digest",
   },
 ];
 

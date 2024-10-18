@@ -103,7 +103,7 @@ const DocumentCommentsPage: NextPage<Args> = ({
             showFilters={false}
             initialFilter={getCommentFilterByTab(tabName)}
             editorType={getEditorTypeFromTabName(tabName)}
-            allowBounty={tabName === "bounties"}
+            allowBounty={tabName === "grants"}
             allowCommentTypeSelection={false}
             // The primary reason for these callbacks is to "optimistically" update the metadata on the page and refresh the cache.
             // Not every use case is taken into account since many scenarios are uncommon. For those, a page refresh will be required.

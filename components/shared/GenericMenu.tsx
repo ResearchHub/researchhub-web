@@ -7,9 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/pro-regular-svg-icons";
 
 export interface MenuOption {
+  value: any;
   label?: string;
   group?: string;
-  value: any;
   html?: React.ReactElement;
   icon?: React.ReactElement;
   href?: string;
@@ -22,13 +22,16 @@ export interface MenuOption {
 
 interface MenuProps {
   id: string;
+  options: MenuOption[];
+  children?: React.ReactElement;
   width?: number | string;
   onSelect?: Function;
-  children: React.ReactElement;
-  options: MenuOption[];
   triggerHeight?: number;
   softHide?: boolean;
   selected?: any;
+  closeMenuOnSelect?: boolean;
+  isMultiSelect?: boolean;
+  menuStyleOverride?: any;
   direction?:
     | "bottom-right"
     | "bottom-left"
@@ -47,12 +50,17 @@ const Menu = ({
   direction = "bottom-left",
   softHide = false,
   selected,
+  closeMenuOnSelect = true,
+  isMultiSelect = false,
+  menuStyleOverride,
 }: MenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
   const handleSelect = (option: MenuOption) => {
-    setIsOpen(!isOpen);
+    if (closeMenuOnSelect) {
+      setIsOpen(!isOpen);
+    }
     onSelect && onSelect(option);
     option.onClick && option.onClick(option);
   };
@@ -64,7 +72,9 @@ const Menu = ({
       setIsOpen(false);
     },
     onInsideClick: () => {
-      setIsOpen(false);
+      if (closeMenuOnSelect) {
+        setIsOpen(false);
+      }
     },
   });
 
@@ -102,7 +112,8 @@ const Menu = ({
             css(
               styles.menu,
               softHide && isOpen && styles.softHideOpen,
-              softHide && !isOpen && styles.softHideClosed
+              softHide && !isOpen && styles.softHideClosed,
+              menuStyleOverride
             ) + ` ${id}`
           }
           ref={menuRef}
@@ -141,7 +152,9 @@ const Menu = ({
                     html
                   ) : (
                     <>
-                      {selected === value ? (
+                      {isMultiSelect ? (
+                        selected.includes(value)
+                      ) : selected === value ? (
                         <div className={css(styles.selected)}>
                           {label}
                           <FontAwesomeIcon icon={faCheck} />

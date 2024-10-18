@@ -16,9 +16,15 @@ interface Props {
   menuPlacement?: "auto" | "top" | "bottom";
   required?: boolean;
   isMulti?: boolean;
+  label?: string | null;
+  placeholder?: any;
+  dropdownStyles?: any;
+  containerStyle?: any;
+  showSelectedHubs?: boolean;
+  showCountInsteadOfLabels?: boolean;
 }
 
-const selectDropdownStyles = {
+export const selectDropdownStyles = {
   multiTagLabelStyle: {
     color: colors.NEW_BLUE(1),
     cursor: "pointer",
@@ -59,22 +65,6 @@ const selectDropdownStyles = {
   },
 };
 
-const HubCardOption: React.FC<any> = (props) => {
-  return (
-    <components.Option {...props}>
-      <HubCard
-        cardStyle={formStyles.hubCardStyle}
-        descriptionStyle={formStyles.hubDescriptionStyle}
-        hub={props.data.hub}
-        showCommentCount={false}
-        numberCharactersToShow={100}
-        preventLinkClick={true}
-        metadataStyle={formStyles.metadataStyle}
-      />
-    </components.Option>
-  );
-};
-
 const TagOnlyOption: React.FC<any> = (props) => {
   return (
     <components.Option {...props}>
@@ -93,6 +83,11 @@ const HubSelectDropdown = ({
   menuPlacement = "auto",
   required = false,
   isMulti = true,
+  label = "Hubs",
+  placeholder = "Search hubs",
+  dropdownStyles = selectDropdownStyles,
+  showSelectedHubs = true,
+  showCountInsteadOfLabels = false,
 }: Props) => {
   const [suggestedHubs, setSuggestedHubs] = useState<HubSuggestion[]>([]);
 
@@ -119,11 +114,12 @@ const HubSelectDropdown = ({
         containerStyle={formStyles.container}
         id="hubs"
         isMulti={isMulti}
-        label="Hubs"
+        label={label}
+        showCountInsteadOfLabels={showCountInsteadOfLabels}
         required={required}
         reactStyles={{}}
         inputStyle={formStyles.inputStyle}
-        reactSelect={{ styles: selectDropdownStyles }}
+        reactSelect={{ styles: dropdownStyles }}
         onInputChange={(field, value) => {
           debouncedHandleInputChange(field, value);
         }}
@@ -148,7 +144,7 @@ const HubSelectDropdown = ({
           flexWrap: "wrap",
         }}
         options={suggestedHubs}
-        placeholder="Search Hubs"
+        placeholder={placeholder}
         value={formattedSelectedHubs}
         menuPlacement={menuPlacement}
       />
@@ -178,7 +174,9 @@ const formStyles = StyleSheet.create({
   metadataStyle: {
     paddingBottom: 0,
   },
-  container: {},
+  container: {
+    minHeight: "auto",
+  },
   inputStyle: {},
   formWrapper: {
     width: "100%",
