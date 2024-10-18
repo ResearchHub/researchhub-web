@@ -17,7 +17,7 @@ import Bounty, {
 import UserTooltip from "~/components/Tooltips/User/UserTooltip";
 import ALink from "~/components/ALink";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
-import { formatDateStandard, timeSince } from "~/config/utils/dates";
+import { formatDateStandard, timeSince, timeTo, timeToRoundUp } from "~/config/utils/dates";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 import { truncateText } from "~/config/utils/string";
 import CommentAvatars from "~/components/Comment/CommentAvatars";
@@ -167,11 +167,11 @@ const BountyCard = ({
               ? "Answer to question"
               : "Uncategorized"}
           </div>
-        </div>
+        </div>       
         <div className={css(styles.lineItem)}>
           <div className={css(styles.lineItemLabel)}>Expiration date:</div>
           <div className={css(styles.lineItemValue)}>
-            {formatDateStandard(bounty.expirationDate)}
+            {timeToRoundUp(bounty.expirationDate)} remaining
           </div>
         </div>
         <div className={css(styles.lineItem, styles.detailsLineItem)}>
@@ -181,7 +181,7 @@ const BountyCard = ({
               <CommentReadOnly
                 content={bounty.content}
                 previewMaxImageLength={1}
-                previewMaxCharLength={400}
+                previewMaxCharLength={250}
               />
             </div>
           )}

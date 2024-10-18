@@ -33,13 +33,6 @@ export const tallyAmounts = ({ bounties }: { bounties: Bounty[] }) => {
   return bounties.reduce((total, b: Bounty) => total + b.amount, 0);
 };
 
-export enum BOUNTY_TYPES {
-  RESEARCHHUB_OFFICIAL = "RESEARCHHUB",
-  REVIEW = "REVIEW",
-  ANSWER = "ANSWER",
-  OTHER = "GENERIC_COMMENT",
-}
-
 export const BOUNTY_TYPE_MAP = {
   "RESEARCHHUB": {
     label: "ResearchHub",
