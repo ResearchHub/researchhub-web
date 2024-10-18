@@ -57,6 +57,7 @@ import IconButton from "~/components/Icons/IconButton";
 import { Checkbox } from "@mui/material";
 import HubSelectModal from "~/components/Hubs/HubSelectModal";
 import Badge from "~/components/Badge";
+import AppliedFilters from "~/components/Search/lib/AppliedFilters";
 
 type SimpleBounty = {
   id: string;
@@ -392,44 +393,41 @@ const BountiesPage: NextPage = () => {
           Earn ResearchCoin by completing research related grants.
         </div>
 
-        <div style={{ display: "flex", gap: 25 }}>
-          <div>
-            <div style={{ minWidth: 220, marginTop: -20 }}>
-              <HubSelectDropdown
-                label={null}
-                selectedHubs={selectedHubs}
-                showSelectedHubs={false}
-                showCountInsteadOfLabels={true}
-                dropdownStyles={{
-                  ...selectDropdownStyles,
-                  menu: {
-                    width: 465,
-                  },
-                }}
-                placeholder={
-                  <div className={css(styles.placeholder)}>
-                    <FontAwesomeIcon icon={faFilter}></FontAwesomeIcon>
-                    Keywords
-                    <FontAwesomeIcon icon={faAngleDown} />
-                  </div>
-                }
-                onChange={(hubs) => {
-                  setSelectedHubs(hubs);
-                }}
-              />
-            </div>
+        <div className={css(styles.filters)}>
+          <div className={css(styles.filterWrapper)} style={{ marginTop: -20 }}>
+            <HubSelectDropdown
+              label={null}
+              selectedHubs={selectedHubs}
+              showSelectedHubs={false}
+              showCountInsteadOfLabels={true}
+              dropdownStyles={{
+                ...selectDropdownStyles,
+                menu: {
+                  width: "100%",
+                },
+              }}
+              placeholder={
+                <div className={css(styles.placeholder)}>
+                  <FontAwesomeIcon icon={faFilter}></FontAwesomeIcon>
+                  Keywords
+                  <FontAwesomeIcon icon={faAngleDown} />
+                </div>
+              }
+              onChange={(hubs) => {
+                setSelectedHubs(hubs);
+              }}
+            />
           </div>
 
-          <div>
+          <div className={css(styles.filterWrapper)}>
             <GenericMenu
               softHide={true}
               options={options}
-              width={250}
+              width={"95%"}
               id="bounty-type-menu"
               direction="bottom-left"
               isMultiSelect
               menuStyleOverride={styles.menuStyleOverride}
-              closeMenuOnSelect={false}
               onSelect={(option: MenuOption) => {
                 if (selectedBountyTypes.includes(option.value)) {
                   setSelectedBountyTypes(
@@ -462,7 +460,7 @@ const BountiesPage: NextPage = () => {
           </div>
         </div>
 
-        <div style={{ display: "flex", flexWrap: "wrap",rowGap: 10, }}>
+        <div className={css(styles.appliedFilters)}>
 
           {selectedBountyTypes.map((bountyType) => (
             <Badge
@@ -868,6 +866,25 @@ const styles = StyleSheet.create({
     width: 800,
     margin: "0 auto",
   },
+  filters: {
+    display: "flex",
+    gap: 25,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      flexDirection: "column",
+      gap: 0
+    }
+  },
+  filterWrapper: {
+    width: "100%",
+  },
+  appliedFilters: {
+    display: "flex",
+    flexWrap: "wrap",
+    rowGap: 10,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginTop: 25
+    },
+  },
   bountyDropdownTrigger: {
     borderColor: "hsl(0,0%,80%)",
     backgroundColor: "#FBFBFD",
@@ -879,7 +896,8 @@ const styles = StyleSheet.create({
     gap: 8,
     display: "flex",
     boxSizing: "border-box",
-    width: 220,
+    width: "100%",
+
     justifyContent: "flex-start",
   },
   menuStyleOverride: {

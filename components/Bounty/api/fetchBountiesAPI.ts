@@ -12,17 +12,17 @@ type Args = {
 
 export const fetchBounties = ({ personalized = true, pageCursor = null, hubIds = [], bountyTypes =[],  status = 'OPEN' }: Args): Promise<PaginatedApiResponse> => {
 
-  let url = `bounty?status=${status}`;
+  let query = `?status=${status}`;
   if (hubIds.length > 0) {
-    url += `&hub_ids=${hubIds.join('&hub_ids=')}`;
+    query += `&hub_ids=${hubIds.join('&hub_ids=')}`;
   }
   if (bountyTypes.length > 0) {
-    url += `&bounty_type=${bountyTypes.join('&bounty_type=')}`;
+    query += `&bounty_type=${bountyTypes.join('&bounty_type=')}`;
   }
   if (personalized) {
-    url += '&personalized=true';
+    query += '&personalized=true';
   }
-  const apiUrl = pageCursor || generateApiUrl(url);
+  const apiUrl = pageCursor || generateApiUrl("bounty") + query;
 
   return fetch(apiUrl, API.GET_CONFIG())
     .then(Helpers.checkStatus)
