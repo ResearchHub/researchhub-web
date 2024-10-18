@@ -55,7 +55,6 @@ const BountiesPage: NextPage = () => {
     []
   );
   const [selectedHubs, setSelectedHubs] = useState<Hub[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const _fetchAndParseBounties = async () => {
     const bounties: any = await fetchBounties({
@@ -155,6 +154,7 @@ const BountiesPage: NextPage = () => {
   ];
 
   const showVerifyBanner =
+    currentUser &&
     !currentUser?.isVerified &&
     verificationBannerDismissStatus === "checked" &&
     !isVerificationBannerDismissed;
@@ -460,7 +460,6 @@ const styles = StyleSheet.create({
       position: "absolute",
       right: 10,
       top: 10,
-      // display: "none",
     },
   },
   title: {

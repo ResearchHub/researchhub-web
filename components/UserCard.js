@@ -56,18 +56,6 @@ const UserCard = ({ authorProfile, reputation, styleVariation }) => {
           )}
         </div>
       </div>
-      {reputation > 0 && (
-        <div className={css(styles.reputation)}>
-          <img
-            className={css(styles.logoIcon)}
-            src="/static/ResearchHubIcon.png"
-          />
-          <span className={css(styles.lifetimeText)}>
-            Lifetime reputation:{" "}
-          </span>
-          {numeral(reputation).format("0,0")}
-        </div>
-      )}
     </Link>
   );
 };
