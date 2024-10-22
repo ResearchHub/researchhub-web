@@ -44,8 +44,8 @@ const HubSelect = ({
 }: HubSelectProps) => {
   const router = useRouter();
   const sortOpts = [
-    { label: "Name (A-Z)", value: "name" },
     { label: "Paper count", value: "-paper_count" },
+    { label: "Name (A-Z)", value: "name" },
   ];
 
   const [parsedHubs, setParsedHubs] = useState<Hub[]>(
@@ -240,7 +240,7 @@ const HubSelect = ({
                 descriptionStyle={styles.hubCardDescription}
                 hub={h}
                 handleClick={handleClick}
-                showCommentCount={showCommentCount}
+                showCommentCount={(h?.numComments || 0) > 0}
                 canEdit={canEdit}
                 preventLinkClick={preventLinkClick}
               />
