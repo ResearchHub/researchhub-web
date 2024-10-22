@@ -120,6 +120,11 @@ const HubSelectDropdown = ({
         reactStyles={{}}
         inputStyle={formStyles.inputStyle}
         reactSelect={{ styles: dropdownStyles }}
+        noOptionsMessage={(value) => {
+          return value.inputValue.length >= 3
+            ? "No hubs found"
+            : "Type to search hubs";
+        }}
         onInputChange={(field, value) => {
           debouncedHandleInputChange(field, value);
         }}

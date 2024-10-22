@@ -3,7 +3,9 @@ import { css, StyleSheet } from "aphrodite";
 import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI";
 import { useEffect, useState } from "react";
 import {
+  BOUNTY_SORT_TYPE,
   BOUNTY_TYPE_MAP,
+  SORT_TYPE_MAP
 } from "~/config/types/bounty";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import { CloseIcon } from "~/config/themes/icons";
@@ -14,6 +16,7 @@ import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import {
   faAngleDown,
   faFilter,
+  faSort,
 } from "@fortawesome/pro-solid-svg-icons";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 import { Hub } from "~/config/types/hub";
@@ -35,6 +38,7 @@ import { parseSimpleBounty, SimpleBounty } from "~/components/Bounty/lib/types";
 import BountyCard from "~/components/Bounty/BountyCard";
 import BountyInfoSection from "~/components/Bounty/BountyInfoSection";
 import SearchEmpty from "~/components/Search/SearchEmpty";
+import { sortOpts } from "~/components/UnifiedDocFeed/constants/UnifiedDocFilters";
 
 const BountiesPage: NextPage = () => {
   const [currentBounties, setCurrentBounties] = useState<SimpleBounty[]>([]);
@@ -57,13 +61,15 @@ const BountiesPage: NextPage = () => {
     []
   );
   const [selectedHubs, setSelectedHubs] = useState<Hub[]>([]);
+  const [selectedSort, setSelectedSort] = useState<BOUNTY_SORT_TYPE>("personalized");
 
-  const _fetchAndParseBounties = async ({ pageCursor = null }) => {
+  const _fetchAndParseBounties = async ({ pageCursor = null, bountyTypes, sort, hubs }) => {
     const bounties: any = await fetchBounties({
       personalized: true,
       pageCursor,
-      hubIds: selectedHubs.map((hub) => hub.id),
-      bountyTypes: selectedBountyTypes,
+      hubIds: hubs.map((hub) => hub.id),
+      bountyTypes,
+      sort,
     });
 
     setNextPageCursor(bounties.next);
@@ -82,7 +88,7 @@ const BountiesPage: NextPage = () => {
 
   useEffect(() => {
     (async () => {
-      const parsedBounties = await _fetchAndParseBounties({ pageCursor: nextPageCursor });
+      const parsedBounties = await _fetchAndParseBounties({ pageCursor: nextPageCursor, bountyTypes: selectedBountyTypes, sort: selectedSort, hubs: selectedHubs });
       setCurrentBounties([...currentBounties, ...parsedBounties]);
       setIsLoading(false);
       setIsLoadingInitial(false);
@@ -92,13 +98,29 @@ const BountiesPage: NextPage = () => {
   useEffect(() => {
     setNextPageCursor(null);
     (async () => {
-      const parsedBounties = await _fetchAndParseBounties({ pageCursor: null });
+      // Reset
+      setCurrentBounties([]);
+      setCurrentPage(1);
+      setIsLoadingInitial(true);
+      setIsLoading(true);
+
+      // Fetch
+      const parsedBounties = await _fetchAndParseBounties({ pageCursor: null, bountyTypes: selectedBountyTypes, sort: selectedSort, hubs: selectedHubs });
+
+      // // Update
       setCurrentBounties(parsedBounties);
       setIsLoading(false);
+      setIsLoadingInitial(false);      
     })();
-  }, [selectedHubs, selectedBountyTypes]);
+  }, [selectedHubs, selectedBountyTypes, selectedSort]);
 
-  const options: Array<MenuOption> = [
+  const sortOptions: Array<MenuOption> = Object.values(SORT_TYPE_MAP).map((sort) => (
+    {
+      value: sort.value,
+      label: sort.label,
+    }))
+
+  const grantTypeOptions: Array<MenuOption> = [
     {
       group: "Grant type",
       value: BOUNTY_TYPE_MAP["RESEARCHHUB"].value,
@@ -172,72 +194,95 @@ const BountiesPage: NextPage = () => {
           Earn ResearchCoin by completing research related grants.
         </div>
 
-        <div className={css(styles.filters)}>
-          <div className={css(styles.filterWrapper)} style={{ marginTop: -20 }}>
-            <HubSelectDropdown
-              label={null}
-              selectedHubs={selectedHubs}
-              showSelectedHubs={false}
-              showCountInsteadOfLabels={true}
-              dropdownStyles={{
-                ...selectDropdownStyles,
-                menu: {
-                  width: "100%",
-                },
-              }}
-              placeholder={
-                <div className={css(styles.placeholder)}>
-                  <FontAwesomeIcon icon={faFilter}></FontAwesomeIcon>
-                  Keywords
+        <div className={css(styles.filtersAndSort)}>
+          <div className={css(styles.filters)}>
+            <div className={css(styles.filterWrapper)} style={{ marginTop: -20 }}>
+              <HubSelectDropdown
+                label={null}
+                selectedHubs={selectedHubs}
+                showSelectedHubs={false}
+                showCountInsteadOfLabels={true}
+                dropdownStyles={{
+                  ...selectDropdownStyles,
+                  menu: {
+                    minWidth: 425,
+                    width: "100%",
+                  },
+                }}
+                placeholder={
+                  <div className={css(styles.placeholder)}>
+                    <FontAwesomeIcon icon={faFilter}></FontAwesomeIcon>
+                    Keywords
+                    <FontAwesomeIcon icon={faAngleDown} />
+                  </div>
+                }
+                onChange={(hubs) => {
+                  setSelectedHubs(hubs);
+                }}
+              />
+            </div>
+
+            <div className={css(styles.filterWrapper)}>
+              <GenericMenu
+                softHide={true}
+                options={grantTypeOptions}
+                width={"100%"}
+                id="bounty-type-menu"
+                direction="bottom-left"
+                isMultiSelect
+                menuStyleOverride={styles.menuStyleOverride}
+                onSelect={(option: MenuOption) => {
+                  if (selectedBountyTypes.includes(option.value)) {
+                    setSelectedBountyTypes(
+                      selectedBountyTypes.filter((type) => type !== option.value)
+                    );
+                  } else {
+                    setSelectedBountyTypes([
+                      ...selectedBountyTypes,
+                      option.value,
+                    ]);
+                  }
+                }}
+              >
+                <IconButton overrideStyle={styles.bountyDropdownTrigger}>
+                  <ResearchCoinIcon
+                    version={4}
+                    height={20}
+                    width={20}
+                    color={colors.MEDIUM_GREY(1.0)}
+                  />
+                  Grant Type
+                  {selectedBountyTypes.length > 0 && (
+                    <div className={css(styles.badge)}>
+                      {selectedBountyTypes.length}
+                    </div>
+                  )}
                   <FontAwesomeIcon icon={faAngleDown} />
-                </div>
-              }
-              onChange={(hubs) => {
-                setSelectedHubs(hubs);
-              }}
-            />
+                </IconButton>
+              </GenericMenu>
+            </div>
           </div>
 
-          <div className={css(styles.filterWrapper)}>
+          <div className={css(styles.filterWrapper, styles.sortWrapper)}>
             <GenericMenu
               softHide={true}
-              options={options}
-              width={"95%"}
-              id="bounty-type-menu"
+              options={sortOptions}
+              width={"100%"}
+              id="bounty-sort"
               direction="bottom-left"
-              isMultiSelect
               menuStyleOverride={styles.menuStyleOverride}
               onSelect={(option: MenuOption) => {
-                if (selectedBountyTypes.includes(option.value)) {
-                  setSelectedBountyTypes(
-                    selectedBountyTypes.filter((type) => type !== option.value)
-                  );
-                } else {
-                  setSelectedBountyTypes([
-                    ...selectedBountyTypes,
-                    option.value,
-                  ]);
-                }
+                setSelectedSort(option.value);
               }}
             >
               <IconButton overrideStyle={styles.bountyDropdownTrigger}>
-                <ResearchCoinIcon
-                  version={4}
-                  height={20}
-                  width={20}
-                  color={colors.MEDIUM_GREY(1.0)}
-                />
-                Grant Type
-                {selectedBountyTypes.length > 0 && (
-                  <div className={css(styles.badge)}>
-                    {selectedBountyTypes.length}
-                  </div>
-                )}
+                {SORT_TYPE_MAP[selectedSort].label}
                 <FontAwesomeIcon icon={faAngleDown} />
               </IconButton>
             </GenericMenu>
           </div>
         </div>
+
 
         <div className={css(styles.appliedFilters)}>
 
@@ -393,16 +438,34 @@ const styles = StyleSheet.create({
     width: 800,
     margin: "0 auto",
   },
-  filters: {
+  filtersAndSort: {
     display: "flex",
+    justifyContent: "space-between",
     gap: 25,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
-      gap: 0
+      gap: 0,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      gap: 20
+    }
+  },
+  filters: {
+    display: "flex",
+    gap: 25,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      flexDirection: "column",
+      gap: 0,
     }
   },
   filterWrapper: {
-    width: "100%",
+    minWidth: 200,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "100%",
+    }
+  },
+  sortWrapper: {
+    minWidth: 150,
   },
   appliedFilters: {
     display: "flex",
