@@ -93,7 +93,7 @@ class EditHubModal extends Component {
     if (isUniqueOrCurrent) {
       const data = new FormData();
       data.append("id", hub.id);
-      data.append("name", hubName ? hubName.toLowerCase() : hub.name);
+      data.append("name", hubName ? hubName : hub.name);
       if (hubDescription) {
         data.append("description", hubDescription);
       }

@@ -87,7 +87,7 @@ class AddHubModal extends Component {
     const isUnique = await this.isHubNameUnique(hubName);
     if (isUnique) {
       const data = new FormData();
-      data.append("name", hubName.toLowerCase());
+      data.append("name", hubName);
       data.append("description", hubDescription);
       return fetch(API.HUB({}), API.POST_FILE_CONFIG(data))
         .then(Helpers.checkStatus)
