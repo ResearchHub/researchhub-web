@@ -350,7 +350,7 @@ const BountiesPage: NextPage = () => {
 
         {(currentBounties.length === 0 && !isLoadingInitial) && (
           <div style={{ minHeight: 250, display: "flex", justifyContent: "center", width: "100%", marginTop: 50 }}>
-            <SearchEmpty title={"No bounties found."} />
+            <SearchEmpty title={"No grants found."} />
           </div>
         )}
 
