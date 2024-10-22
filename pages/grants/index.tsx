@@ -4,6 +4,7 @@ import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI";
 import { useEffect, useState } from "react";
 import {
   BOUNTY_TYPE_MAP,
+  SORT_TYPE_MAP
 } from "~/config/types/bounty";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import { CloseIcon } from "~/config/themes/icons";
@@ -14,6 +15,7 @@ import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import {
   faAngleDown,
   faFilter,
+  faSort,
 } from "@fortawesome/pro-solid-svg-icons";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 import { Hub } from "~/config/types/hub";
@@ -98,7 +100,19 @@ const BountiesPage: NextPage = () => {
     })();
   }, [selectedHubs, selectedBountyTypes]);
 
-  const options: Array<MenuOption> = [
+  const sortOptions: Array<MenuOption> = [
+    {
+      value: SORT_TYPE_MAP["personalized"].value,
+      label: SORT_TYPE_MAP["personalized"].label
+    },{
+      value: SORT_TYPE_MAP["-created_date"].value,
+      label: SORT_TYPE_MAP["-created_date"].label
+    }, {
+      value: SORT_TYPE_MAP["-total_amount"].value,
+      label: SORT_TYPE_MAP["-total_amount"].label
+    }]
+
+  const grantTypeOptions: Array<MenuOption> = [
     {
       group: "Grant type",
       value: BOUNTY_TYPE_MAP["RESEARCHHUB"].value,
@@ -172,72 +186,95 @@ const BountiesPage: NextPage = () => {
           Earn ResearchCoin by completing research related grants.
         </div>
 
-        <div className={css(styles.filters)}>
-          <div className={css(styles.filterWrapper)} style={{ marginTop: -20 }}>
-            <HubSelectDropdown
-              label={null}
-              selectedHubs={selectedHubs}
-              showSelectedHubs={false}
-              showCountInsteadOfLabels={true}
-              dropdownStyles={{
-                ...selectDropdownStyles,
-                menu: {
-                  width: "100%",
-                },
-              }}
-              placeholder={
-                <div className={css(styles.placeholder)}>
-                  <FontAwesomeIcon icon={faFilter}></FontAwesomeIcon>
-                  Keywords
+        <div className={css(styles.filtersAndSort)}>
+          <div className={css(styles.filters)}>
+            <div className={css(styles.filterWrapper)} style={{ marginTop: -20 }}>
+              <HubSelectDropdown
+                label={null}
+                selectedHubs={selectedHubs}
+                showSelectedHubs={false}
+                showCountInsteadOfLabels={true}
+                dropdownStyles={{
+                  ...selectDropdownStyles,
+                  menu: {
+                    minWidth: 400,
+                    width: "100%",
+                  },
+                }}
+                placeholder={
+                  <div className={css(styles.placeholder)}>
+                    <FontAwesomeIcon icon={faFilter}></FontAwesomeIcon>
+                    Keywords
+                    <FontAwesomeIcon icon={faAngleDown} />
+                  </div>
+                }
+                onChange={(hubs) => {
+                  setSelectedHubs(hubs);
+                }}
+              />
+            </div>
+
+            <div className={css(styles.filterWrapper)}>
+              <GenericMenu
+                softHide={true}
+                options={grantTypeOptions}
+                width={"95%"}
+                id="bounty-type-menu"
+                direction="bottom-left"
+                isMultiSelect
+                menuStyleOverride={styles.menuStyleOverride}
+                onSelect={(option: MenuOption) => {
+                  if (selectedBountyTypes.includes(option.value)) {
+                    setSelectedBountyTypes(
+                      selectedBountyTypes.filter((type) => type !== option.value)
+                    );
+                  } else {
+                    setSelectedBountyTypes([
+                      ...selectedBountyTypes,
+                      option.value,
+                    ]);
+                  }
+                }}
+              >
+                <IconButton overrideStyle={styles.bountyDropdownTrigger}>
+                  <ResearchCoinIcon
+                    version={4}
+                    height={20}
+                    width={20}
+                    color={colors.MEDIUM_GREY(1.0)}
+                  />
+                  Grant Type
+                  {selectedBountyTypes.length > 0 && (
+                    <div className={css(styles.badge)}>
+                      {selectedBountyTypes.length}
+                    </div>
+                  )}
                   <FontAwesomeIcon icon={faAngleDown} />
-                </div>
-              }
-              onChange={(hubs) => {
-                setSelectedHubs(hubs);
-              }}
-            />
+                </IconButton>
+              </GenericMenu>
+            </div>
           </div>
 
-          <div className={css(styles.filterWrapper)}>
+          <div className={css(styles.filterWrapper, styles.sortWrapper)}>
             <GenericMenu
               softHide={true}
-              options={options}
+              options={sortOptions}
               width={"95%"}
-              id="bounty-type-menu"
+              id="bounty-sort"
               direction="bottom-left"
-              isMultiSelect
               menuStyleOverride={styles.menuStyleOverride}
               onSelect={(option: MenuOption) => {
-                if (selectedBountyTypes.includes(option.value)) {
-                  setSelectedBountyTypes(
-                    selectedBountyTypes.filter((type) => type !== option.value)
-                  );
-                } else {
-                  setSelectedBountyTypes([
-                    ...selectedBountyTypes,
-                    option.value,
-                  ]);
-                }
+                console.log('sort', option)
               }}
             >
               <IconButton overrideStyle={styles.bountyDropdownTrigger}>
-                <ResearchCoinIcon
-                  version={4}
-                  height={20}
-                  width={20}
-                  color={colors.MEDIUM_GREY(1.0)}
-                />
-                Grant Type
-                {selectedBountyTypes.length > 0 && (
-                  <div className={css(styles.badge)}>
-                    {selectedBountyTypes.length}
-                  </div>
-                )}
+                Best
                 <FontAwesomeIcon icon={faAngleDown} />
               </IconButton>
             </GenericMenu>
           </div>
         </div>
+
 
         <div className={css(styles.appliedFilters)}>
 
@@ -393,16 +430,25 @@ const styles = StyleSheet.create({
     width: 800,
     margin: "0 auto",
   },
-  filters: {
+  filtersAndSort: {
     display: "flex",
+    justifyContent: "space-between",
     gap: 25,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
       gap: 0
     }
   },
+  filters: {
+    display: "flex",
+    gap: 25,
+  },
   filterWrapper: {
-    width: "100%",
+    // width: "100%",
+    minWidth: 200
+  },
+  sortWrapper: {
+    minWidth: 150,
   },
   appliedFilters: {
     display: "flex",

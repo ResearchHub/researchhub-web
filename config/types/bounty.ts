@@ -33,6 +33,21 @@ export const tallyAmounts = ({ bounties }: { bounties: Bounty[] }) => {
   return bounties.reduce((total, b: Bounty) => total + b.amount, 0);
 };
 
+export const SORT_TYPE_MAP = {
+  "personalized": {
+    label: "Best",
+    value: "personalized",
+  },
+  "-created_date": {
+    label: "Newest",
+    value: "-created_date",
+  },
+  "-total_amount": {
+    label: "ResearchCoin Amount",
+    value: "-total_amount",
+  }
+}
+
 export const BOUNTY_TYPE_MAP = {
   "RESEARCHHUB": {
     label: "ResearchHub",
