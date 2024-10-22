@@ -38,6 +38,7 @@ import { parseSimpleBounty, SimpleBounty } from "~/components/Bounty/lib/types";
 import BountyCard from "~/components/Bounty/BountyCard";
 import BountyInfoSection from "~/components/Bounty/BountyInfoSection";
 import SearchEmpty from "~/components/Search/SearchEmpty";
+import { sortOpts } from "~/components/UnifiedDocFeed/constants/UnifiedDocFilters";
 
 const BountiesPage: NextPage = () => {
   const [currentBounties, setCurrentBounties] = useState<SimpleBounty[]>([]);
@@ -113,17 +114,11 @@ const BountiesPage: NextPage = () => {
     })();
   }, [selectedHubs, selectedBountyTypes, selectedSort]);
 
-  const sortOptions: Array<MenuOption> = [
+  const sortOptions: Array<MenuOption> = Object.values(SORT_TYPE_MAP).map((sort) => (
     {
-      value: SORT_TYPE_MAP["personalized"].value,
-      label: SORT_TYPE_MAP["personalized"].label
-    },{
-      value: SORT_TYPE_MAP["-created_date"].value,
-      label: SORT_TYPE_MAP["-created_date"].label
-    }, {
-      value: SORT_TYPE_MAP["-total_amount"].value,
-      label: SORT_TYPE_MAP["-total_amount"].label
-    }]
+      value: sort.value,
+      label: sort.label,
+    }))
 
   const grantTypeOptions: Array<MenuOption> = [
     {
