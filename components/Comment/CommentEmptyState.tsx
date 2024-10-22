@@ -14,7 +14,7 @@ const CommentEmptyState = ({ forSection, documentType, height }: Args) => {
       {forSection === "REVIEW" ? (
         <div>{`This ${documentType} has not been reviewed yet.`}</div>
       ) : forSection === "BOUNTY" ? (
-        <div>{`This ${documentType} has no bounties.`}</div>
+        <div>{`This ${documentType} has no grants.`}</div>
       ) : (
         <div>
           <div className={css(styles.bigText)}>Start the discussion.</div>

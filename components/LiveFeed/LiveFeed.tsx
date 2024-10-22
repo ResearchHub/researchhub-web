@@ -83,7 +83,7 @@ const tabs: Array<Tab> = [
         width={14}
       />
     ),
-    label: "Bounties",
+    label: "Grants",
     value: "BOUNTY",
   },
   {
