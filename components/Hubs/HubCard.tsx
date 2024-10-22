@@ -10,7 +10,6 @@ import { truncateText } from "~/config/utils/string";
 import { formatNumber } from "~/config/utils/number";
 import { faCheckCircle, faPenToSquare } from "@fortawesome/pro-light-svg-icons";
 import { useState } from "react";
-import EditHubModal from "../Modals/EditHubModal";
 import { ModalActions } from "~/redux/modals";
 import { connect } from "react-redux";
 

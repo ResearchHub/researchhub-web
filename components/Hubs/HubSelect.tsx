@@ -5,7 +5,7 @@ import HubCard from "~/components/Hubs/HubCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faSearch } from "@fortawesome/pro-light-svg-icons";
 import Menu, { MenuOption } from "~/components/shared/GenericMenu";
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchHubSuggestions } from "~/components/SearchSuggestion/lib/api";
 import debounce from "lodash/debounce";
 import useWindow from "~/config/hooks/useWindow";
