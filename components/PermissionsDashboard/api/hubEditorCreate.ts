@@ -4,6 +4,7 @@ import API from "../../../config/api";
 
 type HubEditorCreateArgs = {
   editorEmail: any;
+  editorType: string;
   onError: (error: Error) => void;
   onSuccess: () => void;
   selectedHubID: NonNullable<ID>;
@@ -11,6 +12,7 @@ type HubEditorCreateArgs = {
 
 export function hubEditorCreate({
   editorEmail,
+  editorType,
   onError,
   onSuccess,
   selectedHubID,
@@ -19,6 +21,7 @@ export function hubEditorCreate({
     API.HUB_NEW_EDITOR,
     API.POST_CONFIG({
       editor_email: editorEmail,
+      editor_type: editorType.value,
       selected_hub_id: selectedHubID,
     })
   )
