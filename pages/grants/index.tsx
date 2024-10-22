@@ -449,16 +449,25 @@ const styles = StyleSheet.create({
     gap: 25,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
-      gap: 0
+      gap: 0,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      gap: 20
     }
   },
   filters: {
     display: "flex",
     gap: 25,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      flexDirection: "column",
+      gap: 0,
+    }
   },
   filterWrapper: {
-    // width: "100%",
-    minWidth: 200
+    minWidth: 200,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "100%",
+    }
   },
   sortWrapper: {
     minWidth: 150,
