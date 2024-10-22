@@ -10,6 +10,7 @@ type Args = {
   hubIds?: ID[];
   bountyTypes?: string[];
   sort?: BOUNTY_SORT_TYPE;
+  onlyParentBounties?: boolean;
 };
 
 export const fetchBounties = ({
@@ -19,6 +20,7 @@ export const fetchBounties = ({
   bountyTypes =[], 
   status = 'OPEN',
   sort = "personalized",
+  onlyParentBounties = true,
 }: Args): Promise<PaginatedApiResponse> => {
 
   let query = `?status=${status}`;
@@ -33,6 +35,9 @@ export const fetchBounties = ({
   }
   if (sort) {
     query += `&sort=${sort}`;
+  }
+  if (onlyParentBounties) {
+    query += `&only_parent_bounties=true`;
   }
 
   const apiUrl = pageCursor || generateApiUrl("bounty") + query;
