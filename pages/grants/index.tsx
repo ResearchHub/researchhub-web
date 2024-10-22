@@ -3,6 +3,7 @@ import { css, StyleSheet } from "aphrodite";
 import { fetchBounties } from "~/components/Bounty/api/fetchBountiesAPI";
 import { useEffect, useState } from "react";
 import {
+  BOUNTY_SORT_TYPE,
   BOUNTY_TYPE_MAP,
   SORT_TYPE_MAP
 } from "~/config/types/bounty";
@@ -59,13 +60,15 @@ const BountiesPage: NextPage = () => {
     []
   );
   const [selectedHubs, setSelectedHubs] = useState<Hub[]>([]);
+  const [selectedSort, setSelectedSort] = useState<BOUNTY_SORT_TYPE>("personalized");
 
-  const _fetchAndParseBounties = async ({ pageCursor = null }) => {
+  const _fetchAndParseBounties = async ({ pageCursor = null, bountyTypes, sort, hubs }) => {
     const bounties: any = await fetchBounties({
       personalized: true,
       pageCursor,
-      hubIds: selectedHubs.map((hub) => hub.id),
-      bountyTypes: selectedBountyTypes,
+      hubIds: hubs.map((hub) => hub.id),
+      bountyTypes,
+      sort,
     });
 
     setNextPageCursor(bounties.next);
@@ -84,7 +87,7 @@ const BountiesPage: NextPage = () => {
 
   useEffect(() => {
     (async () => {
-      const parsedBounties = await _fetchAndParseBounties({ pageCursor: nextPageCursor });
+      const parsedBounties = await _fetchAndParseBounties({ pageCursor: nextPageCursor, bountyTypes: selectedBountyTypes, sort: selectedSort, hubs: selectedHubs });
       setCurrentBounties([...currentBounties, ...parsedBounties]);
       setIsLoading(false);
       setIsLoadingInitial(false);
@@ -94,11 +97,21 @@ const BountiesPage: NextPage = () => {
   useEffect(() => {
     setNextPageCursor(null);
     (async () => {
-      const parsedBounties = await _fetchAndParseBounties({ pageCursor: null });
+      // Reset
+      setCurrentBounties([]);
+      setCurrentPage(1);
+      setIsLoadingInitial(true);
+      setIsLoading(true);
+
+      // Fetch
+      const parsedBounties = await _fetchAndParseBounties({ pageCursor: null, bountyTypes: selectedBountyTypes, sort: selectedSort, hubs: selectedHubs });
+
+      // // Update
       setCurrentBounties(parsedBounties);
       setIsLoading(false);
+      setIsLoadingInitial(false);      
     })();
-  }, [selectedHubs, selectedBountyTypes]);
+  }, [selectedHubs, selectedBountyTypes, selectedSort]);
 
   const sortOptions: Array<MenuOption> = [
     {
@@ -197,7 +210,7 @@ const BountiesPage: NextPage = () => {
                 dropdownStyles={{
                   ...selectDropdownStyles,
                   menu: {
-                    minWidth: 400,
+                    minWidth: 425,
                     width: "100%",
                   },
                 }}
@@ -218,7 +231,7 @@ const BountiesPage: NextPage = () => {
               <GenericMenu
                 softHide={true}
                 options={grantTypeOptions}
-                width={"95%"}
+                width={"100%"}
                 id="bounty-type-menu"
                 direction="bottom-left"
                 isMultiSelect
@@ -259,16 +272,16 @@ const BountiesPage: NextPage = () => {
             <GenericMenu
               softHide={true}
               options={sortOptions}
-              width={"95%"}
+              width={"100%"}
               id="bounty-sort"
               direction="bottom-left"
               menuStyleOverride={styles.menuStyleOverride}
               onSelect={(option: MenuOption) => {
-                console.log('sort', option)
+                setSelectedSort(option.value);
               }}
             >
               <IconButton overrideStyle={styles.bountyDropdownTrigger}>
-                Best
+                {SORT_TYPE_MAP[selectedSort].label}
                 <FontAwesomeIcon icon={faAngleDown} />
               </IconButton>
             </GenericMenu>

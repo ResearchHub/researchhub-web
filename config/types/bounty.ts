@@ -33,7 +33,9 @@ export const tallyAmounts = ({ bounties }: { bounties: Bounty[] }) => {
   return bounties.reduce((total, b: Bounty) => total + b.amount, 0);
 };
 
-export const SORT_TYPE_MAP = {
+export type BOUNTY_SORT_TYPE = "personalized" | "-created_date" | "-total_amount";
+
+export const SORT_TYPE_MAP:{[key: string]: {label: string, value: BOUNTY_SORT_TYPE } } = {
   "personalized": {
     label: "Best",
     value: "personalized",
@@ -43,10 +45,11 @@ export const SORT_TYPE_MAP = {
     value: "-created_date",
   },
   "-total_amount": {
-    label: "ResearchCoin Amount",
+    label: "RSC Amount",
     value: "-total_amount",
   }
 }
+
 
 export const BOUNTY_TYPE_MAP = {
   "RESEARCHHUB": {

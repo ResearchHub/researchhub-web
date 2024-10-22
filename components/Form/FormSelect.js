@@ -130,6 +130,7 @@ class FormSelect extends Component {
       reactSelect,
       minHeight,
       menuPlacement,
+      noOptionsMessage,
     } = this.props;
 
     let configuredComponents = {
@@ -281,6 +282,7 @@ class FormSelect extends Component {
           value={value}
           isOptionDisabled={isOptionDisabled}
           onInputChange={this.props.onInputChange}
+          noOptionsMessage={noOptionsMessage}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
       </div>
