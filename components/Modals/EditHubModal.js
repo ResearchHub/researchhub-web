@@ -29,7 +29,7 @@ class EditHubModal extends Component {
     this.state = {
       ...this.initialState,
     };
-    this.descriptionLimit = 150;
+    this.descriptionLimit = 500;
     this.nameLimit = 50;
   }
 
