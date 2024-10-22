@@ -20,6 +20,7 @@ import ContributionHeader from "../Contribution/ContributionHeader";
 import HubTag from "~/components/Hubs/HubTag";
 import { parseHub } from "~/config/types/hub";
 import DocumentHubs from "~/components/Document/lib/DocumentHubs";
+import sanitizeHtml from "sanitize-html";
 
 type Args = {
   entry: Contribution;
@@ -80,7 +81,10 @@ const ContributionEntry = ({
           );
           title = (
             <ALink href={getUrlToUniDoc(item?.source.unifiedDocument)}>
-              {item?.source.unifiedDocument?.document?.title}
+              {sanitizeHtml(item?.source.unifiedDocument?.document?.title, {
+                allowedTags: [],
+                allowedAttributes: {},
+              })}
             </ALink>
           );
         }
@@ -102,7 +106,10 @@ const ContributionEntry = ({
         } else {
           title = (
             <ALink href={getUrlToUniDoc(item.unifiedDocument)}>
-              {item.unifiedDocument?.document?.title}
+              {sanitizeHtml(item.unifiedDocument?.document?.title, {
+                allowedTags: [],
+                allowedAttributes: {},
+              })}
             </ALink>
           );
           body = truncateText(
@@ -146,7 +153,10 @@ const ContributionEntry = ({
             overrideStyle={styles.documentLink}
             href={getUrlToUniDoc(item?.unifiedDocument)}
           >
-            {item?.unifiedDocument?.document?.title ?? item?.title ?? ""}
+            {sanitizeHtml(item?.unifiedDocument?.document?.title ?? item?.title ?? "", {
+                allowedTags: [],
+                allowedAttributes: {},
+              })}
           </ALink>
         );
         break;
