@@ -87,7 +87,7 @@ class EditHubModal extends Component {
     let isUniqueOrCurrent = true;
     if (hubName) {
       isUniqueOrCurrent =
-        hubName == this.state.originalHubName ||
+        hubName.toLowerCase() == this.state.originalHubName.toLowerCase() ||
         (await this.isHubNameUnique(hubName));
     }
     if (isUniqueOrCurrent) {
