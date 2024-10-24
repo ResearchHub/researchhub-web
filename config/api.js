@@ -1202,22 +1202,6 @@ const routes = (BASE_URL) => {
     },
     GATEKEEPER_CURRENT_USER: ({ type }) =>
       BASE_URL + `gatekeeper/check_current_user/?type=${type}`,
-    GOOGLE_ANALYTICS: ({ ignorePaper, ignoreUser, manual }) => {
-      let url = BASE_URL + "events/forward_event/";
-      if (ignorePaper) {
-        url += "?ignore_paper=true&";
-      }
-      if (ignoreUser && !ignorePaper) {
-        url += "?ignore_user=true&";
-      } else if (ignoreUser && ignorePaper) {
-        url += "ignore_user=true&";
-      }
-      if (manual) {
-        url += "?manual=true";
-      }
-
-      return url;
-    },
     PROMOTE: BASE_URL + "purchase/",
     PROMOTION: ({ purchaseId }) => {
       let url = BASE_URL + `purchase/${purchaseId}/`;
