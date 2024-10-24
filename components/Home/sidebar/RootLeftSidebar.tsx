@@ -8,6 +8,9 @@ import {
   faNewspaper,
   faTableTree,
   faWavePulse,
+  faFire,
+  faBooks,
+  faBookOpenCover,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faLinkedin,
@@ -70,8 +73,7 @@ export const getLeftSidebarItemAttrs = ({
   isMinimized,
   router,
   openLoginModal,
-}: /* intentional string literal */
-{
+}: {
   currentUser: any;
   isMinimized: boolean;
   router: NextRouter;
@@ -115,7 +117,52 @@ export const getLeftSidebarItemAttrs = ({
       onClick: silentEmptyFnc,
     },
     {
-      icon: <FontAwesomeIcon icon={faNewspaper}></FontAwesomeIcon>,
+      icon: isMinimized ? (
+        <RhTextTag
+          width="28px"
+          height="16px"
+          tagLabel="new"
+          style={{
+            fontVariant: "all-small-caps",
+          }}
+          textColor={"grey"}
+          backgroundColor={"transparent"}
+          fontSize="10px"
+          tagPosition={{ right: "-20px", bottom: "-10px", top: "unset" }}
+        >
+          <FontAwesomeIcon icon={faBookOpenCover} />
+        </RhTextTag>
+      ) : (
+        <FontAwesomeIcon icon={faBookOpenCover} />
+      ),
+      label: isMinimized ? (
+        "RH Journal"
+      ) : (
+        <RhTextTag
+          width="32px"
+          height="20px"
+          tagLabel="new"
+          textTransform={"small-caps"}
+          backgroundColor={"transparent"}
+          textColor={"grey"}
+          style={{
+            fontVariant: "all-small-caps",
+            top: "unset",
+            bottom: -10,
+          }}
+          fontSize="12px"
+          tagPosition={{ right: "-28px", top: "-10px" }}
+        >
+          {"ResearchHub Journal"}
+        </RhTextTag>
+      ),
+      isActive: pathname === "/researchhub-journal",
+      isMinimized,
+      href: "/researchhub-journal",
+      onClick: silentEmptyFnc,
+    },
+    {
+      icon: <FontAwesomeIcon icon={faBooks}></FontAwesomeIcon>,
       label: "Journals",
       isActive: ["/journals"].includes(pathname),
       isMinimized,
@@ -143,6 +190,7 @@ export const getLeftSidebarItemAttrs = ({
         }
       },
     },
+
     {
       icon: isMinimized ? (
         <RhTextTag
@@ -246,6 +294,7 @@ function RootLeftSidebar({
         "journals",
         "user",
         "author",
+        "researchhub-journal",
       ].includes(pathname.split("/")[1]) !== true;
     // if (onSpecficHubPage) {
     //   setIsMinimized(isForceMinimized);
