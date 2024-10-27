@@ -38,6 +38,7 @@ import LinkToPublicPage from "../LinkToPublicPage";
 import { breakpoints } from "~/config/themes/screen";
 import { faBookmark } from "@fortawesome/pro-regular-svg-icons";
 import { faBookmark as solidBookmark } from "@fortawesome/pro-solid-svg-icons";
+import DocumentVersionSelector from "./lib/DocumentVersionSelector";
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
 );
@@ -127,8 +128,15 @@ const DocumentHeader = ({
           }
         >
           <div>
-            <div className={css(styles.badgesWrapper)}>
-              <DocumentBadges document={doc} metadata={metadata} />
+            <div className={css(styles.topLine)}>
+              <div className={css(styles.badgesWrapper)}>
+                <DocumentBadges document={doc} metadata={metadata} />
+              </div>
+              <div className={css(styles.versionWrapper)}>
+                {isPaper(doc) && (
+                  <DocumentVersionSelector versions={doc.versions} />
+                )}
+              </div>
             </div>
             <div className={css(styles.titleWrapper)}>
               <div className={css(styles.voteWrapper)}>
@@ -358,6 +366,13 @@ const BUFFER = 40;
 const SMALL_SCREEN_BREAKPOINT =
   config.width + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH + BUFFER;
 const styles = StyleSheet.create({
+  versionWrapper: {
+
+  },
+  topLine: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
   hubsContainerOverride: {
     flexWrap: "wrap",
   },

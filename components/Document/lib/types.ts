@@ -95,6 +95,14 @@ export type Authorship = {
   isCorresponding: boolean;
 };
 
+export type DocumentVersion = {
+  id: ID;
+  version: string;
+  publishedDate: string;
+  versionMessage: string;
+  formattedLabel: string;
+}
+
 export interface GenericDocument {
   srcUrl: string;
   id: ID;
@@ -129,6 +137,7 @@ export type Paper = GenericDocument & {
   pdfUrl?: string;
   proxyPdfUrl?: string;
   pdfCopyrightAllowsDisplay?: boolean;
+  versions: DocumentVersion[];
 };
 
 export type Post = GenericDocument & {
@@ -167,6 +176,19 @@ export const parseReviewSummary = (raw: any): ReviewSummary => {
   };
 };
 
+export const parseVersion = (raw: any): DocumentVersion => {
+
+  const formattedDate = formatDateStandard(raw.created_date, "MMM D, YYYY");
+
+  return {
+    id: raw.id,
+    version: raw.version,
+    publishedDate: formattedDate,
+    versionMessage: raw.version_message,
+    formattedLabel: `v${raw.version} (${formattedDate})`,
+  }
+}
+
 export const parseGenericDocument = (raw: any): GenericDocument => {
   const parsed: GenericDocument = {
     // @ts-ignore
@@ -204,6 +226,7 @@ export const parsePaper = (raw: any, shouldStripHTML = true): Paper => {
     title: shouldStripHTML ? stripHTML(title) : title,
     authors: parsePaperAuthors(raw),
     journal: raw.external_source,
+    versions: (raw.versions || []).map(v => parseVersion(v)), 
     isOpenAccess: Boolean(raw.is_open_access),
     laymanTitle: shouldStripHTML ? stripHTML(raw.title) : raw.title,
     publishedDate: formatDateStandard(raw.paper_publish_date, "MMM D, YYYY"),
@@ -224,6 +247,18 @@ export const parsePaper = (raw: any, shouldStripHTML = true): Paper => {
       type: "preview",
     });
   }
+
+  if (parsed.versions.length === 0) {
+    parsed.versions = [{
+      id: raw.id,
+      version: "1.0",
+      publishedDate: formatDateStandard(raw.created_date, "MMM D, YYYY"),
+      versionMessage: "Initial",
+      formattedLabel: `v1.0 (${formatDateStandard(raw.created_date, "MMM D, YYYY")})`,
+    }]
+
+  }
+  parsed.versions 
 
   return parsed;
 };

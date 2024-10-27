@@ -49,7 +49,7 @@ export const SORT_TYPE_MAP:{[key: string]: {label: string, value: BOUNTY_SORT_TY
     value: "expiration_date",
   },  
   "-total_amount": {
-    label: "RSC Amount",
+    label: "RSC amount",
     value: "-total_amount",
   },
 }
