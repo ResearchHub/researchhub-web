@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BaseModal from "~/components/Modals/BaseModal";
 import { StyleSheet, css } from "aphrodite";
+import { fetchDocumentByType } from "./fetchDocumentByType";
+import { useRouter } from "next/router";
+import { Paper, parsePaper } from "./types";
 
 interface Args {
   isOpen: boolean;
@@ -22,9 +25,22 @@ export type STEP =
 
 const PaperVersionModal = ({ isOpen, closeModal }: Args) => {
   const [step, setStep] = useState<STEP>("CONTENT");
+  const router = useRouter();
+  const [paper, setPaper] = useState<Paper | null>(null);
   const handleNext = () => {
 
   }
+
+  useEffect(() => {
+    const { documentId } = router.query;
+    (async () => {
+      const rawPaper = await fetchDocumentByType({ documentType: "paper", documentId });
+      const parsed = parsePaper(rawPaper);
+      setPaper(parsed);
+    })();
+
+  }, [])
+
 
   return (
     <BaseModal
