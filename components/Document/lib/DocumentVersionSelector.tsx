@@ -7,6 +7,8 @@ import { faClockRotateLeft } from "@fortawesome/pro-solid-svg-icons";
 import IconButton from "~/components/Icons/IconButton";
 import { useState } from "react";
 import colors from "~/config/themes/colors";
+import PaperVersionModal from "./PaperVersionModal";
+
 
 interface Args {
   versions: DocumentVersion[];
@@ -40,9 +42,14 @@ const DocumentVersionSelector = ({ versions }: Args) => {
 
   const versionOptions = buildVersionOptions(versions);
   const [selectedVersion, setSelectedVersion] = useState<DocumentVersion>(versions[0]);
+  const [isNewVersionModalOpen, setIsNewVersionModalOpen] = useState(false);
 
   return (
     <div>
+      <PaperVersionModal
+        isOpen={isNewVersionModalOpen}
+        closeModal={() => setIsNewVersionModalOpen(false)}
+      />
       <Menu
         softHide={true}
         options={versionOptions}
@@ -51,6 +58,12 @@ const DocumentVersionSelector = ({ versions }: Args) => {
         direction="bottom-right"
         menuStyleOverride={styles.menuStyleOverride}
         onSelect={(option: MenuOption) => {
+
+          if (option.value === "submit-new") {
+            setIsNewVersionModalOpen(true);
+            return;
+          }
+
           console.log('option', option)
         }} 
       >
