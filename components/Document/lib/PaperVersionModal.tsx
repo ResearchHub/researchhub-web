@@ -5,6 +5,11 @@ import { fetchDocumentByType } from "./fetchDocumentByType";
 import { DocumentVersion, Paper, parsePaper, WORK_TYPE } from "./types";
 import FormInput from "~/components/Form/FormInput";
 import FormSelect from "~/components/Form/FormSelect";
+import FormTextArea from "~/components/Form/FormTextArea";
+import HubSelectDropdown, {
+  selectDropdownStyles,
+} from "~/components/Hubs/HubSelectDropdown";
+import { Hub } from "~/config/types/hub";
 
 interface Args {
   isOpen: boolean;
@@ -75,10 +80,13 @@ const ContentStep = ({ paper }: { paper: Paper | null }) => {
   const [title, setTitle] = useState<null | string>(null);
   const [selectedWorkType, setSelectedWorkType] =
     useState<WORK_TYPE>("article");
+  const [abstract, setAbstract] = useState<null | string>(null);
+  const [selectedHubs, setSelectedHubs] = useState<Hub[]>([]);
 
   useEffect(() => {
     setTitle(paper?.title || null);
     setSelectedWorkType(paper?.workType || "article");
+    setAbstract(paper?.abstract || null);
   }, [paper]);
 
   return (
@@ -112,6 +120,37 @@ const ContentStep = ({ paper }: { paper: Paper | null }) => {
           )}
         />
       </div>
+
+      <div className={css(formStyles.inputWrapper)}>
+        <FormTextArea
+          label="Abstract"
+          placeholder="Abstract"
+          inputStyle={formStyles.textArea}
+          value={abstract || ""}
+          onChange={(_name, value) => {
+            setAbstract(value);
+          }}
+        />
+      </div>
+
+      <div className={css(formStyles.inputWrapper)}>
+        <HubSelectDropdown
+          label={null}
+          selectedHubs={selectedHubs}
+          showSelectedHubs={false}
+          dropdownStyles={{
+            ...selectDropdownStyles,
+            menu: {
+              minWidth: 425,
+              width: "100%",
+            },
+          }}
+          placeholder={"Hubs"}
+          onChange={(hubs) => {
+            setSelectedHubs(hubs);
+          }}
+        />
+      </div>
     </div>
   );
 };
@@ -121,6 +160,10 @@ const formStyles = StyleSheet.create({
     width: "100%",
   },
   inputWrapper: {},
+  textArea: {
+    maxHeight: 300,
+    minHeight: 100,
+  },
 });
 
 const styles = StyleSheet.create({
@@ -128,7 +171,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   modalStyle: {
-    minWidth: 650,
+    minWidth: 300,
+    maxWidth: 650,
     minHeight: 500,
   },
 });
