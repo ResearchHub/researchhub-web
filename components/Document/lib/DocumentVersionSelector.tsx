@@ -9,11 +9,9 @@ import { useState } from "react";
 import colors from "~/config/themes/colors";
 import PaperVersionModal from "./PaperVersionModal";
 
-
 interface Args {
   versions: DocumentVersion[];
 }
-
 
 const buildVersionOptions = (versions: DocumentVersion[]) => {
   let options: Array<MenuOption> = versions.map((version) => {
@@ -24,31 +22,36 @@ const buildVersionOptions = (versions: DocumentVersion[]) => {
     };
   });
 
-  options = [...options, {
-    group: "Select version",
-    value: "submit-new",
-    html: (
-      <div style={{ display: "flex", gap: 5, }}>
-        <FontAwesomeIcon icon={faPlus} style={{ marginRight: 5 }} />
-        Submit new version
-      </div>
-    ),
-  }];
+  options = [
+    ...options,
+    {
+      group: "Select version",
+      value: "submit-new",
+      html: (
+        <div style={{ display: "flex", gap: 5 }}>
+          <FontAwesomeIcon icon={faPlus} style={{ marginRight: 5 }} />
+          Submit new version
+        </div>
+      ),
+    },
+  ];
 
   return options;
-}
+};
 
 const DocumentVersionSelector = ({ versions }: Args) => {
-
   const versionOptions = buildVersionOptions(versions);
-  const [selectedVersion, setSelectedVersion] = useState<DocumentVersion>(versions[0]);
+  const [selectedVersion, setSelectedVersion] = useState<DocumentVersion>(
+    versions[0]
+  );
   const [isNewVersionModalOpen, setIsNewVersionModalOpen] = useState(false);
 
   return (
     <div>
       <PaperVersionModal
-        isOpen={isNewVersionModalOpen}
+        isOpen={true}
         closeModal={() => setIsNewVersionModalOpen(false)}
+        versions={versions}
       />
       <Menu
         softHide={true}
@@ -58,24 +61,21 @@ const DocumentVersionSelector = ({ versions }: Args) => {
         direction="bottom-right"
         menuStyleOverride={styles.menuStyleOverride}
         onSelect={(option: MenuOption) => {
-
           if (option.value === "submit-new") {
             setIsNewVersionModalOpen(true);
             return;
           }
-
-          console.log('option', option)
-        }} 
+        }}
       >
         <IconButton overrideStyle={styles.versionTrigger}>
-          <FontAwesomeIcon icon={faClockRotateLeft} />
-          v{selectedVersion.version} ({selectedVersion.publishedDate})
+          <FontAwesomeIcon icon={faClockRotateLeft} />v{selectedVersion.version}{" "}
+          ({selectedVersion.publishedDate})
           <FontAwesomeIcon icon={faAngleDown} />
         </IconButton>
       </Menu>
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   versionTrigger: {
@@ -87,9 +87,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     padding: "6px 10px 6px 10px",
   },
-  menuStyleOverride: {
-
-  }
-})
+  menuStyleOverride: {},
+});
 
 export default DocumentVersionSelector;
