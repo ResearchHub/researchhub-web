@@ -10,6 +10,8 @@ import HubSelectDropdown, {
   selectDropdownStyles,
 } from "~/components/Hubs/HubSelectDropdown";
 import { Hub } from "~/config/types/hub";
+import Button from "~/components/Form/Button";
+
 
 interface Args {
   isOpen: boolean;
@@ -44,7 +46,12 @@ export const ORDERED_STEPS: STEP[] = [
 const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
   const [step, setStep] = useState<STEP>("CONTENT");
   const [latestPaper, setLatestPaper] = useState<Paper | null>(null);
-  const handleNext = () => {};
+  const handleNext = () => {
+    const currentIndex = ORDERED_STEPS.indexOf(step);
+    if (currentIndex + 1 < ORDERED_STEPS.length) {
+      setStep(ORDERED_STEPS[currentIndex + 1]);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -71,10 +78,25 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
     >
       <div className={css(styles.modalBody)}>
         {step === "CONTENT" && <ContentStep paper={latestPaper} />}
+        {step === "AUTHORS_AND_METADATA" && <AuthorsAndMetadataStep paper={latestPaper} />}
       </div>
+
+
+      <div className={css(formStyles.buttonWrapper)}>
+        <Button
+          label={"Next"}
+          onClick={() => handleNext()}
+          theme="solidPrimary"
+        />
+      </div>
+
     </BaseModal>
   );
 };
+
+const AuthorsAndMetadataStep = ({ paper }: { paper: Paper | null }) => {
+  return <div>Authors and metadata step</div>;
+}
 
 const ContentStep = ({ paper }: { paper: Paper | null }) => {
   const [title, setTitle] = useState<null | string>(null);
@@ -164,6 +186,11 @@ const formStyles = StyleSheet.create({
     maxHeight: 300,
     minHeight: 100,
   },
+  buttonWrapper: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-end",
+  }
 });
 
 const styles = StyleSheet.create({
@@ -171,8 +198,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   modalStyle: {
-    minWidth: 300,
-    maxWidth: 650,
+    width: 650,
     minHeight: 500,
   },
 });
