@@ -7,7 +7,7 @@ import { faClockRotateLeft } from "@fortawesome/pro-solid-svg-icons";
 import IconButton from "~/components/Icons/IconButton";
 import { useState } from "react";
 import colors from "~/config/themes/colors";
-import PaperVersionModal from "./PaperVersionModal";
+import PaperVersionModal from "./PaperVersion/PaperVersionModal";
 
 interface Args {
   versions: DocumentVersion[];
