@@ -5,9 +5,11 @@ import {
   parseUserSuggestion,
   parseHubSuggestion,
   parseSuggestion,
+  parseAuthorSuggestion,
   Suggestion,
   JournalSuggestion,
   parseJournalSuggestion,
+  SuggestedAuthor,
 } from "./types";
 import { NullableString } from "~/config/types/root_types";
 
@@ -135,6 +137,40 @@ export const fetchUserSuggestions = (
       });
 
       return suggestedUsers;
+    })
+    .catch((error) => {
+      console.error("Request Failed:", error);
+      return [];
+    });
+};
+
+export const fetchAuthorSuggestions = ({
+  query
+}: {
+  query: string
+}): Promise<SuggestedAuthor[]> => {
+  const url = `${API.BASE_URL}search/people/suggest/?suggestion_phrases__completion=${query}`;
+
+  const suggestedAuthors: SuggestedAuthor[] = [];
+  return fetch(url, API.GET_CONFIG())
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        // TODO: Unexpected error. log to sentry
+        throw new Error("HTTP-Error: " + response.status);
+      }
+    })
+    .then((data) => {
+      const suggestions = data.suggestion_phrases__completion;
+      suggestions.forEach((suggestion) => {
+        suggestion.options.forEach((option) => {
+          const parsed = parseAuthorSuggestion(option._source);
+          suggestedAuthors.push(parsed)
+        });
+      });
+
+      return suggestedAuthors;
     })
     .catch((error) => {
       console.error("Request Failed:", error);

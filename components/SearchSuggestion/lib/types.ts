@@ -17,6 +17,18 @@ export type SuggestedUser = {
   authorProfile: AuthorProfile;
 };
 
+export type SuggestedAuthor = {
+  id: ID;
+  fullName: string;
+  profileImage: string;
+  institutions: Array<{
+    id: ID;
+    name: string;
+  }>;
+  headline: string;
+  reputationHubs: string[];
+};
+
 export type HubSuggestion = {
   id: ID;
   hub: Hub;
@@ -61,6 +73,17 @@ export type Suggestion = {
   suggestionType: "hub" | "user" | "paper" | "post" | "question" | "journal";
   data: HubSuggestion | SuggestedUser | PaperSuggestion | PostSuggestion | JournalSuggestion;
 };
+
+export const parseAuthorSuggestion = (raw: any): SuggestedAuthor => {
+  return {
+    id: raw.id,
+    fullName: raw.full_name,
+    profileImage: raw.profile_image,
+    institutions: raw.institutions,
+    headline: raw.headline,
+    reputationHubs: raw.reputation_hubs || [],
+  };
+}
 
 export const parsePaperSuggestion = (raw: any): PaperSuggestion => {
   return {

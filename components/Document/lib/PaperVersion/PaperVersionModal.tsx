@@ -19,7 +19,7 @@ interface Args {
 }
 
 const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
-  const [step, setStep] = useState<STEP>("CONTENT");
+  const [step, setStep] = useState<STEP>("AUTHORS_AND_METADATA");
   const [latestPaper, setLatestPaper] = useState<Paper | null>(null);
 
   const handleNextStep = () => {
@@ -67,13 +67,13 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
       </div>
 
 
-      <div className={css(formStyles.buttonWrapper, showBackButton && formStyles.buttonWrapperWithBack )}>
+      <div className={css(styles.buttonWrapper, showBackButton && styles.buttonWrapperWithBack )}>
         {showBackButton && (
           <Button
             onClick={() => handlePrevStep()}
             variant="text"
           >
-            <div className={css(formStyles.buttonWithIcon, formStyles.backButton)}>
+            <div className={css(styles.buttonWithIcon, styles.backButton)}>
               <FontAwesomeIcon icon={faArrowLeft} />
               Back
             </div>
@@ -92,7 +92,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
 
 
 
-const formStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   inputContainer: {
     width: "100%",
   },
@@ -116,10 +116,7 @@ const formStyles = StyleSheet.create({
   },
   backButton: {
     color: colors.MEDIUM_GREY2()
-  }
-});
-
-const styles = StyleSheet.create({
+  },
   modalBody: {
     width: "100%",
   },
