@@ -7,6 +7,7 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import ContentBadge from "../ContentBadge";
 import { formatBountyAmount } from "~/config/types/bounty";
 import numeral from "numeral";
+import { bountyColors } from "~/config/themes/colors";
 
 type Props = {
   handleDismiss: () => void;
@@ -154,13 +155,14 @@ const styles = StyleSheet.create({
   badge: {
     padding: "4px 12px",
     fontWeight: 500,
-    borderRadius: "8px",
-    background: 'rgba(245, 223, 185, 0.85)',
-    color: '#F3A113',
+    borderRadius: "4px",
+    background: bountyColors.BADGE_BACKGROUND,
+    color: bountyColors.BADGE_TEXT,
     transition: 'all 0.2s ease',
     ':hover': {
-      background: 'rgba(245, 223, 185, 0.95)',
-      color: '#F3A113',
+      background: bountyColors.BADGE_BACKGROUND,
+      color: bountyColors.BADGE_TEXT,
+      transform: 'scale(1.1)',
     },
   },
   mobile: {
