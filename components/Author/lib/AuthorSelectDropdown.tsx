@@ -22,7 +22,11 @@ import { faAddressCard } from "@fortawesome/pro-regular-svg-icons";
 import { truncateText } from "~/config/utils/string";
 
 interface Props {
-  selectedAuthor: SuggestedAuthor | null;
+  selectedAuthor: {
+    label: string;
+    value: string;
+    author: SuggestedAuthor;
+  } | null;
   onChange: Function;
   menuPlacement?: "auto" | "top" | "bottom";
   required?: boolean;
@@ -160,7 +164,7 @@ const AuthorSelectDropdown = ({
   const [suggestedAuthors, setSuggestedAuthors] = useState<SuggestedAuthor[]>(
     []
   );
-  console.log("selectedAuthor", selectedAuthor);
+  
   const handleSuggestedAuthorInputChange = async (value) => {
     if (value.length >= 3) {
       const suggestions = await fetchAuthorSuggestions({ query: value });

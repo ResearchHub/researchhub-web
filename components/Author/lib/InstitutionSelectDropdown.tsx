@@ -16,7 +16,11 @@ import { fetchInstitutionSuggestions } from "~/components/SearchSuggestion/lib/a
 import { SuggestedInstitution } from "~/components/SearchSuggestion/lib/types";
 
 interface Props {
-  selectedInstitution: SuggestedInstitution | null;
+  selectedInstitution: {
+    label: string;
+    value: string;
+    institution: SuggestedInstitution;
+  } | null;
   onChange: Function;
   menuPlacement?: "auto" | "top" | "bottom";
   required?: boolean;
