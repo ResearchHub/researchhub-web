@@ -65,7 +65,7 @@ export default function HomeRightSidebar(): ReactElement | null {
               isVerificationBannerVisible={isVerificationBannerVisible} 
             />
           </div>
-        ) : currentUser ? (
+        ) : (
           <ExitableBanner
             bannerKey={INFO_TAB_EXIT_KEY}
             content={<RhCarousel rhCarouselItems={carouselElements} />}
@@ -86,7 +86,7 @@ export default function HomeRightSidebar(): ReactElement | null {
             }}
             onExit={(): void => setShouldLimitNumCards(false)}
           />
-        ) : null}
+        )}
         <HomeSidebarBountiesSection shouldLimitNumCards={shouldLimitNumCards} />
       </ColumnContainer>
     </div>
