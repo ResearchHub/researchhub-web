@@ -4,12 +4,17 @@ import { CloseIcon } from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import ContentBadge from "../ContentBadge";
+import { formatBountyAmount } from "~/config/types/bounty";
+import numeral from "numeral";
 
 type Props = {
   handleDismiss: () => void;
 };
 
 const RHFPeerReviewsBanner = ({ handleDismiss }: Props) => {
+  const bountyAmount = 100;
+
   return (
     <div className={css(styles.wrapper)}>
       <div className={css(styles.closeButtonWrapper)} onClick={handleDismiss}>
@@ -28,13 +33,35 @@ const RHFPeerReviewsBanner = ({ handleDismiss }: Props) => {
               className={css(styles.link)}
               target="_blank"
               rel="noopener noreferrer"
-            >request</a> peer review grants for any preprint of their choice
+            >request</a> peer review grants on any preprint
           </span>
         </li>
         <li className={css(styles.listItem)}>
           <FontAwesomeIcon icon={faCheck} className={css(styles.checkIcon)} />
           <span className={css(styles.listItemText)}>
-            Earn an extra <span className={css(styles.boldText)}>100 RSC</span> for awarded peer reviews through November 20th
+            Earn an extra <span className={css(styles.inlineBadge)}>
+              <ContentBadge
+                badgeOverride={styles.badge}
+                contentType="bounty"
+                bountyAmount={bountyAmount}
+                label={
+                  <div style={{ display: "flex", whiteSpace: "pre" }}>
+                    <div className={css(styles.mobile)}>
+                      {numeral(formatBountyAmount({
+                        amount: bountyAmount,
+                      })).format("0,0a")}{" "}
+                      RSC
+                    </div>
+                    <div className={css(styles.desktop)}>
+                      {formatBountyAmount({
+                        amount: bountyAmount,
+                      })}{" "}
+                      RSC
+                    </div>
+                  </div>
+                }
+              />
+            </span> for awarded peer reviews through November 20th
           </span>
         </li>
       </ul>
@@ -118,6 +145,32 @@ const styles = StyleSheet.create({
   },
   boldText: {
     fontWeight: 600,
+  },
+  inlineBadge: {
+    display: 'inline-flex',
+    verticalAlign: 'middle',
+    margin: '0 2px',
+  },
+  badge: {
+    padding: "2px 8px",
+    fontWeight: 400,
+    borderRadius: "50px",
+    background: 'rgba(255, 255, 255, 0.2)',
+    color: 'white',
+    ':hover': {
+      background: 'rgba(255, 255, 255, 0.3)',
+    },
+  },
+  mobile: {
+    "@media only screen and (min-width: 768px)": {
+      display: "none",
+    },
+  },
+  desktop: {
+    display: "flex",
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
   },
 });
 
