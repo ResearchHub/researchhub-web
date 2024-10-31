@@ -4,22 +4,12 @@ import { CloseIcon } from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
-import { useExchangeRate } from "~/components/contexts/ExchangeRateContext";
-import { formatBountyAmount } from "~/config/types/bounty";
 
 type Props = {
   handleDismiss: () => void;
 };
 
 const RHFPeerReviewsBanner = ({ handleDismiss }: Props) => {
-  const { rscToUSDDisplay } = useExchangeRate();
-  const rscAmount = 100;
-  const formattedRSC = formatBountyAmount({
-    amount: rscAmount,
-    withPrecision: false,
-  });
-
   return (
     <div className={css(styles.wrapper)}>
       <div className={css(styles.closeButtonWrapper)} onClick={handleDismiss}>
@@ -41,16 +31,7 @@ const RHFPeerReviewsBanner = ({ handleDismiss }: Props) => {
         </li>
         <li className={css(styles.listItem)}>
           <FontAwesomeIcon icon={faCheck} className={css(styles.checkIcon)} />
-          Earn an extra <span className={css(styles.rscAmount)}>
-            <ResearchCoinIcon
-              version={4}
-              height={14}
-              width={14}
-              color="white"
-            />
-            <span className={css(styles.rscText)}>{formattedRSC} RSC</span>
-            <span className={css(styles.usdText)}>{rscToUSDDisplay(rscAmount)}</span>
-          </span> for awarded peer reviews through November 20th
+          Earn an extra 100 RSC for awarded peer reviews through November 20th
         </li>
       </ul>
     </div>
@@ -125,41 +106,6 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     letterSpacing: '0.5px',
     textTransform: 'uppercase',
-  },
-  rscAmount: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: 4,
-    padding: '2px 6px',
-    background: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 4,
-    margin: '0 2px',
-    position: 'relative',
-    ':hover': {
-      background: 'rgba(255, 255, 255, 0.3)',
-    },
-    ':hover .usdAmount': {
-      display: 'inline',
-    },
-    ':hover .rscAmount': {
-      display: 'none',
-    },
-  },
-  rscText: {
-    display: 'inline',
-    ':hover': {
-      display: 'none',
-    },
-  },
-  usdText: {
-    display: 'none',
-    position: 'absolute',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    whiteSpace: 'nowrap',
-    ':hover': {
-      display: 'inline',
-    },
   },
 });
 
