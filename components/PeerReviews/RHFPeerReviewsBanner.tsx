@@ -8,13 +8,21 @@ import ContentBadge from "../ContentBadge";
 import { formatBountyAmount } from "~/config/types/bounty";
 import numeral from "numeral";
 import { bountyColors } from "~/config/themes/colors";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
 
 type Props = {
   handleDismiss: () => void;
+  isVerificationBannerVisible?: boolean;
 };
 
-const RHFPeerReviewsBanner = ({ handleDismiss }: Props) => {
+const RHFPeerReviewsBanner = ({ handleDismiss, isVerificationBannerVisible = false }: Props) => {
+  const currentUser = useCurrentUser();
   const bountyAmount = 100;
+
+  // Don't show if user isn't logged in or if verification banner is still showing
+  if (!currentUser || isVerificationBannerVisible) {
+    return null;
+  }
 
   return (
     <div className={css(styles.wrapper)}>
@@ -153,7 +161,7 @@ const styles = StyleSheet.create({
     margin: '0 2px',
   },
   badge: {
-    padding: "4px 12px",
+    padding: "4px 8px",
     fontWeight: 500,
     borderRadius: "4px",
     background: bountyColors.BADGE_BACKGROUND,

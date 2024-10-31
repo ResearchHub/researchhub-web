@@ -17,23 +17,19 @@ import { isEmpty } from "~/config/utils/nullchecks";
 import VerificationSmallBanner from "~/components/Verification/VerificationSmallBanner";
 import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
 import RHFPeerReviewsBanner from "~/components/PeerReviews/RHFPeerReviewsBanner";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
 
 export default function HomeRightSidebar(): ReactElement | null {
   const [shouldLimitNumCards, setShouldLimitNumCards] = useState<boolean>(true);
+  const currentUser = useCurrentUser();
   let carouselElements = getEducationalCarouselElements();
-
-  const currentUser = useSelector((state: RootState) =>
-    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
-  );
-
-
 
   const auth = useSelector((state: RootState) => state.auth);
   const {
     isDismissed: isVerificationBannerDismissed,
     dismissFeature: dismissVerificationBanner,
     dismissStatus: verificationBannerDismissStatus
-  } = useDismissableFeature({ auth, featureName: "verification-banner" })
+  } = useDismissableFeature({ auth, featureName: "verification-banner" });
 
   const {
     isDismissed: isPeerReviewBannerDismissed,
@@ -41,8 +37,19 @@ export default function HomeRightSidebar(): ReactElement | null {
     dismissStatus: peerReviewBannerDismissStatus
   } = useDismissableFeature({ auth, featureName: "peer-review-banner" });
 
-  const isVerificationBannerVisible = !currentUser?.isVerified && (verificationBannerDismissStatus === "checked" && !isVerificationBannerDismissed);
-  const isPeerReviewBannerVisible = peerReviewBannerDismissStatus === "checked" && !isPeerReviewBannerDismissed;
+  const isVerificationBannerVisible = currentUser && !currentUser.isVerified && 
+    (verificationBannerDismissStatus === "checked" && !isVerificationBannerDismissed);
+
+  const isPeerReviewBannerVisible = currentUser && 
+    peerReviewBannerDismissStatus === "checked" && 
+    !isPeerReviewBannerDismissed;
+
+  const isLoading = verificationBannerDismissStatus === "unchecked" || 
+    peerReviewBannerDismissStatus === "unchecked";
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <div className={css(styles.HomeRightSidebar)}>
@@ -53,9 +60,12 @@ export default function HomeRightSidebar(): ReactElement | null {
           </div>
         ) : isPeerReviewBannerVisible ? (
           <div className={css(sidebarStyles.bannerWrapper)}>
-            <RHFPeerReviewsBanner handleDismiss={dismissPeerReviewBanner} />
+            <RHFPeerReviewsBanner 
+              handleDismiss={dismissPeerReviewBanner}
+              isVerificationBannerVisible={isVerificationBannerVisible} 
+            />
           </div>
-        ) : (
+        ) : currentUser ? (
           <ExitableBanner
             bannerKey={INFO_TAB_EXIT_KEY}
             content={<RhCarousel rhCarouselItems={carouselElements} />}
@@ -76,7 +86,7 @@ export default function HomeRightSidebar(): ReactElement | null {
             }}
             onExit={(): void => setShouldLimitNumCards(false)}
           />
-        )}
+        ) : null}
         <HomeSidebarBountiesSection shouldLimitNumCards={shouldLimitNumCards} />
       </ColumnContainer>
     </div>
