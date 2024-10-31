@@ -28,27 +28,24 @@ function ResearchHubJournalPage(): JSX.Element {
     <div className={css(styles.container)}>
       {/* Hero Section */}
       <div className={css(styles.hero)}>
+        <div className={css(styles.heroBackground)} />
         <div className={css(styles.heroContent)}>
-          <p className={css(styles.heroSubtitle)}>Open science = better science</p>
-          <h1 className={css(styles.heroTitle)}>
-            ResearchHub
-          </h1>
-          <p className={css(styles.heroDescription)}>
-            APC's should go to scientists - that's why we pay our peer reviewers
-          </p>
+          <div className={css(styles.heroTag)}>
+            Open science is the best science
+          </div>
+          
+          <div className={css(styles.heroTextContainer)}>
+            <h1 className={css(styles.heroTitle)}>
+              ResearchHub is launching its first journal
+            </h1>
+            <p className={css(styles.heroDescription)}>
+              APC's should go to scientists - that's why we pay our peer reviewers
+            </p>
+          </div>
+
           <div className={css(styles.heroButtons)}>
-            <button 
-              className={css(styles.primaryButton)}
-              onClick={handleEarlySubmit}
-            >
-              Submit Early
-            </button>
-            <button 
-              className={css(styles.secondaryButton)}
-              onClick={scrollToHowItWorks}
-            >
-              Learn More
-            </button>
+            <button className={css(styles.primaryButton)}>Submit Early</button>
+            <button className={css(styles.secondaryButton)}>Learn more</button>
           </div>
         </div>
       </div>
@@ -110,78 +107,105 @@ function ResearchHubJournalPage(): JSX.Element {
 
 const styles = StyleSheet.create({
   container: {
-    minHeight: "100vh",
-    backgroundColor: "#fff",
+    width: "100%",
+    overflow: "hidden",
   },
   hero: {
-    background: `url('/static/background/journal-background.png') no-repeat center center`,
-    backgroundSize: 'cover',
-    color: "#fff",
     position: "relative",
-    borderBottom: `1px solid ${colors.GREY_LINE()}`,
+    width: "100%",
+    height: 715,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: `linear-gradient(180deg, #587FFF 0%, #3B72FF 100%)`,
+  },
+  heroBackground: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    background: `url('/static/background/rh-journal-designs.svg') no-repeat center center`,
+    backgroundSize: "contain",
+    zIndex: 0,
   },
   heroContent: {
-    maxWidth: 1520,
-    margin: "0 auto",
-    padding: "64px 32px 48px", // Reduced padding for top and bottom
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: "64px 16px 48px", // Reduced padding for small screens
-    },
+    position: "relative",
+    zIndex: 1,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    maxWidth: 1240*0.75,
+    padding: "64px 32px",
+    gap: 40,
   },
-  heroSubtitle: {
-    fontSize: 24,
-    marginBottom: 24,
-    opacity: 0.9,
+  heroTag: {
+    background: "rgba(241, 245, 255, 0.1)",
+    borderRadius: 40,
+    padding: "8px 12px",
+    fontSize: 14,
+    lineHeight: "140%",
+    textAlign: "center",
+    marginTop: -325,
+    color: "#FFFFFF",
+  },
+  heroTextContainer: {
+    display: "flex", 
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 16,
+    textAlign: "center",
+    marginTop: -20,
   },
   heroTitle: {
-    fontSize: 72,
-    fontWeight: 700,
-    marginBottom: 24,
-    lineHeight: 1.2,
+    fontSize: 64,
+    fontWeight: 500,
+    lineHeight: "120%",
+    margin: 0,
+    color: "#FFFFFF",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 48,
     },
   },
   heroDescription: {
-    fontSize: 30,
-    marginBottom: 48,
-    opacity: 0.9,
-    lineHeight: 1.5,
-    maxWidth: 800,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 24,
-    },
+    fontSize: 16,
+    lineHeight: "140%",
+    opacity: 0.8,
+    maxWidth: 750,
+    margin: 0,
+    color: "#FFFFFF",
   },
   heroButtons: {
     display: "flex",
-    gap: 16,
-    flexWrap: "wrap",
+    gap: 20,
+    marginTop: 10,
   },
   primaryButton: {
-    backgroundColor: "#fff",
-    color: colors.NEW_BLUE(),
-    border: "2px solid #fff",
-    padding: "16px 32px",
-    fontSize: 20,
-    borderRadius: 12,
+    background: "#FFFFFF",
+    color: "#3971FF",
+    border: "none",
+    padding: "10px 18px",
+    borderRadius: 4,
+    fontSize: 16,
+    fontWeight: 500,
     cursor: "pointer",
     transition: "background-color 0.2s",
     ":hover": {
-      backgroundColor: colors.WHITE(0.8),
+      backgroundColor: "rgba(255, 255, 255, 0.9)",
     },
   },
   secondaryButton: {
-    backgroundColor: "rgba(255,255,255,0.1)",
-    color: "#fff",
-    border: "2px solid rgba(255,255,255,0.3)",
-    padding: "16px 32px",
-    fontSize: 20,
-    borderRadius: 12,
+    background: "transparent",
+    color: "#FFFFFF",
+    border: "1px solid #FFFFFF",
+    padding: "10px 18px",
+    borderRadius: 4,
+    fontSize: 16,
+    fontWeight: 500,
     cursor: "pointer",
-    transition: "background-color 0.2s",
-    backdropFilter: "blur(4px)",
+    transition: "all 0.2s",
     ":hover": {
-      backgroundColor: "rgba(255,255,255,0.2)",
+      background: "rgba(255, 255, 255, 0.1)",
     },
   },
   featuresGrid: {
