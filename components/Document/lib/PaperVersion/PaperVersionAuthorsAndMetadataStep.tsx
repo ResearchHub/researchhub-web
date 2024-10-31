@@ -4,7 +4,8 @@ import { StyleSheet, css } from "aphrodite";
 import { useState } from "react";
 import colors from "~/config/themes/colors";
 import AuthorSelectDropdown from "~/components/Author/lib/AuthorSelectDropdown";
-import { SuggestedAuthor } from "~/components/SearchSuggestion/lib/types";
+import { SuggestedAuthor, SuggestedInstitution } from "~/components/SearchSuggestion/lib/types";
+import InstitutionSelectDropdown from "~/components/Author/lib/InstitutionSelectDropdown";
 
 const PaperVersionAuthorsAndMetadataStep = ({
   paper,
@@ -20,19 +21,31 @@ const AuthorForm = () => {
   const [selectedAuthor, setSelectedAuthor] = useState<null | SuggestedAuthor>(
     null
   );
+  const [selectedInstitution, setSelectedInstitution] = useState<null | SuggestedInstitution>(
+    null
+  );
 
   return (
     <div className={css(styles.authorForm)}>
       <AuthorSelectDropdown
-        label="Authors"
+        label="Search authors"
         onChange={(name, value) => {
           console.log(name, value);
           setSelectedAuthor(value);
         }}
         selectedAuthor={selectedAuthor}
         placeholder="Select authors"
-        required
       />
+      <InstitutionSelectDropdown
+        label="Search institutions"
+        onChange={(name, value) => {
+          console.log(name, value);
+          setSelectedInstitution(value);
+        }}
+        selectedInstitution={selectedInstitution}
+        placeholder="Select institutions"
+      />
+
       <Button
         label="Add author"
         onClick={() => {}}

@@ -173,11 +173,6 @@ const AuthorSelectDropdown = ({
     [suggestedAuthors]
   );
 
-  const formattedSelectedAuthor = {
-    label: selectedAuthor?.fullName,
-    value: selectedAuthor?.id,
-  };
-
   const formattedSuggestions = suggestedAuthors.map((author) => {
     return {
       label: author.fullName,
