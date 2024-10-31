@@ -16,6 +16,7 @@ import { parseUser } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
 import VerificationSmallBanner from "~/components/Verification/VerificationSmallBanner";
 import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
+import RHFPeerReviewsBanner from "~/components/PeerReviews/RHFPeerReviewsBanner";
 
 export default function HomeRightSidebar(): ReactElement | null {
   const [shouldLimitNumCards, setShouldLimitNumCards] = useState<boolean>(true);
@@ -34,9 +35,14 @@ export default function HomeRightSidebar(): ReactElement | null {
     dismissStatus: verificationBannerDismissStatus
   } = useDismissableFeature({ auth, featureName: "verification-banner" })
 
+  const {
+    isDismissed: isPeerReviewBannerDismissed,
+    dismissFeature: dismissPeerReviewBanner,
+    dismissStatus: peerReviewBannerDismissStatus
+  } = useDismissableFeature({ auth, featureName: "peer-review-banner" });
 
   const isVerificationBannerVisible = !currentUser?.isVerified && (verificationBannerDismissStatus === "checked" && !isVerificationBannerDismissed);
-
+  const isPeerReviewBannerVisible = peerReviewBannerDismissStatus === "checked" && !isPeerReviewBannerDismissed;
 
   return (
     <div className={css(styles.HomeRightSidebar)}>
@@ -44,6 +50,10 @@ export default function HomeRightSidebar(): ReactElement | null {
         {isVerificationBannerVisible ? (
           <div className={css(sidebarStyles.bannerWrapper)}>
             <VerificationSmallBanner handleDismiss={dismissVerificationBanner} />
+          </div>
+        ) : isPeerReviewBannerVisible ? (
+          <div className={css(sidebarStyles.bannerWrapper)}>
+            <RHFPeerReviewsBanner handleDismiss={dismissPeerReviewBanner} />
           </div>
         ) : (
           <ExitableBanner
