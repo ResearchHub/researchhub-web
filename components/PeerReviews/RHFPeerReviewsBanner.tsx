@@ -22,16 +22,20 @@ const RHFPeerReviewsBanner = ({ handleDismiss }: Props) => {
       <ul className={css(styles.ctaWrapper)}>
         <li className={css(styles.listItem)}>
           <FontAwesomeIcon icon={faCheck} className={css(styles.checkIcon)} />
-          Users can <a 
-            href="https://airtable.com/apptLQP8XMy1kaiID/paguOk9TtZktFk5WQ/form"
-            className={css(styles.link)}
-            target="_blank"
-            rel="noopener noreferrer"
-          >request</a> peer review grants for any preprint of their choice
+          <span className={css(styles.listItemText)}>
+            Users can <a 
+              href="https://airtable.com/apptLQP8XMy1kaiID/paguOk9TtZktFk5WQ/form"
+              className={css(styles.link)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >request</a> peer review grants for any preprint of their choice
+          </span>
         </li>
         <li className={css(styles.listItem)}>
           <FontAwesomeIcon icon={faCheck} className={css(styles.checkIcon)} />
-          Earn an extra 100 RSC for awarded peer reviews through November 20th
+          <span className={css(styles.listItemText)}>
+            Earn an extra <span className={css(styles.boldText)}>100 RSC</span> for awarded peer reviews through November 20th
+          </span>
         </li>
       </ul>
     </div>
@@ -77,14 +81,19 @@ const styles = StyleSheet.create({
   listItem: {
     marginLeft: -30,
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: 5,
+  },
+  listItemText: {
+    display: 'inline',
+    lineHeight: '24px',
   },
   checkIcon: {
     marginRight: 10,
     color: 'white',
     width: 16,
     height: 16,
+    marginTop: 4,
   },
   link: {
     color: 'white',
@@ -106,6 +115,9 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     letterSpacing: '0.5px',
     textTransform: 'uppercase',
+  },
+  boldText: {
+    fontWeight: 600,
   },
 });
 
