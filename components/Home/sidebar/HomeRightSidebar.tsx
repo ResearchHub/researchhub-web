@@ -108,7 +108,6 @@ export default function HomeRightSidebar(): ReactElement | null {
 const sidebarStyles = StyleSheet.create({
   bannerWrapper: {
     padding: "22px 20px 10px",
-    marginTop: 16,
     "@media only screen and (max-width: 767px)": {
       padding: "16px 16px 8px", // Adjust padding for mobile
     },
