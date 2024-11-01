@@ -13,7 +13,6 @@ import { isEmpty } from "~/config/utils/nullchecks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBuildingColumns,
-  faGrid,
   faGrid2,
   faBirthdayCake,
 } from "@fortawesome/pro-solid-svg-icons";
@@ -164,7 +163,7 @@ const AuthorSelectDropdown = ({
   const [suggestedAuthors, setSuggestedAuthors] = useState<SuggestedAuthor[]>(
     []
   );
-  
+
   const handleSuggestedAuthorInputChange = async (value) => {
     if (value.length >= 3) {
       const suggestions = await fetchAuthorSuggestions({ query: value });

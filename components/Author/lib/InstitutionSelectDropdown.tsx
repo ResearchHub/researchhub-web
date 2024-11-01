@@ -15,6 +15,7 @@ import {
 import { fetchInstitutionSuggestions } from "~/components/SearchSuggestion/lib/api";
 import { SuggestedInstitution } from "~/components/SearchSuggestion/lib/types";
 import InstitutionThumbnail from "./InstitutionThumbnail";
+import { createPaperAPI } from "~/components/Document/api/createPaperAPI";
 
 interface Props {
   selectedInstitution: {
@@ -70,9 +71,7 @@ const SingleValue: React.FC<any> = (props) => {
     <components.SingleValue {...props}>
       <div className={css(styles.selected)}>
         <InstitutionThumbnail institution={institution} size={34} />
-        <span className={css(styles.selectedName)}>
-          {institution.name}
-        </span>
+        <span className={css(styles.selectedName)}>{institution.name}</span>
       </div>
     </components.SingleValue>
   );
@@ -84,16 +83,16 @@ const InstitutionOption: React.FC<any> = (props) => {
   const location = [
     institution.city,
     institution.region,
-    institution.countryCode
-  ].filter(Boolean).join(", ");
+    institution.countryCode,
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   return (
     <components.Option {...props}>
       <InstitutionThumbnail institution={institution} size={80} />
       <div className={css(styles.details)}>
-        <div className={css(styles.name)}>
-          {institution.name}
-        </div>
+        <div className={css(styles.name)}>{institution.name}</div>
         {location && (
           <div className={css(styles.lineItem)}>
             <FontAwesomeIcon icon={faLocationDot} />
@@ -105,7 +104,8 @@ const InstitutionOption: React.FC<any> = (props) => {
           <span>
             {institution.hIndex && `h-index: ${institution.hIndex}`}
             {institution.hIndex && institution.worksCount && " • "}
-            {institution.worksCount && `${institution.worksCount.toLocaleString()} works`}
+            {institution.worksCount &&
+              `${institution.worksCount.toLocaleString()} works`}
           </span>
         </div>
       </div>
@@ -122,9 +122,11 @@ const InstitutionSelectDropdown = ({
   placeholder = "Search institutions",
   dropdownStyles = selectDropdownStyles,
 }: Props) => {
-  const [suggestedInstitutions, setSuggestedInstitutions] = useState<SuggestedInstitution[]>([]);
+  const [suggestedInstitutions, setSuggestedInstitutions] = useState<
+    SuggestedInstitution[]
+  >([]);
 
-  console.log('suggestedInstitutions', suggestedInstitutions);
+  console.log("suggestedInstitutions", suggestedInstitutions);
 
   const handleSuggestedInstitutionInputChange = async (value: string) => {
     if (value.length >= 3) {

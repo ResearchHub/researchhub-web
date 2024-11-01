@@ -23,19 +23,25 @@ export const articleTypeOptions: Array<{ value: WORK_TYPE; label: string }> = [
   },
 ];
 
-const PaperVersionContentStep = ({ paper }: { paper: Paper | null }) => {
-  const [title, setTitle] = useState<null | string>(null);
-  const [selectedWorkType, setSelectedWorkType] =
-    useState<WORK_TYPE>("article");
-  const [abstract, setAbstract] = useState<null | string>(null);
-  const [selectedHubs, setSelectedHubs] = useState<Hub[]>([]);
-
-  useEffect(() => {
-    setTitle(paper?.title || null);
-    setSelectedWorkType(paper?.workType || "article");
-    setAbstract(paper?.abstract || null);
-  }, [paper]);
-
+const PaperVersionContentStep = ({
+  title,
+  setTitle,
+  selectedWorkType,
+  setSelectedWorkType,
+  abstract,
+  setAbstract,
+  selectedHubs,
+  setSelectedHubs,
+}: {
+  title: string | null;
+  setTitle: Function;
+  selectedWorkType: WORK_TYPE;
+  setSelectedWorkType: Function;
+  abstract: string | null;
+  setAbstract: Function;
+  selectedHubs: Hub[];
+  setSelectedHubs: Function;
+}) => {
   return (
     <div>
       <div className={css(formStyles.inputWrapper)}>
@@ -115,7 +121,7 @@ const formStyles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "flex-end",
-  }
+  },
 });
 
 export default PaperVersionContentStep;

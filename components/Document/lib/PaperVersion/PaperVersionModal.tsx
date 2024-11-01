@@ -10,7 +10,14 @@ import PaperVersionAuthorsAndMetadataStep from "./PaperVersionAuthorsAndMetadata
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/pro-solid-svg-icons";
 import colors from "~/config/themes/colors";
-
+import PaperVersionPreviewStep from "./PaperVersionPreviewStep";
+import { createPaperAPI } from "../../api/createPaperAPI";
+import { Hub } from "~/config/types/hub";
+import { useAlert } from "react-alert";
+import {
+  SuggestedAuthor,
+  SuggestedInstitution,
+} from "~/components/SearchSuggestion/lib/types";
 
 interface Args {
   isOpen: boolean;
@@ -19,8 +26,43 @@ interface Args {
 }
 
 const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
+  const alert = useAlert();
+
+  // State
   const [step, setStep] = useState<STEP>("AUTHORS_AND_METADATA");
   const [latestPaper, setLatestPaper] = useState<Paper | null>(null);
+
+  // Form state
+  const [title, setTitle] = useState<null | string>(null);
+  const [selectedWorkType, setSelectedWorkType] =
+    useState<WORK_TYPE>("article");
+  const [abstract, setAbstract] = useState<null | string>(null);
+  const [selectedHubs, setSelectedHubs] = useState<Hub[]>([]);
+  const [authorsAndAffiliations, setAuthorsAndAffiliations] = useState<
+    Array<{
+      author: SuggestedAuthor;
+      institution: SuggestedInstitution;
+      isCorrespondingAuthor: boolean;
+    }>
+  >([]);
+
+  useEffect(() => {
+    setTitle(latestPaper?.title || null);
+    setSelectedWorkType(latestPaper?.workType || "article");
+    setAbstract(latestPaper?.abstract || null);
+  }, [latestPaper]);
+
+  useEffect(() => {
+    (async () => {
+      const latestVersion = versions.filter((version) => version.isLatest)[0];
+      const rawPaper = await fetchDocumentByType({
+        documentType: "paper",
+        documentId: latestVersion.id,
+      });
+      const parsed = parsePaper(rawPaper);
+      setLatestPaper(parsed);
+    })();
+  }, []);
 
   const handleNextStep = () => {
     const currentIndex = ORDERED_STEPS.indexOf(step);
@@ -36,17 +78,53 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
     }
   };
 
-  useEffect(() => {
-    (async () => {
-      const latestVersion = versions.filter((version) => version.isLatest)[0];
-      const rawPaper = await fetchDocumentByType({
-        documentType: "paper",
-        documentId: latestVersion.id,
+  const handleSubmit = async () => {
+    if (false /* FIXME */) {
+      alert.show({
+        // @ts-ignore
+        text: (
+          <div>
+            <span style={{ fontSize: 16, marginBottom: 10 }}>
+              Please correct the following
+            </span>
+            <ul style={{ fontSize: 14, paddingLeft: 20 }}>
+              {(title || "").length === 0 && <li>Title is missing</li>}
+              {(abstract || "").length === 0 && <li>Abstract is missing</li>}
+              {selectedHubs.length === 0 && (
+                <li>At least one hub is required</li>
+              )}
+              {authorsAndAffiliations.length === 0 && (
+                <li>At least one author is required</li>
+              )}
+            </ul>
+          </div>
+        ),
+        buttonText: "OK",
       });
-      const parsed = parsePaper(rawPaper);
-      setLatestPaper(parsed);
-    })();
-  }, []);
+      return;
+    }
+
+    try {
+      await createPaperAPI({
+        title,
+        abstract,
+        hubIds: selectedHubs.map((hub) => hub.id),
+        // previousPaperId: latestPaper?.id || undefined,
+        changeDescription: "New version",
+        authors: authorsAndAffiliations.map((authorAndAffiliation) => ({
+          id: authorAndAffiliation.author.id,
+          author_position: "middle",
+          institution_id: authorAndAffiliation.institution.id,
+          is_corresponding: authorAndAffiliation.isCorrespondingAuthor,
+        })),
+      });
+    } catch (e) {
+      alert.show({
+        // @ts-ignore
+        text: "Failed to submit research paper",
+      });
+    }
+  };
 
   const showBackButton = step !== "CONTENT";
 
@@ -62,17 +140,35 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
       modalContentStyle={styles.modalStyle}
     >
       <div className={css(styles.modalBody)}>
-        {step === "CONTENT" && <PaperVersionContentStep paper={latestPaper} />}
-        {step === "AUTHORS_AND_METADATA" && <PaperVersionAuthorsAndMetadataStep paper={latestPaper} />}
+        {step === "CONTENT" && (
+          <PaperVersionContentStep
+            abstract={abstract}
+            selectedHubs={selectedHubs}
+            title={title}
+            selectedWorkType={selectedWorkType}
+            setAbstract={setAbstract}
+            setSelectedHubs={setSelectedHubs}
+            setTitle={setTitle}
+            setSelectedWorkType={setSelectedWorkType}
+          />
+        )}
+        {step === "AUTHORS_AND_METADATA" && (
+          <PaperVersionAuthorsAndMetadataStep
+            authorsAndAffiliations={authorsAndAffiliations}
+            setAuthorsAndAffiliations={setAuthorsAndAffiliations}
+          />
+        )}
+        {step === "PREVIEW" && <PaperVersionPreviewStep paper={latestPaper} />}
       </div>
 
-
-      <div className={css(styles.buttonWrapper, showBackButton && styles.buttonWrapperWithBack )}>
+      <div
+        className={css(
+          styles.buttonWrapper,
+          showBackButton && styles.buttonWrapperWithBack
+        )}
+      >
         {showBackButton && (
-          <Button
-            onClick={() => handlePrevStep()}
-            variant="text"
-          >
+          <Button onClick={() => handlePrevStep()} variant="text">
             <div className={css(styles.buttonWithIcon, styles.backButton)}>
               <FontAwesomeIcon icon={faArrowLeft} />
               Back
@@ -80,17 +176,16 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
           </Button>
         )}
         <Button
-          label={"Next"}
-          onClick={() => handleNextStep()}
+          label={step === "PREVIEW" ? "Submit" : "Next"}
+          onClick={() =>
+            step === "PREVIEW" ? handleSubmit() : handleNextStep()
+          }
           theme="solidPrimary"
         />
       </div>
-
     </BaseModal>
   );
 };
-
-
 
 const styles = StyleSheet.create({
   inputContainer: {
@@ -115,7 +210,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   backButton: {
-    color: colors.MEDIUM_GREY2()
+    color: colors.MEDIUM_GREY2(),
   },
   modalBody: {
     width: "100%",

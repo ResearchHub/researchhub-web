@@ -1,12 +1,12 @@
 export type STEP =
   | "CONTENT"
   | "AUTHORS_AND_METADATA"
-  | "DECLARATIONS"
+  // | "DECLARATIONS"
   | "PREVIEW";
 
 export const ORDERED_STEPS: STEP[] = [
   "CONTENT",
   "AUTHORS_AND_METADATA",
-  "DECLARATIONS",
+  // "DECLARATIONS",
   "PREVIEW",
 ];
