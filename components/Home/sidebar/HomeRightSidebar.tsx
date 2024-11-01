@@ -28,44 +28,55 @@ export default function HomeRightSidebar(): ReactElement | null {
   const {
     isDismissed: isVerificationBannerDismissed,
     dismissFeature: dismissVerificationBanner,
-    dismissStatus: verificationBannerDismissStatus
   } = useDismissableFeature({ auth, featureName: "verification-banner" });
 
   const {
     isDismissed: isPeerReviewBannerDismissed,
     dismissFeature: dismissPeerReviewBanner,
-    dismissStatus: peerReviewBannerDismissStatus
   } = useDismissableFeature({ auth, featureName: "peer-review-banner" });
 
-  const isVerificationBannerVisible = currentUser && !currentUser.isVerified && 
-    (verificationBannerDismissStatus === "checked" && !isVerificationBannerDismissed);
+  // Explicitly check for logged in state first
+  const isLoggedIn = Boolean(currentUser);
 
-  const isPeerReviewBannerVisible = currentUser && 
-    peerReviewBannerDismissStatus === "checked" && 
-    !isPeerReviewBannerDismissed;
+  // Only show verification banner if user is logged in, unverified, and hasn't dismissed
+  const isVerificationBannerVisible = Boolean(
+    isLoggedIn && 
+    !currentUser.isVerified && 
+    !isVerificationBannerDismissed
+  );
 
-  const isLoading = verificationBannerDismissStatus === "unchecked" || 
-    peerReviewBannerDismissStatus === "unchecked";
+  // Only show peer review banner if:
+  // 1. User is logged in
+  // 2. Banner isn't dismissed
+  // 3. Verification banner isn't showing (lower priority)
+  const isPeerReviewBannerVisible = Boolean(
+    isLoggedIn && 
+    !isPeerReviewBannerDismissed && 
+    !isVerificationBannerVisible
+  );
 
-  if (isLoading) {
-    return null;
-  }
+  // Update carousel visibility logic to check both banners
+  const shouldShowCarousel = !isVerificationBannerVisible && !isPeerReviewBannerVisible;
 
   return (
     <div className={css(styles.HomeRightSidebar)}>
       <ColumnContainer overrideStyles={styles.HomeRightSidebarContainer}>
-        {isVerificationBannerVisible ? (
+        {/* Show verification banner with highest priority */}
+        {isVerificationBannerVisible && (
           <div className={css(sidebarStyles.bannerWrapper)}>
             <VerificationSmallBanner handleDismiss={dismissVerificationBanner} />
           </div>
-        ) : isPeerReviewBannerVisible ? (
+        )}
+
+        {/* Show peer review banner if verification isn't showing */}
+        {isPeerReviewBannerVisible && (
           <div className={css(sidebarStyles.bannerWrapper)}>
-            <RHFPeerReviewsBanner 
-              handleDismiss={dismissPeerReviewBanner}
-              isVerificationBannerVisible={isVerificationBannerVisible} 
-            />
+            <RHFPeerReviewsBanner handleDismiss={dismissPeerReviewBanner} />
           </div>
-        ) : (
+        )}
+
+        {/* Show carousel when neither banner is showing */}
+        {shouldShowCarousel && (
           <ExitableBanner
             bannerKey={INFO_TAB_EXIT_KEY}
             content={<RhCarousel rhCarouselItems={carouselElements} />}
@@ -87,6 +98,7 @@ export default function HomeRightSidebar(): ReactElement | null {
             onExit={(): void => setShouldLimitNumCards(false)}
           />
         )}
+        
         <HomeSidebarBountiesSection shouldLimitNumCards={shouldLimitNumCards} />
       </ColumnContainer>
     </div>
@@ -96,5 +108,9 @@ export default function HomeRightSidebar(): ReactElement | null {
 const sidebarStyles = StyleSheet.create({
   bannerWrapper: {
     padding: "22px 20px 10px",
+    marginTop: 16,
+    "@media only screen and (max-width: 767px)": {
+      padding: "16px 16px 8px", // Adjust padding for mobile
+    },
   },
 });
