@@ -14,6 +14,7 @@ import {
 } from "@fortawesome/pro-solid-svg-icons";
 import { fetchInstitutionSuggestions } from "~/components/SearchSuggestion/lib/api";
 import { SuggestedInstitution } from "~/components/SearchSuggestion/lib/types";
+import InstitutionThumbnail from "./InstitutionThumbnail";
 
 interface Props {
   selectedInstitution: {
@@ -109,24 +110,6 @@ const InstitutionOption: React.FC<any> = (props) => {
         </div>
       </div>
     </components.Option>
-  );
-};
-
-const InstitutionThumbnail = ({ institution, size = 32 }) => {
-  return (
-    <div className={css(styles.thumbnailWrapper)} style={{ width: size, height: size }}>
-      {institution.thumbnailImageUrl ? (
-        <img
-          src={institution.thumbnailImageUrl}
-          className={css(styles.thumbnailImage)}
-          alt={institution.name}
-        />
-      ) : (
-        <div className={css(styles.thumbnailFallback)}>
-          {(institution.name || "")[0]}
-        </div>
-      )}
-    </div>
   );
 };
 
@@ -229,30 +212,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 500,
   },
-  thumbnailWrapper: {
-    borderRadius: 8,
-    overflow: "hidden",
-    backgroundColor: colors.NEW_BLUE(0.1),
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  thumbnailImage: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
-  thumbnailFallback: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: colors.NEW_BLUE(0.1),
-    color: colors.NEW_BLUE(),
-    fontWeight: 500,
-    fontSize: 14,
-  },  
 });
 
 export default InstitutionSelectDropdown;
