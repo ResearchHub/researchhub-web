@@ -57,7 +57,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
       const latestVersion = versions.filter((version) => version.isLatest)[0];
       const rawPaper = await fetchDocumentByType({
         documentType: "paper",
-        documentId: latestVersion.id,
+        documentId: latestVersion.paperId,
       });
       const parsed = parsePaper(rawPaper);
       setLatestPaper(parsed);
@@ -108,6 +108,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
       await createPaperAPI({
         title,
         abstract,
+        previousPaperId: latestPaper?.id,
         hubIds: selectedHubs.map((hub) => hub.id),
         // previousPaperId: latestPaper?.id || undefined,
         changeDescription: "New version",

@@ -98,12 +98,12 @@ export type Authorship = {
 };
 
 export type DocumentVersion = {
-  id: ID;
   version: string;
   publishedDate: string;
   versionMessage: string;
   formattedLabel: string;
-  isLatest?: boolean;
+  paperId: ID;
+  isLatest: boolean;
 };
 
 export interface GenericDocument {
@@ -181,14 +181,15 @@ export const parseReviewSummary = (raw: any): ReviewSummary => {
 };
 
 export const parseVersion = (raw: any): DocumentVersion => {
-  const formattedDate = formatDateStandard(raw.created_date, "MMM D, YYYY");
+  const formattedDate = formatDateStandard(raw.published_date, "MMM D, YYYY");
 
   return {
-    id: raw.id,
     version: raw.version,
+    paperId: raw.paper_id,
     publishedDate: formattedDate,
-    versionMessage: raw.version_message,
-    formattedLabel: `v${raw.version} (${formattedDate})`,
+    versionMessage: raw.message,
+    isLatest: raw.is_latest,
+    formattedLabel: `v ${raw.version} (${formattedDate})`,
   };
 };
 
@@ -229,7 +230,7 @@ export const parsePaper = (raw: any, shouldStripHTML = true): Paper => {
     title: shouldStripHTML ? stripHTML(title) : title,
     authors: parsePaperAuthors(raw),
     journal: raw.external_source,
-    versions: (raw.versions || []).map((v) => parseVersion(v)),
+    versions: (raw.version_list || []).map((v) => parseVersion(v)),
     isOpenAccess: Boolean(raw.is_open_access),
     laymanTitle: shouldStripHTML ? stripHTML(raw.title) : raw.title,
     publishedDate: formatDateStandard(raw.paper_publish_date, "MMM D, YYYY"),
@@ -251,23 +252,6 @@ export const parsePaper = (raw: any, shouldStripHTML = true): Paper => {
       type: "preview",
     });
   }
-
-  if (parsed.versions.length === 0) {
-    parsed.versions = [
-      {
-        id: raw.id,
-        version: "1.0",
-        publishedDate: formatDateStandard(raw.created_date, "MMM D, YYYY"),
-        versionMessage: "Initial",
-        formattedLabel: `v1.0 (${formatDateStandard(
-          raw.created_date,
-          "MMM D, YYYY"
-        )})`,
-        isLatest: true,
-      },
-    ];
-  }
-  parsed.versions;
 
   return parsed;
 };

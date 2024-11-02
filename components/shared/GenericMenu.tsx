@@ -130,7 +130,7 @@ const Menu = ({
               disableHover,
               disableStyle,
             } = option;
-
+            console.log('value', value, 'selected', selected);
             const content = (
               <div key={`${id}-${index}`}>
                 {option.group !== currentOptionGroup && (
@@ -154,7 +154,7 @@ const Menu = ({
                     <>
                       {isMultiSelect ? (
                         selected.includes(value)
-                      ) : selected === value ? (
+                      ) : String(selected) === String(value) ? (
                         <div className={css(styles.selected)}>
                           {label}
                           <FontAwesomeIcon icon={faCheck} />

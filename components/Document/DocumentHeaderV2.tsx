@@ -133,7 +133,7 @@ const DocumentHeader = ({
                 <DocumentBadges document={doc} metadata={metadata} />
               </div>
               <div className={css(styles.versionWrapper)}>
-                {isPaper(doc) && (
+                {isPaper(doc) && doc.versions.length > 0 && (
                   <DocumentVersionSelector versions={doc.versions} />
                 )}
               </div>

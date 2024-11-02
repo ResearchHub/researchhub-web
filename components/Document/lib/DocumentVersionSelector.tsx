@@ -8,6 +8,7 @@ import IconButton from "~/components/Icons/IconButton";
 import { useState } from "react";
 import colors from "~/config/themes/colors";
 import PaperVersionModal from "./PaperVersion/PaperVersionModal";
+import { useRouter } from "next/router";
 
 interface Args {
   versions: DocumentVersion[];
@@ -17,10 +18,10 @@ const buildVersionOptions = (versions: DocumentVersion[]) => {
   let options: Array<MenuOption> = versions.map((version) => {
     return {
       group: "Select version",
-      value: version.id,
+      value: version.paperId,
       label: version.formattedLabel,
     };
-  });
+  }).reverse();
 
   options = [
     ...options,
@@ -40,16 +41,20 @@ const buildVersionOptions = (versions: DocumentVersion[]) => {
 };
 
 const DocumentVersionSelector = ({ versions }: Args) => {
+  const router = useRouter();
+  const currentPaperId = router.query.documentId as string;
+
   const versionOptions = buildVersionOptions(versions);
   const [selectedVersion, setSelectedVersion] = useState<DocumentVersion>(
-    versions[0]
+    versions.find(v => String(v.paperId) === String(currentPaperId)) || versions[0]
   );
   const [isNewVersionModalOpen, setIsNewVersionModalOpen] = useState(false);
+
 
   return (
     <div>
       <PaperVersionModal
-        isOpen={true}
+        isOpen={isNewVersionModalOpen}
         closeModal={() => setIsNewVersionModalOpen(false)}
         versions={versions}
       />
@@ -57,19 +62,24 @@ const DocumentVersionSelector = ({ versions }: Args) => {
         softHide={true}
         options={versionOptions}
         width={"100%"}
+        selected={currentPaperId}
         id="version-select-menu"
         direction="bottom-right"
         menuStyleOverride={styles.menuStyleOverride}
         onSelect={(option: MenuOption) => {
+          
           if (option.value === "submit-new") {
             setIsNewVersionModalOpen(true);
             return;
           }
+          else {
+            setSelectedVersion(versions.find(v => String(v.paperId) === String(option.value)) || versions[0]);
+            router.push(`/paper/${option.value}`);
+          }
         }}
       >
         <IconButton overrideStyle={styles.versionTrigger}>
-          <FontAwesomeIcon icon={faClockRotateLeft} />v{selectedVersion.version}{" "}
-          ({selectedVersion.publishedDate})
+          <FontAwesomeIcon icon={faClockRotateLeft} />{selectedVersion.formattedLabel}{" "}
           <FontAwesomeIcon icon={faAngleDown} />
         </IconButton>
       </Menu>
