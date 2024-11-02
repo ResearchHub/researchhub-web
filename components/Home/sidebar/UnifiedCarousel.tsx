@@ -31,12 +31,12 @@ export default function UnifiedCarousel({
       try {
         const [educationalElements, peerReviewElements, verificationElements] = await Promise.all([
           getEducationalCarouselElements(),
-          getPeerReviewCarouselElements(),
-          !currentUser?.isVerified ? getVerificationCarouselElements() : Promise.resolve([])
+          currentUser ? getPeerReviewCarouselElements() : Promise.resolve([]),
+          currentUser && !currentUser.isVerified ? getVerificationCarouselElements() : Promise.resolve([])
         ]);
         
         const elements = [
-          ...peerReviewElements.map(element => ({
+          ...(currentUser ? peerReviewElements.map(element => ({
             type: 'peer-review',
             component: (
               <div className={css(styles.slideWrapper, styles.peerReviewContainer)}>
@@ -51,8 +51,8 @@ export default function UnifiedCarousel({
                 </div>
               </div>
             )
-          })),
-          ...(!currentUser?.isVerified ? verificationElements : []).map(element => ({
+          })) : []),
+          ...(currentUser && !currentUser.isVerified ? verificationElements : []).map(element => ({
             type: 'verification',
             component: (
               <div className={css(styles.slideWrapper, styles.peerReviewContainer)}>
@@ -93,7 +93,7 @@ export default function UnifiedCarousel({
     };
 
     loadContent();
-  }, []);
+  }, [currentUser]);
 
   // Don't render anything while loading
   if (isLoading) {
