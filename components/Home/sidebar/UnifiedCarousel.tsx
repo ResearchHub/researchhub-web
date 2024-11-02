@@ -9,6 +9,9 @@ import { getPeerReviewCarouselElements } from "~/components/PeerReviews/RhPeerRe
 import { getVerificationCarouselElements } from "~/components/Verification/VerificationCarouselElement";
 import colors from "~/config/themes/colors";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
+import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
+import { useSelector } from "react-redux";
+import { RootState } from "~/redux";
 
 type Props = {
   onDismissCarousel: () => void;
@@ -22,6 +25,7 @@ export default function UnifiedCarousel({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const currentUser = useCurrentUser();
+  const auth = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     const loadContent = async () => {
@@ -105,25 +109,67 @@ export default function UnifiedCarousel({
     return null;
   }
 
+  const handleDismissElement = async (index: number) => {
+    const elementType = carouselElements[index].type;
+    const featureName = `carousel-${elementType}-${index}`;
+
+    // Remove the element from the carousel immediately
+    const newElements = carouselElements.filter((_, idx) => idx !== index);
+    setCarouselElements(newElements);
+
+    // If this was the last element, dismiss the entire carousel
+    if (newElements.length === 0) {
+      onDismissCarousel();
+      return;
+    }
+
+    // Set the next slide (or previous if we're at the end)
+    setCurrentSlide((prev) => {
+      if (prev >= newElements.length) {
+        return Math.max(0, newElements.length - 1);
+      }
+      return prev;
+    });
+
+    // Persist the dismissal
+    try {
+      const { dismissFeature } = useDismissableFeature({ 
+        auth, 
+        featureName 
+      });
+      await dismissFeature();
+    } catch (error) {
+      console.error('Failed to persist carousel element dismissal:', error);
+    }
+  };
+
+  // Update the dismiss button to use the new handler
+  const renderDismissButton = (index: number) => (
+    <div 
+      className={css(
+        styles.dismissButton,
+        carouselElements[index].type !== 'educational' && styles.dismissButtonAlt
+      )} 
+      onClick={(e) => {
+        e.stopPropagation();
+        handleDismissElement(index);
+      }}
+    >
+      <CloseIcon 
+        width={10}
+        height={10}
+        color={carouselElements[index].type !== 'educational' ? 'white' : undefined}
+      />
+    </div>
+  );
+
+  // Update the carousel content render to include the new dismiss button
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.carouselWrapper)}>
-        <div 
-          className={css(
-            styles.dismissButton,
-            carouselElements[currentSlide].type !== 'educational' && styles.dismissButtonAlt
-          )} 
-          onClick={onDismissCarousel}
-        >
-          <CloseIcon 
-            onClick={() => null}
-            width={10}
-            height={10}
-            color={carouselElements[currentSlide].type !== 'educational' ? 'white' : undefined}
-          />
-        </div>
+        {renderDismissButton(currentSlide)}
         <div className={css(styles.carouselContent)}>
-          {carouselElements[currentSlide].component}
+          {carouselElements[currentSlide]?.component}
         </div>
         <div className={css(
           styles.navigation,
