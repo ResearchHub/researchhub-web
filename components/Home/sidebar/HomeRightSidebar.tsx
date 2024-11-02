@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { getEducationalCarouselElements } from "~/components/shared/carousel/presets/RhEducationalCarouselElements";
 import { INFO_TAB_EXIT_KEY } from "~/components/Banner/constants/exitable_banner_keys";
-import { ReactElement, useState } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import { styles } from "./styles/HomeRightSidebarStyles";
 import colors from "~/config/themes/colors";
 import ColumnContainer from "../../Paper/SideColumn/ColumnContainer";
@@ -14,67 +14,35 @@ import { useSelector } from "react-redux";
 import { RootState } from "~/redux";
 import { parseUser } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
-import VerificationSmallBanner from "~/components/Verification/VerificationSmallBanner";
 import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
+import UnifiedCarousel from "./UnifiedCarousel";
 
 export default function HomeRightSidebar(): ReactElement | null {
-  const [shouldLimitNumCards, setShouldLimitNumCards] = useState<boolean>(true);
-  let carouselElements = getEducationalCarouselElements();
-
-  const currentUser = useSelector((state: RootState) =>
-    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
-  );
-
-
-
   const auth = useSelector((state: RootState) => state.auth);
+  const [dismissStatus, setDismissStatus] = useState<"unchecked" | "checked">("unchecked");
+  
   const {
-    isDismissed: isVerificationBannerDismissed,
-    dismissFeature: dismissVerificationBanner,
-    dismissStatus: verificationBannerDismissStatus
-  } = useDismissableFeature({ auth, featureName: "verification-banner" })
+    isDismissed: isCarouselDismissed,
+    dismissFeature: dismissCarousel,
+    dismissStatus: carouselDismissStatus,
+  } = useDismissableFeature({ auth, featureName: "educational-carousel" });
 
-
-  const isVerificationBannerVisible = !currentUser?.isVerified && (verificationBannerDismissStatus === "checked" && !isVerificationBannerDismissed);
-
+  // Don't render anything until we've confirmed the dismissal state
+  if (carouselDismissStatus === "unchecked") {
+    return null;
+  }
 
   return (
     <div className={css(styles.HomeRightSidebar)}>
       <ColumnContainer overrideStyles={styles.HomeRightSidebarContainer}>
-        {isVerificationBannerVisible ? (
-          <div className={css(sidebarStyles.bannerWrapper)}>
-            <VerificationSmallBanner handleDismiss={dismissVerificationBanner} />
-          </div>
-        ) : (
-          <ExitableBanner
-            bannerKey={INFO_TAB_EXIT_KEY}
-            content={<RhCarousel rhCarouselItems={carouselElements} />}
-            contentStyleOverride={{
-              background: colors.NEW_BLUE(0.07),
-              borderRadius: 6,
-              margin: 16,
-              padding: "14px 16px 14px",
-            }}
-            exitButton={
-              <div style={{ fontSize: 16 }}>
-                {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
-              </div>
-            }
-            exitButtonPositionOverride={{
-              top: "16px !important",
-              right: "16px !important",
-            }}
-            onExit={(): void => setShouldLimitNumCards(false)}
+        {!isCarouselDismissed && carouselDismissStatus === "checked" && (
+          <UnifiedCarousel
+            onDismissCarousel={dismissCarousel}
           />
         )}
-        <HomeSidebarBountiesSection shouldLimitNumCards={shouldLimitNumCards} />
+        <HomeSidebarBountiesSection shouldLimitNumCards={!isCarouselDismissed} />
       </ColumnContainer>
     </div>
   );
 }
-
-const sidebarStyles = StyleSheet.create({
-  bannerWrapper: {
-    padding: "22px 20px 10px",
-  },
-});

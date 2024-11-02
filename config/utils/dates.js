@@ -196,12 +196,12 @@ export function specificTimeSince(date) {
   const joined = moment(date);
 
   const years = now.diff(joined, "year");
-  joined.add(years, "year");
+  const afterYears = joined.clone().add(years, "years");
 
-  const months = now.diff(joined.clone().add(years, "years"), "month");
-  joined.add(months, "month");
+  const months = now.diff(afterYears, "month");
+  const afterMonths = afterYears.clone().add(months, "months");
 
-  const days = now.diff(joined.clone().add(months, "months"), "day");
+  const days = now.diff(afterMonths, "day");
 
   let result = [];
 
