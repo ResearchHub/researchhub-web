@@ -171,7 +171,7 @@ const AuthorFeedItem = ({
     } else if (itemType === "AUTHORED_PAPER") {
       if (item.paper_publish_date) {
         timestamp = item.paper_publish_date;
-        timeText = `${formatTimestamp(timestamp)} (published)`;
+        timeText = `${formatTimestamp(timestamp)} (shared)`;
       } else {
         timestamp = item.uploaded_date;
         timeText = `${formatTimestamp(timestamp)} (uploaded)`;
