@@ -131,6 +131,26 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
 
   const showBackButton = step !== "CONTENT";
 
+  const isCurrentStepValid = () => {
+    switch (step) {
+      case "CONTENT":
+        return (
+          title && 
+          title.length > 0 && 
+          abstract && 
+          abstract.length > 0 && 
+          selectedHubs.length > 0 &&
+          uploadedFileUrl
+        );
+      case "AUTHORS_AND_METADATA":
+        return authorsAndAffiliations.length > 0;
+      case "PREVIEW":
+        return true;
+      default:
+        return false;
+    }
+  };
+
   return (
     <BaseModal
       isOpen={isOpen}
@@ -187,6 +207,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
             step === "PREVIEW" ? handleSubmit() : handleNextStep()
           }
           theme="solidPrimary"
+          disabled={!isCurrentStepValid()}
         />
       </div>
     </BaseModal>

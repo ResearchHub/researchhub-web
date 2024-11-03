@@ -24,6 +24,18 @@ export const articleTypeOptions: Array<{ value: WORK_TYPE; label: string }> = [
   },
 ];
 
+export type ContentStepProps = {
+  title: string | null;
+  setTitle: Function;
+  selectedWorkType: WORK_TYPE;
+  setSelectedWorkType: Function;
+  abstract: string | null;
+  setAbstract: Function;
+  selectedHubs: Hub[];
+  setSelectedHubs: Function;
+  onFileUpload: (objectKey: string, absoluteUrl: string) => void;
+};
+
 const PaperVersionContentStep = ({
   title,
   setTitle,
@@ -34,17 +46,8 @@ const PaperVersionContentStep = ({
   selectedHubs,
   setSelectedHubs,
   onFileUpload,
-}: {
-  title: string | null;
-  setTitle: Function;
-  selectedWorkType: WORK_TYPE;
-  setSelectedWorkType: Function;
-  abstract: string | null;
-  setAbstract: Function;
-  selectedHubs: Hub[];
-  setSelectedHubs: Function;
-  onFileUpload: (objectKey: string, absoluteUrl: string) => void;
-}) => {
+}: ContentStepProps) => {
+
   return (
     <div>
       <div className={css(formStyles.inputWrapper)}>
