@@ -29,7 +29,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
   const alert = useAlert();
 
   // State
-  const [step, setStep] = useState<STEP>("AUTHORS_AND_METADATA");
+  const [step, setStep] = useState<STEP>("CONTENT");
   const [latestPaper, setLatestPaper] = useState<Paper | null>(null);
 
   // Form state
@@ -45,6 +45,8 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
       isCorrespondingAuthor: boolean;
     }>
   >([]);
+
+  const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
 
   useEffect(() => {
     setTitle(latestPaper?.title || null);
@@ -96,6 +98,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
               {authorsAndAffiliations.length === 0 && (
                 <li>At least one author is required</li>
               )}
+              {!uploadedFileUrl && <li>PDF file is required</li>}
             </ul>
           </div>
         ),
@@ -110,7 +113,6 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
         abstract,
         previousPaperId: latestPaper?.id,
         hubIds: selectedHubs.map((hub) => hub.id),
-        // previousPaperId: latestPaper?.id || undefined,
         changeDescription: "New version",
         authors: authorsAndAffiliations.map((authorAndAffiliation) => ({
           id: authorAndAffiliation.author.id,
@@ -151,6 +153,9 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
             setSelectedHubs={setSelectedHubs}
             setTitle={setTitle}
             setSelectedWorkType={setSelectedWorkType}
+            onFileUpload={(objectKey, absoluteUrl) => {
+              setUploadedFileUrl(absoluteUrl);
+            }}
           />
         )}
         {step === "AUTHORS_AND_METADATA" && (

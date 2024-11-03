@@ -11,6 +11,7 @@ import HubSelectDropdown, {
 } from "~/components/Hubs/HubSelectDropdown";
 import { Hub } from "~/config/types/hub";
 import Button from "~/components/Form/Button";
+import FormFileUpload from "~/components/Form/FormFileUpload";
 
 export const articleTypeOptions: Array<{ value: WORK_TYPE; label: string }> = [
   {
@@ -32,6 +33,7 @@ const PaperVersionContentStep = ({
   setAbstract,
   selectedHubs,
   setSelectedHubs,
+  onFileUpload,
 }: {
   title: string | null;
   setTitle: Function;
@@ -41,6 +43,7 @@ const PaperVersionContentStep = ({
   setAbstract: Function;
   selectedHubs: Hub[];
   setSelectedHubs: Function;
+  onFileUpload: (objectKey: string, absoluteUrl: string) => void;
 }) => {
   return (
     <div>
@@ -103,6 +106,10 @@ const PaperVersionContentStep = ({
             setSelectedHubs(hubs);
           }}
         />
+      </div>
+
+      <div className={css(formStyles.inputWrapper)}>
+        <FormFileUpload label="Upload PDF" onUploadComplete={onFileUpload} />
       </div>
     </div>
   );

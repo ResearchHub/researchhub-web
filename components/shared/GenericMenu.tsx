@@ -130,7 +130,7 @@ const Menu = ({
               disableHover,
               disableStyle,
             } = option;
-            console.log('value', value, 'selected', selected);
+
             const content = (
               <div key={`${id}-${index}`}>
                 {option.group !== currentOptionGroup && (
