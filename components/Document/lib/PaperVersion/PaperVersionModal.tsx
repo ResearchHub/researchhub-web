@@ -18,12 +18,33 @@ import {
   SuggestedAuthor,
   SuggestedInstitution,
 } from "~/components/SearchSuggestion/lib/types";
+import VerifyIdentityBreadcrumbs, {
+  ProgressStepperStep,
+} from "~/components/shared/ProgressStepper";
 
 interface Args {
   isOpen: boolean;
   closeModal: () => void;
   versions: DocumentVersion[];
 }
+
+const stepperSteps: ProgressStepperStep[] = [
+  {
+    title: "Content",
+    number: 1,
+    value: "CONTENT",
+  },
+  {
+    title: "Authors",
+    number: 2,
+    value: "AUTHORS_AND_METADATA",
+  },
+  {
+    title: "Preview",
+    number: 3,
+    value: "PREVIEW",
+  },
+];
 
 const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
   const alert = useAlert();
@@ -162,6 +183,13 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
       title={"Submit new version"}
       modalContentStyle={styles.modalStyle}
     >
+      <div className={css(styles.breadcrumbsWrapper)}>
+        <VerifyIdentityBreadcrumbs
+          selected={step}
+          steps={stepperSteps}
+        />
+      </div>
+
       <div className={css(styles.modalBody)}>
         {step === "CONTENT" && (
           <PaperVersionContentStep
@@ -245,6 +273,10 @@ const styles = StyleSheet.create({
   modalStyle: {
     width: 650,
     minHeight: 500,
+  },
+  breadcrumbsWrapper: {
+    marginTop: 20,
+    marginBottom: 20,
   },
 });
 
