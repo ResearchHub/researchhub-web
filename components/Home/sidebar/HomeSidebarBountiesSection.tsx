@@ -215,7 +215,7 @@ export default function HomeSidebarBountiesSection({
                     width: "100%",
                   }}
                 >
-                  <div>{"Open Bounties"}</div>
+                  <div>{"Open Grants"}</div>
                   <Link
                     href="/live?contentType=BOUNTY"
                     className={css(styles.viewAll)}
