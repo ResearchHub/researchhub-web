@@ -34,6 +34,8 @@ export type ContentStepProps = {
   selectedHubs: Hub[];
   setSelectedHubs: Function;
   onFileUpload: (objectKey: string, absoluteUrl: string) => void;
+  onFileUploadError: (error: Error) => void;
+  fileUploadError: Error | null;
 };
 
 const PaperVersionContentStep = ({
@@ -46,8 +48,9 @@ const PaperVersionContentStep = ({
   selectedHubs,
   setSelectedHubs,
   onFileUpload,
+  onFileUploadError,
+  fileUploadError,
 }: ContentStepProps) => {
-
   return (
     <div>
       <div className={css(formStyles.inputWrapper)}>
@@ -112,7 +115,12 @@ const PaperVersionContentStep = ({
       </div>
 
       <div className={css(formStyles.inputWrapper)}>
-        <FormFileUpload label="Upload PDF" onUploadComplete={onFileUpload} />
+        <FormFileUpload
+          label="Upload research file"
+          error={fileUploadError ? "Failed to upload file" : null}
+          onUploadComplete={onFileUpload}
+          onUploadFError={onFileUploadError}
+        />
       </div>
     </div>
   );

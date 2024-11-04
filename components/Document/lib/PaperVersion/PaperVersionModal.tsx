@@ -49,7 +49,7 @@ const stepperSteps: ProgressStepperStep[] = [
 const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
   const alert = useAlert();
 
-  // State
+  // General State
   const [step, setStep] = useState<STEP>("CONTENT");
   const [latestPaper, setLatestPaper] = useState<Paper | null>(null);
 
@@ -67,7 +67,9 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
     }>
   >([]);
 
+  // File upload state
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<Error | null>(null);
 
   useEffect(() => {
     setTitle(latestPaper?.title || null);
@@ -87,6 +89,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
     })();
   }, []);
 
+  // Handlers
   const handleNextStep = () => {
     const currentIndex = ORDERED_STEPS.indexOf(step);
     if (currentIndex + 1 < ORDERED_STEPS.length) {
@@ -156,10 +159,10 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
     switch (step) {
       case "CONTENT":
         return (
-          title && 
-          title.length > 0 && 
-          abstract && 
-          abstract.length > 0 && 
+          title &&
+          title.length > 0 &&
+          abstract &&
+          abstract.length > 0 &&
           selectedHubs.length > 0 &&
           uploadedFileUrl
         );
@@ -184,10 +187,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
       modalContentStyle={styles.modalStyle}
     >
       <div className={css(styles.breadcrumbsWrapper)}>
-        <VerifyIdentityBreadcrumbs
-          selected={step}
-          steps={stepperSteps}
-        />
+        <VerifyIdentityBreadcrumbs selected={step} steps={stepperSteps} />
       </div>
 
       <div className={css(styles.modalBody)}>
@@ -203,7 +203,12 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
             setSelectedWorkType={setSelectedWorkType}
             onFileUpload={(objectKey, absoluteUrl) => {
               setUploadedFileUrl(absoluteUrl);
+              setUploadError(null);
             }}
+            onFileUploadError={(error) => {
+              setUploadError(error);
+            }}
+            fileUploadError={uploadError}
           />
         )}
         {step === "AUTHORS_AND_METADATA" && (

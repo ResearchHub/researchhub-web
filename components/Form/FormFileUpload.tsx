@@ -10,8 +10,9 @@ import { ClipLoader } from "react-spinners";
 
 interface FormFileUploadProps {
   onUploadComplete: (objectKey: string, absoluteUrl: string) => void;
+  onUploadFError?: (error: Error) => void;
   label?: string;
-  error?: string;
+  error?: string | null;
   disabled?: boolean;
 }
 
@@ -20,6 +21,7 @@ const FormFileUpload = ({
   label,
   error,
   disabled,
+  onUploadFError,
 }: FormFileUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -32,8 +34,6 @@ const FormFileUpload = ({
 
       const formData = new FormData();
       formData.append("filename", file.name);
-
-      console.log("FormData:", formData);
 
       const {
         headers: { Authorization },
@@ -65,11 +65,11 @@ const FormFileUpload = ({
         body: file,
         headers: {
           "Content-Type": "application/pdf",
-          // Headers for CORS
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "PUT",
+          // // Headers for CORS
+          // "Access-Control-Allow-Origin": "*",
+          // "Access-Control-Allow-Methods": "PUT",
         },
-        mode: "cors", // Explicitly set CORS mode
+        // mode: "cors", // Explicitly set CORS mode
       });
 
       if (!uploadResponse.ok) {
@@ -83,6 +83,7 @@ const FormFileUpload = ({
       onUploadComplete(object_key, absoluteUrl);
     } catch (error) {
       console.error("Upload failed:", error);
+      onUploadFError && onUploadFError(error as Error);
       throw error; // Re-throw to be handled by the parent
     } finally {
       setIsUploading(false);
