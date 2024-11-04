@@ -33,6 +33,7 @@ interface Props {
   placeholder?: any;
   dropdownStyles?: any;
   containerStyle?: any;
+  error?: string | null;
 }
 
 export const selectDropdownStyles = {
@@ -159,6 +160,7 @@ const AuthorSelectDropdown = ({
   label = "Search authors",
   placeholder = "Search hubs",
   dropdownStyles = selectDropdownStyles,
+  error = null,
 }: Props) => {
   const [suggestedAuthors, setSuggestedAuthors] = useState<SuggestedAuthor[]>(
     []
@@ -192,7 +194,16 @@ const AuthorSelectDropdown = ({
         isMulti={false}
         label={label}
         required={required}
-        reactStyles={{}}
+        error={error}
+        reactStyles={{
+          control: (base) => ({
+            ...base,
+            borderColor: error ? colors.RED() : base.borderColor,
+            '&:hover': {
+              borderColor: error ? colors.RED() : base.borderColor,
+            }
+          })
+        }}
         inputStyle={formStyles.inputStyle}
         reactSelect={{ styles: dropdownStyles }}
         noOptionsMessage={(value) => {
@@ -204,8 +215,6 @@ const AuthorSelectDropdown = ({
           debouncedHandleInputChange(field, value);
         }}
         onChange={(name, values) => {
-          console.log("name", name);
-          console.log("values", values);
           onChange(name, values);
         }}
         selectComponents={{
@@ -264,6 +273,11 @@ const formStyles = StyleSheet.create({
   selectedAuthorName: {
     fontSize: 14,
     fontWeight: 500,
+  },
+  errorText: {
+    color: colors.RED(),
+    fontSize: 12,
+    marginTop: 4,
   },
 });
 

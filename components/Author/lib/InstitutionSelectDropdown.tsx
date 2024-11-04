@@ -30,6 +30,7 @@ interface Props {
   placeholder?: string;
   dropdownStyles?: any;
   containerStyle?: any;
+  error?: string | null;
 }
 
 export const selectDropdownStyles = {
@@ -121,6 +122,7 @@ const InstitutionSelectDropdown = ({
   label = "Search institutions",
   placeholder = "Search institutions",
   dropdownStyles = selectDropdownStyles,
+  error = null,
 }: Props) => {
   const [suggestedInstitutions, setSuggestedInstitutions] = useState<
     SuggestedInstitution[]
@@ -154,7 +156,16 @@ const InstitutionSelectDropdown = ({
         isMulti={false}
         label={label}
         required={required}
-        reactStyles={{}}
+        error={error}
+        reactStyles={{
+          control: (base) => ({
+            ...base,
+            borderColor: error ? colors.RED() : base.borderColor,
+            '&:hover': {
+              borderColor: error ? colors.RED() : base.borderColor,
+            }
+          })
+        }}
         inputStyle={styles.inputStyle}
         reactSelect={{ styles: dropdownStyles }}
         noOptionsMessage={(value) => {
@@ -213,6 +224,11 @@ const styles = StyleSheet.create({
   selectedName: {
     fontSize: 14,
     fontWeight: 500,
+  },
+  errorText: {
+    color: colors.RED(),
+    fontSize: 12,
+    marginTop: 4,
   },
 });
 

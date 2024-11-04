@@ -67,11 +67,7 @@ const FormFileUpload = ({
         body: file,
         headers: {
           "Content-Type": "application/pdf",
-          // // Headers for CORS
-          // "Access-Control-Allow-Origin": "*",
-          // "Access-Control-Allow-Methods": "PUT",
         },
-        // mode: "cors", // Explicitly set CORS mode
       });
 
       if (!uploadResponse.ok) {
@@ -80,6 +76,9 @@ const FormFileUpload = ({
 
       // Clean the presigned URL by removing the query parameters
       const absoluteUrl = presigned_url.split("?")[0];
+
+      console.log("presigned_url", presigned_url);
+      console.log("absoluteUrl", absoluteUrl);
 
       setFileName(file.name);
       onUploadComplete(object_key, absoluteUrl);

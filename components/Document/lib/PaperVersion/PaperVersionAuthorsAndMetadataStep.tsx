@@ -171,12 +171,30 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
   const [department, setDepartment] = useState("");
   const [email, setEmail] = useState("");
   const [isCorrespondingAuthor, setIsCorrespondingAuthor] = useState(false);
+  const [errors, setErrors] = useState<{
+    author?: boolean;
+    institution?: boolean;
+    department?: boolean;
+    email?: boolean;
+  }>({});
+  
+  const validateForm = () => {
+    const newErrors = {
+      author: !selectedAuthor,
+      institution: !selectedInstitution,
+      department: !department?.trim(),
+      email: isCorrespondingAuthor && !email,
+    };
 
-  const handleAddAuthor = () => {
-    if (isCorrespondingAuthor && !email) {
-      return; // Don't proceed if email is required but missing
+    setErrors(newErrors);
+    return !Object.values(newErrors).some(Boolean); // returns true if form is valid
+  };
+
+  const handleSubmit = () => {
+    if (!validateForm()) {
+      return; // Stop submission if validation fails
     }
-    
+
     onAffiliationAdded({
       author: selectedAuthor?.author,
       institution: selectedInstitution?.institution,
@@ -184,7 +202,8 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
       email,
       isCorrespondingAuthor,
     });
-  };
+    handleCloseForm();
+  };  
 
   return (
     <div className={css(styles.authorForm)}>
@@ -192,7 +211,10 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
         label="Author"
         onChange={(name, value) => {
           setSelectedAuthor(value);
+          setErrors({ ...errors, author: false });
         }}
+        error={errors.author ? "Author is required" : undefined}
+        required
         selectedAuthor={selectedAuthor}
         placeholder="Select authors"
       />
@@ -200,7 +222,10 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
         label="Institution"
         onChange={(name, value) => {
           setSelectedInstitution(value);
+          setErrors({ ...errors, institution: false });
         }}
+        required
+        error={errors.institution ? "Institution is required" : undefined}
         selectedInstitution={selectedInstitution}
         placeholder="Select institutions"
       />
@@ -208,14 +233,24 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
         required
         label="Department"
         value={department}
-        onChange={(id, value) => setDepartment(value) }
+        error={errors.department && "Department is required"}
+        onChange={(id, value) => {
+          setDepartment(value)
+          setErrors({ ...errors, department: false });
+        }}
+        placeholder="Department of the institution"
       />
       <FormInput
         label="Email"
         required={isCorrespondingAuthor}
         value={email}
-        onChange={(id, value) => setEmail(value)}
+        onChange={(id, value) => {
+          setEmail(value)
+          setErrors({ ...errors, email: false });
+        }}
         type="email"
+        error={errors.email && "Email is required for corresponding authors"}
+        placeholder="Email of the author"
       />
       <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
         <Checkbox
@@ -235,7 +270,7 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
         />
         <Button
           label="Save"
-          onClick={handleAddAuthor}
+          onClick={handleSubmit}
         />
       </div>
     </div>
