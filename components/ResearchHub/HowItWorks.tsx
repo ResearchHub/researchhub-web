@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/pro-solid-svg-icons";
 
@@ -109,67 +109,109 @@ const accordionItems = [
     
     Download our template to ensure your submission meets all requirements.`
   },
+  {
+    id: "publication-types",
+    title: "Publication Types",
+    content: `We accept the following types of submissions:
+
+    Original Research Articles
+    • Full research papers presenting novel findings
+    • Complete methodology and results required
+    • No length restrictions, but clarity and conciseness valued
+    
+    Short Communications
+    • Brief reports of significant findings
+    • Maximum 3,000 words
+    • Ideal for time-sensitive or preliminary results
+    
+    Case Studies
+    • Detailed examination of specific real-world contexts
+    • Must include clear implications and lessons learned
+    • Structured methodology and analysis required
+    
+    Review Articles (Invitation Only)
+    • Comprehensive analysis of existing literature
+    • Must provide novel synthesis or perspective
+    • By invitation only - contact Editorial Board if interested
+    • Systematic reviews particularly welcomed`,
+  },
 ];
 
 export const HowItWorks = () => {
   const [openItem, setOpenItem] = useState<string | null>(null);
 
-  // Add effect to listen for external state changes
-  useEffect(() => {
-    const handleSetAccordionState = (event: any) => {
-      if (event.detail && event.detail.id) {
-        // Force the accordion item open regardless of current state
-        setOpenItem(event.detail.id);
-      }
-    };
+  // Memoize event handler
+  const handleSetAccordionState = useCallback((event: any) => {
+    if (event.detail?.id) {
+      setOpenItem(event.detail.id);
+    }
+  }, []);
 
-    // Listen for the custom event
+  useEffect(() => {
     window.addEventListener('setAccordionState', handleSetAccordionState);
-    
     return () => {
       window.removeEventListener('setAccordionState', handleSetAccordionState);
     };
-  }, []); // Empty dependency array since we don't need to re-create the listener
+  }, [handleSetAccordionState]);
+
+  // Memoize accordion items to prevent unnecessary re-renders
+  const accordionElements = useMemo(() => 
+    accordionItems.map((item) => (
+      <AccordionItem 
+        key={item.id}
+        item={item}
+        isOpen={openItem === item.id}
+        onToggle={() => setOpenItem(openItem === item.id ? null : item.id)}
+      />
+    )), [openItem]);
 
   return (
     <div id="how-it-works" className={css(styles.container)}>
       <div className={css(styles.content)}>
         <h2 className={css(styles.heading)}>How it Works</h2>
         <div className={css(styles.accordion)}>
-          {accordionItems.map((item) => (
-            <div key={item.id} className={css(styles.accordionItem)}>
-              <button
-                className={css(styles.trigger)}
-                onClick={() => setOpenItem(openItem === item.id ? null : item.id)}
-              >
-                {item.title}
-                <FontAwesomeIcon
-                  icon={faChevronDown}
-                  className={css(styles.icon, openItem === item.id && styles.iconOpen)}
-                />
-              </button>
-              {openItem === item.id && (
-                <div className={css(styles.accordionContent)}>
-                  <div className={css(styles.contentText)}>
-                    {item.content}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
+          {accordionElements}
         </div>
       </div>
     </div>
   );
 };
 
+// 2. Split accordion item into separate component
+const AccordionItem = ({ item, isOpen, onToggle }) => (
+  <div className={css(styles.accordionItem)}>
+    <button
+      className={css(styles.trigger)}
+      onClick={onToggle}
+    >
+      {item.title}
+      <FontAwesomeIcon
+        icon={faChevronDown}
+        className={css(styles.icon, isOpen && styles.iconOpen)}
+      />
+    </button>
+    {isOpen && (
+      <div className={css(styles.accordionContent)}>
+        <div className={css(styles.contentText)}>
+          {item.content}
+        </div>
+      </div>
+    )}
+  </div>
+);
+
 const styles = StyleSheet.create({
   container: {
     padding: "0px 28px",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: "0px 16px",
+    },
   },
   content: {
     width: 800,
     margin: "0 auto",
+    display: "flex",
+    flexDirection: "column",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
     },
@@ -182,14 +224,25 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: colors.BLACK(0.9),
     letterSpacing: "-0.02em",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 28,
+      marginBottom: 24,
+      padding: "0 16px",
+    },
   },
   accordion: {
     maxWidth: 800,
+    width: "100%",
     margin: "0 auto",
     background: "#fff",
     borderRadius: 12,
     border: `1px solid ${colors.GREY_LINE(0.5)}`,
     overflow: "hidden",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      maxWidth: 400,
+      width: "90%",
+      minWidth: 280,
+    },
   },
   accordionItem: {
     borderBottom: `1px solid ${colors.GREY_LINE(0.35)}`,
@@ -203,6 +256,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    textAlign: "left",
     background: "none",
     border: "none",
     cursor: "pointer",
@@ -213,6 +267,10 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.NEW_BLUE(),
       background: colors.BLUE(0.02),
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: "20px 24px",
+      fontSize: 16,
     },
   },
   icon: {
@@ -228,18 +286,26 @@ const styles = StyleSheet.create({
   accordionContent: {
     padding: "0 32px 24px",
     background: colors.BLUE(0.02),
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: "0 24px 20px",
+    },
   },
   contentText: {
     color: colors.BLACK(0.7),
     fontSize: 15,
     lineHeight: 1.6,
     whiteSpace: "pre-line",
+    textAlign: "left",
     "& ul": {
       paddingLeft: 20,
       marginTop: 8,
     },
     "& li": {
       marginBottom: 4,
+      textAlign: "left",
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 14,
     },
   },
 });

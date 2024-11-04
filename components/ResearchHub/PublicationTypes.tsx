@@ -3,6 +3,7 @@ import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserLock } from "@fortawesome/pro-regular-svg-icons";
+import { useCallback, useMemo } from 'react';
 
 const publicationTypes = [
   {
@@ -24,66 +25,43 @@ const publicationTypes = [
 ];
 
 export const PublicationTypes = () => {
-  const handleCardClick = () => {
+  const handleCardClick = useCallback(() => {
     const howItWorksSection = document.getElementById('how-it-works');
     if (howItWorksSection) {
-      // Calculate scroll position
       const viewportHeight = window.innerHeight;
       const sectionHeight = howItWorksSection.offsetHeight;
       const offset = howItWorksSection.offsetTop - (viewportHeight - sectionHeight) / 2;
       
-      // First scroll to position
       window.scrollTo({
         top: offset,
         behavior: 'smooth'
       });
 
-      // Wait for scroll to complete before triggering accordion
       setTimeout(() => {
-        // Dispatch event to force open the author guidelines section
-        const event = new CustomEvent('setAccordionState', {
+        window.dispatchEvent(new CustomEvent('setAccordionState', {
           detail: { 
             id: 'author-guidelines',
             state: true 
           }
-        });
-        window.dispatchEvent(event);
-      }, 700); // Added delay to ensure scroll completes first
+        }));
+      }, 700);
     }
-  };
+  }, []);
+
+  const publicationCards = useMemo(() => 
+    publicationTypes.map((type, index) => (
+      <PublicationCard 
+        key={index}
+        type={type}
+        onClick={handleCardClick}
+      />
+    )), [handleCardClick]);
 
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.content)}>
         <div className={css(styles.grid)}>
-          {publicationTypes.map((type, index) => (
-            <div 
-              key={index} 
-              className={css(
-                styles.card,
-                type.title === "Review Articles" && styles.reviewCard
-              )}
-              onClick={handleCardClick}
-              role="button"
-              tabIndex={0}
-            >
-              <div className={css(styles.cardContent)}>
-                {type.title === "Review Articles" && (
-                  <div className={css(styles.reviewOverlay) + " reviewOverlay"}>
-                    <FontAwesomeIcon 
-                      icon={faUserLock}
-                      className={css(styles.reviewLockIcon)}
-                    />
-                    <p className={css(styles.reviewMessage)}>
-                      Review article submissions are invite only, please email the Editorial Board if you are interested.
-                    </p>
-                  </div>
-                )}
-                <h3 className={css(styles.cardTitle)}>{type.title}</h3>
-                <p className={css(styles.cardDescription)}>{type.description}</p>
-              </div>
-            </div>
-          ))}
+          {publicationCards}
         </div>
       </div>
     </div>
