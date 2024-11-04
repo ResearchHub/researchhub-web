@@ -12,6 +12,10 @@ import HubSelectDropdown, {
 import { Hub } from "~/config/types/hub";
 import Button from "~/components/Form/Button";
 import FormFileUpload from "~/components/Form/FormFileUpload";
+import colors from "~/config/themes/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/pro-light-svg-icons";
+
 
 export const articleTypeOptions: Array<{ value: WORK_TYPE; label: string }> = [
   {
@@ -120,6 +124,7 @@ const PaperVersionContentStep = ({
           error={fileUploadError ? "Failed to upload file" : null}
           onUploadComplete={onFileUpload}
           onUploadFError={onFileUploadError}
+          helperText="Only PDF files supported at this time"
         />
       </div>
     </div>
@@ -139,6 +144,15 @@ const formStyles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "flex-end",
+  },
+  helperText: {
+    display: "flex",
+    alignItems: "center",
+    gap: 5,
+    color: colors.MEDIUM_GREY2(),
+    fontSize: 13,
+    marginTop: -15,
+    fontWeight: 500,
   },
 });
 

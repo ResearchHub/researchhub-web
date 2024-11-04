@@ -5,7 +5,7 @@ import Button from "./Button";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile } from "@fortawesome/pro-regular-svg-icons";
+import { faFile, faInfoCircle } from "@fortawesome/pro-regular-svg-icons";
 import { ClipLoader } from "react-spinners";
 
 interface FormFileUploadProps {
@@ -14,6 +14,7 @@ interface FormFileUploadProps {
   label?: string;
   error?: string | null;
   disabled?: boolean;
+  helperText?: string;
 }
 
 const FormFileUpload = ({
@@ -22,6 +23,7 @@ const FormFileUpload = ({
   error,
   disabled,
   onUploadFError,
+  helperText,
 }: FormFileUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -105,7 +107,7 @@ const FormFileUpload = ({
   });
 
   return (
-    <div className={css(styles.inputContainer, disabled && styles.disabled)}>
+    <div className={css(styles.inputContainer, disabled && styles.disabled)} onClick={() => open()}>
       {label && <div className={css(styles.inputLabel)}>{label}</div>}
       <div
         {...getRootProps()}
@@ -125,6 +127,7 @@ const FormFileUpload = ({
         <div className={css(styles.buttonContainer)}>
           <Button
             type="button"
+            variant="outlined"
             isDisabled={isUploading || disabled}
             label={
               isUploading ? (
@@ -132,7 +135,7 @@ const FormFileUpload = ({
                   <ClipLoader
                     sizeUnit={"px"}
                     size={18}
-                    color={"#fff"}
+                    color={colors.MEDIUM_GREY()}
                     loading={true}
                   />
                 </div>
@@ -145,10 +148,17 @@ const FormFileUpload = ({
               open();
             }}
             theme="solidPrimary"
+            customButtonStyle={styles.uploadButton}
           />
         </div>
       </div>
       {error && <p className={css(styles.error)}>{error}</p>}
+      {helperText && !error && (
+        <div className={css(styles.helperText)}>
+          <FontAwesomeIcon icon={faInfoCircle} style={{ fontSize: 16 }} />
+          {helperText}
+        </div>
+      )}
     </div>
   );
 };
@@ -162,6 +172,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     position: "relative",
     width: "100%",
+    cursor: "pointer",
   },
   inputLabel: {
     fontWeight: 500,
@@ -188,6 +199,13 @@ const styles = StyleSheet.create({
     ":focus": {
       borderColor: "#3f85f7",
     },
+  },
+  uploadButton: {
+    backgroundColor: "#efefef",
+    borderColor: colors.MEDIUM_GREY(),
+    color: "#4f4e4e",
+    fontWeight: 400,
+    fontSize: 14,
   },
   fileInfo: {
     display: "flex",
@@ -241,6 +259,15 @@ const styles = StyleSheet.create({
   disabled: {
     pointerEvents: "none",
     opacity: 0.6,
+  },
+  helperText: {
+    display: "flex",
+    alignItems: "center",
+    gap: 5,
+    color: colors.MEDIUM_GREY(),
+    fontSize: 12,
+    marginTop: 8,
+    fontWeight: 500,
   },
 });
 

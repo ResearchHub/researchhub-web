@@ -50,7 +50,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
   const alert = useAlert();
 
   // General State
-  const [step, setStep] = useState<STEP>("CONTENT");
+  const [step, setStep] = useState<STEP>("AUTHORS_AND_METADATA");
   const [latestPaper, setLatestPaper] = useState<Paper | null>(null);
 
   // Form state
@@ -240,7 +240,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
             step === "PREVIEW" ? handleSubmit() : handleNextStep()
           }
           theme="solidPrimary"
-          disabled={!isCurrentStepValid()}
+          disabled={ false/*!isCurrentStepValid()*/}
         />
       </div>
     </BaseModal>

@@ -18,6 +18,9 @@ import {
 } from "@fortawesome/pro-solid-svg-icons";
 import Avatar from "@mui/material/Avatar";
 import { isEmpty } from "~/config/utils/nullchecks";
+import TextField from "@mui/material/TextField";
+import FormInput from "~/components/Form/FormInput";
+
 const PaperVersionAuthorsAndMetadataStep = ({
   authorsAndAffiliations,
   setAuthorsAndAffiliations,
@@ -29,7 +32,7 @@ const PaperVersionAuthorsAndMetadataStep = ({
   }>;
   setAuthorsAndAffiliations: Function;
 }) => {
-  const [isFormVisible, setIsFormVisible] = useState(true);
+  const [isFormVisible, setIsFormVisible] = useState(false);
 
   const moveAuthor = (currentIndex: number, direction: "up" | "down") => {
     const newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
@@ -61,80 +64,94 @@ const PaperVersionAuthorsAndMetadataStep = ({
 
   return (
     <div>
-      <div className={css(styles.authorFormWrapper)}>
-        {isFormVisible && (
-          <AuthorAndAffiliationForm
-            onAffiliationAdded={onAffiliationAdded}
-            handleCloseForm={() => setIsFormVisible(false)}
-          />
-        )}
-      </div>
-      <div className={css(styles.authorsList)}>
-        {authorsAndAffiliations.map((authorAndAffiliation, index) => (
-          <div
-            key={authorAndAffiliation.author.id}
-            className={css(styles.authorItem)}
-          >
-            <div className={css(styles.authorContent)}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <Avatar
-                  src={authorAndAffiliation.author.profileImage}
-                  sx={{ width: 24, height: 24, fontSize: 14 }}
-                >
-                  {isEmpty(authorAndAffiliation.author.profileImage) &&
-                    (authorAndAffiliation.author.fullName || "")[0]}
-                </Avatar>
-                <div className={css(styles.authorName)}>
-                  {authorAndAffiliation.author.fullName}
-                </div>
-              </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                <FontAwesomeIcon
-                  icon={faBuildingColumns}
-                  style={{ width: 24 }}
-                />
-                <div className={css(styles.institutionName)}>
-                  {authorAndAffiliation.institution.name}
-                </div>
-              </div>
-              {authorAndAffiliation.isCorrespondingAuthor && (
-                <div className={css(styles.correspondingAuthor)}>
-                  Corresponding author
-                </div>
-              )}
-            </div>
-            <div className={css(styles.arrowControls)}>
-              <button
-                className={css(
-                  styles.arrowButton,
-                  index === 0 && styles.arrowButtonDisabled
-                )}
-                onClick={() => moveAuthor(index, "up")}
-                disabled={index === 0}
-              >
-                <FontAwesomeIcon icon={faChevronUp} />
-              </button>
-              <button
-                className={css(
-                  styles.arrowButton,
-                  index === authorsAndAffiliations.length - 1 &&
-                    styles.arrowButtonDisabled
-                )}
-                onClick={() => moveAuthor(index, "down")}
-                disabled={index === authorsAndAffiliations.length - 1}
-              >
-                <FontAwesomeIcon icon={faChevronDown} />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-      {!isFormVisible && (
-        <Button
-          label="Add author"
-          onClick={() => setIsFormVisible(true)}
-          buttonStyle={{ marginTop: 20 }}
+      {isFormVisible ? (
+        <AuthorAndAffiliationForm
+          onAffiliationAdded={onAffiliationAdded}
+          handleCloseForm={() => setIsFormVisible(false)}
         />
+      ) : (
+        <>
+          <div className={css(styles.authorsList)}>
+            {authorsAndAffiliations.length === 0 ? (
+              <div className={css(styles.emptyState)}>
+                <div className={css(styles.emptyStateText)}>
+                  No authors added yet. Click the button below to add authors and their affiliations.
+                </div>
+                <Button
+                  label="Add author"
+                  onClick={() => setIsFormVisible(true)}
+                  buttonStyle={{ marginTop: 16 }}
+                />
+              </div>
+            ) : (
+              authorsAndAffiliations.map((authorAndAffiliation, index) => (
+                <div
+                  key={authorAndAffiliation.author.id}
+                  className={css(styles.authorItem)}
+                >
+                  <div className={css(styles.authorContent)}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <Avatar
+                        src={authorAndAffiliation.author.profileImage}
+                        sx={{ width: 24, height: 24, fontSize: 14 }}
+                      >
+                        {isEmpty(authorAndAffiliation.author.profileImage) &&
+                          (authorAndAffiliation.author.fullName || "")[0]}
+                      </Avatar>
+                      <div className={css(styles.authorName)}>
+                        {authorAndAffiliation.author.fullName}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <FontAwesomeIcon
+                        icon={faBuildingColumns}
+                        style={{ width: 24 }}
+                      />
+                      <div className={css(styles.institutionName)}>
+                        {authorAndAffiliation.institution.name}
+                      </div>
+                    </div>
+                    {authorAndAffiliation.isCorrespondingAuthor && (
+                      <div className={css(styles.correspondingAuthor)}>
+                        Corresponding author
+                      </div>
+                    )}
+                  </div>
+                  <div className={css(styles.arrowControls)}>
+                    <button
+                      className={css(
+                        styles.arrowButton,
+                        index === 0 && styles.arrowButtonDisabled
+                      )}
+                      onClick={() => moveAuthor(index, "up")}
+                      disabled={index === 0}
+                    >
+                      <FontAwesomeIcon icon={faChevronUp} />
+                    </button>
+                    <button
+                      className={css(
+                        styles.arrowButton,
+                        index === authorsAndAffiliations.length - 1 &&
+                          styles.arrowButtonDisabled
+                      )}
+                      onClick={() => moveAuthor(index, "down")}
+                      disabled={index === authorsAndAffiliations.length - 1}
+                    >
+                      <FontAwesomeIcon icon={faChevronDown} />
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+          {authorsAndAffiliations.length > 0 && (
+            <Button
+              label="Add author"
+              onClick={() => setIsFormVisible(true)}
+              buttonStyle={{ marginTop: 20 }}
+            />
+          )}
+        </>
       )}
     </div>
   );
@@ -151,12 +168,20 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
     label: string;
     value: string;
   } | null>(null);
+  const [department, setDepartment] = useState("");
+  const [email, setEmail] = useState("");
   const [isCorrespondingAuthor, setIsCorrespondingAuthor] = useState(false);
 
   const handleAddAuthor = () => {
+    if (isCorrespondingAuthor && !email) {
+      return; // Don't proceed if email is required but missing
+    }
+    
     onAffiliationAdded({
       author: selectedAuthor?.author,
       institution: selectedInstitution?.institution,
+      department,
+      email,
       isCorrespondingAuthor,
     });
   };
@@ -179,7 +204,20 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
         selectedInstitution={selectedInstitution}
         placeholder="Select institutions"
       />
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <FormInput
+        required
+        label="Department"
+        value={department}
+        onChange={(id, value) => setDepartment(value) }
+      />
+      <FormInput
+        label="Email"
+        required={isCorrespondingAuthor}
+        value={email}
+        onChange={(id, value) => setEmail(value)}
+        type="email"
+      />
+      <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
         <Checkbox
           checked={isCorrespondingAuthor}
           onChange={() => setIsCorrespondingAuthor(!isCorrespondingAuthor)}
@@ -193,12 +231,11 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
           label="Cancel"
           variant="text"
           onClick={() => handleCloseForm()}
-          buttonStyle={{ marginTop: 20, marginRight: 10 }}
+          buttonStyle={{ marginRight: 10 }}
         />
         <Button
           label="Save"
           onClick={handleAddAuthor}
-          buttonStyle={{ marginTop: 20 }}
         />
       </div>
     </div>
@@ -276,6 +313,28 @@ const styles = StyleSheet.create({
     ":hover": {
       background: "transparent",
     },
+  },
+  emptyState: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: 32,
+    background: colors.LIGHTER_GREY(),
+    borderRadius: 4,
+    textAlign: "center",
+  },
+  emptyStateText: {
+    color: colors.BLACK(0.6),
+    fontSize: 15,
+    marginBottom: 8,
+  },
+  row: {
+    display: "flex",
+    gap: 16,
+    marginBottom: 16,
+  },
+  flexGrow: {
+    flex: 1,
   },
 });
 
