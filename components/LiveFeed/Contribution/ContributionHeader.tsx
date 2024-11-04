@@ -186,7 +186,7 @@ const ContributionHeader = ({ entry, context }: Args) => {
     );
   } else {
     // @ts-ignore
-    actionLabel = <>{` published a ${item?.unifiedDocument?.documentType}`}</>;
+    actionLabel = <>{` shared a ${item?.unifiedDocument?.documentType}`}</>;
   }
 
   const moreOptionsId = `header-more-options-${entry?.contentType?.name}-${entry?.item?.id}`;
