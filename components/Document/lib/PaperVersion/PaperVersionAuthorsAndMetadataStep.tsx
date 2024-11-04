@@ -21,15 +21,20 @@ import { isEmpty } from "~/config/utils/nullchecks";
 import TextField from "@mui/material/TextField";
 import FormInput from "~/components/Form/FormInput";
 
+// Update the type definition to include email and department
+type AuthorAffiliation = {
+  author: SuggestedAuthor;
+  institution: SuggestedInstitution;
+  isCorrespondingAuthor: boolean;
+  email?: string;
+  department?: string;
+};
+
 const PaperVersionAuthorsAndMetadataStep = ({
   authorsAndAffiliations,
   setAuthorsAndAffiliations,
 }: {
-  authorsAndAffiliations: Array<{
-    author: SuggestedAuthor;
-    institution: SuggestedInstitution;
-    isCorrespondingAuthor: boolean;
-  }>;
+  authorsAndAffiliations: Array<AuthorAffiliation>;
   setAuthorsAndAffiliations: Function;
 }) => {
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -50,6 +55,8 @@ const PaperVersionAuthorsAndMetadataStep = ({
     author,
     institution,
     isCorrespondingAuthor,
+    email,
+    department,
   }) => {
     setIsFormVisible(false);
     setAuthorsAndAffiliations([
@@ -58,6 +65,8 @@ const PaperVersionAuthorsAndMetadataStep = ({
         author,
         institution,
         isCorrespondingAuthor,
+        email,
+        department,
       },
     ]);
   };
@@ -99,7 +108,7 @@ const PaperVersionAuthorsAndMetadataStep = ({
                           (authorAndAffiliation.author.fullName || "")[0]}
                       </Avatar>
                       <div className={css(styles.authorName)}>
-                        {authorAndAffiliation.author.fullName}
+                        {authorAndAffiliation.author.fullName} - <div className={css(styles.email)}>{authorAndAffiliation.email}</div>
                       </div>
                     </div>
                     <div style={{ display: "flex", gap: 8 }}>
@@ -107,8 +116,15 @@ const PaperVersionAuthorsAndMetadataStep = ({
                         icon={faBuildingColumns}
                         style={{ width: 24 }}
                       />
-                      <div className={css(styles.institutionName)}>
-                        {authorAndAffiliation.institution.name}
+                      <div>
+                        <div className={css(styles.institutionName)}>
+                          {authorAndAffiliation.institution.name}
+                        </div>
+                        {authorAndAffiliation.department && (
+                          <div className={css(styles.departmentName)}>
+                            Department: {authorAndAffiliation.department}
+                          </div>
+                        )}
                       </div>
                     </div>
                     {authorAndAffiliation.isCorrespondingAuthor && (
@@ -310,6 +326,9 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: 15,
     marginBottom: 4,
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
   },
   institutionName: {
     color: colors.BLACK(0.6),
@@ -370,6 +389,14 @@ const styles = StyleSheet.create({
   },
   flexGrow: {
     flex: 1,
+  },
+  departmentName: {
+    color: colors.BLACK(0.5),
+    fontSize: 13,
+  },
+  email: {
+    color: colors.BLACK(0.6),
+    fontSize: 13,
   },
 });
 

@@ -64,6 +64,8 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
       author: SuggestedAuthor;
       institution: SuggestedInstitution;
       isCorrespondingAuthor: boolean;
+      email?: string;
+      department?: string;
     }>
   >([]);
 
