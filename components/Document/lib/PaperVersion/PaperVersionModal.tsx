@@ -21,6 +21,7 @@ import {
 import VerifyIdentityBreadcrumbs, {
   ProgressStepperStep,
 } from "~/components/shared/ProgressStepper";
+import PaperVersionDeclarationStep from "./PaperVersionDeclarationStep";
 
 interface Args {
   isOpen: boolean;
@@ -40,8 +41,13 @@ const stepperSteps: ProgressStepperStep[] = [
     value: "AUTHORS_AND_METADATA",
   },
   {
-    title: "Preview",
+    title: "Declarations",
     number: 3,
+    value: "DECLARATION",
+  },
+  {
+    title: "Preview",
+    number: 4,
     value: "PREVIEW",
   },
 ];
@@ -50,7 +56,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
   const alert = useAlert();
 
   // General State
-  const [step, setStep] = useState<STEP>("AUTHORS_AND_METADATA");
+  const [step, setStep] = useState<STEP>("DECLARATION");
   const [latestPaper, setLatestPaper] = useState<Paper | null>(null);
 
   // Form state
@@ -72,7 +78,14 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
   // File upload state
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<Error | null>(null);
-console.log('uploadedFileUrl', uploadedFileUrl)
+
+  // License state
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedLicense, setAcceptedLicense] = useState(false);
+  const [acceptedAuthorship, setAcceptedAuthorship] = useState(false);
+  const [acceptedOriginality, setAcceptedOriginality] = useState(false);
+  const [acceptedPeerReview, setAcceptedPeerReview] = useState(false);
+
   useEffect(() => {
     setTitle(latestPaper?.title || null);
     setSelectedWorkType(latestPaper?.workType || "article");
@@ -172,6 +185,14 @@ console.log('uploadedFileUrl', uploadedFileUrl)
         return authorsAndAffiliations.length > 0;
       case "PREVIEW":
         return true;
+      case "DECLARATION":
+        return (
+          acceptedTerms &&
+          acceptedLicense &&
+          acceptedAuthorship &&
+          acceptedOriginality &&
+          acceptedPeerReview
+        );
       default:
         return false;
     }
@@ -220,6 +241,20 @@ console.log('uploadedFileUrl', uploadedFileUrl)
           />
         )}
         {step === "PREVIEW" && <PaperVersionPreviewStep paper={latestPaper} />}
+        {step === "DECLARATION" && (
+          <PaperVersionDeclarationStep
+            acceptedTerms={acceptedTerms}
+            setAcceptedTerms={setAcceptedTerms}
+            acceptedLicense={acceptedLicense}
+            setAcceptedLicense={setAcceptedLicense}
+            acceptedAuthorship={acceptedAuthorship}
+            setAcceptedAuthorship={setAcceptedAuthorship}
+            acceptedOriginality={acceptedOriginality}
+            setAcceptedOriginality={setAcceptedOriginality}
+            acceptedPeerReview={acceptedPeerReview}
+            setAcceptedPeerReview={setAcceptedPeerReview}
+          />
+        )}
       </div>
 
       <div

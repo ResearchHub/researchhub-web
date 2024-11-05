@@ -28,6 +28,7 @@ const FormFileUpload = ({
   const [isUploading, setIsUploading] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
 
+  // TODO: Possibly extract into a hook
   const uploadFile = async (file: File) => {
     try {
       setIsUploading(true);
