@@ -8,47 +8,51 @@ import { useCallback, useMemo } from 'react';
 
 const editors = [
     {
-      name: "Sam Monic",
-      role: "Editor in Chief",
-      bio: "Dr. Thompson's research focuses on climate science and environmental modeling. She has contributed to major IPCC reports and leads several international research collaborations.",
-      image: "/static/EinsteinAvatar.png",
+      name: "Dr. Maulik M Dhandha, MD FAAD",
+      role: "Editor in Chief (Interim)",
+      bio: "Dr. Maulik Dhandha's research centers on dermatology, focusing on skin cancer, inflammatory skin disorders, and immune-related skin conditions. His work includes high-risk factors for cutaneous squamous cell carcinoma and immunoglobulin roles in pemphigus vulgaris.",
+      image: "/static/editorial-board/MaulikDhandha.jpeg",
+      authorId: "931964",
       socialLinks: {
-        email: "hello@researchhub.com",
-        twitter: "https://twitter.com/sammonic",
-        scholar: "https://scholar.google.com/sammonic"
+        email: "maulik.editor@researchhub.foundation",
+        twitter: "https://x.com/DhandhaMaulik",
+        scholar: "https://scholar.google.com/citations?user=M2JZCWMAAAAJ&hl=en"
       }
     },
     {
-      name: "Elena Rodriguez",
+      name: "Dr. Emilio Merheb, PhD",
       role: "Associate Editor",
-      bio: "Dr. Rodriguez specializes in molecular biology and genetics. Her groundbreaking research on CRISPR applications has been featured in Nature and Science journals.",
-      image: "/static/EinsteinAvatar.png",
+      bio: "Dr. Emilio Merheb is an Instructor at Icahn School of Medicine at Mount Sinai, specializes in endocrinology, metabolism, oncology, and molecular biology. His research on neurodegeneration, islet biology, and β-cell therapies appears in top journals like Cell Metabolism, PNAS, and eLife.",
+      image: "/static/editorial-board/EmilioMerheb.jpeg",
+      authorId: "1872316",
       socialLinks: {
-        email: "hello@researchhub.com",
-        twitter: "https://twitter.com/elenarod",
-        scholar: "https://scholar.google.com/elenarod"
+        email: "emilio.editor@researchhub.foundation",
+        twitter: "https://www.linkedin.com/in/emilio-merheb-ph-d-29ba10154/",
+        scholar: "https://scholar.google.com/citations?user=MY7E-6QAAAAJ&hl=en"
       }
     },
     {
-      name: "James Chen",
+      name: "Dr. Attila Karsi",
       role: "Associate Editor",
-      bio: "Professor Chen leads the Quantum Computing Initiative at MIT. His work bridges the gap between theoretical physics and practical computing applications.",
-      image: "/static/EinsteinAvatar.png",
+      bio: "Dr. Attila Karsi earned MSc and PhD degrees from Auburn University. His education and research provided him with diverse experiences in genetics and genomics. Later, he worked as a postdoctoral researcher at USDA and Mississippi State University. He is a tenured professor in the College of Veterinary Medicine at Mississippi State University, and his research involves bacterial pathogenesis, host-pathogen interactions, and vaccine development.",
+      image: "/static/editorial-board/AttilaKarsi.jpeg",
+      authorId: "984218",
       socialLinks: {
-        email: "hello@researchhub.com",
-        twitter: "https://twitter.com/jameschen",
-        scholar: "https://scholar.google.com/jchen"
+        email: "attila.editor@researchhub.foundation",
+        twitter: "https://www.linkedin.com/in/attilakarsi/",
+        scholar: "https://scholar.google.com/citations?user=kkhhBZgAAAAJ&hl=en"
       }
     },
     {
-      name: "Sarah Thompson",
+      name: "Interested in joining as an Editor?",
       role: "Associate Editor",
-      bio: "Dr. Thompson's research focuses on climate science and environmental modeling. She has contributed to major IPCC reports and leads several international research collaborations.",
+      bio: "If you're interested in joining the Editorial Board, please apply here by emailing maulik.editor@researchhub.foundation. Relevant qualifications include a PhD, a strong publication record, and a passion for driving scientific progress through innovative peer review systems.",
       image: "/static/EinsteinAvatar.png",
+      authorId: "1",
       socialLinks: {
-        email: "hello@researchhub.com",
-        twitter: "https://twitter.com/sarahthompson",
-        scholar: "https://scholar.google.com/sthompson"
+        email: "maulik.editor@researchhub.foundation",
+        twitter: "https://twitter.com/researchhub",
+        scholar: "https://scholar.google.com/citations?user=M2JZCWMAAAAJ&hl=en"
       }
     }
 ];
@@ -78,6 +82,10 @@ const EditorialBoardSection = () => {
 
 // 2. Split into smaller components for better re-render control
 const EditorCard = ({ editor }) => {
+  const handleProfileClick = useCallback(() => {
+    window.location.href = `./author/${editor.authorId}`;
+  }, [editor.authorId]);
+
   // Memoize social links since they're static per editor
   const socialLinks = useMemo(() => (
     <div className={css(styles.socialLinks)}>
@@ -104,12 +112,20 @@ const EditorCard = ({ editor }) => {
             src={editor.image} 
             className={css(styles.editorAvatar)} 
             alt={editor.name}
+            onClick={handleProfileClick}
+            role="button"
           />
           {socialLinks}
         </div>
         <div className={css(styles.editorContent)}>
           <div className={css(styles.editorInfo)}>
-            <h3 className={css(styles.editorName)}>{editor.name}</h3>
+            <h3 
+              className={css(styles.editorName, styles.clickable)}
+              onClick={handleProfileClick}
+              role="button"
+            >
+              {editor.name}
+            </h3>
             <p className={css(styles.editorRole)}>{editor.role}</p>
           </div>
           <hr className={css(styles.divider)} />
@@ -231,10 +247,15 @@ const styles = StyleSheet.create({
     border: "1px solid rgba(255, 255, 255, 0.8)",
     background: "#3971FF",
     flexShrink: 0,
+    cursor: "pointer",
+    transition: "transform 0.2s ease",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: 80,
       height: 80,
     },
+    ":hover": {
+      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+    }
   },
   editorContent: {
     flex: 1,
@@ -250,6 +271,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: "24px",
     marginBottom: 8,
+    position: "relative",
+    display: "inline-block",
+    transition: "all 0.2s ease",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 16,
       lineHeight: "20px",
@@ -335,6 +359,16 @@ const styles = StyleSheet.create({
       alignItems: "center",
       marginBottom: 40,
     },
+  },
+  clickable: {
+    cursor: "pointer",
+    ":hover": {
+      transform: "scale(1.02)",
+      color: "rgba(255, 255, 255, 0.95)",
+      textDecoration: "underline",
+      textUnderlineOffset: "4px",
+      textDecorationThickness: "1px",
+    }
   },
 });
 

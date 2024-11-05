@@ -1,14 +1,19 @@
 import { css, StyleSheet } from "aphrodite";
-import { HowItWorks } from "~/components/ResearchHub/HowItWorks";
+import { HowItWorks } from "~/components/ResearchHubJournal/HowItWorks";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faUsers, faFileCheck, faFilePlus, faBolt } from "@fortawesome/pro-solid-svg-icons";
-import EditorialBoardSection from "~/components/ResearchHub/EditorialBoard";
+import { faClock, faUsers, faFileCheck, faFilePlus, faBolt, faStar } from "@fortawesome/pro-solid-svg-icons";
+import EditorialBoardSection from "~/components/ResearchHubJournal/EditorialBoard";
 import RhJournalIcon from "~/components/Icons/RhJournalIcon";
-import ScrollingHubTags from "~/components/ResearchHub/ScrollingHubTags";
+import ScrollingHubTags from "~/components/ResearchHubJournal/ScrollingHubTags";
+import { useState } from "react";
+import { useRouter } from 'next/router';
+import JournalLayout from "~/components/ResearchHubJournal/JournalLayout";
 
 function ResearchHubJournalPage(): JSX.Element {
+  const router = useRouter();
+
   const handleEarlySubmit = () => {
     // TODO: Implement toast notification
     console.log("Early submission recorded");
@@ -36,108 +41,110 @@ function ResearchHubJournalPage(): JSX.Element {
   );
 
   return (
-    <div className={css(styles.container)}>
-      {/* Hero Section */}
-      <div className={css(styles.hero)}>
-        <div className={css(styles.heroContent)}>
-          <div className={css(styles.heroTagWrapper)}>
-            <div className={css(styles.heroTag)}>Coming Soon</div>
+    <JournalLayout>
+      <div className={css(styles.container)}>
+        {/* Hero Section */}
+        <div className={css(styles.hero)}>
+          <div className={css(styles.heroContent)}>
+            <div className={css(styles.heroTagWrapper)}>
+              <div className={css(styles.heroTag)}>Coming Soon</div>
+            </div>
+            
+            <div className={css(styles.titleContainer)}>
+              <RhJournalIcon width={65} height={65} color={colors.WHITE()} />
+              <h1 className={css(styles.heroTitle)}>ResearchHub Journal</h1>
+            </div>
+            
+            <p className={css(styles.heroDescription)}>
+              APC's should go to scientists - <span className={css(styles.underlineOnHover)}>that's why we pay our peer reviewers</span>
+            </p>
+
+            <div className={css(styles.heroButtons)}>
+              <button 
+                onClick={handleEarlySubmit}
+                className={css(styles.primaryButton)}
+              >
+                Submit Early
+              </button>
+              <button 
+                onClick={scrollToHowItWorks}
+                className={css(styles.secondaryButton)}
+              >
+                Learn More
+              </button>
+            </div>
+
+            <ScrollingHubTags />
+
+            <div className={css(styles.featureList)}>
+              <FeatureItem text="2 days to initial editorial decision" />
+            </div>
           </div>
-          
-          <div className={css(styles.titleContainer)}>
-            <RhJournalIcon width={65} height={65} color={colors.WHITE()} />
-            <h1 className={css(styles.heroTitle)}>ResearchHub Journal</h1>
-          </div>
-          
-          <p className={css(styles.heroDescription)}>
-            APC's should go to scientists - <span className={css(styles.underlineOnHover)}>that's why we pay our peer reviewers</span>
+        </div>
+
+        {/* Features Section */}
+        <div className={css(styles.featuresSection)}>
+          <h2 className={css(styles.featuresTitle)}>About this journal</h2>
+          <p className={css(styles.featuresDescription)}>
+            The ResearchHub Journal aims to accelerate the pace of science through novel 
+            incentive structures that reward authors for reproducible research and compensate 
+            peer reviewers for their expertise. Authors receive rapid, constructive feedback 
+            through 2+ expert open peer reviews.
           </p>
-
-          <div className={css(styles.heroButtons)}>
-            <button 
-              onClick={handleEarlySubmit}
-              className={css(styles.primaryButton)}
-            >
-              Submit Early
-            </button>
-            <button 
-              onClick={scrollToHowItWorks}
-              className={css(styles.secondaryButton)}
-            >
-              Learn More
-            </button>
-          </div>
-
-          <ScrollingHubTags />
-
-          <div className={css(styles.featureList)}>
-            <FeatureItem text="2 days to initial editorial decision" />
-          </div>
-        </div>
-      </div>
-
-      {/* Features Section */}
-      <div className={css(styles.featuresSection)}>
-        <h2 className={css(styles.featuresTitle)}>About this journal</h2>
-        <p className={css(styles.featuresDescription)}>
-          The ResearchHub Journal aims to accelerate the pace of science through novel 
-          incentive structures that reward authors for reproducible research and compensate 
-          peer reviewers for their expertise. Authors receive rapid, constructive feedback 
-          through 2+ expert open peer reviews.
-        </p>
-        
-        <div className={css(styles.featuresGrid)}>
-          <div className={css(styles.featureCard)}>
-            <FontAwesomeIcon icon={faFilePlus} className={css(styles.featureIcon)} />
-            <div className={css(styles.featureContent)}>
-              <h3 className={css(styles.featureTitle)}>Preprint Publication</h3>
-              <p className={css(styles.featureDescription)}>
-                Immediate early sharing of research, at no cost.
-              </p>
+          
+          <div className={css(styles.featuresGrid)}>
+            <div className={css(styles.featureCard)}>
+              <FontAwesomeIcon icon={faFilePlus} className={css(styles.featureIcon)} />
+              <div className={css(styles.featureContent)}>
+                <h3 className={css(styles.featureTitle)}>Preprint Publication</h3>
+                <p className={css(styles.featureDescription)}>
+                  Immediate early sharing of research, at no cost.
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div className={css(styles.featureCard)}>
-            <FontAwesomeIcon icon={faBolt} className={css(styles.featureIcon)} />
-            <div className={css(styles.featureContent)}>
-              <h3 className={css(styles.featureTitle)}>Rapid Turnaround</h3>
-              <ul className={css(styles.bulletList)}>
-                <li>2 days: Editorial decision</li>
-                <li>21 days: Publication decision</li>
-              </ul>
+            <div className={css(styles.featureCard)}>
+              <FontAwesomeIcon icon={faBolt} className={css(styles.featureIcon)} />
+              <div className={css(styles.featureContent)}>
+                <h3 className={css(styles.featureTitle)}>Rapid Turnaround</h3>
+                <ul className={css(styles.bulletList)}>
+                  <li>2 days: Editorial decision</li>
+                  <li>21 days: Publication decision</li>
+                </ul>
+              </div>
             </div>
-          </div>
 
-          <div className={css(styles.featureCard)}>
-            <FontAwesomeIcon icon={faUsers} className={css(styles.featureIcon)} />
-            <div className={css(styles.featureContent)}>
-              <h3 className={css(styles.featureTitle)}>Paid Peer Review</h3>
-              <p className={css(styles.featureDescription)}>
-                $150 per review - rewarding all contributors in the scientific process
-              </p>
+            <div className={css(styles.featureCard)}>
+              <FontAwesomeIcon icon={faStar} className={css(styles.featureIcon)} />
+              <div className={css(styles.featureContent)}>
+                <h3 className={css(styles.featureTitle)}>Paid Peer Review</h3>
+                <p className={css(styles.featureDescription)}>
+                  $150 per review, because researchers
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div className={css(styles.featureCard)}>
-            <FontAwesomeIcon icon={faFileCheck} className={css(styles.featureIcon)} />
-            <div className={css(styles.featureContent)}>
-              <h3 className={css(styles.featureTitle)}>Constructive Process</h3>
-              <p className={css(styles.featureDescription)}>
-                No rejections - only collaborative improvement
-              </p>
+            <div className={css(styles.featureCard)}>
+              <FontAwesomeIcon icon={faUsers} className={css(styles.featureIcon)} />
+              <div className={css(styles.featureContent)}>
+                <h3 className={css(styles.featureTitle)}>Constructive Process</h3>
+                <p className={css(styles.featureDescription)}>
+                  No rejections - only collaborative improvement
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Journal Info Section */}
-      <EditorialBoardSection />
+        {/* Journal Info Section */}
+        <EditorialBoardSection />
 
-      {/* How it Works Section */}
-      <div id="how-it-works" className={css(styles.subtleGradientSection)}>
-        <HowItWorks />
+        {/* How it Works Section */}
+        <div id="how-it-works" className={css(styles.subtleGradientSection)}>
+          <HowItWorks />
+        </div>
       </div>
-    </div>
+    </JournalLayout>
   );
 }
 

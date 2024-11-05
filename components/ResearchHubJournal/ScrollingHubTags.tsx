@@ -5,32 +5,45 @@ import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 
 const HUBS = [
-  "Neuroscience",
-  "Genetics",
-  "Immunology",
-  "Biophysics",
-  "Proteomics",
-  "Oncology",
-  "Cardiology",
-  "Genomics",
-  "Pathology",
-  "Virology",
-  "Metabolism",
   "Biochemistry",
-  "Bioinformatics",
+  "Genetics",
+  "Molecular Biology",
+  "Cancer Research",
+  "Molecular Medicine",
+  "Structural Biology",
+  "Biophysics",
+  "Biotechnology",
+  "Endocrinology",
+  "Clinical Biochemistry",
+  "Physiology",
+  "Developmental Biology",
+  "Immunology",
+  "Virology",
+  "Parasitology",
   "Microbiology",
+  "Applied Microbiology and Biotechnology",
+  "Cognitive Neuroscience",
+  "Cellular and Molecular Neuroscience",
+  "Sensory Systems",
+  "Endocrine and Autonomic Systems",
+  "Behavioral Neuroscience",
+  "Neurology",
+  "Developmental Neuroscience",
+  "Biological Psychiatry",
+  "Pharmaceutical Science",
   "Pharmacology",
   "Toxicology",
-  "Physiology",
-  "Cytology",
-  "Histology",
-  "Embryology",
-  "Biomechanics",
-  "Biotechnology",
-  "Nanomedicine",
-  "Regeneration",
-  "Bioengineering",
+  "Drug Discovery"
 ];
+
+const slugify = (text: string): string => {
+  return text
+    .toLowerCase()
+    .replace(/\s+/g, '-')     // Replace spaces with hyphens
+    .replace(/[^\w\-]+/g, '') // Remove all non-word chars (except hyphens)
+    .replace(/\-\-+/g, '-')   // Replace multiple hyphens with single hyphen
+    .trim();                  // Trim hyphens from start and end
+};
 
 export default function ScrollingHubTags(): JSX.Element {
   const [offset, setOffset] = useState(0);
@@ -72,7 +85,12 @@ export default function ScrollingHubTags(): JSX.Element {
         >
           {[...HUBS, ...HUBS].map((name, i) => (
             <div key={i} className={css(styles.hubTagWrapper)}>
-              <HubTag hub={{ name, slug: name.toLowerCase() }} />
+              <HubTag 
+                hub={{ 
+                  name, 
+                  slug: slugify(name)
+                }} 
+              />
             </div>
           ))}
         </div>
@@ -124,7 +142,7 @@ const styles = StyleSheet.create({
   },
   hubTagWrapper: {
     display: "inline-block",
-    background: colors.WHITE(0.65),
+    background: colors.WHITE(0.75),
     borderRadius: 13,
     transition: "all 0.2s ease",
     ":hover": {
