@@ -16,6 +16,7 @@ import {
   faChevronDown,
   faBuildingColumns,
   faTrash,
+  faUserPlus,
 } from "@fortawesome/pro-solid-svg-icons";
 import Avatar from "@mui/material/Avatar";
 import { isEmpty } from "~/config/utils/nullchecks";
@@ -89,6 +90,14 @@ const PaperVersionAuthorsAndMetadataStep = ({
           <div className={css(styles.authorsList)}>
             {authorsAndAffiliations.length === 0 ? (
               <div className={css(styles.emptyState)}>
+                <FontAwesomeIcon 
+                  icon={faUserPlus} 
+                  style={{ 
+                    fontSize: 24, 
+                    marginBottom: 16,
+                    color: colors.BLACK(0.6)
+                  }} 
+                />
                 <div className={css(styles.emptyStateText)}>
                   No authors added yet. Click the button below to add authors and their affiliations.
                 </div>

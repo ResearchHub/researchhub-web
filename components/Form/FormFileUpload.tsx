@@ -74,11 +74,9 @@ const FormFileUpload = ({
         throw new Error("Failed to upload file");
       }
 
-      // Clean the presigned URL by removing the query parameters
-      const absoluteUrl = presigned_url.split("?")[0];
-
-      console.log("presigned_url", presigned_url);
-      console.log("absoluteUrl", absoluteUrl);
+      // Extract the base URL without query parameters and replace the domain
+      const path = presigned_url.split("?")[0].split(".com/")[1];
+      const absoluteUrl = `https://${process.env.STORAGE_DOMAIN}/${path}`;
 
       setFileName(file.name);
       onUploadComplete(object_key, absoluteUrl);

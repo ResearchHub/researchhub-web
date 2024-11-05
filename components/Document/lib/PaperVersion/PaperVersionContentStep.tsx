@@ -1,8 +1,5 @@
-import { useEffect, useState } from "react";
-import BaseModal from "~/components/Modals/BaseModal";
 import { StyleSheet, css } from "aphrodite";
-import { fetchDocumentByType } from "../fetchDocumentByType";
-import { DocumentVersion, Paper, parsePaper, WORK_TYPE } from "../types";
+import { WORK_TYPE } from "../types";
 import FormInput from "~/components/Form/FormInput";
 import FormSelect from "~/components/Form/FormSelect";
 import FormTextArea from "~/components/Form/FormTextArea";
@@ -10,11 +7,8 @@ import HubSelectDropdown, {
   selectDropdownStyles,
 } from "~/components/Hubs/HubSelectDropdown";
 import { Hub } from "~/config/types/hub";
-import Button from "~/components/Form/Button";
 import FormFileUpload from "~/components/Form/FormFileUpload";
 import colors from "~/config/themes/colors";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle } from "@fortawesome/pro-light-svg-icons";
 
 
 export const articleTypeOptions: Array<{ value: WORK_TYPE; label: string }> = [

@@ -45,6 +45,7 @@ const nextConfig = {
     GA_TRACKING_ID: process.env.GA_TRACKING_ID,
     WITH_PERSONA_ENVIRONMENT_ID: process.env.WITH_PERSONA_ENVIRONMENT_ID,
     WITH_PERSONA_TEMPLATE_ID: process.env.WITH_PERSONA_TEMPLATE_ID,
+    STORAGE_DOMAIN: process.env.STORAGE_DOMAIN,
   },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // Load Markdown Configuration

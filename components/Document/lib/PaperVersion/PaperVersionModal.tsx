@@ -72,7 +72,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
   // File upload state
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<Error | null>(null);
-
+console.log('uploadedFileUrl', uploadedFileUrl)
   useEffect(() => {
     setTitle(latestPaper?.title || null);
     setSelectedWorkType(latestPaper?.workType || "article");
