@@ -56,7 +56,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
   const alert = useAlert();
 
   // General State
-  const [step, setStep] = useState<STEP>("DECLARATION");
+  const [step, setStep] = useState<STEP>("PREVIEW");
   const [latestPaper, setLatestPaper] = useState<Paper | null>(null);
 
   // Form state
@@ -84,7 +84,9 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
   const [acceptedLicense, setAcceptedLicense] = useState(false);
   const [acceptedAuthorship, setAcceptedAuthorship] = useState(false);
   const [acceptedOriginality, setAcceptedOriginality] = useState(false);
-  const [acceptedPeerReview, setAcceptedPeerReview] = useState(false);
+
+  // Add to form state section
+  const [changeDescription, setChangeDescription] = useState<string>("");
 
   useEffect(() => {
     setTitle(latestPaper?.title || null);
@@ -152,7 +154,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
         abstract,
         previousPaperId: latestPaper?.id,
         hubIds: selectedHubs.map((hub) => hub.id),
-        changeDescription: "New version",
+        changeDescription,
         authors: authorsAndAffiliations.map((authorAndAffiliation) => ({
           id: authorAndAffiliation.author.id,
           author_position: "middle",
@@ -190,8 +192,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
           acceptedTerms &&
           acceptedLicense &&
           acceptedAuthorship &&
-          acceptedOriginality &&
-          acceptedPeerReview
+          acceptedOriginality
         );
       default:
         return false;
@@ -240,7 +241,17 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
             setAuthorsAndAffiliations={setAuthorsAndAffiliations}
           />
         )}
-        {step === "PREVIEW" && <PaperVersionPreviewStep paper={latestPaper} />}
+        {step === "PREVIEW" && (
+          <PaperVersionPreviewStep 
+            paper={latestPaper}
+            title={title}
+            abstract={abstract}
+            selectedHubs={selectedHubs}
+            authorsAndAffiliations={authorsAndAffiliations}
+            changeDescription={changeDescription}
+            setChangeDescription={setChangeDescription}
+          />
+        )}
         {step === "DECLARATION" && (
           <PaperVersionDeclarationStep
             acceptedTerms={acceptedTerms}
@@ -251,8 +262,6 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
             setAcceptedAuthorship={setAcceptedAuthorship}
             acceptedOriginality={acceptedOriginality}
             setAcceptedOriginality={setAcceptedOriginality}
-            acceptedPeerReview={acceptedPeerReview}
-            setAcceptedPeerReview={setAcceptedPeerReview}
           />
         )}
       </div>

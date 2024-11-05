@@ -11,8 +11,6 @@ export type LicenseStepProps = {
   setAcceptedAuthorship: (value: boolean) => void;
   acceptedOriginality: boolean;
   setAcceptedOriginality: (value: boolean) => void;
-  acceptedPeerReview: boolean;
-  setAcceptedPeerReview: (value: boolean) => void;
 };
 
 const PaperVersionDeclarationStep = ({
@@ -24,8 +22,6 @@ const PaperVersionDeclarationStep = ({
   setAcceptedAuthorship,
   acceptedOriginality,
   setAcceptedOriginality,
-  acceptedPeerReview,
-  setAcceptedPeerReview,
 }: LicenseStepProps) => {
   return (
     <div className={css(styles.container)}>
@@ -53,6 +49,7 @@ const PaperVersionDeclarationStep = ({
                 target="_blank"
                 rel="noopener noreferrer"
               >Terms and Conditions</a>
+              {" "}for publication
             </span>
           }
           sx={{ 
@@ -119,25 +116,6 @@ const PaperVersionDeclarationStep = ({
             />
           }
           label="I confirm that this manuscript is our original work, does not infringe on any existing copyrights or violate any laws including defamation, privacy, and data protection regulations, and that we as authors have obtained all necessary permissions for any third-party content included in the manuscript (e.g., figures, tables)."
-          sx={{ 
-            alignItems: 'flex-start',
-            '.MuiFormControlLabel-label': {
-              marginTop: '9px'
-            }
-          }}
-        />
-      </div>
-
-      <h3 className={css(styles.sectionTitle)}>Public Peer Reviews</h3>
-      <div className={css(styles.checkboxGroup)}>
-        <FormControlLabel
-          control={
-            <Checkbox 
-              checked={acceptedPeerReview}
-              onChange={(e) => setAcceptedPeerReview(e.target.checked)}
-            />
-          }
-          label="I and my co-authors acknowledge that all peer reviews will be openly published alongside our Article."
           sx={{ 
             alignItems: 'flex-start',
             '.MuiFormControlLabel-label': {
