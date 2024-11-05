@@ -113,7 +113,7 @@ export const parseInstitutionSuggestion = (raw: any): SuggestedInstitution => {
 export const parseAuthorSuggestion = (raw: any): SuggestedAuthor => {
   return {
     id: raw.id,
-    fullName: raw.full_name,
+    fullName: raw.full_name || (raw.first_name + " " + raw.last_name) || "",
     profileImage: raw.profile_image || null,
     institutions: raw.institutions,
     education: raw.education,

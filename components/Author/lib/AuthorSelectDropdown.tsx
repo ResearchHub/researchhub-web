@@ -1,13 +1,11 @@
-import { Hub } from "~/config/types/hub";
-import Select, { ValueType, OptionTypeBase, components } from "react-select";
+import { components } from "react-select";
 import debounce from "lodash/debounce";
 import { useCallback, useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import FormSelect from "~/components/Form/FormSelect";
 import { fetchAuthorSuggestions } from "~/components/SearchSuggestion/lib/api";
-import { SuggestedAuthor } from "~/components/SearchSuggestion/lib/types";
-import HubTag, { HubBadge } from "~/components/Hubs/HubTag";
+import { parseAuthorSuggestion, SuggestedAuthor } from "~/components/SearchSuggestion/lib/types";
 import Avatar from "@mui/material/Avatar";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,6 +17,7 @@ import {
 import ALink, { themes } from "~/components/ALink";
 import { faAddressCard } from "@fortawesome/pro-regular-svg-icons";
 import { truncateText } from "~/config/utils/string";
+import { createAuthor } from "./api";
 
 interface Props {
   selectedAuthor: {
@@ -59,9 +58,6 @@ export const selectDropdownStyles = {
   menuList: {
     display: "flex",
     flexDirection: "column",
-    // flexWrap: "wrap",
-    // columnGap: "10px",
-    // padding: "7px 7px 0 7px",
   },
   valueContainer: {
     padding: "7px 7px 7px 4px",
@@ -70,7 +66,7 @@ export const selectDropdownStyles = {
 
 const SingleValue: React.FC<any> = (props) => {
   const author = props.data.author;
-
+console.log('props', props)
   if (!author) return null;
 
   return (
@@ -90,7 +86,7 @@ const SingleValue: React.FC<any> = (props) => {
   );
 };
 
-const TagOnlyOption: React.FC<any> = (props) => {
+const AuthorOption: React.FC<any> = (props) => {
   const author: SuggestedAuthor = props?.data?.author;
   const schools =
     (author.education?.[0] ? author.education?.[0] + ", " : "") +
@@ -152,6 +148,17 @@ const TagOnlyOption: React.FC<any> = (props) => {
   );
 };
 
+const CreateOption: React.FC<any> = (props) => {
+  return (
+    <components.Option {...props}>
+      <div className={css(formStyles.createOption)}>
+        <FontAwesomeIcon icon={faAddressCard} style={{ color: colors.NEW_BLUE() }} />
+        <span>Create new author: "{props.data.inputValue}"</span>
+      </div>
+    </components.Option>
+  );
+};
+
 const AuthorSelectDropdown = ({
   selectedAuthor = null,
   onChange,
@@ -165,6 +172,7 @@ const AuthorSelectDropdown = ({
   const [suggestedAuthors, setSuggestedAuthors] = useState<SuggestedAuthor[]>(
     []
   );
+  const [inputValue, setInputValue] = useState("");
 
   const handleSuggestedAuthorInputChange = async (value) => {
     if (value.length >= 3) {
@@ -173,18 +181,58 @@ const AuthorSelectDropdown = ({
     }
   };
 
+  const handleChange = async (name, selected) => {
+    if (selected?.isCreateNew) {
+      const [firstName, ...lastNameParts] = selected.inputValue.split(' ');
+      const lastName = lastNameParts.join(' ');
+      
+      try {
+        const newAuthor:any = await createAuthor({ firstName, lastName });
+        const parsedNewAuthor = parseAuthorSuggestion(newAuthor);
+
+        // Convert the new author to the expected format used in FormSelect
+        const formattedAuthor = {
+          label: `${firstName} ${lastName}`,
+          value: newAuthor.id,
+          author: parsedNewAuthor,
+        };
+
+        onChange(name, formattedAuthor);
+      } catch (error) {
+        console.error('Failed to create author:', error);
+      }
+    } else {
+      onChange(name, selected);
+    }
+  };
+
   const debouncedHandleInputChange = useCallback(
     debounce(handleSuggestedAuthorInputChange, 250),
     [suggestedAuthors]
   );
 
-  const formattedSuggestions = suggestedAuthors.map((author) => {
-    return {
-      label: author.fullName,
-      value: author.id,
-      author: author,
-    };
-  });
+  const formattedSuggestions = suggestedAuthors.map((author) => ({
+    label: author.fullName,
+    value: author.id,
+    author: author,
+  }));
+
+  // Add create option when no matches found
+  const getOptions = (inputValue: string) => {
+    let options = [...formattedSuggestions];
+    
+    if (inputValue?.length >= 3) {
+      options.push({
+        label: `Create new author: "${inputValue}"`,
+        value: 'create_new',
+        // @ts-ignore
+        inputValue,
+        isCreateNew: true,
+      });
+    }
+    
+    return options;
+  };
 
   return (
     <div>
@@ -211,14 +259,16 @@ const AuthorSelectDropdown = ({
             ? "No authors found"
             : "Type to search authors";
         }}
-        onInputChange={(field, value) => {
-          debouncedHandleInputChange(field, value);
+        onInputChange={(value) => {
+          setInputValue(value);
+          debouncedHandleInputChange(value);
         }}
-        onChange={(name, values) => {
-          onChange(name, values);
-        }}
+        onChange={handleChange}
         selectComponents={{
-          Option: TagOnlyOption,
+          Option: (props) => 
+            props.data.isCreateNew ? 
+              <CreateOption {...props} /> : 
+              <AuthorOption {...props} />,
           SingleValue,
           IndicatorsContainer: () => null,
         }}
@@ -226,9 +276,9 @@ const AuthorSelectDropdown = ({
           display: "flex",
           flexWrap: "wrap",
         }}
-        options={formattedSuggestions}
-        placeholder={placeholder}
         value={selectedAuthor}
+        options={getOptions(inputValue)}
+        placeholder={placeholder}
         menuPlacement={menuPlacement}
       />
     </div>
@@ -278,6 +328,14 @@ const formStyles = StyleSheet.create({
     color: colors.RED(),
     fontSize: 12,
     marginTop: 4,
+  },
+  createOption: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+    fontSize: 14,
+    color: colors.NEW_BLUE(),
+    fontWeight: 500,
   },
 });
 
