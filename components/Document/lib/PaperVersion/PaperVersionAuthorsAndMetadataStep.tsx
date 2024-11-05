@@ -15,6 +15,7 @@ import {
   faChevronUp,
   faChevronDown,
   faBuildingColumns,
+  faTrash,
 } from "@fortawesome/pro-solid-svg-icons";
 import Avatar from "@mui/material/Avatar";
 import { isEmpty } from "~/config/utils/nullchecks";
@@ -69,6 +70,11 @@ const PaperVersionAuthorsAndMetadataStep = ({
         department,
       },
     ]);
+  };
+
+  const deleteAuthor = (indexToDelete: number) => {
+    const newAuthors = authorsAndAffiliations.filter((_, index) => index !== indexToDelete);
+    setAuthorsAndAffiliations(newAuthors);
   };
 
   return (
@@ -133,28 +139,38 @@ const PaperVersionAuthorsAndMetadataStep = ({
                       </div>
                     )}
                   </div>
-                  <div className={css(styles.arrowControls)}>
-                    <button
-                      className={css(
-                        styles.arrowButton,
-                        index === 0 && styles.arrowButtonDisabled
-                      )}
-                      onClick={() => moveAuthor(index, "up")}
-                      disabled={index === 0}
+                  <div className={css(styles.controls)}>
+                    <div className={css(styles.arrowControls)}>
+                      <button
+                        className={css(
+                          styles.arrowButton,
+                          index === 0 && styles.arrowButtonDisabled
+                        )}
+                        onClick={() => moveAuthor(index, "up")}
+                        disabled={index === 0}
+                      >
+                        <FontAwesomeIcon icon={faChevronUp} />
+                      </button>
+                      <button
+                        className={css(
+                          styles.arrowButton,
+                          index === authorsAndAffiliations.length - 1 &&
+                            styles.arrowButtonDisabled
+                        )}
+                        onClick={() => moveAuthor(index, "down")}
+                        disabled={index === authorsAndAffiliations.length - 1}
+                      >
+                        <FontAwesomeIcon icon={faChevronDown} />
+                      </button>
+                    </div>
+                    <Button
+                      variant="text"
+                      size="small"
+                      onClick={() => deleteAuthor(index)}
                     >
-                      <FontAwesomeIcon icon={faChevronUp} />
-                    </button>
-                    <button
-                      className={css(
-                        styles.arrowButton,
-                        index === authorsAndAffiliations.length - 1 &&
-                          styles.arrowButtonDisabled
-                      )}
-                      onClick={() => moveAuthor(index, "down")}
-                      disabled={index === authorsAndAffiliations.length - 1}
-                    >
-                      <FontAwesomeIcon icon={faChevronDown} />
-                    </button>
+                      <FontAwesomeIcon icon={faTrash} style={{ marginRight: 8 }} />
+                      Delete
+                    </Button>                    
                   </div>
                 </div>
               ))
@@ -308,13 +324,13 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   authorItem: {
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'column',
     padding: 16,
-    background: "white",
+    background: 'white',
     borderRadius: 4,
     border: `1px solid ${colors.GREY_LINE()}`,
-    transition: "all 0.2s ease",
+    transition: 'all 0.2s ease',
   },
   authorContent: {
     flex: 1,
@@ -342,9 +358,7 @@ const styles = StyleSheet.create({
   },
   arrowControls: {
     display: "flex",
-    flexDirection: "column",
-    gap: 4,
-    marginLeft: 16,
+    gap: 12,
   },
   arrowButton: {
     border: "none",
@@ -398,6 +412,16 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.6),
     fontSize: 13,
   },
+  controls: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 12,
+    borderTop: `1px solid ${colors.GREY_LINE()}`,
+    marginTop: 12,
+    paddingTop: 12,
+  },
+
 });
 
 export default PaperVersionAuthorsAndMetadataStep;
