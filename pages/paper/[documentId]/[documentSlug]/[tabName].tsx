@@ -1,6 +1,7 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import DocumentCommentsPage from "~/components/Document/pages/DocumentCommentsPage";
 import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps";
+import DocumentChangesPage from "~/components/Document/pages/DocumentChangesPage";
 
 interface Args {
   documentData?: any;
@@ -16,15 +17,30 @@ const TabPage: NextPage<Args> = ({
   errorCode,
   metadata,
 }) => {
-  return (
-    <DocumentCommentsPage
-      documentData={documentData}
-      documentType="paper"
-      metadata={metadata}
-      tabName={tabName}
-      errorCode={errorCode}
-    />
-  );
+
+  if (tabName === "changes") {
+    return (
+      <DocumentChangesPage
+        documentData={documentData}
+        documentType="paper"
+        tabName={tabName}
+        metadata={metadata}
+        errorCode={errorCode}
+      />
+    );
+  }
+  else {
+    return (
+      <DocumentCommentsPage
+        documentData={documentData}
+        documentType="paper"
+        metadata={metadata}
+        tabName={tabName}
+        errorCode={errorCode}
+      />
+    );
+  }
+
 };
 
 export const getStaticProps: GetStaticProps = async (ctx) => {

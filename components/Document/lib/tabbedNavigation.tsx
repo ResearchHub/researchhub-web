@@ -1,7 +1,7 @@
 import { NextRouter } from "next/router";
 import { PaperIcon, QuestionIcon } from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComments, faStar, faCircleCheck } from "@fortawesome/pro-solid-svg-icons";
+import { faComments, faStar, faCircleCheck, faClockRotateLeft } from "@fortawesome/pro-solid-svg-icons";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import { Tab } from "~/components/HorizontalTabBar";
 import colors from "~/config/themes/colors";
@@ -13,6 +13,11 @@ export const tabs: Array<Tab> = [
     label: "Conversation",
     value: "conversation",
   },
+  {
+    icon: <FontAwesomeIcon icon={faClockRotateLeft} />,
+    label: "Changes",
+    value: "changes",
+  },  
   {
     icon: (
       <ResearchCoinIcon
@@ -117,6 +122,10 @@ const withDocTypeTab = ({
   return [docTab, ...tabs];
 };
 
+const isResearchHubPaper = (document: GenericDocument) => {
+  return isPaper(document) && document.doi?.includes("ResearchHub");
+}
+
 const withPillContent = ({
   tabs,
   document,
@@ -126,6 +135,7 @@ const withPillContent = ({
   document: GenericDocument;
   metadata: DocumentMetadata;
 }) => {
+
   const finalTabs: Array<Tab> = [];
   for (let i = 0; i < tabs.length; i++) {
     const tab = tabs[i];
@@ -137,6 +147,11 @@ const withPillContent = ({
         ...tab,
         pillContent: metadata.discussionCount || undefined,
       });
+    } else if (tab.value === "changes") {
+      finalTabs.push({
+        ...tab,
+        pillContent: isPaper(document) && document.versions.length,
+      });      
     } else if (tab.value === "grants") {
       finalTabs.push({
         ...tab,

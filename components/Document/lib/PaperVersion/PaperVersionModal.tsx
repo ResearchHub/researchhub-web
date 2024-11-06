@@ -57,7 +57,7 @@ const stepperSteps: ProgressStepperStep[] = [
 const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
 
   // General State
-  const [step, setStep] = useState<STEP>("PREVIEW");
+  const [step, setStep] = useState<STEP>("CONTENT");
   const [latestPaper, setLatestPaper] = useState<Paper | null>(null);
 
   // Form state

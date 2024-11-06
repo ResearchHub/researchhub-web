@@ -15,13 +15,14 @@ interface Args {
 }
 
 const buildVersionOptions = (versions: DocumentVersion[]) => {
-  let options: Array<MenuOption> = versions.map((version) => {
+  const reversedVersions = versions.reverse();
+  let options: Array<MenuOption> = reversedVersions.map((version) => {
     return {
       group: "Select version",
       value: version.paperId,
       label: version.formattedLabel,
     };
-  }).reverse();
+  });
 
   options = [
     ...options,
@@ -49,7 +50,6 @@ const DocumentVersionSelector = ({ versions }: Args) => {
     versions.find(v => String(v.paperId) === String(currentPaperId)) || versions[0]
   );
   const [isNewVersionModalOpen, setIsNewVersionModalOpen] = useState(false);
-
 
   return (
     <div>
