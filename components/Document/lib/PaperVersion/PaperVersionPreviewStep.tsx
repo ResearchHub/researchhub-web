@@ -52,7 +52,7 @@ const PaperVersionPreviewStep = ({
 
       <div className={css(styles.section)}>
         <h4 className={css(styles.label)}>Abstract</h4>
-        <p>{abstract}</p>
+        <p style={{ fontSize: 14,}}>{abstract}</p>
       </div>
 
       <div className={css(styles.section)}>

@@ -145,7 +145,7 @@ const PaperVersionAuthorsAndMetadataStep = ({
                   className={css(styles.authorItem)}
                   style={{ position: 'relative' }}
                 >
-                  <div style={{ right: 0, top: 0, position: "absolute", fontWeight: 500, fontSize: 22, width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center", background: colors.LIGHTER_GREY() }}>
+                  <div className={css(styles.authorNumberBadge)}>
                     {index + 1}
                   </div>
                   <div className={css(styles.authorContent)}>
@@ -547,6 +547,19 @@ const styles = StyleSheet.create({
   infoIcon: {
     fontSize: 18,
     color: colors.BLACK(0.5),
+  },
+  authorNumberBadge: {
+    right: 0,
+    top: 0,
+    position: "absolute",
+    fontWeight: 500,
+    fontSize: 22,
+    width: 40,
+    height: 40,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: colors.LIGHTER_GREY(),
   },
 });
 

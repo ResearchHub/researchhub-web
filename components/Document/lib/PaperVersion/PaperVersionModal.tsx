@@ -13,7 +13,6 @@ import colors from "~/config/themes/colors";
 import PaperVersionPreviewStep from "./PaperVersionPreviewStep";
 import { createPaperAPI } from "../../api/createPaperAPI";
 import { Hub } from "~/config/types/hub";
-import { useAlert } from "react-alert";
 import {
   SuggestedAuthor,
   SuggestedInstitution,
@@ -23,6 +22,8 @@ import VerifyIdentityBreadcrumbs, {
 } from "~/components/shared/ProgressStepper";
 import PaperVersionDeclarationStep from "./PaperVersionDeclarationStep";
 import { CloseIcon } from "~/config/themes/icons";
+import { MessageActions } from "~/redux/message";
+const { setMessage, showMessage } = MessageActions;
 
 interface Args {
   isOpen: boolean;
@@ -54,7 +55,6 @@ const stepperSteps: ProgressStepperStep[] = [
 ];
 
 const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
-  const alert = useAlert();
 
   // General State
   const [step, setStep] = useState<STEP>("PREVIEW");
@@ -123,51 +123,24 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
   };
 
   const handleSubmit = async () => {
-    if (false /* FIXME */) {
-      alert.show({
-        // @ts-ignore
-        text: (
-          <div>
-            <span style={{ fontSize: 16, marginBottom: 10 }}>
-              Please correct the following
-            </span>
-            <ul style={{ fontSize: 14, paddingLeft: 20 }}>
-              {(title || "").length === 0 && <li>Title is missing</li>}
-              {(abstract || "").length === 0 && <li>Abstract is missing</li>}
-              {selectedHubs.length === 0 && (
-                <li>At least one hub is required</li>
-              )}
-              {authorsAndAffiliations.length === 0 && (
-                <li>At least one author is required</li>
-              )}
-              {!uploadedFileUrl && <li>PDF file is required</li>}
-            </ul>
-          </div>
-        ),
-        buttonText: "OK",
-      });
-      return;
-    }
-
     try {
       await createPaperAPI({
-        title,
-        abstract,
+        title: title || "",
+        abstract: abstract || "",
         previousPaperId: latestPaper?.id,
         hubIds: selectedHubs.map((hub) => hub.id),
         changeDescription,
-        authors: authorsAndAffiliations.map((authorAndAffiliation) => ({
+        pdfUrl: uploadedFileUrl || "",
+        authors: authorsAndAffiliations.map((authorAndAffiliation, index) => ({
           id: authorAndAffiliation.author.id,
-          author_position: "middle",
+          author_position: index === 0 ? "first" : index === authorsAndAffiliations.length - 1 ? "last" : "middle",
           institution_id: authorAndAffiliation.institution.id,
           is_corresponding: authorAndAffiliation.isCorrespondingAuthor,
         })),
       });
     } catch (e) {
-      alert.show({
-        // @ts-ignore
-        text: "Failed to submit research paper",
-      });
+      // FIXME
+      alert('error')
     }
   };
 
