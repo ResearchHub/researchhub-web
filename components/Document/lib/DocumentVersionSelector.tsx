@@ -15,7 +15,8 @@ interface Args {
 }
 
 const buildVersionOptions = (versions: DocumentVersion[]) => {
-  const reversedVersions = versions.reverse();
+  const reversedVersions = [...versions].reverse();
+
   let options: Array<MenuOption> = reversedVersions.map((version) => {
     return {
       group: "Select version",
@@ -95,9 +96,11 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     border: `1px solid ${colors.GREY_LINE(1.0)}`,
     fontSize: 13,
-    padding: "6px 10px 6px 10px",
+    padding: "8px 10px 8px 10px",
   },
-  menuStyleOverride: {},
+  menuStyleOverride: {
+    width: 200,
+  },
 });
 
 export default DocumentVersionSelector;

@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
     color: "#2a2a2a",
     display: "flex",
     alignItems: "center",
+    marginBottom: 4,
   },
   versionMessage: {
     color: "#666",

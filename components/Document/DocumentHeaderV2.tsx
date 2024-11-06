@@ -367,7 +367,7 @@ const SMALL_SCREEN_BREAKPOINT =
   config.width + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH + BUFFER;
 const styles = StyleSheet.create({
   versionWrapper: {
-    width: 190,
+    // width: 190,
   },
   topLine: {
     display: "flex",
