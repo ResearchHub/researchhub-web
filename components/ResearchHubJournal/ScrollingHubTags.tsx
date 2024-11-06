@@ -45,6 +45,13 @@ const slugify = (text: string): string => {
     .trim();                  // Trim hyphens from start and end
 };
 
+const HUB_URL_OVERRIDES = {
+  "Molecular Biology": "molecular-biology-1",
+  "Pharmaceutical Science": "pharmaceutical-science-1",
+  "Pharmacology": "pharmacology-and-toxicology",
+  // Add more overrides as needed
+};
+
 export default function ScrollingHubTags(): JSX.Element {
   const [offset, setOffset] = useState(0);
 
@@ -87,8 +94,10 @@ export default function ScrollingHubTags(): JSX.Element {
             <div key={i} className={css(styles.hubTagWrapper)}>
               <HubTag 
                 hub={{ 
-                  name, 
-                  slug: slugify(name)
+                  name,
+                  slug: HUB_URL_OVERRIDES[name] ? 
+                    HUB_URL_OVERRIDES[name].replace('/hubs/', '') : 
+                    slugify(name)
                 }} 
               />
             </div>
@@ -117,7 +126,7 @@ const styles = StyleSheet.create({
       top: 0,
       bottom: 0,
       width: 100,
-      background: `linear-gradient(to right, ${colors.NEW_BLUE()} 0%, transparent 10%)`,
+      background: `linear-gradient(to right, ${colors.NEW_BLUE(0.75)} 0%, transparent 30%)`,
       zIndex: 2,
       pointerEvents: "none",
     },
@@ -128,7 +137,7 @@ const styles = StyleSheet.create({
       top: 0,
       bottom: 0,
       width: 100,
-      background: `linear-gradient(to left, ${colors.NEW_BLUE()} 0%, transparent 10%)`,
+      background: `linear-gradient(to left, ${colors.NEW_BLUE(0.75)} 0%, transparent 30%)`,
       zIndex: 2,
       pointerEvents: "none",
     },

@@ -3,7 +3,7 @@ import { HowItWorks } from "~/components/ResearchHubJournal/HowItWorks";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUsers, faFileCheck, faFilePlus, faBolt, faStar } from "@fortawesome/pro-solid-svg-icons";
+import { faUsers, faCoins, faFilePlus, faBolt, faChartLineUp } from "@fortawesome/pro-solid-svg-icons";
 import EditorialBoardSection from "~/components/ResearchHubJournal/EditorialBoard";
 import RhJournalIcon from "~/components/Icons/RhJournalIcon";
 import ScrollingHubTags from "~/components/ResearchHubJournal/ScrollingHubTags";
@@ -56,7 +56,7 @@ function ResearchHubJournalPage(): JSX.Element {
 
             <div className={css(styles.heroButtons)}>
               <button 
-                onClick={() => window.open('https://forms.gle/KKyeF3nWn9yGJx7Y6', '_blank')}
+                onClick={() => window.open('https://forms.gle/3x1F6Gj4pxoDUHU19', '_blank')}
                 className={css(styles.primaryButton)}
               >
                 Submit Early
@@ -72,7 +72,7 @@ function ResearchHubJournalPage(): JSX.Element {
             <ScrollingHubTags />
 
             <div className={css(styles.featureList)}>
-              <FeatureItem text="21 days to publication decision" />
+              <FeatureItem text="21 days from submission to peer review completion" />
             </div>
           </div>
         </div>
@@ -103,28 +103,31 @@ function ResearchHubJournalPage(): JSX.Element {
               <div className={css(styles.featureContent)}>
                 <h3 className={css(styles.featureTitle)}>Rapid Turnaround</h3>
                 <ul className={css(styles.bulletList)}>
-                  <li>14 days: Peer reviews returned</li>
+                  <li>14 days: Peer reviews done</li>
                   <li>21 days: Publication decision</li>
                 </ul>
               </div>
             </div>
 
             <div className={css(styles.featureCard)}>
-              <FontAwesomeIcon icon={faStar} className={css(styles.featureIcon)} />
+              <FontAwesomeIcon 
+                icon={faCoins} 
+                className={css(styles.featureIcon)}
+              />
               <div className={css(styles.featureContent)}>
-                <h3 className={css(styles.featureTitle)}>Paid Peer Review</h3>
+                <h3 className={css(styles.featureTitle)}>$150 to Peer Reviewers</h3>
                 <p className={css(styles.featureDescription)}>
-                  $150 per review, because your time and expertise deserves more than thanks.
+                  A scientist's time and expertise is valuable. We pay for peer review.
                 </p>
               </div>
             </div>
 
             <div className={css(styles.featureCard)}>
-              <FontAwesomeIcon icon={faUsers} className={css(styles.featureIcon)} />
+              <FontAwesomeIcon icon={faChartLineUp} className={css(styles.featureIcon)} />
               <div className={css(styles.featureContent)}>
-                <h3 className={css(styles.featureTitle)}>Constructive Process</h3>
+                <h3 className={css(styles.featureTitle)}>Maximize Your Impact</h3>
                 <p className={css(styles.featureDescription)}>
-                  No rejections - only collaborative improvement
+                  Tap into a social network that gets more eyes on your research.
                 </p>
               </div>
             </div>

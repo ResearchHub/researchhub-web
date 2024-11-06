@@ -9,7 +9,7 @@ import { useCallback, useMemo } from 'react';
 const editors = [
     {
       name: "Maulik M. Dhandha, MD FAAD",
-      role: "Editor in Chief (Interim)",
+      role: "Editor in Chief",
       bio: "Dr. Maulik Dhandha completed his medical school and residency training in Dermatology at Saint Louis University. He practices general dermatology and is actively involved in clinical research. His work is focused on autoimmune and inflammatory skin conditions including Pemphigus Vulgaris, Psoriasis, Hidradenitis Suppurative, Atopic Dermatitis and others. His work has been published in highly reputable journals like - Journal of American Academy of Dermatology, American Journal of Dermatopathology, Autoimmunity, and British Journal of Dermatology.",
       image: "/static/editorial-board/MaulikDhandha.jpeg",
       authorId: "931964",
@@ -22,7 +22,7 @@ const editors = [
     {
       name: "Emilio Merheb, PhD",
       role: "Associate Editor",
-      bio: "Dr. Emilio Merheb is an Instructor at the Diabetes, Obesity, and Metabolism (DOMI) at the Icahn School of Medicine at Mount Sinai and specializes in endocrinology, metabolism, neuroscience, oncology, and molecular biology. He completed his post-doctoral fellowship and doctoral degree in Biomedical Sciences at the Albert Einstein College of Medicine. His research on neurodegeneration, islet biology, and β-cell therapies appears in top journals like Cell Metabolism, PNAS, and eLife.",
+      bio: "Dr. Emilio Merheb is an Instructor at the Diabetes, Obesity, and Metabolism Institute (DOMI) at the Icahn School of Medicine at Mount Sinai. His scientific and research expertise specializes in endocrinology, metabolism, neuroscience, biochemistry, oncology, and molecular biology. Dr. Merheb completed his doctoral training and post-doctoral fellowship at the Albert Einstein College of Medicine. His research on neurodegeneration, islet biology, and β-cell therapies appears in top journals like Cell Metabolism, PNAS, and eLife. Notably, His dedication to science resulted in the recipient of multiple awards, including the Julius Marmur Award.",
       image: "/static/editorial-board/EmilioMerheb.jpeg",
       authorId: "1872316",
       socialLinks: {
@@ -51,8 +51,8 @@ const editors = [
       authorId: "3884973",
       socialLinks: {
         email: "maulik.editor@researchhub.foundation",
-        linkedin: "https://www.linkedin.com/company/researchhubtechnologies/",
-        scholar: "https://scholar.google.com/citations?user=qc6CJjYAAAAJ&hl=en"
+        linkedin: "",
+        scholar: ""
       }
     }
 ];
@@ -82,27 +82,62 @@ const EditorialBoardSection = () => {
 
 // 2. Split into smaller components for better re-render control
 const EditorCard = ({ editor }) => {
+  const isCallForEditors = editor.name === "Interested in joining as an Editor?";
+  
+  const handleEmailClick = useCallback(() => {
+    const subject = "ResearchHub Journal: Editorial Board Position";
+    const body = `Dear Dr. Dhandha,
+
+I am writing to express my interest in joining the ResearchHub Journal Editorial Board as [Chief/Associate] Editor.
+
+My qualifications include:
+[Your qualifications]
+
+Best,
+[Your name]
+`;
+    
+    const mailtoLink = `mailto:${editor.socialLinks.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoLink;
+  }, [editor.socialLinks.email]);
+
   const handleProfileClick = useCallback(() => {
-    window.location.href = `./author/${editor.authorId}`;
-  }, [editor.authorId]);
+    if (!isCallForEditors) {
+      window.location.href = `./author/${editor.authorId}`;
+    }
+  }, [editor.authorId, isCallForEditors]);
 
   // Memoize social links since they're static per editor
   const socialLinks = useMemo(() => (
     <div className={css(styles.socialLinks)}>
-      <SocialLink 
-        href={`mailto:${editor.socialLinks.email}`} 
-        icon={faEnvelope} 
-      />
-      <SocialLink 
-        href={editor.socialLinks.linkedin} 
-        icon={faLinkedin} 
-      />
-      <SocialLink 
-        href={editor.socialLinks.scholar} 
-        icon={faGoogleScholar} 
-      />
+      <a 
+        onClick={(e) => {
+          e.preventDefault();
+          if (isCallForEditors) {
+            handleEmailClick();
+          } else {
+            window.location.href = `mailto:${editor.socialLinks.email}`;
+          }
+        }}
+        href="#"
+        className={css(styles.socialIconLink)}
+      >
+        <FontAwesomeIcon icon={faEnvelope} className={css(styles.socialIcon)} />
+      </a>
+      {!isCallForEditors && (
+        <>
+          <SocialLink 
+            href={editor.socialLinks.linkedin} 
+            icon={faLinkedin} 
+          />
+          <SocialLink 
+            href={editor.socialLinks.scholar} 
+            icon={faGoogleScholar} 
+          />
+        </>
+      )}
     </div>
-  ), [editor.socialLinks]);
+  ), [editor.socialLinks, isCallForEditors, handleEmailClick]);
 
   return (
     <div className={css(styles.editorCard)}>
@@ -110,18 +145,18 @@ const EditorCard = ({ editor }) => {
         <div className={css(styles.avatarColumn)}>
           <img 
             src={editor.image} 
-            className={css(styles.editorAvatar)} 
+            className={css(styles.editorAvatar, isCallForEditors && styles.nonClickableAvatar)} 
             alt={editor.name}
             onClick={handleProfileClick}
-            role="button"
+            role={isCallForEditors ? undefined : "button"}
           />
           {socialLinks}
         </div>
         <div className={css(styles.editorContent)}>
           <div className={css(styles.editorInfo)}>
             <h3 
-              className={css(styles.editorName, styles.clickable)}
-              onClick={handleProfileClick}
+              className={css(styles.editorName, isCallForEditors ? styles.clickableEmail : styles.clickable)}
+              onClick={isCallForEditors ? handleEmailClick : handleProfileClick}
               role="button"
             >
               {editor.name}
@@ -368,6 +403,22 @@ const styles = StyleSheet.create({
       textDecoration: "underline",
       textUnderlineOffset: "4px",
       textDecorationThickness: "1px",
+    }
+  },
+  clickableEmail: {
+    cursor: "pointer",
+    ":hover": {
+      transform: "scale(1.02)",
+      color: "rgba(255, 255, 255, 0.95)",
+      textDecoration: "underline",
+      textUnderlineOffset: "4px",
+      textDecorationThickness: "1px",
+    }
+  },
+  nonClickableAvatar: {
+    cursor: "not-allowed",
+    ":hover": {
+      boxShadow: "none",
     }
   },
 });

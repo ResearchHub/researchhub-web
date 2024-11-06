@@ -3,31 +3,6 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faArrowUpRightFromSquare } from "@fortawesome/pro-solid-svg-icons";
 
-const GuidelinesContent = () => (
-  <div>
-    <div className={styles.contentText}>
-      <p>Reviewers are expected to:</p>
-      <ul>
-        <li>Evaluate scientific merit and methodology</li>
-        <li>Assess reproducibility of methods and results</li>
-        <li>Provide constructive feedback for improvement</li>
-        <li>Declare any potential conflicts of interest</li>
-        <li>Complete reviews using our{' '}
-          <a 
-            href="https://drive.google.com/file/d/1t7NpL39ghnBY9ImWjuunbc6gzmzrhqUt/view?ref=blog.researchhub.foundation" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className={styles.link}
-          >
-            structured review template
-          </a>
-        </li>
-      </ul>
-      <p>Reviews should be thorough, constructive, and actionable. Please contact a member of the editorial team if you believe your peer reviews did not meet these standards.</p>
-    </div>
-  </div>
-);
-
 const accordionItems = [
   {
     id: "aims",
@@ -133,7 +108,28 @@ const accordionItems = [
   {
     id: "guidelines",
     title: "Review guidelines",
-    content: <GuidelinesContent />
+    content: (
+      <>
+        <p className={styles.contentText}>Reviewers are expected to:</p>
+          <ul>
+            <li className={styles.contentText}>Evaluate scientific merit and methodology</li>
+            <li className={styles.contentText}>Assess reproducibility of methods and results</li>
+            <li className={styles.contentText}>Provide constructive feedback for improvement</li>
+            <li className={styles.contentText}>Declare any potential conflicts of interest</li>
+            <li className={styles.contentText}>Complete reviews using our{' '}
+              <a 
+                href="https://drive.google.com/file/d/1t7NpL39ghnBY9ImWjuunbc6gzmzrhqUt/view?ref=blog.researchhub.foundation" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className={styles.link}
+              >
+                structured review template
+              </a>
+            </li>
+          </ul>
+          <p className={styles.contentText}>Reviews should be thorough, constructive, and actionable. Please contact a member of the editorial team if you believe your peer reviews did not meet these standards.</p>
+      </>
+    )
   },
   {
     id: "reviewers",
@@ -154,7 +150,9 @@ const accordionItems = [
         </ul>
         <p className={styles.contentText}>This model helps maintain our rapid review timeline while ensuring high-quality peer review.</p>
         
-        <div className={styles.buttonWrapper}>
+        <div className={styles.reviewerCta}>
+          <p style={{ margin: 0, marginBottom: 12, fontSize: 16, fontWeight: 500 }}>
+          </p>
           <a 
             href="https://airtable.com/apptLQP8XMy1kaiID/pag5tkxt0V18Xobje/form" 
             target="_blank" 

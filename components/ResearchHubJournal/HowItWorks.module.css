@@ -115,14 +115,6 @@
   text-decoration: underline;
 }
 
-.buttonWrapper {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
 .ctaLabel {
   margin: 0;
   margin-bottom: 12px;
