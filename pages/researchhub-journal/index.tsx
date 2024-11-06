@@ -3,7 +3,7 @@ import { HowItWorks } from "~/components/ResearchHubJournal/HowItWorks";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faUsers, faFileCheck, faFilePlus, faBolt, faStar } from "@fortawesome/pro-solid-svg-icons";
+import { faUsers, faFileCheck, faFilePlus, faBolt, faStar } from "@fortawesome/pro-solid-svg-icons";
 import EditorialBoardSection from "~/components/ResearchHubJournal/EditorialBoard";
 import RhJournalIcon from "~/components/Icons/RhJournalIcon";
 import ScrollingHubTags from "~/components/ResearchHubJournal/ScrollingHubTags";
@@ -13,11 +13,6 @@ import JournalLayout from "~/components/ResearchHubJournal/JournalLayout";
 
 function ResearchHubJournalPage(): JSX.Element {
   const router = useRouter();
-
-  const handleEarlySubmit = () => {
-    // TODO: Implement toast notification
-    console.log("Early submission recorded");
-  };
 
   const scrollToHowItWorks = () => {
     const howItWorksSection = document.getElementById('how-it-works');
@@ -61,7 +56,7 @@ function ResearchHubJournalPage(): JSX.Element {
 
             <div className={css(styles.heroButtons)}>
               <button 
-                onClick={handleEarlySubmit}
+                onClick={() => window.open('https://forms.gle/KKyeF3nWn9yGJx7Y6', '_blank')}
                 className={css(styles.primaryButton)}
               >
                 Submit Early
@@ -77,7 +72,7 @@ function ResearchHubJournalPage(): JSX.Element {
             <ScrollingHubTags />
 
             <div className={css(styles.featureList)}>
-              <FeatureItem text="2 days to initial editorial decision" />
+              <FeatureItem text="21 days to publication decision" />
             </div>
           </div>
         </div>
@@ -108,7 +103,7 @@ function ResearchHubJournalPage(): JSX.Element {
               <div className={css(styles.featureContent)}>
                 <h3 className={css(styles.featureTitle)}>Rapid Turnaround</h3>
                 <ul className={css(styles.bulletList)}>
-                  <li>2 days: Editorial decision</li>
+                  <li>14 days: Peer reviews returned</li>
                   <li>21 days: Publication decision</li>
                 </ul>
               </div>
@@ -119,7 +114,7 @@ function ResearchHubJournalPage(): JSX.Element {
               <div className={css(styles.featureContent)}>
                 <h3 className={css(styles.featureTitle)}>Paid Peer Review</h3>
                 <p className={css(styles.featureDescription)}>
-                  $150 per review, because researchers
+                  $150 per review, because your time and expertise deserves more than thanks.
                 </p>
               </div>
             </div>
@@ -176,7 +171,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     gap: 32,
-    marginTop: 80,
+    marginTop: 40,
     width: 'auto',
     maxWidth: 900,
     padding: '0 24px',
@@ -186,8 +181,8 @@ const styles = StyleSheet.create({
     },
   },
   heroTagWrapper: {
-    position: 'absolute',
-    top: -10,
+    position: 'relative',
+    top: -0,
     right: 0,
     zIndex: 2,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
@@ -445,7 +440,7 @@ const styles = StyleSheet.create({
     },
   },
   checkIcon: {
-    color: colors.YELLOW(0.9),
+    color: colors.YELLOW(),
     fontSize: 24,
   },
   featureText: {

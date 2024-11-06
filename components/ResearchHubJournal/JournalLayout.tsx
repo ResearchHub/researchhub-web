@@ -11,33 +11,15 @@ export default function JournalLayout({ children }: JournalLayoutProps) {
   const router = useRouter();
   const currentPath = router.pathname;
 
-  const getActiveTab = () => {
-    if (currentPath.includes("/published")) return "published";
-    if (currentPath.includes("/in-review")) return "inReview";
-    return "home";
-  };
-
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.tabNavigation)}>
         <div className={css(styles.tabContainer)}>
           <button 
-            className={css(styles.tab, getActiveTab() === "home" && styles.activeTab)}
+            className={css(styles.tab, currentPath === "/researchhub-journal" && styles.activeTab)}
             onClick={() => router.push('/researchhub-journal')}
           >
             About
-          </button>
-          <button 
-            className={css(styles.tab, getActiveTab() === "published" && styles.activeTab)}
-            onClick={() => router.push('/researchhub-journal/published')}
-          >
-            Published
-          </button>
-          <button 
-            className={css(styles.tab, getActiveTab() === "inReview" && styles.activeTab)}
-            onClick={() => router.push('/researchhub-journal/in-review')}
-          >
-            In review
           </button>
         </div>
       </div>

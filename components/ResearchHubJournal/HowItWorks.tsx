@@ -1,7 +1,7 @@
 import styles from "./HowItWorks.module.css";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/pro-solid-svg-icons";
+import { faChevronDown, faArrowUpRightFromSquare } from "@fortawesome/pro-solid-svg-icons";
 
 const GuidelinesContent = () => (
   <div>
@@ -92,10 +92,9 @@ const accordionItems = [
       <>
         <p className={styles.contentText}>Our streamlined review process follows this timeline following submission:</p>
         <ul>
-          <li className={styles.contentText}>1-2 days: Initial editorial decision</li>
+          <li className={styles.contentText}>Immediate: Preprint available</li>
           <li className={styles.contentText}>14 days: Peer review completion</li>
           <li className={styles.contentText}>21 days: Publication decision</li>
-          <li className={styles.contentText}>Immediate: Publication upon acceptance</li>
         </ul>
         <p className={styles.contentText}>We maintain these timelines through our innovative peer review incentive structure and dedicated editorial team.</p>
       </>
@@ -114,27 +113,27 @@ const accordionItems = [
           <li className={styles.contentText}>Proper citation of prior work</li>
           <li className={styles.contentText}>Adherence to reporting standards</li>
         </ul>
-        <p className={styles.contentText}>Detailed submission guidelines are available in our submission template.</p>
+        <p className={styles.contentText}>For specific guidelines, please consult our author guidelines document, which also contains a submission template. Contact the editorial team if you have any questions.</p>
+        <div className={styles.reviewerCta}>
+          <p style={{ margin: 0, marginBottom: 12, fontSize: 16, fontWeight: 500 }}>
+          </p>
+          <a 
+            href="https://docs.google.com/document/d/1a3WrTSDOCvWXxWetbPn-TDav56Y7EFwpyzK5B8Ll3Io/edit?tab=t.0" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className={styles.ctaButton}
+          >
+            View Author Guidelines
+            <FontAwesomeIcon icon={faArrowUpRightFromSquare} className={styles.buttonIcon} />
+          </a>
+        </div>
       </>
     )
   },
   {
-    id: "submission-template",
-    title: "Submission template",
-    content: (
-      <>
-        <p className={styles.contentText}>Our submission template includes:</p>
-        <ul>
-          <li className={styles.contentText}>Structured abstract format</li>
-          <li className={styles.contentText}>Methods checklist</li>
-          <li className={styles.contentText}>Data availability statement</li>
-          <li className={styles.contentText}>Code availability statement</li>
-          <li className={styles.contentText}>Author contribution statement</li>
-          <li className={styles.contentText}>Conflict of interest declaration</li>
-        </ul>
-        <p className={styles.contentText}>Download our template to ensure your submission meets all requirements.</p>
-      </>
-    )
+    id: "guidelines",
+    title: "Review guidelines",
+    content: <GuidelinesContent />
   },
   {
     id: "reviewers",
@@ -147,42 +146,25 @@ const accordionItems = [
           <li className={styles.contentText}>Compensated $150 per high-quality peer review</li>
           <li className={styles.contentText}>Required to complete reviews within 14 days</li>
         </ul>
-        <p className={styles.contentText}>We maintain a diverse pool of qualified reviewers across disciplines to ensure thorough and timely evaluation of submissions.</p>
-
-        <div className={styles.reviewerCta}>
-          <p style={{ margin: 0, marginBottom: 12, fontSize: 16, fontWeight: 500 }}>
-            Interested in becoming a peer reviewer?
-          </p>
+        <p className={styles.contentText}>We strive to maintain a diverse pool of qualified reviewers across disciplines to ensure thorough and timely evaluation of submissions. We choose to pay peer reviewers to share their reviews openly because:</p>
+        <ul>
+          <li className={styles.contentText}>Peer review is valuable intellectual work</li>
+          <li className={styles.contentText}>Financial incentives ensure timely reviews</li>
+          <li className={styles.contentText}>Open peer reviews promote higher quality, constructive feedback</li>
+        </ul>
+        <p className={styles.contentText}>This model helps maintain our rapid review timeline while ensuring high-quality peer review.</p>
+        
+        <div className={styles.buttonWrapper}>
           <a 
             href="https://airtable.com/apptLQP8XMy1kaiID/pag5tkxt0V18Xobje/form" 
             target="_blank" 
             rel="noopener noreferrer" 
             className={styles.ctaButton}
           >
-            Apply Now
+            Apply to be a peer reviewer
+            <FontAwesomeIcon icon={faArrowUpRightFromSquare} className={styles.buttonIcon} />
           </a>
         </div>
-      </>
-    )
-  },
-  {
-    id: "guidelines",
-    title: "Review guidelines",
-    content: <GuidelinesContent />
-  },
-  {
-    id: "payment",
-    title: "Why do we pay peer reviewers?",
-    content: (
-      <>
-        <p className={styles.contentText}>We pay peer reviewers because:</p>
-        <ul>
-          <li className={styles.contentText}>Peer review is valuable intellectual work</li>
-          <li className={styles.contentText}>Financial incentives ensure timely reviews</li>
-          <li className={styles.contentText}>It promotes higher quality feedback</li>
-          <li className={styles.contentText}>It recognizes reviewer expertise and time</li>
-        </ul>
-        <p className={styles.contentText}>This model helps maintain our rapid review timeline while ensuring high-quality peer review.</p>
       </>
     )
   },

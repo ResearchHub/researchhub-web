@@ -2,44 +2,44 @@ import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink, faEnvelope } from "@fortawesome/pro-solid-svg-icons";
-import { faTwitter, faGoogleScholar, faXTwitter } from "@fortawesome/free-brands-svg-icons";
+import { faEnvelope } from "@fortawesome/pro-solid-svg-icons";
+import { faGoogleScholar, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { useCallback, useMemo } from 'react';
 
 const editors = [
     {
-      name: "Dr. Maulik M Dhandha, MD FAAD",
+      name: "Maulik M. Dhandha, MD FAAD",
       role: "Editor in Chief (Interim)",
-      bio: "Dr. Maulik Dhandha's research centers on dermatology, focusing on skin cancer, inflammatory skin disorders, and immune-related skin conditions. His work includes high-risk factors for cutaneous squamous cell carcinoma and immunoglobulin roles in pemphigus vulgaris.",
+      bio: "Dr. Maulik Dhandha completed his medical school and residency training in Dermatology at Saint Louis University. He practices general dermatology and is actively involved in clinical research. His work is focused on autoimmune and inflammatory skin conditions including Pemphigus Vulgaris, Psoriasis, Hidradenitis Suppurative, Atopic Dermatitis and others. His work has been published in highly reputable journals like - Journal of American Academy of Dermatology, American Journal of Dermatopathology, Autoimmunity, and British Journal of Dermatology.",
       image: "/static/editorial-board/MaulikDhandha.jpeg",
       authorId: "931964",
       socialLinks: {
         email: "maulik.editor@researchhub.foundation",
-        twitter: "https://x.com/DhandhaMaulik",
+        linkedin: "https://www.linkedin.com/in/maulik-dhandha-1836a5227/",
         scholar: "https://scholar.google.com/citations?user=M2JZCWMAAAAJ&hl=en"
       }
     },
     {
-      name: "Dr. Emilio Merheb, PhD",
+      name: "Emilio Merheb, PhD",
       role: "Associate Editor",
-      bio: "Dr. Emilio Merheb is an Instructor at Icahn School of Medicine at Mount Sinai, specializes in endocrinology, metabolism, oncology, and molecular biology. His research on neurodegeneration, islet biology, and β-cell therapies appears in top journals like Cell Metabolism, PNAS, and eLife.",
+      bio: "Dr. Emilio Merheb is an Instructor at the Diabetes, Obesity, and Metabolism (DOMI) at the Icahn School of Medicine at Mount Sinai and specializes in endocrinology, metabolism, neuroscience, oncology, and molecular biology. He completed his post-doctoral fellowship and doctoral degree in Biomedical Sciences at the Albert Einstein College of Medicine. His research on neurodegeneration, islet biology, and β-cell therapies appears in top journals like Cell Metabolism, PNAS, and eLife.",
       image: "/static/editorial-board/EmilioMerheb.jpeg",
       authorId: "1872316",
       socialLinks: {
         email: "emilio.editor@researchhub.foundation",
-        twitter: "https://www.linkedin.com/in/emilio-merheb-ph-d-29ba10154/",
+        linkedin: "https://www.linkedin.com/in/emilio-merheb-ph-d-29ba10154/",
         scholar: "https://scholar.google.com/citations?user=MY7E-6QAAAAJ&hl=en"
       }
     },
     {
-      name: "Dr. Attila Karsi",
+      name: "Attila Karsi, PhD",
       role: "Associate Editor",
-      bio: "Dr. Attila Karsi earned MSc and PhD degrees from Auburn University. His education and research provided him with diverse experiences in genetics and genomics. Later, he worked as a postdoctoral researcher at USDA and Mississippi State University. He is a tenured professor in the College of Veterinary Medicine at Mississippi State University, and his research involves bacterial pathogenesis, host-pathogen interactions, and vaccine development.",
+      bio: "Dr. Attila Karsi earned his MSc and PhD degrees from Auburn University and is a tenured professor in the College of Veterinary Medicine at Mississippi State University. His research focuses on bacterial pathogenesis, host-pathogen interactions, and vaccine development. He has published over 100 peer-reviewed articles in esteemed journals, including Nucleic Acids Research, Journal of Bacteriology, Frontiers in Microbiology, and PLOS One.",
       image: "/static/editorial-board/AttilaKarsi.jpeg",
       authorId: "984218",
       socialLinks: {
         email: "attila.editor@researchhub.foundation",
-        twitter: "https://www.linkedin.com/in/attilakarsi/",
+        linkedin: "https://www.linkedin.com/in/attilakarsi/",
         scholar: "https://scholar.google.com/citations?user=kkhhBZgAAAAJ&hl=en"
       }
     },
@@ -48,11 +48,11 @@ const editors = [
       role: "Associate Editor",
       bio: "If you're interested in joining the Editorial Board, please apply here by emailing maulik.editor@researchhub.foundation. Relevant qualifications include a PhD, a strong publication record, and a passion for driving scientific progress through innovative peer review systems.",
       image: "/static/EinsteinAvatar.png",
-      authorId: "1",
+      authorId: "3884973",
       socialLinks: {
         email: "maulik.editor@researchhub.foundation",
-        twitter: "https://twitter.com/researchhub",
-        scholar: "https://scholar.google.com/citations?user=M2JZCWMAAAAJ&hl=en"
+        linkedin: "https://www.linkedin.com/company/researchhubtechnologies/",
+        scholar: "https://scholar.google.com/citations?user=qc6CJjYAAAAJ&hl=en"
       }
     }
 ];
@@ -68,7 +68,7 @@ const EditorialBoardSection = () => {
       <div className={css(styles.headerContent)}>
         <h2 className={css(styles.title)}>Editorial Board</h2>
         <p className={css(styles.subtitle)}>
-          Our goal at ResearchHub Journal is to drive scientific progress by introducing innovative
+          Our goal at ResearchHub is to drive scientific progress by introducing innovative
           reward systems that compensate peer reviewers for their contributions.
         </p>
       </div>
@@ -94,8 +94,8 @@ const EditorCard = ({ editor }) => {
         icon={faEnvelope} 
       />
       <SocialLink 
-        href={editor.socialLinks.twitter} 
-        icon={faXTwitter} 
+        href={editor.socialLinks.linkedin} 
+        icon={faLinkedin} 
       />
       <SocialLink 
         href={editor.socialLinks.scholar} 
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     gap: 16,
-    alignItems: "flex-start",
+    alignItems: "center",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       gap: 12,
       alignItems: "center",

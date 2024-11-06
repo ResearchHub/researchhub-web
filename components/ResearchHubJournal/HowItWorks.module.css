@@ -75,6 +75,11 @@
   background: rgba(44, 125, 247, 0.02);
 }
 
+.accordionContent > div > p:first-child,
+.accordionContent > div > ul:first-child {
+  margin-top: 24px;
+}
+
 .contentText {
   font-family: "Roboto";
   color: #7c7989;
@@ -110,39 +115,31 @@
   text-decoration: underline;
 }
 
-.reviewerCta {
+.buttonWrapper {
   margin-top: 24px;
-  padding: 32px;
-  background: linear-gradient(
-    45deg,
-    rgba(44, 125, 247, 0.95),
-    rgba(44, 125, 247, 0.85)
-  );
-  border-radius: 12px;
-  text-align: center;
-  position: relative;
-  color: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
-.reviewerCta > * {
-  position: static;
-}
-
-.reviewerCta p {
+.ctaLabel {
   margin: 0;
-  margin-bottom: 16px;
-  font-size: 20px;
-  font-weight: 600;
-  color: white;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #7c7989;
+  text-align: center;
 }
 
 .ctaButton {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   padding: 14px 36px;
-  background: white;
-  color: #2c7df7;
+  background: #2c7df7;
+  color: rgb(255, 255, 255);
   border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
@@ -151,8 +148,17 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.buttonIcon {
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.ctaButton:hover .buttonIcon {
+  transform: translateX(2px);
+}
+
 .ctaButton:hover {
-  background: white;
+  background: #2c7df7d3;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
@@ -180,7 +186,7 @@
 
   .trigger {
     padding: 20px 24px;
-    font-size: 12px;
+    font-size: 16px;
   }
 
   .accordionContent {
@@ -188,20 +194,20 @@
   }
 
   .contentText {
-    font-size: 11px;
-  }
-
-  .reviewerCta {
-    padding: 24px;
-  }
-
-  .reviewerCta p {
-    font-size: 16px;
-    margin-bottom: 12px;
+    font-size: 14px;
   }
 
   .ctaButton {
     padding: 12px 28px;
     font-size: 14px;
+  }
+
+  .buttonIcon {
+    font-size: 12px;
+  }
+
+  .accordionContent > div > p:first-child,
+  .accordionContent > div > ul:first-child {
+    margin-top: 16px;
   }
 }
