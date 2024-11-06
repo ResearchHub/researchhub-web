@@ -19,7 +19,9 @@ import {
   faUserPlus,
   faPlus,
   faEnvelope,
+  faInfoCircle,
 } from "@fortawesome/pro-solid-svg-icons";
+
 import Avatar from "@mui/material/Avatar";
 import { isEmpty } from "~/config/utils/nullchecks";
 import TextField from "@mui/material/TextField";
@@ -91,6 +93,20 @@ const PaperVersionAuthorsAndMetadataStep = ({
         />
       ) : (
         <>
+          {authorsAndAffiliations.length > 0 && (
+            <div className={css(styles.orderingNote)}>
+              <div className={css(styles.orderingTitleRow)}>
+                <FontAwesomeIcon 
+                  icon={faInfoCircle} 
+                  className={css(styles.infoIcon)}
+                />
+                <div className={css(styles.orderingTitle)}>Author Ordering</div>
+              </div>
+              <div className={css(styles.orderingText)}>
+                Authors will appear in the paper in the order shown below. Use the arrows to adjust the order.
+              </div>
+            </div>
+          )}
           <div className={css(styles.authorsList)}>
             {authorsAndAffiliations.length === 0 ? (
               <div className={css(styles.emptyState)}>
@@ -127,7 +143,11 @@ const PaperVersionAuthorsAndMetadataStep = ({
                 <div
                   key={authorAndAffiliation.author.id}
                   className={css(styles.authorItem)}
+                  style={{ position: 'relative' }}
                 >
+                  <div style={{ right: 0, top: 0, position: "absolute", fontWeight: 500, fontSize: 22, width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center", background: colors.LIGHTER_GREY() }}>
+                    {index + 1}
+                  </div>
                   <div className={css(styles.authorContent)}>
                     <div
                       style={{ display: "flex", alignItems: "center", gap: 8 }}
@@ -143,7 +163,7 @@ const PaperVersionAuthorsAndMetadataStep = ({
                         {authorAndAffiliation.author.fullName}
                         {authorAndAffiliation.email && (
                           <>
-                            -{" "}
+                            {" - "}
                             <div className={css(styles.email)}>
                               {authorAndAffiliation.email}
                             </div>
@@ -205,12 +225,14 @@ const PaperVersionAuthorsAndMetadataStep = ({
                       variant="text"
                       size="small"
                       onClick={() => deleteAuthor(index)}
+                      customButtonStyle={styles.deleteButton}
                     >
                       <FontAwesomeIcon
                         icon={faTrash}
                         color={colors.MEDIUM_GREY2()}
+                        style={{ fontSize: 14, marginRight: 8 }}
                       />
-                      {/* Delete */}
+                      Delete
                     </Button>
                   </div>
                 </div>
@@ -369,6 +391,10 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
 };
 
 const styles = StyleSheet.create({
+  deleteButton: {
+    color: colors.MEDIUM_GREY2(),
+    // borderColor: colors.MEDIUM_GREY2(),
+  },
   addAuthorButton: {
     color: colors.MEDIUM_GREY2(),
     borderColor: colors.MEDIUM_GREY2(),
@@ -414,16 +440,17 @@ const styles = StyleSheet.create({
   },
   institutionName: {
     color: colors.BLACK(0.6),
-    fontSize: 14,
+    fontSize: 13,
     marginBottom: 4,
   },
   correspondingAuthor: {
     fontSize: 13,
     color: colors.NEW_BLUE(),
-    fontWeight: 500,
+    fontWeight: 400,
     display: "flex",
     alignItems: "center",
-    gap: 4,
+    gap: 0,
+    marginLeft: 4,
   },
   arrowControls: {
     display: "flex",
@@ -475,7 +502,7 @@ const styles = StyleSheet.create({
   },
   departmentName: {
     color: colors.BLACK(0.6),
-    fontSize: 14,
+    fontSize: 13,
   },
   email: {
     color: colors.BLACK(0.6),
@@ -495,6 +522,31 @@ const styles = StyleSheet.create({
     fontSize: 22,
     textAlign: "center",
     fontWeight: 500,
+  },
+  orderingNote: {
+    marginBottom: 16,
+    padding: 12,
+    background: colors.LIGHTER_GREY(),
+    borderRadius: 4,
+  },
+  orderingTitle: {
+    fontWeight: 500,
+    marginBottom: 0,
+    fontSize: 15,
+  },
+  orderingText: {
+    fontSize: 13,
+    color: colors.BLACK(0.6),
+  },
+  orderingTitleRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 4,
+  },
+  infoIcon: {
+    fontSize: 18,
+    color: colors.BLACK(0.5),
   },
 });
 

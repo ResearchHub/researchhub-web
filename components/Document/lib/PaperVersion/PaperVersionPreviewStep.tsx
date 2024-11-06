@@ -179,12 +179,12 @@ const styles = StyleSheet.create({
   },
   institutionName: {
     color: colors.BLACK(0.6),
-    fontSize: 14,
+    fontSize: 12,
     marginBottom: 4,
   },
   departmentName: {
     color: colors.BLACK(0.6),
-    fontSize: 14,
+    fontSize: 12,
   },
   email: {
     color: colors.BLACK(0.6),
@@ -193,10 +193,10 @@ const styles = StyleSheet.create({
   correspondingAuthor: {
     fontSize: 13,
     color: colors.NEW_BLUE(),
-    fontWeight: 500,
+    fontWeight: 400,
     display: "flex",
     alignItems: "center",
-    gap: 4,
+    marginLeft: 4,
   },
   subheading: {
     // fontSize: 16,
