@@ -27,15 +27,16 @@ const PaperVersionDeclarationStep = ({
     <div className={css(styles.container)}>
       <h3 className={css(styles.sectionTitle)}>License</h3>
       <p className={css(styles.description)}>
-        ResearchHub publishes articles under the Creative Commons license. Please confirm your
-        acceptance of the ResearchHub Terms and Conditions and the terms of the following Creative
-        Commons Licenses in connection with the article being submitted ("our Article").
+        ResearchHub publishes articles under the Creative Commons license.
+        Please confirm your acceptance of the ResearchHub Terms and Conditions
+        and the terms of the following Creative Commons Licenses in connection
+        with the article being submitted ("our Article").
       </p>
 
       <div className={css(styles.checkboxGroup)}>
         <FormControlLabel
           control={
-            <Checkbox 
+            <Checkbox
               checked={acceptedTerms}
               onChange={(e) => setAcceptedTerms(e.target.checked)}
             />
@@ -43,49 +44,54 @@ const PaperVersionDeclarationStep = ({
           label={
             <span>
               I accept the ResearchHub{" "}
-              <a 
-                href="/about/tos" 
+              <a
+                href="/about/tos"
                 className={css(styles.link)}
                 target="_blank"
                 rel="noopener noreferrer"
-              >Terms and Conditions</a>
-              {" "}for publication
+              >
+                Terms and Conditions
+              </a>{" "}
+              for publication
             </span>
           }
-          sx={{ 
-            alignItems: 'flex-start',
-            '.MuiFormControlLabel-label': {
-              marginTop: '9px'
-            }
+          sx={{
+            alignItems: "flex-start",
+            ".MuiFormControlLabel-label": {
+              marginTop: "9px",
+            },
           }}
         />
 
         <FormControlLabel
           control={
-            <Checkbox 
+            <Checkbox
               checked={acceptedLicense}
               onChange={(e) => setAcceptedLicense(e.target.checked)}
             />
           }
           label={
             <span>
-              I and my co-authors authorize the use of our Article in accordance with the{" "}
-              <a 
-                href="https://creativecommons.org/licenses/by/4.0/" 
+              I and my co-authors authorize the use of our Article in accordance
+              with the{" "}
+              <a
+                href="https://creativecommons.org/licenses/by/4.0/"
                 className={css(styles.link)}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Creative Commons Attribution 4.0 International License (CC BY 4.0)
-              </a>
-              {" "}allowing others to share and adapt the work with proper attribution.
+                Creative Commons Attribution 4.0 International License (CC BY
+                4.0)
+              </a>{" "}
+              allowing others to share and adapt the work with proper
+              attribution.
             </span>
           }
-          sx={{ 
-            alignItems: 'flex-start',
-            '.MuiFormControlLabel-label': {
-              marginTop: '9px'
-            }
+          sx={{
+            alignItems: "flex-start",
+            ".MuiFormControlLabel-label": {
+              marginTop: "9px",
+            },
           }}
         />
       </div>
@@ -94,33 +100,33 @@ const PaperVersionDeclarationStep = ({
       <div className={css(styles.checkboxGroup)}>
         <FormControlLabel
           control={
-            <Checkbox 
+            <Checkbox
               checked={acceptedAuthorship}
               onChange={(e) => setAcceptedAuthorship(e.target.checked)}
             />
           }
           label="I confirm that all co-authors and I are authors of the Article, have agreed to the submission of this manuscript to ResearchHub, have all necessary rights and have obtained all necessary permissions and consents to grant the rights granted to our Article in the License section above."
-          sx={{ 
-            alignItems: 'flex-start',
-            '.MuiFormControlLabel-label': {
-              marginTop: '9px'
-            }
+          sx={{
+            alignItems: "flex-start",
+            ".MuiFormControlLabel-label": {
+              marginTop: "9px",
+            },
           }}
         />
 
         <FormControlLabel
           control={
-            <Checkbox 
+            <Checkbox
               checked={acceptedOriginality}
               onChange={(e) => setAcceptedOriginality(e.target.checked)}
             />
           }
           label="I confirm that this manuscript is our original work, does not infringe on any existing copyrights or violate any laws including defamation, privacy, and data protection regulations, and that we as authors have obtained all necessary permissions for any third-party content included in the manuscript (e.g., figures, tables)."
-          sx={{ 
-            alignItems: 'flex-start',
-            '.MuiFormControlLabel-label': {
-              marginTop: '9px'
-            }
+          sx={{
+            alignItems: "flex-start",
+            ".MuiFormControlLabel-label": {
+              marginTop: "9px",
+            },
           }}
         />
       </div>
@@ -132,7 +138,7 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     flexDirection: "column",
-    gap: 24,
+    gap: 22,
   },
   sectionTitle: {
     fontSize: 20,
@@ -148,7 +154,7 @@ const styles = StyleSheet.create({
   checkboxGroup: {
     display: "flex",
     flexDirection: "column",
-    gap: 16,
+    gap: 10,
   },
   link: {
     color: colors.NEW_BLUE(),
@@ -159,4 +165,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PaperVersionDeclarationStep; 
+export default PaperVersionDeclarationStep;

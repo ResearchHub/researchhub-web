@@ -76,7 +76,9 @@ const PaperVersionAuthorsAndMetadataStep = ({
   };
 
   const deleteAuthor = (indexToDelete: number) => {
-    const newAuthors = authorsAndAffiliations.filter((_, index) => index !== indexToDelete);
+    const newAuthors = authorsAndAffiliations.filter(
+      (_, index) => index !== indexToDelete
+    );
     setAuthorsAndAffiliations(newAuthors);
   };
 
@@ -92,27 +94,32 @@ const PaperVersionAuthorsAndMetadataStep = ({
           <div className={css(styles.authorsList)}>
             {authorsAndAffiliations.length === 0 ? (
               <div className={css(styles.emptyState)}>
-                <FontAwesomeIcon 
-                  icon={faUserPlus} 
-                  style={{ 
-                    fontSize: 24, 
+                <FontAwesomeIcon
+                  icon={faUserPlus}
+                  style={{
+                    fontSize: 24,
                     marginBottom: 16,
-                    color: colors.BLACK(0.6)
-                  }} 
+                    color: colors.BLACK(0.6),
+                  }}
                 />
                 <div className={css(styles.emptyStateText)}>
-                  No authors added yet. Click the button below to add authors and their affiliations.
+                  No authors added yet. Click the button below to add authors
+                  and their affiliations.
                 </div>
                 <Button
+                  size="small"
+                  customButtonStyle={styles.addAuthorButton}
                   label={
                     <div style={{ fontWeight: 500 }}>
-                      <FontAwesomeIcon icon={faPlus} style={{ marginRight: 8 }} />
+                      <FontAwesomeIcon
+                        icon={faPlus}
+                        style={{ marginRight: 8 }}
+                      />
                       Add author
                     </div>
                   }
                   variant="outlined"
                   onClick={() => setIsFormVisible(true)}
-                  buttonStyle={{ marginTop: 16 }}
                 />
               </div>
             ) : (
@@ -122,7 +129,9 @@ const PaperVersionAuthorsAndMetadataStep = ({
                   className={css(styles.authorItem)}
                 >
                   <div className={css(styles.authorContent)}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 8 }}
+                    >
                       <Avatar
                         src={authorAndAffiliation.author.profileImage}
                         sx={{ width: 24, height: 24, fontSize: 14 }}
@@ -131,7 +140,15 @@ const PaperVersionAuthorsAndMetadataStep = ({
                           (authorAndAffiliation.author.fullName || "")[0]}
                       </Avatar>
                       <div className={css(styles.authorName)}>
-                        {authorAndAffiliation.author.fullName} - <div className={css(styles.email)}>{authorAndAffiliation.email}</div>
+                        {authorAndAffiliation.author.fullName}
+                        {authorAndAffiliation.email && (
+                          <>
+                            -{" "}
+                            <div className={css(styles.email)}>
+                              {authorAndAffiliation.email}
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                     <div style={{ display: "flex", gap: 8 }}>
@@ -152,9 +169,9 @@ const PaperVersionAuthorsAndMetadataStep = ({
                     </div>
                     {authorAndAffiliation.isCorrespondingAuthor && (
                       <div className={css(styles.correspondingAuthor)}>
-                        <FontAwesomeIcon 
-                          icon={faEnvelope} 
-                          style={{ marginRight: 12 , fontSize: 16 }} 
+                        <FontAwesomeIcon
+                          icon={faEnvelope}
+                          style={{ marginRight: 12, fontSize: 16 }}
                         />
                         Corresponding author
                       </div>
@@ -189,26 +206,36 @@ const PaperVersionAuthorsAndMetadataStep = ({
                       size="small"
                       onClick={() => deleteAuthor(index)}
                     >
-                      <FontAwesomeIcon icon={faTrash} style={{ marginRight: 8 }} />
-                      Delete
-                    </Button>                    
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        color={colors.MEDIUM_GREY2()}
+                      />
+                      {/* Delete */}
+                    </Button>
                   </div>
                 </div>
               ))
             )}
           </div>
           {authorsAndAffiliations.length > 0 && (
-            <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
+            <div
+              style={{
+                marginTop: 20,
+                display: "flex",
+                justifyContent: "flex-start",
+              }}
+            >
               <Button
-                variant="text"
+                size="small"
+                variant="outlined"
+                customButtonStyle={styles.addAuthorButton}
                 label={
                   <div style={{ fontWeight: 500 }}>
                     <FontAwesomeIcon icon={faPlus} style={{ marginRight: 8 }} />
-                    Add author
+                    Author
                   </div>
                 }
                 onClick={() => setIsFormVisible(true)}
-                buttonStyle={{ marginTop: 20 }}
               />
             </div>
           )}
@@ -238,7 +265,7 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
     department?: boolean;
     email?: boolean;
   }>({});
-  
+
   const validateForm = () => {
     const newErrors = {
       author: !selectedAuthor,
@@ -264,10 +291,11 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
       isCorrespondingAuthor,
     });
     handleCloseForm();
-  };  
+  };
 
   return (
     <div className={css(styles.authorForm)}>
+      <h2 className={css(styles.formTitle)}>Add author</h2>
       <AuthorSelectDropdown
         label="Author"
         onChange={(name, value) => {
@@ -296,7 +324,7 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
         value={department}
         error={errors.department && "Department is required"}
         onChange={(id, value) => {
-          setDepartment(value)
+          setDepartment(value);
           setErrors({ ...errors, department: false });
         }}
         placeholder="Department of the institution"
@@ -306,7 +334,7 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
         required={isCorrespondingAuthor}
         value={email}
         onChange={(id, value) => {
-          setEmail(value)
+          setEmail(value);
           setErrors({ ...errors, email: false });
         }}
         type="email"
@@ -332,6 +360,7 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
         <Button
           label="Save"
           variant="outlined"
+          customButtonStyle={styles.saveButton}
           onClick={handleSubmit}
         />
       </div>
@@ -340,6 +369,14 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
 };
 
 const styles = StyleSheet.create({
+  addAuthorButton: {
+    color: colors.MEDIUM_GREY2(),
+    borderColor: colors.MEDIUM_GREY2(),
+  },
+  saveButton: {
+    color: colors.BLACK(),
+    borderColor: colors.BLACK(),
+  },
   authorFormWrapper: {
     marginBottom: 20,
   },
@@ -354,24 +391,23 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   authorItem: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     padding: 16,
-    background: 'white',
+    background: "white",
     borderRadius: 4,
     border: `1px solid ${colors.GREY_LINE()}`,
-    transition: 'all 0.2s ease',
+    transition: "all 0.2s ease",
   },
   authorContent: {
     flex: 1,
     display: "flex",
     flexDirection: "column",
-    gap: 8,
+    gap: 10,
   },
   authorName: {
     fontWeight: 500,
     fontSize: 15,
-    marginBottom: 4,
     display: "flex",
     alignItems: "center",
     gap: 4,
@@ -438,23 +474,28 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   departmentName: {
-    color: colors.BLACK(0.5),
-    fontSize: 13,
+    color: colors.BLACK(0.6),
+    fontSize: 14,
   },
   email: {
     color: colors.BLACK(0.6),
     fontSize: 13,
   },
   controls: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
     gap: 12,
     borderTop: `1px solid ${colors.GREY_LINE()}`,
     marginTop: 12,
     paddingTop: 12,
   },
-
+  formTitle: {
+    marginBottom: 40,
+    fontSize: 22,
+    textAlign: "center",
+    fontWeight: 500,
+  },
 });
 
 export default PaperVersionAuthorsAndMetadataStep;

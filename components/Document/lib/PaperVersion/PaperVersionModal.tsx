@@ -24,7 +24,6 @@ import VerifyIdentityBreadcrumbs, {
 import PaperVersionDeclarationStep from "./PaperVersionDeclarationStep";
 import { CloseIcon } from "~/config/themes/icons";
 
-
 interface Args {
   isOpen: boolean;
   closeModal: () => void;
@@ -257,7 +256,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
           />
         )}
         {step === "PREVIEW" && (
-          <PaperVersionPreviewStep 
+          <PaperVersionPreviewStep
             paper={latestPaper}
             title={title}
             abstract={abstract}
@@ -279,31 +278,32 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
             setAcceptedOriginality={setAcceptedOriginality}
           />
         )}
-        <div
-          className={css(
-            styles.buttonWrapper,
-            showBackButton && styles.buttonWrapperWithBack
-          )}
-        >
-          {showBackButton && (
+      </div>
+      <div
+        className={css(
+          styles.buttonWrapper,
+          showBackButton && styles.buttonWrapperWithBack
+        )}
+      >
+        {showBackButton && (
+          <div style={{ marginLeft: -10 }}>
             <Button onClick={() => handlePrevStep()} variant="text">
               <div className={css(styles.buttonWithIcon, styles.backButton)}>
                 <FontAwesomeIcon icon={faArrowLeft} />
                 Back
               </div>
             </Button>
-          )}
-          <Button
-            label={step === "PREVIEW" ? "Submit" : "Continue"}
-            onClick={() =>
-              step === "PREVIEW" ? handleSubmit() : handleNextStep()
-            }
-            theme="solidPrimary"
-            disabled={ false/*!isCurrentStepValid()*/}
-          />
-        </div>
+          </div>
+        )}
+        <Button
+          label={step === "PREVIEW" ? "Submit" : "Continue"}
+          onClick={() =>
+            step === "PREVIEW" ? handleSubmit() : handleNextStep()
+          }
+          theme="solidPrimary"
+          disabled={false /*!isCurrentStepValid()*/}
+        />
       </div>
-
     </BaseModal>
   );
 };
@@ -322,6 +322,9 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-end",
     marginTop: 35,
+    padding: "15px 25px",
+    boxSizing: "border-box",
+    borderTop: `1px solid rgb(202, 202, 203)`,
   },
   buttonWithIcon: {
     display: "flex",
@@ -362,10 +365,10 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 18,
     color: "#2A2B2B",
     width: "100%",
-    fontWeight: 400,
+    fontWeight: 500,
   },
   closeIcon: {
     cursor: "pointer",
@@ -376,7 +379,7 @@ const styles = StyleSheet.create({
   divider: {
     width: "100%",
     height: 1,
-    backgroundColor: "#E9EAEB",
+    backgroundColor: "rgb(202, 202, 203)",
   },
 });
 

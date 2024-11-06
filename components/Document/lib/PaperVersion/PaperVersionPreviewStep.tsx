@@ -2,9 +2,19 @@ import { StyleSheet, css } from "aphrodite";
 import FormTextArea from "~/components/Form/FormTextArea";
 import { Paper } from "../types";
 import { Hub } from "~/config/types/hub";
-import { SuggestedAuthor, SuggestedInstitution } from "~/components/SearchSuggestion/lib/types";
+import {
+  SuggestedAuthor,
+  SuggestedInstitution,
+} from "~/components/SearchSuggestion/lib/types";
 import colors from "~/config/themes/colors";
 import { HubBadge } from "~/components/Hubs/HubTag";
+import Avatar from "@mui/material/Avatar";
+import { isEmpty } from "~/config/utils/nullchecks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBuildingColumns,
+  faEnvelope,
+} from "@fortawesome/pro-solid-svg-icons";
 
 interface Props {
   paper: Paper | null;
@@ -34,7 +44,7 @@ const PaperVersionPreviewStep = ({
   return (
     <div className={css(styles.container)}>
       <h3 className={css(styles.sectionTitle)}>Preview changes</h3>
-      
+
       <div className={css(styles.section)}>
         <h4 className={css(styles.label)}>Title</h4>
         <p>{title}</p>
@@ -58,11 +68,50 @@ const PaperVersionPreviewStep = ({
         <h4 className={css(styles.label)}>Authors</h4>
         {authorsAndAffiliations.map((item, index) => (
           <div key={index} className={css(styles.author)}>
-            <p>{item.author.name}</p>
-            <p className={css(styles.institution)}>{item.institution.name}</p>
-            {item.isCorrespondingAuthor && (
-              <span className={css(styles.corresponding)}>Corresponding Author</span>
-            )}
+            <div className={css(styles.authorContent)}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <Avatar
+                  src={item.author.profileImage}
+                  sx={{ width: 24, height: 24, fontSize: 14 }}
+                >
+                  {isEmpty(item.author.profileImage) &&
+                    (item.author.fullName || "")[0]}
+                </Avatar>
+                <div className={css(styles.authorName)}>
+                  {item.author.fullName}
+                  {item.email && (
+                    <>
+                      - <div className={css(styles.email)}>{item.email}</div>
+                    </>
+                  )}
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <FontAwesomeIcon
+                  icon={faBuildingColumns}
+                  style={{ width: 24 }}
+                />
+                <div>
+                  <div className={css(styles.institutionName)}>
+                    {item.institution.name}
+                  </div>
+                  {item.department && (
+                    <div className={css(styles.departmentName)}>
+                      Department: {item.department}
+                    </div>
+                  )}
+                </div>
+              </div>
+              {item.isCorrespondingAuthor && (
+                <div className={css(styles.correspondingAuthor)}>
+                  <FontAwesomeIcon
+                    icon={faEnvelope}
+                    style={{ marginRight: 12, fontSize: 16 }}
+                  />
+                  Corresponding author
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -110,22 +159,50 @@ const styles = StyleSheet.create({
     color: colors.NEW_BLUE(),
   },
   author: {
-    marginBottom: 16,
+    padding: 16,
+    background: "white",
+    borderRadius: 4,
+    border: `1px solid ${colors.GREY_LINE()}`,
+    marginBottom: 12,
   },
-  institution: {
+  authorContent: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 10,
+  },
+  authorName: {
+    fontWeight: 500,
+    fontSize: 15,
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+  },
+  institutionName: {
+    color: colors.BLACK(0.6),
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  departmentName: {
     color: colors.BLACK(0.6),
     fontSize: 14,
   },
-  corresponding: {
-    fontSize: 12,
+  email: {
+    color: colors.BLACK(0.6),
+    fontSize: 13,
+  },
+  correspondingAuthor: {
+    fontSize: 13,
     color: colors.NEW_BLUE(),
-    marginLeft: 8,
+    fontWeight: 500,
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
   },
   subheading: {
     // fontSize: 16,
     color: colors.BLACK(0.6),
     marginBottom: 8,
-  }
+  },
 });
 
 export default PaperVersionPreviewStep;
