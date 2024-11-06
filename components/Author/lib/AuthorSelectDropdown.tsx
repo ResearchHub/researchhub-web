@@ -336,6 +336,7 @@ const formStyles = StyleSheet.create({
     fontSize: 14,
     color: colors.NEW_BLUE(),
     fontWeight: 500,
+    padding: "10px 4px",
   },
 });
 

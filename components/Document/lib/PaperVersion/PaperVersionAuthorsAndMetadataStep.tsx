@@ -17,6 +17,7 @@ import {
   faBuildingColumns,
   faTrash,
   faUserPlus,
+  faPlus,
 } from "@fortawesome/pro-solid-svg-icons";
 import Avatar from "@mui/material/Avatar";
 import { isEmpty } from "~/config/utils/nullchecks";
@@ -79,7 +80,7 @@ const PaperVersionAuthorsAndMetadataStep = ({
   };
 
   return (
-    <div>
+    <div style={{ minHeight: 250 }}>
       {isFormVisible ? (
         <AuthorAndAffiliationForm
           onAffiliationAdded={onAffiliationAdded}
@@ -102,7 +103,13 @@ const PaperVersionAuthorsAndMetadataStep = ({
                   No authors added yet. Click the button below to add authors and their affiliations.
                 </div>
                 <Button
-                  label="Add author"
+                  label={
+                    <div style={{ fontWeight: 500 }}>
+                      <FontAwesomeIcon icon={faPlus} style={{ marginRight: 8 }} />
+                      Add author
+                    </div>
+                  }
+                  variant="outlined"
                   onClick={() => setIsFormVisible(true)}
                   buttonStyle={{ marginTop: 16 }}
                 />
@@ -311,6 +318,7 @@ const AuthorAndAffiliationForm = ({ onAffiliationAdded, handleCloseForm }) => {
         />
         <Button
           label="Save"
+          variant="outlined"
           onClick={handleSubmit}
         />
       </div>
@@ -403,7 +411,7 @@ const styles = StyleSheet.create({
   emptyStateText: {
     color: colors.BLACK(0.6),
     fontSize: 15,
-    marginBottom: 8,
+    marginBottom: 20,
   },
   row: {
     display: "flex",

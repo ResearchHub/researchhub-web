@@ -4,6 +4,7 @@ import { Paper } from "../types";
 import { Hub } from "~/config/types/hub";
 import { SuggestedAuthor, SuggestedInstitution } from "~/components/SearchSuggestion/lib/types";
 import colors from "~/config/themes/colors";
+import { HubBadge } from "~/components/Hubs/HubTag";
 
 interface Props {
   paper: Paper | null;
@@ -32,7 +33,7 @@ const PaperVersionPreviewStep = ({
 }: Props) => {
   return (
     <div className={css(styles.container)}>
-      <h3 className={css(styles.sectionTitle)}>Preview</h3>
+      <h3 className={css(styles.sectionTitle)}>Preview changes</h3>
       
       <div className={css(styles.section)}>
         <h4 className={css(styles.label)}>Title</h4>
@@ -48,9 +49,7 @@ const PaperVersionPreviewStep = ({
         <h4 className={css(styles.label)}>Hubs</h4>
         <div className={css(styles.hubList)}>
           {selectedHubs.map((hub) => (
-            <span key={hub.id} className={css(styles.hub)}>
-              {hub.name}
-            </span>
+            <HubBadge key={hub.id} name={hub.name} />
           ))}
         </div>
       </div>
@@ -122,6 +121,11 @@ const styles = StyleSheet.create({
     color: colors.NEW_BLUE(),
     marginLeft: 8,
   },
+  subheading: {
+    // fontSize: 16,
+    color: colors.BLACK(0.6),
+    marginBottom: 8,
+  }
 });
 
 export default PaperVersionPreviewStep;

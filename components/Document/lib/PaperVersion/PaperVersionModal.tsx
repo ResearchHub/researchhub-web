@@ -22,6 +22,8 @@ import VerifyIdentityBreadcrumbs, {
   ProgressStepperStep,
 } from "~/components/shared/ProgressStepper";
 import PaperVersionDeclarationStep from "./PaperVersionDeclarationStep";
+import { CloseIcon } from "~/config/themes/icons";
+
 
 interface Args {
   isOpen: boolean;
@@ -202,12 +204,25 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
   return (
     <BaseModal
       isOpen={isOpen}
-      hideClose={false}
+      hideClose={true}
       closeModal={() => {
         closeModal();
       }}
+      titleStyle={styles.modalTitleStyle}
       zIndex={1000000}
-      title={"Submit new version"}
+      title={
+        <>
+          <div className={css(styles.headerContainer)}>
+            <span className={css(styles.modalTitle)}>Submit new version</span>
+            <CloseIcon
+              overrideStyle={styles.closeIcon}
+              color={colors.MEDIUM_GREY()}
+              onClick={() => closeModal()}
+            />
+          </div>
+          <div className={css(styles.divider)} />
+        </>
+      }
       modalContentStyle={styles.modalStyle}
     >
       <div className={css(styles.breadcrumbsWrapper)}>
@@ -264,31 +279,31 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
             setAcceptedOriginality={setAcceptedOriginality}
           />
         )}
+        <div
+          className={css(
+            styles.buttonWrapper,
+            showBackButton && styles.buttonWrapperWithBack
+          )}
+        >
+          {showBackButton && (
+            <Button onClick={() => handlePrevStep()} variant="text">
+              <div className={css(styles.buttonWithIcon, styles.backButton)}>
+                <FontAwesomeIcon icon={faArrowLeft} />
+                Back
+              </div>
+            </Button>
+          )}
+          <Button
+            label={step === "PREVIEW" ? "Submit" : "Next"}
+            onClick={() =>
+              step === "PREVIEW" ? handleSubmit() : handleNextStep()
+            }
+            theme="solidPrimary"
+            disabled={ false/*!isCurrentStepValid()*/}
+          />
+        </div>
       </div>
 
-      <div
-        className={css(
-          styles.buttonWrapper,
-          showBackButton && styles.buttonWrapperWithBack
-        )}
-      >
-        {showBackButton && (
-          <Button onClick={() => handlePrevStep()} variant="text">
-            <div className={css(styles.buttonWithIcon, styles.backButton)}>
-              <FontAwesomeIcon icon={faArrowLeft} />
-              Back
-            </div>
-          </Button>
-        )}
-        <Button
-          label={step === "PREVIEW" ? "Submit" : "Next"}
-          onClick={() =>
-            step === "PREVIEW" ? handleSubmit() : handleNextStep()
-          }
-          theme="solidPrimary"
-          disabled={ false/*!isCurrentStepValid()*/}
-        />
-      </div>
     </BaseModal>
   );
 };
@@ -306,6 +321,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "flex-end",
+    marginTop: 35,
   },
   buttonWithIcon: {
     display: "flex",
@@ -320,14 +336,47 @@ const styles = StyleSheet.create({
   },
   modalBody: {
     width: "100%",
+    padding: 25,
+    boxSizing: "border-box",
   },
   modalStyle: {
     width: 650,
     minHeight: 500,
+    padding: 0,
   },
   breadcrumbsWrapper: {
     marginTop: 20,
     marginBottom: 20,
+  },
+  modalTitleStyle: {
+    height: "auto",
+  },
+  headerContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "15px 10px",
+    marginTop: 0,
+    width: "100%",
+    textAlign: "center",
+    position: "relative",
+  },
+  modalTitle: {
+    fontSize: 20,
+    color: "#2A2B2B",
+    width: "100%",
+    fontWeight: 400,
+  },
+  closeIcon: {
+    cursor: "pointer",
+    marginRight: 20,
+    position: "absolute",
+    right: 20,
+  },
+  divider: {
+    width: "100%",
+    height: 1,
+    backgroundColor: "#E9EAEB",
   },
 });
 
