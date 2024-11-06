@@ -58,6 +58,7 @@ const DocumentVersionSelector = ({ versions }: Args) => {
         isOpen={isNewVersionModalOpen}
         closeModal={() => setIsNewVersionModalOpen(false)}
         versions={versions}
+        mode="NEW_VERSION"
       />
       <Menu
         softHide={true}

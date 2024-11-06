@@ -29,6 +29,7 @@ interface Args {
   isOpen: boolean;
   closeModal: () => void;
   versions: DocumentVersion[];
+  mode?: "CREATE" | "NEW_VERSION";
 }
 
 const stepperSteps: ProgressStepperStep[] = [
@@ -54,7 +55,7 @@ const stepperSteps: ProgressStepperStep[] = [
   },
 ];
 
-const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
+const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Args) => {
 
   // General State
   const [step, setStep] = useState<STEP>("CONTENT");
@@ -96,6 +97,11 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
   }, [latestPaper]);
 
   useEffect(() => {
+
+    if (mode === "CREATE") {
+      return;
+    }
+
     (async () => {
       const latestVersion = versions.filter((version) => version.isLatest)[0];
       const rawPaper = await fetchDocumentByType({
@@ -105,7 +111,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
       const parsed = parsePaper(rawPaper);
       setLatestPaper(parsed);
     })();
-  }, []);
+  }, [mode]);
 
   // Handlers
   const handleNextStep = () => {
@@ -181,7 +187,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
         closeModal();
       }}
       titleStyle={styles.modalTitleStyle}
-      zIndex={1000000}
+      zIndex={100000000}
       title={
         <>
           <div className={css(styles.headerContainer)}>

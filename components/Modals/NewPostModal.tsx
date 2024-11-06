@@ -52,6 +52,28 @@ export const getModalOptionItems = ({
   setButtonValues: (values: NewPostButtonContextValues) => void;
 }) => [
   {
+    key: "submit_research",
+    header: (
+      <div className={css(styles.header)}>
+        <span>Submit your Research</span>
+        <div className={css(styles.new)}>
+          <span className={css(styles.newText)}>NEW</span>
+        </div>
+      </div>
+    ),
+    description: "Submit your original research paper for review and publication.",
+    icon: (
+      <PaperIcon
+        height={40}
+        onClick={silentEmptyFnc}
+        width={40}
+        color={`#aeaeae`}
+        withAnimation={false}
+      />
+    ),
+    newFeature: true,
+  },  
+  {
     key: "paper_upload",
     header: "Share a Paper",
     description: "Share a paper with the community via a link or DOI.",
