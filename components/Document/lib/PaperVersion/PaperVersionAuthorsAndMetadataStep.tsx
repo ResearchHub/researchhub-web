@@ -18,6 +18,7 @@ import {
   faTrash,
   faUserPlus,
   faPlus,
+  faEnvelope,
 } from "@fortawesome/pro-solid-svg-icons";
 import Avatar from "@mui/material/Avatar";
 import { isEmpty } from "~/config/utils/nullchecks";
@@ -151,6 +152,10 @@ const PaperVersionAuthorsAndMetadataStep = ({
                     </div>
                     {authorAndAffiliation.isCorrespondingAuthor && (
                       <div className={css(styles.correspondingAuthor)}>
+                        <FontAwesomeIcon 
+                          icon={faEnvelope} 
+                          style={{ marginRight: 12 , fontSize: 16 }} 
+                        />
                         Corresponding author
                       </div>
                     )}
@@ -193,11 +198,19 @@ const PaperVersionAuthorsAndMetadataStep = ({
             )}
           </div>
           {authorsAndAffiliations.length > 0 && (
-            <Button
-              label="Add author"
-              onClick={() => setIsFormVisible(true)}
-              buttonStyle={{ marginTop: 20 }}
-            />
+            <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
+              <Button
+                variant="text"
+                label={
+                  <div style={{ fontWeight: 500 }}>
+                    <FontAwesomeIcon icon={faPlus} style={{ marginRight: 8 }} />
+                    Add author
+                  </div>
+                }
+                onClick={() => setIsFormVisible(true)}
+                buttonStyle={{ marginTop: 20 }}
+              />
+            </div>
           )}
         </>
       )}
@@ -372,6 +385,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.NEW_BLUE(),
     fontWeight: 500,
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
   },
   arrowControls: {
     display: "flex",

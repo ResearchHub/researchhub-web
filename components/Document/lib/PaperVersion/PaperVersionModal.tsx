@@ -294,7 +294,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions }: Args) => {
             </Button>
           )}
           <Button
-            label={step === "PREVIEW" ? "Submit" : "Next"}
+            label={step === "PREVIEW" ? "Submit" : "Continue"}
             onClick={() =>
               step === "PREVIEW" ? handleSubmit() : handleNextStep()
             }
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   breadcrumbsWrapper: {
-    marginTop: 20,
+    marginTop: 30,
     marginBottom: 20,
   },
   modalTitleStyle: {
