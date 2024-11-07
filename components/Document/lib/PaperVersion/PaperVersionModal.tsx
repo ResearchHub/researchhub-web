@@ -59,7 +59,7 @@ const stepperSteps: ProgressStepperStep[] = [
 const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Args) => {
 
   // General State
-  const [step, setStep] = useState<STEP>(mode === "CREATE" ? "INTRO" : "CONTENT");
+  const [step, setStep] = useState<STEP>("PREVIEW") //(mode === "CREATE" ? "INTRO" : "CONTENT");
   const [latestPaper, setLatestPaper] = useState<Paper | null>(null);
 
   // Form state
@@ -91,7 +91,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
   const [acceptedOriginality, setAcceptedOriginality] = useState(false);
 
   // Add to form state section
-  const [changeDescription, setChangeDescription] = useState<string>("");
+  const [changeDescription, setChangeDescription] = useState<string>(mode === "CREATE" ? "Initial submission" : "");
 
   // Add state for tracking field errors
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string | null}>({});
@@ -191,7 +191,13 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
         return !Object.values(declarationErrors).some(Boolean);
         
       case "PREVIEW":
-        return true;
+        const previewErrors = {
+          changeDescription: !changeDescription?.trim() 
+            ? "Please describe the changes made in this version" 
+            : null
+        };
+        setFieldErrors(previewErrors);
+        return !Object.values(previewErrors).some(Boolean);
         
       default:
         return false;
@@ -266,6 +272,14 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
     setAcceptedOriginality(accepted);
     if (fieldErrors.originality) {
       setFieldErrors(prev => ({ ...prev, originality: null }));
+    }
+  };
+
+  // Add handler to clear error when description changes
+  const handleChangeDescriptionUpdate = (value: string) => {
+    setChangeDescription(value);
+    if (fieldErrors.changeDescription) {
+      setFieldErrors(prev => ({ ...prev, changeDescription: null }));
     }
   };
 
@@ -345,7 +359,8 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
             selectedHubs={selectedHubs}
             authorsAndAffiliations={authorsAndAffiliations}
             changeDescription={changeDescription}
-            setChangeDescription={setChangeDescription}
+            setChangeDescription={handleChangeDescriptionUpdate}
+            error={fieldErrors.changeDescription}
           />
         )}
         {step === "DECLARATION" && (

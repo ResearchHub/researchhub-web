@@ -30,6 +30,7 @@ interface Props {
   }>;
   changeDescription: string;
   setChangeDescription: (value: string) => void;
+  error?: string | null;
 }
 
 const PaperVersionPreviewStep = ({
@@ -40,6 +41,7 @@ const PaperVersionPreviewStep = ({
   authorsAndAffiliations,
   changeDescription,
   setChangeDescription,
+  error,
 }: Props) => {
   return (
     <div className={css(styles.container)}>
@@ -52,7 +54,7 @@ const PaperVersionPreviewStep = ({
 
       <div className={css(styles.section)}>
         <h4 className={css(styles.label)}>Abstract</h4>
-        <p style={{ fontSize: 14,}}>{abstract}</p>
+        <p>{abstract}</p>
       </div>
 
       <div className={css(styles.section)}>
@@ -119,10 +121,14 @@ const PaperVersionPreviewStep = ({
       <div className={css(styles.section)}>
         <h4 className={css(styles.label)}>Change Description</h4>
         <FormTextArea
-          value={changeDescription}
-          onChange={(e) => setChangeDescription(e.target.value)}
+          value={changeDescription || ""}
+          onChange={(name, value) => {
+            setChangeDescription(value)
+          }}
+          required={true}
           placeholder="Describe the changes made in this version..."
           rows={4}
+          error={error}
         />
       </div>
     </div>
