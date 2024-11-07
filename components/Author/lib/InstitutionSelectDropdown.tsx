@@ -128,8 +128,6 @@ const InstitutionSelectDropdown = ({
     SuggestedInstitution[]
   >([]);
 
-  console.log("suggestedInstitutions", suggestedInstitutions);
-
   const handleSuggestedInstitutionInputChange = async (value: string) => {
     if (value.length >= 3) {
       const suggestions = await fetchInstitutionSuggestions({ query: value });

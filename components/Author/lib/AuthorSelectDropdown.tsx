@@ -66,7 +66,7 @@ export const selectDropdownStyles = {
 
 const SingleValue: React.FC<any> = (props) => {
   const author = props.data.author;
-console.log('props', props)
+
   if (!author) return null;
 
   return (
