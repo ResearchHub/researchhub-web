@@ -6,6 +6,7 @@ import { COMMENT_TYPES, parseComment } from "~/components/Comment/lib/types";
 import getDocumentFromRaw, {
   DocumentType,
   GenericDocument,
+  isPaper,
   Post,
 } from "~/components/Document/lib/types";
 import Error from "next/error";
@@ -22,12 +23,16 @@ import useCurrentUser from "~/config/hooks/useCurrentUser";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import { breakpoints } from "~/config/themes/screen";
 import colors from "~/config/themes/colors";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHourglassHalf, faCheckCircle, faExclamationCircle } from "@fortawesome/free-solid-svg-icons"; // Import icons
 import CommentEditor from "~/components/Comment/CommentEditor";
 import { genClientId } from "~/config/utils/id";
 import { fetchPeerReviewers } from "~/components/PeerReview/lib/api";
 import { PeerReview } from "~/config/types/peerReview";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { 
+  faStar, // Changed from faPenToSquare
+  faComments // For Community Reviews
+} from "@fortawesome/pro-regular-svg-icons";
 
 
 interface Args {
@@ -51,12 +56,6 @@ const DocumentCommentsPage: NextPage<Args> = ({
     config.width
   );
 
-  const [peerReviewers, setPeerReviewers] = useState<PeerReview[]>([]);
-
-  useEffect(() => {
-    fetchPeerReviewers(17).then(setPeerReviewers);
-  }, []);
-
   const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({
     rawMetadata: metadata,
     unifiedDocumentId: documentData?.unified_document?.id,
@@ -66,9 +65,6 @@ const DocumentCommentsPage: NextPage<Args> = ({
     documentType,
   });
   const { revalidateDocument } = useCacheControl();
-
-  const [showReviewEditor, setShowReviewEditor] = useState(false);
-  const [editorType, setEditorType] = useState<COMMENT_TYPES | null>(null);
 
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
@@ -84,6 +80,10 @@ const DocumentCommentsPage: NextPage<Args> = ({
     });
     return <Error statusCode={500} />;
   }
+
+  const isAssignedReviewer = isPaper(document) && document.peerReviews.some(
+    review => review.user.id === currentUser?.id && review.status === "PENDING"
+  );
 
   const commentCount = 0;
 
@@ -108,84 +108,46 @@ const DocumentCommentsPage: NextPage<Args> = ({
           className={css(styles.bodyContentWrapper)}
           style={{ maxWidth: viewerWidth }}
         >
-          {tabName === "reviews" && (
-            <div className={"peer-reviews-section " + css(styles.peerReviewsSection)}>
-              <h2>Peer Reviews</h2>
-              <ul className={css(styles.list)}>
-                {peerReviewers.map((reviewer) => (
-                  <li key={reviewer.id} className={css(styles.versionCard)}>
-                    <div className={css(styles.versionHeader)}>
-                      <AuthorAvatar
-                        size={32}
-                        authorProfile={reviewer.user.authorProfile}
-                      />
-                      <div className={css(styles.versionInfo)}>
-                        <div className={css(styles.versionLabel)}>
-                          {reviewer.user.firstName} {reviewer.user.lastName}
-                        </div>
-                        <div className={css(styles.versionMessage)}>
-                          Assigned on: {reviewer.createdDate.toLocaleDateString()}
-                        </div>
-                        <div className={css(styles.status)}>
-                          {reviewer.status === "PENDING" && (
-                            <>
-                              <FontAwesomeIcon icon={faHourglassHalf} className={css(styles.pendingIcon)} />
-                              <span className={css(styles.pendingText)}>Pending</span>
-                            </>
-                          )}
-                          {reviewer.status === "APPROVED" && (
-                            <>
-                              <FontAwesomeIcon icon={faCheckCircle} className={css(styles.approvedIcon)} />
-                              <span className={css(styles.approvedText)}>Approved</span>
-                            </>
-                          )}
-                          {reviewer.status === "CHANGES_REQUESTED" && (
-                            <>
-                              <FontAwesomeIcon icon={faExclamationCircle} className={css(styles.changesRequestedIcon)} />
-                              <span className={css(styles.changesRequestedText)}>Changes Requested</span>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                      {currentUser?.id === reviewer.user.id && (
-                        <button
-                          className={css(styles.switchButton)}
-                          onClick={() => {
-                            setEditorType(COMMENT_TYPES.PEER_REVIEW);
-                            setShowReviewEditor(true);
-                          }}
-                        >
-                          Add your Review
-                        </button>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              {showReviewEditor && (
-                <div>
-                  <button
-                    className={css(styles.backButton)}
-                    onClick={() => setShowReviewEditor(false)}
-                  >
-                    Back
-                  </button>
-                  <CommentEditor
-                    editorId={genClientId()}
-                    editorType={COMMENT_TYPES.PEER_REVIEW}
-                    handleSubmit={async (props) => {
-                      // Handle submit logic
-                    }}
-                    allowBounty={false}
-                    author={currentUser?.authorProfile}
-                    allowCommentTypeSelection={false}
+          {tabName === "reviews" && isAssignedReviewer && (
+            <div className={"peer-reviews-section " + css(styles.peerReviewEditor)}>
+              <div className={css(styles.sectionHeaderWrapper)}>
+                <h2 className={css(styles.sectionHeader)}>
+                  <FontAwesomeIcon 
+                    icon={faStar} 
+                    className={css(styles.headerIcon)} 
                   />
-                </div>
-              )}
+                  Peer Reviews
+                </h2>
+                <p className={css(styles.sectionSubtext)}>
+                  Editorially curated peer reviews from our network of experts
+                </p>
+              </div>
+              <CommentEditor
+                editorId={genClientId()}
+                commentType={COMMENT_TYPES.PEER_REVIEW}
+                handleSubmit={async (props) => {
+                  // Handle submit logic
+                  await revalidateDocument();
+                }}
+                allowBounty={false}
+                author={currentUser?.authorProfile}
+                allowCommentTypeSelection={false}
+              />
             </div>
           )}
           <div className={css(styles.communityReviewsSection)}>
-            <h2>Community Reviews</h2>
+            <div className={css(styles.sectionHeaderWrapper)}>
+              <h2 className={css(styles.sectionHeader)}>
+                <FontAwesomeIcon 
+                  icon={faComments} 
+                  className={css(styles.headerIcon)} 
+                />
+                Community Reviews
+              </h2>
+              <p className={css(styles.sectionSubtext)}>
+                Reviews completed by members of our research community
+              </p>
+            </div>
             <CommentFeed
               document={document}
               showFilters={false}
@@ -222,103 +184,32 @@ const styles = StyleSheet.create({
   bodyContentWrapper: {
     margin: "0 auto",
   },
-  peerReviewsSection: {
-    marginBottom: 20,
+  peerReviewEditor: {
+    marginBottom: 32,
   },
   communityReviewsSection: {
     marginTop: 20,
   },
-  list: {
-    listStyleType: "none", // Remove bullet points
-    padding: 0,
-  },
-  versionCard: {
-    padding: 16,
-    borderRadius: 8,
-    border: "1px solid #E0E0E0",
+  sectionHeaderWrapper: {
     marginBottom: 16,
-    backgroundColor: "#fff",
   },
-  versionHeader: {
-    display: "flex",
-    alignItems: "flex-start",
-    gap: 12,
-  },
-  versionInfo: {
-    flex: 1,
-  },
-  versionLabel: {
-    fontWeight: 500,
-    color: "#2a2a2a",
+  sectionHeader: {
     display: "flex",
     alignItems: "center",
+    gap: 8,
+    fontSize: 20,
+    fontWeight: 500,
+    color: colors.BLACK(0.8),
     marginBottom: 4,
   },
-  versionMessage: {
-    color: "#666",
+  headerIcon: {
+    fontSize: 18,
+    color: colors.BLACK(0.6),
+  },
+  sectionSubtext: {
     fontSize: 14,
-    lineHeight: "1.4",
-  },
-  status: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 8,
-  },
-  pendingIcon: {
-    color: "orange",
-  },
-  approvedIcon: {
-    color: "green",
-  },
-  changesRequestedIcon: {
-    color: "red",
-  },
-  pendingText: {
-    color: "orange",
-  },
-  approvedText: {
-    color: "green",
-  },
-  changesRequestedText: {
-    color: "red",
-  },
-  switchButton: {
-    marginLeft: "auto",
-    padding: "6px 12px",
-    borderRadius: 4,
-    border: `1px solid ${colors.NEW_BLUE()}`,
-    backgroundColor: "white",
-    color: colors.NEW_BLUE(),
-    cursor: "pointer",
-    fontSize: 13,
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    ":hover": {
-      backgroundColor: "#F5F9FF",
-    },
-    [`@media (max-width: ${breakpoints.mobile.str})`]: {
-      padding: "6px",
-      minWidth: 32,
-      justifyContent: "center",
-    },
-  },
-  backButton: {
-    marginBottom: 10,
-    padding: "6px 12px",
-    borderRadius: 4,
-    border: `1px solid ${colors.NEW_BLUE()}`,
-    backgroundColor: "white",
-    color: colors.NEW_BLUE(),
-    cursor: "pointer",
-    fontSize: 13,
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    ":hover": {
-      backgroundColor: "#F5F9FF",
-    },
+    color: colors.BLACK(0.5),
+    marginLeft: 26,
   },
 });
 

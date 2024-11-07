@@ -4,6 +4,7 @@ import {
   faLayerGroup,
   faComments,
   faCheck,
+  faHourglass,
 } from "@fortawesome/pro-solid-svg-icons";
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
@@ -59,7 +60,9 @@ const ContentBadgeBase = ({
       ]}
     >
       <div data-delay-show={500} data-tip={tooltip} style={{ display: "flex" }}>
-        {contentType === "paper" ? (
+        {contentType === "status" ? (
+          <span>{label}</span>
+        ) : contentType === "paper" ? (
           <>
             <span className={css(styles.icon)}>
               <PaperIcon withAnimation={false} onClick={undefined} />
@@ -400,6 +403,10 @@ const styles = StyleSheet.create({
   transitionOpacity: {
     opacity: 1,
     height: 17,
+  },
+  badgeFor_status: {
+    background: colors.LIGHTER_GREY(1.0),
+    color: colors.BLACK(0.7),
   },
 });
 

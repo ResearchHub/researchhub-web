@@ -41,7 +41,7 @@ import { faBookmark as solidBookmark } from "@fortawesome/pro-solid-svg-icons";
 import DocumentVersionSelector from "./lib/DocumentVersionSelector";
 import { isResearchHubPaper } from "./lib/util";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
-import { PeerReview } from "~/config/types/peerReview";
+import { parsePeerReview, PeerReview } from "../PeerReview/lib/types";
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
 );
