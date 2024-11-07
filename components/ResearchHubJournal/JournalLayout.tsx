@@ -7,22 +7,26 @@ type JournalLayoutProps = {
   children: React.ReactNode;
 };
 
+const showTabs = false; // Set to true when ready to show
+
 export default function JournalLayout({ children }: JournalLayoutProps) {
   const router = useRouter();
   const currentPath = router.pathname;
 
   return (
     <div className={css(styles.container)}>
-      <div className={css(styles.tabNavigation)}>
-        <div className={css(styles.tabContainer)}>
-          <button 
-            className={css(styles.tab, currentPath === "/researchhub-journal" && styles.activeTab)}
-            onClick={() => router.push('/researchhub-journal')}
-          >
-            About
-          </button>
+      {showTabs && (
+        <div className={css(styles.tabNavigation)}>
+          <div className={css(styles.tabContainer)}>
+            <button 
+              className={css(styles.tab, currentPath === "/researchhub-journal" && styles.activeTab)}
+              onClick={() => router.push('/researchhub-journal')}
+            >
+              About
+            </button>
+          </div>
         </div>
-      </div>
+      )}
       {children}
     </div>
   );
