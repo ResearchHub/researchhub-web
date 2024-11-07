@@ -20,6 +20,7 @@ import {
   faPlus,
   faEnvelope,
   faInfoCircle,
+  faExclamationCircle,
 } from "@fortawesome/pro-solid-svg-icons";
 
 import Avatar from "@mui/material/Avatar";
@@ -39,9 +40,11 @@ type AuthorAffiliation = {
 const PaperVersionAuthorsAndMetadataStep = ({
   authorsAndAffiliations,
   setAuthorsAndAffiliations,
+  error,
 }: {
   authorsAndAffiliations: Array<AuthorAffiliation>;
   setAuthorsAndAffiliations: Function;
+  error?: string | null;
 }) => {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
@@ -93,6 +96,15 @@ const PaperVersionAuthorsAndMetadataStep = ({
         />
       ) : (
         <>
+          {error && (
+            <div className={css(styles.errorMessage)}>
+              <FontAwesomeIcon 
+                icon={faExclamationCircle} 
+                className={css(styles.errorIcon)}
+              />
+              {error}
+            </div>
+          )}
           {authorsAndAffiliations.length > 0 && (
             <div className={css(styles.orderingNote)}>
               <div className={css(styles.orderingTitleRow)}>
@@ -560,6 +572,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     background: colors.LIGHTER_GREY(),
+  },
+  errorMessage: {
+    color: colors.RED(),
+    fontSize: 14,
+    padding: "12px 16px",
+    backgroundColor: colors.RED(0.1),
+    borderRadius: 4,
+    marginBottom: 16,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+  },
+  errorIcon: {
+    fontSize: 16,
   },
 });
 

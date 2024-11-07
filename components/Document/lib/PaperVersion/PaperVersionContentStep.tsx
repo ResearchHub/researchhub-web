@@ -38,6 +38,7 @@ export type ContentStepProps = {
   onFileUpload: (objectKey: string, absoluteUrl: string) => void;
   onFileUploadError: (error: Error) => void;
   fileUploadError: Error | null;
+  fieldErrors: {[key: string]: string | null};
 };
 
 const PaperVersionContentStep = ({
@@ -52,12 +53,13 @@ const PaperVersionContentStep = ({
   onFileUpload,
   onFileUploadError,
   fileUploadError,
+  fieldErrors,
 }: ContentStepProps) => {
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <div className={css(formStyles.inputWrapper)}>
         <FormInput
-          error={typeof title === "string" && title.length === 0}
+          error={fieldErrors.title}
           value={title}
           label="Title"
           required
@@ -75,10 +77,11 @@ const PaperVersionContentStep = ({
           required
           placeholder="Abstract of your manuscript"
           inputStyle={formStyles.textArea}
-          value={abstract || ""}
+          value={abstract}
           onChange={(_name, value) => {
             setAbstract(value);
           }}
+          error={fieldErrors.abstract}
         />
       </div>
 
@@ -96,6 +99,7 @@ const PaperVersionContentStep = ({
           value={articleTypeOptions.find(
             (option) => option.value === selectedWorkType
           )}
+          error={fieldErrors.workType}
         />
       </div>
 
@@ -116,6 +120,7 @@ const PaperVersionContentStep = ({
           onChange={(hubs) => {
             setSelectedHubs(hubs);
           }}
+          error={fieldErrors.hubs}
         />
       </div>
 
@@ -123,7 +128,7 @@ const PaperVersionContentStep = ({
         <FormFileUpload
           required
           label="Upload manuscript file"
-          error={fileUploadError ? "Failed to upload file" : null}
+          error={fieldErrors.file || (fileUploadError ? "Failed to upload file" : null)}
           onUploadComplete={onFileUpload}
           onUploadFError={onFileUploadError}
           helperText="Only PDF files supported at this time"

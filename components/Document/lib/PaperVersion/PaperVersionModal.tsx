@@ -67,6 +67,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
   const [selectedWorkType, setSelectedWorkType] =
     useState<WORK_TYPE>("article");
   const [abstract, setAbstract] = useState<null | string>(null);
+  console.log("abstract", abstract);
   const [selectedHubs, setSelectedHubs] = useState<Hub[]>([]);
   const [authorsAndAffiliations, setAuthorsAndAffiliations] = useState<
     Array<{
@@ -90,6 +91,9 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
 
   // Add to form state section
   const [changeDescription, setChangeDescription] = useState<string>("");
+
+  // Add state for tracking field errors
+  const [fieldErrors, setFieldErrors] = useState<{[key: string]: string | null}>({});
 
   useEffect(() => {
     setTitle(latestPaper?.title || null);
@@ -153,30 +157,99 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
 
   const showBackButton = step !== "CONTENT";
 
-  const isCurrentStepValid = () => {
+  // Replace isCurrentStepValid with validateCurrentStep
+  const validateCurrentStep = (): boolean => {
     switch (step) {
       case "CONTENT":
-        return (
-          title &&
-          title.length > 0 &&
-          abstract &&
-          abstract.length > 0 &&
-          selectedHubs.length > 0 &&
-          uploadedFileUrl
-        );
+        const contentErrors = {
+          title: !title ? "Title is required" : null,
+          abstract: !abstract ? "Abstract is required" : null,
+          hubs: selectedHubs.length === 0 ? "Please select at least one hub" : null,
+          file: !uploadedFileUrl ? "Please upload a file" : null,
+        };
+        setFieldErrors(contentErrors);
+        return !Object.values(contentErrors).some(Boolean);
+        
       case "AUTHORS_AND_METADATA":
-        return authorsAndAffiliations.length > 0;
+        const authorErrors = {
+          authors: authorsAndAffiliations.length === 0 
+            ? "Add at least one author" 
+            : null,
+        };
+        setFieldErrors(authorErrors);
+        return !Object.values(authorErrors).some(Boolean);
+        
+      case "DECLARATION":
+        const declarationErrors = {
+          terms: !acceptedTerms ? "Please accept the terms and conditions" : null,
+          license: !acceptedLicense ? "Please accept the license agreement" : null,
+          authorship: !acceptedAuthorship ? "Please confirm authorship" : null,
+          originality: !acceptedOriginality ? "Please confirm originality" : null,
+        };
+        setFieldErrors(declarationErrors);
+        return !Object.values(declarationErrors).some(Boolean);
+        
       case "PREVIEW":
         return true;
-      case "DECLARATION":
-        return (
-          acceptedTerms &&
-          acceptedLicense &&
-          acceptedAuthorship &&
-          acceptedOriginality
-        );
+        
       default:
         return false;
+    }
+  };
+
+  // Update the button click handler
+  const handleNextOrSubmit = () => {
+    if (validateCurrentStep()) {
+      if (step === "PREVIEW") {
+        handleSubmit();
+      } else {
+        handleNextStep();
+      }
+    }
+  };
+
+  // Update handlers to clear errors when fields change
+  const handleTitleChange = (value: string) => {
+    setTitle(value);
+    if (fieldErrors.title) {
+      setFieldErrors(prev => ({ ...prev, title: null }));
+    }
+  };
+
+  const handleAbstractChange = (value: string) => {
+    setAbstract(value);
+    if (fieldErrors.abstract) {
+      setFieldErrors(prev => ({ ...prev, abstract: null }));
+    }
+  };
+
+  const handleHubsChange = (hubs: Hub[]) => {
+    setSelectedHubs(hubs);
+    if (fieldErrors.hubs) {
+      setFieldErrors(prev => ({ ...prev, hubs: null }));
+    }
+  };
+
+  const handleFileUpload = (objectKey: string, absoluteUrl: string) => {
+    setUploadedFileUrl(absoluteUrl);
+    console.log("uploadedFileUrl", uploadedFileUrl);
+    setUploadError(null);
+    if (fieldErrors.file) {
+      setFieldErrors(prev => ({ ...prev, file: null }));
+    }
+  };
+
+  const handleTermsChange = (accepted: boolean) => {
+    setAcceptedTerms(accepted);
+    if (fieldErrors.terms) {
+      setFieldErrors(prev => ({ ...prev, terms: null }));
+    }
+  };
+
+  const handleLicenseChange = (accepted: boolean) => {
+    setAcceptedLicense(accepted);
+    if (fieldErrors.license) {
+      setFieldErrors(prev => ({ ...prev, license: null }));
     }
   };
 
@@ -219,18 +292,16 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
         )}
         {step === "CONTENT" && (
           <PaperVersionContentStep
+            fieldErrors={fieldErrors}
             abstract={abstract}
             selectedHubs={selectedHubs}
             title={title}
             selectedWorkType={selectedWorkType}
-            setAbstract={setAbstract}
-            setSelectedHubs={setSelectedHubs}
-            setTitle={setTitle}
+            setAbstract={handleAbstractChange}
+            setSelectedHubs={handleHubsChange}
+            setTitle={handleTitleChange}
             setSelectedWorkType={setSelectedWorkType}
-            onFileUpload={(objectKey, absoluteUrl) => {
-              setUploadedFileUrl(absoluteUrl);
-              setUploadError(null);
-            }}
+            onFileUpload={handleFileUpload}
             onFileUploadError={(error) => {
               setUploadError(error);
             }}
@@ -241,6 +312,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
           <PaperVersionAuthorsAndMetadataStep
             authorsAndAffiliations={authorsAndAffiliations}
             setAuthorsAndAffiliations={setAuthorsAndAffiliations}
+            error={fieldErrors.authors}
           />
         )}
         {step === "PREVIEW" && (
@@ -257,9 +329,9 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
         {step === "DECLARATION" && (
           <PaperVersionDeclarationStep
             acceptedTerms={acceptedTerms}
-            setAcceptedTerms={setAcceptedTerms}
+            setAcceptedTerms={handleTermsChange}
             acceptedLicense={acceptedLicense}
-            setAcceptedLicense={setAcceptedLicense}
+            setAcceptedLicense={handleLicenseChange}
             acceptedAuthorship={acceptedAuthorship}
             setAcceptedAuthorship={setAcceptedAuthorship}
             acceptedOriginality={acceptedOriginality}
@@ -286,9 +358,8 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
           )}
           <Button
             label={step === "PREVIEW" ? "Submit" : "Continue"}
-            onClick={() => step === "PREVIEW" ? handleSubmit() : handleNextStep()}
+            onClick={handleNextOrSubmit}
             theme="solidPrimary"
-            disabled={!isCurrentStepValid()}
           />
         </div>
       )}
