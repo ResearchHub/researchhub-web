@@ -141,6 +141,16 @@ const accordionItems = [
           <li className={styles.contentText}>Researchers with strong publication history and relevant expertise</li>
           <li className={styles.contentText}>Compensated $150 per high-quality peer review</li>
           <li className={styles.contentText}>Required to complete reviews within 14 days</li>
+          <li className={styles.contentText}>Provide constructive and actionable feedback using our{' '}
+              <a 
+                href="https://drive.google.com/file/d/1t7NpL39ghnBY9ImWjuunbc6gzmzrhqUt/view?ref=blog.researchhub.foundation" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className={styles.link}
+              >
+                structured review template
+              </a>
+            </li>
         </ul>
         <p className={styles.contentText}>We strive to maintain a diverse pool of qualified reviewers across disciplines to ensure thorough and timely evaluation of submissions. We choose to pay peer reviewers to share their reviews openly because:</p>
         <ul>
@@ -184,10 +194,9 @@ const accordionItems = [
         <p className={styles.contentText}><strong>Peer-Reviewed Publication - $1,000</strong></p>
         <ul>
           <li className={styles.contentText}>All preprint benefits included</li>
-          <li className={styles.contentText}>2+ expert open peer reviews</li>
-          <li className={styles.contentText}>2 days to initial editorial decision</li>
+          <li className={styles.contentText}>2+ expert open peer reviews within 14 days</li>
           <li className={styles.contentText}>21 days to publication decision</li>
-          <li className={styles.contentText}>Publication in ResearchHub Journal upon acceptance</li>
+          <li className={styles.contentText}>Immediate publication in the ResearchHub journal upon acceptance</li>
         </ul>
 
         <p className={styles.contentText}>The APC supports our innovative peer review system. We compensate expert reviewers for their valuable contributions especially in the open. Authors receive comprehensive feedback to improve their work regardless of the final editorial decision, enhancing the quality and visibility of their research.</p>
@@ -199,7 +208,7 @@ const accordionItems = [
     title: "DOI's for preprints, papers, and peer reviews",
     content: (
       <>
-        <p className={styles.contentText}>We provide DOIs for:</p>
+        <p className={styles.contentText}>We leverage <a href="https://www.crossref.org/services/content-registration/#:~:text=When%20you%20join%20Crossref%20as,via%20machine%20or%20human%20interfaces." target="_blank" rel="noopener noreferrer">CrossRef</a> to provide DOIs for:</p>
         <ul>
           <li className={styles.contentText}>Preprints upon submission</li>
           <li className={styles.contentText}>Peer reviews</li>
@@ -216,11 +225,14 @@ const accordionItems = [
       <>
         <p className={styles.contentText}>All content is published under open licenses:</p>
         <ul>
-          <li className={styles.contentText}>Research articles: CC-BY 4.0</li>
+          <li className={styles.contentText}>Manuscripts: CC-BY 4.0</li>
+        </ul>
+        <p className={styles.contentText}>Additionally, we highly recommend leveraging existing repositories such as Zenodo to provide open access to data and GitHub to provide open source software access alongside your publication. </p>
+        <ul>
           <li className={styles.contentText}>Data: CC0 or CC-BY</li>
           <li className={styles.contentText}>Code: MIT, Apache, or similar open source license</li>
         </ul>
-        <p className={styles.contentText}>This ensures maximum reusability while maintaining proper attribution.</p>
+        <p className={styles.contentText}>This ensures maximum reusability and increases the likelihood of your work replicating in the future, while maintaining proper attribution.</p>
       </>
     )
   }
