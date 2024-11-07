@@ -22,6 +22,7 @@ interface Props {
   containerStyle?: any;
   showSelectedHubs?: boolean;
   showCountInsteadOfLabels?: boolean;
+  error?: string | null;
 }
 
 export const selectDropdownStyles = {
@@ -88,6 +89,7 @@ const HubSelectDropdown = ({
   dropdownStyles = selectDropdownStyles,
   showSelectedHubs = true,
   showCountInsteadOfLabels = false,
+  error = null,
 }: Props) => {
   const [suggestedHubs, setSuggestedHubs] = useState<HubSuggestion[]>([]);
 
@@ -119,7 +121,19 @@ const HubSelectDropdown = ({
         required={required}
         reactStyles={{}}
         inputStyle={formStyles.inputStyle}
-        reactSelect={{ styles: dropdownStyles }}
+        reactSelect={{ 
+          styles: {
+            ...dropdownStyles,
+            control: (base, state) => ({
+              ...base,
+              borderColor: error ? colors.RED() : base.borderColor,
+              '&:hover': {
+                borderColor: error ? colors.RED() : base.borderColor,
+              }
+            })
+          } 
+        }}
+        error={error}
         noOptionsMessage={(value) => {
           return value.inputValue.length >= 3
             ? "No hubs found"
@@ -185,6 +199,14 @@ const formStyles = StyleSheet.create({
   inputStyle: {},
   formWrapper: {
     width: "100%",
+  },
+  error: {
+    margin: 0,
+    padding: 0,
+    marginTop: 4,
+    marginBottom: 10,
+    color: colors.RED(1),
+    fontSize: 12,
   },
 });
 

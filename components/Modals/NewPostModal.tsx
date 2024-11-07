@@ -35,7 +35,7 @@ import AskQuestionForm from "~/components/Question/AskQuestionForm";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX } from "@fortawesome/pro-regular-svg-icons";
+import { faX, faUpload, faFileArrowUp } from "@fortawesome/pro-solid-svg-icons";
 import { NullableString } from "~/config/types/root_types";
 
 export type NewPostModalProps = {
@@ -50,55 +50,75 @@ export const getModalOptionItems = ({
   currentUser: any;
   router: NextRouter;
   setButtonValues: (values: NewPostButtonContextValues) => void;
-}) => [
-  {
-    key: "paper_upload",
-    header: "Share a Paper",
-    description: "Share a paper with the community via a link or DOI.",
-    icon: (
-      <PaperIcon
-        height={40}
-        onClick={silentEmptyFnc}
-        width={40}
-        color={`#aeaeae`}
-        withAnimation={false}
-      />
-    ),
-  },
-  {
-    key: "question",
-    header: (
-      <div className={css(styles.header)}>
-        <span>Ask a Question</span>
-      </div>
-    ),
-    description:
-      "Ask a science related question. Add a bounty to incentivize quality submissions.",
-    icon: (
-      <QuestionIcon
-        color={`#aeaeae`}
-        onClick={silentEmptyFnc}
-        withAnimation={false}
-        size={40}
-      />
-    ),
-  },
-  {
-    key: "eln",
-    header: "Publish a Post",
-    description:
-      "All posts must be academic in nature. Ideas, theories, and questions to the community are all welcome.",
-    icon: (
-      <PostIcon
-        height={40}
-        onClick={silentEmptyFnc}
-        width={40}
-        color={`#aeaeae`}
-        withAnimation={false}
-      />
-    ),
-  },
-];
+}) => {
+  const showResearchSubmission = router.asPath.includes('exp=submit');
+  
+  return [
+    ...(showResearchSubmission ? [{
+      key: "submit_research",
+      header: (
+        <div className={css(styles.header)}>
+          <span>Submit your Research</span>
+        </div>
+      ),
+      description: "Submit your original research to ResearchHub. Optionally pay to publish in the ResearchHub Journal.",
+      icon: (
+        <FontAwesomeIcon
+          icon={faFileArrowUp}
+          className={css(styles.submitIcon)}
+        />
+      ),
+      newFeature: true,
+    }] : []),
+    {
+      key: "paper_upload",
+      header: "Share a Paper",
+      description: "Share a paper with the community via a link or DOI.",
+      icon: (
+        <PaperIcon
+          height={40}
+          onClick={silentEmptyFnc}
+          width={40}
+          color={`#aeaeae`}
+          withAnimation={false}
+        />
+      ),
+    },
+    {
+      key: "question",
+      header: (
+        <div className={css(styles.header)}>
+          <span>Ask a Question</span>
+        </div>
+      ),
+      description:
+        "Ask a science related question. Add a bounty to incentivize quality submissions.",
+      icon: (
+        <QuestionIcon
+          color={`#aeaeae`}
+          onClick={silentEmptyFnc}
+          withAnimation={false}
+          size={40}
+        />
+      ),
+    },
+    {
+      key: "eln",
+      header: "Publish a Post",
+      description:
+        "All posts must be academic in nature. Ideas, theories, and questions to the community are all welcome.",
+      icon: (
+        <PostIcon
+          height={40}
+          onClick={silentEmptyFnc}
+          width={40}
+          color={`#aeaeae`}
+          withAnimation={false}
+        />
+      ),
+    },
+  ];
+};
 
 function NewPostModal({
   currentUser,
@@ -353,6 +373,22 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: 660px)`]: {
       width: "100%",
     },
+  },
+  iconWrapper: {
+    position: "relative",
+  },
+  overlayIcon: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    color: colors.WHITE(),
+    fontSize: "16px",
+  },
+  submitIcon: {
+    fontSize: 40,
+    color: "#aeaeae",
   },
 });
 

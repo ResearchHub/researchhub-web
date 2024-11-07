@@ -17,6 +17,7 @@ const FormTextArea = (props) => {
     value,
     passedRef,
     autoFocus,
+    error,
   } = props;
 
   return (
@@ -38,13 +39,18 @@ const FormTextArea = (props) => {
       <TextareaAutosize
         inputRef={(ref) => (passedRef = ref)}
         autoFocus={autoFocus && autoFocus}
-        className={css(styles.input, styles.text, inputStyle && inputStyle)}
+        className={css(
+          styles.input,
+          styles.text,
+          inputStyle && inputStyle,
+          error && styles.errorInput
+        )}
         required={required && required}
         placeholder={placeholder && placeholder}
-        // style={inputStyle && inputStyle}
         onChange={(e) => onChange && onChange(id, e.target.value)}
         value={value}
       />
+      {error && <p className={css(styles.text, styles.error)}>{error}</p>}
     </div>
   );
 };
@@ -106,6 +112,26 @@ const styles = StyleSheet.create({
   },
   hide: {
     display: "none",
+  },
+  errorInput: {
+    borderColor: colors.RED(),
+    ":hover": {
+      borderColor: colors.RED(),
+    },
+    ":focus": {
+      borderColor: colors.RED(),
+      ":hover": {
+        cursor: "text",
+      },
+    },
+  },
+  error: {
+    margin: 0,
+    padding: 0,
+    marginTop: 4,
+    marginBottom: 10,
+    color: colors.RED(1),
+    fontSize: 12,
   },
 });
 

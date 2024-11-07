@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons";
-import { SyntheticEvent } from "react";
+import { SyntheticEvent, useState } from "react";
 import { DEFAULT_POST_BUTTON_VALUES, NewPostButtonContext } from "~/components/contexts/NewPostButtonContext";
 import { useContext } from "react";
 import Button from "./Form/Button";
@@ -21,6 +21,7 @@ import { useRouter } from "next/router";
 import { createNewNote } from "~/config/fetch";
 import { NOTE_GROUPS } from "./Notebook/config/notebookConstants";
 import { breakpoints } from "~/config/themes/screen";
+import PaperVersionModal from "./Document/lib/PaperVersion/PaperVersionModal";
 
 export type NewPostButtonProps = {
   customButtonStyle?: object;
@@ -45,7 +46,10 @@ export default function NewPostButton({
     buttonValues?.isOpen &&
     !buttonValues?.isQuestionType &&
     buttonValues?.type !== "bounty" &&
+    buttonValues?.type !== "submit_research" &&
     isEmpty(buttonValues.wizardBodyType);
+
+  const [showPaperVersionModal, setShowPaperVersionModal] = useState<boolean>(false);
 
   const popoverOptionCards = filterNull(
     getModalOptionItems({ currentUser, router, setButtonValues })
@@ -102,6 +106,13 @@ export default function NewPostButton({
               type: "bounty",
             });
             break;
+          case "submit_research":
+            setShowPaperVersionModal(true);
+            setButtonValues({
+              ...DEFAULT_POST_BUTTON_VALUES,
+              isOpen: false,
+            });
+            break;
           default:
             emptyFncWithMsg("No optionKey found");
         }
@@ -110,58 +121,67 @@ export default function NewPostButton({
     />
   ));
   return (
-    <PermissionNotificationWrapper
-      loginRequired
-      modalMessage="create a new post"
-      onClick={(): void => {
-        buttonValues.isOpen
-          ? setButtonValues({ ...buttonValues, isOpen: false })
-          : setButtonValues({ ...buttonValues, isOpen: true });
-      }}
-      permissionKey="CreatePaper"
-      styling={styles.rippleClass}
-    >
-      <ResearchHubPopover
-        containerStyle={{ zIndex: 100 }}
-        positions={["bottom", "right"]}
-        onClickOutside={(): void =>
-          setButtonValues({ ...buttonValues, isOpen: false })
-        }
-        popoverContent={
-          <div
-            style={{
-              backgroundColor: "#fff",
-              borderRadius: 4,
-              boxShadow: `3px 2px 12px ${colors.STANDARD_BOX_SHADOW}`,
-              position: "fixed",
-              left: isMinimized ? 12 : 26,
-              top: 124,
-            }}
-          >
-            {popoverOptionCards}
-          </div>
-        }
-        isOpen={shouldOpenPopover}
-        targetContent={
-          <Button
-            customButtonStyle={customButtonStyle && customButtonStyle}
-            hideRipples={true}
-            label={
-              // isLink prop does not allow onClick to trigger on link click
-              <div className={css(styles.newPostLabel)}>
-                <FontAwesomeIcon
-                  // @ts-ignore icon prop works with FontAwesome
-                  icon={faPlus}
-                />
-                {!isMinimized && <span>{"New"}</span>}
-              </div>
-            }
-            onClick={() => onClick && onClick()}
-            size={"newPost"}
-          />
-        }
+    <>
+      <PermissionNotificationWrapper
+        loginRequired
+        modalMessage="create a new post"
+        onClick={(): void => {
+          buttonValues.isOpen
+            ? setButtonValues({ ...buttonValues, isOpen: false })
+            : setButtonValues({ ...buttonValues, isOpen: true });
+        }}
+        permissionKey="CreatePaper"
+        styling={styles.rippleClass}
+      >
+        <ResearchHubPopover
+          containerStyle={{ zIndex: 100 }}
+          positions={["bottom", "right"]}
+          onClickOutside={(): void =>
+            setButtonValues({ ...buttonValues, isOpen: false })
+          }
+          popoverContent={
+            <div
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: 4,
+                boxShadow: `3px 2px 12px ${colors.STANDARD_BOX_SHADOW}`,
+                position: "fixed",
+                left: isMinimized ? 12 : 26,
+                top: 124,
+              }}
+            >
+              {popoverOptionCards}
+            </div>
+          }
+          isOpen={shouldOpenPopover}
+          targetContent={
+            <Button
+              customButtonStyle={customButtonStyle && customButtonStyle}
+              hideRipples={true}
+              label={
+                // isLink prop does not allow onClick to trigger on link click
+                <div className={css(styles.newPostLabel)}>
+                  <FontAwesomeIcon
+                    // @ts-ignore icon prop works with FontAwesome
+                    icon={faPlus}
+                  />
+                  {!isMinimized && <span>{"New"}</span>}
+                </div>
+              }
+              onClick={() => onClick && onClick()}
+              size={"newPost"}
+            />
+          }
+        />
+      </PermissionNotificationWrapper>
+      
+      <PaperVersionModal 
+        isOpen={showPaperVersionModal}
+        closeModal={() => setShowPaperVersionModal(false)}
+        versions={[]}
+        mode="CREATE"
       />
-    </PermissionNotificationWrapper>
+    </>
   );
 }
 

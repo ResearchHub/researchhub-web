@@ -40,7 +40,6 @@ const ProgressStepper = ({ steps, selected }) => {
   );
 };
 
-
 const styles = StyleSheet.create({
   breadcrumbs: {
     display: "flex",
@@ -56,18 +55,19 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: "50%",
-    backgroundColor: "#ccc",
+    backgroundColor: "rgb(227, 226, 226)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 7,
+    color: colors.MEDIUM_GREY2(),
   },
   selectedStep: {
     backgroundColor: colors.NEW_BLUE(),
     color: "#fff",
   },
   selectedStepText: {
-    fontWeight: "bold",
+    fontWeight: 500,
     color: colors.BLACK(),
   },
   stepText: {

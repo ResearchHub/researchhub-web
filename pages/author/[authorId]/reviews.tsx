@@ -5,11 +5,9 @@ import { css, StyleSheet } from "aphrodite";
 import AuthorProfileHeader from "~/components/Author/Profile/AuthorProfileHeader";
 import { AuthorProfileContextProvider } from "~/components/Author/lib/AuthorProfileContext";
 import AuthorNavigation from "~/components/Author/Profile/AuthorNavigation";
-import fetchContributionsAPI from "~/components/LiveFeed/api/fetchContributionsAPI";
 import AuthorComments from "~/components/Author/Profile/AuthorComments";
 import { ClipLoader } from "react-spinners";
 import colors from "~/config/themes/colors";
-import { useEffect } from "react";
 import { breakpoints } from "~/config/themes/screen";
 
 

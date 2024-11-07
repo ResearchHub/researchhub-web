@@ -142,3 +142,22 @@ export const fetchProfileData = async ({
 
   return Promise.all(promises);
 }
+
+export const createAuthor = async ({
+  firstName,
+  lastName,
+}: {
+  firstName: string;
+  lastName: string;
+}) => {
+  const url = generateApiUrl('author');
+  
+  const response = await fetch(url, {
+    ...API.POST_CONFIG({
+      first_name: firstName,
+      last_name: lastName,
+    }),
+  }).then(Helpers.parseJSON);
+
+  return response;
+};

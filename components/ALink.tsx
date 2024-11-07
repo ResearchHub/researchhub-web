@@ -8,6 +8,7 @@ export const themes = {
   solidPrimary: "linkThemeSolidPrimary",
   blackAndBlue: "blankAndBlue",
   green: "green",
+  blue: "blue",
 };
 
 interface Props {
@@ -78,6 +79,13 @@ export const styles = StyleSheet.create({
     color: colors.BLACK(),
     ":hover": {
       color: colors.NEW_BLUE(),
+    },
+  },
+  blue: {
+    color: colors.NEW_BLUE(),
+    ":hover": {
+      color: colors.NEW_BLUE(),
+      textDecoration: "underline",
     },
   },
   green: {

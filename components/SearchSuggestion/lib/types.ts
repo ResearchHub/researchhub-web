@@ -17,6 +17,34 @@ export type SuggestedUser = {
   authorProfile: AuthorProfile;
 };
 
+export type SuggestedInstitution = {
+  id: ID;
+  name: string;
+  worksCount: number;
+  thumbnailImageUrl?: string;
+  imageUrl?: string;
+  hIndex?: number;
+  i10Index?: number;
+  region?: string;
+  city?: string;
+  countryCode?: string;
+}
+
+export type SuggestedAuthor = {
+  id: ID;
+  fullName: string;
+  profileImage: string;
+  institutions: Array<{
+    id: ID;
+    name: string;
+  }>;
+  headline: string;
+  reputationHubs: string[];
+  userId?: ID;
+  createdDate?: string;
+  education: string;
+};
+
 export type HubSuggestion = {
   id: ID;
   hub: Hub;
@@ -59,7 +87,41 @@ export type QuestionSuggestion = {
 
 export type Suggestion = {
   suggestionType: "hub" | "user" | "paper" | "post" | "question" | "journal";
-  data: HubSuggestion | SuggestedUser | PaperSuggestion | PostSuggestion | JournalSuggestion;
+  data:
+    | HubSuggestion
+    | SuggestedUser
+    | PaperSuggestion
+    | PostSuggestion
+    | JournalSuggestion;
+};
+
+export const parseInstitutionSuggestion = (raw: any): SuggestedInstitution => {
+  return {
+    id: raw.id,
+    name: raw.display_name,
+    worksCount: raw.works_count,
+    thumbnailImageUrl: raw.image_thumbnail_url || null,
+    imageUrl: raw.image_url || null,
+    hIndex: raw.h_index,
+    i10Index: raw.i10_index,
+    region: raw.region,
+    city: raw.city,
+    countryCode: raw.country_code,
+  };
+}
+
+export const parseAuthorSuggestion = (raw: any): SuggestedAuthor => {
+  return {
+    id: raw.id,
+    fullName: raw.full_name || (raw.first_name + " " + raw.last_name) || "",
+    profileImage: raw.profile_image || null,
+    institutions: raw.institutions,
+    education: raw.education,
+    headline: raw?.headline?.title || "",
+    reputationHubs: raw.reputation_hubs || [],
+    userId: raw.user_id,
+    createdDate: formatDateStandard(raw.created_date, "MMM D, YYYY"),
+  };
 };
 
 export const parsePaperSuggestion = (raw: any): PaperSuggestion => {

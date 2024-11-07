@@ -32,6 +32,8 @@ export type ContentInstance = {
   unifiedDocumentId?: ID;
 };
 
+export type WORK_TYPE = "article" | "review" | "case-study" | "short-report";
+
 export type ApiDocumentType =
   | "researchhubpost"
   | "paper"
@@ -95,6 +97,15 @@ export type Authorship = {
   isCorresponding: boolean;
 };
 
+export type DocumentVersion = {
+  version: string;
+  publishedDate: string;
+  versionMessage: string;
+  formattedLabel: string;
+  paperId: ID;
+  isLatest: boolean;
+};
+
 export interface GenericDocument {
   srcUrl: string;
   id: ID;
@@ -129,6 +140,8 @@ export type Paper = GenericDocument & {
   pdfUrl?: string;
   proxyPdfUrl?: string;
   pdfCopyrightAllowsDisplay?: boolean;
+  versions: DocumentVersion[];
+  workType?: WORK_TYPE;
 };
 
 export type Post = GenericDocument & {
@@ -164,6 +177,19 @@ export const parseReviewSummary = (raw: any): ReviewSummary => {
   return {
     count: raw?.count || 0,
     averageRating: raw?.avg || 0,
+  };
+};
+
+export const parseVersion = (raw: any): DocumentVersion => {
+  const formattedDate = formatDateStandard(raw.published_date, "MMM D, YYYY");
+
+  return {
+    version: raw.version,
+    paperId: raw.paper_id,
+    publishedDate: formattedDate,
+    versionMessage: raw.message,
+    isLatest: raw.is_latest,
+    formattedLabel: `v ${raw.version} (${formattedDate})`,
   };
 };
 
@@ -204,6 +230,7 @@ export const parsePaper = (raw: any, shouldStripHTML = true): Paper => {
     title: shouldStripHTML ? stripHTML(title) : title,
     authors: parsePaperAuthors(raw),
     journal: raw.external_source,
+    versions: (raw.version_list || []).map((v) => parseVersion(v)),
     isOpenAccess: Boolean(raw.is_open_access),
     laymanTitle: shouldStripHTML ? stripHTML(raw.title) : raw.title,
     publishedDate: formatDateStandard(raw.paper_publish_date, "MMM D, YYYY"),
@@ -213,6 +240,7 @@ export const parsePaper = (raw: any, shouldStripHTML = true): Paper => {
     type: "paper",
     apiDocumentType: "paper",
     pdfUrl: raw.pdf_url,
+    workType: raw.work_type || null,
     proxyPdfUrl: raw.pdf_url ? proxyApi.generateProxyUrl(raw.pdf_url) : null,
     pdfCopyrightAllowsDisplay: Boolean(raw.pdf_copyright_allows_display),
     ...(raw.pdf_license && { license: raw.pdf_license }),

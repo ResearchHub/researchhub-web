@@ -154,7 +154,7 @@ const Menu = ({
                     <>
                       {isMultiSelect ? (
                         selected.includes(value)
-                      ) : selected === value ? (
+                      ) : String(selected) === String(value) ? (
                         <div className={css(styles.selected)}>
                           {label}
                           <FontAwesomeIcon icon={faCheck} />
