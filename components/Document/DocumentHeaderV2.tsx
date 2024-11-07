@@ -155,7 +155,7 @@ const DocumentHeader = ({
             ) && (
                 <div className={css(styles.reviewRequestBanner)}>
                   <span className={css(styles.reviewRequestText)}>
-                    You were requested to complete a peer review on this document
+                    You were requested to complete a peer review on this document on Nov 7th, 2024
                   </span>
                   <button
                     className={css(styles.reviewRequestButton)}
@@ -553,20 +553,21 @@ const styles = StyleSheet.create({
     },
   },
   reviewRequestBanner: {
-    backgroundColor: "#fff8c5",
+    backgroundColor: "rgb(255 250 215)",
     border: "1px solid rgba(212, 167, 44, 0.4)",
     padding: "8px 16px",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 16,
+    borderRadius: 4,
   },
   reviewRequestText: {
     color: "#24292f",
     fontSize: 14,
   },
   reviewRequestButton: {
-    padding: "6px 12px",
+    padding: "8px 12px",
     borderRadius: 4,
     backgroundColor: colors.NEW_BLUE(),
     color: "white",
