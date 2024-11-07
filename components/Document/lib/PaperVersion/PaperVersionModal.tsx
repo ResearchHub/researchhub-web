@@ -33,29 +33,6 @@ interface Args {
   mode?: "CREATE" | "NEW_VERSION";
 }
 
-const stepperSteps: ProgressStepperStep[] = [
-  {
-    title: "Content",
-    number: 1,
-    value: "CONTENT",
-  },
-  {
-    title: "Authors",
-    number: 2,
-    value: "AUTHORS_AND_METADATA",
-  },
-  {
-    title: "Declarations",
-    number: 3,
-    value: "DECLARATION",
-  },
-  {
-    title: "Preview",
-    number: 4,
-    value: "PREVIEW",
-  },
-];
-
 const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Args) => {
 
   // General State
@@ -119,6 +96,29 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
     })();
   }, [mode]);
 
+  const stepperSteps: ProgressStepperStep[] = [
+    {
+      title: "Content",
+      number: 1,
+      value: "CONTENT",
+    },
+    {
+      title: "Authors",
+      number: 2,
+      value: "AUTHORS_AND_METADATA",
+    },
+    ...(mode === "CREATE" ? [{
+      title: "Declarations",
+      number: 3,
+      value: "DECLARATION",
+    }] : []),
+    {
+      title: "Preview",
+      number: mode === "CREATE" ? 4 : 3,
+      value: "PREVIEW",
+    },
+  ];
+
   // Handlers
   const handleNextStep = () => {
     const currentIndex = ORDERED_STEPS.indexOf(step);
@@ -181,6 +181,8 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
         return !Object.values(authorErrors).some(Boolean);
         
       case "DECLARATION":
+        if (mode === "NEW_VERSION") return true;
+        
         const declarationErrors = {
           terms: !acceptedTerms ? "Please accept the terms and conditions" : null,
           license: !acceptedLicense ? "Please accept the license agreement" : null,
@@ -363,7 +365,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
             error={fieldErrors.changeDescription}
           />
         )}
-        {step === "DECLARATION" && (
+        {step === "DECLARATION" && mode === "CREATE" && (
           <PaperVersionDeclarationStep
             acceptedTerms={acceptedTerms}
             setAcceptedTerms={handleTermsChange}
