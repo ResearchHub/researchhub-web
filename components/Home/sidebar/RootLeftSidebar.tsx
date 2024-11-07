@@ -623,8 +623,11 @@ const styles = StyleSheet.create({
   rootLeftSidebar: {
     background: colors.GREY_ICY_BLUE_HUE,
     boxSizing: "border-box",
-    position: "relative",
+    position: "sticky",
+    top: 0,
     zIndex: 10,
+    height: "100vh",
+    overflowY: "auto",
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
     },

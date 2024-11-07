@@ -72,7 +72,7 @@ function ResearchHubJournalPage(): JSX.Element {
             <ScrollingHubTags />
 
             <div className={css(styles.featureList)}>
-              <FeatureItem text="21 days from submission to peer review completion" />
+              <FeatureItem text="14 days from submission to peer review completion" />
             </div>
           </div>
         </div>
