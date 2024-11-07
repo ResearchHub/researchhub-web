@@ -19,6 +19,7 @@ import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { stripHTML } from "~/config/utils/string";
 import { Fundraise, parseFundraise } from "~/components/Fundraise/lib/types";
 import proxyApi from "~/config/proxy-api";
+import { parsePeerReview, PeerReview } from "~/components/PeerReview/lib/types";
 
 export type DocumentFormat = {
   type: "pdf" | "latex";
@@ -142,6 +143,7 @@ export type Paper = GenericDocument & {
   pdfCopyrightAllowsDisplay?: boolean;
   versions: DocumentVersion[];
   workType?: WORK_TYPE;
+  peerReviews: PeerReview[];
 };
 
 export type Post = GenericDocument & {
@@ -194,6 +196,7 @@ export const parseVersion = (raw: any): DocumentVersion => {
 };
 
 export const parseGenericDocument = (raw: any): GenericDocument => {
+
   const parsed: GenericDocument = {
     // @ts-ignore
     type: undefined, // Will be defined in concrete types
@@ -243,6 +246,7 @@ export const parsePaper = (raw: any, shouldStripHTML = true): Paper => {
     workType: raw.work_type || null,
     proxyPdfUrl: raw.pdf_url ? proxyApi.generateProxyUrl(raw.pdf_url) : null,
     pdfCopyrightAllowsDisplay: Boolean(raw.pdf_copyright_allows_display),
+    peerReviews: (raw.peer_reviews || []).map(parsePeerReview),
     ...(raw.pdf_license && { license: raw.pdf_license }),
   };
 

@@ -109,7 +109,7 @@ const DocumentCommentsPage: NextPage<Args> = ({
           style={{ maxWidth: viewerWidth }}
         >
           {tabName === "reviews" && (
-            <div className={css(styles.peerReviewsSection)}>
+            <div className={"peer-reviews-section " + css(styles.peerReviewsSection)}>
               <h2>Peer Reviews</h2>
               <ul className={css(styles.list)}>
                 {peerReviewers.map((reviewer) => (

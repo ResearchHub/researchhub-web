@@ -40,6 +40,8 @@ import { faBookmark } from "@fortawesome/pro-regular-svg-icons";
 import { faBookmark as solidBookmark } from "@fortawesome/pro-solid-svg-icons";
 import DocumentVersionSelector from "./lib/DocumentVersionSelector";
 import { isResearchHubPaper } from "./lib/util";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
+import { PeerReview } from "~/config/types/peerReview";
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
 );
@@ -68,9 +70,7 @@ const DocumentHeader = ({
   const headerWrapperRef = useRef<HTMLDivElement>(null);
   const [stickyVisible, setStickyVisible] = useState<boolean>(false);
   const [stickyOffset, setStickyOffset] = useState<number>(0);
-  const currentUser = useSelector((state: RootState) =>
-    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
-  );
+  const currentUser = useCurrentUser();
 
   const tabs = getTabs({
     router,
@@ -101,9 +101,26 @@ const DocumentHeader = ({
     };
   }, []);
 
+  const handleReviewClick = () => {
+    const { documentId, documentSlug } = router.query;
+    const documentType = router.asPath.split("/")[1];
+    const reviewsPath = `/${documentType}/${documentId}/${documentSlug}/reviews`;
+    
+    router.push(reviewsPath, undefined, { 
+      shallow: true 
+    }).then(() => {
+      // After URL update, scroll to the reviews section
+      const reviewsSection = document.querySelector('.peer-reviews-section');
+      if (reviewsSection) {
+        const y = reviewsSection.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({top: y, behavior: 'smooth'});
+      }
+    });
+  };
+
   return (
     <div ref={headerWrapperRef} className={css(styles.headerRoot)}>
-      {/* <DocumentPageTutorial /> */}
+
       <div
         className={css(
           styles.stickyHeader,
@@ -131,6 +148,24 @@ const DocumentHeader = ({
           }
         >
           <div>
+            {isPaper(doc) && doc.peerReviews.some(
+              (reviewer) =>
+                reviewer.user.id === currentUser?.id &&
+                reviewer.status === "PENDING"
+            ) && (
+                <div className={css(styles.reviewRequestBanner)}>
+                  <span className={css(styles.reviewRequestText)}>
+                    You were requested to complete a peer review on this document
+                  </span>
+                  <button
+                    className={css(styles.reviewRequestButton)}
+                    onClick={handleReviewClick}
+                  >
+                    Add your review
+                  </button>
+                </div>
+              )}
+
             <div className={css(styles.topLine)}>
               <div className={css(styles.badgesWrapper)}>
                 <DocumentBadges document={doc} metadata={metadata} />
@@ -515,6 +550,34 @@ const styles = StyleSheet.create({
     ":hover": {
       background: colors.DARKER_GREY(0.2),
       transition: "0.2s",
+    },
+  },
+  reviewRequestBanner: {
+    backgroundColor: "#fff8c5",
+    border: "1px solid rgba(212, 167, 44, 0.4)",
+    padding: "8px 16px",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  reviewRequestText: {
+    color: "#24292f",
+    fontSize: 14,
+  },
+  reviewRequestButton: {
+    padding: "6px 12px",
+    borderRadius: 4,
+    backgroundColor: colors.NEW_BLUE(),
+    color: "white",
+    border: "none",
+    cursor: "pointer",
+    fontSize: 13,
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    ":hover": {
+      backgroundColor: colors.NEW_BLUE(0.8),
     },
   },
 });
