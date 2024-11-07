@@ -24,6 +24,8 @@ import PaperVersionDeclarationStep from "./PaperVersionDeclarationStep";
 import { CloseIcon } from "~/config/themes/icons";
 import { MessageActions } from "~/redux/message";
 import PaperVersionIntroStep from "./PaperVersionIntroStep";
+import PaperVersionSuccessStep from "./PaperVersionSuccessStep";
+import ClipLoader from "react-spinners/ClipLoader";
 const { setMessage, showMessage } = MessageActions;
 
 interface Args {
@@ -72,6 +74,12 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
 
   // Add state for tracking field errors
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string | null}>({});
+
+  // Add new state for tracking submission
+  const [submittedPaperId, setSubmittedPaperId] = useState<number | null>(null);
+
+  // Add new state for tracking submission
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setTitle(latestPaper?.title || null);
@@ -139,8 +147,9 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
   };
 
   const handleSubmit = async () => {
+    setIsSubmitting(true);
     try {
-      await createPaperAPI({
+      const response = await createPaperAPI({
         title: title || "",
         abstract: abstract || "",
         previousPaperId: latestPaper?.id,
@@ -154,9 +163,13 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
           is_corresponding: authorAndAffiliation.isCorrespondingAuthor,
         })),
       });
+      
+      setSubmittedPaperId(response.id);
+      setStep("SUCCESS");
     } catch (e) {
-      // FIXME
       alert('error')
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -317,7 +330,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
       modalContentStyle={styles.modalStyle}
     >
       <div className={css(styles.breadcrumbsWrapper)}>
-        {step !== "INTRO" && (
+        {!["INTRO", "SUCCESS"].includes(step) && (
           <VerifyIdentityBreadcrumbs selected={step} steps={stepperSteps} />
         )}
       </div>
@@ -382,8 +395,14 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
             fieldErrors={fieldErrors}
           />
         )}
+        {step === "SUCCESS" && submittedPaperId && (
+          <PaperVersionSuccessStep
+            paperId={submittedPaperId}
+            paperTitle={title || ""}
+          />
+        )}
       </div>
-      {step !== "INTRO" && (
+      {step !== "INTRO" && step !== "SUCCESS" && (
         <div
           className={css(
             styles.buttonWrapper,
@@ -401,9 +420,18 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
             </div>
           )}
           <Button
-            label={step === "PREVIEW" ? "Submit" : "Continue"}
+            label={
+              isSubmitting ? (
+                <div className={css(styles.loadingContainer)}>
+                  <ClipLoader size={20} color="#fff" />
+                </div>
+              ) : (
+                step === "PREVIEW" ? "Submit" : "Continue"
+              )
+            }
             onClick={handleNextOrSubmit}
             theme="solidPrimary"
+            disabled={true}
           />
         </div>
       )}
@@ -483,6 +511,13 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 1,
     backgroundColor: "rgb(202, 202, 203)",
+  },
+  loadingContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 26, // Match the height of the text
+    width: 60,
   },
 });
 
