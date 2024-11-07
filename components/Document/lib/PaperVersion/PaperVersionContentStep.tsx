@@ -14,12 +14,16 @@ import colors from "~/config/themes/colors";
 export const articleTypeOptions: Array<{ value: WORK_TYPE; label: string }> = [
   {
     value: "article",
-    label: "Research Article",
+    label: "Original Research Article",
   },
   {
-    value: "review",
-    label: "Review Article",
+    value: "case-study",
+    label: "Case Study",
   },
+  {
+    value: "short-report",
+    label: "Short communication",
+  },  
 ];
 
 export type ContentStepProps = {
@@ -50,16 +54,30 @@ const PaperVersionContentStep = ({
   fileUploadError,
 }: ContentStepProps) => {
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column" }}>
       <div className={css(formStyles.inputWrapper)}>
         <FormInput
           error={typeof title === "string" && title.length === 0}
           value={title}
           label="Title"
-          placeholder={"Paper title"}
+          required
+          placeholder="Title of your manuscript"
           containerStyle={formStyles.inputContainer}
           onChange={(name, value) => {
             setTitle(value);
+          }}
+        />
+      </div>
+
+      <div className={css(formStyles.inputWrapper)}>
+        <FormTextArea
+          label="Abstract"
+          required
+          placeholder="Abstract of your manuscript"
+          inputStyle={formStyles.textArea}
+          value={abstract || ""}
+          onChange={(_name, value) => {
+            setAbstract(value);
           }}
         />
       </div>
@@ -71,9 +89,9 @@ const PaperVersionContentStep = ({
           }}
           id="article-type"
           label="Article type"
+          required
           options={articleTypeOptions}
           placeholder="Select article type"
-          required={true}
           type="select"
           value={articleTypeOptions.find(
             (option) => option.value === selectedWorkType
@@ -82,20 +100,8 @@ const PaperVersionContentStep = ({
       </div>
 
       <div className={css(formStyles.inputWrapper)}>
-        <FormTextArea
-          label="Abstract"
-          placeholder="Abstract"
-          inputStyle={formStyles.textArea}
-          value={abstract || ""}
-          onChange={(_name, value) => {
-            setAbstract(value);
-          }}
-        />
-      </div>
-
-      <div className={css(formStyles.inputWrapper)}>
         <HubSelectDropdown
-          label={null}
+          label={"Hubs"}
           selectedHubs={selectedHubs}
           showSelectedHubs={false}
           dropdownStyles={{
@@ -105,7 +111,8 @@ const PaperVersionContentStep = ({
               width: "100%",
             },
           }}
-          placeholder={"Hubs"}
+          placeholder={<div style={{ textTransform: "initial"}}>Tag your manuscript with relevant hubs</div>}
+          required
           onChange={(hubs) => {
             setSelectedHubs(hubs);
           }}
@@ -114,7 +121,8 @@ const PaperVersionContentStep = ({
 
       <div className={css(formStyles.inputWrapper)}>
         <FormFileUpload
-          label="Upload research file"
+          required
+          label="Upload manuscript file"
           error={fileUploadError ? "Failed to upload file" : null}
           onUploadComplete={onFileUpload}
           onUploadFError={onFileUploadError}

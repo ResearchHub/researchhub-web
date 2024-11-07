@@ -15,6 +15,7 @@ interface FormFileUploadProps {
   error?: string | null;
   disabled?: boolean;
   helperText?: string;
+  required?: boolean;
 }
 
 const FormFileUpload = ({
@@ -24,6 +25,7 @@ const FormFileUpload = ({
   disabled,
   onUploadFError,
   helperText,
+  required = false,
 }: FormFileUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -106,7 +108,12 @@ const FormFileUpload = ({
 
   return (
     <div className={css(styles.inputContainer, disabled && styles.disabled)} onClick={() => open()}>
-      {label && <div className={css(styles.inputLabel)}>{label}</div>}
+      {label && (
+        <div className={css(styles.inputLabel)}>
+          {label}
+          {required && <span className={css(styles.required)}>*</span>}
+        </div>
+      )}
       <div
         {...getRootProps()}
         className={css(styles.input, Boolean(error) && styles.errorInput)}
@@ -224,8 +231,8 @@ const styles = StyleSheet.create({
     textOverflow: "ellipsis",
   },
   placeholder: {
-    fontSize: 14,
-    color: colors.BLACK(0.6),
+    fontSize: 16,
+    color: colors.BLACK(0.5),
   },
   buttonContainer: {
     marginLeft: "auto",
@@ -266,6 +273,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 8,
     fontWeight: 500,
+  },
+  required: {
+    color: "rgb(78, 83, 255)",
   },
 });
 

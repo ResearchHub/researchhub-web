@@ -23,6 +23,7 @@ import VerifyIdentityBreadcrumbs, {
 import PaperVersionDeclarationStep from "./PaperVersionDeclarationStep";
 import { CloseIcon } from "~/config/themes/icons";
 import { MessageActions } from "~/redux/message";
+import PaperVersionIntroStep from "./PaperVersionIntroStep";
 const { setMessage, showMessage } = MessageActions;
 
 interface Args {
@@ -58,7 +59,7 @@ const stepperSteps: ProgressStepperStep[] = [
 const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Args) => {
 
   // General State
-  const [step, setStep] = useState<STEP>("CONTENT");
+  const [step, setStep] = useState<STEP>(mode === "CREATE" ? "INTRO" : "CONTENT");
   const [latestPaper, setLatestPaper] = useState<Paper | null>(null);
 
   // Form state
@@ -191,8 +192,11 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
       title={
         <>
           <div className={css(styles.headerContainer)}>
-            <span className={css(styles.modalTitle)}>Submit new version</span>
+            <span className={css(styles.modalTitle)}>
+              {mode === "CREATE" ? "Submit research" : "Submit new version"}
+            </span>
             <CloseIcon
+              // @ts-ignore
               overrideStyle={styles.closeIcon}
               color={colors.MEDIUM_GREY()}
               onClick={() => closeModal()}
@@ -204,10 +208,15 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
       modalContentStyle={styles.modalStyle}
     >
       <div className={css(styles.breadcrumbsWrapper)}>
-        <VerifyIdentityBreadcrumbs selected={step} steps={stepperSteps} />
+        {step !== "INTRO" && (
+          <VerifyIdentityBreadcrumbs selected={step} steps={stepperSteps} />
+        )}
       </div>
 
       <div className={css(styles.modalBody)}>
+        {step === "INTRO" && (
+          <PaperVersionIntroStep onStart={handleNextStep} />
+        )}
         {step === "CONTENT" && (
           <PaperVersionContentStep
             abstract={abstract}
@@ -258,31 +267,31 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
           />
         )}
       </div>
-      <div
-        className={css(
-          styles.buttonWrapper,
-          showBackButton && styles.buttonWrapperWithBack
-        )}
-      >
-        {showBackButton && (
-          <div style={{ marginLeft: -10 }}>
-            <Button onClick={() => handlePrevStep()} variant="text">
-              <div className={css(styles.buttonWithIcon, styles.backButton)}>
-                <FontAwesomeIcon icon={faArrowLeft} />
-                Back
-              </div>
-            </Button>
-          </div>
-        )}
-        <Button
-          label={step === "PREVIEW" ? "Submit" : "Continue"}
-          onClick={() =>
-            step === "PREVIEW" ? handleSubmit() : handleNextStep()
-          }
-          theme="solidPrimary"
-          disabled={false /*!isCurrentStepValid()*/}
-        />
-      </div>
+      {step !== "INTRO" && (
+        <div
+          className={css(
+            styles.buttonWrapper,
+            showBackButton && styles.buttonWrapperWithBack
+          )}
+        >
+          {showBackButton  && (
+            <div style={{ marginLeft: -10 }}>
+              <Button onClick={() => handlePrevStep()} variant="text">
+                <div className={css(styles.buttonWithIcon, styles.backButton)}>
+                  <FontAwesomeIcon icon={faArrowLeft} />
+                  Back
+                </div>
+              </Button>
+            </div>
+          )}
+          <Button
+            label={step === "PREVIEW" ? "Submit" : "Continue"}
+            onClick={() => step === "PREVIEW" ? handleSubmit() : handleNextStep()}
+            theme="solidPrimary"
+            disabled={!isCurrentStepValid()}
+          />
+        </div>
+      )}
     </BaseModal>
   );
 };
