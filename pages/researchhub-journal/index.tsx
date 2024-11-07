@@ -175,9 +175,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 32,
     marginTop: 40,
-    width: 'auto',
+    width: '100%',
     maxWidth: 900,
-    padding: '0 24px',
+    padding: '0 16px',
+    boxSizing: 'border-box',
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       gap: 24,
       marginTop: 32,
@@ -222,11 +223,11 @@ const styles = StyleSheet.create({
     lineHeight: '120%',
     color: colors.WHITE(),
     margin: 0,
+    textAlign: 'center',
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 40,
+      fontSize: 36,
       lineHeight: '110%',
-      textAlign: 'center',
-      padding: '0 20px',
+      padding: '0 16px',
     },
   },
   heroDescription: {
@@ -234,16 +235,13 @@ const styles = StyleSheet.create({
     lineHeight: '22px',
     textAlign: 'center',
     color: colors.WHITE(0.8),
-    margin: -20,
-    marginBottom: 20,
+    margin: '0 0 20px 0',
     maxWidth: '100%',
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 16,
       lineHeight: '140%',
-      padding: '0 24px',
-      maxWidth: '40%',
-      wordWrap: 'normal',
-      whiteSpace: 'normal',
+      padding: '0 16px',
+      maxWidth: '100%',
     },
   },
   underlineOnHover: {
@@ -272,9 +270,11 @@ const styles = StyleSheet.create({
     gap: 20,
     marginTop: 12,
     marginBottom: 12,
+    flexWrap: 'wrap',
+    justifyContent: 'center',
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: 'column',
-      width: 'auto',
+      width: '100%',
       minWidth: 200,
       maxWidth: 280,
       gap: 12,
@@ -440,17 +440,27 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: '100%',
       justifyContent: 'center',
+      padding: '0 16px',
+      flexDirection: 'column',
     },
   },
   checkIcon: {
     color: colors.YELLOW(),
     fontSize: 24,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 20,
+    },
   },
   featureText: {
     fontSize: 18,
     lineHeight: '22px',
     fontWeight: 500,
     color: colors.WHITE(0.75),
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 16,
+      textAlign: 'center',
+      width: '80%',
+    },
   },
   bulletList: {
     color: colors.WHITE(),
