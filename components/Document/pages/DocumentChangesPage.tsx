@@ -112,7 +112,7 @@ const DocumentChangesPage: NextPage<Args> = ({
                       className={css(styles.switchButton)}
                       onClick={() => router.push(`/paper/${version.paperId}`)}
                     >
-                      <span className={css(styles.switchButtonText)}>Switch to this version</span>
+                      <span className={css(styles.switchButtonText)}>View</span>
                       <FontAwesomeIcon icon={faArrowRight} />
                     </button>
                   )}

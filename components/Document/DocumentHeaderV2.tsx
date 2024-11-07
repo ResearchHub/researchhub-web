@@ -39,6 +39,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { faBookmark } from "@fortawesome/pro-regular-svg-icons";
 import { faBookmark as solidBookmark } from "@fortawesome/pro-solid-svg-icons";
 import DocumentVersionSelector from "./lib/DocumentVersionSelector";
+import { isResearchHubPaper } from "./lib/util";
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
 );
@@ -76,6 +77,8 @@ const DocumentHeader = ({
     document: doc,
     metadata,
   });
+
+  const showVersionSelector = router.asPath.includes('exp=submit') || isResearchHubPaper(doc);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -133,7 +136,7 @@ const DocumentHeader = ({
                 <DocumentBadges document={doc} metadata={metadata} />
               </div>
               <div className={css(styles.versionWrapper)}>
-                {isPaper(doc) && doc.versions.length > 0 && (
+                {showVersionSelector && isPaper(doc) && doc.versions.length > 0 && (
                   <DocumentVersionSelector versions={doc.versions} />
                 )}
               </div>

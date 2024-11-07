@@ -6,6 +6,7 @@ import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import { Tab } from "~/components/HorizontalTabBar";
 import colors from "~/config/themes/colors";
 import { DocumentMetadata, GenericDocument, isPaper, isPost } from "./types";
+import { isResearchHubPaper } from "./util";
 
 export const tabs: Array<Tab> = [
   {
@@ -71,6 +72,9 @@ export const getTabs = ({
         tab.value !== "grants"
     );
   }
+  if (isPaper(document) && !isResearchHubPaper(document)) {
+    _tabs = _tabs.filter((tab) => tab.value !== "changes");
+  }
 
   _tabs = withDocTypeTab({ tabs: _tabs, document });
   _tabs = withHref({ tabs: _tabs, router });
@@ -121,10 +125,6 @@ const withDocTypeTab = ({
 
   return [docTab, ...tabs];
 };
-
-const isResearchHubPaper = (document: GenericDocument) => {
-  return isPaper(document) && document.doi?.includes("ResearchHub");
-}
 
 const withPillContent = ({
   tabs,

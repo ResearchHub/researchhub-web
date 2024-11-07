@@ -7,7 +7,7 @@ function TabNewFeature({ overrideStyles }) {
 
 const styles = StyleSheet.create({
   newFeature: {
-    background: colors.RED(1),
+    background: colors.GREEN(1),
     borderRadius: 4,
     fontSize: 12,
     padding: "2px 6px",
