@@ -13,10 +13,10 @@ export const getPeerReviewCarouselElements = () => [{
   title: (
     <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
       <div className={css(styles.titleWrapper)}>
+        <div className={css(styles.titleText)}>Review preprints of your choice</div>
         <div className={css(styles.newTagContainer)}>
           <div className={css(styles.newTag)}>NEW</div>
         </div>
-        <div className={css(styles.titleText)}>Review preprints of your choice</div>
       </div>
     </div>
   ),
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
   titleWrapper: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'space-between',
     gap: 16,
     marginLeft: -8,
   },
