@@ -41,7 +41,7 @@ export const tabs: Array<Tab> = [
   },
   {
     icon: <FontAwesomeIcon icon={faStar} />,
-    label: "Peer Reviews",
+    label: "Reviews",
     value: "reviews",
   },
 ];

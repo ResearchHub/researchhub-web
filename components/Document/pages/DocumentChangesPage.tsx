@@ -22,7 +22,7 @@ type Args = {
     documentData?: any;
     metadata?: any;
     errorCode?: number;
-    documentType: DocumentType;
+    documentType: string;
     tabName: string;
 };
 
