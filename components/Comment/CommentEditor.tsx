@@ -26,6 +26,10 @@ import {
   faExclamationCircle,
   faTimes,
   faPlus,
+  faHourglassHalf,
+  faCheckCircle,
+  faRotateExclamation,
+  faAngleDown,
 } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
 import CommentReviewCategorySelector from "./CommentReviewCategorySelector";
@@ -40,6 +44,8 @@ import { ModalActions } from "~/redux/modals";
 import globalColors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import CommentPrivacySelector from "./CommentPrivacySelector";
+import GenericMenu, { MenuOption } from "../shared/GenericMenu";
+
 const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {
@@ -101,6 +107,38 @@ const CommentEditor = ({
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
+  const [reviewStatus, setReviewStatus] = useState<string>("APPROVE");
+
+  const reviewStatusOptions: MenuOption[] = [
+    {
+      value: "APPROVE",
+      label: "Approve",
+      html: (
+        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <FontAwesomeIcon icon={faCheckCircle} style={{ color: "green" }} />
+          <div>
+            <strong>Approve</strong>
+            <div>Manuscript is approved for publication</div>
+          </div>
+        </div>
+      ),
+      icon: <FontAwesomeIcon icon={faCheckCircle} style={{ color: "green" }} />,
+    },
+    {
+      value: "REQUEST_CHANGES",
+      label: "Request changes",
+      html: (
+        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <FontAwesomeIcon icon={faRotateExclamation} style={{ color: "red" }} />
+          <div>
+            <strong>Request changes</strong>
+            <div>Changes must be addressed and reviewed again before publication</div>
+          </div>
+        </div>
+      ),
+      icon: <FontAwesomeIcon icon={faRotateExclamation} style={{ color: "red" }} />,
+    },
+  ];
 
   const { quill, quillRef, isReady } = useQuill({
     options: {
@@ -213,6 +251,7 @@ const CommentEditor = ({
           bountyType: interimBounty.bountyType,
           targetHubs: interimBounty.targetHubs,
         }),
+        ...(commentType === COMMENT_TYPES.PEER_REVIEW && { reviewStatus }),
       });
 
       dangerouslySetContent({});
@@ -400,6 +439,21 @@ const CommentEditor = ({
         </div>
         {!isMinimalMode && (
           <div className={css(styles.actions)}>
+            {commentType === COMMENT_TYPES.PEER_REVIEW && (
+              <GenericMenu
+                id="review-status-menu"
+                options={reviewStatusOptions}
+                onSelect={(option) => setReviewStatus(option.value)}
+                selected={reviewStatus}
+                menuStyleOverride={styles.menuStyleOverride}
+              >
+                <button className={css(styles.versionTrigger)}>
+                  {reviewStatusOptions.find(option => option.value === reviewStatus)?.icon}
+                  {reviewStatusOptions.find(option => option.value === reviewStatus)?.label}
+                  <FontAwesomeIcon icon={faAngleDown} />
+                </button>
+              </GenericMenu>
+            )}
             <div style={{ width: 70 }}>
               <Button
                 fullWidth
@@ -551,6 +605,20 @@ const styles = StyleSheet.create({
     [`@media (max-width: ${breakpoints.xsmall.str})`]: {
       display: "inline-block",
     },
+  },
+  versionTrigger: {
+    display: "flex",
+    gap: 8,
+    color: colors.gray,
+    borderRadius: 4,
+    border: `1px solid ${colors.border}`,
+    fontSize: 13,
+    padding: "8px 10px",
+    alignItems: "center",
+    cursor: "pointer",
+  },
+  menuStyleOverride: {
+    width: 200,
   },
 });
 

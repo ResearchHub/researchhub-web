@@ -18,70 +18,17 @@ import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import { useDocument, useDocumentMetadata } from "../lib/useHooks";
-
-import API from "~/config/api";
-import { ID, parseUser, RHUser } from "~/config/types/root_types";
-import { formatDateStandard } from "~/config/utils/dates";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import { breakpoints } from "~/config/themes/screen";
 import colors from "~/config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHourglassHalf, faCheckCircle, faExclamationCircle } from "@fortawesome/free-solid-svg-icons"; // Import icons
+import CommentEditor from "~/components/Comment/CommentEditor";
+import { genClientId } from "~/config/utils/id";
+import { fetchPeerReviewers } from "~/components/PeerReview/lib/api";
+import { PeerReview } from "~/config/types/peerReview";
 
-type PeerReview = {
-  id: number;
-  commentThread: ID
-  paper: ID;
-  status: "PENDING" | "APPROVED" | "CHANGES_REQUESTED";
-  user: RHUser;
-  createdDate: Date;
-  updatedDate: Date;
-  formattedCreatedDate: string;
-};
-
-export const parsePeerReview = (raw: any): PeerReview => {
-  return {
-    id: raw.id,
-    commentThread: raw.comment_thread,
-    paper: raw.paper,
-    status: raw.status,
-    user: parseUser(raw.user),
-    createdDate: new Date(raw.created_date),
-    updatedDate: new Date(raw.updated_date),
-    formattedCreatedDate: formatDateStandard(raw.created_date),
-  };
-};
-
-
-export const fetchPeerReviewers = (paperId: number): Promise<PeerReview[]> => {
-  const url = `${API.BASE_URL}paper/${paperId}/peer-review`;
-
-  return fetch(url, API.GET_CONFIG())
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      }
-    })
-    .then((data) => {
-      return data.results.map(parsePeerReview);
-    })
-    .catch((error) => {
-      console.error("Request Failed:", error);
-      return [];
-    });
-};
-
-const getEditorTypeFromTabName = (tabName: string): COMMENT_TYPES => {
-  switch (tabName) {
-    case "reviews":
-      return COMMENT_TYPES.REVIEW;
-    case "bounties":
-    case "conversation":
-    default:
-      return COMMENT_TYPES.DISCUSSION;
-  }
-};
 
 interface Args {
   documentData?: any;
@@ -119,6 +66,9 @@ const DocumentCommentsPage: NextPage<Args> = ({
     documentType,
   });
   const { revalidateDocument } = useCacheControl();
+
+  const [showReviewEditor, setShowReviewEditor] = useState(false);
+  const [editorType, setEditorType] = useState<COMMENT_TYPES | null>(null);
 
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
@@ -158,110 +108,98 @@ const DocumentCommentsPage: NextPage<Args> = ({
           className={css(styles.bodyContentWrapper)}
           style={{ maxWidth: viewerWidth }}
         >
-          {tabName === "reviews" ? (
-            <>
-              <div className={css(styles.peerReviewsSection)}>
-                <h2>Peer Reviews</h2>
-                <ul className={css(styles.list)}>
-                  {peerReviewers.map((reviewer) => (
-                    <li key={reviewer.id} className={css(styles.versionCard)}>
-                      <div className={css(styles.versionHeader)}>
-                        <AuthorAvatar
-                          size={32}
-                          authorProfile={reviewer.user.authorProfile}
-                        />
-                        <div className={css(styles.versionInfo)}>
-                          <div className={css(styles.versionLabel)}>
-                            {reviewer.user.firstName} {reviewer.user.lastName}
-                          </div>
-                          <div className={css(styles.versionMessage)}>
-                            Assigned on: {reviewer.createdDate.toLocaleDateString()}
-                          </div>
-                          <div className={css(styles.status)}>
-                            {reviewer.status === "PENDING" && (
-                              <>
-                                <FontAwesomeIcon icon={faHourglassHalf} className={css(styles.pendingIcon)} />
-                                <span className={css(styles.pendingText)}>Pending</span>
-                              </>
-                            )}
-                            {reviewer.status === "APPROVED" && (
-                              <>
-                                <FontAwesomeIcon icon={faCheckCircle} className={css(styles.approvedIcon)} />
-                                <span className={css(styles.approvedText)}>Approved</span>
-                              </>
-                            )}
-                            {reviewer.status === "CHANGES_REQUESTED" && (
-                              <>
-                                <FontAwesomeIcon icon={faExclamationCircle} className={css(styles.changesRequestedIcon)} />
-                                <span className={css(styles.changesRequestedText)}>Changes Requested</span>
-                              </>
-                            )}
-                          </div>
+          {tabName === "reviews" && (
+            <div className={css(styles.peerReviewsSection)}>
+              <h2>Peer Reviews</h2>
+              <ul className={css(styles.list)}>
+                {peerReviewers.map((reviewer) => (
+                  <li key={reviewer.id} className={css(styles.versionCard)}>
+                    <div className={css(styles.versionHeader)}>
+                      <AuthorAvatar
+                        size={32}
+                        authorProfile={reviewer.user.authorProfile}
+                      />
+                      <div className={css(styles.versionInfo)}>
+                        <div className={css(styles.versionLabel)}>
+                          {reviewer.user.firstName} {reviewer.user.lastName}
                         </div>
-                        {currentUser?.id === reviewer.user.id && (
-                          <button className={css(styles.switchButton)}>
-                            Add your Review
-                          </button>
-                        )}
+                        <div className={css(styles.versionMessage)}>
+                          Assigned on: {reviewer.createdDate.toLocaleDateString()}
+                        </div>
+                        <div className={css(styles.status)}>
+                          {reviewer.status === "PENDING" && (
+                            <>
+                              <FontAwesomeIcon icon={faHourglassHalf} className={css(styles.pendingIcon)} />
+                              <span className={css(styles.pendingText)}>Pending</span>
+                            </>
+                          )}
+                          {reviewer.status === "APPROVED" && (
+                            <>
+                              <FontAwesomeIcon icon={faCheckCircle} className={css(styles.approvedIcon)} />
+                              <span className={css(styles.approvedText)}>Approved</span>
+                            </>
+                          )}
+                          {reviewer.status === "CHANGES_REQUESTED" && (
+                            <>
+                              <FontAwesomeIcon icon={faExclamationCircle} className={css(styles.changesRequestedIcon)} />
+                              <span className={css(styles.changesRequestedText)}>Changes Requested</span>
+                            </>
+                          )}
+                        </div>
                       </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className={css(styles.communityReviewsSection)}>
-                <h2>Community Reviews</h2>
-                <CommentFeed
-                  document={document}
-                  showFilters={false}
-                  initialFilter={getCommentFilterByTab(tabName)}
-                  editorType={COMMENT_TYPES.REVIEW}
-                  allowBounty={false}
-                  allowCommentTypeSelection={false}
-                  onCommentCreate={(comment) => {
-                    revalidateDocument();
-                    if (!documentMetadata) return;
-                    if (comment.commentType === COMMENT_TYPES.REVIEW) {
-                      setDocumentMetadata({
-                        ...documentMetadata,
-                        reviewCount: documentMetadata.reviewCount + 1,
-                      });
-                    }
-                  }}
-                  onCommentUpdate={() => {
-                    revalidateDocument();
-                  }}
-                  onCommentRemove={(comment) => {
-                    revalidateDocument();
-                  }}
-                  totalCommentCount={commentCount}
-                />
-              </div>
-            </>
-          ) : (
+                      {currentUser?.id === reviewer.user.id && (
+                        <button
+                          className={css(styles.switchButton)}
+                          onClick={() => {
+                            setEditorType(COMMENT_TYPES.PEER_REVIEW);
+                            setShowReviewEditor(true);
+                          }}
+                        >
+                          Add your Review
+                        </button>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              {showReviewEditor && (
+                <div>
+                  <button
+                    className={css(styles.backButton)}
+                    onClick={() => setShowReviewEditor(false)}
+                  >
+                    Back
+                  </button>
+                  <CommentEditor
+                    editorId={genClientId()}
+                    editorType={COMMENT_TYPES.PEER_REVIEW}
+                    handleSubmit={async (props) => {
+                      // Handle submit logic
+                    }}
+                    allowBounty={false}
+                    author={currentUser?.authorProfile}
+                    allowCommentTypeSelection={false}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+          <div className={css(styles.communityReviewsSection)}>
+            <h2>Community Reviews</h2>
             <CommentFeed
               document={document}
               showFilters={false}
               initialFilter={getCommentFilterByTab(tabName)}
-              editorType={getEditorTypeFromTabName(tabName)}
-              allowBounty={tabName === "grants"}
+              editorType={COMMENT_TYPES.REVIEW}
+              allowBounty={false}
               allowCommentTypeSelection={false}
               onCommentCreate={(comment) => {
                 revalidateDocument();
                 if (!documentMetadata) return;
-                if (comment.bounties.length > 0) {
-                  setDocumentMetadata({
-                    ...documentMetadata,
-                    bounties: [comment.bounties[0], ...documentMetadata.bounties],
-                  });
-                } else if (comment.commentType === COMMENT_TYPES.REVIEW) {
+                if (comment.commentType === COMMENT_TYPES.REVIEW) {
                   setDocumentMetadata({
                     ...documentMetadata,
                     reviewCount: documentMetadata.reviewCount + 1,
-                  });
-                } else {
-                  setDocumentMetadata({
-                    ...documentMetadata,
-                    discussionCount: documentMetadata.discussionCount + 1,
                   });
                 }
               }}
@@ -273,7 +211,7 @@ const DocumentCommentsPage: NextPage<Args> = ({
               }}
               totalCommentCount={commentCount}
             />
-          )}
+          </div>
         </div>
       </DocumentPageLayout>
     </DocumentContext.Provider>
@@ -364,6 +302,22 @@ const styles = StyleSheet.create({
       padding: "6px",
       minWidth: 32,
       justifyContent: "center",
+    },
+  },
+  backButton: {
+    marginBottom: 10,
+    padding: "6px 12px",
+    borderRadius: 4,
+    border: `1px solid ${colors.NEW_BLUE()}`,
+    backgroundColor: "white",
+    color: colors.NEW_BLUE(),
+    cursor: "pointer",
+    fontSize: 13,
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    ":hover": {
+      backgroundColor: "#F5F9FF",
     },
   },
 });
