@@ -36,7 +36,7 @@ interface Args {
 const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Args) => {
 
   // General State
-  const [step, setStep] = useState<STEP>("PREVIEW") //(mode === "CREATE" ? "INTRO" : "CONTENT");
+  const [step, setStep] = useState<STEP>(mode === "CREATE" ? "INTRO" : "CONTENT");
   const [latestPaper, setLatestPaper] = useState<Paper | null>(null);
 
   // Form state
@@ -121,16 +121,20 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
 
   // Handlers
   const handleNextStep = () => {
-    const currentIndex = ORDERED_STEPS.indexOf(step);
-    if (currentIndex + 1 < ORDERED_STEPS.length) {
-      setStep(ORDERED_STEPS[currentIndex + 1]);
+    const steps = mode === "CREATE" ? ORDERED_STEPS : ORDERED_STEPS.filter((step) => step !== "DECLARATION");
+
+    const currentIndex = steps.indexOf(step);
+    if (currentIndex + 1 < steps.length) {
+      setStep(steps[currentIndex + 1]);
     }
   };
 
   const handlePrevStep = () => {
-    const currentIndex = ORDERED_STEPS.indexOf(step);
+    const steps = mode === "CREATE" ? ORDERED_STEPS : ORDERED_STEPS.filter((step) => step !== "DECLARATION");
+
+    const currentIndex = steps.indexOf(step);
     if (currentIndex - 1 >= 0) {
-      setStep(ORDERED_STEPS[currentIndex - 1]);
+      setStep(steps[currentIndex - 1]);
     }
   };
 
