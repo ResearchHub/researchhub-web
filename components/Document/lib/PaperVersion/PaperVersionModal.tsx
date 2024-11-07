@@ -67,7 +67,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
   const [selectedWorkType, setSelectedWorkType] =
     useState<WORK_TYPE>("article");
   const [abstract, setAbstract] = useState<null | string>(null);
-  console.log("abstract", abstract);
+  
   const [selectedHubs, setSelectedHubs] = useState<Hub[]>([]);
   const [authorsAndAffiliations, setAuthorsAndAffiliations] = useState<
     Array<{
@@ -82,6 +82,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
   // File upload state
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<Error | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   // License state
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -230,15 +231,16 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
     }
   };
 
-  const handleFileUpload = (objectKey: string, absoluteUrl: string) => {
+  const handleFileUpload = (objectKey: string, absoluteUrl: string, fileName: string) => {
     setUploadedFileUrl(absoluteUrl);
-    console.log("uploadedFileUrl", uploadedFileUrl);
+    setFileName(fileName);
     setUploadError(null);
     if (fieldErrors.file) {
       setFieldErrors(prev => ({ ...prev, file: null }));
     }
   };
 
+  // Add handlers for each checkbox that clear their respective errors
   const handleTermsChange = (accepted: boolean) => {
     setAcceptedTerms(accepted);
     if (fieldErrors.terms) {
@@ -250,6 +252,20 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
     setAcceptedLicense(accepted);
     if (fieldErrors.license) {
       setFieldErrors(prev => ({ ...prev, license: null }));
+    }
+  };
+
+  const handleAuthorshipChange = (accepted: boolean) => {
+    setAcceptedAuthorship(accepted);
+    if (fieldErrors.authorship) {
+      setFieldErrors(prev => ({ ...prev, authorship: null }));
+    }
+  };
+
+  const handleOriginalityChange = (accepted: boolean) => {
+    setAcceptedOriginality(accepted);
+    if (fieldErrors.originality) {
+      setFieldErrors(prev => ({ ...prev, originality: null }));
     }
   };
 
@@ -296,6 +312,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
             abstract={abstract}
             selectedHubs={selectedHubs}
             title={title}
+            fileName={fileName}
             selectedWorkType={selectedWorkType}
             setAbstract={handleAbstractChange}
             setSelectedHubs={handleHubsChange}
@@ -311,7 +328,12 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
         {step === "AUTHORS_AND_METADATA" && (
           <PaperVersionAuthorsAndMetadataStep
             authorsAndAffiliations={authorsAndAffiliations}
-            setAuthorsAndAffiliations={setAuthorsAndAffiliations}
+            setAuthorsAndAffiliations={(authors) => {
+              setAuthorsAndAffiliations(authors);
+              if (fieldErrors.authors) {
+                setFieldErrors(prev => ({ ...prev, authors: null }));
+              }
+            }}
             error={fieldErrors.authors}
           />
         )}
@@ -333,9 +355,10 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
             acceptedLicense={acceptedLicense}
             setAcceptedLicense={handleLicenseChange}
             acceptedAuthorship={acceptedAuthorship}
-            setAcceptedAuthorship={setAcceptedAuthorship}
+            setAcceptedAuthorship={handleAuthorshipChange}
             acceptedOriginality={acceptedOriginality}
-            setAcceptedOriginality={setAcceptedOriginality}
+            setAcceptedOriginality={handleOriginalityChange}
+            fieldErrors={fieldErrors}
           />
         )}
       </div>

@@ -32,10 +32,11 @@ export type ContentStepProps = {
   selectedWorkType: WORK_TYPE;
   setSelectedWorkType: Function;
   abstract: string | null;
+  fileName: string | null;
   setAbstract: Function;
   selectedHubs: Hub[];
   setSelectedHubs: Function;
-  onFileUpload: (objectKey: string, absoluteUrl: string) => void;
+  onFileUpload: (objectKey: string, absoluteUrl: string, fileName: string) => void;
   onFileUploadError: (error: Error) => void;
   fileUploadError: Error | null;
   fieldErrors: {[key: string]: string | null};
@@ -47,6 +48,7 @@ const PaperVersionContentStep = ({
   selectedWorkType,
   setSelectedWorkType,
   abstract,
+  fileName,
   setAbstract,
   selectedHubs,
   setSelectedHubs,
@@ -59,8 +61,8 @@ const PaperVersionContentStep = ({
     <div style={{ display: "flex", flexDirection: "column" }}>
       <div className={css(formStyles.inputWrapper)}>
         <FormInput
-          error={fieldErrors.title}
-          value={title}
+          error={fieldErrors?.title}
+          value={title || ""}
           label="Title"
           required
           placeholder="Title of your manuscript"
@@ -77,11 +79,11 @@ const PaperVersionContentStep = ({
           required
           placeholder="Abstract of your manuscript"
           inputStyle={formStyles.textArea}
-          value={abstract}
+          value={abstract || ""}
           onChange={(_name, value) => {
             setAbstract(value);
           }}
-          error={fieldErrors.abstract}
+          error={fieldErrors?.abstract}
         />
       </div>
 
@@ -97,9 +99,9 @@ const PaperVersionContentStep = ({
           placeholder="Select article type"
           type="select"
           value={articleTypeOptions.find(
-            (option) => option.value === selectedWorkType
+            (option) => option.value === (selectedWorkType || "article")
           )}
-          error={fieldErrors.workType}
+          error={fieldErrors?.workType}
         />
       </div>
 
@@ -128,7 +130,8 @@ const PaperVersionContentStep = ({
         <FormFileUpload
           required
           label="Upload manuscript file"
-          error={fieldErrors.file || (fileUploadError ? "Failed to upload file" : null)}
+          fileName={fileName || undefined}
+          error={fieldErrors.file || (fileUploadError ? "Failed to upload file" : undefined)}
           onUploadComplete={onFileUpload}
           onUploadFError={onFileUploadError}
           helperText="Only PDF files supported at this time"

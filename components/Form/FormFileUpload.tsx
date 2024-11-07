@@ -9,26 +9,27 @@ import { faFile, faInfoCircle } from "@fortawesome/pro-regular-svg-icons";
 import { ClipLoader } from "react-spinners";
 
 interface FormFileUploadProps {
-  onUploadComplete: (objectKey: string, absoluteUrl: string) => void;
+  onUploadComplete: (objectKey: string, absoluteUrl: string, fileName: string) => void;
   onUploadFError?: (error: Error) => void;
   label?: string;
   error?: string | null;
   disabled?: boolean;
   helperText?: string;
   required?: boolean;
+  fileName?: string;
 }
 
 const FormFileUpload = ({
   onUploadComplete,
   label,
   error,
+  fileName,
   disabled,
   onUploadFError,
   helperText,
   required = false,
 }: FormFileUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
-  const [fileName, setFileName] = useState<string | null>(null);
 
   // TODO: Possibly extract into a hook
   const uploadFile = async (file: File) => {
@@ -81,8 +82,7 @@ const FormFileUpload = ({
       const path = presigned_url.split("?")[0].split(".com/")[1];
       const absoluteUrl = `https://${process.env.STORAGE_DOMAIN}/${path}`;
 
-      setFileName(file.name);
-      onUploadComplete(object_key, absoluteUrl);
+      onUploadComplete(object_key, absoluteUrl, file.name);
     } catch (error) {
       console.error("Upload failed:", error);
       onUploadFError && onUploadFError(error as Error);

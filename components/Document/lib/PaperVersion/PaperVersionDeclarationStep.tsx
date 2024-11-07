@@ -2,7 +2,7 @@ import { StyleSheet, css } from "aphrodite";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import colors from "~/config/themes/colors";
 
-export type LicenseStepProps = {
+export type DeclarationStepProps = {
   acceptedTerms: boolean;
   setAcceptedTerms: (value: boolean) => void;
   acceptedLicense: boolean;
@@ -11,6 +11,7 @@ export type LicenseStepProps = {
   setAcceptedAuthorship: (value: boolean) => void;
   acceptedOriginality: boolean;
   setAcceptedOriginality: (value: boolean) => void;
+  fieldErrors?: {[key: string]: string | null};
 };
 
 const PaperVersionDeclarationStep = ({
@@ -22,7 +23,8 @@ const PaperVersionDeclarationStep = ({
   setAcceptedAuthorship,
   acceptedOriginality,
   setAcceptedOriginality,
-}: LicenseStepProps) => {
+  fieldErrors,
+}: DeclarationStepProps) => {
   return (
     <div className={css(styles.container)}>
       <h3 className={css(styles.sectionTitle)}>License</h3>
@@ -39,10 +41,16 @@ const PaperVersionDeclarationStep = ({
             <Checkbox
               checked={acceptedTerms}
               onChange={(e) => setAcceptedTerms(e.target.checked)}
+              sx={{
+                color: fieldErrors?.terms ? colors.RED() : undefined,
+                '&.Mui-checked': {
+                  color: fieldErrors?.terms ? colors.RED() : undefined,
+                },
+              }}
             />
           }
           label={
-            <span>
+            <span className={css(fieldErrors?.terms && styles.errorText)}>
               I accept the ResearchHub{" "}
               <a
                 href="/about/tos"
@@ -68,10 +76,16 @@ const PaperVersionDeclarationStep = ({
             <Checkbox
               checked={acceptedLicense}
               onChange={(e) => setAcceptedLicense(e.target.checked)}
+              sx={{
+                color: fieldErrors?.license ? colors.RED() : undefined,
+                '&.Mui-checked': {
+                  color: fieldErrors?.license ? colors.RED() : undefined,
+                },
+              }}
             />
           }
           label={
-            <span>
+            <span className={css(fieldErrors?.license && styles.errorText)}>
               I and my co-authors authorize the use of our Article in accordance
               with the{" "}
               <a
@@ -103,9 +117,19 @@ const PaperVersionDeclarationStep = ({
             <Checkbox
               checked={acceptedAuthorship}
               onChange={(e) => setAcceptedAuthorship(e.target.checked)}
+              sx={{
+                color: fieldErrors?.authorship ? colors.RED() : undefined,
+                '&.Mui-checked': {
+                  color: fieldErrors?.authorship ? colors.RED() : undefined,
+                },
+              }}
             />
           }
-          label="I confirm that all co-authors and I are authors of the Article, have agreed to the submission of this manuscript to ResearchHub, have all necessary rights and have obtained all necessary permissions and consents to grant the rights granted to our Article in the License section above."
+          label={
+            <span className={css(fieldErrors?.authorship && styles.errorText)}>
+              I confirm that all co-authors and I are authors of the Article, have agreed to the submission of this manuscript to ResearchHub, have all necessary rights and have obtained all necessary permissions and consents to grant the rights granted to our Article in the License section above.
+            </span>
+          }
           sx={{
             alignItems: "flex-start",
             ".MuiFormControlLabel-label": {
@@ -119,9 +143,19 @@ const PaperVersionDeclarationStep = ({
             <Checkbox
               checked={acceptedOriginality}
               onChange={(e) => setAcceptedOriginality(e.target.checked)}
+              sx={{
+                color: fieldErrors?.originality ? colors.RED() : undefined,
+                '&.Mui-checked': {
+                  color: fieldErrors?.originality ? colors.RED() : undefined,
+                },
+              }}
             />
           }
-          label="I confirm that this manuscript is our original work, does not infringe on any existing copyrights or violate any laws including defamation, privacy, and data protection regulations, and that we as authors have obtained all necessary permissions for any third-party content included in the manuscript (e.g., figures, tables)."
+          label={
+            <span className={css(fieldErrors?.originality && styles.errorText)}>
+              I confirm that this manuscript is our original work, does not infringe on any existing copyrights or violate any laws including defamation, privacy, and data protection regulations, and that we as authors have obtained all necessary permissions for any third-party content included in the manuscript (e.g., figures, tables).
+            </span>
+          }
           sx={{
             alignItems: "flex-start",
             ".MuiFormControlLabel-label": {
@@ -162,6 +196,9 @@ const styles = StyleSheet.create({
     ":hover": {
       textDecoration: "underline",
     },
+  },
+  errorText: {
+    color: colors.RED(),
   },
 });
 
