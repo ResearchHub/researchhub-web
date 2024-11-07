@@ -8,6 +8,9 @@ import {
   faNewspaper,
   faTableTree,
   faWavePulse,
+  faFire,
+  faBooks,
+  faBookOpenCover,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faLinkedin,
@@ -53,6 +56,7 @@ import NewPostModal from "~/components/Modals/NewPostModal";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
+import RhJournalIcon from "~/components/Icons/RhJournalIcon";
 
 type Props = {
   openLoginModal: any;
@@ -70,8 +74,7 @@ export const getLeftSidebarItemAttrs = ({
   isMinimized,
   router,
   openLoginModal,
-}: /* intentional string literal */
-{
+}: {
   currentUser: any;
   isMinimized: boolean;
   router: NextRouter;
@@ -99,6 +102,51 @@ export const getLeftSidebarItemAttrs = ({
       onClick: silentEmptyFnc,
     },
     {
+      icon: isMinimized ? (
+        <RhTextTag
+          width="28px"
+          height="16px"
+          tagLabel="new"
+          style={{
+            fontVariant: "all-small-caps",
+          }}
+          textColor={"grey"}
+          backgroundColor={"transparent"}
+          fontSize="10px"
+          tagPosition={{ right: "-20px", bottom: "-10px", top: "unset" }}
+        >
+          <RhJournalIcon width={21} height={21} color={pathname === "/researchhub-journal" ? colors.NEW_BLUE() : "#C1C1CF"} />
+        </RhTextTag>
+      ) : (
+        <RhJournalIcon width={21} height={21} color={pathname === "/researchhub-journal" ? colors.NEW_BLUE() : "#C1C1CF"} />
+      ),
+      label: isMinimized ? (
+        "RH Journal"
+      ) : (
+        <RhTextTag
+          width="32px"
+          height="20px"
+          tagLabel="new"
+          textTransform={"small-caps"}
+          backgroundColor={"transparent"}
+          textColor={"grey"}
+          style={{
+            fontVariant: "all-small-caps",
+            top: "unset",
+            bottom: -10,
+          }}
+          fontSize="12px"
+          tagPosition={{ right: "-28px", top: "-10px" }}
+        >
+          {"RH Journal"}
+        </RhTextTag>
+      ),
+      isActive: pathname === "/researchhub-journal",
+      isMinimized,
+      href: "/researchhub-journal",
+      onClick: silentEmptyFnc,
+    },
+    {
       icon: <ResearchCoinIcon height={21} width={21} version={4} color={["/grants"].includes(pathname) ? colors.NEW_BLUE() : "#C1C1CF"}></ResearchCoinIcon>,
       label: "Grants",
       isActive: ["/grants"].includes(pathname),
@@ -115,7 +163,7 @@ export const getLeftSidebarItemAttrs = ({
       onClick: silentEmptyFnc,
     },
     {
-      icon: <FontAwesomeIcon icon={faNewspaper}></FontAwesomeIcon>,
+      icon: <FontAwesomeIcon icon={faBooks}></FontAwesomeIcon>,
       label: "Journals",
       isActive: ["/journals"].includes(pathname),
       isMinimized,
@@ -143,6 +191,7 @@ export const getLeftSidebarItemAttrs = ({
         }
       },
     },
+
     {
       icon: isMinimized ? (
         <RhTextTag
@@ -246,6 +295,7 @@ function RootLeftSidebar({
         "journals",
         "user",
         "author",
+        "researchhub-journal",
       ].includes(pathname.split("/")[1]) !== true;
     // if (onSpecficHubPage) {
     //   setIsMinimized(isForceMinimized);

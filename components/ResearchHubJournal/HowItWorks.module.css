@@ -1,0 +1,205 @@
+.howItWorksContainer {
+  padding: 0 28px;
+}
+
+.howItWorksContent {
+  width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.howItWorksHeading {
+  font-family: "Roboto";
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 40px;
+  text-align: center;
+  color: #241f3a;
+  margin-bottom: 32px;
+  letter-spacing: -0.02em;
+}
+
+.accordion {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  background: #fff;
+  overflow: hidden;
+}
+
+.accordionItem {
+  border-bottom: 1px solid rgba(85, 85, 85, 0.1);
+}
+
+.accordionItem:last-child {
+  border-bottom: none;
+}
+
+.trigger {
+  font-family: "Roboto";
+  width: 100%;
+  padding: 24px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.9);
+  transition: all 0.2s ease;
+}
+
+.trigger:hover {
+  color: #2c7df7;
+  background: rgba(44, 125, 247, 0.02);
+}
+
+.icon {
+  transition: transform 0.2s ease;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 14px;
+  margin-left: 16px;
+}
+
+.iconOpen {
+  transform: rotate(180deg);
+  color: #2c7df7;
+}
+
+.accordionContent {
+  padding: 0 32px 24px;
+  background: rgba(44, 125, 247, 0.02);
+}
+
+.accordionContent > div > p:first-child,
+.accordionContent > div > ul:first-child {
+  margin-top: 24px;
+}
+
+.contentText {
+  font-family: "Roboto";
+  color: #7c7989;
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-line;
+  text-align: left;
+}
+
+.contentText ul {
+  padding-left: 24px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  list-style-type: disc;
+}
+
+.contentText li {
+  margin-bottom: 8px;
+  text-align: left;
+  padding-left: 8px;
+}
+
+.contentText p {
+  margin: 16px 0;
+}
+
+.link {
+  color: #2c7df7;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.ctaLabel {
+  margin: 0;
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #7c7989;
+  text-align: center;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 36px;
+  background: #2c7df7;
+  color: rgb(255, 255, 255);
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.buttonIcon {
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.ctaButton:hover .buttonIcon {
+  transform: translateX(2px);
+}
+
+.ctaButton:hover {
+  background: #2c7df7d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media only screen and (max-width: 768px) {
+  .howItWorksContainer {
+    padding: 0 16px;
+  }
+
+  .howItWorksContent {
+    width: 100%;
+  }
+
+  .howItWorksHeading {
+    font-size: 28px;
+    margin-bottom: 24px;
+    padding: 0 16px;
+  }
+
+  .accordion {
+    max-width: 400px;
+    width: 90%;
+    min-width: 280px;
+  }
+
+  .trigger {
+    padding: 20px 24px;
+    font-size: 16px;
+  }
+
+  .accordionContent {
+    padding: 0 24px 20px;
+  }
+
+  .contentText {
+    font-size: 14px;
+  }
+
+  .ctaButton {
+    padding: 12px 28px;
+    font-size: 14px;
+  }
+
+  .buttonIcon {
+    font-size: 12px;
+  }
+
+  .accordionContent > div > p:first-child,
+  .accordionContent > div > ul:first-child {
+    margin-top: 16px;
+  }
+}
