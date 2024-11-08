@@ -13,7 +13,7 @@ export const getPeerReviewCarouselElements = () => [{
   title: (
     <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
       <div className={css(styles.titleWrapper)}>
-        <div className={css(styles.titleText)}>Review preprints of your choice</div>
+        <div className={css(styles.titleText)}>Earn More on Peer Reviews</div>
         <div className={css(styles.newTagContainer)}>
           <div className={css(styles.newTag)}>NEW</div>
         </div>
@@ -31,12 +31,12 @@ export const getPeerReviewCarouselElements = () => [{
             style={{ color: 'white' }}
           />
           <span className={css(styles.listItemText)}>
-            Users can <a 
+            <a 
               href="https://airtable.com/apptLQP8XMy1kaiID/paguOk9TtZktFk5WQ/form"
               className={css(styles.link)}
               target="_blank"
               rel="noopener noreferrer"
-            >request</a> peer review grants on any preprint
+            >Choose any preprint</a> in your field of expertise
           </span>
         </li>
         <li className={css(styles.bulletPoint)}>
@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     marginTop: 4,
+    width: '70%',
     fontSize: 20,
     fontWeight: 500,
     letterSpacing: '0.25px',
