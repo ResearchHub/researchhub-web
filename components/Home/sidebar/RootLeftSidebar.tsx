@@ -426,198 +426,199 @@ function RootLeftSidebar({
         },
       }}
     >
-      <div className={css(styles.rootLeftSidebarStickyWrap)}>
-        <div className={formattedItemsContainer}>
-          <div
-            className={css(
-              styles.leftSidebarItemsInnerContainer,
-              isMinimized && styles.leftSidebarItemsInnerContainerMin
-            )}
-          >
-            <div className={css(styles.logoDiv)}>
-              <ALink href={"/"} as={`/`} overrideStyle={formattedLogoContainer}>
-                <RHLogo
-                  iconStyle={styles.logo}
-                  white={false}
-                  withText={false}
+      <div className={css(styles.fixedHeader)}>
+        <div className={css(styles.logoDiv)}>
+          <ALink href={"/"} as={`/`} overrideStyle={formattedLogoContainer}>
+            <RHLogo iconStyle={styles.logo} white={false} withText={false} />
+            <AnimatePresence initial={false}>
+              {!isMinimized && (
+                <motion.img
+                  alt="ResearchHub Text Logo"
+                  className={css(styles.researchHubLogoText)}
+                  exit={"minimized"}
+                  src={"/static/ResearchHubText.png"}
+                  transition={{
+                    duration: didMount
+                      ? ITEM_FADE_DURATION
+                      : 0 /* avoids landing animation */,
+                  }}
+                  variants={{
+                    minimized: {
+                      opacity: 0,
+                    },
+                    full: {
+                      display: "visible",
+                      opacity: 1,
+                    },
+                  }}
                 />
-                <AnimatePresence initial={false}>
-                  {!isMinimized && (
-                    <motion.img
-                      alt="ResearchHub Text Logo"
-                      className={css(styles.researchHubLogoText)}
-                      exit={"minimized"}
-                      src={"/static/ResearchHubText.png"}
-                      transition={{
-                        duration: didMount
-                          ? ITEM_FADE_DURATION
-                          : 0 /* avoids landing animation */,
-                      }}
-                      variants={{
-                        minimized: {
-                          opacity: 0,
-                        },
-                        full: {
-                          display: "visible",
-                          opacity: 1,
-                        },
-                      }}
-                    />
-                  )}
-                </AnimatePresence>
-              </ALink>
-            </div>
+              )}
+            </AnimatePresence>
+          </ALink>
+        </div>
+        <div
+          className={css(
+            isMinimized
+              ? styles.newPostButtonContainerMin
+              : styles.newPostButtonContainer
+          )}
+        >
+          <NewPostButton
+            customButtonStyle={styles.newPostButtonCustom}
+            isMinimized={isMinimized}
+          />
+        </div>
+        <NewPostModal />
+      </div>
+
+      <div className={css(styles.scrollableContent)}>
+        <div className={css(styles.rootLeftSidebarStickyWrap)}>
+          <div className={formattedItemsContainer}>
             <div
               className={css(
-                isMinimized
-                  ? styles.newPostButtonContainerMin
-                  : styles.newPostButtonContainer
+                styles.leftSidebarItemsInnerContainer,
+                isMinimized && styles.leftSidebarItemsInnerContainerMin
               )}
             >
-              <NewPostButton
-                customButtonStyle={styles.newPostButtonCustom}
-                isMinimized={isMinimized}
-              />
+              {leftSidebarItems}
             </div>
-            <NewPostModal />
-            {leftSidebarItems}
           </div>
-        </div>
-        <div className={css(styles.leftSidebarFooter)}>
-          {!isMinimized && (
-            <div className={css(styles.subheader)}>Resources</div>
-          )}
-          <div className={css(styles.leftSidebarFooterItemsTop)}>
-            {/* <span className={css(formattedFooterTxtItem)}>
-              <InviteButton context={"referral"}>
-                <span className={css(styles.referralProgramItem)}>
-                  {isMinimized ? (
-                    "Invite"
-                  ) : (
-                    <>
-                      {"Invite and earn"}
-                      <ResearchCoinIcon
-                        width={20}
-                        height={20}
-                        version={4}
-                        color={"#AAA8B4"}
-                        overrideStyle={styles.rscIcon}
-                      />
-                    </>
-                  )}
-                </span>
-              </InviteButton>
-            </span> */}
-            <span className={css(formattedFooterTxtItem)}>
-              {/* @ts-ignore */}
-              <VerifyIdentityModal
-                // @ts-ignore legacy
-                wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
-                // @ts-ignore legacy
-                wsAuth
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    columnGap: 5,
-                    cursor: "pointer",
-                  }}
+          <div className={css(styles.leftSidebarFooter)}>
+            {!isMinimized && (
+              <div className={css(styles.subheader)}>Resources</div>
+            )}
+            <div className={css(styles.leftSidebarFooterItemsTop)}>
+              {/* <span className={css(formattedFooterTxtItem)}>
+                <InviteButton context={"referral"}>
+                  <span className={css(styles.referralProgramItem)}>
+                    {isMinimized ? (
+                      "Invite"
+                    ) : (
+                      <>
+                        {"Invite and earn"}
+                        <ResearchCoinIcon
+                          width={20}
+                          height={20}
+                          version={4}
+                          color={"#AAA8B4"}
+                          overrideStyle={styles.rscIcon}
+                        />
+                      </>
+                    )}
+                  </span>
+                </InviteButton>
+              </span> */}
+              <span className={css(formattedFooterTxtItem)}>
+                {/* @ts-ignore */}
+                <VerifyIdentityModal
+                  // @ts-ignore legacy
+                  wsUrl={WS_ROUTES.NOTIFICATIONS(auth?.user?.id)}
+                  // @ts-ignore legacy
+                  wsAuth
                 >
-                  {isMinimized ? "Verify" : (
-                    <>
-                      Verify Identity
-                      <VerifiedBadge
-                        height={20}
-                        width={20}
-                        variation="grey"
-                        showTooltipOnHover={false}
-                      />
-                    </>
-                  )}
-                </div>
-              </VerifyIdentityModal>
-            </span>            
-            <ALink
-              href="https://researchhub.foundation"
-              overrideStyle={formattedFooterTxtItem}
-            >
-              {isMinimized ? "Comm.." : "Community"}
-            </ALink>
-            <ALink 
-              href="https://airtable.com/appuhMJaf1kb3ic8e/pagYeh6cB9sgiTIgx/form"
-              overrideStyle={formattedFooterTxtItem}
-              target="_blank"
-            >
-              {"Support"}
-            </ALink>
-            <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
-              {"About"}
-            </ALink>            
-            {/* <ALink
-              href="/leaderboard/users"
-              overrideStyle={formattedFooterTxtItem}
-            >
-              {isMinimized ? "Top" : "Leaderboard"}
-            </ALink> */}
-          </div>
-          <div className={css(styles.footer)}>
-            <div className={formattedFooterItemsButtonRow}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      columnGap: 5,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {isMinimized ? "Verify" : (
+                      <>
+                        Verify Identity
+                        <VerifiedBadge
+                          height={20}
+                          width={20}
+                          variation="grey"
+                          showTooltipOnHover={false}
+                        />
+                      </>
+                    )}
+                  </div>
+                </VerifyIdentityModal>
+              </span>            
               <ALink
-                href="https://x.com/researchhub"
-                overrideStyle={styles.leftSidebarFooterIcon}
-                target="__blank"
+                href="https://researchhub.foundation"
+                overrideStyle={formattedFooterTxtItem}
               >
-                {<FontAwesomeIcon icon={faXTwitter}></FontAwesomeIcon>}
+                {isMinimized ? "Comm.." : "Community"}
               </ALink>
-              <ALink
-                href="https://discord.com/invite/ZcCYgcnUp5"
-                overrideStyle={styles.leftSidebarFooterIcon}
-                target="__blank"
+              <ALink 
+                href="https://airtable.com/appuhMJaf1kb3ic8e/pagYeh6cB9sgiTIgx/form"
+                overrideStyle={formattedFooterTxtItem}
+                target="_blank"
               >
-                {<FontAwesomeIcon icon={faDiscord}></FontAwesomeIcon>}
+                {"Support"}
               </ALink>
-              <ALink
-                href="https://github.com/ResearchHub"
-                overrideStyle={styles.leftSidebarFooterIcon}
-                target="__blank"
+              <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
+                {"About"}
+              </ALink>            
+              {/* <ALink
+                href="/leaderboard/users"
+                overrideStyle={formattedFooterTxtItem}
               >
-                {<FontAwesomeIcon icon={faGithub}></FontAwesomeIcon>}
-              </ALink>
-              <ALink
-                href="https://www.linkedin.com/company/researchhubtechnologies"
-                overrideStyle={styles.leftSidebarFooterIcon}
-                target="__blank"
-              >
-                {<FontAwesomeIcon icon={faLinkedin}></FontAwesomeIcon>}
-              </ALink>
+                {isMinimized ? "Top" : "Leaderboard"}
+              </ALink> */}
             </div>
-            <div className={formattedFooterItemsButtonRow}>
-              <ALink
-                href="/about/tos"
-                overrideStyle={styles.leftSidebarFooterBotItem}
-              >
-                {"Terms"}
-              </ALink>
-              <ALink
-                href="/about/privacy"
-                overrideStyle={styles.leftSidebarFooterBotItem}
-              >
-                {"Privacy"}
-              </ALink>
-              <ALink
-                href="https://github.com/ResearchHub/issues/issues/new/choose"
-                target="__blank"
-                overrideStyle={styles.leftSidebarFooterBotItem}
-              >
-                {"Issues"}
-              </ALink>
-              <ALink
-                href="https://docs.researchhub.com/"
-                overrideStyle={styles.leftSidebarFooterBotItem}
-              >
-                {"Docs"}
-              </ALink>
+            <div className={css(styles.footer)}>
+              <div className={formattedFooterItemsButtonRow}>
+                <ALink
+                  href="https://x.com/researchhub"
+                  overrideStyle={styles.leftSidebarFooterIcon}
+                  target="__blank"
+                >
+                  {<FontAwesomeIcon icon={faXTwitter}></FontAwesomeIcon>}
+                </ALink>
+                <ALink
+                  href="https://discord.com/invite/ZcCYgcnUp5"
+                  overrideStyle={styles.leftSidebarFooterIcon}
+                  target="__blank"
+                >
+                  {<FontAwesomeIcon icon={faDiscord}></FontAwesomeIcon>}
+                </ALink>
+                <ALink
+                  href="https://github.com/ResearchHub"
+                  overrideStyle={styles.leftSidebarFooterIcon}
+                  target="__blank"
+                >
+                  {<FontAwesomeIcon icon={faGithub}></FontAwesomeIcon>}
+                </ALink>
+                <ALink
+                  href="https://www.linkedin.com/company/researchhubtechnologies"
+                  overrideStyle={styles.leftSidebarFooterIcon}
+                  target="__blank"
+                >
+                  {<FontAwesomeIcon icon={faLinkedin}></FontAwesomeIcon>}
+                </ALink>
+              </div>
+              <div className={formattedFooterItemsButtonRow}>
+                <ALink
+                  href="/about/tos"
+                  overrideStyle={styles.leftSidebarFooterBotItem}
+                >
+                  {"Terms"}
+                </ALink>
+                <ALink
+                  href="/about/privacy"
+                  overrideStyle={styles.leftSidebarFooterBotItem}
+                >
+                  {"Privacy"}
+                </ALink>
+                <ALink
+                  href="https://github.com/ResearchHub/issues/issues/new/choose"
+                  target="__blank"
+                  overrideStyle={styles.leftSidebarFooterBotItem}
+                >
+                  {"Issues"}
+                </ALink>
+                <ALink
+                  href="https://docs.researchhub.com/"
+                  overrideStyle={styles.leftSidebarFooterBotItem}
+                >
+                  {"Docs"}
+                </ALink>
+              </div>
             </div>
           </div>
         </div>
@@ -634,7 +635,7 @@ const styles = StyleSheet.create({
     top: 0,
     zIndex: 10,
     height: "100vh",
-    overflowY: "auto",
+    overflowY: "hidden",
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
     },
@@ -805,6 +806,23 @@ const styles = StyleSheet.create({
   newPostButtonCustom: {
     height: 40,
     width: "100%",
+  },
+  fixedHeader: {
+    position: 'sticky',
+    top: 0,
+    background: colors.GREY_ICY_BLUE_HUE,
+    zIndex: 2,
+    //borderBottom: `1px solid ${colors.GREY_BORDER}`,
+  },
+
+  scrollableContent: {
+    height: 'calc(100vh - 136px)', // Desktop height
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      height: 'auto', // Remove fixed height on mobile
+      overflowY: 'visible', // Disable scrolling on mobile
+    },
   },
 });
 
