@@ -544,6 +544,13 @@ function RootLeftSidebar({
             >
               {isMinimized ? "Comm.." : "Community"}
             </ALink>
+            <ALink 
+              href="https://airtable.com/appuhMJaf1kb3ic8e/pagYeh6cB9sgiTIgx/form"
+              overrideStyle={formattedFooterTxtItem}
+              target="_blank"
+            >
+              {"Support"}
+            </ALink>
             <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
               {"About"}
             </ALink>            
