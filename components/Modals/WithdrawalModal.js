@@ -617,21 +617,16 @@ class WithdrawalModal extends Component {
             >
               Your account is currently under review by an administrator.
             </div>
-            <div style={{ marginTop: 10 }}>
-              Please email&nbsp;
+            <div style={{ marginTop: 10, textAlign: "center" }}>
+              Please open a&nbsp;
               <Link
-                href="mailto:support@researchhub.foundation"
+                href="https://airtable.com/appuhMJaf1kb3ic8e/pagYeh6cB9sgiTIgx/form"
                 style={{ color: colors.NEW_BLUE(), display: "inline-block" }}
                 target="_blank"
               >
-                support@researchhub.foundation
+                support ticket
               </Link>{" "}
-              and include
-              <ul style={{ fontSize: 16, paddingLeft: 15, marginTop: 10 }}>
-                <li>A link to your researchhub profile</li>
-                <li>Email address associated with your account</li>
-                <li>A brief description of your issue</li>
-              </ul>
+              and allow up to 72 hours for your ticket to be reviewed.
             </div>
           </div>
         )}
