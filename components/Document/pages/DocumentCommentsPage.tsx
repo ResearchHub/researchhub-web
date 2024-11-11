@@ -23,17 +23,20 @@ import useCurrentUser from "~/config/hooks/useCurrentUser";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import { breakpoints } from "~/config/themes/screen";
 import colors from "~/config/themes/colors";
-import { faHourglassHalf, faCheckCircle, faExclamationCircle } from "@fortawesome/free-solid-svg-icons"; // Import icons
+import {
+  faHourglassHalf,
+  faCheckCircle,
+  faExclamationCircle,
+} from "@fortawesome/free-solid-svg-icons"; // Import icons
 import CommentEditor from "~/components/Comment/CommentEditor";
 import { genClientId } from "~/config/utils/id";
 import { fetchPeerReviewers } from "~/components/PeerReview/lib/api";
 import { PeerReview } from "~/config/types/peerReview";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { 
+import {
   faStar, // Changed from faPenToSquare
-  faComments // For Community Reviews
+  faComments, // For Community Reviews
 } from "@fortawesome/pro-regular-svg-icons";
-
 
 interface Args {
   documentData?: any;
@@ -81,9 +84,12 @@ const DocumentCommentsPage: NextPage<Args> = ({
     return <Error statusCode={500} />;
   }
 
-  const isAssignedReviewer = isPaper(document) && document.peerReviews.some(
-    review => review.user.id === currentUser?.id && review.status === "PENDING"
-  );
+  const isAssignedReviewer =
+    isPaper(document) &&
+    document.peerReviews.some(
+      (review) =>
+        review.user.id === currentUser?.id && review.status === "PENDING"
+    );
 
   const commentCount = 0;
 
@@ -108,72 +114,35 @@ const DocumentCommentsPage: NextPage<Args> = ({
           className={css(styles.bodyContentWrapper)}
           style={{ maxWidth: viewerWidth }}
         >
-          {tabName === "reviews" && isAssignedReviewer && (
-            <div className={"peer-reviews-section " + css(styles.peerReviewEditor)}>
-              <div className={css(styles.sectionHeaderWrapper)}>
-                <h2 className={css(styles.sectionHeader)}>
-                  <FontAwesomeIcon 
-                    icon={faStar} 
-                    className={css(styles.headerIcon)} 
-                  />
-                  Peer Reviews
-                </h2>
-                <p className={css(styles.sectionSubtext)}>
-                  Editorially curated peer reviews from our network of experts
-                </p>
-              </div>
-              <CommentEditor
-                editorId={genClientId()}
-                commentType={COMMENT_TYPES.PEER_REVIEW}
-                handleSubmit={async (props) => {
-                  // Handle submit logic
-                  await revalidateDocument();
-                }}
-                allowBounty={false}
-                author={currentUser?.authorProfile}
-                allowCommentTypeSelection={false}
-              />
-            </div>
-          )}
-          <div className={css(styles.communityReviewsSection)}>
-            <div className={css(styles.sectionHeaderWrapper)}>
-              <h2 className={css(styles.sectionHeader)}>
-                <FontAwesomeIcon 
-                  icon={faComments} 
-                  className={css(styles.headerIcon)} 
-                />
-                Community Reviews
-              </h2>
-              <p className={css(styles.sectionSubtext)}>
-                Reviews completed by members of our research community
-              </p>
-            </div>
-            <CommentFeed
-              document={document}
-              showFilters={false}
-              initialFilter={getCommentFilterByTab(tabName)}
-              editorType={COMMENT_TYPES.REVIEW}
-              allowBounty={false}
-              allowCommentTypeSelection={false}
-              onCommentCreate={(comment) => {
-                revalidateDocument();
-                if (!documentMetadata) return;
-                if (comment.commentType === COMMENT_TYPES.REVIEW) {
-                  setDocumentMetadata({
-                    ...documentMetadata,
-                    reviewCount: documentMetadata.reviewCount + 1,
-                  });
-                }
-              }}
-              onCommentUpdate={() => {
-                revalidateDocument();
-              }}
-              onCommentRemove={(comment) => {
-                revalidateDocument();
-              }}
-              totalCommentCount={commentCount}
-            />
-          </div>
+          <CommentFeed
+            document={document}
+            showFilters={false}
+            initialFilter={getCommentFilterByTab(tabName)}
+            editorType={
+              isAssignedReviewer
+                ? COMMENT_TYPES.PEER_REVIEW
+                : COMMENT_TYPES.REVIEW
+            }
+            allowBounty={false}
+            allowCommentTypeSelection={false}
+            onCommentCreate={(comment) => {
+              revalidateDocument();
+              if (!documentMetadata) return;
+              if (comment.commentType === COMMENT_TYPES.REVIEW) {
+                setDocumentMetadata({
+                  ...documentMetadata,
+                  reviewCount: documentMetadata.reviewCount + 1,
+                });
+              }
+            }}
+            onCommentUpdate={() => {
+              revalidateDocument();
+            }}
+            onCommentRemove={(comment) => {
+              revalidateDocument();
+            }}
+            totalCommentCount={commentCount}
+          />
         </div>
       </DocumentPageLayout>
     </DocumentContext.Provider>
