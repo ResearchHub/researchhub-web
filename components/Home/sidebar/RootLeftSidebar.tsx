@@ -372,7 +372,6 @@ function RootLeftSidebar({
     formattedFooterTxtItem: [
       styles.leftSidebarFooterTxtItem,
       isMinimized && styles.leftSidebarFooterTxtItemMin,
-      window.innerWidth <= breakpoints.xsmall.int && styles.leftSidebarFooterTxtItemMobile,
     ],
     formattedItemsContainer: css(styles.leftSidebarItemsContainer),
     formattedLogoContainer: [
