@@ -115,26 +115,26 @@ function RootLeftSidebarSlider({
             overrideStyle={styles.leftSidebarSliderFooterTxtItem}
           >
             {"Docs"}
-          </ALink>          
+          </ALink>
           <ALink
             href="https://researchhub.foundation"
             overrideStyle={styles.leftSidebarSliderFooterTxtItem}
           >
             Community
           </ALink>
-          {/* <ALink
-            href="/leaderboard/users"
+          <ALink
+            href="https://airtable.com/appuhMJaf1kb3ic8e/pagYeh6cB9sgiTIgx/form"
             overrideStyle={styles.leftSidebarSliderFooterTxtItem}
+            target="_blank"
           >
-            Leaderboard
-          </ALink> */}
+            Support
+          </ALink>
         </div>
         <div className={css(styles.leftSidebarSliderFooterBottom)}>
           <div
             className={css(styles.leftSidebarSliderFooterItemsBottomRow)}
             style={{ marginLeft: "-4px !important" }}
           >
-
             <ALink
               href="https://x.com/researchhub"
               overrideStyle={styles.leftSidebarSliderFooterIcon}
