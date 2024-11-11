@@ -48,6 +48,7 @@ export const createPaperAPI = ({
     })
     .then((data) => {
       console.log("data", data);
+      return data;
     })
     .catch((error) => {
       console.error("Request Failed:", error);

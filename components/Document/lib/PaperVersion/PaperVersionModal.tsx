@@ -164,6 +164,8 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
         })),
       });
       
+      console.log("response", response);
+
       setSubmittedPaperId(response.id);
       setStep("SUCCESS");
     } catch (e) {
@@ -431,7 +433,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
             }
             onClick={handleNextOrSubmit}
             theme="solidPrimary"
-            disabled={true}
+            disabled={isSubmitting}
           />
         </div>
       )}
