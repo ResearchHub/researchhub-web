@@ -549,7 +549,7 @@ function RootLeftSidebar({
                 overrideStyle={formattedFooterTxtItem}
                 target="_blank"
               >
-                {"Support"}
+                {isMinimized ? "Support" : "Support"}
               </ALink>
               <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
                 {"About"}
@@ -673,8 +673,6 @@ const styles = StyleSheet.create({
   leftSidebarFooter: {
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between",
-    flex: 1,
     height: "100%",
   },
   leftSidebarFooterTxtItem: {
@@ -704,7 +702,16 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     width: "100%",
   },
-  leftSidebarFooterItemsBottomRowMin: { display: "none" },
+  leftSidebarFooterItemsBottomRowMin: {
+    justifyContent: "center",
+    padding: "8px 0",
+  },
+  leftSidebarFooterTxtItemMobile: {
+    fontSize: 14,
+    fontWeight: 300,
+    margin: "0 auto 10px",
+    textAlign: "center",
+  },
   referralProgramItem: {
     // color: colors.ORANGE_DARK2(),
     display: "flex",
@@ -739,7 +746,7 @@ const styles = StyleSheet.create({
     },
   },
   footer: {
-    marginTop: "auto",
+    paddingBottom: 20,
   },
   arrowRight: {
     color: "#aaa",
