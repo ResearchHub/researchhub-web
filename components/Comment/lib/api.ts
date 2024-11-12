@@ -423,24 +423,26 @@ export const assignPeerReview = ({
 
 export const updatePeerReviewStatus = ({
   paperId,
-  commentId,
+  commentThreadId,
   status,
+  peerReviewId
 }: {
   paperId: ID;
-  commentId: ID;
+  commentThreadId: ID;
   status: "CHANGES_REQUESTED" | "APPROVED";
+  peerReviewId: ID;
 }) => {
 
   console.log('paperId', paperId);
-  console.log('commentId', commentId);
+  console.log('commentId', commentThreadId);
   console.log('status', status);
+  console.log('peerReviewId', peerReviewId);
 
-
-  const url = `${API.BASE_URL}paper/${paperId}/peer-review/`;
+  const url = `${API.BASE_URL}paper/${paperId}/peer-review/${peerReviewId}/`;
 
   const payload = {
     paper: paperId,
-    comment_thread: commentId,
+    comment_thread: commentThreadId,
     status,
   };
 

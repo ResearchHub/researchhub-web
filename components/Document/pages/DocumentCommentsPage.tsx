@@ -84,12 +84,12 @@ const DocumentCommentsPage: NextPage<Args> = ({
     return <Error statusCode={500} />;
   }
 
-  const isAssignedReviewer =
-    isPaper(document) &&
-    document.peerReviews.some(
-      (review) =>
-        review.user.id === currentUser?.id && review.status === "PENDING"
-    );
+  const assignedReview = isPaper(document)
+    ? document.peerReviews.find(
+        (review) =>
+          review.user.id === currentUser?.id && review.status === "PENDING"
+      )
+    : undefined;
 
   const commentCount = 0;
 
@@ -118,8 +118,10 @@ const DocumentCommentsPage: NextPage<Args> = ({
             document={document}
             showFilters={false}
             initialFilter={getCommentFilterByTab(tabName)}
+            // Review ID for the pending review
+            pendingReviewId={assignedReview?.id}
             editorType={
-              isAssignedReviewer
+              assignedReview
                 ? COMMENT_TYPES.PEER_REVIEW
                 : COMMENT_TYPES.REVIEW
             }

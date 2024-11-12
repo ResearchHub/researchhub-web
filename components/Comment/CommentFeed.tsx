@@ -64,6 +64,7 @@ type Args = {
   allowCommentTypeSelection?: boolean;
   allowBounty?: boolean;
   tabName?: string;
+  pendingReviewId?: ID;
 };
 
 const CommentFeed = ({
@@ -80,6 +81,7 @@ const CommentFeed = ({
   showSort = true,
   allowCommentTypeSelection = false,
   allowBounty = false,
+  pendingReviewId = undefined,
   editorType = COMMENT_TYPES.DISCUSSION,
 }: Args) => {
   const router = useRouter();
@@ -91,18 +93,18 @@ const CommentFeed = ({
     hasInitialComments ? false : true
   );
   const [rootLevelCommentCount, setRootLevelCommentCount] = useState<number>(
-    totalCommentCount > 0 ? totalCommentCount : 0
+    totalCommentCount ?? 0
   );
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(
-    hasInitialComments ? true : false
+    hasInitialComments
   );
   const [selectedSortValue, setSelectedSortValue] = useState<string | null>(
     sortOpts[0].value
   );
   const [selectedFilterValue, setSelectedFilterValue] = useState<
-    string | null | undefined
-  >(initialFilter);
+    COMMENT_FILTERS | null | undefined
+  >(initialFilter as COMMENT_FILTERS | null | undefined);
 
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
@@ -116,18 +118,17 @@ const CommentFeed = ({
     filter,
   }: {
     sort?: string | null;
-    filter?: string | null;
+    filter?: COMMENT_FILTERS | null | undefined;
   }) => {
     setIsFetching(true);
     try {
       const { comments, count } = await fetchCommentsAPI({
         documentId: document.id,
         documentType: document.apiDocumentType,
-        tabName: tabName || router.query.tabName,
-        sort: sort || sort === null ? sort : selectedSortValue,
-        // @ts-ignore
-        filter: filter || (filter === null ? filter : selectedFilterValue),
-      });
+        tabName: tabName || (router.query.tabName as string | undefined),
+        sort: sort !== undefined ? sort : selectedSortValue,
+        filter: filter !== undefined ? filter : selectedFilterValue as COMMENT_FILTERS | null | undefined,
+      })
 
       const parsedComments = comments.map((raw: any) => parseComment({ raw }));
 
@@ -362,7 +363,7 @@ const CommentFeed = ({
     setComments([]);
     setCurrentPage(1);
     setSelectedSortValue(sortOpts[0].value);
-    setSelectedFilterValue(initialFilter);
+    setSelectedFilterValue(initialFilter as COMMENT_FILTERS);
     setRootLevelCommentCount(0);
   };
 
@@ -383,7 +384,7 @@ const CommentFeed = ({
     setComments(initialComments || []);
 
     // @ts-ignore
-    const filter = getCommentFilterByTab(router?.query?.tabName);
+    const filter = getCommentFilterByTab(router?.query?.tabName) as COMMENT_FILTERS;
     setSelectedFilterValue(filter);
     handleFetch({ filter });
 
@@ -473,8 +474,9 @@ const CommentFeed = ({
                     if (comment.commentType === COMMENT_TYPES.PEER_REVIEW) {
                       await updatePeerReviewStatus({
                         status: props.reviewStatus,
+                        peerReviewId: pendingReviewId,
                         paperId: document.id,
-                        commentId: comment.id,
+                        commentThreadId: comment.thread.id,
                       });
                     } else if (comment.commentType === COMMENT_TYPES.REVIEW) {
                       const review = await handleCommunityReviewCreate({

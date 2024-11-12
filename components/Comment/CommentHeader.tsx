@@ -118,6 +118,16 @@ const CommentHeader = ({
                 <div className={css(styles.verb)}>{` created a grant`}</div>
               ) : comment.commentType === COMMENT_TYPES.REVIEW ? (
                 <div className={css(styles.verb)}>{` peer reviewed`}</div>
+              ) : comment.commentType === COMMENT_TYPES.PEER_REVIEW ? (
+                <div className={css(styles.verb)}>
+                  {comment.thread?.peerReview?.status === "CHANGES_REQUESTED"
+                    ? ` requested changes`
+                    : comment.thread?.peerReview?.status === "APPROVED"
+                    ? ` approved for publication`
+                    : comment.thread?.peerReview?.status === "PENDING"
+                    ? ` is reviewing`
+                    : ` peer reviewed`}
+                </div>
               ) : (
                 <div className={css(styles.verb)}>{` commented`}</div>
               )}

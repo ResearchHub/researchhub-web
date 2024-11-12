@@ -3,11 +3,13 @@ import { parseUser } from "~/config/types/root_types";
 import { ID, RHUser } from "~/config/types/root_types";
 import { formatDateStandard } from "~/config/utils/dates";
 
+export type PEER_REVIEW_STATUSES = "PENDING" | "APPROVED" | "CHANGES_REQUESTED";
+
 export type PeerReview = {
   id: number;
   commentThread: ID
   paper: ID;
-  status: "PENDING" | "APPROVED" | "CHANGES_REQUESTED";
+  status: PEER_REVIEW_STATUSES;
   user: RHUser;
   createdDate: Date;
   updatedDate: Date;
