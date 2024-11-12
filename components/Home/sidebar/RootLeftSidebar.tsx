@@ -747,6 +747,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     paddingBottom: 20,
+    marginTop: 'auto',
   },
   arrowRight: {
     color: "#aaa",
@@ -819,17 +820,22 @@ const styles = StyleSheet.create({
     top: 0,
     background: colors.GREY_ICY_BLUE_HUE,
     zIndex: 2,
-    //borderBottom: `1px solid ${colors.GREY_BORDER}`,
+    paddingBottom: 8,
   },
 
   scrollableContent: {
-    height: 'calc(100vh - 136px)', // Desktop height
+    height: 'calc(100vh - 136px)', // Adjust for header height
     overflowY: 'auto',
     overflowX: 'hidden',
-    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-      height: 'auto', // Remove fixed height on mobile
-      overflowY: 'visible', // Disable scrolling on mobile
+    // Hide scrollbar but keep functionality
+    '::-webkit-scrollbar': {
+      width: 0,
+      background: 'transparent',
     },
+    // For Firefox
+    scrollbarWidth: 'none',
+    // For IE/Edge
+    '-ms-overflow-style': 'none',
   },
 });
 
