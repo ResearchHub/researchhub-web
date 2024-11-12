@@ -456,7 +456,7 @@ const CommentEditor = ({
         </div>
         {!isMinimalMode && (
           <div className={css(styles.actions)}>
-            {commentType === COMMENT_TYPES.PEER_REVIEW && (
+            {commentType === COMMENT_TYPES.PEER_REVIEW ? (
               <div className={css(styles.reviewActions)}>
                 <GenericMenu
                   id="review-status-menu"
@@ -500,6 +500,21 @@ const CommentEditor = ({
                     disabled={isSubmitting || isEmpty || !reviewStatus}
                   />
                 </div>
+              </div>
+            ) : (
+              <div className={css(styles.postButtonWrapper)}>
+                <Button
+                  fullWidth
+                  size="small"
+                  label={isSubmitting ? (
+                    <div className={css(styles.loadingWrapper)}>
+                      <ClipLoader sizeUnit={"px"} size={18} color={"#fff"} loading={true} />
+                    </div>
+                  ) : "Post"}
+                  hideRipples={true}
+                  onClick={(event) => _handleSubmit(event)}
+                  disabled={isSubmitting || isEmpty}
+                />
               </div>
             )}
             {handleCancel && (

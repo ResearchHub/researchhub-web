@@ -101,9 +101,9 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
     );
   }
 
-  const isInReview = comment.thread?.peerReview?.status === "PENDING";
-  const isApproved = comment.thread?.peerReview?.status === "APPROVED";
-  const needsChanges = comment.thread?.peerReview?.status === "CHANGES_REQUESTED";
+  const isInReview = !comment.parent && comment.thread?.peerReview?.status === "PENDING";
+  const isApproved = !comment.parent && comment.thread?.peerReview?.status === "APPROVED";
+  const needsChanges = !comment.parent && comment.thread?.peerReview?.status === "CHANGES_REQUESTED";
 
   const tooltipProps = {
     placement: "bottom-start" as const,

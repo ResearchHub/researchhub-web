@@ -28,7 +28,7 @@ import { RootState } from "~/redux";
 import CommentList from "./CommentList";
 import {
   createCommentAPI,
-  createPeerReview,
+  createCommunityReview,
   fetchSingleCommentAPI,
   updateCommentAPI,
   updatePeerReview,
@@ -45,7 +45,6 @@ import { breakpoints } from "~/config/themes/screen";
 import getReviewCategoryScore from "./lib/quill/getReviewCategoryScore";
 import { captureEvent } from "~/config/utils/events";
 import CommentPrivacyBadge from "./CommentPrivacyBadge";
-import CommentVote from "./CommentVote";
 import { faReply } from "@fortawesome/pro-solid-svg-icons";
 const { setMessage, showMessage } = MessageActions;
 
@@ -136,7 +135,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
     });
 
     try {
-      const reviewResponse = await createPeerReview({
+      const reviewResponse = await createCommunityReview({
         unifiedDocumentId: unifiedDocumentId,
         commentId,
         score: reviewScore,
