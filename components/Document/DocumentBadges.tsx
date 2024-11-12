@@ -12,6 +12,8 @@ import { faHourglass, faCircleCheck } from "@fortawesome/pro-regular-svg-icons";
 import { Tooltip } from "@mui/material";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "~/config/themes/colors";
+import PeerReviewStatusSummary from "./lib/PeerReviewStatusSummary";
+
 
 type Props = {
   document: GenericDocument;
@@ -32,80 +34,64 @@ const DocumentBadges = ({ document, metadata }: Props) => {
     review => review.status === "PENDING"
   );
 
-  const ReviewersTooltip = () => (
-    <div className={css(styles.tooltipContent)}>
-      <div className={css(styles.tooltipTitle)}>Assigned Reviewers:</div>
-      <div className={css(styles.reviewersGrid)}>
-        {isPaper(document) && document.peerReviews.map((review, index) => (
-          <div key={index} className={css(styles.reviewerItem)}>
-            <div className={css(styles.reviewerMainInfo)}>
-              <AuthorAvatar
-                size={24}
-                author={review.user.authorProfile}
-              />
-              <span className={css(styles.reviewerName)}>
-                {review.user.authorProfile.firstName} {review.user.authorProfile.lastName}
-              </span>
-              <div className={css(styles.statusWrapper)}>
-                <div className={css(styles.statusIconWrapper, 
-                  review.status === "APPROVED" && styles.completedIconWrapper,
-                  review.status === "PENDING" && styles.pendingIconWrapper
-                )}>
-                  <FontAwesomeIcon 
-                    icon={review.status === "APPROVED" ? faCircleCheck : faHourglass} 
-                    className={css(styles.statusIcon)}
-                  />
-                </div>
-                <span className={css(styles.statusText,
-                  review.status === "APPROVED" && styles.completedText,
-                  review.status === "PENDING" && styles.pendingText
-                )}>
-                  {review.status.charAt(0) + review.status.slice(1).toLowerCase()}
-                </span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+  const isApproved = isPaper(document) && document.peerReviews.length > 0 && 
+    document.peerReviews.every(review => review.status === "APPROVED");
+
+  const tooltipProps = {
+    placement: "bottom-start" as const,
+    componentsProps: {
+      tooltip: {
+        sx: {
+          bgcolor: colors.LIGHTER_GREY(1.0),
+          '& .MuiTooltip-arrow': {
+            display: 'none'
+          },
+          marginTop: '0px !important',
+          position: 'relative',
+          top: '10px'
+        }
+      },
+      popper: {
+        sx: {
+          marginTop: '0px !important'
+        }
+      }
+    }
+  };
 
   return (
     <div className={css(styles.badges)}>
-      {isInReview && (
+      {(isInReview || isApproved) && (
         <Tooltip 
-          title={<ReviewersTooltip />}
-          placement="bottom-start"
-          componentsProps={{
-            tooltip: {
-              sx: {
-                bgcolor: colors.LIGHTER_GREY(1.0),
-                '& .MuiTooltip-arrow': {
-                  display: 'none'
-                },
-                marginTop: '0px !important',
-                position: 'relative',
-                top: '10px'
-              }
-            },
-            popper: {
-              sx: {
-                marginTop: '0px !important'
-              }
-            }
-          }}
+          {...tooltipProps}
+          title={<PeerReviewStatusSummary document={document} />}
         >
           <div>
-            <ContentBadge
-              size="medium"
-              contentType="status"
-              label={
-                <span className={css(styles.inReviewLabel)}>
-                  <FontAwesomeIcon icon={faHourglass} className={css(styles.hourglassIcon)} />
-                  In Review
-                </span>
-              }
-            />
+            {isInReview && (
+              <ContentBadge
+                size="medium"
+                contentType="status"
+                label={
+                  <span className={css(styles.badgeLabel)}>
+                    <FontAwesomeIcon icon={faHourglass} className={css(styles.badgeIcon)} />
+                    In Review
+                  </span>
+                }
+              />
+            )}
+            {isApproved && (
+              <ContentBadge
+                size="medium"
+                contentType="status"
+                badgeOverride={styles.approvedBadge}
+                label={
+                  <span className={css(styles.badgeLabel)}>
+                    <FontAwesomeIcon icon={faCircleCheck} className={css(styles.badgeIcon)} />
+                    Approved
+                  </span>
+                }
+              />
+            )}
           </div>
         </Tooltip>
       )}
@@ -136,14 +122,6 @@ const styles = StyleSheet.create({
   badges: {
     display: "flex",
     columnGap: "8px",
-  },
-  inReviewLabel: {
-    display: "flex",
-    alignItems: "center",
-    gap: "6px",
-  },
-  hourglassIcon: {
-    fontSize: 12,
   },
   tooltipContent: {
     padding: "8px 12px",
@@ -215,6 +193,17 @@ const styles = StyleSheet.create({
   },
   pendingText: {
     color: colors.ORANGE_DARK2(),
+  },
+  badgeLabel: {
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+  },
+  badgeIcon: {
+    fontSize: 12,
+  },
+  approvedBadge: {
+    color: colors.NEW_GREEN(1.0),
   },
 });
 

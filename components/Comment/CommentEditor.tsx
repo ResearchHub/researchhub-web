@@ -112,7 +112,7 @@ const CommentEditor = ({
 
   const reviewStatusOptions: MenuOption[] = [
     {
-      value: "APPROVE",
+      value: "APPROVED",
       label: "Approve",
       html: (
         <div className={css(styles.menuOptionContent)}>
@@ -134,7 +134,7 @@ const CommentEditor = ({
       />,
     },
     {
-      value: "REQUEST_CHANGES",
+      value: "CHANGES_REQUESTED",
       label: "Request changes",
       html: (
         <div className={css(styles.menuOptionContent)}>

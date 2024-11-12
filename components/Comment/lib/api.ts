@@ -360,7 +360,7 @@ export const getFileUrl = ({ fileString, type }) => {
     });
 };
 
-export const createPeerReview = ({
+export const createCommunityReview = ({
   unifiedDocumentId,
   commentId,
   score,
@@ -397,6 +397,54 @@ export const updatePeerReview = ({
     API.REVIEW({ reviewId, unifiedDocumentId }),
     API.PATCH_CONFIG(payload)
   )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
+export const assignPeerReview = ({
+  paperId,
+  assignedToUserId,
+}: {
+  paperId: ID;
+  assignedToUserId: ID;
+}) => {
+
+  const url = `${API.BASE_URL}paper/${paperId}/peer-review/`;
+
+  const payload = {
+    paper: paperId,
+    user: assignedToUserId,
+  };
+
+  return fetch(url, API.POST_CONFIG(payload))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
+export const updatePeerReviewStatus = ({
+  paperId,
+  commentId,
+  status,
+}: {
+  paperId: ID;
+  commentId: ID;
+  status: "CHANGES_REQUESTED" | "APPROVED";
+}) => {
+
+  console.log('paperId', paperId);
+  console.log('commentId', commentId);
+  console.log('status', status);
+
+
+  const url = `${API.BASE_URL}paper/${paperId}/peer-review/`;
+
+  const payload = {
+    paper: paperId,
+    comment_thread: commentId,
+    status,
+  };
+
+  return fetch(url, API.PUT_CONFIG(payload))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };

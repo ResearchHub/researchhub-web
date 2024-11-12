@@ -8,7 +8,8 @@ import {
 import { CommentTreeContext } from "./lib/contexts";
 import {
   createCommentAPI,
-  createPeerReview,
+  updatePeerReviewStatus,
+  createCommunityReview,
   fetchCommentsAPI,
 } from "./lib/api";
 import { css, StyleSheet } from "aphrodite";
@@ -211,7 +212,7 @@ const CommentFeed = ({
     }
   };
 
-  const handleReviewCreate = async ({
+  const handleCommunityReviewCreate = async ({
     content,
     commentId,
   }: {
@@ -224,7 +225,7 @@ const CommentFeed = ({
     });
 
     try {
-      const reviewResponse = await createPeerReview({
+      const reviewResponse = await createCommunityReview({
         unifiedDocumentId: document.unifiedDocument.id,
         commentId,
         score: reviewScore,
@@ -467,17 +468,23 @@ const CommentFeed = ({
                       }
                     }
 
-                    let comment = (await handleRootCommentCreate(
-                      props
-                    )) as CommentType;
-                    if (comment.commentType === COMMENT_TYPES.REVIEW) {
-                      const review = await handleReviewCreate({
+                    let comment = (await handleRootCommentCreate(props)) as CommentType;
+                    
+                    if (comment.commentType === COMMENT_TYPES.PEER_REVIEW) {
+                      await updatePeerReviewStatus({
+                        status: props.reviewStatus,
+                        paperId: document.id,
+                        commentId: comment.id,
+                      });
+                    } else if (comment.commentType === COMMENT_TYPES.REVIEW) {
+                      const review = await handleCommunityReviewCreate({
                         commentId: comment.id,
                         content: comment.content,
                       });
 
                       comment = { ...comment, review: review as Review };
                     }
+                    
                     onCreate({ comment });
                     setEditorId(genClientId());
                   } catch (error: any) {
