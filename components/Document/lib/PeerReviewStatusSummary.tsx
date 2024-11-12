@@ -10,7 +10,7 @@ import ALink from "~/components/ALink";
 
 const STATUS_TEXT_MAP = {
   APPROVED: "Approved",
-  PENDING: "In Review",
+  PENDING: "Pending",
   CHANGES_REQUESTED: "Changes Requested"
 } as const;
 
@@ -18,11 +18,8 @@ export const PeerReviewStatusSummary = ({ document }: { document: GenericDocumen
   if (!isPaper(document)) return null;
   
   const isInReview = isPaper(document) && document.peerReviews.some(
-    review => review.status === "PENDING" || review.status === "CHANGES_REQUESTED"
+    review => ["APPROVED", "PENDING", "CHANGES_REQUESTED"].includes(review.status)
   );
-
-  const isApproved = isPaper(document) && document.peerReviews.length > 0 && 
-    document.peerReviews.every(review => review.status === "APPROVED");
 
   return (
     <div className={css(styles.tooltipContent)}>
@@ -141,7 +138,7 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.LIGHTER_GREY(1.0)}`,
   },
   statusIcon: {
-    fontSize: 18,
+    fontSize: 16,
     backgroundColor: colors.LIGHTER_GREY(1.0),
   },
   approvedIcon: {
@@ -158,10 +155,8 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.7),
   },
   completedIconWrapper: {
-    backgroundColor: colors.NEW_GREEN(),
   },
   pendingIconWrapper: {
-    backgroundColor: colors.ORANGE_DARK2(),
   },
   reviewerName: {
     fontSize: 13,
@@ -180,7 +175,6 @@ const styles = StyleSheet.create({
     color: colors.ORANGE_DARK2(),
   },
   changesRequestedIconWrapper: {
-    backgroundColor: colors.RED(),
   },
   changesRequestedText: {
     color: colors.RED(),

@@ -4,14 +4,14 @@ import {
   getOpenBounties,
   getClosedBounties,
 } from "./lib/bounty";
-import { Comment, COMMENT_CONTEXTS, COMMENT_TYPES } from "./lib/types";
+import { Comment, COMMENT_TYPES } from "./lib/types";
 import ContentBadge from "../ContentBadge";
 import { Purchase } from "~/config/types/purchase";
 import { formatBountyAmount } from "~/config/types/bounty";
 import { useContext } from "react";
 import { CommentTreeContext } from "./lib/contexts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHourglass, faCircleCheck, faRotateExclamation } from "@fortawesome/pro-regular-svg-icons";
+import { faCircleCheck, faRotateExclamation } from "@fortawesome/pro-regular-svg-icons";
 import { faCircleInfo } from "@fortawesome/pro-solid-svg-icons";
 import colors from "~/config/themes/colors";
 import { Tooltip } from "@mui/material";
@@ -101,7 +101,6 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
     );
   }
 
-  const isInReview = !comment.parent && comment.thread?.peerReview?.status === "PENDING";
   const isApproved = !comment.parent && comment.thread?.peerReview?.status === "APPROVED";
   const needsChanges = !comment.parent && comment.thread?.peerReview?.status === "CHANGES_REQUESTED";
 
@@ -127,26 +126,14 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
     }
   };
 
-  if (isInReview) {
+if (isApproved) {
     badges.push(
-      <Tooltip {...tooltipProps} title="Placeholder tooltip text">
-        <div>
-          <ContentBadge
-            size="small"
-            contentType="status"
-            label={
-              <span className={css(styles.badgeLabel)}>
-                <FontAwesomeIcon icon={faHourglass} className={css(styles.badgeIcon)} />
-                In Review
-              </span>
-            }
-          />
-        </div>
-      </Tooltip>
-    );
-  } else if (isApproved) {
-    badges.push(
-      <Tooltip {...tooltipProps} title="Placeholder tooltip text">
+      <Tooltip {...tooltipProps} title={
+        <div className={css(styles.tooltipText)}>
+          <FontAwesomeIcon icon={faCircleInfo} className={css(styles.infoIcon)} />
+          Peer reviewer approved changes to this paper. Once 2/3 of reviewers approve, it will be published in the ResearchHub Journal.
+        </div>        
+      }>
         <div>
           <ContentBadge
             size="small"

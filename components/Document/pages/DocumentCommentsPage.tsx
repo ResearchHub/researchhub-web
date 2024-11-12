@@ -20,23 +20,7 @@ import { StyleSheet, css } from "aphrodite";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import { useDocument, useDocumentMetadata } from "../lib/useHooks";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
-import AuthorAvatar from "~/components/AuthorAvatar";
-import { breakpoints } from "~/config/themes/screen";
 import colors from "~/config/themes/colors";
-import {
-  faHourglassHalf,
-  faCheckCircle,
-  faExclamationCircle,
-} from "@fortawesome/free-solid-svg-icons"; // Import icons
-import CommentEditor from "~/components/Comment/CommentEditor";
-import { genClientId } from "~/config/utils/id";
-import { fetchPeerReviewers } from "~/components/PeerReview/lib/api";
-import { PeerReview } from "~/config/types/peerReview";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faStar, // Changed from faPenToSquare
-  faComments, // For Community Reviews
-} from "@fortawesome/pro-regular-svg-icons";
 
 interface Args {
   documentData?: any;
@@ -111,7 +95,7 @@ const DocumentCommentsPage: NextPage<Args> = ({
         metadata={documentMetadata}
       >
         <div
-          className={css(styles.bodyContentWrapper)}
+          className={"peer-reviews-section" + " " + css(styles.bodyContentWrapper)}
           style={{ maxWidth: viewerWidth }}
         >
           <CommentFeed

@@ -1,16 +1,14 @@
-import Bounty, { formatBountyAmount } from "~/config/types/bounty";
+import { formatBountyAmount } from "~/config/types/bounty";
 import { StyleSheet, css } from "aphrodite";
 import ContentBadge from "../ContentBadge";
 import {
   DocumentMetadata,
   GenericDocument,
   isPaper,
-  isPost,
 } from "./lib/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHourglass, faCircleCheck } from "@fortawesome/pro-regular-svg-icons";
 import { Tooltip } from "@mui/material";
-import AuthorAvatar from "../AuthorAvatar";
 import colors from "~/config/themes/colors";
 import PeerReviewStatusSummary from "./lib/PeerReviewStatusSummary";
 
@@ -198,6 +196,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     gap: "6px",
+    cursor: "pointer",
   },
   badgeIcon: {
     fontSize: 12,
