@@ -31,7 +31,7 @@ const DocumentBadges = ({ document, metadata }: Props) => {
   );
 
   const isInReview = isPaper(document) && document.peerReviews.some(
-    review => review.status === "PENDING"
+    review => review.status === "PENDING" || review.status === "CHANGES_REQUESTED"
   );
 
   const isApproved = isPaper(document) && document.peerReviews.length > 0 && 

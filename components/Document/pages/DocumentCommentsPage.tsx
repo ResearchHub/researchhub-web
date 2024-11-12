@@ -87,7 +87,7 @@ const DocumentCommentsPage: NextPage<Args> = ({
   const assignedReview = isPaper(document)
     ? document.peerReviews.find(
         (review) =>
-          review.user.id === currentUser?.id && review.status === "PENDING"
+          review.user.id === currentUser?.id
       )
     : undefined;
 

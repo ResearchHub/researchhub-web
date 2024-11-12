@@ -1,17 +1,24 @@
 import { StyleSheet, css } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHourglass, faCircleCheck } from "@fortawesome/pro-regular-svg-icons";
+import { faRotateExclamation } from "@fortawesome/pro-solid-svg-icons";
 import AuthorAvatar from "../../AuthorAvatar";
 import colors from "~/config/themes/colors";
 import { GenericDocument, isPaper } from "./types";
 import { faInfoCircle } from "@fortawesome/pro-solid-svg-icons";
 import ALink from "~/components/ALink";
 
+const STATUS_TEXT_MAP = {
+  APPROVED: "Approved",
+  PENDING: "In Review",
+  CHANGES_REQUESTED: "Changes Requested"
+} as const;
+
 export const PeerReviewStatusSummary = ({ document }: { document: GenericDocument }) => {
   if (!isPaper(document)) return null;
   
   const isInReview = isPaper(document) && document.peerReviews.some(
-    review => review.status === "PENDING"
+    review => review.status === "PENDING" || review.status === "CHANGES_REQUESTED"
   );
 
   const isApproved = isPaper(document) && document.peerReviews.length > 0 && 
@@ -46,18 +53,29 @@ export const PeerReviewStatusSummary = ({ document }: { document: GenericDocumen
               <div className={css(styles.statusWrapper)}>
                 <div className={css(styles.statusIconWrapper, 
                   review.status === "APPROVED" && styles.completedIconWrapper,
-                  review.status === "PENDING" && styles.pendingIconWrapper
+                  review.status === "PENDING" && styles.pendingIconWrapper,
+                  review.status === "CHANGES_REQUESTED" && styles.changesRequestedIconWrapper
                 )}>
                   <FontAwesomeIcon 
-                    icon={review.status === "APPROVED" ? faCircleCheck : faHourglass} 
-                    className={css(styles.statusIcon)}
+                    icon={review.status === "APPROVED" 
+                      ? faCircleCheck 
+                      : review.status === "CHANGES_REQUESTED"
+                      ? faRotateExclamation
+                      : faHourglass
+                    } 
+                    className={css(styles.statusIcon,
+                      review.status === "APPROVED" && styles.approvedIcon,
+                      review.status === "PENDING" && styles.pendingIcon,
+                      review.status === "CHANGES_REQUESTED" && styles.changesRequestedIcon
+                    )}
                   />
                 </div>
                 <span className={css(styles.statusText,
                   review.status === "APPROVED" && styles.completedText,
-                  review.status === "PENDING" && styles.pendingText
+                  review.status === "PENDING" && styles.pendingText,
+                  review.status === "CHANGES_REQUESTED" && styles.changesRequestedText
                 )}>
-                  {review.status.charAt(0) + review.status.slice(1).toLowerCase()}
+                  {STATUS_TEXT_MAP[review.status] || review.status}
                 </span>
               </div>
             </div>
@@ -123,8 +141,17 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.LIGHTER_GREY(1.0)}`,
   },
   statusIcon: {
-    fontSize: 8,
-    color: "white",
+    fontSize: 18,
+    backgroundColor: colors.LIGHTER_GREY(1.0),
+  },
+  approvedIcon: {
+    color: colors.NEW_GREEN(),
+  },
+  pendingIcon: {
+    color: colors.ORANGE_DARK2(),
+  },
+  changesRequestedIcon: {
+    color: colors.RED(),
   },
   statusText: {
     fontSize: 13,
@@ -151,6 +178,12 @@ const styles = StyleSheet.create({
   },
   pendingText: {
     color: colors.ORANGE_DARK2(),
+  },
+  changesRequestedIconWrapper: {
+    backgroundColor: colors.RED(),
+  },
+  changesRequestedText: {
+    color: colors.RED(),
   },
 });
 
