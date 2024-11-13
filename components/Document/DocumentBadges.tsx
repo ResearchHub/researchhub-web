@@ -8,6 +8,7 @@ import {
 } from "./lib/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHourglass, faCircleCheck } from "@fortawesome/pro-regular-svg-icons";
+import { faCircleInfo } from "@fortawesome/pro-solid-svg-icons";
 import { Tooltip } from "@mui/material";
 import colors from "~/config/themes/colors";
 import PeerReviewStatusSummary from "./lib/PeerReviewStatusSummary";
@@ -40,14 +41,19 @@ const DocumentBadges = ({ document, metadata }: Props) => {
     componentsProps: {
       tooltip: {
         sx: {
+          fontSize: 14,
           width: "auto",
+          color: colors.BLACK(0.7),
           bgcolor: colors.LIGHTER_GREY(1.0),
           '& .MuiTooltip-arrow': {
             display: 'none'
           },
           marginTop: '0px !important',
           position: 'relative',
-          top: '10px'
+          top: '10px',
+          // fontSize: 13,
+          fontWeight: 400,
+          padding: "8px 14px",
         }
       },
       popper: {
@@ -57,9 +63,27 @@ const DocumentBadges = ({ document, metadata }: Props) => {
       }
     }
   };
-
+  
   return (
     <div className={css(styles.badges)}>
+      {isPaper(document) && document.workType === "preprint" && (
+        <Tooltip 
+          {...tooltipProps}
+          title={
+            <span className={css(styles.tooltipContent)}>
+              <FontAwesomeIcon icon={faCircleInfo} className={css(styles.tooltipIcon)} /> 
+              Preprints have yet to be peer reviewed and published in a journal.
+            </span>
+          }
+        >
+          <div style={{ cursor: "pointer" }}>
+            <ContentBadge
+              size="medium"
+              contentType="preprint"
+            />
+          </div>
+        </Tooltip>
+      )}
       {(isInReview || isApproved) && (
         <Tooltip 
           {...tooltipProps}
@@ -123,7 +147,7 @@ const styles = StyleSheet.create({
     columnGap: "8px",
   },
   tooltipContent: {
-    padding: "8px 12px",
+    padding: "0",
   },
   tooltipTitle: {
     fontSize: 13,
@@ -202,6 +226,10 @@ const styles = StyleSheet.create({
   },
   approvedBadge: {
     color: colors.NEW_GREEN(1.0),
+  },
+  tooltipIcon: {
+    marginRight: 8,
+    fontSize: 14,
   },
 });
 

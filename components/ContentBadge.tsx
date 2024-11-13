@@ -5,6 +5,9 @@ import {
   faComments,
   faCheck,
   faHourglass,
+  faFileLines,
+  faCircleExclamation,
+  faPen,
 } from "@fortawesome/pro-solid-svg-icons";
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
@@ -68,6 +71,15 @@ const ContentBadgeBase = ({
               <PaperIcon withAnimation={false} onClick={undefined} />
             </span>
             <span>Paper</span>
+          </>
+        ) : contentType === "preprint" ? (
+          <>
+            <span className={css(styles.icon, styles.preprint)}>
+              <span className={css(styles.paperIconWrapper)}>
+                <FontAwesomeIcon icon={faPen} />
+              </span>
+            </span>
+            <span>Preprint</span>
           </>
         ) : contentType === "post" ? (
           <>
@@ -407,6 +419,13 @@ const styles = StyleSheet.create({
   badgeFor_status: {
     background: colors.LIGHTER_GREY(1.0),
     color: colors.BLACK(0.7),
+  },
+  preprint: {
+    position: 'relative',
+    display: 'inline-block',
+  },
+  paperIconWrapper: {
+    display: 'inline-block',
   },
 });
 

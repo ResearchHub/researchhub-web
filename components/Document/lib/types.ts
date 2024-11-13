@@ -33,7 +33,7 @@ export type ContentInstance = {
   unifiedDocumentId?: ID;
 };
 
-export type WORK_TYPE = "article" | "review" | "case-study" | "short-report";
+export type WORK_TYPE = "article" | "review" | "case-study" | "short-report" | "preprint";
 
 export type ApiDocumentType =
   | "researchhubpost"
