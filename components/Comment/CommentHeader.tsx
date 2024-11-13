@@ -12,10 +12,11 @@ import { useContext } from "react";
 import { CommentTreeContext } from "./lib/contexts";
 import { breakpoints } from "~/config/themes/screen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/pro-regular-svg-icons";
+import { faClock, faFeather } from "@fortawesome/pro-regular-svg-icons";
 import { timeSince } from "~/config/utils/dates";
 import CommentVote from "./CommentVote";
 import VerifiedBadge from "../Verification/VerifiedBadge";
+import globalColors from "~/config/themes/colors";
 
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
@@ -45,6 +46,10 @@ const CommentHeader = ({
 
   const commentTreeState = useContext(CommentTreeContext);
   const hasAnyBounties = openBounties.length > 0 || closedBounties.length > 0;
+  const isDocumentAuthor = commentTreeState?.document?.authors?.some(
+    author => author.id === authorProfile.id
+  );
+
   return (
     <div className={css(styles.commentHeader)}>
       <CommentBadges comment={comment} />
@@ -86,6 +91,12 @@ const CommentHeader = ({
                         {authorProfile.firstName} {authorProfile.lastName}
                         {authorProfile.isVerified && (
                           <VerifiedBadge height={18} width={18} />
+                        )}
+                        {isDocumentAuthor && (
+                          <div className={css(styles.authorBadge)}>
+                            <FontAwesomeIcon icon={faFeather} className={css(styles.authorBadgeIcon)} />
+                            Author
+                          </div>
                         )}
                       </div>
                     </ALink>
@@ -238,6 +249,20 @@ const styles = StyleSheet.create({
   },
   badgesWrapper: {
     marginBottom: 10,
+  },
+  authorBadge: {
+    display: "flex",
+    alignItems: "center",
+    gap: "4px",
+    fontSize: 12,
+    color: colors.secondary.text,
+    background: globalColors.NEW_BLUE(0.1),
+    padding: "2px 6px",
+    borderRadius: 4,
+    fontWeight: 500,
+  },
+  authorBadgeIcon: {
+    fontSize: 11,
   },
 });
 
