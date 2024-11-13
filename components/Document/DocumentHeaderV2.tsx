@@ -42,6 +42,8 @@ import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import { isResearchHubPaper } from "./lib/util";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { parsePeerReview, PeerReview } from "../PeerReview/lib/types";
+import { faArrowRight } from "@fortawesome/pro-regular-svg-icons";
+import { faClockRotateLeft } from "@fortawesome/pro-solid-svg-icons";
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
 );
@@ -147,6 +149,26 @@ const DocumentHeader = ({
           }
         >
           <div>
+            {isPaper(doc) && doc.versions.some(v => v.isLatest) && 
+              String(doc.versions.find(v => v.isLatest)?.paperId) !== String(doc.id) && (
+              <div className={css(styles.reviewRequestBanner)}>
+                <span className={css(styles.reviewRequestText)}>
+                  <FontAwesomeIcon 
+                    icon={faClockRotateLeft} 
+                    className={css(styles.bannerIcon)}
+                  />
+                  You are viewing an older version of this paper.
+                </span>
+                <button
+                  className={css(styles.reviewRequestButton)}
+                  onClick={() => router.push(`/paper/${doc.versions.find(v => v.isLatest)?.paperId}`)}
+                >
+                  View latest version
+                  <FontAwesomeIcon icon={faArrowRight} />
+                </button>
+              </div>
+            )}
+
             {isPaper(doc) && doc.peerReviews.some(
               (reviewer) =>
                 reviewer.user.id === currentUser?.id &&
@@ -574,6 +596,11 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: colors.NEW_BLUE(0.8),
     },
+  },
+  bannerIcon: {
+    marginRight: 8,
+    fontSize: 14,
+    color: "#24292f",
   },
 });
 

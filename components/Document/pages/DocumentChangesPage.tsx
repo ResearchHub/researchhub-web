@@ -19,6 +19,7 @@ import { faArrowRight, faPlus } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import dynamic from "next/dynamic";
 import { DocumentType } from "../lib/types";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
 
 type Args = {
     documentData?: any;
@@ -53,6 +54,12 @@ const DocumentChangesPage: NextPage<Args> = ({
   });
   const { revalidateDocument } = useCacheControl();
   const [isNewVersionModalOpen, setIsNewVersionModalOpen] = useState(false);
+  const currentUser = useCurrentUser();
+  
+  const isAuthor = currentUser?.authorProfile && document?.authors.some(
+    author => author.id === currentUser.authorProfile.id
+  );
+
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
   }
@@ -93,7 +100,7 @@ const DocumentChangesPage: NextPage<Args> = ({
           className={css(styles.bodyContentWrapper)}
           style={{ maxWidth: viewerWidth }}
         >
-          {isPaper(document) && (
+          {isPaper(document) && isAuthor && (
             <div className={css(styles.headerSection)}>
               <button 
                 className={css(styles.newVersionButton)}
