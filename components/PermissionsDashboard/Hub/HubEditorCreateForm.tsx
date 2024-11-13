@@ -60,9 +60,9 @@ export default function HubEditorCreateForm(): ReactElement<"div"> {
   };
 
   const editorOptions = [
-    {value: "ASSISTANT_EDITOR", label: "Assistant Editor"},
-    {value: "ASSOCIATE_EDITOR", label: "Associate Editor"},
-    {value: "SENIOR_EDITOR", label: "Senior Editor"},
+    { value: "ASSISTANT_EDITOR", label: "Assistant Editor" },
+    { value: "ASSOCIATE_EDITOR", label: "Associate Editor" },
+    { value: "SENIOR_EDITOR", label: "Senior Editor" },
   ];
 
   return (
@@ -70,7 +70,11 @@ export default function HubEditorCreateForm(): ReactElement<"div"> {
       <div>
         <h1>{"Add a New Hub Editor"}</h1>
       </div>
-      <form encType="multipart/form-data" onSubmit={handleSubmit}>
+      <form
+        encType="multipart/form-data"
+        onSubmit={handleSubmit}
+        className={css(styles.mFormWrap)}
+      >
         <HubSelectDropdown
           selectedHubs={selectedHub ? [selectedHub] : []}
           required
@@ -105,7 +109,12 @@ export default function HubEditorCreateForm(): ReactElement<"div"> {
           value={editorEmail ?? ""}
         />
         <div
-          style={{ display: "flex", width: "100%", justifyContent: "center" }}
+          style={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "center",
+            marginTop: 24,
+          }}
         >
           <Button
             label={
@@ -124,4 +133,7 @@ export default function HubEditorCreateForm(): ReactElement<"div"> {
 
 const styles = StyleSheet.create({
   formWrap: { maxWidth: 800, width: "100%" },
+  mFormWrap: {
+    maxWidth: 600,
+  },
 });
