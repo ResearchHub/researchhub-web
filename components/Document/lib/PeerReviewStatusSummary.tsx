@@ -8,6 +8,7 @@ import { GenericDocument, isPaper } from "./types";
 import { faInfoCircle } from "@fortawesome/pro-solid-svg-icons";
 import ALink from "~/components/ALink";
 
+const REQUIRED_REVIEWER_COUNT = 3;
 const STATUS_TEXT_MAP = {
   APPROVED: "Approved",
   PENDING: "Pending",
@@ -20,6 +21,10 @@ export const PeerReviewStatusSummary = ({ document }: { document: GenericDocumen
   const isInReview = isPaper(document) && document.peerReviews.some(
     review => ["APPROVED", "PENDING", "CHANGES_REQUESTED"].includes(review.status)
   );
+
+  // Calculate number of empty slots needed
+  const emptyReviewerSlots = REQUIRED_REVIEWER_COUNT - document.peerReviews.length;
+  const emptyReviewers = Array(emptyReviewerSlots).fill(null);
 
   return (
     <div className={css(styles.tooltipContent)}>
@@ -35,7 +40,7 @@ export const PeerReviewStatusSummary = ({ document }: { document: GenericDocumen
       </div>
 
 
-      <div className={css(styles.tooltipTitle)}>Assigned peer-reviewers:</div>
+      <div className={css(styles.tooltipTitle)}>Peer Reviewers:</div>
       <div className={css(styles.reviewersGrid)}>
         {document.peerReviews.map((review, index) => (
           <div key={index} className={css(styles.reviewerItem)}>
@@ -73,6 +78,32 @@ export const PeerReviewStatusSummary = ({ document }: { document: GenericDocumen
                   review.status === "CHANGES_REQUESTED" && styles.changesRequestedText
                 )}>
                   {STATUS_TEXT_MAP[review.status] || review.status}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
+        
+        {/* Add empty reviewer slots */}
+        {emptyReviewers.map((_, index) => (
+          <div key={`empty-${index}`} className={css(styles.reviewerItem)}>
+            <div className={css(styles.reviewerMainInfo)}>
+              <AuthorAvatar
+                size={24}
+                author={null}
+              />
+              <span className={css(styles.reviewerName)}>
+                Reviewer to be assigned
+              </span>
+              <div className={css(styles.statusWrapper)}>
+                <div className={css(styles.statusIconWrapper, styles.pendingIconWrapper)}>
+                  <FontAwesomeIcon 
+                    icon={faHourglass}
+                    className={css(styles.statusIcon, styles.pendingIcon)}
+                  />
+                </div>
+                <span className={css(styles.statusText, styles.pendingText)}>
+                  {STATUS_TEXT_MAP.PENDING}
                 </span>
               </div>
             </div>
@@ -178,6 +209,15 @@ const styles = StyleSheet.create({
   },
   changesRequestedText: {
     color: colors.RED(),
+  },
+  tbdIconWrapper: {
+    // Add any specific styles for TBD state
+  },
+  tbdIcon: {
+    color: colors.BLACK(0.3),
+  },
+  tbdText: {
+    color: colors.BLACK(0.3),
   },
 });
 
