@@ -14,6 +14,7 @@ import {
   faFlag,
   faBan,
   faTrashAlt,
+  faPlus,
 } from "@fortawesome/pro-light-svg-icons";
 import PaperMetadataModal from "./PaperMetadataModal";
 import { useSelector } from "react-redux";
@@ -27,18 +28,23 @@ import {
 } from "@fortawesome/pro-regular-svg-icons";
 import { StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { DocumentContext } from "./lib/DocumentContext";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import excludeFromFeed from "../Admin/api/excludeDocFromFeedAPI";
 import censorDocument from "./api/censorDocAPI";
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 
 interface Props {
   document: GenericDocument;
   metadata: DocumentMetadata;
 }
+
+const PaperVersionModal = dynamic(
+  () => import("./lib/PaperVersion/PaperVersionModal")
+);
 
 function downloadPDF(pdfUrl) {
   // Create a link for our script to click
@@ -63,9 +69,11 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
   );
   const documentContext = useContext(DocumentContext);
   const { revalidateDocument } = useCacheControl();
+  const [isNewVersionModalOpen, setIsNewVersionModalOpen] = useState(false);
 
   const isModerator = Boolean(currentUser?.moderator);
   const isHubEditor = Boolean(currentUser?.authorProfile?.isHubEditor);
+  const isAuthor = doc.authors.some(author => author.id === currentUser?.authorProfile.id);
 
   const handleRemoveContent = () => {
     alert.show({
@@ -106,6 +114,18 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
   };
 
   const options: Array<MenuOption> = [
+    ...(isPaper(doc) && isAuthor && doc.versions.length > 0
+      ? [
+          {
+            label: "Submit new version",
+            group: "Document",
+            icon: <FontAwesomeIcon icon={faPlus} />,
+            value: "submit-new-version",
+            onClick: () => setIsNewVersionModalOpen(true),
+          },
+        ]
+      : []),
+
     ...(isPaper(doc) && currentUser
       ? [
           {
@@ -245,6 +265,15 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
           <FontAwesomeIcon icon={faEllipsis} />
         </IconButton>
       </GenericMenu>
+
+      {isPaper(doc) && (
+        <PaperVersionModal
+          isOpen={isNewVersionModalOpen}
+          closeModal={() => setIsNewVersionModalOpen(false)}
+          versions={doc.versions}
+          mode="NEW_VERSION"
+        />
+      )}
     </div>
   );
 };

@@ -38,7 +38,7 @@ import LinkToPublicPage from "../LinkToPublicPage";
 import { breakpoints } from "~/config/themes/screen";
 import { faBookmark } from "@fortawesome/pro-regular-svg-icons";
 import { faBookmark as solidBookmark } from "@fortawesome/pro-solid-svg-icons";
-import DocumentVersionSelector from "./lib/DocumentVersionSelector";
+import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import { isResearchHubPaper } from "./lib/util";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
 import { parsePeerReview, PeerReview } from "../PeerReview/lib/types";
@@ -78,7 +78,6 @@ const DocumentHeader = ({
     metadata,
   });
 
-  const showVersionSelector = router.asPath.includes('exp=submit') || isResearchHubPaper(doc);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -169,11 +168,6 @@ const DocumentHeader = ({
             <div className={css(styles.topLine)}>
               <div className={css(styles.badgesWrapper)}>
                 <DocumentBadges document={doc} metadata={metadata} />
-              </div>
-              <div className={css(styles.versionWrapper)}>
-                {showVersionSelector && isPaper(doc) && doc.versions.length > 0 && (
-                  <DocumentVersionSelector versions={doc.versions} />
-                )}
               </div>
             </div>
             <div className={css(styles.titleWrapper)}>
