@@ -30,8 +30,6 @@
       "eth_address": null,
       "btc_address": null,
       "rsc_address": null,
-      "stripe_acc": null,
-      "stripe_verified": false,
       "author": 397
     }
   }],
@@ -122,8 +120,6 @@
         "eth_address": null,
         "btc_address": null,
         "rsc_address": null,
-        "stripe_acc": null,
-        "stripe_verified": false,
         "author": 1
       }
     },
@@ -219,8 +215,6 @@
         "eth_address": null,
         "btc_address": null,
         "rsc_address": null,
-        "stripe_acc": null,
-        "stripe_verified": false,
         "author": 1
       }
     },
