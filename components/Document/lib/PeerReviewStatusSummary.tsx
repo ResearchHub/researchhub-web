@@ -118,7 +118,6 @@ const styles = StyleSheet.create({
   tooltipContent: {
     padding: "8px 12px",
     background: colors.LIGHTER_GREY(1.0),
-    width: 300,
   },
   tooltipTitle: {
     fontSize: 13,

@@ -40,6 +40,7 @@ const DocumentBadges = ({ document, metadata }: Props) => {
     componentsProps: {
       tooltip: {
         sx: {
+          width: "auto",
           bgcolor: colors.LIGHTER_GREY(1.0),
           '& .MuiTooltip-arrow': {
             display: 'none'
@@ -123,8 +124,6 @@ const styles = StyleSheet.create({
   },
   tooltipContent: {
     padding: "8px 12px",
-    background: colors.LIGHTER_GREY(1.0),
-    width: 200,
   },
   tooltipTitle: {
     fontSize: 13,
