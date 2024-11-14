@@ -433,11 +433,6 @@ export const updatePeerReviewStatus = ({
   peerReviewId: ID;
 }) => {
 
-  console.log('paperId', paperId);
-  console.log('commentId', commentThreadId);
-  console.log('status', status);
-  console.log('peerReviewId', peerReviewId);
-
   const url = `${API.BASE_URL}paper/${paperId}/peer-review/${peerReviewId}/`;
 
   const payload = {

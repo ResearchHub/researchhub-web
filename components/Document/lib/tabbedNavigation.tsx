@@ -72,7 +72,7 @@ export const getTabs = ({
         tab.value !== "grants"
     );
   }
-  if (isPaper(document) && !isResearchHubPaper(document)) {
+  if (!(isPaper(document) && isResearchHubPaper(document))) {
     _tabs = _tabs.filter((tab) => tab.value !== "changes");
   }
 

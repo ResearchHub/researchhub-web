@@ -51,7 +51,6 @@ const DocumentBadges = ({ document, metadata }: Props) => {
           marginTop: '0px !important',
           position: 'relative',
           top: '10px',
-          // fontSize: 13,
           fontWeight: 400,
           padding: "8px 14px",
         }
