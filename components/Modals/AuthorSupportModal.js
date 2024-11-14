@@ -142,7 +142,7 @@ const AuthorSupportModal = (props) => {
       object_id: paper.id, // id of paper or author
       amount,
       payment_option: "SINGLE", // {'SINGLE', 'MONTHLY'},
-      payment_type: "RSC_OFF_CHAIN", //{'RSC_ON_CHAIN', 'RSC_OFF_CHAIN', 'ETH', 'BTC', 'STRIPE', 'PAYPAL'}
+      payment_type: "RSC_OFF_CHAIN", //{'RSC_ON_CHAIN', 'RSC_OFF_CHAIN', 'ETH', 'BTC', 'PAYPAL'}
     };
 
     return fetch(API.SUPPORT, API.POST_CONFIG(payload))

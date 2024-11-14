@@ -151,7 +151,6 @@ export type User = {
   // onboarding fields
   has_seen_first_coin_modal: boolean;
   has_seen_orcid_connect_modal: boolean;
-  has_seen_stripe_modal: boolean;
   has_completed_onboarding: boolean;
 
   id: ID;
@@ -234,7 +233,6 @@ export const parseOrganization = (raw: any): Organization => {
 };
 
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
-
   if (typeof raw !== "object") {
     return raw;
   }
@@ -277,7 +275,6 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
     parsed["authors"] = unparsedInnerDoc.authors.map(parseAuthorProfile);
   }
 
-
   // @ts-ignore
   return parsed;
 };
@@ -311,7 +308,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     return raw;
   }
 
-  let url = `/author/${raw.id}`;
+  const url = `/author/${raw.id}`;
 
   const parsed = {
     id: raw.id,

@@ -378,12 +378,6 @@ const styles = StyleSheet.create({
     lineHeight: "100%",
     verticalAlign: "middle",
   },
-  stripeLogo: {
-    position: "absolute",
-    height: 20,
-    right: 0,
-    bottom: 0,
-  },
   italics: {
     fontStyle: "italic",
   },
