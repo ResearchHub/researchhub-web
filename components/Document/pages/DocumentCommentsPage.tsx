@@ -37,6 +37,7 @@ const DocumentCommentsPage: NextPage<Args> = ({
   metadata,
   errorCode,
 }) => {
+
   const router = useRouter();
   const currentUser = useCurrentUser();
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(
@@ -75,6 +76,17 @@ const DocumentCommentsPage: NextPage<Args> = ({
       )
     : undefined;
 
+  const _getEditorType = (tabName: string): COMMENT_TYPES => {
+    switch (tabName) {
+      case "reviews":
+        return assignedReview ? COMMENT_TYPES.PEER_REVIEW : COMMENT_TYPES.REVIEW;
+      case "bounties":
+      case "conversation":
+      default:
+        return COMMENT_TYPES.DISCUSSION;
+    }
+  }
+
   const commentCount = 0;
 
   return (
@@ -104,12 +116,8 @@ const DocumentCommentsPage: NextPage<Args> = ({
             initialFilter={getCommentFilterByTab(tabName)}
             // Review ID for the pending review
             pendingReviewId={assignedReview?.id}
-            editorType={
-              assignedReview
-                ? COMMENT_TYPES.PEER_REVIEW
-                : COMMENT_TYPES.REVIEW
-            }
-            allowBounty={false}
+            editorType={_getEditorType(tabName)}
+            allowBounty={tabName === "grants"}
             allowCommentTypeSelection={false}
             onCommentCreate={(comment) => {
               revalidateDocument();

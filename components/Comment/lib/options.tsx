@@ -20,7 +20,7 @@ export const commentTypes = [
     group: "contribute",
     // @ts-ignore
     icon: <FontAwesomeIcon icon={faComments} />,
-    placeholder: "Add a comment or start a grant",
+    placeholder: "Discuss this paper with the community",
   },
   {
     label: "Review",
