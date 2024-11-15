@@ -15,11 +15,6 @@ export const tabs: Array<Tab> = [
     value: "conversation",
   },
   {
-    icon: <FontAwesomeIcon icon={faClockRotateLeft} />,
-    label: "Changes",
-    value: "changes",
-  },  
-  {
     icon: (
       <ResearchCoinIcon
         version={4}
@@ -44,6 +39,11 @@ export const tabs: Array<Tab> = [
     label: "Reviews",
     value: "reviews",
   },
+  {
+    icon: <FontAwesomeIcon icon={faClockRotateLeft} />,
+    label: "Changes",
+    value: "changes",
+  },    
 ];
 
 export const getTabs = ({

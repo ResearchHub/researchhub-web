@@ -22,7 +22,7 @@ export const parsePeerReview = (raw: any): PeerReview => {
     commentThread: raw.comment_thread,
     paper: raw.paper,
     status: raw.status,
-    user: parseUser(raw.user),
+    user: parseUser(raw.user_details),
     createdDate: new Date(raw.created_date),
     updatedDate: new Date(raw.updated_date),
     formattedCreatedDate: formatDateStandard(raw.created_date),
