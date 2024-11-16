@@ -4,16 +4,17 @@ import colors from "~/config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePlus, faBolt, faCoins, faChartLineUp } from "@fortawesome/pro-solid-svg-icons";
 import RhJournalIcon from "~/components/Icons/RhJournalIcon";
+import Link from "next/link";
 
 const PaperVersionIntroStep = ({ onStart }: { onStart: () => void }) => {
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.iconContainer)}>
-        <RhJournalIcon width={60} height={60} color={colors.NEW_BLUE()} />
+        <RhJournalIcon width={50} height={50} color={colors.NEW_BLUE()} />
       </div>
       <h1 className={css(styles.title)}>Publish in the ResearchHub Journal</h1>
       <p className={css(styles.subtitle)}>
-        Fast, affordable, and transparent peer review process
+        Fast, affordable, and transparent peer review process.
       </p>
       <div className={css(styles.benefitsContainer)}>
         <div className={css(styles.benefitCard)}>
@@ -93,7 +94,11 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 18,
     color: colors.MEDIUM_GREY(),
-    marginBottom: 35,
+    marginBottom: 25,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   benefitsContainer: {
     display: "grid",
@@ -173,6 +178,38 @@ const styles = StyleSheet.create({
     },
     ":active": {
       transform: "scale(0.98)",
+    },
+  },
+  buttonGroup: {
+    display: "flex",
+    gap: 16,
+    flexDirection: "column",
+    width: "100%",
+  },
+  secondaryButton: {
+    fontSize: 18,
+    padding: "16px 32px",
+    borderRadius: 30,
+    fontWeight: 600,
+    width: "100%",
+    transition: "all 0.2s ease",
+    border: `2px solid ${colors.NEW_BLUE()}`,
+    color: colors.NEW_BLUE(),
+    background: colors.WHITE(),
+    ":hover": {
+      transform: "scale(1.02)",
+      boxShadow: "0 8px 20px rgba(0, 0, 0, 0.15)",
+    },
+    ":active": {
+      transform: "scale(0.98)",
+    },
+  },
+  learnMoreLink: {
+    color: colors.NEW_BLUE(),
+    fontSize: 16,
+    textDecoration: 'none',
+    ':hover': {
+      textDecoration: 'underline',
     },
   },
 });
