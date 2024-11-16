@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/pro-light-svg-icons";
 import { CloseIcon } from "~/config/themes/icons";
 import { DEFAULT_ITEM_STYLE } from "~/components/shared/carousel/RhCarouselItem";
-import { getPeerReviewCarouselElements } from "~/components/PeerReviews/RhPeerReviewCarouselElement";
 import { getVerificationCarouselElements } from "~/components/Verification/VerificationCarouselElement";
 import colors from "~/config/themes/colors";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
@@ -29,9 +28,8 @@ export default function UnifiedCarousel({
       setError(null);
       
       try {
-        const [educationalElements, peerReviewElements, verificationElements] = await Promise.all([
+        const [educationalElements, peerReviewElements] = await Promise.all([
           getEducationalCarouselElements(),
-          currentUser ? getPeerReviewCarouselElements() : Promise.resolve([]),
           currentUser && !currentUser.isVerified ? getVerificationCarouselElements() : Promise.resolve([])
         ]);
         

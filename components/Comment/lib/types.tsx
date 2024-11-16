@@ -21,11 +21,13 @@ import {
   faMessagesQuestion,
   faStar,
 } from "@fortawesome/pro-solid-svg-icons";
+import { PEER_REVIEW_STATUSES, PeerReview } from "~/components/PeerReview/lib/types";
 
 export enum COMMENT_TYPES {
   DISCUSSION = "GENERIC_COMMENT",
   SUMMARY = "SUMMARY",
   REVIEW = "REVIEW",
+  PEER_REVIEW = "PEER_REVIEW",
   ANSWER = "ANSWER",
   ANNOTATION = "INNER_CONTENT_COMMENT",
   REPLICABILITY_COMMENT = "REPLICABILITY_COMMENT",
@@ -76,6 +78,10 @@ export type CommentThread = {
   anchor?: SerializedAnchorPosition | null;
   relatedContent: ContentInstance;
   privacy: CommentPrivacyFilter;
+  peerReview?: {
+    id: ID;
+    status: PEER_REVIEW_STATUSES;
+  }
 };
 
 export type CommentPrivacyFilter = "PUBLIC" | "PRIVATE" | "WORKSPACE";
@@ -113,6 +119,10 @@ export const parseThread = (raw: any): CommentThread => {
     privacy: raw.privacy_type,
     threadType: raw.thread_type,
     anchor: raw.anchor ? parseAnchor(raw.anchor) : null,
+    ...(raw.peer_review && { peerReview: {
+      id: raw.peer_review.id,
+      status: raw.peer_review.status,
+    } }),
   };
 };
 

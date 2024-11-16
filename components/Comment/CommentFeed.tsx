@@ -8,7 +8,8 @@ import {
 import { CommentTreeContext } from "./lib/contexts";
 import {
   createCommentAPI,
-  createPeerReview,
+  updatePeerReviewStatus,
+  createCommunityReview,
   fetchCommentsAPI,
 } from "./lib/api";
 import { css, StyleSheet } from "aphrodite";
@@ -63,6 +64,7 @@ type Args = {
   allowCommentTypeSelection?: boolean;
   allowBounty?: boolean;
   tabName?: string;
+  pendingReviewId?: ID;
 };
 
 const CommentFeed = ({
@@ -79,6 +81,7 @@ const CommentFeed = ({
   showSort = true,
   allowCommentTypeSelection = false,
   allowBounty = false,
+  pendingReviewId = undefined,
   editorType = COMMENT_TYPES.DISCUSSION,
 }: Args) => {
   const router = useRouter();
@@ -90,18 +93,18 @@ const CommentFeed = ({
     hasInitialComments ? false : true
   );
   const [rootLevelCommentCount, setRootLevelCommentCount] = useState<number>(
-    totalCommentCount > 0 ? totalCommentCount : 0
+    totalCommentCount ?? 0
   );
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(
-    hasInitialComments ? true : false
+    hasInitialComments
   );
   const [selectedSortValue, setSelectedSortValue] = useState<string | null>(
     sortOpts[0].value
   );
   const [selectedFilterValue, setSelectedFilterValue] = useState<
-    string | null | undefined
-  >(initialFilter);
+    COMMENT_FILTERS | null | undefined
+  >(initialFilter as COMMENT_FILTERS | null | undefined);
 
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
@@ -115,18 +118,17 @@ const CommentFeed = ({
     filter,
   }: {
     sort?: string | null;
-    filter?: string | null;
+    filter?: COMMENT_FILTERS | null | undefined;
   }) => {
     setIsFetching(true);
     try {
       const { comments, count } = await fetchCommentsAPI({
         documentId: document.id,
         documentType: document.apiDocumentType,
-        tabName: tabName || router.query.tabName,
-        sort: sort || sort === null ? sort : selectedSortValue,
-        // @ts-ignore
-        filter: filter || (filter === null ? filter : selectedFilterValue),
-      });
+        tabName: tabName || (router.query.tabName as string | undefined),
+        sort: sort !== undefined ? sort : selectedSortValue,
+        filter: filter !== undefined ? filter : selectedFilterValue as COMMENT_FILTERS | null | undefined,
+      })
 
       const parsedComments = comments.map((raw: any) => parseComment({ raw }));
 
@@ -211,7 +213,7 @@ const CommentFeed = ({
     }
   };
 
-  const handleReviewCreate = async ({
+  const handleCommunityReviewCreate = async ({
     content,
     commentId,
   }: {
@@ -224,7 +226,7 @@ const CommentFeed = ({
     });
 
     try {
-      const reviewResponse = await createPeerReview({
+      const reviewResponse = await createCommunityReview({
         unifiedDocumentId: document.unifiedDocument.id,
         commentId,
         score: reviewScore,
@@ -361,7 +363,7 @@ const CommentFeed = ({
     setComments([]);
     setCurrentPage(1);
     setSelectedSortValue(sortOpts[0].value);
-    setSelectedFilterValue(initialFilter);
+    setSelectedFilterValue(initialFilter as COMMENT_FILTERS);
     setRootLevelCommentCount(0);
   };
 
@@ -382,7 +384,7 @@ const CommentFeed = ({
     setComments(initialComments || []);
 
     // @ts-ignore
-    const filter = getCommentFilterByTab(router?.query?.tabName);
+    const filter = getCommentFilterByTab(router?.query?.tabName) as COMMENT_FILTERS;
     setSelectedFilterValue(filter);
     handleFetch({ filter });
 
@@ -467,17 +469,24 @@ const CommentFeed = ({
                       }
                     }
 
-                    let comment = (await handleRootCommentCreate(
-                      props
-                    )) as CommentType;
-                    if (comment.commentType === COMMENT_TYPES.REVIEW) {
-                      const review = await handleReviewCreate({
+                    let comment = (await handleRootCommentCreate(props)) as CommentType;
+                    
+                    if (comment.commentType === COMMENT_TYPES.PEER_REVIEW) {
+                      await updatePeerReviewStatus({
+                        status: props.reviewStatus,
+                        peerReviewId: pendingReviewId,
+                        paperId: document.id,
+                        commentThreadId: comment.thread.id,
+                      });
+                    } else if (comment.commentType === COMMENT_TYPES.REVIEW) {
+                      const review = await handleCommunityReviewCreate({
                         commentId: comment.id,
                         content: comment.content,
                       });
 
                       comment = { ...comment, review: review as Review };
                     }
+                    
                     onCreate({ comment });
                     setEditorId(genClientId());
                   } catch (error: any) {

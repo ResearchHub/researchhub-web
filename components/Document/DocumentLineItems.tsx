@@ -9,11 +9,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLongArrowDown,
   faLongArrowUp,
+  faCircleCheck,
+  faHourglass,
 } from "@fortawesome/pro-regular-svg-icons";
 import { GenericDocument, Paper, isPaper, isPost } from "./lib/types";
 import StarInput from "../Form/StarInput";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { formatDate } from "~/config/utils/dates";
+import AuthorAvatar from "../AuthorAvatar";
+import { parsePeerReview, PeerReview } from "../PeerReview/lib/types";
+
+
 
 const DocumentLineItems = ({
   document,
@@ -233,6 +240,34 @@ const styles = StyleSheet.create({
     ":hover": {
       textDecoration: "underline",
     },
+  },
+  reviewersItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+  },
+  reviewersWrapper: {
+    display: "flex",
+    gap: 12,
+    alignItems: "center",
+  },
+  reviewerItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+  },
+  statusIcon: {
+    fontSize: 12,
+  },
+  completedIcon: {
+    color: colors.NEW_GREEN(),
+  },
+  pendingIcon: {
+    color: colors.ORANGE_DARK2(),
+  },
+  reviewDate: {
+    fontSize: 13,
+    color: colors.BLACK(0.5),
   },
 });
 

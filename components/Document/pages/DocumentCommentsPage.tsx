@@ -1,11 +1,12 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import DocumentPageLayout from "~/components/Document/pages/DocumentPageLayout";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { captureEvent } from "~/config/utils/events";
 import { COMMENT_TYPES, parseComment } from "~/components/Comment/lib/types";
 import getDocumentFromRaw, {
   DocumentType,
   GenericDocument,
+  isPaper,
   Post,
 } from "~/components/Document/lib/types";
 import Error from "next/error";
@@ -18,17 +19,8 @@ import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import { useDocument, useDocumentMetadata } from "../lib/useHooks";
-
-const getEditorTypeFromTabName = (tabName: string): COMMENT_TYPES => {
-  switch (tabName) {
-    case "reviews":
-      return COMMENT_TYPES.REVIEW;
-    case "bounties":
-    case "conversation":
-    default:
-      return COMMENT_TYPES.DISCUSSION;
-  }
-};
+import useCurrentUser from "~/config/hooks/useCurrentUser";
+import colors from "~/config/themes/colors";
 
 interface Args {
   documentData?: any;
@@ -45,7 +37,9 @@ const DocumentCommentsPage: NextPage<Args> = ({
   metadata,
   errorCode,
 }) => {
+
   const router = useRouter();
+  const currentUser = useCurrentUser();
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(
     config.width
   );
@@ -75,6 +69,24 @@ const DocumentCommentsPage: NextPage<Args> = ({
     return <Error statusCode={500} />;
   }
 
+  const assignedReview = isPaper(document)
+    ? document.peerReviews.find(
+        (review) =>
+          review.user.id === currentUser?.id
+      )
+    : undefined;
+
+  const _getEditorType = (tabName: string): COMMENT_TYPES => {
+    switch (tabName) {
+      case "reviews":
+        return assignedReview ? COMMENT_TYPES.PEER_REVIEW : COMMENT_TYPES.REVIEW;
+      case "bounties":
+      case "conversation":
+      default:
+        return COMMENT_TYPES.DISCUSSION;
+    }
+  }
+
   const commentCount = 0;
 
   return (
@@ -95,35 +107,25 @@ const DocumentCommentsPage: NextPage<Args> = ({
         metadata={documentMetadata}
       >
         <div
-          className={css(styles.bodyContentWrapper)}
+          className={"peer-reviews-section" + " " + css(styles.bodyContentWrapper)}
           style={{ maxWidth: viewerWidth }}
         >
           <CommentFeed
             document={document}
             showFilters={false}
             initialFilter={getCommentFilterByTab(tabName)}
-            editorType={getEditorTypeFromTabName(tabName)}
+            // Review ID for the pending review
+            pendingReviewId={assignedReview?.id}
+            editorType={_getEditorType(tabName)}
             allowBounty={tabName === "grants"}
             allowCommentTypeSelection={false}
-            // The primary reason for these callbacks is to "optimistically" update the metadata on the page and refresh the cache.
-            // Not every use case is taken into account since many scenarios are uncommon. For those, a page refresh will be required.
             onCommentCreate={(comment) => {
               revalidateDocument();
               if (!documentMetadata) return;
-              if (comment.bounties.length > 0) {
-                setDocumentMetadata({
-                  ...documentMetadata,
-                  bounties: [comment.bounties[0], ...documentMetadata.bounties],
-                });
-              } else if (comment.commentType === COMMENT_TYPES.REVIEW) {
+              if (comment.commentType === COMMENT_TYPES.REVIEW) {
                 setDocumentMetadata({
                   ...documentMetadata,
                   reviewCount: documentMetadata.reviewCount + 1,
-                });
-              } else {
-                setDocumentMetadata({
-                  ...documentMetadata,
-                  discussionCount: documentMetadata.discussionCount + 1,
                 });
               }
             }}
@@ -144,6 +146,33 @@ const DocumentCommentsPage: NextPage<Args> = ({
 const styles = StyleSheet.create({
   bodyContentWrapper: {
     margin: "0 auto",
+  },
+  peerReviewEditor: {
+    marginBottom: 32,
+  },
+  communityReviewsSection: {
+    marginTop: 20,
+  },
+  sectionHeaderWrapper: {
+    marginBottom: 16,
+  },
+  sectionHeader: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    fontSize: 20,
+    fontWeight: 500,
+    color: colors.BLACK(0.8),
+    marginBottom: 4,
+  },
+  headerIcon: {
+    fontSize: 18,
+    color: colors.BLACK(0.6),
+  },
+  sectionSubtext: {
+    fontSize: 14,
+    color: colors.BLACK(0.5),
+    marginLeft: 26,
   },
 });
 

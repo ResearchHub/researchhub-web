@@ -15,11 +15,6 @@ export const tabs: Array<Tab> = [
     value: "conversation",
   },
   {
-    icon: <FontAwesomeIcon icon={faClockRotateLeft} />,
-    label: "Changes",
-    value: "changes",
-  },  
-  {
     icon: (
       <ResearchCoinIcon
         version={4}
@@ -41,9 +36,14 @@ export const tabs: Array<Tab> = [
   },
   {
     icon: <FontAwesomeIcon icon={faStar} />,
-    label: "Peer Reviews",
+    label: "Reviews",
     value: "reviews",
   },
+  {
+    icon: <FontAwesomeIcon icon={faClockRotateLeft} />,
+    label: "Changes",
+    value: "changes",
+  },    
 ];
 
 export const getTabs = ({
@@ -72,7 +72,7 @@ export const getTabs = ({
         tab.value !== "grants"
     );
   }
-  if (isPaper(document) && !isResearchHubPaper(document)) {
+  if (!(isPaper(document) && isResearchHubPaper(document))) {
     _tabs = _tabs.filter((tab) => tab.value !== "changes");
   }
 

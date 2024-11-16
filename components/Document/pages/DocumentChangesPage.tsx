@@ -15,8 +15,11 @@ import { captureEvent } from "~/config/utils/events";
 import config from "~/components/Document/lib/config";
 import colors from "~/config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight } from "@fortawesome/pro-light-svg-icons";
+import { faArrowRight, faPlus } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
+import dynamic from "next/dynamic";
+import { DocumentType } from "../lib/types";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
 
 type Args = {
     documentData?: any;
@@ -25,6 +28,10 @@ type Args = {
     documentType: DocumentType;
     tabName: string;
 };
+
+const PaperVersionModal = dynamic(
+  () => import("../lib/PaperVersion/PaperVersionModal")
+);
 
 const DocumentChangesPage: NextPage<Args> = ({
     documentData,
@@ -46,6 +53,13 @@ const DocumentChangesPage: NextPage<Args> = ({
     documentType,
   });
   const { revalidateDocument } = useCacheControl();
+  const [isNewVersionModalOpen, setIsNewVersionModalOpen] = useState(false);
+  const currentUser = useCurrentUser();
+  
+  const isAuthor = currentUser?.authorProfile && document?.authors.some(
+    author => author.id === currentUser.authorProfile.id
+  );
+
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
   }
@@ -72,7 +86,7 @@ const DocumentChangesPage: NextPage<Args> = ({
     <DocumentContext.Provider
       value={{
         metadata: documentMetadata,
-        documentType,
+        documentType: documentType as DocumentType,
         tabName,
         updateMetadata: setDocumentMetadata,
         updateDocument: setDocument,
@@ -86,9 +100,17 @@ const DocumentChangesPage: NextPage<Args> = ({
           className={css(styles.bodyContentWrapper)}
           style={{ maxWidth: viewerWidth }}
         >
-        <div
-          className={css(styles.bodyContentWrapper)}
-        >
+          {isPaper(document) && isAuthor && (
+            <div className={css(styles.headerSection)}>
+              <button 
+                className={css(styles.newVersionButton)}
+                onClick={() => setIsNewVersionModalOpen(true)}
+              >
+                <FontAwesomeIcon icon={faPlus} />
+                <span>Submit new version</span>
+              </button>
+            </div>
+          )}
           {isPaper(document) && reversedVersions.map((version) => {
             const isCurrentVersion = String(version.paperId) === router.query.documentId;
             return (
@@ -120,8 +142,15 @@ const DocumentChangesPage: NextPage<Args> = ({
               </div>
             );
           })}
+          {isPaper(document) && (
+            <PaperVersionModal
+              isOpen={isNewVersionModalOpen}
+              closeModal={() => setIsNewVersionModalOpen(false)}
+              versions={document.versions}
+              mode="NEW_VERSION"
+            />
+          )}
         </div>
-        </div>        
       </DocumentPageLayout>
     </DocumentContext.Provider>
   );
@@ -191,6 +220,31 @@ const styles = StyleSheet.create({
   switchButtonText: {
     [`@media (max-width: ${breakpoints.mobile.str})`]: {
       display: "none",
+    },
+  },
+  headerSection: {
+    marginBottom: 24,
+    display: "flex",
+    justifyContent: "flex-start",
+  },
+  newVersionButton: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "8px 16px",
+    borderRadius: 4,
+    backgroundColor: colors.NEW_BLUE(),
+    color: "white",
+    border: "none",
+    cursor: "pointer",
+    fontSize: 14,
+    fontWeight: 500,
+    ":hover": {
+      backgroundColor: colors.NEW_BLUE(0.8),
+    },
+    [`@media (max-width: ${breakpoints.mobile.str})`]: {
+      width: "100%",
+      justifyContent: "center",
     },
   },
 });

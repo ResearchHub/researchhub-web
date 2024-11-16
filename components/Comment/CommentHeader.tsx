@@ -12,10 +12,13 @@ import { useContext } from "react";
 import { CommentTreeContext } from "./lib/contexts";
 import { breakpoints } from "~/config/themes/screen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/pro-regular-svg-icons";
+import { faClock, faFeather, faHourglass, faCircleInfo, faUserTie } from "@fortawesome/pro-regular-svg-icons";
 import { timeSince } from "~/config/utils/dates";
 import CommentVote from "./CommentVote";
 import VerifiedBadge from "../Verification/VerifiedBadge";
+import globalColors from "~/config/themes/colors";
+import { Paper } from "../Document/lib/types";
+import { Tooltip } from "@mui/material";
 
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
@@ -45,6 +48,37 @@ const CommentHeader = ({
 
   const commentTreeState = useContext(CommentTreeContext);
   const hasAnyBounties = openBounties.length > 0 || closedBounties.length > 0;
+  const isDocumentAuthor = commentTreeState?.document?.authors?.some(
+    author => author.id === authorProfile.id
+  );
+  
+  // Add this new check for peer reviewers
+  const isAssignedReviewer = (commentTreeState?.document as Paper)?.peerReviews?.some(
+    review => review.user.authorProfile.id === authorProfile.id
+  );
+
+  const tooltipProps = {
+    placement: "bottom-start" as const,
+    componentsProps: {
+      tooltip: {
+        sx: {
+          bgcolor: globalColors.LIGHTER_GREY(1.0),
+          '& .MuiTooltip-arrow': {
+            display: 'none'
+          },
+          marginTop: '0px !important',
+          position: 'relative',
+          top: '10px'
+        }
+      },
+      popper: {
+        sx: {
+          marginTop: '0px !important'
+        }
+      }
+    }
+  };
+
   return (
     <div className={css(styles.commentHeader)}>
       <CommentBadges comment={comment} />
@@ -87,10 +121,35 @@ const CommentHeader = ({
                         {authorProfile.isVerified && (
                           <VerifiedBadge height={18} width={18} />
                         )}
+                        {isDocumentAuthor && (
+                          <div className={css(styles.authorBadge)}>
+                            <FontAwesomeIcon icon={faFeather} className={css(styles.authorBadgeIcon)} />
+                            Author
+                          </div>
+                        )}
                       </div>
                     </ALink>
                   }
-                />
+                  />
+                  {isAssignedReviewer && (
+                    <Tooltip {...tooltipProps} title={
+                      <div className={css(styles.tooltipText)}>
+                        <FontAwesomeIcon icon={faCircleInfo} className={css(styles.infoIcon)} />
+                        This reviewer has been assigned to review this paper by ResearchHub.
+                        <br /><br />
+                        <a href="https://airtable.com/apptLQP8XMy1kaiID/pag5tkxt0V18Xobje/form" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           className={css(styles.tooltipLink)}>
+                          Apply here
+                        </a> to become an official peer reviewer and get paid.
+                      </div>
+                    }>
+                      <div className={css(styles.reviewerBadge)}>
+                        Assigned Reviewer
+                      </div>
+                    </Tooltip>
+                  )}
                 {hasAnyBounties && bountyContributors.length > 0 && (
                   <>
                     {commentTreeState.context !== COMMENT_CONTEXTS.SIDEBAR && (
@@ -118,6 +177,16 @@ const CommentHeader = ({
                 <div className={css(styles.verb)}>{` created a grant`}</div>
               ) : comment.commentType === COMMENT_TYPES.REVIEW ? (
                 <div className={css(styles.verb)}>{` peer reviewed`}</div>
+              ) : comment.commentType === COMMENT_TYPES.PEER_REVIEW ? (
+                <div className={css(styles.verb)}>
+                  {comment.thread?.peerReview?.status === "CHANGES_REQUESTED"
+                    ? ` requested changes`
+                    : comment.thread?.peerReview?.status === "APPROVED"
+                    ? ` approved for publication`
+                    : comment.thread?.peerReview?.status === "PENDING"
+                    ? ` is reviewing`
+                    : ` peer reviewed`}
+                </div>
               ) : (
                 <div className={css(styles.verb)}>{` commented`}</div>
               )}
@@ -228,6 +297,45 @@ const styles = StyleSheet.create({
   },
   badgesWrapper: {
     marginBottom: 10,
+  },
+  authorBadge: {
+    display: "flex",
+    alignItems: "center",
+    gap: "4px",
+    fontSize: 12,
+    color: colors.secondary.text,
+    background: globalColors.NEW_BLUE(0.1),
+    padding: "2px 6px",
+    borderRadius: 4,
+    fontWeight: 500,
+  },
+  authorBadgeIcon: {
+    fontSize: 11,
+  },
+  reviewerBadge: {
+    display: "flex",
+    alignItems: "center",
+    gap: "4px",
+    fontSize: 12,
+    color: colors.secondary.text,
+    background: globalColors.YELLOW2(0.2),
+    padding: "2px 6px",
+    borderRadius: 4,
+    fontWeight: 500,
+    marginLeft: 4,
+  },
+  tooltipText: {
+    fontSize: 12,
+    color: colors.secondary.text,
+    padding: 8,
+  },
+  infoIcon: {
+    fontSize: 12,
+    marginRight: 5,
+  },
+  tooltipLink: {
+    color: globalColors.NEW_BLUE(),
+    textDecoration: "underline",
   },
 });
 

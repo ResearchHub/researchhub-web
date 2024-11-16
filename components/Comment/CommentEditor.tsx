@@ -26,7 +26,11 @@ import {
   faExclamationCircle,
   faTimes,
   faPlus,
-} from "@fortawesome/pro-light-svg-icons";
+  faHourglassHalf,
+  faCheckCircle,
+  faRotateExclamation,
+  faAngleDown,
+} from "@fortawesome/pro-solid-svg-icons";
 import IconButton from "../Icons/IconButton";
 import CommentReviewCategorySelector from "./CommentReviewCategorySelector";
 import useEffectForCommentTypeChange from "./hooks/useEffectForCommentTypeChange";
@@ -40,6 +44,9 @@ import { ModalActions } from "~/redux/modals";
 import globalColors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import CommentPrivacySelector from "./CommentPrivacySelector";
+import GenericMenu, { MenuOption } from "../shared/GenericMenu";
+
+
 const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {
@@ -101,6 +108,54 @@ const CommentEditor = ({
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
+  const [reviewStatus, setReviewStatus] = useState<string | null>(null);
+
+  const reviewStatusOptions: MenuOption[] = [
+    {
+      value: "APPROVED",
+      label: "Approve",
+      html: (
+        <div className={css(styles.menuOptionContent)}>
+          <FontAwesomeIcon 
+            icon={faCheckCircle} 
+            className={css(styles.menuOptionIcon, styles.approveIcon)} 
+          />
+          <div>
+            <strong>Approve</strong>
+            <div className={css(styles.menuOptionDescription)}>
+              Manuscript is approved for publication
+            </div>
+          </div>
+        </div>
+      ),
+      icon: <FontAwesomeIcon 
+        icon={faCheckCircle} 
+        className={css(styles.triggerStatusIcon, styles.approveIcon)} 
+      />,
+    },
+    {
+      value: "CHANGES_REQUESTED",
+      label: "Request changes",
+      html: (
+        <div className={css(styles.menuOptionContent)}>
+          <FontAwesomeIcon 
+            icon={faRotateExclamation} 
+            className={css(styles.menuOptionIcon, styles.requestChangesIcon)} 
+          />
+          <div>
+            <strong>Request changes</strong>
+            <div className={css(styles.menuOptionDescription)}>
+              Changes must be addressed and reviewed again before publication
+            </div>
+          </div>
+        </div>
+      ),
+      icon: <FontAwesomeIcon 
+        icon={faRotateExclamation} 
+        className={css(styles.triggerStatusIcon, styles.requestChangesIcon)} 
+      />,
+    },
+  ];
 
   const { quill, quillRef, isReady } = useQuill({
     options: {
@@ -213,6 +268,7 @@ const CommentEditor = ({
           bountyType: interimBounty.bountyType,
           targetHubs: interimBounty.targetHubs,
         }),
+        ...(commentType === COMMENT_TYPES.PEER_REVIEW && { reviewStatus }),
       });
 
       dangerouslySetContent({});
@@ -400,37 +456,67 @@ const CommentEditor = ({
         </div>
         {!isMinimalMode && (
           <div className={css(styles.actions)}>
-            <div style={{ width: 70 }}>
-              <Button
-                fullWidth
-                size="small"
-                label={
-                  isSubmitting ? (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        minHeight: "28px",
-                      }}
-                    >
-                      <ClipLoader
-                        sizeUnit={"px"}
-                        size={18}
-                        color={"#fff"}
-                        loading={true}
-                      />
+            {commentType === COMMENT_TYPES.PEER_REVIEW ? (
+              <div className={css(styles.reviewActions)}>
+                <GenericMenu
+                  id="review-status-menu"
+                  options={reviewStatusOptions}
+                  onSelect={(option) => setReviewStatus(option.value)}
+                  selected={reviewStatus}
+                  menuStyleOverride={styles.menuStyleOverride}
+                >
+                  <button className={css(styles.versionTrigger)}>
+                    {!reviewStatus ? (
+                      <>
+                        Select status
+                        <FontAwesomeIcon 
+                          icon={faAngleDown} 
+                          className={css(styles.dropdownIcon)}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        {reviewStatusOptions.find(option => option.value === reviewStatus)?.icon}
+                        {reviewStatusOptions.find(option => option.value === reviewStatus)?.label}
+                        <FontAwesomeIcon 
+                          icon={faAngleDown}
+                          className={css(styles.dropdownIcon)} 
+                        />
+                      </>
+                    )}
+                  </button>
+                </GenericMenu>
+                <div className={css(styles.postButtonWrapper)}>
+                  <Button
+                    fullWidth
+                    size="small"
+                    label={isSubmitting ? (
+                      <div className={css(styles.loadingWrapper)}>
+                        <ClipLoader sizeUnit={"px"} size={18} color={"#fff"} loading={true} />
+                      </div>
+                    ) : "Post"}
+                    hideRipples={true}
+                    onClick={(event) => _handleSubmit(event)}
+                    disabled={isSubmitting || isEmpty || !reviewStatus}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className={css(styles.postButtonWrapper)}>
+                <Button
+                  fullWidth
+                  size="small"
+                  label={isSubmitting ? (
+                    <div className={css(styles.loadingWrapper)}>
+                      <ClipLoader sizeUnit={"px"} size={18} color={"#fff"} loading={true} />
                     </div>
-                  ) : (
-                    <>{`Post`}</>
-                  )
-                }
-                hideRipples={true}
-                onClick={(event) => _handleSubmit(event)}
-                disabled={
-                  isSubmitting || isEmpty || (allowBounty && !interimBounty)
-                }
-              />
-            </div>
+                  ) : "Post"}
+                  hideRipples={true}
+                  onClick={(event) => _handleSubmit(event)}
+                  disabled={isSubmitting || isEmpty}
+                />
+              </div>
+            )}
             {handleCancel && (
               <div style={{ marginLeft: 15 }}>
                 <Button
@@ -475,7 +561,21 @@ const styles = StyleSheet.create({
   },
   actions: {
     display: "flex",
+    justifyContent: "flex-end",
     alignItems: "center",
+  },
+  reviewActions: {
+    display: "flex",
+    alignItems: "center",
+    gap: 16,
+  },
+  postButtonWrapper: {
+    width: 70,
+  },
+  loadingWrapper: {
+    display: "flex",
+    alignItems: "center",
+    minHeight: "28px",
   },
   toolbarContainer: {
     position: "relative",
@@ -551,6 +651,61 @@ const styles = StyleSheet.create({
     [`@media (max-width: ${breakpoints.xsmall.str})`]: {
       display: "inline-block",
     },
+  },
+  versionTrigger: {
+    display: "flex",
+    gap: 8,
+    color: globalColors.BLACK(0.8),
+    borderRadius: 4,
+    border: `1px solid ${globalColors.GREY(0.4)}`,
+    fontSize: 14,
+    padding: "6px 12px",
+    height: 38,
+    alignItems: "center",
+    cursor: "pointer",
+    background: "white",
+    minWidth: 130,
+    fontWeight: 500,
+    transition: "all 0.2s ease",
+    ":hover": {
+      borderColor: globalColors.GREY(0.6),
+      background: globalColors.GREY(0.05),
+    },
+  },
+  dropdownIcon: {
+    fontSize: 12,
+    color: globalColors.BLACK(0.6),
+  },
+  menuStyleOverride: {
+    width: 300,
+    marginTop: 4,
+  },
+  menuOptionContent: {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: 12,
+    padding: "8px 4px",
+  },
+  menuOptionDescription: {
+    fontSize: 13,
+    color: globalColors.BLACK(0.6),
+    marginTop: 2,
+  },
+  menuOptionIcon: {
+    fontSize: 20,
+    width: 20,
+    height: 20,
+  },
+  triggerStatusIcon: {
+    fontSize: 16,
+    width: 16,
+    height: 16,
+  },
+  approveIcon: {
+    color: globalColors.NEW_GREEN(),
+  },
+  requestChangesIcon: {
+    color: globalColors.RED(),
   },
 });
 

@@ -38,8 +38,12 @@ import LinkToPublicPage from "../LinkToPublicPage";
 import { breakpoints } from "~/config/themes/screen";
 import { faBookmark } from "@fortawesome/pro-regular-svg-icons";
 import { faBookmark as solidBookmark } from "@fortawesome/pro-solid-svg-icons";
-import DocumentVersionSelector from "./lib/DocumentVersionSelector";
+import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import { isResearchHubPaper } from "./lib/util";
+import useCurrentUser from "~/config/hooks/useCurrentUser";
+import { parsePeerReview, PeerReview } from "../PeerReview/lib/types";
+import { faArrowRight } from "@fortawesome/pro-regular-svg-icons";
+import { faClockRotateLeft } from "@fortawesome/pro-solid-svg-icons";
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
 );
@@ -68,9 +72,7 @@ const DocumentHeader = ({
   const headerWrapperRef = useRef<HTMLDivElement>(null);
   const [stickyVisible, setStickyVisible] = useState<boolean>(false);
   const [stickyOffset, setStickyOffset] = useState<number>(0);
-  const currentUser = useSelector((state: RootState) =>
-    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
-  );
+  const currentUser = useCurrentUser();
 
   const tabs = getTabs({
     router,
@@ -78,7 +80,6 @@ const DocumentHeader = ({
     metadata,
   });
 
-  const showVersionSelector = router.asPath.includes('exp=submit') || isResearchHubPaper(doc);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -101,9 +102,26 @@ const DocumentHeader = ({
     };
   }, []);
 
+  const handleReviewClick = () => {
+    const { documentId, documentSlug } = router.query;
+    const documentType = router.asPath.split("/")[1];
+    const reviewsPath = `/${documentType}/${documentId}/${documentSlug}/reviews`;
+    
+    router.push(reviewsPath, undefined, { 
+      shallow: true 
+    }).then(() => {
+      // After URL update, scroll to the reviews section
+      const reviewsSection = document.querySelector('.peer-reviews-section');
+      if (reviewsSection) {
+        const y = reviewsSection.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({top: y, behavior: 'smooth'});
+      }
+    });
+  };
+
   return (
     <div ref={headerWrapperRef} className={css(styles.headerRoot)}>
-      {/* <DocumentPageTutorial /> */}
+
       <div
         className={css(
           styles.stickyHeader,
@@ -131,14 +149,47 @@ const DocumentHeader = ({
           }
         >
           <div>
+            {isPaper(doc) && doc.versions.some(v => v.isLatest) && 
+              String(doc.versions.find(v => v.isLatest)?.paperId) !== String(doc.id) && (
+              <div className={css(styles.reviewRequestBanner)}>
+                <span className={css(styles.reviewRequestText)}>
+                  <FontAwesomeIcon 
+                    icon={faClockRotateLeft} 
+                    className={css(styles.bannerIcon)}
+                  />
+                  You are viewing an older version of this paper.
+                </span>
+                <button
+                  className={css(styles.reviewRequestButton)}
+                  onClick={() => router.push(`/paper/${doc.versions.find(v => v.isLatest)?.paperId}`)}
+                >
+                  View latest version
+                  <FontAwesomeIcon icon={faArrowRight} />
+                </button>
+              </div>
+            )}
+
+            {isPaper(doc) && doc.peerReviews.some(
+              (reviewer) =>
+                reviewer.user.id === currentUser?.id &&
+                reviewer.status === "PENDING"
+            ) && (
+                <div className={css(styles.reviewRequestBanner)}>
+                  <span className={css(styles.reviewRequestText)}>
+                    You were requested to complete a peer review on this document on Nov 7th, 2024
+                  </span>
+                  <button
+                    className={css(styles.reviewRequestButton)}
+                    onClick={handleReviewClick}
+                  >
+                    Add your review
+                  </button>
+                </div>
+              )}
+
             <div className={css(styles.topLine)}>
               <div className={css(styles.badgesWrapper)}>
                 <DocumentBadges document={doc} metadata={metadata} />
-              </div>
-              <div className={css(styles.versionWrapper)}>
-                {showVersionSelector && isPaper(doc) && doc.versions.length > 0 && (
-                  <DocumentVersionSelector versions={doc.versions} />
-                )}
               </div>
             </div>
             <div className={css(styles.titleWrapper)}>
@@ -516,6 +567,40 @@ const styles = StyleSheet.create({
       background: colors.DARKER_GREY(0.2),
       transition: "0.2s",
     },
+  },
+  reviewRequestBanner: {
+    backgroundColor: "rgb(255 250 215)",
+    border: "1px solid rgba(212, 167, 44, 0.4)",
+    padding: "8px 16px",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+    borderRadius: 4,
+  },
+  reviewRequestText: {
+    color: "#24292f",
+    fontSize: 14,
+  },
+  reviewRequestButton: {
+    padding: "8px 12px",
+    borderRadius: 4,
+    backgroundColor: colors.NEW_BLUE(),
+    color: "white",
+    border: "none",
+    cursor: "pointer",
+    fontSize: 13,
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    ":hover": {
+      backgroundColor: colors.NEW_BLUE(0.8),
+    },
+  },
+  bannerIcon: {
+    marginRight: 8,
+    fontSize: 14,
+    color: "#24292f",
   },
 });
 

@@ -376,33 +376,6 @@ function FeedCard({
                               </>
                             )}
 
-                            <div style={{ alignSelf: "flex-end", marginLeft: "auto", }}>
-                              <AvatarGroup
-                                total={authors.length}
-                                max={4}
-                                spacing={6}
-                                componentsProps={{
-                                  additionalAvatar: {
-                                    sx: {
-                                      width: 22,
-                                      height: 22,
-                                      fontSize: 13
-                                    }
-                                  }
-                                }}
-                              >
-                                {authors.map((author) => {
-                                  return (
-                                    <Tooltip title={author.firstName + " " + author.lastName}>
-                                      <Avatar src={author.profileImage} sx={{ width: 22, height: 22, fontSize: 13, }}>
-                                        {isEmpty(author.profileImage) && (author.firstName || "")[0]}
-                                      </Avatar>
-                                    </Tooltip>
-                                  )
-                                })}
-                              </AvatarGroup>
-                            </div>
-
                           </div>
                         </div>
 

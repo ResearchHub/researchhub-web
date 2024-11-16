@@ -20,13 +20,21 @@ export const commentTypes = [
     group: "contribute",
     // @ts-ignore
     icon: <FontAwesomeIcon icon={faComments} />,
-    placeholder: "Add a comment or start a grant",
+    placeholder: "Discuss this paper with the community",
   },
   {
-    label: "Peer review",
+    label: "Review",
     value: COMMENT_TYPES.REVIEW,
     isDefault: false,
     placeholder: "What are your overall impressions of this paper?",
+    // @ts-ignore
+    icon: <FontAwesomeIcon icon={faStar} />,
+  },
+  {
+    label: "Peer review",
+    value: COMMENT_TYPES.PEER_REVIEW,
+    isDefault: false,
+    placeholder: "Add your review and select a status",
     // @ts-ignore
     icon: <FontAwesomeIcon icon={faStar} />,
   },
@@ -105,7 +113,7 @@ export const reviewCategories = {
     description:
       "Does the introduction clearly articulate the research question and provide adequate context? Is the study's significance within the field convincingly established?",
     isDefault: false,
-  },  
+  },
   methods: {
     label: "Methods",
     value: "methods",
