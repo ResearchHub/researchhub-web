@@ -431,7 +431,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
             }
             onClick={handleNextOrSubmit}
             theme="solidPrimary"
-            disabled={isSubmitting}
+            disabled={true}
           />
         </div>
       )}
