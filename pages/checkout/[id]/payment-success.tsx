@@ -1,19 +1,39 @@
+import { StyleSheet, css } from "aphrodite";
 import { Box, Container, List, ListItem, ListItemIcon, ListItemText, Paper, Button } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import Link from 'next/link';
 import colors from '~/config/themes/colors';
+import { parsePaper } from "~/components/Document/lib/types";
+import fetchPaper from "~/components/Document/api/fetchPaper";
+import { useRouter } from "next/router";
 
-export default function PaymentSuccess() {
+interface PaymentSuccessProps {
+  documentData: any;
+}
+
+export default function PaymentSuccess({ documentData }: PaymentSuccessProps) {
+
+  const router = useRouter();
+  if (router.isFallback || !documentData) {
+    return  (
+        <div
+        style={{
+          display: "flex",
+          marginTop: "20%",
+          justifyContent: "center",
+          fontSize: 22,
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
+
+  const paper = parsePaper(documentData);
+  
   return (
-    <Box 
-      sx={{ 
-        minHeight: '100vh',
-        background: '#FAFAFA',
-        pt: 6,
-        pb: 10
-      }}
-    >
+    <Box sx={{ minHeight: '100vh', background: '#FAFAFA', pt: 6, pb: 10 }}>
       <Container maxWidth="md">
         <Paper 
           elevation={3}
@@ -67,35 +87,17 @@ export default function PaymentSuccess() {
             Your paper is now live on ResearchHub
           </h2>
 
-          {/* Paper Title as Button */}
           <Link 
-            href="/paper/title" 
+            href={`/paper/${paper.id}`}
             style={{ textDecoration: 'none', width: '100%' }}
           >
             <Button
               variant="contained"
               fullWidth
-              sx={{
-                p: 3,
-                mb: 4,
-                textTransform: 'none',
-                backgroundColor: '#f8f9fa',
-                color: colors.NEW_BLUE(),
-                boxShadow: 1,
-                '&:hover': {
-                  backgroundColor: colors.NEW_BLUE(0.1),
-                  boxShadow: 2,
-                },
-                display: 'block',
-                whiteSpace: 'normal',
-                lineHeight: 1.4,
-              }}
+              className={css(styles.paperButton)}
             >
-              <span style={{ 
-                fontSize: '16px',
-                fontWeight: 400
-              }}>
-                Evolution of priorities in strategic funding for collaborative health research.
+              <span className={css(styles.paperTitle)}>
+                {paper.title}
               </span>
             </Button>
           </Link>
@@ -175,3 +177,53 @@ export default function PaymentSuccess() {
     </Box>
   );
 }
+
+const styles = StyleSheet.create({
+  paperButton: {
+    padding: '24px',
+    marginBottom: '32px',
+    textTransform: 'none',
+    backgroundColor: '#f8f9fa',
+    color: colors.NEW_BLUE(),
+    boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
+    ':hover': {
+      backgroundColor: colors.NEW_BLUE(0.1),
+      boxShadow: '0 2px 4px rgba(0,0,0,0.15)',
+    },
+    display: 'block',
+    whiteSpace: 'normal',
+    lineHeight: 1.4,
+  },
+  paperTitle: {
+    fontSize: '16px',
+    fontWeight: 400,
+  },
+});
+
+export const getStaticProps = async (ctx) => {
+  const { id } = ctx.params;
+  
+  try {
+    const paper = await fetchPaper({ paperId: id });
+    return {
+      props: {
+        documentData: paper,
+      },
+      revalidate: 600, // Revalidate every 10 minutes
+    };
+  } catch (error) {
+    return {
+      props: {
+        errorCode: 404,
+      },
+      revalidate: 10, // Retry sooner if there was an error
+    };
+  }
+};
+
+export const getStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
