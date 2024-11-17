@@ -349,6 +349,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
       closeModal={() => {
         closeModal();
       }}
+      modalStyle={action === "PUBLISH_IN_JOURNAL" ? styles.journalModalStyle : undefined}
       titleStyle={styles.modalTitleStyle}
       zIndex={100000000}
       title={
@@ -491,6 +492,10 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
 const styles = StyleSheet.create({
   slideIntro: {
     background: "#eaf1ff"
+  },
+  journalModalStyle: {
+    borderRadius: 4,
+    border: `3px solid ${colors.NEW_BLUE()}`,
   },
   inputContainer: {
     width: "100%",

@@ -14,7 +14,7 @@ const PaperVersionIntroStep = ({ onStart }: { onStart: () => void }) => {
       </div>
       <h1 className={css(styles.title)}>Publish in the ResearchHub Journal</h1>
       <p className={css(styles.subtitle)}>
-        Fast, affordable, and transparent peer review process.
+        Fast, affordable, and transparent publication process. <br/>Flat fee of 1,000 USD.
       </p>
       <div className={css(styles.benefitsContainer)}>
         <div className={css(styles.benefitCard)}>
@@ -42,7 +42,7 @@ const PaperVersionIntroStep = ({ onStart }: { onStart: () => void }) => {
           </div>
           <h3 className={css(styles.benefitTitle)}>Preprint Publication</h3>
           <span className={css(styles.benefitText)}>
-            Immediate early sharing of research, at no cost.
+            Your research will receive a DOI and published immediately.
           </span>
         </div>
         <div className={css(styles.benefitCard)}>
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 18,
-    color: colors.MEDIUM_GREY(),
+    color: "rgb(121, 121, 121)",
     marginBottom: 25,
     display: 'flex',
     flexDirection: 'row',
@@ -112,14 +112,14 @@ const styles = StyleSheet.create({
   benefitCard: {
     display: "flex",
     flexDirection: "column",
-    padding: "24px 24px",
-    borderRadius: 12,
+    padding: "18px 18px",
+    borderRadius: 8,
     backgroundColor: colors.WHITE(),
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1)",
   },
   benefitIcon: {
-    fontSize: 32,
-    marginBottom: 20,
+    fontSize: 24,
+    marginBottom: 15,
     color: colors.NEW_BLUE(),
     display: "flex",
     alignItems: "center",
@@ -127,21 +127,21 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   benefitTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: 500,
     color: colors.BLACK(),
-    marginBottom: 12,
+    marginBottom: 8,
     lineHeight: "28px",
     textAlign: "center",
   },
   benefitText: {
     fontSize: 14,
-    color: colors.MEDIUM_GREY(),
+    color: "rgb(121, 121, 121)",
     lineHeight: "20px",
     textAlign: "center",
   },
   bulletList: {
-    color: colors.MEDIUM_GREY2(),
+    color: "rgb(121, 121, 121)",
     fontSize: 14,
     lineHeight: "24px",
     margin: "0 auto",
