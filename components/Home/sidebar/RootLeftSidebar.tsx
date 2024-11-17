@@ -51,8 +51,7 @@ import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import RhTextTag from "~/components/shared/RhTextTag";
 import VerificationModal from "~/components/Verification/VerificationModal";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
-import NewPostButton from "~/components/NewPostButton";
-import NewPostModal from "~/components/Modals/NewPostModal";
+import PublishButton from "./PublishButton";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import VerifyIdentityModal from "~/components/Verification/VerifyIdentityModal";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
@@ -463,12 +462,10 @@ function RootLeftSidebar({
               : styles.newPostButtonContainer
           )}
         >
-          <NewPostButton
+          <PublishButton
             customButtonStyle={styles.newPostButtonCustom}
-            isMinimized={isMinimized}
           />
         </div>
-        <NewPostModal />
       </div>
 
       <div className={css(styles.scrollableContent)}>
