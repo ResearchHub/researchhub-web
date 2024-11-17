@@ -182,6 +182,26 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
           institution_id: authorAndAffiliation.institution.id,
           is_corresponding: authorAndAffiliation.isCorrespondingAuthor,
         })),
+        ...(action === "PUBLISH_RESEARCH" || action === "PUBLISH_IN_JOURNAL" ? {
+          declarations: [
+            {
+              declaration_type: "ACCEPT_TERMS_AND_CONDITIONS",
+              accepted: acceptedTerms,
+            },
+            {
+              declaration_type: "AUTHORIZE_CC_BY_4_0",
+              accepted: acceptedLicense,
+            },
+            {
+              declaration_type: "CONFIRM_AUTHORS_RIGHTS",
+              accepted: acceptedAuthorship,
+            },
+            {
+              declaration_type: "CONFIRM_ORIGINALITY_AND_COMPLIANCE",
+              accepted: acceptedOriginality,
+            },
+          ],
+        } : {}),
       });
       
       setSubmittedPaperId(response.id);
@@ -411,7 +431,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
             error={fieldErrors.changeDescription}
           />
         )}
-        {step === "DECLARATION" && action === "PUBLISH_RESEARCH" && (
+        {step === "DECLARATION" &&  (
           <PaperVersionDeclarationStep
             acceptedTerms={acceptedTerms}
             setAcceptedTerms={handleTermsChange}

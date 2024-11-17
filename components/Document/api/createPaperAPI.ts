@@ -1,6 +1,17 @@
 import { ID } from "~/config/types/root_types";
 import API from "~/config/api";
 
+type DeclarationType = 
+  | "ACCEPT_TERMS_AND_CONDITIONS"
+  | "AUTHORIZE_CC_BY_4_0"
+  | "CONFIRM_AUTHORS_RIGHTS"
+  | "CONFIRM_ORIGINALITY_AND_COMPLIANCE";
+
+interface Declaration {
+  declaration_type: DeclarationType;
+  accepted: boolean;
+}
+
 export interface createPaperProps {
   title: string;
   abstract: string;
@@ -14,6 +25,7 @@ export interface createPaperProps {
   pdfUrl: string;
   previousPaperId?: ID;
   changeDescription: string;
+  declarations?: Declaration[];
 }
 
 export const createPaperAPI = ({
@@ -24,6 +36,7 @@ export const createPaperAPI = ({
   pdfUrl,
   previousPaperId,
   changeDescription,
+  declarations,
 }: createPaperProps): Promise<any> => {
   const url = `${API.BASE_URL}paper/create_researchhub_paper/`;
 
@@ -37,6 +50,7 @@ export const createPaperAPI = ({
       pdf_url: pdfUrl,
       previous_paper_id: previousPaperId,
       change_description: changeDescription,
+      ...(declarations ? { declarations } : {}),
     })
   )
     .then((response) => {
