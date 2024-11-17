@@ -28,6 +28,7 @@ import PaperVersionSuccessStep from "./PaperVersionSuccessStep";
 import ClipLoader from "react-spinners/ClipLoader";
 import { ACTION } from "./PaperVersionTypes";
 import PaperVersionPublishResearchIntroStep from "./PaperVersionPublishResearchIntroStep";
+import { loadStripeCheckout } from "~/config/stripe";
 const { setMessage, showMessage } = MessageActions;
 
 interface Args {
@@ -35,9 +36,10 @@ interface Args {
   closeModal: () => void;
   versions?: DocumentVersion[];
   action?: ACTION;
+  journalFee?: number;
 }
 
-const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLISH_RESEARCH" }: Args) => {
+const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLISH_RESEARCH", journalFee = 1000 }: Args) => {
 
   // General State
   const [step, setStep] = useState<STEP>(
@@ -90,6 +92,9 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
 
   // Add new state for tracking submission
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Add new state for tracking payment
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   useEffect(() => {
     setTitle(latestPaper?.title || null);
@@ -169,47 +174,73 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      const response = await createPaperAPI({
-        title: title || "",
-        abstract: abstract || "",
-        previousPaperId: latestPaper?.id,
-        hubIds: selectedHubs.map((hub) => hub.id),
-        changeDescription,
-        pdfUrl: uploadedFileUrl || "",
-        authors: authorsAndAffiliations.map((authorAndAffiliation, index) => ({
-          id: authorAndAffiliation.author.id,
-          author_position: index === 0 ? "first" : index === authorsAndAffiliations.length - 1 ? "last" : "middle",
-          institution_id: authorAndAffiliation.institution.id,
-          is_corresponding: authorAndAffiliation.isCorrespondingAuthor,
-        })),
-        ...(action === "PUBLISH_RESEARCH" || action === "PUBLISH_IN_JOURNAL" ? {
-          declarations: [
-            {
-              declaration_type: "ACCEPT_TERMS_AND_CONDITIONS",
-              accepted: acceptedTerms,
-            },
-            {
-              declaration_type: "AUTHORIZE_CC_BY_4_0",
-              accepted: acceptedLicense,
-            },
-            {
-              declaration_type: "CONFIRM_AUTHORS_RIGHTS",
-              accepted: acceptedAuthorship,
-            },
-            {
-              declaration_type: "CONFIRM_ORIGINALITY_AND_COMPLIANCE",
-              accepted: acceptedOriginality,
-            },
-          ],
-        } : {}),
-      });
-      
-      setSubmittedPaperId(response.id);
+      // For journal submissions, handle payment first
+      if (action === "PUBLISH_IN_JOURNAL") {
+        setIsProcessingPayment(true);
+        
+        // Create paper first to get the ID
+        const createPaperResponse = await createPaperAPI({
+          title: title || "",
+          abstract: abstract || "",
+          previousPaperId: latestPaper?.id,
+          hubIds: selectedHubs.map((hub) => hub.id),
+          changeDescription,
+          pdfUrl: uploadedFileUrl || "",
+          authors: authorsAndAffiliations.map((authorAndAffiliation, index) => ({
+            id: authorAndAffiliation.author.id,
+            author_position: index === 0 ? "first" : index === authorsAndAffiliations.length - 1 ? "last" : "middle",
+            institution_id: authorAndAffiliation.institution.id,
+            is_corresponding: authorAndAffiliation.isCorrespondingAuthor,
+          })),
+          ...(action === "PUBLISH_IN_JOURNAL" || action === "PUBLISH_RESEARCH" ? {
+            declarations: [
+              {
+                declaration_type: "ACCEPT_TERMS_AND_CONDITIONS", 
+                accepted: acceptedTerms,
+              },
+              {
+                declaration_type: "AUTHORIZE_CC_BY_4_0",
+                accepted: acceptedLicense,
+              },
+              {
+                declaration_type: "CONFIRM_AUTHORS_RIGHTS",
+                accepted: acceptedAuthorship,
+              },
+              {
+                declaration_type: "CONFIRM_ORIGINALITY_AND_COMPLIANCE",
+                accepted: acceptedOriginality,
+              },
+            ],
+          } : {}),
+        });
+        setSubmittedPaperId(createPaperResponse.id);
+
+        // Redirect to Stripe checkout
+        const stripe = await loadStripeCheckout();
+        const result = await stripe?.redirectToCheckout({
+          lineItems: [{
+            price: String(journalFee),
+            quantity: 1,
+          }],
+          mode: 'payment',
+          successUrl: `${window.location.origin}/papers/${createPaperResponse.id}/payment-success`,
+          cancelUrl: `${window.location.origin}/papers/${createPaperResponse.id}/payment-cancelled`,
+          clientReferenceId: createPaperResponse.id.toString(),
+        });
+
+        if (result?.error) {
+          throw new Error(result.error.message);
+        }
+
+        return; // Stop here as we're redirecting
+      }
+
       setStep("SUCCESS");
     } catch (e) {
       alert('error')
     } finally {
       setIsSubmitting(false);
+      setIsProcessingPayment(false);
     }
   };
 
@@ -342,6 +373,23 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
     }
   };
 
+  // Update button label based on payment state
+  const getButtonLabel = () => {
+    if (isSubmitting) {
+      return (
+        <div className={css(styles.loadingContainer)}>
+          <ClipLoader size={20} color="#fff" />
+        </div>
+      );
+    }
+    if (step === "PREVIEW") {
+      return action === "PUBLISH_IN_JOURNAL" 
+        ? `Continue to Payment ($${journalFee})` 
+        : "Submit";
+    }
+    return "Continue";
+  };
+
   return (
     <BaseModal
       isOpen={isOpen}
@@ -470,18 +518,10 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
             </div>
           )}
           <Button
-            label={
-              isSubmitting ? (
-                <div className={css(styles.loadingContainer)}>
-                  <ClipLoader size={20} color="#fff" />
-                </div>
-              ) : (
-                step === "PREVIEW" ? "Submit" : "Continue"
-              )
-            }
+            label={getButtonLabel()}
             onClick={handleNextOrSubmit}
             theme="solidPrimary"
-            disabled={true}
+            disabled={isSubmitting || isProcessingPayment}
           />
         </div>
       )}
