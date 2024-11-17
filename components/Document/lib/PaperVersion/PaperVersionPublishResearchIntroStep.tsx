@@ -2,63 +2,66 @@ import { StyleSheet, css } from "aphrodite";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilePlus, faBolt, faCoins, faChartLineUp } from "@fortawesome/pro-solid-svg-icons";
-import RhJournalIcon from "~/components/Icons/RhJournalIcon";
-import Link from "next/link";
+import { 
+  faBookOpen, 
+  faUsers, 
+  faComments, 
+  faChartNetwork,
+  faFileArrowUp 
+} from "@fortawesome/pro-solid-svg-icons";
 
-const PaperVersionIntroStep = ({ onStart }: { onStart: () => void }) => {
+const PaperVersionPublishResearchIntroStep = ({ onStart }: { onStart: () => void }) => {
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.iconContainer)}>
-        <RhJournalIcon width={50} height={50} color={colors.NEW_BLUE()} />
+        <FontAwesomeIcon icon={faFileArrowUp} className={css(styles.icon)} />
       </div>
-      <h1 className={css(styles.title)}>Publish in the ResearchHub Journal</h1>
+      <h1 className={css(styles.title)}>Share Your Research with the World</h1>
       <p className={css(styles.subtitle)}>
-        Fast, affordable, and transparent peer review process.
+        Join the open science movement and make your research accessible to everyone
       </p>
       <div className={css(styles.benefitsContainer)}>
         <div className={css(styles.benefitCard)}>
           <div className={css(styles.benefitIcon)}>
-            <FontAwesomeIcon icon={faBolt} />
+            <FontAwesomeIcon icon={faBookOpen} />
           </div>
-          <h3 className={css(styles.benefitTitle)}>Rapid Turnaround</h3>
-          <ul className={css(styles.bulletList)}>
-            <li>14 days: Peer reviews done</li>
-            <li>21 days: Publication decision</li>
-          </ul>
-        </div>
-        <div className={css(styles.benefitCard)}>
-          <div className={css(styles.benefitIcon)}>
-            <FontAwesomeIcon icon={faCoins} />
-          </div>
-          <h3 className={css(styles.benefitTitle)}>$150 to Peer Reviewers</h3>
+          <h3 className={css(styles.benefitTitle)}>Open Access</h3>
           <span className={css(styles.benefitText)}>
-            A scientist's time and expertise is valuable. We pay for peer review.
+            Make your research freely available to readers worldwide
           </span>
         </div>
         <div className={css(styles.benefitCard)}>
           <div className={css(styles.benefitIcon)}>
-            <FontAwesomeIcon icon={faFilePlus} />
+            <FontAwesomeIcon icon={faUsers} />
           </div>
-          <h3 className={css(styles.benefitTitle)}>Preprint Publication</h3>
+          <h3 className={css(styles.benefitTitle)}>Build Your Network</h3>
           <span className={css(styles.benefitText)}>
-            Immediate early sharing of research, at no cost.
+            Connect with researchers in your field and grow your academic network
           </span>
         </div>
         <div className={css(styles.benefitCard)}>
           <div className={css(styles.benefitIcon)}>
-            <FontAwesomeIcon icon={faChartLineUp} />
+            <FontAwesomeIcon icon={faComments} />
           </div>
-          <h3 className={css(styles.benefitTitle)}>Maximize Your Impact</h3>
+          <h3 className={css(styles.benefitTitle)}>Get Feedback</h3>
           <span className={css(styles.benefitText)}>
-            Tap into a social network that gets more eyes on your research.
+            Receive valuable feedback from the scientific community
+          </span>
+        </div>
+        <div className={css(styles.benefitCard)}>
+          <div className={css(styles.benefitIcon)}>
+            <FontAwesomeIcon icon={faChartNetwork} />
+          </div>
+          <h3 className={css(styles.benefitTitle)}>Increase Impact</h3>
+          <span className={css(styles.benefitText)}>
+            Track engagement and measure the impact of your research
           </span>
         </div>
       </div>
       <div className={css(styles.buttonContainer)}>
         <Button
           fullWidth
-          label="Get Started"
+          label="Start Publishing"
           theme="solidPrimary"
           onClick={onStart}
           customStyles={styles.button}
@@ -70,7 +73,7 @@ const PaperVersionIntroStep = ({ onStart }: { onStart: () => void }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: -40,
+    marginTop: 0,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -140,24 +143,6 @@ const styles = StyleSheet.create({
     lineHeight: "20px",
     textAlign: "center",
   },
-  bulletList: {
-    color: colors.MEDIUM_GREY2(),
-    fontSize: 14,
-    lineHeight: "24px",
-    margin: "0 auto",
-    padding: "0",
-    listStylePosition: "inside",
-    width: "200px",
-    textAlign: "left",
-    "li": {
-      marginBottom: 8,
-      paddingLeft: 16,
-      textIndent: -16,
-      ":last-child": {
-        marginBottom: 0,
-      },
-    },
-  },
   buttonContainer: {
     marginTop: 32,
     width: "100%",
@@ -180,38 +165,6 @@ const styles = StyleSheet.create({
       transform: "scale(0.98)",
     },
   },
-  buttonGroup: {
-    display: "flex",
-    gap: 16,
-    flexDirection: "column",
-    width: "100%",
-  },
-  secondaryButton: {
-    fontSize: 18,
-    padding: "16px 32px",
-    borderRadius: 30,
-    fontWeight: 600,
-    width: "100%",
-    transition: "all 0.2s ease",
-    border: `2px solid ${colors.NEW_BLUE()}`,
-    color: colors.NEW_BLUE(),
-    background: colors.WHITE(),
-    ":hover": {
-      transform: "scale(1.02)",
-      boxShadow: "0 8px 20px rgba(0, 0, 0, 0.15)",
-    },
-    ":active": {
-      transform: "scale(0.98)",
-    },
-  },
-  learnMoreLink: {
-    color: colors.NEW_BLUE(),
-    fontSize: 16,
-    textDecoration: 'none',
-    ':hover': {
-      textDecoration: 'underline',
-    },
-  },
 });
 
-export default PaperVersionIntroStep; 
+export default PaperVersionPublishResearchIntroStep; 

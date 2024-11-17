@@ -23,22 +23,30 @@ import VerifyIdentityBreadcrumbs, {
 import PaperVersionDeclarationStep from "./PaperVersionDeclarationStep";
 import { CloseIcon } from "~/config/themes/icons";
 import { MessageActions } from "~/redux/message";
-import PaperVersionIntroStep from "./PaperVersionIntroStep";
+import PaperVersionPublishInJournalIntroStep from "./PaperVersionPublishInJournalIntroStep";
 import PaperVersionSuccessStep from "./PaperVersionSuccessStep";
 import ClipLoader from "react-spinners/ClipLoader";
+import { ACTION } from "./PaperVersionTypes";
+import PaperVersionPublishResearchIntroStep from "./PaperVersionPublishResearchIntroStep";
 const { setMessage, showMessage } = MessageActions;
 
 interface Args {
   isOpen: boolean;
   closeModal: () => void;
-  versions: DocumentVersion[];
-  mode?: "CREATE" | "NEW_VERSION";
+  versions?: DocumentVersion[];
+  action?: ACTION;
 }
 
-const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Args) => {
+const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLISH_RESEARCH" }: Args) => {
 
   // General State
-  const [step, setStep] = useState<STEP>(mode === "CREATE" ? "INTRO" : "CONTENT");
+  const [step, setStep] = useState<STEP>(
+    action === "PUBLISH_RESEARCH" 
+      ? "INTRO_PUBLISH_RESEARCH" 
+      : action === "PUBLISH_IN_JOURNAL" 
+        ? "INTRO_PUBLISH_IN_JOURNAL" 
+        : "CONTENT"
+  );
   const [latestPaper, setLatestPaper] = useState<Paper | null>(null);
 
   // Form state
@@ -70,7 +78,9 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
   const [acceptedOriginality, setAcceptedOriginality] = useState(false);
 
   // Add to form state section
-  const [changeDescription, setChangeDescription] = useState<string>(mode === "CREATE" ? "Initial submission" : "");
+  const [changeDescription, setChangeDescription] = useState<string>(
+    action === "PUBLISH_NEW_VERSION" ? "" : "Initial submission"
+  );
 
   // Add state for tracking field errors
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string | null}>({});
@@ -89,7 +99,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
 
   useEffect(() => {
 
-    if (mode === "CREATE") {
+    if (action !== "PUBLISH_NEW_VERSION") {
       return;
     }
 
@@ -102,7 +112,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
       const parsed = parsePaper(rawPaper);
       setLatestPaper(parsed);
     })();
-  }, [mode]);
+  }, [action]);
 
   const stepperSteps: ProgressStepperStep[] = [
     {
@@ -115,21 +125,29 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
       number: 2,
       value: "AUTHORS_AND_METADATA",
     },
-    ...(mode === "CREATE" ? [{
+    ...(action === "PUBLISH_RESEARCH" || action === "PUBLISH_IN_JOURNAL" ? [{
       title: "Declarations",
       number: 3,
       value: "DECLARATION",
     }] : []),
     {
       title: "Preview",
-      number: mode === "CREATE" ? 4 : 3,
+      number: action === "PUBLISH_RESEARCH" ? 4 : 3,
       value: "PREVIEW",
     },
   ];
 
   // Handlers
   const handleNextStep = () => {
-    const steps = mode === "CREATE" ? ORDERED_STEPS : ORDERED_STEPS.filter((step) => step !== "DECLARATION");
+
+    let steps = ORDERED_STEPS;
+    if (action === "PUBLISH_RESEARCH") {
+      steps = steps.filter((step) => step !== "INTRO_PUBLISH_IN_JOURNAL");
+    } else if (action === "PUBLISH_IN_JOURNAL") {
+      steps = steps.filter((step) => step !== "INTRO_PUBLISH_RESEARCH");
+    } else if (action === "PUBLISH_NEW_VERSION") {
+      steps = steps.filter((step) => step !== "DECLARATION");
+    }
 
     const currentIndex = steps.indexOf(step);
     if (currentIndex + 1 < steps.length) {
@@ -138,7 +156,9 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
   };
 
   const handlePrevStep = () => {
-    const steps = mode === "CREATE" ? ORDERED_STEPS : ORDERED_STEPS.filter((step) => step !== "DECLARATION");
+    const steps = action === "PUBLISH_RESEARCH" 
+      ? ORDERED_STEPS 
+      : ORDERED_STEPS.filter((step) => step !== "DECLARATION");
 
     const currentIndex = steps.indexOf(step);
     if (currentIndex - 1 >= 0) {
@@ -198,7 +218,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
         return !Object.values(authorErrors).some(Boolean);
         
       case "DECLARATION":
-        if (mode === "NEW_VERSION") return true;
+        if (action === "PUBLISH_NEW_VERSION") return true;
         
         const declarationErrors = {
           terms: !acceptedTerms ? "Please accept the terms and conditions" : null,
@@ -312,10 +332,15 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
       titleStyle={styles.modalTitleStyle}
       zIndex={100000000}
       title={
+        !["INTRO_PUBLISH_IN_JOURNAL", "INTRO_PUBLISH_RESEARCH"].includes(step) && (
         <>
           <div className={css(styles.headerContainer)}>
             <span className={css(styles.modalTitle)}>
-              {mode === "CREATE" ? "Submit research" : "Submit new version"}
+              {action === "PUBLISH_RESEARCH" 
+                ? "Submit research"
+                : action === "PUBLISH_IN_JOURNAL" 
+                  ? "Submit to journal" 
+                  : "Submit new version"}
             </span>
             <CloseIcon
               // @ts-ignore
@@ -323,21 +348,25 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
               color={colors.MEDIUM_GREY()}
               onClick={() => closeModal()}
             />
-          </div>
-          <div className={css(styles.divider)} />
-        </>
+            </div>
+            <div className={css(styles.divider)} />
+          </>
+        )
       }
       modalContentStyle={styles.modalStyle}
     >
-      <div className={css(styles.breadcrumbsWrapper)}>
-        {!["INTRO", "SUCCESS"].includes(step) && (
-          <VerifyIdentityBreadcrumbs selected={step} steps={stepperSteps} />
+        {!["INTRO_PUBLISH_IN_JOURNAL", "INTRO_PUBLISH_RESEARCH", "SUCCESS"].includes(step) && (
+          <div className={css(styles.breadcrumbsWrapper)}>
+            <VerifyIdentityBreadcrumbs selected={step} steps={stepperSteps} />
+          </div>
         )}
-      </div>
 
-      <div className={css(styles.modalBody)}>
-        {step === "INTRO" && (
-          <PaperVersionIntroStep onStart={handleNextStep} />
+      <div className={css(styles.modalBody, step === "INTRO_PUBLISH_IN_JOURNAL" && styles.slideIntro)}>
+        {step === "INTRO_PUBLISH_IN_JOURNAL" && (
+          <PaperVersionPublishInJournalIntroStep onStart={handleNextStep} />
+        )}
+        {step === "INTRO_PUBLISH_RESEARCH" && (
+          <PaperVersionPublishResearchIntroStep onStart={handleNextStep} />
         )}
         {step === "CONTENT" && (
           <PaperVersionContentStep
@@ -382,7 +411,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
             error={fieldErrors.changeDescription}
           />
         )}
-        {step === "DECLARATION" && mode === "CREATE" && (
+        {step === "DECLARATION" && action === "PUBLISH_RESEARCH" && (
           <PaperVersionDeclarationStep
             acceptedTerms={acceptedTerms}
             setAcceptedTerms={handleTermsChange}
@@ -402,7 +431,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
           />
         )}
       </div>
-      {step !== "INTRO" && step !== "SUCCESS" && (
+      {step !== "INTRO_PUBLISH_IN_JOURNAL" && step !== "INTRO_PUBLISH_RESEARCH" && step !== "SUCCESS" && (
         <div
           className={css(
             styles.buttonWrapper,
@@ -440,6 +469,9 @@ const PaperVersionModal = ({ isOpen, closeModal, versions, mode = "CREATE" }: Ar
 };
 
 const styles = StyleSheet.create({
+  slideIntro: {
+    background: "#eaf1ff"
+  },
   inputContainer: {
     width: "100%",
   },
