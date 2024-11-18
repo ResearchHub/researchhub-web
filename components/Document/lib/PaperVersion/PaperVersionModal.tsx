@@ -93,9 +93,6 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
   // Add new state for tracking submission
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Add new state for tracking payment
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-
   useEffect(() => {
     setTitle(latestPaper?.title || null);
     setSelectedWorkType(latestPaper?.workType || "article");
@@ -172,57 +169,53 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
   };
 
   const handleSubmit = async () => {
-    setIsSubmitting(true);
-    try {
-      // For journal submissions, handle payment first
+      setIsSubmitting(true);
+      
+      let createPaperResponse;
+      try {
+        // Create paper first to get the ID
+        createPaperResponse = await createPaperAPI({
+          title: title || "",
+          abstract: abstract || "",
+          previousPaperId: latestPaper?.id,
+          hubIds: selectedHubs.map((hub) => hub.id),
+          changeDescription,
+          pdfUrl: uploadedFileUrl || "",
+          authors: authorsAndAffiliations.map((authorAndAffiliation, index) => ({
+            id: authorAndAffiliation.author.id,
+            author_position: index === 0 ? "first" : index === authorsAndAffiliations.length - 1 ? "last" : "middle",
+            institution_id: authorAndAffiliation.institution.id,
+            is_corresponding: authorAndAffiliation.isCorrespondingAuthor,
+          })),
+          ...(action === "PUBLISH_IN_JOURNAL" || action === "PUBLISH_RESEARCH" ? {
+            declarations: [
+              {
+                declaration_type: "ACCEPT_TERMS_AND_CONDITIONS", 
+                accepted: acceptedTerms,
+              },
+              {
+                declaration_type: "AUTHORIZE_CC_BY_4_0",
+                accepted: acceptedLicense,
+              },
+              {
+                declaration_type: "CONFIRM_AUTHORS_RIGHTS",
+                accepted: acceptedAuthorship,
+              },
+              {
+                declaration_type: "CONFIRM_ORIGINALITY_AND_COMPLIANCE",
+                accepted: acceptedOriginality,
+              },
+            ],
+          } : {}),
+        });
+      } catch (error) {
+        console.error('Paper Creation Error:', error);
+        alert('Failed to create paper. Please try again.');
+        return; // Exit early without resetting state
+      }
+
+      setSubmittedPaperId(createPaperResponse.id);
       if (action === "PUBLISH_IN_JOURNAL") {
-        setIsProcessingPayment(true);
-        
-        let createPaperResponse;
-        try {
-          // Create paper first to get the ID
-          createPaperResponse = await createPaperAPI({
-            title: title || "",
-            abstract: abstract || "",
-            previousPaperId: latestPaper?.id,
-            hubIds: selectedHubs.map((hub) => hub.id),
-            changeDescription,
-            pdfUrl: uploadedFileUrl || "",
-            authors: authorsAndAffiliations.map((authorAndAffiliation, index) => ({
-              id: authorAndAffiliation.author.id,
-              author_position: index === 0 ? "first" : index === authorsAndAffiliations.length - 1 ? "last" : "middle",
-              institution_id: authorAndAffiliation.institution.id,
-              is_corresponding: authorAndAffiliation.isCorrespondingAuthor,
-            })),
-            ...(action === "PUBLISH_IN_JOURNAL" || action === "PUBLISH_RESEARCH" ? {
-              declarations: [
-                {
-                  declaration_type: "ACCEPT_TERMS_AND_CONDITIONS", 
-                  accepted: acceptedTerms,
-                },
-                {
-                  declaration_type: "AUTHORIZE_CC_BY_4_0",
-                  accepted: acceptedLicense,
-                },
-                {
-                  declaration_type: "CONFIRM_AUTHORS_RIGHTS",
-                  accepted: acceptedAuthorship,
-                },
-                {
-                  declaration_type: "CONFIRM_ORIGINALITY_AND_COMPLIANCE",
-                  accepted: acceptedOriginality,
-                },
-              ],
-            } : {}),
-          });
-        } catch (error) {
-          console.error('Paper Creation Error:', error);
-          alert('Failed to create paper. Please try again.');
-          return; // Exit early without resetting state
-        }
-
-        setSubmittedPaperId(createPaperResponse.id);
-
         try {
           const response = await fetch(
             `${API.BASE_URL}payment/checkout-session/`,
@@ -253,15 +246,10 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
         return; // Stop here as we're redirecting
       }
 
-      setStep("SUCCESS");
-    } catch (e) {
-      console.error('Submission Error:', e);
-      alert('An error occurred. Please try again.');
-      return; // Exit early without resetting state
-    } finally {
-      setIsSubmitting(false);
-      setIsProcessingPayment(false);
-    }
+      // Publishing in journal will not have a success step. Instead, it will have a redirect url
+      if (action === "PUBLISH_NEW_VERSION" || action === "PUBLISH_RESEARCH") {
+        setStep("SUCCESS");
+      }
   };
 
   const showBackButton = step !== "CONTENT";
@@ -513,10 +501,11 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
             fieldErrors={fieldErrors}
           />
         )}
-        {step === "SUCCESS" && submittedPaperId && (
+        {step === "SUCCESS" && (
           <PaperVersionSuccessStep
-            paperId={submittedPaperId}
+            paperId={submittedPaperId || 0}
             paperTitle={title || ""}
+            closeModal={closeModal}
           />
         )}
       </div>
@@ -541,7 +530,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
             label={getButtonLabel()}
             onClick={handleNextOrSubmit}
             theme="solidPrimary"
-            disabled={isSubmitting || isProcessingPayment}
+            disabled={isSubmitting}
           />
         </div>
       )}
