@@ -1,15 +1,23 @@
-import { Box, Button, Container } from '@mui/material';
+import { Box, Button, Container, TextField } from '@mui/material';
 import API from "~/config/api";
+import { useState } from 'react';
 
 export default function TestStripeCheckout() {
+  const [paperId, setPaperId] = useState('');
+
   const initiateCheckout = async () => {
+    if (!paperId.trim()) {
+      alert('Please enter a paper ID');
+      return;
+    }
+
     try {
       const response = await fetch(
         `${API.BASE_URL}payment/checkout-session/`,
         API.POST_CONFIG({
-          success_url: 'http://localhost:3000/checkout/1/payment-success',
-          failure_url: 'http://localhost:3000/checkout/1/payment-failure',
-          paper: '1' // Test paper ID
+          success_url: `${window.location.protocol}//${window.location.host}/checkout/${paperId}/payment-success`,
+          failure_url: `${window.location.protocol}//${window.location.host}/checkout/${paperId}/payment-failure`,
+          paper: paperId
         })
       );
 
@@ -19,12 +27,15 @@ export default function TestStripeCheckout() {
 
       const data = await response.json();
       
-      // Redirect to Stripe checkout URL
-      if (data.checkout_url) {
-        window.location.href = data.checkout_url;
+      // Redirect user to Stripe's hosted checkout page
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No checkout URL received from server');
       }
     } catch (error) {
       console.error('Checkout Error:', error);
+      alert('Failed to initiate checkout. Please try again.');
     }
   };
 
@@ -34,10 +45,18 @@ export default function TestStripeCheckout() {
         sx={{ 
           minHeight: '100vh',
           display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
           alignItems: 'center',
           justifyContent: 'center'
         }}
       >
+        <TextField
+          label="Paper ID"
+          value={paperId}
+          onChange={(e) => setPaperId(e.target.value)}
+          sx={{ width: '200px' }}
+        />
         <Button
           variant="contained"
           onClick={initiateCheckout}

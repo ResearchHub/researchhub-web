@@ -28,7 +28,7 @@ import PaperVersionSuccessStep from "./PaperVersionSuccessStep";
 import ClipLoader from "react-spinners/ClipLoader";
 import { ACTION } from "./PaperVersionTypes";
 import PaperVersionPublishResearchIntroStep from "./PaperVersionPublishResearchIntroStep";
-import { loadStripeCheckout } from "~/config/stripe";
+import API from "~/config/api";
 const { setMessage, showMessage } = MessageActions;
 
 interface Args {
@@ -215,21 +215,32 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
         });
         setSubmittedPaperId(createPaperResponse.id);
 
-        // Redirect to Stripe checkout
-        const stripe = await loadStripeCheckout();
-        const result = await stripe?.redirectToCheckout({
-          lineItems: [{
-            price: String(journalFee),
-            quantity: 1,
-          }],
-          mode: 'payment',
-          successUrl: `${window.location.origin}/papers/${createPaperResponse.id}/payment-success`,
-          cancelUrl: `${window.location.origin}/papers/${createPaperResponse.id}/payment-cancelled`,
-          clientReferenceId: createPaperResponse.id.toString(),
-        });
+        // Initiate checkout with our new API
+        try {
+          const response = await fetch(
+            `${API.BASE_URL}payment/checkout-session/`,
+            API.POST_CONFIG({
+              success_url: `${window.location.origin}/papers/${createPaperResponse.id}/payment-success`,
+              failure_url: `${window.location.origin}/papers/${createPaperResponse.id}/payment-failure`,
+              paper: createPaperResponse.id
+            })
+          );
 
-        if (result?.error) {
-          throw new Error(result.error.message);
+          if (!response.ok) {
+            throw new Error('Checkout session creation failed');
+          }
+
+          const data = await response.json();
+          
+          // Redirect user to Stripe's hosted checkout page
+          if (data.url) {
+            window.location.href = data.url;
+          } else {
+            throw new Error('No checkout URL received from server');
+          }
+        } catch (error) {
+          console.error('Checkout Error:', error);
+          alert('Failed to initiate checkout. Please try again.');
         }
 
         return; // Stop here as we're redirecting

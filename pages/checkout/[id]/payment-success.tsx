@@ -33,62 +33,19 @@ export default function PaymentSuccess({ documentData }: PaymentSuccessProps) {
   const paper = parsePaper(documentData);
   
   return (
-    <Box sx={{ minHeight: '100vh', background: '#FAFAFA', pt: 6, pb: 10 }}>
+    <Box className={css(styles.pageWrapper)}>
       <Container maxWidth="md">
-        <Paper 
-          elevation={3}
-          sx={{
-            p: 6,
-            borderRadius: 4,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            background: 'white',
-            position: 'relative',
-            overflow: 'hidden',
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              height: '4px',
-              background: colors.NEW_GREEN()
-            }
-          }}
-        >
-          <Box
-            sx={{
-              animation: 'fadeIn 0.5s ease-out',
-              '@keyframes fadeIn': {
-                '0%': { opacity: 0, transform: 'translateY(10px)' },
-                '100%': { opacity: 1, transform: 'translateY(0)' }
-              }
-            }}
-          >
-            <CheckCircleIcon 
-              sx={{ 
-                fontSize: 70,
-                color: colors.NEW_GREEN()
-              }} 
-            />
+        <Paper className={css(styles.container)}>
+          <Box className={css(styles.successIcon)}>
+            <CheckCircleIcon className={css(styles.icon)} />
           </Box>
 
-          <h2 
-            style={{ 
-              marginTop: '32px',
-              marginBottom: '32px',
-              textAlign: 'center',
-              color: colors.NEW_GREEN(),
-              fontWeight: 500,
-              fontSize: '24px'
-            }}
-          >
+          <h2 className={css(styles.heading)}>
             Your paper is now live on ResearchHub
           </h2>
 
           <Link 
-            href={`/paper/${paper.id}`}
+            href={`/paper/${paper.id}/${paper.slug}`}
             style={{ textDecoration: 'none', width: '100%' }}
           >
             <Button
@@ -102,41 +59,32 @@ export default function PaymentSuccess({ documentData }: PaymentSuccessProps) {
             </Button>
           </Link>
 
-          <h3 
-            style={{ 
-              marginBottom: '24px',
-              fontWeight: 600,
-              textAlign: 'left',
-              marginTop: '35px',
-              fontSize: '18px',
-              color: colors.BLACK()
-            }}
-          >
+          <h3 className={css(styles.subheading)}>
             What happens next?
           </h3>
           
           <List sx={{ width: '100%' }}>
             {[
               { 
-                icon: <CheckCircleIcon sx={{ color: colors.NEW_GREEN() }} />,
+                icon: <CheckCircleIcon className={css(styles.greenIcon)} />,
                 primary: "Preprint available on ResearchHub",
                 secondary: "Completed",
                 done: true
               },
               {
-                icon: <RadioButtonUncheckedIcon sx={{ color: colors.ORANGE() }} />,
+                icon: <RadioButtonUncheckedIcon className={css(styles.orangeIcon)} />,
                 primary: "Editor reviews submission",
                 secondary: "1-3 days",
                 done: false
               },
               {
-                icon: <RadioButtonUncheckedIcon sx={{ color: colors.GREY() }} />,
+                icon: <RadioButtonUncheckedIcon className={css(styles.greyIcon)} />,
                 primary: "Peer review process",
                 secondary: "1-14 days",
                 done: false
               },
               {
-                icon: <RadioButtonUncheckedIcon sx={{ color: colors.GREY() }} />,
+                icon: <RadioButtonUncheckedIcon className={css(styles.greyIcon)} />,
                 primary: "Publication in ResearchHub Journal",
                 secondary: "Final step",
                 done: false
@@ -144,27 +92,17 @@ export default function PaymentSuccess({ documentData }: PaymentSuccessProps) {
             ].map((item, index) => (
               <ListItem 
                 key={index}
-                sx={{
-                  p: 2,
-                  borderLeft: '2px solid',
-                  borderColor: item.done ? colors.NEW_GREEN() : colors.GREY(0.3),
-                  mb: 2,
-                  backgroundColor: item.done ? `${colors.NEW_GREEN(0.1)}` : 'transparent',
-                  borderRadius: 1
-                }}
+                className={css(styles.listItem, item.done && styles.listItemDone)}
               >
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText 
                   primary={
-                    <span style={{ 
-                      fontWeight: 500,
-                      color: colors.BLACK()
-                    }}>
+                    <span className={css(styles.listItemPrimary)}>
                       {item.primary}
                     </span>
                   }
                   secondary={
-                    <span style={{ color: colors.MEDIUM_GREY2() }}>
+                    <span className={css(styles.listItemSecondary)}>
                       {item.secondary}
                     </span>
                   }
@@ -179,9 +117,61 @@ export default function PaymentSuccess({ documentData }: PaymentSuccessProps) {
 }
 
 const styles = StyleSheet.create({
+  pageWrapper: {
+    minHeight: '100vh',
+    background: '#FAFAFA',
+    paddingTop: 48,
+    paddingBottom: 80
+  },
+  container: {
+    padding: 48,
+    borderRadius: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    background: 'white',
+    position: 'relative',
+    overflow: 'hidden',
+    ':before': {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      height: '4px',
+      background: colors.NEW_GREEN()
+    }
+  },
+  successIcon: {
+    animation: 'fadeIn 0.5s ease-out',
+    '@keyframes fadeIn': {
+      '0%': { opacity: 0, transform: 'translateY(10px)' },
+      '100%': { opacity: 1, transform: 'translateY(0)' }
+    }
+  },
+  icon: {
+    fontSize: 70,
+    color: colors.NEW_GREEN()
+  },
+  heading: {
+    marginTop: 32,
+    marginBottom: 32,
+    textAlign: 'center',
+    color: colors.NEW_GREEN(),
+    fontWeight: 500,
+    fontSize: 24
+  },
+  subheading: {
+    marginBottom: 24,
+    fontWeight: 600,
+    textAlign: 'left',
+    marginTop: 35,
+    fontSize: 18,
+    color: colors.BLACK()
+  },
   paperButton: {
-    padding: '24px',
-    marginBottom: '32px',
+    padding: 24,
+    marginBottom: 32,
     textTransform: 'none',
     backgroundColor: '#f8f9fa',
     color: colors.NEW_BLUE(),
@@ -195,9 +185,35 @@ const styles = StyleSheet.create({
     lineHeight: 1.4,
   },
   paperTitle: {
-    fontSize: '16px',
+    fontSize: 16,
     fontWeight: 400,
   },
+  listItem: {
+    padding: 16,
+    borderLeft: `2px solid ${colors.GREY(0.3)}`,
+    marginBottom: 16,
+    backgroundColor: 'transparent',
+  },
+  listItemDone: {
+    borderLeft: `2px solid ${colors.NEW_GREEN()}`,
+    backgroundColor: colors.NEW_GREEN(0.1)
+  },
+  listItemPrimary: {
+    fontWeight: 500,
+    color: colors.BLACK()
+  },
+  listItemSecondary: {
+    color: colors.MEDIUM_GREY2()
+  },
+  greenIcon: {
+    color: colors.NEW_GREEN()
+  },
+  orangeIcon: {
+    color: colors.ORANGE()
+  },
+  greyIcon: {
+    color: colors.GREY()
+  }
 });
 
 export const getStaticProps = async (ctx) => {
