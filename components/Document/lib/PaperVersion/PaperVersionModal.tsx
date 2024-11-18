@@ -178,50 +178,57 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
       if (action === "PUBLISH_IN_JOURNAL") {
         setIsProcessingPayment(true);
         
-        // Create paper first to get the ID
-        const createPaperResponse = await createPaperAPI({
-          title: title || "",
-          abstract: abstract || "",
-          previousPaperId: latestPaper?.id,
-          hubIds: selectedHubs.map((hub) => hub.id),
-          changeDescription,
-          pdfUrl: uploadedFileUrl || "",
-          authors: authorsAndAffiliations.map((authorAndAffiliation, index) => ({
-            id: authorAndAffiliation.author.id,
-            author_position: index === 0 ? "first" : index === authorsAndAffiliations.length - 1 ? "last" : "middle",
-            institution_id: authorAndAffiliation.institution.id,
-            is_corresponding: authorAndAffiliation.isCorrespondingAuthor,
-          })),
-          ...(action === "PUBLISH_IN_JOURNAL" || action === "PUBLISH_RESEARCH" ? {
-            declarations: [
-              {
-                declaration_type: "ACCEPT_TERMS_AND_CONDITIONS", 
-                accepted: acceptedTerms,
-              },
-              {
-                declaration_type: "AUTHORIZE_CC_BY_4_0",
-                accepted: acceptedLicense,
-              },
-              {
-                declaration_type: "CONFIRM_AUTHORS_RIGHTS",
-                accepted: acceptedAuthorship,
-              },
-              {
-                declaration_type: "CONFIRM_ORIGINALITY_AND_COMPLIANCE",
-                accepted: acceptedOriginality,
-              },
-            ],
-          } : {}),
-        });
+        let createPaperResponse;
+        try {
+          // Create paper first to get the ID
+          createPaperResponse = await createPaperAPI({
+            title: title || "",
+            abstract: abstract || "",
+            previousPaperId: latestPaper?.id,
+            hubIds: selectedHubs.map((hub) => hub.id),
+            changeDescription,
+            pdfUrl: uploadedFileUrl || "",
+            authors: authorsAndAffiliations.map((authorAndAffiliation, index) => ({
+              id: authorAndAffiliation.author.id,
+              author_position: index === 0 ? "first" : index === authorsAndAffiliations.length - 1 ? "last" : "middle",
+              institution_id: authorAndAffiliation.institution.id,
+              is_corresponding: authorAndAffiliation.isCorrespondingAuthor,
+            })),
+            ...(action === "PUBLISH_IN_JOURNAL" || action === "PUBLISH_RESEARCH" ? {
+              declarations: [
+                {
+                  declaration_type: "ACCEPT_TERMS_AND_CONDITIONS", 
+                  accepted: acceptedTerms,
+                },
+                {
+                  declaration_type: "AUTHORIZE_CC_BY_4_0",
+                  accepted: acceptedLicense,
+                },
+                {
+                  declaration_type: "CONFIRM_AUTHORS_RIGHTS",
+                  accepted: acceptedAuthorship,
+                },
+                {
+                  declaration_type: "CONFIRM_ORIGINALITY_AND_COMPLIANCE",
+                  accepted: acceptedOriginality,
+                },
+              ],
+            } : {}),
+          });
+        } catch (error) {
+          console.error('Paper Creation Error:', error);
+          alert('Failed to create paper. Please try again.');
+          return; // Exit early without resetting state
+        }
+
         setSubmittedPaperId(createPaperResponse.id);
 
-        // Initiate checkout with our new API
         try {
           const response = await fetch(
             `${API.BASE_URL}payment/checkout-session/`,
             API.POST_CONFIG({
-              success_url: `${window.location.origin}/papers/${createPaperResponse.id}/payment-success`,
-              failure_url: `${window.location.origin}/papers/${createPaperResponse.id}/payment-failure`,
+              success_url: `${window.location.origin}/paper/${createPaperResponse.id}/payment-success`,
+              failure_url: `${window.location.origin}/paper/${createPaperResponse.id}/payment-failure`,
               paper: createPaperResponse.id
             })
           );
@@ -232,7 +239,6 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
 
           const data = await response.json();
           
-          // Redirect user to Stripe's hosted checkout page
           if (data.url) {
             window.location.href = data.url;
           } else {
@@ -241,6 +247,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
         } catch (error) {
           console.error('Checkout Error:', error);
           alert('Failed to initiate checkout. Please try again.');
+          return; // Exit early without resetting state
         }
 
         return; // Stop here as we're redirecting
@@ -248,7 +255,9 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
 
       setStep("SUCCESS");
     } catch (e) {
-      alert('error')
+      console.error('Submission Error:', e);
+      alert('An error occurred. Please try again.');
+      return; // Exit early without resetting state
     } finally {
       setIsSubmitting(false);
       setIsProcessingPayment(false);
@@ -395,7 +404,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
     }
     if (step === "PREVIEW") {
       return action === "PUBLISH_IN_JOURNAL" 
-        ? `Continue to Payment ($${journalFee})` 
+        ? `Continue to Payment` 
         : "Submit";
     }
     return "Continue";
