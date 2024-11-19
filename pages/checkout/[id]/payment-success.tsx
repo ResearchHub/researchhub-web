@@ -73,20 +73,19 @@ export default function PaymentSuccess({ documentData }: PaymentSuccessProps) {
               },
               {
                 icon: <RadioButtonUncheckedIcon className={css(styles.orangeIcon)} />,
-                primary: "Editor reviews submission",
-                secondary: "1-3 days",
+                primary: "Peer review evaluations",
+                secondary: "10 - 14 days",
                 done: false
               },
               {
                 icon: <RadioButtonUncheckedIcon className={css(styles.greyIcon)} />,
-                primary: "Peer review process",
-                secondary: "1-14 days",
+                primary: "Review quality check",
+                secondary: "1 - 7 days",
                 done: false
-              },
+              },              
               {
                 icon: <RadioButtonUncheckedIcon className={css(styles.greyIcon)} />,
-                primary: "Publication in ResearchHub Journal",
-                secondary: "Final step",
+                primary: "Paper published in ResearchHub Journal",
                 done: false
               }
             ].map((item, index) => (
