@@ -7,6 +7,8 @@ import colors from '~/config/themes/colors';
 import { parsePaper } from "~/components/Document/lib/types";
 import fetchPaper from "~/components/Document/api/fetchPaper";
 import { useRouter } from "next/router";
+import { PaperIcon } from "~/config/themes/icons";
+import ALink from "~/components/ALink";
 
 interface PaymentSuccessProps {
   documentData: any;
@@ -29,6 +31,7 @@ export default function PaymentSuccess({ documentData }: PaymentSuccessProps) {
       </div>
     );
   }
+
 
   const paper = parsePaper(documentData);
   
@@ -53,6 +56,12 @@ export default function PaymentSuccess({ documentData }: PaymentSuccessProps) {
               fullWidth
               className={css(styles.paperButton)}
             >
+              <PaperIcon 
+                width={18} 
+                height={18} 
+                color={colors.NEW_BLUE()}
+                overrideStyle={styles.buttonIcon}
+              />
               <span className={css(styles.paperTitle)}>
                 {paper.title}
               </span>
@@ -68,37 +77,59 @@ export default function PaymentSuccess({ documentData }: PaymentSuccessProps) {
               { 
                 icon: <CheckCircleIcon className={css(styles.greenIcon)} />,
                 primary: "Preprint available on ResearchHub",
-                secondary: "Completed",
+                time: "Completed",
+                secondary: <ALink theme="blue" href={`/paper/${paper.id}/${paper.slug}`}>View your paper →</ALink>,
                 done: true
               },
               {
                 icon: <RadioButtonUncheckedIcon className={css(styles.orangeIcon)} />,
                 primary: "Peer review evaluations",
-                secondary: "10 - 14 days",
-                done: false
+                time: "10-14 days",
+                secondary: "Expert reviewers evaluate your paper and provide feedback",
+                done: false,
+                isInProgress: true
               },
               {
                 icon: <RadioButtonUncheckedIcon className={css(styles.greyIcon)} />,
                 primary: "Review quality check",
-                secondary: "1 - 7 days",
+                time: "1-7 days",
+                secondary: "Editorial team ensures review quality and completeness",
                 done: false
-              },              
+              },
+              {
+                icon: <RadioButtonUncheckedIcon className={css(styles.greyIcon)} />,
+                primary: "Publication decision",
+                time: "",
+                secondary: "Reviewers may request changes. Please respond within 14 days to finalize publication",
+                done: false
+              },                            
               {
                 icon: <RadioButtonUncheckedIcon className={css(styles.greyIcon)} />,
                 primary: "Paper published in ResearchHub Journal",
+                time: "Final step",
+                secondary: "Paper formally published",
                 done: false
               }
             ].map((item, index) => (
               <ListItem 
                 key={index}
-                className={css(styles.listItem, item.done && styles.listItemDone)}
+                className={css(
+                  styles.listItem, 
+                  item.done && styles.listItemDone,
+                  item.isInProgress && styles.listItemInProgress
+                )}
               >
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText 
                   primary={
-                    <span className={css(styles.listItemPrimary)}>
-                      {item.primary}
-                    </span>
+                    <div className={css(styles.primaryContainer)}>
+                      <span className={css(styles.listItemPrimary)}>
+                        {item.primary}
+                      </span>
+                      <span className={css(styles.timeText)}>
+                        {item.time}
+                      </span>
+                    </div>
                   }
                   secondary={
                     <span className={css(styles.listItemSecondary)}>
@@ -179,7 +210,8 @@ const styles = StyleSheet.create({
       backgroundColor: colors.NEW_BLUE(0.1),
       boxShadow: '0 2px 4px rgba(0,0,0,0.15)',
     },
-    display: 'block',
+    display: 'flex',
+    alignItems: 'center',
     whiteSpace: 'normal',
     lineHeight: 1.4,
   },
@@ -197,6 +229,9 @@ const styles = StyleSheet.create({
     borderLeft: `2px solid ${colors.NEW_GREEN()}`,
     backgroundColor: colors.NEW_GREEN(0.1)
   },
+  listItemInProgress: {
+    borderLeft: `2px solid ${colors.ORANGE()}`,
+  },
   listItemPrimary: {
     fontWeight: 500,
     color: colors.BLACK()
@@ -212,6 +247,22 @@ const styles = StyleSheet.create({
   },
   greyIcon: {
     color: colors.GREY()
+  },
+  primaryContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%'
+  },
+  timeText: {
+    color: colors.MEDIUM_GREY2(),
+    fontSize: 14,
+    marginLeft: 16
+  },
+  buttonIcon: {
+    marginRight: 8,
+    display: 'inline-flex',
+    alignItems: 'center'
   }
 });
 
