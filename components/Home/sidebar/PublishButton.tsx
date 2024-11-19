@@ -1,20 +1,21 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Menu, MenuItem as MuiMenuItem } from '@mui/material';
+import { Menu, MenuItem as MuiMenuItem, Modal } from '@mui/material';
 import { StyleSheet, css } from "aphrodite";
 import { useState, ReactElement, MouseEvent } from "react";
 import { 
   faChevronDown,
   faFlask,
   faShare,
+  faBolt,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import RhJournalIcon from "~/components/Icons/RhJournalIcon";
-import { PostIcon, QuestionIcon } from "~/config/themes/icons";
+import { PostIcon, QuestionIcon, CloseIcon, BoltSvg } from "~/config/themes/icons";
 import PaperVersionModal from "~/components/Document/lib/PaperVersion/PaperVersionModal";
-import { paper } from "~/redux/paper/shims";
 import { ACTION } from "~/components/Document/lib/PaperVersion/PaperVersionTypes";
+import { breakpoints } from "~/config/themes/screen";
 
 type MenuItemType = {
   id: string;
@@ -29,14 +30,20 @@ function PublishButton({ customButtonStyle }: { customButtonStyle?: React.CSSPro
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [showPaperModal, setShowPaperModal] = useState(false);
   const [paperModalAction, setPaperModalAction] = useState("INTRO_PUBLISH_RESEARCH");
+  const [isMenuModal, setIsMenuModal] = useState(false);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>): void => {
-    setAnchorEl(event.currentTarget);
+    if (window.innerWidth <= breakpoints.xsmall.int) {
+      setIsMenuModal(true);
+    } else {
+      setAnchorEl(event.currentTarget);
+    }
   };
 
   const handleClose = (): void => {
     setAnchorEl(null);
+    setIsMenuModal(false);
   };
 
   const handleMenuItemClick = (action: string): void => {
@@ -54,37 +61,65 @@ function PublishButton({ customButtonStyle }: { customButtonStyle?: React.CSSPro
     {
       id: 'journal',
       icon: <RhJournalIcon color={colors.TEXT_GREY(0.8)} width={21} height={21} />,
-      title: 'Publish in ResearchHub Journal',
-      description: 'Submit your research for peer review and publication in our journal',
-      badge: <div style={{ backgroundColor: colors.ORANGE_LIGHT() }} className={css(styles.badge)}>Low APCs</div>,
+      title: 'Publish in ResearchHub',
+      description: 'Submit your research for peer review and publication in the ResearchHub journal.',
+      badge: <div className={css(styles.badge, styles.journalBadge)}>
+        <FontAwesomeIcon icon={faBolt as IconProp} className={css(styles.boltIcon)} />
+        <span>14 days</span>
+      </div>,
       iconStyle: { marginTop: -2 },
     },
     {
       id: 'research',
       icon: <FontAwesomeIcon icon={faFlask as IconProp} className={css(styles.menuIcon)} />,
-      title: 'Publish your research',
-      description: 'Share your findings, preprints, or research papers with the community',
-      badge: <div style={{ backgroundColor: "rgb(211 237 247)" }} className={css(styles.badge)}>Free and Open</div>,
+      title: 'Publish your Preprint',
+      description: 'Upload your preprint to share findings with the research community. Immediate, open-access visibility.',
+      badge: <div className={css(styles.badge, styles.preprintBadge)}>Free</div>,
     },
     {
       id: 'post',
       icon: <PostIcon width={20} height={20} color={colors.TEXT_GREY(0.8)} onClick={undefined} />,
-      title: 'Publish a post',
-      description: 'Write about research developments, insights, or scientific discussions',
+      title: 'Write a Post',
+      description: 'Share research methods, developments, or insights in a rigorous and open (CC0) forum.',
     },
     {
       id: 'question',
       icon: <QuestionIcon color={colors.TEXT_GREY(0.8)} size={18} onClick={undefined} />,
       title: 'Ask a Question',
-      description: 'Get answers and insights from the research community',
+      description: 'Get expert insights and responses from leading researchers. Add a grant to accelerate response time.',
     },
     {
       id: 'paper',
       icon: <FontAwesomeIcon icon={faShare as IconProp} className={css(styles.menuIcon)} />,
-      title: 'Share a paper',
-      description: 'Share and discuss published papers with the research community',
+      title: 'Share a Paper',
+      description: 'Highlight and discuss impactful papers with the research community.',
     },
   ];
+
+  const renderMenuItems = () => (
+    menuItems.map((item, index) => (
+      <div key={`${item.id}-wrapper`}>
+        {index === 2 && <div className={css(styles.divider)} />}
+        <MuiMenuItem 
+          onClick={() => handleMenuItemClick(item.id)} 
+          className={css(styles.menuItem)}
+        >
+          <div className={css(styles.iconColumn)} style={item.iconStyle}>
+            {item.icon}
+          </div>
+          <div className={css(styles.menuItemContent)}>
+            <div className={css(styles.menuItemHeader)}>
+              <span>{item.title}</span>
+              {item.badge && item.badge}
+            </div>
+            <span className={css(styles.menuItemDescription)}>
+              {item.description}
+            </span>
+          </div>
+        </MuiMenuItem>
+      </div>
+    ))
+  );
 
   return (
     <>
@@ -108,6 +143,7 @@ function PublishButton({ customButtonStyle }: { customButtonStyle?: React.CSSPro
           </div>
         }
       />
+      
       <Menu
         id="create-new-menu"
         anchorEl={anchorEl}
@@ -130,31 +166,26 @@ function PublishButton({ customButtonStyle }: { customButtonStyle?: React.CSSPro
           className: css(styles.menuPaper),
         }}
       >
-        {menuItems.map((item, index) => (
-          <div key={`${item.id}-wrapper`}>
-            {index === 2 && <div className={css(styles.divider)} />}
-            <MuiMenuItem 
-              onClick={() => handleMenuItemClick(item.id)} 
-              className={css(styles.menuItem)}
-            >
-              <div className={css(styles.iconColumn)} style={item.iconStyle}>
-                {item.icon}
-              </div>
-              <div className={css(styles.menuItemContent)}>
-                <div className={css(styles.menuItemHeader)}>
-                  <span>{item.title}</span>
-                  {item.badge && (
-                    <span className={css(styles.badge)}>{item.badge}</span>
-                  )}
-                </div>
-                <span className={css(styles.menuItemDescription)}>
-                  {item.description}
-                </span>
-              </div>
-            </MuiMenuItem>
-          </div>
-        ))}
+        {renderMenuItems()}
       </Menu>
+
+      <Modal
+        open={isMenuModal}
+        onClose={handleClose}
+        aria-labelledby="mobile-publish-modal"
+      >
+        <div className={css(styles.modalContent)}>
+          <div className={css(styles.modalHeader)}>
+            <h2>Publish</h2>
+            <CloseIcon 
+              onClick={handleClose}
+              color={colors.TEXT_GREY(0.8)}
+              overrideStyle={styles.closeButton}
+            />
+          </div>
+          {renderMenuItems()}
+        </div>
+      </Modal>
       
       {showPaperModal && paperModalAction && (
         <PaperVersionModal
@@ -189,8 +220,6 @@ const styles = StyleSheet.create({
   },
   chevronOpen: {
     transform: 'rotate(180deg)',
-  },
-  menu: {
   },
   menuPaper: {
     width: '100%',
@@ -238,14 +267,60 @@ const styles = StyleSheet.create({
     whiteSpace: 'pre-wrap',
   },
   badge: {
-    padding: '0px 8px',
+    padding: '2px 8px',
     borderRadius: 4,
     fontSize: 12,
+    whiteSpace: 'nowrap',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4,
+  },
+  journalBadge: {
+    backgroundColor: colors.ORANGE_LIGHT(),
+    color: colors.BLACK(),
+  },
+  preprintBadge: {
+    backgroundColor: colors.ORANGE_LIGHT(),
+    color: colors.BLACK(),
+  },
+  boltIcon: {
+    fontSize: 10,
   },
   divider: {
     height: 1,
     backgroundColor: colors.NEW_BLUE(0.2),
     margin: '8px -16px',
+  },
+  modalContent: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: 'white',
+    padding: '24px',
+    borderRadius: 8,
+    width: '90%',
+    maxWidth: 400,
+    maxHeight: '90vh',
+    overflowY: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 8,
+    boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+  },
+  modalHeader: {
+    marginBottom: 16,
+    paddingBottom: 16,
+    borderBottom: `1px solid ${colors.LIGHT_GREY(0.5)}`,
+    textAlign: 'center',
+    position: 'relative',
+  },
+  closeButton: {
+    position: 'absolute',
+    right: -8,
+    top: -8,
+    cursor: 'pointer',
+    padding: 8,
   },
 }); 
 
