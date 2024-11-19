@@ -16,6 +16,13 @@ import { PostIcon, QuestionIcon, CloseIcon, BoltSvg } from "~/config/themes/icon
 import PaperVersionModal from "~/components/Document/lib/PaperVersion/PaperVersionModal";
 import { ACTION } from "~/components/Document/lib/PaperVersion/PaperVersionTypes";
 import { breakpoints } from "~/config/themes/screen";
+import PaperUploadWizardContainer from "~/components/Paper/UploadWizard/PaperUploadWizardContainer";
+import AskQuestionForm from "~/components/Question/AskQuestionForm";
+import { createNewNote } from "~/config/fetch";
+import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import { RootState } from "~/redux";
 
 type MenuItemType = {
   id: string;
@@ -27,10 +34,14 @@ type MenuItemType = {
 };
 
 function PublishButton({ customButtonStyle }: { customButtonStyle?: React.CSSProperties }): ReactElement {
+  const user = useSelector((state: RootState) => state.auth?.user);
+  const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [showPaperModal, setShowPaperModal] = useState(false);
   const [paperModalAction, setPaperModalAction] = useState("INTRO_PUBLISH_RESEARCH");
   const [isMenuModal, setIsMenuModal] = useState(false);
+  const [showPaperUploadWizard, setShowPaperUploadWizard] = useState(false);
+  const [showQuestionForm, setShowQuestionForm] = useState(false);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>): void => {
@@ -46,15 +57,32 @@ function PublishButton({ customButtonStyle }: { customButtonStyle?: React.CSSPro
     setIsMenuModal(false);
   };
 
-  const handleMenuItemClick = (action: string): void => {
-    if (action === 'journal') {
-      setPaperModalAction("PUBLISH_IN_JOURNAL");
-      setShowPaperModal(true);
-    } else if (action === 'research') {
-      setPaperModalAction("PUBLISH_RESEARCH");
-      setShowPaperModal(true);
-    }
+  const handleMenuItemClick = async (id: string): Promise<void> => {
     handleClose();
+
+    switch (id) {
+      case 'journal':
+        setPaperModalAction("PUBLISH_IN_JOURNAL");
+        setShowPaperModal(true);
+        break;
+      case 'research':
+        setPaperModalAction("PUBLISH_RESEARCH");
+        setShowPaperModal(true);
+        break;
+      case 'post':
+        const note = await createNewNote({
+          orgSlug: user?.organization_slug,
+          grouping: NOTE_GROUPS.WORKSPACE,
+        });
+        router.push(`/${user?.organization_slug}/notebook/${note?.id ?? ""}`);
+        break;
+      case 'question':
+        setShowQuestionForm(true);
+        break;
+      case 'paper':
+        setShowPaperUploadWizard(true);
+        break;
+    }
   };
 
   const menuItems: MenuItemType[] = [
@@ -194,6 +222,34 @@ function PublishButton({ customButtonStyle }: { customButtonStyle?: React.CSSPro
           action={paperModalAction as ACTION}
         />
       )}
+
+      {/* Paper Upload Wizard Modal */}
+      {showPaperUploadWizard && (
+        <Modal
+          open={showPaperUploadWizard}
+          onClose={() => setShowPaperUploadWizard(false)}
+        >
+          <div className={css(styles.wizardModalContent)}>
+            <PaperUploadWizardContainer 
+              onExit={() => setShowPaperUploadWizard(false)} 
+            />
+          </div>
+        </Modal>
+      )}
+
+      {/* Question Form Modal */}
+      {showQuestionForm && (
+        <Modal
+          open={showQuestionForm}
+          onClose={() => setShowQuestionForm(false)}
+        >
+          <div className={css(styles.wizardModalContent)}>
+            <AskQuestionForm 
+              onExit={() => setShowQuestionForm(false)} 
+            />
+          </div>
+        </Modal>
+      )}
     </>
   );
 }
@@ -321,6 +377,28 @@ const styles = StyleSheet.create({
     top: -8,
     cursor: 'pointer',
     padding: 8,
+  },
+  wizardModalContent: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: 'white',
+    padding: '40px',
+    borderRadius: 5,
+    maxWidth: 800,
+    maxHeight: '90vh',
+    overflowY: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      padding: '40px 16px',
+      width: '100%',
+      height: '100%',
+      maxHeight: '100vh',
+      borderRadius: 0,
+    },
   },
 }); 
 
