@@ -1,5 +1,5 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { $getSelection, $isRangeSelection, TextNode } from 'lexical';
 import { css, StyleSheet } from 'aphrodite';
 import SuggestUsers from '~/components/SearchSuggestion/SuggestUsers';
@@ -11,9 +11,96 @@ function MentionsPlugin() {
   const [mentionPopupOpen, setMentionPopupOpen] = useState(false);
   const [mentionPopupPosition, setMentionPopupPosition] = useState({ x: 0, y: 0 });
   const [mentionQuery, setMentionQuery] = useState('');
+  const [isTypingMention, setIsTypingMention] = useState(false);
+  const lastAtPositionRef = useRef<number | null>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
+  const closeTimeoutRef = useRef<number | null>(null);
+
+  // Debug state changes
+  useEffect(() => {
+    console.log('🔄 State Update:', {
+      mentionPopupOpen,
+      isTypingMention,
+      lastAtPosition: lastAtPositionRef.current,
+      mentionQuery
+    });
+  }, [mentionPopupOpen, isTypingMention, mentionQuery]);
+
+  const closeMentionPopup = useCallback(() => {
+    console.log('📕 Closing mention popup');
+    
+    // Clear any existing timeout
+    if (closeTimeoutRef.current) {
+      window.clearTimeout(closeTimeoutRef.current);
+    }
+
+    setMentionPopupOpen(false);
+    setMentionQuery('');
+    setIsTypingMention(false);
+    lastAtPositionRef.current = null;
+    editor.focus();
+
+    // Set a timeout to prevent immediate reopening
+    closeTimeoutRef.current = window.setTimeout(() => {
+      closeTimeoutRef.current = null;
+    }, 100) as unknown as number;
+  }, [editor]);
+
+  // Handle escape key
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      console.log('🎹 Keydown event:', {
+        key: event.key,
+        mentionPopupOpen,
+        isTypingMention
+      });
+
+      if (!mentionPopupOpen) {
+        console.log('❌ Escape pressed but popup not open');
+        return;
+      }
+      
+      if (event.key === 'Escape') {
+        console.log('🔑 Escape key pressed with popup open');
+        event.preventDefault();
+        event.stopPropagation();
+        closeMentionPopup();
+      }
+    };
+
+    console.log('🎧 Adding escape key listener');
+    document.addEventListener('keydown', handleKeyDown, true);
+    return () => {
+      console.log('🔕 Removing escape key listener');
+      document.removeEventListener('keydown', handleKeyDown, true);
+    };
+  }, [mentionPopupOpen, closeMentionPopup]);
+
+  // Handle clicks outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      console.log('🖱️ Click event:', {
+        mentionPopupOpen,
+        isClickInsidePopup: popupRef.current?.contains(event.target as Node)
+      });
+
+      if (!mentionPopupOpen) return;
+      
+      if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
+        console.log('👆 Click outside detected');
+        event.preventDefault();
+        event.stopPropagation();
+        closeMentionPopup();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside, true);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside, true);
+    };
+  }, [mentionPopupOpen, closeMentionPopup]);
 
   const handleMentionSelect = useCallback((user) => {
-    console.log('Selected user:', user);
     editor.update(() => {
       const selection = $getSelection();
       if (!$isRangeSelection(selection)) return;
@@ -24,23 +111,11 @@ function MentionsPlugin() {
         selection.deleteCharacter(true);
       }
       
-      // Make sure we have the required user data
-      const mentionUser = {
-        firstName: user.firstName || user.first_name,
-        lastName: user.lastName || user.last_name,
-        authorProfile: user.authorProfile || user, // Ensure authorProfile exists for Avatar
-        id: user.id,
-      };
-      
-      const mentionNode = $createMentionNode(
-        `@${mentionUser.firstName} ${mentionUser.lastName}`, 
-        mentionUser
-      );
+      const mentionNode = $createMentionNode(`@${user.firstName} ${user.lastName}`, user);
       selection.insertNodes([mentionNode]);
     });
-    setMentionPopupOpen(false);
-    setMentionQuery('');
-  }, [editor, mentionQuery]);
+    closeMentionPopup();
+  }, [editor, mentionQuery, closeMentionPopup]);
 
   useEffect(() => {
     return editor.registerUpdateListener(({ editorState }) => {
@@ -53,59 +128,55 @@ function MentionsPlugin() {
 
         const textContent = node.getTextContent();
         const offset = selection.anchor.offset;
-        
-        // Find the @ symbol before the cursor
-        const textBeforeCursor = textContent.slice(0, offset);
-        const atSymbolIndex = textBeforeCursor.lastIndexOf('@');
-        
-        if (atSymbolIndex !== -1) {
-          const query = textBeforeCursor.slice(atSymbolIndex + 1);
-          setMentionQuery(query);
 
-          // Only show popup if we're in a mention context
-          if (!mentionPopupOpen || query !== mentionQuery) {
-            const editorElement = editor.getRootElement();
-            if (!editorElement) return;
+        console.log('📝 Editor update:', {
+          textContent,
+          offset,
+          lastChar: textContent[offset - 1],
+          mentionPopupOpen,
+          isTypingMention,
+          hasCloseTimeout: closeTimeoutRef.current !== null
+        });
 
-            const domSelection = window.getSelection();
-            if (domSelection && domSelection.rangeCount > 0) {
-              const range = domSelection.getRangeAt(0);
-              const rect = range.getBoundingClientRect();
-              const editorRect = editorElement.getBoundingClientRect();
+        // Check if user just typed "@" and we're not in a close timeout
+        if (textContent[offset - 1] === '@' && !mentionPopupOpen && closeTimeoutRef.current === null) {
+          console.log('@ detected');
+          const currentPosition = offset - 1;
+          lastAtPositionRef.current = currentPosition;
+          setIsTypingMention(true);
+          
+          const editorElement = editor.getRootElement();
+          if (!editorElement) return;
 
-              setMentionPopupPosition({
-                x: rect.left - editorRect.left,
-                y: rect.bottom - editorRect.top
-              });
-              setMentionPopupOpen(true);
-            }
+          const domSelection = window.getSelection();
+          if (domSelection && domSelection.rangeCount > 0) {
+            const range = domSelection.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+            const editorRect = editorElement.getBoundingClientRect();
+
+            setMentionPopupPosition({
+              x: rect.left - editorRect.left,
+              y: rect.bottom - editorRect.top
+            });
+            setMentionPopupOpen(true);
           }
-        } else {
-          // Close popup if there's no @ symbol before cursor
-          setMentionPopupOpen(false);
-          setMentionQuery('');
         }
       });
     });
-  }, [editor, mentionQuery, mentionPopupOpen]);
-
-  useEffect(() => {
-    return editor.registerCommand(
-      'keydown',
-      (event: KeyboardEvent) => {
-        if (event.key === 'Escape' && mentionPopupOpen) {
-          setMentionPopupOpen(false);
-          setMentionQuery('');
-          return true;
-        }
-        return false;
-      },
-      1
-    );
   }, [editor, mentionPopupOpen]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        window.clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return mentionPopupOpen ? (
     <div 
+      ref={popupRef}
       className={css(styles.mentionPopup)} 
       style={{ 
         left: mentionPopupPosition.x,
@@ -115,7 +186,6 @@ function MentionsPlugin() {
       <SuggestUsers
         onSelect={handleMentionSelect}
         onChange={(text) => {
-          // Don't close the popup on change, let the main logic handle it
           console.log('SuggestUsers onChange:', text);
         }}
       />
