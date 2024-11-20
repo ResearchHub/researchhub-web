@@ -1,23 +1,24 @@
-import { useQuill } from "./hooks/useQuill";
-import CommentEditorToolbar from "./CommentEditorToolbar";
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { ContentEditable } from '@lexical/react/LexicalContentEditable';
+import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin';
+import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
+import MarkdownPlugin from '@lexical/markdown';
+// import { TablePlugin } from '@lexical/table';
+// import { MentionsPlugin } from './plugins/MentionsPlugin';
+import { ToolbarPlugin } from './plugins/ToolbarPlugin';
 import { css, StyleSheet } from "aphrodite";
 import { useEffect, useRef, useState } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
-import {
-  insertReviewCategory,
-  focusEditor,
-  forceShowPlaceholder,
-  hasQuillContent,
-  filterOps,
-} from "./lib/quill";
 import { AuthorProfile, ID, parseUser } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
 import CommentTypeSelector from "./CommentTypeSelector";
 import { COMMENT_TYPES, CommentPrivacyFilter } from "./lib/types";
-import useQuillContent from "./hooks/useQuillContent";
-import colors from "./lib/colors";
-import { commentTypes } from "./lib/options";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import { MessageActions } from "~/redux/message";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,6 +46,10 @@ import globalColors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import CommentPrivacySelector from "./CommentPrivacySelector";
 import GenericMenu, { MenuOption } from "../shared/GenericMenu";
+import colors from './lib/colors';
+import { commentTypes } from './lib/options';
+import { ListNode, ListItemNode } from '@lexical/list';
+import { LinkNode } from '@lexical/link';
 
 
 const { setMessage, showMessage } = MessageActions;
@@ -92,8 +97,8 @@ const CommentEditor = ({
   showAuthorLine = true,
   displayCurrentUser = true,
 }: CommentEditorArgs) => {
+  const [editor, setEditor] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const editorRef = useRef<any>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
   const [isMinimalMode, setIsMinimalMode] = useState<boolean>(minimalMode);
   const isMinimalModeRef = useRef(minimalMode);
@@ -157,83 +162,49 @@ const CommentEditor = ({
     },
   ];
 
-  const { quill, quillRef, isReady } = useQuill({
-    options: {
-      placeholder,
+  const initialConfig = {
+    namespace: editorId,
+    theme: {
+      paragraph: 'editor-paragraph',
+      text: {
+        bold: 'editor-text-bold',
+        italic: 'editor-text-italic',
+        underline: 'editor-text-underline',
+      },
     },
-    editorId,
-  });
-
-  const {
-    content: _content,
-    dangerouslySetContent,
-  }: { content: any; dangerouslySetContent: Function } = useQuillContent({
-    quill,
-    content,
-    notifyOnContentChangeRate: 300, // ms
-  });
-
-  useEffectForCommentTypeChange({
-    quill,
-    quillRef,
-    isReady,
-    commentType: _commentType,
-    editorId,
-  });
-
-  useEffectHandleClick({
-    ref: editorRef,
-    onInsideClick: () => {
-      if (minimalMode) {
-        setIsMinimalMode(false);
-        isMinimalModeRef.current = false;
-        quill && !quill.hasFocus() && quill.focus();
-      }
+    onError: (error: Error) => {
+      console.error(error);
     },
-    onOutsideClick: () => {
-      if (minimalMode) {
-        setIsMinimalMode(true);
-      }
-    },
-  });
+    nodes: [
+      ListNode,
+      ListItemNode,
+      LinkNode
+    ],
+  };
 
-  useEffect(() => {
-    if (isReady) {
-      const _isEmpty = !hasQuillContent({ quill });
-      setIsEmpty(_isEmpty);
-      if (_isEmpty) {
-        forceShowPlaceholder({
-          quillRef,
-          placeholderText:
-            placeholder ||
-            commentTypes.find((ctype) => ctype.value === commentType)
-              ?.placeholder ||
-            "Add a comment about this paper...",
-        });
-      }
+  // useEffectForCommentTypeChange({
+  //   quill: editor,
+  //   quillRef: editorRef,
+  //   isReady: editor !== null,
+  //   commentType: _commentType,
+  //   editorId,
+  // });
 
-      if (onChange) {
-        onChange({ content: _content, isEmpty: _isEmpty });
-      }
-    }
-  }, [_content, isReady]);
+  // useEffectHandleClick({
+  //   ref: editorRef,
+  //   onInsideClick: handleEditorClick,
+  //   onOutsideClick: () => {
+  //     if (minimalMode) {
+  //       setIsMinimalMode(true);
+  //     }
+  //   },
+  // });
 
-  useEffect(() => {
-    if (quill && focusOnMount) {
-      quill?.enable();
-      focusEditor({ quill });
-    }
-  }, [isReady, quill]);
-
-  useEffect(() => {
-    // Remove module event listeners when editor is unmounted
-    return () => {
-      const mentionsModule = quill?.getModule("mentions");
-      if (mentionsModule) {
-        mentionsModule.destroy();
-      }
-    };
-  }, []);
+  // useEffect(() => {
+  //   if (editor && focusOnMount) {
+  //     editor.focus();
+  //   }
+  // }, [editor]);
 
   const _handleSubmit = async (event) => {
     event.preventDefault();
@@ -241,24 +212,25 @@ const CommentEditor = ({
 
     setIsSubmitting(true);
     try {
-      if (quill!.getLength() <= config.comment.minLength) {
+      const editorState = editor.getEditorState();
+      const jsonContent = editorState.toJSON();
+      
+      const content = convertLexicalToDesiredFormat(jsonContent);
+      
+      if (content.length <= config.comment.minLength) {
         dispatch(
           setMessage(
             `Comment must be greater than ${config.comment.minLength} characters long.`
           )
         );
-        // @ts-ignore
         dispatch(showMessage({ show: true, error: true }));
         return false;
       }
 
-      const mentions = filterOps({
-        quillOps: _content.ops,
-        opName: "user",
-      }).map((op: any) => op.insert.user.userId);
+      const mentions = extractMentionsFromLexical(jsonContent);
 
       await handleSubmit({
-        content: _content,
+        content,
         privacy: selectedPrivacyFilter,
         mentions,
         ...(commentId && { id: commentId }),
@@ -271,8 +243,10 @@ const CommentEditor = ({
         ...(commentType === COMMENT_TYPES.PEER_REVIEW && { reviewStatus }),
       });
 
-      dangerouslySetContent({});
-      _setCommentType(_commentType);
+      // editor.update(() => {
+      //   $getRoot().clear();
+      // });
+      
       setInterimBounty(null);
       if (minimalMode) {
         setIsMinimalMode(true);
@@ -283,45 +257,34 @@ const CommentEditor = ({
     }
   };
 
-  useEffect(() => {
-    const _handleKeyDown = (event) => {
-      if (!(quill && isReady)) return;
-      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
-        event.preventDefault();
-        event.stopPropagation();
-        _handleSubmit(event);
-      }
-    };
+  // useEffect(() => {
+  //   const _handleKeyDown = (event) => {
+  //     if (!(editor && editor !== null)) return;
+  //     if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+  //       event.preventDefault();
+  //       event.stopPropagation();
+  //       _handleSubmit(event);
+  //     }
+  //   };
 
-    if (editorRef.current) {
-      editorRef.current.addEventListener("keydown", _handleKeyDown);
-    }
+  //   if (editorRef.current) {
+  //     editorRef.current.addEventListener("keydown", _handleKeyDown);
+  //   }
 
-    return () => {
-      if (editorRef.current) {
-        editorRef.current.removeEventListener("keydown", _handleKeyDown);
-      }
-    };
-  }, [quill, isReady, _content, editorRef]);
+  //   return () => {
+  //     if (editorRef.current) {
+  //       editorRef.current.removeEventListener("keydown", _handleKeyDown);
+  //     }
+  //   };
+  // }, [editor, editorRef]);
 
   const isLoggedIn = auth.authChecked && auth.isLoggedIn;
   return (
-    <div
-      onClick={() => {
-        // @ts-ignore
-        if (!quill?.isEnabled()) {
-          // Quill is disablbed by in order to avoid auto focus on mount. We want to enable it.
-          quill?.enable();
-          quill?.focus();
-        }
-      }}
-    >
+    <div>
       <div
-        ref={editorRef}
         className={`${css(
           styles.commentEditor,
-          editorStyleOverride,
-          !isReady && styles.hidden
+          editorStyleOverride
         )} CommentEditor`}
         onClick={() => {
           if (!isLoggedIn) {
@@ -433,26 +396,24 @@ const CommentEditor = ({
             )}
           </div>
 
-          <div className={css(styles.editor)}>
-            <div ref={quillRef} />
-            {_commentType === COMMENT_TYPES.REVIEW && (
-              <div className={css(styles.reviewCategoryContainer)}>
-                <CommentReviewCategorySelector
-                  handleSelect={(category) => {
-                    insertReviewCategory({ category, quill, quillRef });
-                  }}
-                />
-              </div>
-            )}
-            <div
-              className={css(
-                styles.toolbarContainer,
-                isMinimalMode && styles.hidden
-              )}
-            >
-              <CommentEditorToolbar editorId={editorId} />
+          <LexicalComposer initialConfig={initialConfig}>
+            <div className={css(styles.editorContainer)}>
+              <ToolbarPlugin />
+              <RichTextPlugin
+                contentEditable={<ContentEditable className={css(styles.contentEditable)} />}
+                placeholder={
+                  <div className={css(styles.placeholder)}>
+                    {placeholder || "Add a comment about this paper..."}
+                  </div>
+                }
+                ErrorBoundary={LexicalErrorBoundary}
+              />
+              <HistoryPlugin />
+              <AutoFocusPlugin />
+              <ListPlugin />
+              <LinkPlugin />
             </div>
-          </div>
+          </LexicalComposer>
         </div>
         {!isMinimalMode && (
           <div className={css(styles.actions)}>
@@ -706,6 +667,27 @@ const styles = StyleSheet.create({
   },
   requestChangesIcon: {
     color: globalColors.RED(),
+  },
+  contentEditable: {
+    minHeight: '150px',
+    padding: '15px',
+    position: 'relative',
+    outline: 'none',
+  },
+  placeholder: {
+    position: 'absolute',
+    top: '15px',
+    left: '15px',
+    color: colors.gray,
+    pointerEvents: 'none',
+    userSelect: 'none',
+  },
+  editorContainer: {
+    position: 'relative',
+    background: '#fff',
+    border: `1px solid ${colors.border}`,
+    borderRadius: 4,
+    marginBottom: 15,
   },
 });
 
