@@ -540,11 +540,12 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
 
 const styles = StyleSheet.create({
   slideIntro: {
-    background: "#eaf1ff"
+    background: `linear-gradient(to bottom, ${colors.WHITE()} 0%, ${colors.NEW_BLUE(0.15)} 100%)`,
+    padding: 0,
   },
   journalModalStyle: {
-    borderRadius: 4,
-    border: `3px solid ${colors.NEW_BLUE()}`,
+    // borderRadius: 4,
+    // border: `3px solid ${colors.NEW_BLUE()}`,
   },
   inputContainer: {
     width: "100%",
