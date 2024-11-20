@@ -15,7 +15,7 @@ export default function HomeRightSidebar(): ReactElement {
     isDismissed: isCarouselDismissed,
     dismissFeature: dismissCarousel,
     dismissStatus: carouselDismissStatus,
-  } = useDismissableFeature({ auth, featureName: "educational-carousel" });
+  } = useDismissableFeature({ auth, featureName: "educational-carousel-with-journal" });
 
   return (
     <div className={css(styles.HomeRightSidebar)}>

@@ -701,10 +701,15 @@ const styles = StyleSheet.create({
     padding: "8px 30px",
     justifyContent: "flex-start",
     width: "100%",
+    flexWrap: "wrap",
+    gap: "12px",
+
   },
   leftSidebarFooterItemsBottomRowMin: {
     justifyContent: "center",
     padding: "8px 0",
+    flexDirection: "column",
+    gap: "8px",
   },
   leftSidebarFooterTxtItemMobile: {
     fontSize: 14,
@@ -726,13 +731,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginRight: 20,
     display: "block",
+    "@media only screen and (max-width: 1023px)": {
+      marginRight: 0,
+    },
   },
   leftSidebarFooterBotItem: {
     color: colors.TEXT_GREY(1),
-    fontSize: 14,
-    marginRight: 14,
+    fontSize: 13,
+    marginRight: 0,
     ":hover": {
       color: colors.TEXT_GREY(1),
+    },
+    "@media only screen and (max-width: 1023px)": {
+      marginRight: 0,
     },
   },
   logoDiv: {
