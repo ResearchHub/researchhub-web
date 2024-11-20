@@ -7,16 +7,15 @@ import {
   faUsers, 
   faComments, 
   faChartNetwork,
-  faFileArrowUp 
+  faFileArrowUp, 
+  faChartLineUp,
 } from "@fortawesome/pro-solid-svg-icons";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 
 const PaperVersionPublishResearchIntroStep = ({ onStart }: { onStart: () => void }) => {
   return (
     <div className={css(styles.container)}>
-      <div className={css(styles.iconContainer)}>
-        <FontAwesomeIcon icon={faFileArrowUp} className={css(styles.icon)} />
-      </div>
-      <h1 className={css(styles.title)}>Share Your Research with the World</h1>
+      <h1 className={css(styles.title)}>Publish on ResearchHub</h1>
       <p className={css(styles.subtitle)}>
         Join the open science movement and make your research accessible to everyone
       </p>
@@ -27,16 +26,25 @@ const PaperVersionPublishResearchIntroStep = ({ onStart }: { onStart: () => void
           </div>
           <h3 className={css(styles.benefitTitle)}>Open Access</h3>
           <span className={css(styles.benefitText)}>
-            Make your research freely available to readers worldwide
+          Open access immediately, with a permanent DOI.
           </span>
         </div>
         <div className={css(styles.benefitCard)}>
           <div className={css(styles.benefitIcon)}>
-            <FontAwesomeIcon icon={faUsers} />
+            <FontAwesomeIcon icon={faChartLineUp} />
           </div>
-          <h3 className={css(styles.benefitTitle)}>Build Your Network</h3>
+          <h3 className={css(styles.benefitTitle)}>Maximize your Impact</h3>
           <span className={css(styles.benefitText)}>
-            Connect with researchers in your field and grow your academic network
+          Tap into a social network that gets more eyes on your research.
+          </span>
+        </div>        
+        <div className={css(styles.benefitCard)}>
+          <div className={css(styles.benefitIcon)}>
+            <ResearchCoinIcon width={32} height={32} version={4} color={colors.NEW_BLUE()} />
+          </div>
+          <h3 className={css(styles.benefitTitle)}>Earn RSC Rewards</h3>
+          <span className={css(styles.benefitText)}>
+            Earn ResearchCoin whenever your paper gets cited.
           </span>
         </div>
         <div className={css(styles.benefitCard)}>
@@ -48,20 +56,11 @@ const PaperVersionPublishResearchIntroStep = ({ onStart }: { onStart: () => void
             Receive valuable feedback from the scientific community
           </span>
         </div>
-        <div className={css(styles.benefitCard)}>
-          <div className={css(styles.benefitIcon)}>
-            <FontAwesomeIcon icon={faChartNetwork} />
-          </div>
-          <h3 className={css(styles.benefitTitle)}>Increase Impact</h3>
-          <span className={css(styles.benefitText)}>
-            Track engagement and measure the impact of your research
-          </span>
-        </div>
       </div>
       <div className={css(styles.buttonContainer)}>
         <Button
           fullWidth
-          label="Start Publishing"
+          label="Start"
           theme="solidPrimary"
           onClick={onStart}
           customStyles={styles.button}

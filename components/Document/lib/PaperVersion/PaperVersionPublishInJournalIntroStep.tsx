@@ -14,7 +14,8 @@ const PaperVersionIntroStep = ({ onStart }: { onStart: () => void }) => {
       </div>
       <h1 className={css(styles.title)}>Publish in the ResearchHub Journal</h1>
       <p className={css(styles.subtitle)}>
-        Fast, affordable, and transparent publication process. <br/>Flat fee of 1,000 USD.
+        Fast, affordable, and transparent publication process.
+        <span className={css(styles.priceBadge)}>Flat fee of 1,000 USD</span>
       </p>
       <div className={css(styles.benefitsContainer)}>
         <div className={css(styles.benefitCard)}>
@@ -42,7 +43,7 @@ const PaperVersionIntroStep = ({ onStart }: { onStart: () => void }) => {
           </div>
           <h3 className={css(styles.benefitTitle)}>Preprint Publication</h3>
           <span className={css(styles.benefitText)}>
-            Your research will receive a DOI and published immediately.
+            Your preprint will receive a DOI and published immediately.
           </span>
         </div>
         <div className={css(styles.benefitCard)}>
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
     color: "rgb(121, 121, 121)",
     marginBottom: 25,
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     gap: 8,
   },
@@ -211,6 +212,14 @@ const styles = StyleSheet.create({
     ':hover': {
       textDecoration: 'underline',
     },
+  },
+  priceBadge: {
+    fontSize: 13,
+    fontWeight: 500,
+    color: colors.WHITE(),
+    backgroundColor: colors.PURPLE_LIGHT(1.0),
+    padding: "0px 14px",
+    borderRadius: 4,
   },
 });
 

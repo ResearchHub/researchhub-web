@@ -70,6 +70,7 @@ function PublishButton({ customButtonStyle }: { customButtonStyle?: React.CSSPro
         setShowPaperModal(true);
         break;
       case 'post':
+        // @ts-ignore
         const note = await createNewNote({
           orgSlug: user?.organization_slug,
           grouping: NOTE_GROUPS.WORKSPACE,
@@ -89,7 +90,7 @@ function PublishButton({ customButtonStyle }: { customButtonStyle?: React.CSSPro
     {
       id: 'journal',
       icon: <RhJournalIcon color={colors.TEXT_GREY(0.8)} width={21} height={21} />,
-      title: 'Publish in ResearchHub',
+      title: 'Publish in ResearchHub Journal',
       description: 'Submit your research for peer review and publication in the ResearchHub journal.',
       badge: <div className={css(styles.badge, styles.journalBadge)}>
         <FontAwesomeIcon icon={faBolt as IconProp} className={css(styles.boltIcon)} />
@@ -332,11 +333,11 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   journalBadge: {
-    backgroundColor: colors.ORANGE_LIGHT(),
+    backgroundColor: colors.NEW_BLUE(0.1),
     color: colors.BLACK(),
   },
   preprintBadge: {
-    backgroundColor: colors.ORANGE_LIGHT(),
+    backgroundColor: colors.NEW_BLUE(0.1),
     color: colors.BLACK(),
   },
   boltIcon: {
