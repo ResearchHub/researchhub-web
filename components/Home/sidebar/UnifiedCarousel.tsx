@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/pro-light-svg-icons";
 import { CloseIcon } from "~/config/themes/icons";
 import { DEFAULT_ITEM_STYLE } from "~/components/shared/carousel/RhCarouselItem";
+import { getJournalCarouselElements } from "~/components/ResearchHubJournal/RhJournalCarouselElement";
 import { getVerificationCarouselElements } from "~/components/Verification/VerificationCarouselElement";
 import colors from "~/config/themes/colors";
 import useCurrentUser from "~/config/hooks/useCurrentUser";
@@ -28,18 +29,17 @@ export default function UnifiedCarousel({
       setError(null);
       
       try {
-        const [educationalElements, peerReviewElements] = await Promise.all([
-          getEducationalCarouselElements(),
-          currentUser && !currentUser.isVerified ? getVerificationCarouselElements() : Promise.resolve([])
-        ]);
-        
+        const educationalElements = await getEducationalCarouselElements();
+        const verificationElements = await getVerificationCarouselElements();
+        const journalElements = getJournalCarouselElements();
+
         const elements = [
-          ...(currentUser ? peerReviewElements.map(element => ({
-            type: 'peer-review',
+          ...(currentUser ? journalElements.map(element => ({
+            type: 'journal',
             component: (
-              <div className={css(styles.slideWrapper, styles.peerReviewContainer)}>
-                <div className={css(styles.peerReviewBackground)} />
-                <div className={css(styles.peerReviewContent)}>
+              <div className={css(styles.slideWrapper, styles.journalContainer)}>
+                <div className={css(styles.journalBackground)} />
+                <div className={css(styles.journalContent)}>
                   <div className={css(styles.titleArea)}>
                     {element.title}
                   </div>
@@ -328,6 +328,30 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   peerReviewContent: {
+    position: 'relative',
+    zIndex: 2,
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  journalContainer: {
+    position: 'relative',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    padding: "24px 32px 48px 32px",
+  },
+  journalBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: colors.NEW_BLUE(),
+    opacity: 1,
+    zIndex: 1,
+  },
+  journalContent: {
     position: 'relative',
     zIndex: 2,
     height: '100%',
