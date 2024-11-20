@@ -50,6 +50,8 @@ import colors from './lib/colors';
 import { commentTypes } from './lib/options';
 import { ListNode, ListItemNode } from '@lexical/list';
 import { LinkNode } from '@lexical/link';
+import { MentionNode } from './nodes/MentionNode';
+import MentionsPlugin from './plugins/MentionsPlugin';
 
 
 const { setMessage, showMessage } = MessageActions;
@@ -163,23 +165,29 @@ const CommentEditor = ({
   ];
 
   const initialConfig = {
-    namespace: editorId,
+    namespace: 'CommentEditor',
     theme: {
-      paragraph: 'editor-paragraph',
+      // Text formatting
       text: {
         bold: 'editor-text-bold',
         italic: 'editor-text-italic',
         underline: 'editor-text-underline',
       },
+      // Paragraph formatting
+      paragraph: 'editor-paragraph',
+      // Mention formatting
+      mention: 'editor-mention',
+      // List formatting
+      list: {
+        ul: 'editor-list-ul',
+        ol: 'editor-list-ol',
+        listitem: 'editor-listitem',
+      },
     },
+    nodes: [ListNode, ListItemNode, MentionNode, LinkNode],
     onError: (error: Error) => {
       console.error(error);
     },
-    nodes: [
-      ListNode,
-      ListItemNode,
-      LinkNode
-    ],
   };
 
   // useEffectForCommentTypeChange({
@@ -412,6 +420,7 @@ const CommentEditor = ({
               <AutoFocusPlugin />
               <ListPlugin />
               <LinkPlugin />
+              <MentionsPlugin />
             </div>
           </LexicalComposer>
         </div>
@@ -688,6 +697,42 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.border}`,
     borderRadius: 4,
     marginBottom: 15,
+  },
+  '.mention': {
+    color: colors.primary.btn,
+    fontWeight: 500,
+  },
+  '.editor-paragraph': {
+    margin: '0 0 8px 0',
+    position: 'relative',
+  },
+  '.editor-text-bold': {
+    fontWeight: 'bold',
+  },
+  '.editor-text-italic': {
+    fontStyle: 'italic',
+  },
+  '.editor-text-underline': {
+    textDecoration: 'underline',
+  },
+  '.editor-mention': {
+    color: globalColors.NEW_BLUE(),
+    fontWeight: 500,
+    backgroundColor: globalColors.NEW_BLUE(0.1),
+    padding: '1px 4px',
+    borderRadius: '4px',
+    userSelect: 'all',
+  },
+  '.editor-list-ol': {
+    padding: 0,
+    margin: '0 0 0 16px',
+  },
+  '.editor-list-ul': {
+    padding: 0,
+    margin: '0 0 0 16px',
+  },
+  '.editor-listitem': {
+    margin: '8px 32px',
   },
 });
 
