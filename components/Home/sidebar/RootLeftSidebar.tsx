@@ -464,6 +464,7 @@ function RootLeftSidebar({
         >
           <PublishButton
             customButtonStyle={styles.newPostButtonCustom}
+            iconOnly={isMinimized}
           />
         </div>
       </div>

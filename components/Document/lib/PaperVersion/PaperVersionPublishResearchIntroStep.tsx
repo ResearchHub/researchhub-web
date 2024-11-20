@@ -4,10 +4,7 @@ import colors from "~/config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faBookOpen, 
-  faUsers, 
   faComments, 
-  faChartNetwork,
-  faFileArrowUp, 
   faChartLineUp,
 } from "@fortawesome/pro-solid-svg-icons";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
@@ -15,10 +12,13 @@ import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 const PaperVersionPublishResearchIntroStep = ({ onStart }: { onStart: () => void }) => {
   return (
     <div className={css(styles.container)}>
-      <h1 className={css(styles.title)}>Publish on ResearchHub</h1>
-      <p className={css(styles.subtitle)}>
-        Join the open science movement and make your research accessible to everyone
-      </p>
+      <div className={css(styles.heroSection)}>
+        <h1 className={css(styles.title)}>Publish on ResearchHub</h1>
+        <p className={css(styles.subtitle)}>
+          Join the open science movement and make your research accessible to everyone
+        </p>
+      </div>
+      
       <div className={css(styles.benefitsContainer)}>
         <div className={css(styles.benefitCard)}>
           <div className={css(styles.benefitIcon)}>
@@ -57,13 +57,14 @@ const PaperVersionPublishResearchIntroStep = ({ onStart }: { onStart: () => void
           </span>
         </div>
       </div>
+      
       <div className={css(styles.buttonContainer)}>
         <Button
           fullWidth
           label="Start"
           theme="solidPrimary"
           onClick={onStart}
-          customStyles={styles.button}
+          buttonStyle={styles.button}
         />
       </div>
     </div>
@@ -72,16 +73,27 @@ const PaperVersionPublishResearchIntroStep = ({ onStart }: { onStart: () => void
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 0,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "0 30px",
-    textAlign: "center",
+    background: `linear-gradient(180deg, ${colors.WHITE()} 0%, ${colors.ORANGE(0.05)} 100%)`,
+    padding: "40px 30px",
+    margin: "0px auto",
+    maxWidth: 1000,
+    marginTop: -20,
+  },
+  heroSection: {
+    marginBottom: 0,
+    position: 'relative',
+    padding: "20px 0",
   },
   iconContainer: {
     marginBottom: 24,
+    display: 'flex',
+    justifyContent: 'center',
+    animation: 'float 3s ease-in-out infinite',
+    '@keyframes float': {
+      '0%': { transform: 'translateY(0px)' },
+      '50%': { transform: 'translateY(-10px)' },
+      '100%': { transform: 'translateY(0px)' }
+    }
   },
   icon: {
     fontSize: 48,
@@ -92,6 +104,7 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     color: colors.BLACK(),
     marginBottom: 8,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 18,
@@ -100,6 +113,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    textAlign: 'center',
     gap: 8,
   },
   benefitsContainer: {
@@ -109,7 +123,7 @@ const styles = StyleSheet.create({
     maxWidth: 600,
     marginBottom: 32,
     width: "100%",
-    padding: "0 16px",
+    // padding: "0 16px",
   },
   benefitCard: {
     display: "flex",
@@ -146,7 +160,8 @@ const styles = StyleSheet.create({
     marginTop: 32,
     width: "100%",
     maxWidth: 600,
-    padding: "0 16px",
+    // padding: "0 16px",
+    boxSizing: "border-box",
   },
   button: {
     fontSize: 18,

@@ -405,7 +405,6 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
       closeModal={() => {
         closeModal();
       }}
-      modalStyle={action === "PUBLISH_IN_JOURNAL" ? styles.journalModalStyle : undefined}
       titleStyle={styles.modalTitleStyle}
       zIndex={100000000}
       title={
@@ -438,7 +437,7 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
           </div>
         )}
 
-      <div className={css(styles.modalBody, step === "INTRO_PUBLISH_IN_JOURNAL" && styles.slideIntro)}>
+      <div className={css(styles.modalBody, step === "INTRO_PUBLISH_IN_JOURNAL" ? styles.slideIntro : step === "INTRO_PUBLISH_RESEARCH" ? styles.slideIntroForPublish : undefined)}>
         {step === "INTRO_PUBLISH_IN_JOURNAL" && (
           <PaperVersionPublishInJournalIntroStep onStart={handleNextStep} />
         )}
@@ -543,9 +542,9 @@ const styles = StyleSheet.create({
     background: `linear-gradient(to bottom, ${colors.WHITE()} 0%, ${colors.NEW_BLUE(0.15)} 100%)`,
     padding: 0,
   },
-  journalModalStyle: {
-    // borderRadius: 4,
-    // border: `3px solid ${colors.NEW_BLUE()}`,
+  slideIntroForPublish: {
+    background: `linear-gradient(180deg, ${colors.WHITE()} 0%, ${colors.ORANGE(0.05)} 100%)`,
+    padding: 0,
   },
   inputContainer: {
     width: "100%",

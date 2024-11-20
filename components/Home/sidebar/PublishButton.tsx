@@ -7,6 +7,7 @@ import {
   faFlask,
   faShare,
   faBolt,
+  faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import Button from "~/components/Form/Button";
@@ -33,7 +34,13 @@ type MenuItemType = {
   iconStyle?: React.CSSProperties;
 };
 
-function PublishButton({ customButtonStyle }: { customButtonStyle?: React.CSSProperties }): ReactElement {
+function PublishButton({ 
+  customButtonStyle,
+  iconOnly = false 
+}: { 
+  customButtonStyle?: React.CSSProperties,
+  iconOnly?: boolean 
+}): ReactElement {
   const user = useSelector((state: RootState) => state.auth?.user);
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -102,14 +109,14 @@ function PublishButton({ customButtonStyle }: { customButtonStyle?: React.CSSPro
       id: 'research',
       icon: <FontAwesomeIcon icon={faFlask as IconProp} className={css(styles.menuIcon)} />,
       title: 'Publish your Preprint',
-      description: 'Upload your preprint to share findings with the research community. Immediate, open-access visibility.',
+      description: 'Immediate, open-access visibility with citable DOI.',
       badge: <div className={css(styles.badge, styles.preprintBadge)}>Free</div>,
     },
     {
       id: 'post',
       icon: <PostIcon width={20} height={20} color={colors.TEXT_GREY(0.8)} onClick={undefined} />,
       title: 'Write a Post',
-      description: 'Share research methods, developments, or insights in a rigorous and open (CC0) forum.',
+      description: 'Share research methods, developments, or insights in a rigorous and open forum.',
     },
     {
       id: 'question',
@@ -160,15 +167,22 @@ function PublishButton({ customButtonStyle }: { customButtonStyle?: React.CSSPro
         onClick={handleClick}
         customButtonStyle={{
           ...styles.newButton,
+          ...(iconOnly && styles.iconOnlyButton),
           ...customButtonStyle,
         }}
         label={
           <div className={css(styles.newButtonContent)}>
-            <span>Publish</span>
-            <FontAwesomeIcon 
-              icon={faChevronDown as IconProp} 
-              className={css(styles.chevron, open && styles.chevronOpen)} 
-            />
+            {iconOnly ? (
+              <FontAwesomeIcon icon={faPlus as IconProp} className={css(styles.plusIcon)} />
+            ) : (
+              <>
+                <span>Publish</span>
+                <FontAwesomeIcon 
+                  icon={faChevronDown as IconProp} 
+                  className={css(styles.chevron, open && styles.chevronOpen)} 
+                />
+              </>
+            )}
           </div>
         }
       />
@@ -400,6 +414,14 @@ const styles = StyleSheet.create({
       maxHeight: '100vh',
       borderRadius: 0,
     },
+  },
+  iconOnlyButton: {
+    width: 40,
+    minWidth: 40,
+    padding: 0,
+  },
+  plusIcon: {
+    fontSize: 16,
   },
 }); 
 
