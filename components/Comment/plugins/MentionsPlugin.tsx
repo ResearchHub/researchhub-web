@@ -1,9 +1,9 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { useCallback, useEffect, useState, useRef } from 'react';
-import { $getSelection, $isRangeSelection, TextNode } from 'lexical';
+import { $getSelection, $isRangeSelection, COMMAND_PRIORITY_LOW, KEY_BACKSPACE_COMMAND, TextNode } from 'lexical';
 import { css, StyleSheet } from 'aphrodite';
 import SuggestUsers from '~/components/SearchSuggestion/SuggestUsers';
-import { $createMentionNode } from '../nodes/MentionNode';
+import { $createMentionNode, MentionNode } from '../nodes/MentionNode';
 import colors from '~/config/themes/colors';
 
 function MentionsPlugin() {
@@ -15,16 +15,6 @@ function MentionsPlugin() {
   const lastAtPositionRef = useRef<number | null>(null);
   const popupRef = useRef<HTMLDivElement>(null);
   const closeTimeoutRef = useRef<number | null>(null);
-
-  // Debug state changes
-  useEffect(() => {
-    console.log('🔄 State Update:', {
-      mentionPopupOpen,
-      isTypingMention,
-      lastAtPosition: lastAtPositionRef.current,
-      mentionQuery
-    });
-  }, [mentionPopupOpen, isTypingMention, mentionQuery]);
 
   const closeMentionPopup = useCallback(() => {
     console.log('📕 Closing mention popup');
@@ -45,77 +35,6 @@ function MentionsPlugin() {
       closeTimeoutRef.current = null;
     }, 100) as unknown as number;
   }, [editor]);
-
-  // Handle escape key
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      console.log('🎹 Keydown event:', {
-        key: event.key,
-        mentionPopupOpen,
-        isTypingMention
-      });
-
-      if (!mentionPopupOpen) {
-        console.log('❌ Escape pressed but popup not open');
-        return;
-      }
-      
-      if (event.key === 'Escape') {
-        console.log('🔑 Escape key pressed with popup open');
-        event.preventDefault();
-        event.stopPropagation();
-        closeMentionPopup();
-      }
-    };
-
-    console.log('🎧 Adding escape key listener');
-    document.addEventListener('keydown', handleKeyDown, true);
-    return () => {
-      console.log('🔕 Removing escape key listener');
-      document.removeEventListener('keydown', handleKeyDown, true);
-    };
-  }, [mentionPopupOpen, closeMentionPopup]);
-
-  // Handle clicks outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      console.log('🖱️ Click event:', {
-        mentionPopupOpen,
-        isClickInsidePopup: popupRef.current?.contains(event.target as Node)
-      });
-
-      if (!mentionPopupOpen) return;
-      
-      if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
-        console.log('👆 Click outside detected');
-        event.preventDefault();
-        event.stopPropagation();
-        closeMentionPopup();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside, true);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside, true);
-    };
-  }, [mentionPopupOpen, closeMentionPopup]);
-
-  const handleMentionSelect = useCallback((user) => {
-    editor.update(() => {
-      const selection = $getSelection();
-      if (!$isRangeSelection(selection)) return;
-
-      // Delete the @ symbol and query
-      const queryLength = mentionQuery.length + 1; // +1 for the @ symbol
-      for (let i = 0; i < queryLength; i++) {
-        selection.deleteCharacter(true);
-      }
-      
-      const mentionNode = $createMentionNode(`@${user.firstName} ${user.lastName}`, user);
-      selection.insertNodes([mentionNode]);
-    });
-    closeMentionPopup();
-  }, [editor, mentionQuery, closeMentionPopup]);
 
   useEffect(() => {
     return editor.registerUpdateListener(({ editorState }) => {
@@ -138,7 +57,7 @@ function MentionsPlugin() {
           hasCloseTimeout: closeTimeoutRef.current !== null
         });
 
-        // Check if user just typed "@" and we're not in a close timeout
+        // Check if user just typed "@"
         if (textContent[offset - 1] === '@' && !mentionPopupOpen && closeTimeoutRef.current === null) {
           console.log('@ detected');
           const currentPosition = offset - 1;
@@ -160,10 +79,90 @@ function MentionsPlugin() {
             });
             setMentionPopupOpen(true);
           }
+        } 
+        // Handle updates while popup is open
+        else if (mentionPopupOpen && isTypingMention) {
+          const textBeforeCursor = textContent.slice(0, offset);
+          const atSymbolIndex = textBeforeCursor.lastIndexOf('@');
+          
+          // Close popup if we've backspaced over the @ symbol
+          if (atSymbolIndex === -1) {
+            closeMentionPopup();
+            return;
+          }
+
+          // Update query based on text after @
+          const query = textBeforeCursor.slice(atSymbolIndex + 1);
+          setMentionQuery(query);
+
+          // Close popup if backspace is pressed with empty query
+          if (query === '' && textContent.length < lastAtPositionRef.current! + 1) {
+            closeMentionPopup();
+            return;
+          }
         }
       });
     });
-  }, [editor, mentionPopupOpen]);
+  }, [editor, mentionPopupOpen, isTypingMention, closeMentionPopup]);
+
+  // Handle escape key
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!mentionPopupOpen) return;
+      
+      if (event.key === 'Escape' || (event.key === 'Backspace' && mentionQuery === '')) {
+        console.log('🔑 Closing popup via keyboard:', event.key);
+        event.preventDefault();
+        event.stopPropagation();
+        closeMentionPopup();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown, true);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown, true);
+    };
+  }, [mentionPopupOpen, mentionQuery, closeMentionPopup]);
+
+  // Handle clicks outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!mentionPopupOpen) return;
+      
+      if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
+        console.log('👆 Click outside detected');
+        event.preventDefault();
+        event.stopPropagation();
+        closeMentionPopup();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside, true);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside, true);
+    };
+  }, [mentionPopupOpen, closeMentionPopup]);
+
+  const handleMentionSelect = useCallback((user) => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if (!$isRangeSelection(selection)) return;
+
+      console.log('👤 Creating mention node for:', user);
+
+      // Delete the @ symbol and query
+      const queryLength = mentionQuery.length + 1; // +1 for the @ symbol
+      for (let i = 0; i < queryLength; i++) {
+        selection.deleteCharacter(true);
+      }
+      
+      const mentionNode = $createMentionNode(`@${user.firstName} ${user.lastName}`, user);
+      selection.insertNodes([mentionNode]);
+      
+      console.log('✅ Mention node inserted');
+    });
+    closeMentionPopup();
+  }, [editor, mentionQuery, closeMentionPopup]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -173,6 +172,60 @@ function MentionsPlugin() {
       }
     };
   }, []);
+
+  // Add this effect to handle backspace on mention nodes
+  useEffect(() => {
+    return editor.registerCommand(
+      KEY_BACKSPACE_COMMAND,
+      (event) => {
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection)) {
+          console.log('🔍 Backspace: Not a range selection');
+          return false;
+        }
+
+        const node = selection.anchor.getNode();
+        const prevSibling = node.getPreviousSibling();
+        
+        console.log('🔍 Backspace Debug:', {
+          nodeType: node.getType(),
+          nodeText: node.getTextContent(),
+          offset: selection.anchor.offset,
+          prevSiblingType: prevSibling?.getType(),
+          prevSiblingText: prevSibling?.getTextContent(),
+          isMentionNode: node instanceof MentionNode,
+          isPrevMentionNode: prevSibling instanceof MentionNode,
+          nodeLength: node.getTextContent().length
+        });
+
+        // Handle backspace at start of node after a mention
+        if (selection.anchor.offset === 0 && prevSibling instanceof MentionNode) {
+          console.log('🗑️ Removing previous mention node');
+          prevSibling.remove();
+          return true;
+        }
+
+        // Handle backspace on mention node itself
+        if (node instanceof MentionNode) {
+          console.log('🗑️ Removing current mention node');
+          node.remove();
+          return true;
+        }
+
+        // Handle backspace at start of text node after mention
+        const textContent = node.getTextContent();
+        if (textContent.startsWith('@') && selection.anchor.offset <= textContent.length) {
+          console.log('🗑️ Removing mention text');
+          node.remove();
+          return true;
+        }
+
+        console.log('↩️ Letting default backspace behavior handle it');
+        return false;
+      },
+      COMMAND_PRIORITY_LOW
+    );
+  }, [editor]);
 
   return mentionPopupOpen ? (
     <div 
@@ -186,7 +239,9 @@ function MentionsPlugin() {
       <SuggestUsers
         onSelect={handleMentionSelect}
         onChange={(text) => {
-          console.log('SuggestUsers onChange:', text);
+          console.log('🔍 SuggestUsers onChange:', text);
+          // Update the query as user types
+          setMentionQuery(text);
         }}
       />
     </div>
