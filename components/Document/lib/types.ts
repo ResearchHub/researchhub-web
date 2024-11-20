@@ -243,6 +243,7 @@ export const parsePaper = (raw: any, shouldStripHTML = true): Paper => {
     type: "paper",
     apiDocumentType: "paper",
     pdfUrl: raw.pdf_url,
+    slug: raw.slug,
     workType: raw.work_type || null,
     proxyPdfUrl: raw.pdf_url ? proxyApi.generateProxyUrl(raw.pdf_url) : null,
     pdfCopyrightAllowsDisplay: Boolean(raw.pdf_copyright_allows_display),

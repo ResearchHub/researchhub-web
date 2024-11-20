@@ -219,6 +219,8 @@ MyApp.getInitialProps = async (appContext) => {
     "/question/[documentId]/[documentSlug]",
     "/question/[documentId]/[documentSlug]/[tabName]",
     "/notebook",
+    "/checkout/[id]/payment-success",
+    "/checkout/[id]/payment-failure",
   ];
   const cookies = nookies.get(appContext.ctx);
   const rootLeftSidebarForceMin = false;

@@ -17,17 +17,27 @@ import { ReactElement, SyntheticEvent, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
+import { Menu, MenuItem } from '@mui/material';
+import { 
+  faPlus, 
+  faChevronDown,
+  faNewspaper, 
+  faFlask,
+  faPen,
+  faShare,
+  faQuestion 
+} from '@fortawesome/free-solid-svg-icons';
 
 import RHLogo from "../RHLogo";
 import RootLeftSidebarSliderItem, {
   Props as RootLeftSidebarSliderItemProps,
 } from "./sidebar_items/RootLeftSidebarSliderItem";
-import NewPostButton from "~/components/NewPostButton";
 import Login from "~/components/Login/Login";
 import Button from "~/components/Form/Button";
 import VerifiedBadge from "~/components/Verification/VerifiedBadge";
 import VerificationModal from "~/components/Verification/VerificationModal";
 import NewPostModal from "~/components/Modals/NewPostModal";
+import PublishButton from "./PublishButton";
 
 type Props = {
   isLoggedIn: boolean;
@@ -85,7 +95,7 @@ function RootLeftSidebarSlider({
       <NewPostModal />
       {isLoggedIn && (
         <div className={css(styles.newPostButtonContainer)}>
-          <NewPostButton customButtonStyle={styles.newPostButtonCustom} />
+          <PublishButton customButtonStyle={styles.newPostButtonCustom} />
         </div>
       )}
       {sliderMainItems}
