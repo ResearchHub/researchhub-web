@@ -133,6 +133,7 @@ const CommentEditor = ({
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
   const [reviewStatus, setReviewStatus] = useState<string | null>(null);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   const reviewStatusOptions: MenuOption[] = [
     {
@@ -181,7 +182,7 @@ const CommentEditor = ({
     },
   ];
 
-  const initialConfig = {
+  const richTextConfig = {
     namespace: 'CommentEditor',
     theme: {
       // Text formatting
@@ -234,6 +235,14 @@ const CommentEditor = ({
         url: 'editor-tokenOperator',
         variable: 'editor-tokenVariable'
       },
+      markdown: {
+        paragraph: 'editor-markdown-paragraph',
+        text: {
+          bold: 'editor-markdown-bold',
+          italic: 'editor-markdown-italic',
+          underline: 'editor-markdown-underline',
+        }
+      }
     },
     nodes: [
       ListNode, 
@@ -246,6 +255,20 @@ const CommentEditor = ({
       HeadingNode,
       QuoteNode
     ],
+    onError: (error: Error) => {
+      console.error(error);
+    },
+  };
+
+  const markdownConfig = {
+    namespace: 'MarkdownEditor',
+    theme: {
+      paragraph: 'editor-paragraph',
+      text: {
+        base: 'editor-text-plain',
+      }
+    },
+    nodes: [], // Empty array to disable all node transformations
     onError: (error: Error) => {
       console.error(error);
     },
@@ -465,10 +488,13 @@ const CommentEditor = ({
             )}
           </div>
 
-          <LexicalComposer initialConfig={initialConfig}>
+          <LexicalComposer initialConfig={isPreviewMode ? markdownConfig : richTextConfig}>
             <div className={css(styles.editorContainer)}>
-              <MarkdownPreviewPlugin>
-                {({ isPreviewMode, setIsPreviewMode, MarkdownContent }) => (
+              <MarkdownPreviewPlugin 
+                isPreviewMode={isPreviewMode}
+                setIsPreviewMode={setIsPreviewMode}
+              >
+                {({ setIsPreviewMode, MarkdownContent }) => (
                   <>
                     <ToolbarPlugin 
                       isPreviewMode={isPreviewMode} 
@@ -487,6 +513,9 @@ const CommentEditor = ({
                         ErrorBoundary={LexicalErrorBoundary}
                       />
                     )}
+                    {!isPreviewMode && (
+                      <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+                    )}
                   </>
                 )}
               </MarkdownPreviewPlugin>
@@ -496,7 +525,6 @@ const CommentEditor = ({
               <LinkPlugin />
               <MentionsPlugin />
               <CodeHighlightingPlugin />
-              <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
             </div>
           </LexicalComposer>
         </div>
@@ -789,6 +817,20 @@ const styles = StyleSheet.create({
     lineHeight: '1.5',
     color: '#24292e',
   },
+  '.editor-markdown-paragraph': {
+    fontFamily: 'monospace',
+    margin: '0',
+    lineHeight: '1.5',
+  },
+  '.editor-markdown-bold': {
+    color: '#24292e',
+  },
+  '.editor-markdown-italic': {
+    color: '#24292e',
+  },
+  '.editor-markdown-underline': {
+    color: '#24292e',
+  }
 });
 
 export default CommentEditor;

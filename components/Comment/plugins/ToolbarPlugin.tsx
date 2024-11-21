@@ -80,25 +80,67 @@ export function ToolbarPlugin({ isPreviewMode, setIsPreviewMode }) {
     });
   };
 
+  const formatTextMarkdown = (format: string) => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if (!$isRangeSelection(selection)) return;
+      
+      const text = selection.getTextContent();
+      let markdownText = text;
+      
+      switch (format) {
+        case 'bold':
+          markdownText = `**${text}**`;
+          break;
+        case 'italic':
+          markdownText = `_${text}_`;
+          break;
+        case 'underline':
+          markdownText = `__${text}__`;
+          break;
+      }
+
+      selection.insertText(markdownText);
+    });
+  };
+
   return (
     <div className={css(styles.toolbar)}>
       <button
         className={css(styles.button)}
-        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold')}
+        onClick={() => {
+          if (isPreviewMode) {
+            formatTextMarkdown('bold');
+          } else {
+            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+          }
+        }}
         title="Bold"
       >
         <FontAwesomeIcon icon={faBold} />
       </button>
       <button
         className={css(styles.button)}
-        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic')}
+        onClick={() => {
+          if (isPreviewMode) {
+            formatTextMarkdown('italic');
+          } else {
+            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
+          }
+        }}
         title="Italic"
       >
         <FontAwesomeIcon icon={faItalic} />
       </button>
       <button
         className={css(styles.button)}
-        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')}
+        onClick={() => {
+          if (isPreviewMode) {
+            formatTextMarkdown('underline');
+          } else {
+            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
+          }
+        }}
         title="Underline"
       >
         <FontAwesomeIcon icon={faUnderline} />
@@ -106,7 +148,18 @@ export function ToolbarPlugin({ isPreviewMode, setIsPreviewMode }) {
       <span className={css(styles.divider)} />
       <button
         className={css(styles.button)}
-        onClick={() => editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined)}
+        onClick={() => {
+          if (isPreviewMode) {
+            editor.update(() => {
+              const selection = $getSelection();
+              if (!$isRangeSelection(selection)) return;
+              const text = selection.getTextContent();
+              selection.insertText(`- ${text}`);
+            });
+          } else {
+            editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
+          }
+        }}
         title="Bullet List"
       >
         <FontAwesomeIcon icon={faListUl} />
@@ -152,10 +205,13 @@ export function ToolbarPlugin({ isPreviewMode, setIsPreviewMode }) {
       <button
         onClick={() => setIsPreviewMode(!isPreviewMode)}
         className={css(styles.toolbarItem, isPreviewMode && styles.activeButton)}
-        title="Toggle Markdown Preview"
-        aria-label="Toggle markdown preview"
+        title={isPreviewMode ? "Switch to Rich Text" : "Switch to Markdown"}
+        aria-label={isPreviewMode ? "Switch to Rich Text" : "Switch to Markdown"}
       >
         <FontAwesomeIcon icon={faMarkdown} />
+        <span className={css(styles.buttonLabel)}>
+          {isPreviewMode ? "Markdown" : "Rich Text"}
+        </span>
       </button>
     </div>
   );
@@ -234,5 +290,10 @@ const styles = StyleSheet.create({
   },
   activeButton: {
     backgroundColor: '#e1e1e1',
+    color: '#0366d6',
+  },
+  buttonLabel: {
+    marginLeft: '4px',
+    fontSize: '12px',
   }
 }); 
