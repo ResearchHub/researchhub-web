@@ -1,5 +1,5 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { FORMAT_TEXT_COMMAND, UNDO_COMMAND, REDO_COMMAND } from 'lexical';
+import { FORMAT_TEXT_COMMAND, UNDO_COMMAND, REDO_COMMAND, createCommand, $getSelection, $isRangeSelection } from 'lexical';
 import { css, StyleSheet } from 'aphrodite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -10,14 +10,27 @@ import {
   faRedo,
   faListUl,
   faListOl,
+  faAt,
 } from '@fortawesome/pro-solid-svg-icons';
 import { 
   INSERT_UNORDERED_LIST_COMMAND,
   INSERT_ORDERED_LIST_COMMAND,
 } from '@lexical/list';
 
+export const TRIGGER_MENTIONS_COMMAND = createCommand('TRIGGER_MENTIONS_COMMAND');
+
 export function ToolbarPlugin() {
   const [editor] = useLexicalComposerContext();
+
+  const triggerMentions = () => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if (!$isRangeSelection(selection)) return;
+      selection.insertText('@');
+    });
+    
+    editor.dispatchCommand(TRIGGER_MENTIONS_COMMAND, undefined);
+  };
 
   return (
     <div className={css(styles.toolbar)}>
@@ -56,6 +69,14 @@ export function ToolbarPlugin() {
         title="Numbered List"
       >
         <FontAwesomeIcon icon={faListOl} />
+      </button>
+      <span className={css(styles.divider)} />
+      <button
+        className={css(styles.button)}
+        onClick={triggerMentions}
+        title="Mention User"
+      >
+        <FontAwesomeIcon icon={faAt} />
       </button>
       <span className={css(styles.divider)} />
       <button

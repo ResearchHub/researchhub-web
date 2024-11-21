@@ -5,6 +5,7 @@ import { css, StyleSheet } from 'aphrodite';
 import SuggestUsers from '~/components/SearchSuggestion/SuggestUsers';
 import { $createMentionNode, MentionNode } from '../nodes/MentionNode';
 import colors from '~/config/themes/colors';
+import { TRIGGER_MENTIONS_COMMAND } from './ToolbarPlugin';
 
 function MentionsPlugin() {
   const [editor] = useLexicalComposerContext();
@@ -36,6 +37,28 @@ function MentionsPlugin() {
     }, 100) as unknown as number;
   }, [editor]);
 
+  // Extract handleMentionTrigger into a reusable function
+  const handleMentionTrigger = useCallback((offset: number) => {
+    const editorElement = editor.getRootElement();
+    if (!editorElement) return;
+
+    const domSelection = window.getSelection();
+    if (domSelection && domSelection.rangeCount > 0) {
+      const range = domSelection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      const editorRect = editorElement.getBoundingClientRect();
+
+      setMentionPopupPosition({
+        x: rect.left - editorRect.left,
+        y: rect.bottom - editorRect.top
+      });
+      setMentionPopupOpen(true);
+      setIsTypingMention(true);
+      lastAtPositionRef.current = offset;
+    }
+  }, [editor]);
+
+  // Update listener effect to use handleMentionTrigger
   useEffect(() => {
     return editor.registerUpdateListener(({ editorState }) => {
       editorState.read(() => {
@@ -59,26 +82,7 @@ function MentionsPlugin() {
 
         // Check if user just typed "@"
         if (textContent[offset - 1] === '@' && !mentionPopupOpen && closeTimeoutRef.current === null) {
-          console.log('@ detected');
-          const currentPosition = offset - 1;
-          lastAtPositionRef.current = currentPosition;
-          setIsTypingMention(true);
-          
-          const editorElement = editor.getRootElement();
-          if (!editorElement) return;
-
-          const domSelection = window.getSelection();
-          if (domSelection && domSelection.rangeCount > 0) {
-            const range = domSelection.getRangeAt(0);
-            const rect = range.getBoundingClientRect();
-            const editorRect = editorElement.getBoundingClientRect();
-
-            setMentionPopupPosition({
-              x: rect.left - editorRect.left,
-              y: rect.bottom - editorRect.top
-            });
-            setMentionPopupOpen(true);
-          }
+          handleMentionTrigger(offset - 1);
         } 
         // Handle updates while popup is open
         else if (mentionPopupOpen && isTypingMention) {
@@ -103,7 +107,7 @@ function MentionsPlugin() {
         }
       });
     });
-  }, [editor, mentionPopupOpen, isTypingMention, closeMentionPopup]);
+  }, [editor, mentionPopupOpen, isTypingMention, closeMentionPopup, handleMentionTrigger]);
 
   // Handle escape key
   useEffect(() => {
@@ -232,6 +236,26 @@ function MentionsPlugin() {
       COMMAND_PRIORITY_LOW
     );
   }, [editor]);
+
+  // Add command listener
+  useEffect(() => {
+    return editor.registerCommand(
+      TRIGGER_MENTIONS_COMMAND,
+      () => {
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection)) return false;
+
+        const node = selection.anchor.getNode();
+        if (!(node instanceof TextNode)) return false;
+
+        const offset = selection.anchor.offset;
+        handleMentionTrigger(offset - 1);
+        
+        return true;
+      },
+      COMMAND_PRIORITY_LOW
+    );
+  }, [editor, handleMentionTrigger]);
 
   return mentionPopupOpen ? (
     <div 
