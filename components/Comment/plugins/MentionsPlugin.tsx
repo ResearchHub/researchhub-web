@@ -148,18 +148,24 @@ function MentionsPlugin() {
       const selection = $getSelection();
       if (!$isRangeSelection(selection)) return;
 
-      console.log('👤 Creating mention node for:', user);
-
       // Delete the @ symbol and query
-      const queryLength = mentionQuery.length + 1; // +1 for the @ symbol
+      const queryLength = mentionQuery.length + 1;
       for (let i = 0; i < queryLength; i++) {
         selection.deleteCharacter(true);
       }
       
-      const mentionNode = $createMentionNode(`@${user.firstName} ${user.lastName}`, user);
+      // Create mention node with the user's name
+      const mentionNode = $createMentionNode(
+        `${user.firstName} ${user.lastName}`.trim(),
+        user
+      );
       selection.insertNodes([mentionNode]);
       
-      console.log('✅ Mention node inserted');
+      // For debugging
+      console.log('Created mention:', {
+        name: `${user.firstName} ${user.lastName}`,
+        user
+      });
     });
     closeMentionPopup();
   }, [editor, mentionQuery, closeMentionPopup]);

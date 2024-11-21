@@ -1,4 +1,6 @@
 import { TextNode, NodeKey, SerializedTextNode } from 'lexical';
+import { StyleSheet, css } from 'aphrodite';
+import colors from '~/config/themes/colors';
 
 export type SerializedMentionNode = SerializedTextNode & {
   mentionName: string;
@@ -26,8 +28,25 @@ export class MentionNode extends TextNode {
   }
 
   createDOM(): HTMLElement {
-    const dom = super.createDOM();
-    dom.classList.add('editor-mention');
+    const dom = document.createElement('span');
+    dom.className = css(styles.mention);
+    
+    const badge = document.createElement('span');
+    badge.className = css(styles.badge);
+    
+    if (this.__userData?.avatarUrl) {
+      const avatar = document.createElement('img');
+      avatar.src = this.__userData.avatarUrl;
+      avatar.className = css(styles.avatar);
+      badge.appendChild(avatar);
+    }
+    
+    const name = document.createElement('span');
+    name.textContent = this.__mention;
+    badge.appendChild(name);
+    
+    dom.appendChild(badge);
+  
     return dom;
   }
 
@@ -83,6 +102,36 @@ export class MentionNode extends TextNode {
   }
 }
 
+const styles = StyleSheet.create({
+  mention: {
+    display: 'inline-block',
+    margin: '0 2px',
+    verticalAlign: 'baseline',
+  },
+  badge: {
+    backgroundColor: '#e8f2ff',
+    color: '#1877f2',
+    padding: '2px 6px',
+    borderRadius: '4px',
+    fontSize: '14px',
+    fontWeight: 500,
+    border: '1px solid #1877f2',
+    display: 'inline-flex',
+    alignItems: 'center',
+    ':hover': {
+      backgroundColor: '#d8e6fd',
+      cursor: 'default',
+    }
+  },
+  avatar: {
+    width: '16px',
+    height: '16px',
+    borderRadius: '50%',
+    marginRight: '4px',
+    objectFit: 'cover',
+  }
+});
+
 export function $createMentionNode(mention: string, user: any): MentionNode {
   return new MentionNode(mention, user);
-} 
+}
