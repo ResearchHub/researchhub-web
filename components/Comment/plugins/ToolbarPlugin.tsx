@@ -25,10 +25,13 @@ import {
   getDefaultCodeLanguage,
 } from '@lexical/code';
 import { useState, useEffect } from 'react';
+import { faMarkdown } from "@fortawesome/free-brands-svg-icons";
+import { $convertToMarkdownString } from '@lexical/markdown';
+import { $getRoot } from 'lexical';
 
 export const TRIGGER_MENTIONS_COMMAND = createCommand('TRIGGER_MENTIONS_COMMAND');
 
-export function ToolbarPlugin() {
+export function ToolbarPlugin({ isPreviewMode, setIsPreviewMode }) {
   const [editor] = useLexicalComposerContext();
   const [isCode, setIsCode] = useState(false);
 
@@ -146,6 +149,14 @@ export function ToolbarPlugin() {
       >
         <FontAwesomeIcon icon={faRedo} />
       </button>
+      <button
+        onClick={() => setIsPreviewMode(!isPreviewMode)}
+        className={css(styles.toolbarItem, isPreviewMode && styles.activeButton)}
+        title="Toggle Markdown Preview"
+        aria-label="Toggle markdown preview"
+      >
+        <FontAwesomeIcon icon={faMarkdown} />
+      </button>
     </div>
   );
 }
@@ -194,4 +205,34 @@ const styles = StyleSheet.create({
     borderRadius: '4px',
     whiteSpace: 'pre-wrap',
   },
+  '.toolbar': {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    padding: '4px 8px',
+    borderBottom: '1px solid #ccc',
+  },
+  '.toolbar-item': {
+    border: 'none',
+    background: 'none',
+    cursor: 'pointer',
+    borderRadius: '4px',
+    padding: '4px 8px',
+    ':hover': {
+      backgroundColor: '#f1f1f1',
+    },
+  },
+  toolbarItem: {
+    border: 'none',
+    background: 'none',
+    cursor: 'pointer',
+    borderRadius: '4px',
+    padding: '4px 8px',
+    ':hover': {
+      backgroundColor: '#f1f1f1',
+    }
+  },
+  activeButton: {
+    backgroundColor: '#e1e1e1',
+  }
 }); 

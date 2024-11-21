@@ -53,7 +53,11 @@ import { LinkNode } from '@lexical/link';
 import { MentionNode } from './nodes/MentionNode';
 import MentionsPlugin from './plugins/MentionsPlugin';
 import { CodeNode, CodeHighlightNode, registerCodeHighlighting } from '@lexical/code';
-
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
+import { TRANSFORMERS } from '@lexical/markdown';
+import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
+import { HeadingNode, QuoteNode } from '@lexical/rich-text';
+import { MarkdownPreviewPlugin } from './plugins/MarkdownPreviewPlugin';
 
 
 
@@ -237,7 +241,10 @@ const CommentEditor = ({
       MentionNode, 
       LinkNode,
       CodeNode,
-      CodeHighlightNode
+      CodeHighlightNode,
+      HorizontalRuleNode,
+      HeadingNode,
+      QuoteNode
     ],
     onError: (error: Error) => {
       console.error(error);
@@ -460,22 +467,36 @@ const CommentEditor = ({
 
           <LexicalComposer initialConfig={initialConfig}>
             <div className={css(styles.editorContainer)}>
-              <ToolbarPlugin />
-              <RichTextPlugin
-                contentEditable={<ContentEditable className={css(styles.contentEditable)} />}
-                placeholder={
-                  <div className={css(styles.placeholder)}>
-                    {placeholder || "Add a comment about this paper..."}
-                  </div>
-                }
-                ErrorBoundary={LexicalErrorBoundary}
-              />
+              <MarkdownPreviewPlugin>
+                {({ isPreviewMode, setIsPreviewMode, MarkdownContent }) => (
+                  <>
+                    <ToolbarPlugin 
+                      isPreviewMode={isPreviewMode} 
+                      setIsPreviewMode={setIsPreviewMode}
+                    />
+                    {isPreviewMode ? (
+                      MarkdownContent
+                    ) : (
+                      <RichTextPlugin
+                        contentEditable={<ContentEditable className={css(styles.contentEditable)} />}
+                        placeholder={
+                          <div className={css(styles.placeholder)}>
+                            {placeholder || "Add a comment about this paper..."}
+                          </div>
+                        }
+                        ErrorBoundary={LexicalErrorBoundary}
+                      />
+                    )}
+                  </>
+                )}
+              </MarkdownPreviewPlugin>
               <HistoryPlugin />
               <AutoFocusPlugin />
               <ListPlugin />
               <LinkPlugin />
               <MentionsPlugin />
               <CodeHighlightingPlugin />
+              <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
             </div>
           </LexicalComposer>
         </div>
@@ -755,6 +776,18 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginBottom: 15,
     overflow: 'hidden',
+  },
+  markdownPreview: {
+    padding: '15px',
+    backgroundColor: '#f8f9fa',
+    border: '1px solid #e1e4e8',
+    borderRadius: '4px',
+    fontFamily: 'monospace',
+    whiteSpace: 'pre-wrap',
+    wordWrap: 'break-word',
+    fontSize: '14px',
+    lineHeight: '1.5',
+    color: '#24292e',
   },
 });
 
