@@ -52,6 +52,9 @@ import { ListNode, ListItemNode } from '@lexical/list';
 import { LinkNode } from '@lexical/link';
 import { MentionNode } from './nodes/MentionNode';
 import MentionsPlugin from './plugins/MentionsPlugin';
+import { CodeNode, CodeHighlightNode, registerCodeHighlighting } from '@lexical/code';
+
+
 
 
 const { setMessage, showMessage } = MessageActions;
@@ -77,6 +80,16 @@ type CommentEditorArgs = {
   displayCurrentUser?: boolean;
   showAuthorLine?: boolean;
 };
+
+function CodeHighlightingPlugin() {
+  const [editor] = useLexicalComposerContext();
+  useEffect(() => {
+    return registerCodeHighlighting(editor);
+  }, [editor]);
+  return null;
+}
+
+
 
 const CommentEditor = ({
   editorId,
@@ -183,8 +196,49 @@ const CommentEditor = ({
         ol: 'editor-list-ol',
         listitem: 'editor-listitem',
       },
+      // Add code styling
+      code: 'editor-code-block',
+      codeHighlight: {
+        atrule: 'editor-tokenAttr',
+        attr: 'editor-tokenAttr',
+        boolean: 'editor-tokenProperty',
+        builtin: 'editor-tokenSelector',
+        cdata: 'editor-tokenComment',
+        char: 'editor-tokenSelector',
+        class: 'editor-tokenFunction',
+        'class-name': 'editor-tokenFunction',
+        comment: 'editor-tokenComment',
+        constant: 'editor-tokenProperty',
+        deleted: 'editor-tokenProperty',
+        doctype: 'editor-tokenComment',
+        entity: 'editor-tokenOperator',
+        function: 'editor-tokenFunction',
+        important: 'editor-tokenVariable',
+        inserted: 'editor-tokenSelector',
+        keyword: 'editor-tokenAttr',
+        namespace: 'editor-tokenOperator',
+        number: 'editor-tokenProperty',
+        operator: 'editor-tokenOperator',
+        prolog: 'editor-tokenComment',
+        property: 'editor-tokenProperty',
+        punctuation: 'editor-tokenPunctuation',
+        regex: 'editor-tokenVariable',
+        selector: 'editor-tokenSelector',
+        string: 'editor-tokenSelector',
+        symbol: 'editor-tokenProperty',
+        tag: 'editor-tokenProperty',
+        url: 'editor-tokenOperator',
+        variable: 'editor-tokenVariable'
+      },
     },
-    nodes: [ListNode, ListItemNode, MentionNode, LinkNode],
+    nodes: [
+      ListNode, 
+      ListItemNode, 
+      MentionNode, 
+      LinkNode,
+      CodeNode,
+      CodeHighlightNode
+    ],
     onError: (error: Error) => {
       console.error(error);
     },
@@ -421,6 +475,7 @@ const CommentEditor = ({
               <ListPlugin />
               <LinkPlugin />
               <MentionsPlugin />
+              <CodeHighlightingPlugin />
             </div>
           </LexicalComposer>
         </div>
@@ -682,6 +737,8 @@ const styles = StyleSheet.create({
     padding: '15px',
     position: 'relative',
     outline: 'none',
+    overflowWrap: 'break-word',
+    wordWrap: 'break-word',
   },
   placeholder: {
     position: 'absolute',
@@ -697,42 +754,7 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.border}`,
     borderRadius: 4,
     marginBottom: 15,
-  },
-  '.mention': {
-    color: colors.primary.btn,
-    fontWeight: 500,
-  },
-  '.editor-paragraph': {
-    margin: '0 0 8px 0',
-    position: 'relative',
-  },
-  '.editor-text-bold': {
-    fontWeight: 'bold',
-  },
-  '.editor-text-italic': {
-    fontStyle: 'italic',
-  },
-  '.editor-text-underline': {
-    textDecoration: 'underline',
-  },
-  '.editor-mention': {
-    color: globalColors.NEW_BLUE(),
-    fontWeight: 500,
-    backgroundColor: globalColors.NEW_BLUE(0.1),
-    padding: '1px 4px',
-    borderRadius: '4px',
-    userSelect: 'all',
-  },
-  '.editor-list-ol': {
-    padding: 0,
-    margin: '0 0 0 16px',
-  },
-  '.editor-list-ul': {
-    padding: 0,
-    margin: '0 0 0 16px',
-  },
-  '.editor-listitem': {
-    margin: '8px 32px',
+    overflow: 'hidden',
   },
 });
 

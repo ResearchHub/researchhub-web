@@ -16,6 +16,7 @@ import "~/components/Comment/lib/quill.css";
 import "~/components/Notifications/lib/react-toastify-custom.css";
 import "react-toastify/dist/ReactToastify.css";
 import "pdfjs-dist/web/pdf_viewer.css";
+import "~/components/Comment/CommentEditor.css";
 import { Analytics } from "@vercel/analytics/react";
 import { configureStore } from "~/redux/configureStore";
 import { init as initApm } from "@elastic/apm-rum";
