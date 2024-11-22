@@ -1,9 +1,17 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { useState, useEffect } from 'react';
-import { $convertToMarkdownString, TRANSFORMERS } from '@lexical/markdown';
+import {
+  $convertFromMarkdownString,
+  $convertToMarkdownString,
+  ELEMENT_TRANSFORMERS,
+  TEXT_FORMAT_TRANSFORMERS,
+  TEXT_MATCH_TRANSFORMERS,
+  TextFormatTransformer,
+  Transformer,
+} from '@lexical/markdown';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
-import { $getRoot, $createTextNode, $createParagraphNode, $getSelection } from 'lexical';
+import { $getRoot, $createTextNode, $createParagraphNode } from 'lexical';
 import { css, StyleSheet } from 'aphrodite';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 
@@ -22,32 +30,56 @@ export function MarkdownPreviewPlugin({
   setIsPreviewMode 
 }: MarkdownPreviewProps) {
   const [editor] = useLexicalComposerContext();
-  const [markdownContent, setMarkdownContent] = useState('');
 
-  // Convert content to markdown when switching modes
+  // Define custom format transformers with explicit priorities
+  const customTextFormatTransformers: TextFormatTransformer[] = [
+    {
+      format: ['underline'],
+      tag: '__',
+      type: 'text-format',
+      priority: 1, // Higher priority for underline
+    },
+    {
+      format: ['bold'],
+      tag: '**',
+      type: 'text-format',
+      priority: 0,
+    },
+    {
+      format: ['italic'],
+      tag: '_',
+      type: 'text-format',
+      priority: 0,
+    }
+  ];
+
+  // Combine transformers, putting underline transformers first
+  const MARKDOWN_TRANSFORMERS: Transformer[] = [
+    ...customTextFormatTransformers,
+    ...ELEMENT_TRANSFORMERS,
+    ...TEXT_MATCH_TRANSFORMERS,
+  ];
+
+  // Handle mode switching
   useEffect(() => {
-    if (isPreviewMode) {
-      editor.update(() => {
-        const root = $getRoot();
-        const markdown = $convertToMarkdownString(TRANSFORMERS, root);
+    editor.update(() => {
+      const root = $getRoot();
+      if (isPreviewMode) {
+        // Converting to markdown mode
+        const markdown = $convertToMarkdownString(MARKDOWN_TRANSFORMERS);
         const paragraph = $createParagraphNode();
         paragraph.append($createTextNode(markdown));
         root.clear();
         root.append(paragraph);
-      });
-    }
-  }, [isPreviewMode, editor]);
-
-  // Keep track of content updates
-  useEffect(() => {
-    return editor.registerUpdateListener(({ editorState }) => {
-      editorState.read(() => {
-        const root = $getRoot();
-        const markdown = $convertToMarkdownString(TRANSFORMERS, root);
-        setMarkdownContent(markdown);
-      });
+      } else {
+        // Converting to rich text mode
+        const markdown = $convertToMarkdownString(MARKDOWN_TRANSFORMERS);
+        console.log('Converting markdown:', markdown); // Debug log
+        root.clear();
+        $convertFromMarkdownString(markdown, MARKDOWN_TRANSFORMERS);
+      }
     });
-  }, [editor]);
+  }, [isPreviewMode, editor]);
 
   const MarkdownContent = isPreviewMode ? (
     <PlainTextPlugin
