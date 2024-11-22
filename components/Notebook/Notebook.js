@@ -22,6 +22,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useRef, useCallback } from "react";
 import CommentEditor from "../Comment/CommentEditor";
 import NoteTypeSelector, { NOTE_TYPE } from "./lib/NoteTypeSelector";
+import SearchDocumentsSuggester from "~/components/Search/lib/SearchDocumentsSuggester";
 
 const Notebook = ({ auth, user, wsResponse }) => {
   const router = useRouter();
@@ -400,7 +401,20 @@ const Notebook = ({ auth, user, wsResponse }) => {
       {currentNote && (
         <div className={css(styles.editorContainer)}>
           <div className={css(styles.editorHeader)}>
-            <NoteTypeSelector selectedType={noteType} onChange={setNoteType} />
+            <div className={css(styles.headerControls)}>
+              <NoteTypeSelector
+                selectedType={noteType}
+                onChange={setNoteType}
+              />
+              <SearchDocumentsSuggester
+                onSelect={(suggestion) => {
+                  // Handle the selected paper or post
+                  console.log("Selected:", suggestion);
+                }}
+                containerStyle={styles.searchContainer}
+                inputContainerStyle={styles.searchInputContainer}
+              />
+            </div>
           </div>
           <CommentEditor
             editorId={`notebook-${currentNote.id}`}
@@ -453,7 +467,20 @@ const styles = StyleSheet.create({
   },
   editorHeader: {
     padding: 20,
-    maxWidth: 200,
+    width: "100%",
+  },
+  headerControls: {
+    display: "flex",
+    alignItems: "center",
+    gap: 16,
+    maxWidth: "100%",
+  },
+  searchContainer: {
+    flex: 1,
+    minWidth: 0,
+  },
+  searchInputContainer: {
+    marginBottom: 0,
   },
 });
 
