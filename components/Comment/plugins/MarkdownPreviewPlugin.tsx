@@ -54,11 +54,17 @@ export function MarkdownPreviewPlugin({
   ];
 
   // Combine transformers, putting underline transformers first
-  const MARKDOWN_TRANSFORMERS: Transformer[] = [
-    ...customTextFormatTransformers,
-    ...ELEMENT_TRANSFORMERS,
-    ...TEXT_MATCH_TRANSFORMERS,
-  ];
+  const MARKDOWN_TRANSFORMERS: Transformer[] = isPreviewMode 
+    ? [
+        ...customTextFormatTransformers,
+        ...ELEMENT_TRANSFORMERS,
+        ...TEXT_MATCH_TRANSFORMERS.filter(t => !t.match?.toString().includes('`')),
+      ]
+    : [
+        ...customTextFormatTransformers,
+        ...ELEMENT_TRANSFORMERS,
+        ...TEXT_MATCH_TRANSFORMERS,
+      ];
 
   // Handle mode switching
   useEffect(() => {

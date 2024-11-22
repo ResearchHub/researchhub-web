@@ -49,7 +49,7 @@ import GenericMenu, { MenuOption } from "../shared/GenericMenu";
 import colors from './lib/colors';
 import { commentTypes } from './lib/options';
 import { ListNode, ListItemNode } from '@lexical/list';
-import { LinkNode } from '@lexical/link';
+import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { MentionNode } from './nodes/MentionNode';
 import MentionsPlugin from './plugins/MentionsPlugin';
 import { CodeNode, CodeHighlightNode, registerCodeHighlighting } from '@lexical/code';
@@ -185,23 +185,36 @@ const CommentEditor = ({
   const richTextConfig = {
     namespace: 'CommentEditor',
     theme: {
-      // Text formatting
+      // Restore all theme configurations
+      ltr: 'ltr',
+      rtl: 'rtl',
+      paragraph: 'editor-paragraph',
+      quote: 'editor-quote',
+      heading: {
+        h1: 'editor-heading-h1',
+        h2: 'editor-heading-h2',
+        h3: 'editor-heading-h3',
+        h4: 'editor-heading-h4',
+        h5: 'editor-heading-h5',
+      },
+      list: {
+        nested: {
+          listitem: 'editor-nested-listitem',
+        },
+        ol: 'editor-list-ol',
+        ul: 'editor-list-ul',
+        listitem: 'editor-listitem',
+      },
+      image: 'editor-image',
+      link: 'editor-link',
       text: {
         bold: 'editor-text-bold',
         italic: 'editor-text-italic',
         underline: 'editor-text-underline',
+        strikethrough: 'editor-text-strikethrough',
+        underlineStrikethrough: 'editor-text-underlineStrikethrough',
+        code: 'editor-inline-code',
       },
-      // Paragraph formatting
-      paragraph: 'editor-paragraph',
-      // Mention formatting
-      mention: 'editor-mention',
-      // List formatting
-      list: {
-        ul: 'editor-list-ul',
-        ol: 'editor-list-ol',
-        listitem: 'editor-listitem',
-      },
-      // Add code styling
       code: 'editor-code-block',
       codeHighlight: {
         atrule: 'editor-tokenAttr',
@@ -221,7 +234,7 @@ const CommentEditor = ({
         important: 'editor-tokenVariable',
         inserted: 'editor-tokenSelector',
         keyword: 'editor-tokenAttr',
-        namespace: 'editor-tokenOperator',
+        namespace: 'editor-tokenVariable',
         number: 'editor-tokenProperty',
         operator: 'editor-tokenOperator',
         prolog: 'editor-tokenComment',
@@ -233,27 +246,19 @@ const CommentEditor = ({
         symbol: 'editor-tokenProperty',
         tag: 'editor-tokenProperty',
         url: 'editor-tokenOperator',
-        variable: 'editor-tokenVariable'
+        variable: 'editor-tokenVariable',
       },
-      markdown: {
-        paragraph: 'editor-markdown-paragraph',
-        text: {
-          bold: 'editor-markdown-bold',
-          italic: 'editor-markdown-italic',
-          underline: 'editor-markdown-underline',
-        }
-      }
     },
     nodes: [
-      ListNode, 
-      ListItemNode, 
-      MentionNode, 
-      LinkNode,
+      HeadingNode,
+      ListNode,
+      ListItemNode,
+      QuoteNode,
       CodeNode,
       CodeHighlightNode,
-      HorizontalRuleNode,
-      HeadingNode,
-      QuoteNode
+      AutoLinkNode,
+      LinkNode,
+      MentionNode,
     ],
     onError: (error: Error) => {
       console.error(error);
@@ -514,7 +519,10 @@ const CommentEditor = ({
                       />
                     )}
                     {!isPreviewMode && (
-                      <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+                      <>
+                        <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+                        <CodeHighlightingPlugin />
+                      </>
                     )}
                   </>
                 )}
@@ -524,7 +532,6 @@ const CommentEditor = ({
               <ListPlugin />
               <LinkPlugin />
               <MentionsPlugin />
-              <CodeHighlightingPlugin />
             </div>
           </LexicalComposer>
         </div>

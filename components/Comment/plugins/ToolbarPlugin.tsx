@@ -90,6 +90,10 @@ export function ToolbarPlugin({ isPreviewMode, setIsPreviewMode }) {
             }
 
             setActiveFormats(formats);
+
+            // Check if we're in a code block
+            const node = selection.anchor.getNode();
+            setIsCode($isCodeNode(node));
           }
         });
         return false;
@@ -112,8 +116,19 @@ export function ToolbarPlugin({ isPreviewMode, setIsPreviewMode }) {
     editor.update(() => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
-        const codeNode = $createCodeNode(getDefaultCodeLanguage());
-        selection.insertNodes([codeNode]);
+        if ($isCodeNode(selection.anchor.getNode())) {
+          // If we're already in a code block, remove it
+          selection.getNodes().forEach((node) => {
+            if ($isCodeNode(node)) {
+              node.remove();
+            }
+          });
+        } else {
+          // Create a new code block
+          const codeNode = $createCodeNode(getDefaultCodeLanguage());
+          selection.insertNodes([codeNode]);
+          setIsCode(true);
+        }
       }
     });
   };
