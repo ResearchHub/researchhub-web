@@ -21,6 +21,7 @@ import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef, useCallback } from "react";
 import CommentEditor from "../Comment/CommentEditor";
+import NoteTypeSelector, { NOTE_TYPE } from "./lib/NoteTypeSelector";
 
 const Notebook = ({ auth, user, wsResponse }) => {
   const router = useRouter();
@@ -41,6 +42,8 @@ const Notebook = ({ auth, user, wsResponse }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
   const orgsFetched = useRef();
+
+  const [noteType, setNoteType] = useState(NOTE_TYPE.POST);
 
   useEffect(() => {
     // If user just logged in, refresh the page
@@ -395,29 +398,34 @@ const Notebook = ({ auth, user, wsResponse }) => {
         titles={titles}
       />
       {currentNote && (
-        <CommentEditor
-          editorId={`notebook-${currentNote.id}`}
-          content={currentNote.content}
-          displayCurrentUser={false}
-          isBig
-          handleSubmit={async (updatedContent) => {
-            // Implement your note update logic here
-            // This should match the format expected by your API
-          }}
-          placeholder="Start writing your note..."
-          allowCommentTypeSelection={false}
-          allowPrivacySelection={false}
-          author={user}
-          showAuthorLine={true}
-          editorStyleOverride={styles.editorOverride}
-          // You may need to implement these handlers based on your requirements
-          onChange={(content) => {
-            // Handle content changes
-          }}
-          handleCancel={() => {
-            // Handle cancel action if needed
-          }}
-        />
+        <div className={css(styles.editorContainer)}>
+          <div className={css(styles.editorHeader)}>
+            <NoteTypeSelector selectedType={noteType} onChange={setNoteType} />
+          </div>
+          <CommentEditor
+            editorId={`notebook-${currentNote.id}`}
+            content={currentNote.content}
+            displayCurrentUser={false}
+            isBig
+            handleSubmit={async (updatedContent) => {
+              // Implement your note update logic here
+              // This should match the format expected by your API
+            }}
+            placeholder="Start writing your note..."
+            allowCommentTypeSelection={false}
+            allowPrivacySelection={false}
+            author={user}
+            showAuthorLine={true}
+            editorStyleOverride={styles.editorOverride}
+            // You may need to implement these handlers based on your requirements
+            onChange={(content) => {
+              // Handle content changes
+            }}
+            handleCancel={() => {
+              // Handle cancel action if needed
+            }}
+          />
+        </div>
       )}
     </div>
   );
@@ -437,6 +445,15 @@ const styles = StyleSheet.create({
     margin: 20,
     border: "none",
     // Add any additional styling needed to match your design
+  },
+  editorContainer: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+  },
+  editorHeader: {
+    padding: 20,
+    maxWidth: 200,
   },
 });
 
