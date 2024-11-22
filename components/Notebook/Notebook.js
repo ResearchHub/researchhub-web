@@ -20,16 +20,12 @@ import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
 import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef, useCallback } from "react";
-
-const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
-  ssr: false,
-});
+import CommentEditor from "../Comment/CommentEditor";
 
 const Notebook = ({ auth, user, wsResponse }) => {
   const router = useRouter();
   const { orgSlug, noteId } = router.query;
 
-  const [ELNLoading, setELNLoading] = useState(false);
   const [currentNote, setCurrentNote] = useState(null);
   const [currentNotePerms, setCurrentNotePerms] = useState(null);
   const [userNoteAccess, setUserNoteAccess] = useState(null);
@@ -94,7 +90,6 @@ const Notebook = ({ auth, user, wsResponse }) => {
 
   useEffect(() => {
     setCurrentNote(null);
-    setELNLoading(true);
     fetchAndSetCurrentNote();
     fetchAndSetCurrentNotePermissions();
   }, [noteId]);
@@ -400,19 +395,28 @@ const Notebook = ({ auth, user, wsResponse }) => {
         titles={titles}
       />
       {currentNote && (
-        <ELNEditor
-          ELNLoading={ELNLoading}
-          currentNote={currentNote}
-          currentOrganization={currentOrganization}
-          handleEditorInput={handleEditorInput}
-          isOrgMember={_isOrgMember}
-          notePerms={currentNotePerms?.list || []}
-          redirectToNote={redirectToNote}
-          refetchNotePerms={fetchAndSetCurrentNotePermissions}
-          refetchTemplates={fetchAndSetOrgTemplates}
-          setELNLoading={setELNLoading}
-          user={user}
-          userOrgs={organizations}
+        <CommentEditor
+          editorId={`notebook-${currentNote.id}`}
+          content={currentNote.content}
+          displayCurrentUser={false}
+          isBig
+          handleSubmit={async (updatedContent) => {
+            // Implement your note update logic here
+            // This should match the format expected by your API
+          }}
+          placeholder="Start writing your note..."
+          allowCommentTypeSelection={false}
+          allowPrivacySelection={false}
+          author={user}
+          showAuthorLine={true}
+          editorStyleOverride={styles.editorOverride}
+          // You may need to implement these handlers based on your requirements
+          onChange={(content) => {
+            // Handle content changes
+          }}
+          handleCancel={() => {
+            // Handle cancel action if needed
+          }}
         />
       )}
     </div>
@@ -427,6 +431,12 @@ const mapStateToProps = (state) => ({
 const styles = StyleSheet.create({
   container: {
     display: "flex",
+  },
+  editorOverride: {
+    flex: 1,
+    margin: 20,
+    border: "none",
+    // Add any additional styling needed to match your design
   },
 });
 

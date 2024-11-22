@@ -83,6 +83,7 @@ type CommentEditorArgs = {
   onChange?: Function;
   displayCurrentUser?: boolean;
   showAuthorLine?: boolean;
+  isBig?: boolean;
 };
 
 function CodeHighlightingPlugin() {
@@ -115,6 +116,7 @@ const CommentEditor = ({
   onChange,
   showAuthorLine = true,
   displayCurrentUser = true,
+  isBig = false,
 }: CommentEditorArgs) => {
   const [editor, setEditor] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -377,10 +379,11 @@ const CommentEditor = ({
 
   const isLoggedIn = auth.authChecked && auth.isLoggedIn;
   return (
-    <div>
+    <div className={css(isBig && styles.big)}>
       <div
         className={`${css(
           styles.commentEditor,
+          isBig && styles.bigEditor,
           editorStyleOverride
         )} CommentEditor`}
         onClick={() => {
@@ -391,7 +394,7 @@ const CommentEditor = ({
           }
         }}
       >
-        <div>
+        <div className={css(isBig && styles.big)}>
           {handleClose && (
             <IconButton overrideStyle={styles.closeBtn} onClick={handleClose}>
               <FontAwesomeIcon icon={faTimes} />
@@ -494,7 +497,7 @@ const CommentEditor = ({
           </div>
 
           <LexicalComposer initialConfig={isPreviewMode ? markdownConfig : richTextConfig}>
-            <div className={css(styles.editorContainer)}>
+            <div className={css(styles.editorContainer, isBig && styles.big)}>
               <MarkdownPreviewPlugin 
                 isPreviewMode={isPreviewMode}
                 setIsPreviewMode={setIsPreviewMode}
@@ -509,7 +512,7 @@ const CommentEditor = ({
                       MarkdownContent
                     ) : (
                       <RichTextPlugin
-                        contentEditable={<ContentEditable className={css(styles.contentEditable)} />}
+                        contentEditable={<ContentEditable className={css(styles.contentEditable, isBig && styles.big)} />}
                         placeholder={
                           <div className={css(styles.placeholder)}>
                             {placeholder || "Add a comment about this paper..."}
@@ -618,6 +621,10 @@ const CommentEditor = ({
 };
 
 const styles = StyleSheet.create({
+  big: {
+    height: "100%",
+    width: "100%",
+  },
   privacySelectorWrapper: {
     marginBottom: 10,
   },
@@ -628,6 +635,9 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  bigEditor: {
+    height: "100%"
   },
   commentEditor: {
     display: "flex",
