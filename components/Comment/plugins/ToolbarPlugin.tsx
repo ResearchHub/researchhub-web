@@ -1,5 +1,5 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { FORMAT_TEXT_COMMAND, UNDO_COMMAND, REDO_COMMAND, createCommand, $getSelection, $isRangeSelection, SELECTION_CHANGE_COMMAND, COMMAND_PRIORITY_LOW } from 'lexical';
+import { FORMAT_TEXT_COMMAND, UNDO_COMMAND, REDO_COMMAND, createCommand, $getSelection, $isRangeSelection, SELECTION_CHANGE_COMMAND, COMMAND_PRIORITY_LOW, TextFormatType } from 'lexical';
 import { css, StyleSheet } from 'aphrodite';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -34,6 +34,7 @@ export const TRIGGER_MENTIONS_COMMAND = createCommand('TRIGGER_MENTIONS_COMMAND'
 export function ToolbarPlugin({ isPreviewMode, setIsPreviewMode }) {
   const [editor] = useLexicalComposerContext();
   const [isCode, setIsCode] = useState(false);
+  const [activeFormats, setActiveFormats] = useState<Set<TextFormatType>>(new Set());
 
   useEffect(() => {
     if (!editor) return;
@@ -44,21 +45,58 @@ export function ToolbarPlugin({ isPreviewMode, setIsPreviewMode }) {
         newEditor.getEditorState().read(() => {
           const selection = $getSelection();
           if ($isRangeSelection(selection)) {
-            const anchorNode = selection.anchor.getNode();
-            const focusNode = selection.focus.getNode();
-            const isCodeBlock = 
-              $isCodeNode(anchorNode) || 
-              $isCodeNode(focusNode) || 
-              $isCodeNode(anchorNode.getParent()) || 
-              $isCodeNode(focusNode.getParent());
-            setIsCode(isCodeBlock);
+            const formats = new Set<TextFormatType>();
+            
+            if (isPreviewMode) {
+              const node = selection.anchor.getNode();
+              const text = node.getTextContent();
+              const cursorOffset = selection.anchor.offset;
+
+              // Helper function to check if cursor is within markdown syntax
+              const isWithinMarkdown = (text: string, cursor: number, start: string, end: string) => {
+                let startIndex = 0;
+                while (true) {
+                  const markStart = text.indexOf(start, startIndex);
+                  if (markStart === -1) break;
+                  
+                  const markEnd = text.indexOf(end, markStart + start.length);
+                  if (markEnd === -1) break;
+
+                  if (cursor >= markStart && cursor <= markEnd + end.length) {
+                    return true;
+                  }
+                  startIndex = markEnd + end.length;
+                }
+                return false;
+              };
+
+              // Check for different markdown formats
+              if (isWithinMarkdown(text, cursorOffset, '*', '*') || 
+                  isWithinMarkdown(text, cursorOffset, '**', '**')) {
+                formats.add('bold');
+              }
+              if (isWithinMarkdown(text, cursorOffset, '_', '_')) {
+                formats.add('italic');
+              }
+              if (isWithinMarkdown(text, cursorOffset, '__', '__')) {
+                formats.add('underline');
+              }
+
+              console.log('Active formats:', Array.from(formats)); // Debug log
+            } else {
+              if (selection.hasFormat('bold')) formats.add('bold');
+              if (selection.hasFormat('italic')) formats.add('italic');
+              if (selection.hasFormat('underline')) formats.add('underline');
+            }
+
+            setActiveFormats(formats);
           }
         });
         return false;
       },
       COMMAND_PRIORITY_LOW
     );
-  }, [editor]);
+  }, [editor, isPreviewMode]);
 
   const triggerMentions = () => {
     editor.update(() => {
@@ -80,67 +118,59 @@ export function ToolbarPlugin({ isPreviewMode, setIsPreviewMode }) {
     });
   };
 
-  const formatTextMarkdown = (format: string) => {
-    editor.update(() => {
-      const selection = $getSelection();
-      if (!$isRangeSelection(selection)) return;
-      
-      const text = selection.getTextContent();
-      let markdownText = text;
-      
-      switch (format) {
-        case 'bold':
-          markdownText = `**${text}**`;
-          break;
-        case 'italic':
-          markdownText = `_${text}_`;
-          break;
-        case 'underline':
-          markdownText = `__${text}__`;
-          break;
-      }
+  const toggleFormat = (format: TextFormatType) => {
+    if (isPreviewMode) {
+      editor.update(() => {
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection)) return;
+        
+        const text = selection.getTextContent();
+        let newText = text;
+        
+        switch (format) {
+          case 'bold':
+            newText = text.startsWith('**') && text.endsWith('**') 
+              ? text.slice(2, -2) 
+              : `**${text}**`;
+            break;
+          case 'italic':
+            newText = text.startsWith('_') && text.endsWith('_') 
+              ? text.slice(1, -1) 
+              : `_${text}_`;
+            break;
+          case 'underline':
+            newText = text.startsWith('__') && text.endsWith('__') 
+              ? text.slice(2, -2) 
+              : `__${text}__`;
+            break;
+        }
 
-      selection.insertText(markdownText);
-    });
+        selection.insertText(newText);
+      });
+    } else {
+      editor.dispatchCommand(FORMAT_TEXT_COMMAND, format);
+    }
   };
 
   return (
     <div className={css(styles.toolbar)}>
       <button
-        className={css(styles.button)}
-        onClick={() => {
-          if (isPreviewMode) {
-            formatTextMarkdown('bold');
-          } else {
-            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
-          }
-        }}
+        className={css(styles.button, activeFormats.has('bold') && styles.buttonActive)}
+        onClick={() => toggleFormat('bold')}
         title="Bold"
       >
         <FontAwesomeIcon icon={faBold} />
       </button>
       <button
-        className={css(styles.button)}
-        onClick={() => {
-          if (isPreviewMode) {
-            formatTextMarkdown('italic');
-          } else {
-            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
-          }
-        }}
+        className={css(styles.button, activeFormats.has('italic') && styles.buttonActive)}
+        onClick={() => toggleFormat('italic')}
         title="Italic"
       >
         <FontAwesomeIcon icon={faItalic} />
       </button>
       <button
-        className={css(styles.button)}
-        onClick={() => {
-          if (isPreviewMode) {
-            formatTextMarkdown('underline');
-          } else {
-            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
-          }
-        }}
+        className={css(styles.button, activeFormats.has('underline') && styles.buttonActive)}
+        onClick={() => toggleFormat('underline')}
         title="Underline"
       >
         <FontAwesomeIcon icon={faUnderline} />
