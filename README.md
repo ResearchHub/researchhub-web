@@ -48,7 +48,7 @@ brew install pango pkg-config
 1. Fork this repo and then clone it to your local env
 2. Create a new branch
 
-```
+```shell
 git checkout -b MY_BRANCH_NAME
 ```
 
