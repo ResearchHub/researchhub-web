@@ -65,12 +65,6 @@ function UnifiedDocFeedContainer({
     setUnifiedDocsLoading(false);
   }, []);
 
-  // useEffectUpdateStatesOnServerChanges({
-  //   routePath: routerPathName,
-  //   serverLoadedData,
-  //   setPaginationInfo,
-  // });
-
   const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
   useEffectFetchDocs({
     fetchParams: {
@@ -146,7 +140,6 @@ function UnifiedDocFeedContainer({
   };
 
   const showLoadMoreButton = hasMore;
-  // const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const cards = getDocumentCard({
     setUnifiedDocuments,
     unifiedDocumentData: unifiedDocuments,
