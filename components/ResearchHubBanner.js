@@ -74,7 +74,7 @@ class ResearchHubBanner extends Component {
             </span>
           </div>
           <div className={css(styles.subtext, styles.text)}>
-            {`We are bulding an open platform and community whose goal it is to
+            {`We are building an open platform and community whose goal it is to
             accelerate science. `}
             <Link href={"/about"} className={css(styles.readMore)}>
               Read more
