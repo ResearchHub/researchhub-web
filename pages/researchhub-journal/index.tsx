@@ -11,7 +11,6 @@ import { useState } from "react";
 import { useRouter } from 'next/router';
 import JournalLayout from "~/components/ResearchHubJournal/JournalLayout";
 import PaperVersionModal from "~/components/Document/lib/PaperVersion/PaperVersionModal";
-import { ACTION } from "~/components/Document/lib/PaperVersion/PaperVersionTypes";
 
 function ResearchHubJournalPage(): JSX.Element {
   const router = useRouter();
