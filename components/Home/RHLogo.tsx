@@ -4,7 +4,7 @@ import { breakpoints } from "~/config/themes/screen";
 import FlaskAnimation from "../../public/RH_animated_flask_new_starting_frame.json";
 import { useRef, useState } from "react";
 
-const Lottie = dynamic(() => import("react-lottie"));
+const Lottie = dynamic(() => import("react-lottie"), { ssr: false });
 
 type Props = {
   iconStyle: StyleDeclarationValue;
