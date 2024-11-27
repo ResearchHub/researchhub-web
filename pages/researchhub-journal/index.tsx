@@ -10,9 +10,12 @@ import ScrollingHubTags from "~/components/ResearchHubJournal/ScrollingHubTags";
 import { useState } from "react";
 import { useRouter } from 'next/router';
 import JournalLayout from "~/components/ResearchHubJournal/JournalLayout";
+import PaperVersionModal from "~/components/Document/lib/PaperVersion/PaperVersionModal";
+import { ACTION } from "~/components/Document/lib/PaperVersion/PaperVersionTypes";
 
 function ResearchHubJournalPage(): JSX.Element {
   const router = useRouter();
+  const [showPaperModal, setShowPaperModal] = useState(false);
 
   const scrollToHowItWorks = () => {
     const howItWorksSection = document.getElementById('how-it-works');
@@ -42,7 +45,7 @@ function ResearchHubJournalPage(): JSX.Element {
         <div className={css(styles.hero)}>
           <div className={css(styles.heroContent)}>
             <div className={css(styles.heroTagWrapper)}>
-              <div className={css(styles.heroTag)}>Coming Soon</div>
+              <div className={css(styles.heroTag)}>Available Now</div>
             </div>
             
             <div className={css(styles.titleContainer)}>
@@ -56,10 +59,10 @@ function ResearchHubJournalPage(): JSX.Element {
 
             <div className={css(styles.heroButtons)}>
               <button 
-                onClick={() => window.open('https://forms.gle/3x1F6Gj4pxoDUHU19', '_blank')}
+                onClick={() => setShowPaperModal(true)}
                 className={css(styles.primaryButton)}
               >
-                Submit Early
+                Submit Now
               </button>
               <button 
                 onClick={scrollToHowItWorks}
@@ -141,6 +144,14 @@ function ResearchHubJournalPage(): JSX.Element {
         <div id="how-it-works" className={css(styles.subtleGradientSection)}>
           <HowItWorks />
         </div>
+
+        {showPaperModal && (
+          <PaperVersionModal
+            isOpen={showPaperModal}
+            closeModal={() => setShowPaperModal(false)}
+            action="PUBLISH_IN_JOURNAL"
+          />
+        )}
       </div>
     </JournalLayout>
   );
