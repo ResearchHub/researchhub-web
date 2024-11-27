@@ -11,7 +11,6 @@ import {
 import { AUTHOR_CLAIM_STATUS } from "../constants/AuthorClaimStatus";
 import {
   Authorship,
-  parseAuthorship,
   parsePaper,
 } from "~/components/Document/lib/types";
 import {
@@ -94,10 +93,10 @@ export function getCases({
                 status,
                 updated_date,
                 paper,
+                authorship,
                 target_author_name,
                 target_paper_title,
                 target_paper_doi,
-                authorship,
                 preregistration_url,
                 open_data_url,
                 paper_reward,
@@ -110,7 +109,7 @@ export function getCases({
                   status,
                   updatedDate: updated_date,
                   paper,
-                  authorship: authorship ? parseAuthorship(authorship) : null,
+                  authorship: authorship,
                   userVerification:  {
                     isVerified: resultData?.user_verification?.status === "APPROVED",
                     verifiedName: resultData?.user_verification?.verified_name,
