@@ -10,7 +10,7 @@ import ScrollingHubTags from "~/components/ResearchHubJournal/ScrollingHubTags";
 import { useState } from "react";
 import { useRouter } from 'next/router';
 import JournalLayout from "~/components/ResearchHubJournal/JournalLayout";
-import PaperVersionModal from "~/components/Document/lib/PaperVersion/PaperVersionModal";
+// import PaperVersionModal from "~/components/Document/lib/PaperVersion/PaperVersionModal";
 
 function ResearchHubJournalPage(): JSX.Element {
   const router = useRouter();
@@ -144,13 +144,13 @@ function ResearchHubJournalPage(): JSX.Element {
           <HowItWorks />
         </div>
 
-        {showPaperModal && (
+        {/* {showPaperModal && (
           <PaperVersionModal
             isOpen={showPaperModal}
             closeModal={() => setShowPaperModal(false)}
             action="PUBLISH_IN_JOURNAL"
           />
-        )}
+        )} */}
       </div>
     </JournalLayout>
   );
