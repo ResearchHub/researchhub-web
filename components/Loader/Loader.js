@@ -1,8 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import dynamic from "next/dynamic";
 
-// import { Player } from "@lottiefiles/react-lottie-player";
-
 const Loader = (props) => {
   const { size, containerStyle, type, Component } = props;
 
