@@ -11,3 +11,8 @@ export const getCurrServerEnv = (): ENV => {
 export const isDevEnv = (): boolean => {
   return getCurrServerEnv() === "development";
 };
+
+export const isProduction = (): boolean => {
+  console.log("getCurrServerEnv()", getCurrServerEnv());
+  return getCurrServerEnv() === "production";
+};
