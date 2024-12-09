@@ -28,6 +28,9 @@ import Base from "./Base";
 import nookies from "nookies";
 import { useRouter } from "next/router";
 import withRedux from "next-redux-wrapper";
+import MaintenancePage from "./maintenance";
+
+const MAINTENANCE_MODE = true;
 
 if (process.env.ELASTIC_APM_URL) {
   initApm({
@@ -175,6 +178,10 @@ const MyApp = ({
     router.pathname !== "/viewer" &&
     router.pathname !== "/linkedin-login" &&
     !router.pathname.startsWith("/product");
+
+  if (MAINTENANCE_MODE) {
+    return <MaintenancePage />;
+  }
 
   return (
     <Provider store={store}>
