@@ -6,13 +6,6 @@ import "~/components/Modals/Stylesheets/Dnd.css";
 import "~/components/Paper/progressbar.css";
 import "~/components/Paper/Tabs/stylesheets/custom-editor.css";
 import "~/components/SearchSuggestion/authorinput.css";
-import "~/pages/user/stylesheets/toggle.css";
-import "isomorphic-unfetch";
-import "katex/dist/katex.min.css";
-import "react-placeholder/lib/reactPlaceholder.css";
-import "react-quill/dist/quill.snow.css";
-import "react-tagsinput/react-tagsinput.css";
-import "~/components/Comment/lib/quill.css";
 import "~/components/Notifications/lib/react-toastify-custom.css";
 import "react-toastify/dist/ReactToastify.css";
 import "pdfjs-dist/web/pdf_viewer.css";
@@ -28,6 +21,9 @@ import Base from "./Base";
 import nookies from "nookies";
 import { useRouter } from "next/router";
 import withRedux from "next-redux-wrapper";
+import MaintenancePage from "./maintenance";
+
+const MAINTENANCE_MODE = true;
 
 if (process.env.ELASTIC_APM_URL) {
   initApm({
@@ -175,6 +171,10 @@ const MyApp = ({
     router.pathname !== "/viewer" &&
     router.pathname !== "/linkedin-login" &&
     !router.pathname.startsWith("/product");
+
+  if (MAINTENANCE_MODE) {
+    return <MaintenancePage />;
+  }
 
   return (
     <Provider store={store}>
