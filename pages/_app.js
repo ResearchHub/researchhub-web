@@ -30,7 +30,7 @@ import { useRouter } from "next/router";
 import withRedux from "next-redux-wrapper";
 import MaintenancePage from "./maintenance";
 
-const MAINTENANCE_MODE = true;
+const MAINTENANCE_MODE = false;
 
 if (process.env.ELASTIC_APM_URL) {
   initApm({
