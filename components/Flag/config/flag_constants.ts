@@ -5,6 +5,7 @@ export enum FLAG_REASON {
   NOT_CONSTRUCTIVE = "Not Constructive",
   PLAGIARISM = "Plagiarism",
   ABUSIVE_OR_RUDE = "Rude or Abusive",
+  AI_ABUSE = "Improper AI usage",
   NOT_SPECIFIED = "Flag reason not specified",
 }
 
@@ -15,5 +16,6 @@ export enum FLAG_REASON_DESCRIPTION {
   PLAGIARISM = "Copied work or ideas of others without citation",
   ABUSIVE_OR_RUDE = "Aims to offend; not respectful of community members",
   SPAM = "Exists only to promote a product or service",
+  AI_ABUSE = "Content violates ResearchHub's AI policy, such as undisclosed or inappropriate AI-generated text.",
   NOT_SPECIFIED = "Not specified",
 }
