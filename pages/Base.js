@@ -51,7 +51,7 @@ LEFT_SIDEBAR_MIN_WIDTH;
 const projectId = "a3e8904e258fe256bf772b764d3acfab";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [isProduction ? mainnet : sepolia],
+  [isProduction() ? mainnet : sepolia],
   [
     w3mProvider({ projectId }),
     infuraProvider({
