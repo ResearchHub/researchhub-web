@@ -2,7 +2,7 @@ import { AuthActions } from "../redux/auth";
 import { createContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { HubActions } from "../redux/hub";
-import { isDevEnv } from "~/config/utils/env";
+import { isDevEnv, isProduction } from "~/config/utils/env";
 import { NewPostButtonContext } from "~/components/contexts/NewPostButtonContext.ts";
 import { NavigationContextProvider } from "~/components/contexts/NavigationContext";
 import { SavedCitationsContextProvider } from "~/components/contexts/SavedCitationsContext";
@@ -24,7 +24,7 @@ import OrganizationContextProvider from "~/components/contexts/OrganizationConte
 import CustomHead from "../components/Head";
 import { WagmiConfig, createConfig, configureChains } from "wagmi";
 import { createPublicClient, http } from "viem";
-import { mainnet } from "wagmi/chains";
+import { mainnet, sepolia } from "wagmi/chains";
 import {
   EthereumClient,
   w3mConnectors,
@@ -51,7 +51,7 @@ LEFT_SIDEBAR_MIN_WIDTH;
 const projectId = "a3e8904e258fe256bf772b764d3acfab";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet],
+  [isProduction() ? mainnet : sepolia],
   [
     w3mProvider({ projectId }),
     infuraProvider({
@@ -64,6 +64,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 const config = createConfig({
   autoConnect: true,
   connectors: [
+    ...w3mConnectors({ projectId, chains }),
     new MetaMaskConnector({ chains }),
     new CoinbaseWalletConnector({
       chains,
@@ -75,13 +76,6 @@ const config = createConfig({
       chains,
       options: {
         projectId,
-      },
-    }),
-    new InjectedConnector({
-      chains,
-      options: {
-        name: "Injected",
-        shimDisconnect: true,
       },
     }),
     new InjectedConnector({
@@ -106,12 +100,7 @@ const DynamicAlertTemplate = dynamic(() =>
 const DynamicNavbar = dynamic(() => import("~/components/Navbar"));
 export const NavbarContext = createContext();
 
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors: w3mConnectors({ projectId, chains }),
-  publicClient,
-});
-const ethereumClient = new EthereumClient(wagmiConfig, chains);
+const ethereumClient = new EthereumClient(config, chains);
 
 function Base({
   auth,
