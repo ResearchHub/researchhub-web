@@ -5,6 +5,7 @@ export type Hub = {
   slug: string;
   name: string;
   description: string;
+  namespace?: string;
   relevancyScore: number;
   numDocs?: number;
   numComments?: number;
@@ -19,6 +20,7 @@ export const parseHub = (raw: any): Hub => {
     isUsedForRep: raw.is_used_for_rep || false,
     relevancyScore: raw.relevancy_score || 0,
     description: raw.description || "",
+    namespace: raw.namespace,
   };
 
   if (raw.discussion_count) {
