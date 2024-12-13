@@ -59,14 +59,23 @@ export function DepositScreen(props) {
     ],
   });
 
-  const { data, write } = useContractWrite(config);
+  const { data, write, isError } = useContractWrite({
+    ...config,
+    onError: (error) => {
+      setIsTransacting(false);
+      captureEvent({
+        error,
+        msg: "Deposit transaction rejected",
+        data: {
+          amount,
+          from_address: address,
+        },
+      });
+    },
+  });
   const [balance, setBalance] = useState(0);
 
-  const {
-    data: RSCBalance,
-    isError,
-    isLoading: isLoadingBalance,
-  } = useContractRead({
+  const { data: RSCBalance, isError: isLoadingBalance } = useContractRead({
     address: RSCContractAddress,
     abi: CONTRACT_ABI,
     functionName: "balanceOf",
@@ -86,8 +95,11 @@ export function DepositScreen(props) {
     setAmount(e.target.value);
   };
 
+  const [isTransacting, setIsTransacting] = useState(false);
+
   useEffect(() => {
     if (data?.hash) {
+      setIsTransacting(false);
       const PAYLOAD = {
         amount,
         transaction_hash: data.hash,
@@ -115,13 +127,16 @@ export function DepositScreen(props) {
 
   const signTransaction = async (e) => {
     e && e.preventDefault();
+    setIsTransacting(true);
 
     if (!signer) {
+      setIsTransacting(false);
       openWeb3ReactModal();
       return;
     }
 
     if (chain.id !== CHAIN_ID) {
+      setIsTransacting(false);
       switchNetwork(CHAIN_ID);
     }
 
@@ -168,8 +183,14 @@ export function DepositScreen(props) {
       />
       <div className={css(styles.buttonContainer)}>
         <Button
-          disabled={!ethAccount}
-          label={!RSCBalance ? "Connect Your Wallet" : "Confirm"}
+          disabled={!ethAccount || isTransacting}
+          label={
+            !RSCBalance
+              ? "Connect Your Wallet"
+              : isTransacting
+              ? "Processing..."
+              : "Confirm"
+          }
           type="submit"
           customButtonStyle={styles.button}
           rippleClass={styles.button}
