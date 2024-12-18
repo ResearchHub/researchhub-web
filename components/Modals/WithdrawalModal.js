@@ -119,7 +119,10 @@ class WithdrawalModal extends Component {
   }
 
   getTransactionFee = () => {
-    fetch(API.WITHDRAWAL_FEE, API.GET_CONFIG())
+    const params = {
+      network: "BASE",
+    };
+    fetch(API.WITHDRAWAL_FEE, API.GET_CONFIG_WITH_BODY(params))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then(
@@ -308,6 +311,7 @@ class WithdrawalModal extends Component {
         agreed_to_terms: true,
         amount: `${amount}`,
         transaction_fee: transactionFee,
+        network: "BASE",
       };
       return fetch(API.WITHDRAW_COIN({}), API.POST_CONFIG(param))
         .then(Helpers.checkStatus)
