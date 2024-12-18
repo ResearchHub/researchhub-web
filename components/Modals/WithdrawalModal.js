@@ -10,6 +10,7 @@ import Loader from "../Loader/Loader";
 import ETHAddressInput from "../Ethereum/ETHAddressInput";
 import Button from "../Form/Button";
 import { AmountInput, RecipientInput } from "../Form/RSCForm";
+import FormSelect from "../Form/FormSelect";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -69,12 +70,18 @@ class WithdrawalModal extends Component {
       // api toggle
       metaMaskVisible: false,
       walletLinkVisible: false,
+      selectedNetwork: "BASE",
     };
     this.state = {
       ...this.initialState,
     };
 
     this.provider = null;
+
+    this.networkOptions = [
+      { value: "BASE", label: "Base" },
+      { value: "ETHEREUM", label: "Ethereum" },
+    ];
   }
 
   componentDidMount() {
@@ -120,16 +127,16 @@ class WithdrawalModal extends Component {
 
   getTransactionFee = () => {
     const params = {
-      network: "BASE",
+      network: this.state.selectedNetwork,
     };
     fetch(API.WITHDRAWAL_FEE, API.GET_CONFIG_WITH_BODY(params))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then(
-        (res) =>
-          !this.state.transactionFee !== res &&
-          this.setState({ transactionFee: res })
-      );
+      .then((res) => {
+        if (this.state.transactionFee !== res) {
+          this.setState({ transactionFee: res });
+        }
+      });
   };
 
   checkNetwork = () => {
@@ -278,7 +285,7 @@ class WithdrawalModal extends Component {
     e.preventDefault();
 
     const { showMessage, setMessage } = this.props;
-    const { buttonEnabled, amount, transactionFee, userBalance, ethAccount } =
+    const { amount, transactionFee, userBalance, ethAccount, selectedNetwork } =
       this.state;
 
     if (this.props.auth.user.probable_spammer) {
@@ -311,7 +318,7 @@ class WithdrawalModal extends Component {
         agreed_to_terms: true,
         amount: `${amount}`,
         transaction_fee: transactionFee,
-        network: "BASE",
+        network: selectedNetwork,
       };
       return fetch(API.WITHDRAW_COIN({}), API.POST_CONFIG(param))
         .then(Helpers.checkStatus)
@@ -544,8 +551,7 @@ class WithdrawalModal extends Component {
   };
 
   renderWithdrawalForm = () => {
-    const { ethAccount, amount, transactionFee } = this.state;
-
+    const { ethAccount, amount, transactionFee, selectedNetwork } = this.state;
     const isUnderInvestigation = this.props?.auth?.user?.probable_spammer;
 
     return (
@@ -559,6 +565,31 @@ class WithdrawalModal extends Component {
           author={this.props.auth.user.author_profile}
           label={"From"}
         />
+
+        <FormSelect
+          id="network"
+          label="Network"
+          placeholder="Select Network"
+          value={this.networkOptions.find(
+            (opt) => opt.value === selectedNetwork
+          )}
+          options={this.networkOptions}
+          onChange={(id, option) => {
+            this.setState(
+              {
+                selectedNetwork: option.value,
+                transactionFee: null,
+              },
+              () => {
+                this.getTransactionFee();
+              }
+            );
+          }}
+          containerStyle={styles.networkSelectContainer}
+          inputStyle={styles.networkSelect}
+          isSearchable={false}
+        />
+
         <ETHAddressInput
           label="To"
           tooltip="The address of your ETH Account (ex. 0x0000...)"
@@ -1246,6 +1277,15 @@ const styles = StyleSheet.create({
     borderBottom: "1px dashed #E7E5E4",
   },
   fullWidth: {
+    width: "100%",
+    fontSize: 16,
+    fontWeight: 400,
+  },
+  networkSelectContainer: {
+    marginTop: 25,
+    width: "100%",
+  },
+  networkSelect: {
     width: "100%",
     fontSize: 16,
     fontWeight: 400,
