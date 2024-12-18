@@ -3,6 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -79,8 +80,16 @@ class WithdrawalModal extends Component {
     this.provider = null;
 
     this.networkOptions = [
-      { value: "BASE", label: "Base" },
-      { value: "ETHEREUM", label: "Ethereum" },
+      {
+        value: "BASE",
+        label: "Base",
+        icon: "/static/icons/base.png",
+      },
+      {
+        value: "ETHEREUM",
+        label: "Ethereum",
+        icon: "/static/icons/ethereum.png",
+      },
     ];
   }
 
@@ -129,7 +138,12 @@ class WithdrawalModal extends Component {
     const params = {
       network: this.state.selectedNetwork,
     };
-    fetch(API.WITHDRAWAL_FEE, API.GET_CONFIG_WITH_BODY(params))
+
+    // Convert params object to URL query string
+    const queryString = new URLSearchParams(params).toString();
+    const url = `${API.WITHDRAWAL_FEE}?${queryString}`;
+
+    fetch(url, API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -550,6 +564,19 @@ class WithdrawalModal extends Component {
     return this.renderWithdrawalForm();
   };
 
+  renderNetworkOption = ({ value, label, icon }) => (
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <Image
+        src={icon}
+        alt={`${label} logo`}
+        width={20}
+        height={20}
+        style={{ marginRight: 8 }}
+      />
+      {label}
+    </div>
+  );
+
   renderWithdrawalForm = () => {
     const { ethAccount, amount, transactionFee, selectedNetwork } = this.state;
     const isUnderInvestigation = this.props?.auth?.user?.probable_spammer;
@@ -585,6 +612,7 @@ class WithdrawalModal extends Component {
               }
             );
           }}
+          formatOptionLabel={this.renderNetworkOption}
           containerStyle={styles.networkSelectContainer}
           inputStyle={styles.networkSelect}
           isSearchable={false}
