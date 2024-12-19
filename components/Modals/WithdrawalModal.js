@@ -580,17 +580,27 @@ class WithdrawalModal extends Component {
 
     return (
       <div className={css(styles.networkOptionContainer)}>
-        <div className={css(styles.networkOptionLeft)}>
+        <div className={css(styles.iconColumn)}>
           <Image
             src={icon}
             alt={`${label} logo`}
-            width={20}
-            height={20}
-            style={{ marginRight: 8 }}
+            width={showBadge ? 30 : 20}
+            height={showBadge ? 30 : 20}
           />
-          {label}
         </div>
-        {badge}
+        <div className={css(styles.networkOptionContent)}>
+          <div className={css(styles.networkOptionHeader)}>
+            <span>{label}</span>
+            {badge}
+          </div>
+          {showBadge && (
+            <div className={css(styles.networkDescription)}>
+              {value === "BASE"
+                ? "Recommended network for faster & cheaper transactions"
+                : "Higher fees and longer processing times"}
+            </div>
+          )}
+        </div>
       </div>
     );
   };
@@ -1337,14 +1347,33 @@ const styles = StyleSheet.create({
     fontWeight: 400,
   },
   networkOptionContainer: {
+    width: "100%",
+    padding: "4px 0",
+    display: "flex",
+  },
+  iconColumn: {
+    width: 24,
+    marginRight: 12,
+    display: "flex",
+    justifyContent: "center",
+    paddingTop: 2,
+  },
+  networkOptionContent: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 4,
+    flex: 1,
+  },
+  networkOptionHeader: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    width: "100%",
+    gap: 8,
   },
-  networkOptionLeft: {
-    display: "flex",
-    alignItems: "center",
+  networkDescription: {
+    fontSize: 12,
+    color: colors.TEXT_GREY(0.8),
+    lineHeight: 1.3,
   },
   badge: {
     padding: "2px 8px",
