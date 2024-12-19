@@ -3,6 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -10,6 +11,7 @@ import Loader from "../Loader/Loader";
 import ETHAddressInput from "../Ethereum/ETHAddressInput";
 import Button from "../Form/Button";
 import { AmountInput, RecipientInput } from "../Form/RSCForm";
+import FormSelect from "../Form/FormSelect";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -24,6 +26,7 @@ import colors, { alertColors } from "~/config/themes/colors";
 import { sanitizeNumber, formatBalance } from "~/config/utils/form";
 import {
   getEtherscanLink,
+  getBasescanLink,
   isAddress,
   toCheckSumAddress,
 } from "~/config/utils/crypto";
@@ -69,12 +72,26 @@ class WithdrawalModal extends Component {
       // api toggle
       metaMaskVisible: false,
       walletLinkVisible: false,
+      selectedNetwork: "BASE",
     };
     this.state = {
       ...this.initialState,
     };
 
     this.provider = null;
+
+    this.networkOptions = [
+      {
+        value: "BASE",
+        label: "Base",
+        icon: "/static/icons/base.png",
+      },
+      {
+        value: "ETHEREUM",
+        label: "Ethereum",
+        icon: "/static/icons/ethereum.png",
+      },
+    ];
   }
 
   componentDidMount() {
@@ -119,14 +136,22 @@ class WithdrawalModal extends Component {
   }
 
   getTransactionFee = () => {
-    fetch(API.WITHDRAWAL_FEE, API.GET_CONFIG())
+    const params = {
+      network: this.state.selectedNetwork,
+    };
+
+    // Convert params object to URL query string
+    const queryString = new URLSearchParams(params).toString();
+    const url = `${API.WITHDRAWAL_FEE}?${queryString}`;
+
+    fetch(url, API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then(
-        (res) =>
-          !this.state.transactionFee !== res &&
-          this.setState({ transactionFee: res })
-      );
+      .then((res) => {
+        if (this.state.transactionFee !== res) {
+          this.setState({ transactionFee: res });
+        }
+      });
   };
 
   checkNetwork = () => {
@@ -275,7 +300,7 @@ class WithdrawalModal extends Component {
     e.preventDefault();
 
     const { showMessage, setMessage } = this.props;
-    const { buttonEnabled, amount, transactionFee, userBalance, ethAccount } =
+    const { amount, transactionFee, userBalance, ethAccount, selectedNetwork } =
       this.state;
 
     if (this.props.auth.user.probable_spammer) {
@@ -308,6 +333,7 @@ class WithdrawalModal extends Component {
         agreed_to_terms: true,
         amount: `${amount}`,
         transaction_fee: transactionFee,
+        network: selectedNetwork,
       };
       return fetch(API.WITHDRAW_COIN({}), API.POST_CONFIG(param))
         .then(Helpers.checkStatus)
@@ -539,10 +565,68 @@ class WithdrawalModal extends Component {
     return this.renderWithdrawalForm();
   };
 
-  renderWithdrawalForm = () => {
-    const { ethAccount, amount, transactionFee } = this.state;
+  renderNetworkOption = (data, meta) => {
+    const { value, label, icon } = data;
+    const isSelected = meta.selectValue?.some(
+      (selected) => selected.value === value
+    );
 
+    // Only show badge in the menu, not in the selected value display
+    const showBadge = meta.context === "menu";
+
+    const badge =
+      showBadge &&
+      (value === "BASE" ? (
+        <div className={css(styles.badge, isSelected && styles.selectedBadge)}>
+          Lower Fees
+        </div>
+      ) : (
+        <div className={css(styles.badge, isSelected && styles.selectedBadge)}>
+          Higher Fees
+        </div>
+      ));
+
+    return (
+      <div className={css(styles.networkOptionContainer)}>
+        <div className={css(styles.iconColumn)}>
+          <Image
+            src={icon}
+            alt={`${label} logo`}
+            width={showBadge ? 30 : 20}
+            height={showBadge ? 30 : 20}
+          />
+        </div>
+        <div className={css(styles.networkOptionContent)}>
+          <div className={css(styles.networkOptionHeader)}>
+            <span>{label}</span>
+            {badge}
+          </div>
+          {showBadge && (
+            <div
+              className={css(
+                styles.networkDescription,
+                isSelected && styles.selectedDescription
+              )}
+            >
+              {value === "BASE"
+                ? "Recommended network for most users"
+                : "Legacy option"}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  renderWithdrawalForm = () => {
+    const { ethAccount, amount, transactionFee, selectedNetwork } = this.state;
     const isUnderInvestigation = this.props?.auth?.user?.probable_spammer;
+
+    const isBase = selectedNetwork === "BASE";
+
+    const feeDocUrl = isBase
+      ? "https://docs.base.org/docs/fees/"
+      : "https://ethereum.org/en/developers/docs/gas/";
 
     return (
       <form
@@ -555,6 +639,32 @@ class WithdrawalModal extends Component {
           author={this.props.auth.user.author_profile}
           label={"From"}
         />
+
+        <FormSelect
+          id="network"
+          label="Network"
+          placeholder="Select Network"
+          value={this.networkOptions.find(
+            (opt) => opt.value === selectedNetwork
+          )}
+          options={this.networkOptions}
+          onChange={(id, option) => {
+            this.setState(
+              {
+                selectedNetwork: option.value,
+                transactionFee: null,
+              },
+              () => {
+                this.getTransactionFee();
+              }
+            );
+          }}
+          formatOptionLabel={this.renderNetworkOption}
+          containerStyle={styles.networkSelectContainer}
+          inputStyle={styles.networkSelect}
+          isSearchable={false}
+        />
+
         <ETHAddressInput
           label="To"
           tooltip="The address of your ETH Account (ex. 0x0000...)"
@@ -578,7 +688,7 @@ class WithdrawalModal extends Component {
           <div className={css(styles.left)}>
             <div className={css(styles.mainHeader)}>Transaction Fee</div>
             <a
-              href={"https://ethereum.org/en/developers/docs/gas/"}
+              href={feeDocUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={css(styles.description, styles.link)}
@@ -645,13 +755,17 @@ class WithdrawalModal extends Component {
   };
 
   renderSuccessScreen = () => {
-    const { depositScreen, transactionHash } = this.state;
+    const { depositScreen, transactionHash, selectedNetwork } = this.state;
 
     const title = depositScreen
       ? "Deposit Successful"
       : "Withdrawal Successful";
 
-    const etherscanLink = getEtherscanLink(transactionHash);
+    const isBase = selectedNetwork === "BASE";
+    const explorerUrl = isBase
+      ? getBasescanLink(transactionHash)
+      : getEtherscanLink(transactionHash);
+    const explorerName = isBase ? "Basescan" : "Etherscan";
 
     const confirmationMessage = depositScreen ? (
       <Fragment>
@@ -660,12 +774,12 @@ class WithdrawalModal extends Component {
         }
         Review your transaction details and status on
         <a
-          href={etherscanLink}
+          href={explorerUrl}
           rel="noopener noreferrer"
           target="_blank"
           className={css(styles.transactionHashLink)}
         >
-          Etherscan
+          {explorerName}
         </a>
         {" or in your"}
         <Link
@@ -683,12 +797,12 @@ class WithdrawalModal extends Component {
         }
         Review your transaction details and status on
         <a
-          href={etherscanLink}
+          href={explorerUrl}
           rel="noopener noreferrer"
           target="_blank"
           className={css(styles.transactionHashLink)}
         >
-          Etherscan
+          {explorerName}
         </a>
         {" or in your"}
         <Link
@@ -1245,6 +1359,63 @@ const styles = StyleSheet.create({
     width: "100%",
     fontSize: 16,
     fontWeight: 400,
+  },
+  networkSelectContainer: {
+    marginTop: 25,
+    width: "100%",
+  },
+  networkSelect: {
+    width: "100%",
+    fontSize: 16,
+    fontWeight: 400,
+  },
+  networkOptionContainer: {
+    width: "100%",
+    padding: "4px 0",
+    display: "flex",
+    alignItems: "center",
+  },
+  iconColumn: {
+    width: 24,
+    marginRight: 12,
+    display: "flex",
+    justifyContent: "center",
+    paddingTop: 2,
+  },
+  networkOptionContent: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 4,
+    flex: 1,
+  },
+  networkOptionHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+  networkDescription: {
+    fontSize: 12,
+    lineHeight: 1.3,
+    color: colors.TEXT_GREY(0.8),
+  },
+  selectedDescription: {
+    color: colors.WHITE(),
+  },
+  badge: {
+    padding: "2px 8px",
+    borderRadius: 4,
+    fontSize: 12,
+    whiteSpace: "nowrap",
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: colors.NEW_BLUE(0.1),
+    color: colors.BLACK(),
+  },
+  selectedBadge: {
+    backgroundColor: colors.NEW_BLUE(),
+    color: colors.WHITE(),
   },
 });
 

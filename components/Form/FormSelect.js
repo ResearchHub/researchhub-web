@@ -131,6 +131,7 @@ class FormSelect extends Component {
       minHeight,
       menuPlacement,
       noOptionsMessage,
+      formatOptionLabel,
     } = this.props;
 
     let configuredComponents = {
@@ -283,6 +284,7 @@ class FormSelect extends Component {
           isOptionDisabled={isOptionDisabled}
           onInputChange={this.props.onInputChange}
           noOptionsMessage={noOptionsMessage}
+          formatOptionLabel={formatOptionLabel}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
       </div>
