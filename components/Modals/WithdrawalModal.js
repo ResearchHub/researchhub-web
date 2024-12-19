@@ -618,6 +618,12 @@ class WithdrawalModal extends Component {
     const { ethAccount, amount, transactionFee, selectedNetwork } = this.state;
     const isUnderInvestigation = this.props?.auth?.user?.probable_spammer;
 
+    const isBase = selectedNetwork === "BASE";
+
+    const feeDocUrl = isBase
+      ? "https://docs.base.org/docs/fees/"
+      : "https://ethereum.org/en/developers/docs/gas/";
+
     return (
       <form
         className={css(styles.networkContainer)}
@@ -678,7 +684,7 @@ class WithdrawalModal extends Component {
           <div className={css(styles.left)}>
             <div className={css(styles.mainHeader)}>Transaction Fee</div>
             <a
-              href={"https://ethereum.org/en/developers/docs/gas/"}
+              href={feeDocUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={css(styles.description, styles.link)}
