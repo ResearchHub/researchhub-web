@@ -26,6 +26,7 @@ import colors, { alertColors } from "~/config/themes/colors";
 import { sanitizeNumber, formatBalance } from "~/config/utils/form";
 import {
   getEtherscanLink,
+  getBasescanLink,
   isAddress,
   toCheckSumAddress,
 } from "~/config/utils/crypto";
@@ -744,13 +745,17 @@ class WithdrawalModal extends Component {
   };
 
   renderSuccessScreen = () => {
-    const { depositScreen, transactionHash } = this.state;
+    const { depositScreen, transactionHash, selectedNetwork } = this.state;
 
     const title = depositScreen
       ? "Deposit Successful"
       : "Withdrawal Successful";
 
-    const etherscanLink = getEtherscanLink(transactionHash);
+    const isBase = selectedNetwork === "BASE";
+    const explorerUrl = isBase
+      ? `https://basescan.org/tx/${txHash}`
+      : `https://etherscan.io/tx/${txHash}`;
+    const explorerName = isBase ? "Basescan" : "Etherscan";
 
     const confirmationMessage = depositScreen ? (
       <Fragment>
@@ -759,12 +764,12 @@ class WithdrawalModal extends Component {
         }
         Review your transaction details and status on
         <a
-          href={etherscanLink}
+          href={explorerUrl}
           rel="noopener noreferrer"
           target="_blank"
           className={css(styles.transactionHashLink)}
         >
-          Etherscan
+          {explorerName}
         </a>
         {" or in your"}
         <Link
@@ -782,12 +787,12 @@ class WithdrawalModal extends Component {
         }
         Review your transaction details and status on
         <a
-          href={etherscanLink}
+          href={explorerUrl}
           rel="noopener noreferrer"
           target="_blank"
           className={css(styles.transactionHashLink)}
         >
-          Etherscan
+          {explorerName}
         </a>
         {" or in your"}
         <Link

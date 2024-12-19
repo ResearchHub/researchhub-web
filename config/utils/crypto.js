@@ -22,6 +22,12 @@ export const getEtherscanLink = (transactionHash) => {
     : `https://sepolia.etherscan.io/tx/${transactionHash}`;
 };
 
+export const getBasescanLink = (transactionHash) => {
+  return process.env.REACT_APP_ENV === "production"
+    ? `https://basescan.org/tx/${transactionHash}`
+    : `https://sepolia.basescan.org/tx/${transactionHash}`;
+};
+
 /**
  * Checks if the given string is an address
  *
