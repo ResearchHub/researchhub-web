@@ -759,8 +759,8 @@ class WithdrawalModal extends Component {
 
     const isBase = selectedNetwork === "BASE";
     const explorerUrl = isBase
-      ? `https://basescan.org/tx/${txHash}`
-      : `https://etherscan.io/tx/${txHash}`;
+      ? getBasescanLink(transactionHash)
+      : getEtherscanLink(transactionHash);
     const explorerName = isBase ? "Basescan" : "Etherscan";
 
     const confirmationMessage = depositScreen ? (
