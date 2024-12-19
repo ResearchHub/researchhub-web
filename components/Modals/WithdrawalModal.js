@@ -577,9 +577,9 @@ class WithdrawalModal extends Component {
     const badge =
       showBadge &&
       (value === "BASE" ? (
-        <div className={css(styles.badge)}>Lower Fee</div>
+        <div className={css(styles.badge)}>Lower Fees</div>
       ) : (
-        <div className={css(styles.badge)}>Higher Fee</div>
+        <div className={css(styles.badge)}>Higher Fees</div>
       ));
 
     return (
@@ -605,8 +605,8 @@ class WithdrawalModal extends Component {
               )}
             >
               {value === "BASE"
-                ? "Recommended network with lower fees"
-                : "Network with higher fees"}
+                ? "Recommended network for most users"
+                : "Legacy option"}
             </div>
           )}
         </div>
