@@ -564,9 +564,14 @@ class WithdrawalModal extends Component {
     return this.renderWithdrawalForm();
   };
 
-  renderNetworkOption = ({ value, label, icon }, { selectProps, context }) => {
+  renderNetworkOption = (data, meta) => {
+    const { value, label, icon } = data;
+    const isSelected = meta.selectValue?.some(
+      (selected) => selected.value === value
+    );
+
     // Only show badge in the menu, not in the selected value display
-    const showBadge = context === "menu";
+    const showBadge = meta.context === "menu";
 
     const badge =
       showBadge &&
@@ -592,7 +597,12 @@ class WithdrawalModal extends Component {
             {badge}
           </div>
           {showBadge && (
-            <div className={css(styles.networkDescription)}>
+            <div
+              className={css(
+                styles.networkDescription,
+                isSelected && styles.selectedDescription
+              )}
+            >
               {value === "BASE"
                 ? "Recommended network with lower fees"
                 : "Network with higher fees"}
@@ -1371,6 +1381,10 @@ const styles = StyleSheet.create({
   networkDescription: {
     fontSize: 12,
     lineHeight: 1.3,
+    color: colors.TEXT_GREY(0.8),
+  },
+  selectedDescription: {
+    color: "#FFFFFF",
   },
   badge: {
     padding: "2px 8px",
@@ -1380,8 +1394,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     gap: 4,
-    backgroundColor: colors.LIGHT_GREY(),
-    color: colors.BLACK(0.7),
+    backgroundColor: colors.NEW_BLUE(0.1),
+    color: colors.BLACK(),
   },
 });
 
