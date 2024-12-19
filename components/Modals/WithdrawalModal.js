@@ -564,18 +564,36 @@ class WithdrawalModal extends Component {
     return this.renderWithdrawalForm();
   };
 
-  renderNetworkOption = ({ value, label, icon }) => (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <Image
-        src={icon}
-        alt={`${label} logo`}
-        width={20}
-        height={20}
-        style={{ marginRight: 8 }}
-      />
-      {label}
-    </div>
-  );
+  renderNetworkOption = ({ value, label, icon }, { selectProps, context }) => {
+    // Only show badge in the menu, not in the selected value display
+    const showBadge = context === "menu";
+
+    const badge =
+      showBadge &&
+      (value === "BASE" ? (
+        <div className={css(styles.badge, styles.baseBadge)}>Lower Fee</div>
+      ) : (
+        <div className={css(styles.badge, styles.ethereumBadge)}>
+          Higher Fee
+        </div>
+      ));
+
+    return (
+      <div className={css(styles.networkOptionContainer)}>
+        <div className={css(styles.networkOptionLeft)}>
+          <Image
+            src={icon}
+            alt={`${label} logo`}
+            width={20}
+            height={20}
+            style={{ marginRight: 8 }}
+          />
+          {label}
+        </div>
+        {badge}
+      </div>
+    );
+  };
 
   renderWithdrawalForm = () => {
     const { ethAccount, amount, transactionFee, selectedNetwork } = this.state;
@@ -1317,6 +1335,33 @@ const styles = StyleSheet.create({
     width: "100%",
     fontSize: 16,
     fontWeight: 400,
+  },
+  networkOptionContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  networkOptionLeft: {
+    display: "flex",
+    alignItems: "center",
+  },
+  badge: {
+    padding: "2px 8px",
+    borderRadius: 4,
+    fontSize: 12,
+    whiteSpace: "nowrap",
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+  },
+  baseBadge: {
+    backgroundColor: colors.NEW_BLUE(0.1),
+    color: colors.BLACK(),
+  },
+  ethereumBadge: {
+    backgroundColor: colors.LIGHT_GREY(),
+    color: colors.BLACK(0.7),
   },
 });
 
