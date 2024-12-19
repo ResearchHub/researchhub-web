@@ -596,8 +596,8 @@ class WithdrawalModal extends Component {
           {showBadge && (
             <div className={css(styles.networkDescription)}>
               {value === "BASE"
-                ? "Recommended network for faster & cheaper transactions"
-                : "Higher fees and longer processing times"}
+                ? "Recommended network with lower fees"
+                : "Network with higher fees"}
             </div>
           )}
         </div>
@@ -1372,7 +1372,6 @@ const styles = StyleSheet.create({
   },
   networkDescription: {
     fontSize: 12,
-    color: colors.TEXT_GREY(0.8),
     lineHeight: 1.3,
   },
   badge: {
