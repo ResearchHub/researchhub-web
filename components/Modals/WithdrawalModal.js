@@ -571,11 +571,9 @@ class WithdrawalModal extends Component {
     const badge =
       showBadge &&
       (value === "BASE" ? (
-        <div className={css(styles.badge, styles.baseBadge)}>Lower Fee</div>
+        <div className={css(styles.badge)}>Lower Fee</div>
       ) : (
-        <div className={css(styles.badge, styles.ethereumBadge)}>
-          Higher Fee
-        </div>
+        <div className={css(styles.badge)}>Higher Fee</div>
       ));
 
     return (
@@ -1382,12 +1380,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     gap: 4,
-  },
-  baseBadge: {
-    backgroundColor: colors.NEW_BLUE(0.1),
-    color: colors.BLACK(),
-  },
-  ethereumBadge: {
     backgroundColor: colors.LIGHT_GREY(),
     color: colors.BLACK(0.7),
   },
