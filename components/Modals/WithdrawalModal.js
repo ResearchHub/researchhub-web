@@ -1358,6 +1358,7 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: "4px 0",
     display: "flex",
+    alignItems: "center",
   },
   iconColumn: {
     width: 24,
