@@ -609,8 +609,8 @@ class WithdrawalModal extends Component {
               )}
             >
               {value === "BASE"
-                ? "Recommended network for most users"
-                : "Legacy option"}
+                ? "Recommended network for low fees"
+                : "Higher fees, with increased decentralization"}
             </div>
           )}
         </div>
