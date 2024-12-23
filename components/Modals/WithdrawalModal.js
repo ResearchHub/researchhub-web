@@ -23,7 +23,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 import colors, { alertColors } from "~/config/themes/colors";
-import { sanitizeNumber, formatBalance } from "~/config/utils/form";
+import { sanitizeNumber } from "~/config/utils/form";
 import {
   getEtherscanLink,
   getBasescanLink,
@@ -106,7 +106,7 @@ class WithdrawalModal extends Component {
       if (this.props.address !== prevProps.address) {
         this.setState({
           ethAccount: this.props.address,
-          ethAccountIsValid: true,
+          ethAccountIsValid: false,
         });
       }
       if (!this.state.buttonEnabled && this.state.userBalance) {
@@ -609,8 +609,8 @@ class WithdrawalModal extends Component {
               )}
             >
               {value === "BASE"
-                ? "Recommended network for most users"
-                : "Legacy option"}
+                ? "Recommended network for low fees"
+                : "Higher fees, with increased decentralization"}
             </div>
           )}
         </div>
@@ -696,9 +696,7 @@ class WithdrawalModal extends Component {
               Learn more about fees.
             </a>
           </div>
-          <div className={css(styles.right)}>
-            {formatBalance(transactionFee)}
-          </div>
+          <div className={css(styles.right)}>{transactionFee}</div>
         </div>
         <div className={css(styles.row)}>
           <div className={css(styles.left)}>
@@ -707,9 +705,7 @@ class WithdrawalModal extends Component {
               The total RSC transferred after fees.
             </div>
           </div>
-          <div className={css(styles.right)}>
-            {formatBalance(amount - transactionFee)}
-          </div>
+          <div className={css(styles.right)}>{amount - transactionFee}</div>
         </div>
 
         {isUnderInvestigation && (
