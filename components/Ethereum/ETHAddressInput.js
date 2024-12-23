@@ -26,12 +26,12 @@ const ETHAddressInput = (props) => {
       return (
         <div className={css(styles.connectStatus)}>
           <div className={css(styles.dot, styles.invalidAddress)} />
-          <span className={css(styles.red)}>Invalid address</span>
+          <span className={css(styles.red)}>Invalid Address</span>
         </div>
       );
     }
 
-    if (!connectedMetaMask && ethAccountIsValid) {
+    if (ethAccount && !connectedMetaMask && ethAccountIsValid) {
       return (
         <div className={css(styles.connectStatus)}>
           <div className={css(styles.dot, styles.connected)} />
