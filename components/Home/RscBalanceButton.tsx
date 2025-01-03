@@ -5,7 +5,7 @@ import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { postLastTimeClickedRscTab } from "./api/postLastTimeClickedRscTab";
 import { StyleSheet, css } from "aphrodite";
-import { formatBalance } from "~/config/utils/form";
+import { formatBalanceWithDecimals } from "~/config/utils/form";
 import { useRouter } from "next/router";
 import { useState, useEffect, SyntheticEvent, ReactElement } from "react";
 import colors, { mainNavIcons } from "~/config/themes/colors";
@@ -98,12 +98,12 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
           />
           {shouldDisplayBalanceHome && (
             <div className={css(styles.balanceText)}>
-              {formatBalance(Math.floor(balance ?? 0))} RSC
+              {formatBalanceWithDecimals(balance ?? 0)} RSC
             </div>
           )}
           {shouldDisplayRscDelta && (
-            <div className={css(styles.rscDelta)}>{`+ ${formatBalance(
-              Math.floor(rscDeltaSinceSeen)
+            <div className={css(styles.rscDelta)}>{`+ ${formatBalanceWithDecimals(
+              Number(rscDeltaSinceSeen.toFixed(2))
             )}`}</div>
           )}
           <div className={css(styles.caretDown)}>

@@ -26,10 +26,15 @@ const formatBalance = (balance = 0) => {
   return numeral(balance).format("0,0");
 };
 
+const formatBalanceWithDecimals = (balance = 0) => {
+  return numeral(balance).format("0,0.00");
+};
+
 export {
   onKeyDownNumInput,
   onPasteNumInput,
   sanitizeNumber,
   formatScore,
   formatBalance,
+  formatBalanceWithDecimals,
 };
