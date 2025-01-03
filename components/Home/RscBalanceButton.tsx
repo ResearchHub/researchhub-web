@@ -103,7 +103,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
           )}
           {shouldDisplayRscDelta && (
             <div className={css(styles.rscDelta)}>{`+ ${formatBalance(
-              Math.floor(rscDeltaSinceSeen)
+              Number(rscDeltaSinceSeen.toFixed(2))
             )}`}</div>
           )}
           <div className={css(styles.caretDown)}>
