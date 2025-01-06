@@ -73,6 +73,7 @@ class WithdrawalModal extends Component {
       metaMaskVisible: false,
       walletLinkVisible: false,
       selectedNetwork: "BASE",
+      isLoadingFee: false,
     };
     this.state = {
       ...this.initialState,
@@ -140,7 +141,9 @@ class WithdrawalModal extends Component {
       network: this.state.selectedNetwork,
     };
 
-    // Convert params object to URL query string
+    // Set loading state
+    this.setState({ isLoadingFee: true });
+
     const queryString = new URLSearchParams(params).toString();
     const url = `${API.WITHDRAWAL_FEE}?${queryString}`;
 
@@ -149,8 +152,15 @@ class WithdrawalModal extends Component {
       .then(Helpers.parseJSON)
       .then((res) => {
         if (this.state.transactionFee !== res) {
-          this.setState({ transactionFee: res });
+          this.setState({
+            transactionFee: res,
+            isLoadingFee: false, // Clear loading state on success
+          });
         }
+      })
+      .catch((err) => {
+        // Clear loading state on error
+        this.setState({ isLoadingFee: false });
       });
   };
 
@@ -619,7 +629,13 @@ class WithdrawalModal extends Component {
   };
 
   renderWithdrawalForm = () => {
-    const { ethAccount, amount, transactionFee, selectedNetwork } = this.state;
+    const {
+      ethAccount,
+      amount,
+      transactionFee,
+      selectedNetwork,
+      isLoadingFee,
+    } = this.state;
     const isUnderInvestigation = this.props?.auth?.user?.probable_spammer;
 
     const isBase = selectedNetwork === "BASE";
@@ -696,7 +712,9 @@ class WithdrawalModal extends Component {
               Learn more about fees.
             </a>
           </div>
-          <div className={css(styles.right)}>{transactionFee}</div>
+          <div className={css(styles.right)}>
+            {isLoadingFee ? <span>--</span> : transactionFee}
+          </div>
         </div>
         <div className={css(styles.row)}>
           <div className={css(styles.left)}>
@@ -739,7 +757,7 @@ class WithdrawalModal extends Component {
 
         <div className={css(styles.buttons)}>
           <Button
-            disabled={!ethAccount || isUnderInvestigation}
+            disabled={!ethAccount || isLoadingFee || isUnderInvestigation}
             label={"Confirm"}
             type="submit"
             customButtonStyle={styles.button}
