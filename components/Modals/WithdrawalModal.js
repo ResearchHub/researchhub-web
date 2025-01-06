@@ -185,38 +185,6 @@ class WithdrawalModal extends Component {
     }
   };
 
-  updateChainId = (chainId) => {
-    if (chainId !== this.state.networkVersion) {
-      let transition = false;
-      if (
-        this.state.networkVersion !== CURRENT_CHAIN_ID &&
-        chainId === CURRENT_CHAIN_ID
-      ) {
-        transition = true;
-      }
-      if (
-        this.state.networkVersion === CURRENT_CHAIN_ID &&
-        chainId !== CURRENT_CHAIN_ID
-      ) {
-        transition = true;
-      }
-      this.setState(
-        {
-          networkVersion: chainId, // shows the eth network
-          transition: transition,
-        },
-        () => {
-          this.state.transition &&
-            setTimeout(() => {
-              this.setState({
-                transition: false,
-              });
-            }, 200);
-        }
-      );
-    }
-  };
-
   updateAccount = (accounts) => {
     let account = accounts && accounts[0] && accounts[0];
     let valid = isAddress(account);
@@ -417,17 +385,6 @@ class WithdrawalModal extends Component {
       </div>
     );
   };
-
-  setUpEthListeners() {
-    if (!this.state.listnerNetwork && !this.state.listenerAccount) {
-      this.setState({
-        listenerNetwork: ethereum.on("networkChanged", () =>
-          this.updateChainId(ethereum.networkVersion)
-        ),
-        listenerAccount: ethereum.on("accountsChanged", this.updateAccount),
-      });
-    }
-  }
 
   renderWalletLinkButton = () => {
     return (
@@ -904,7 +861,7 @@ class WithdrawalModal extends Component {
         {this.renderTabs()}
         <div className={css(styles.content)}>
           {this.renderToggleContainer(css(styles.toggleContainer))}
-          {connectedMetaMask && networkVersion !== CURRENT_CHAIN_ID
+          {connectedMetaMask
             ? this.renderSwitchNetworkMsg()
             : this.renderTransactionScreen()}
           <img
