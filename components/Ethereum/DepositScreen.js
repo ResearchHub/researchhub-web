@@ -11,7 +11,7 @@ import {
   useAccount,
   // eslint-disable-next-line
 } from "wagmi";
-import { sepolia, mainnet } from "wagmi/chains";
+import { sepolia, mainnet, base, baseSepolia } from "wagmi/chains";
 
 // Component
 import Button from "~/components/Form/Button";
@@ -25,16 +25,24 @@ import { captureEvent } from "~/config/utils/events";
 
 const isProduction = process.env.REACT_APP_ENV === "production";
 
-const CHAIN_ID = isProduction ? mainnet.id : sepolia.id;
+const CHAIN_ID = isProduction
+  ? [mainnet.id, base.id]
+  : [sepolia.id, baseSepolia.id];
 
 // Constants
-const RSCContractAddress = isProduction
-  ? "0xd101dcc414f310268c37eeb4cd376ccfa507f571"
-  : "0xEe8D932a66aDA39E4EF08046734F601D04B6a3DA";
+const RSCContractAddress = {
+  [mainnet.id]: "0xd101dcc414f310268c37eeb4cd376ccfa507f571",
+  [base.id]: "0xfbb75a59193a3525a8825bebe7d4b56899e2f7e1",
+  [sepolia.id]: "0xEe8D932a66aDA39E4EF08046734F601D04B6a3DA",
+  [baseSepolia.id]: "0xdAf43508D785939D6C2d97c2df73d65c9359dBEa",
+};
 
-const HOTWALLET = isProduction
-  ? "0x7F57d306a9422ee8175aDc25898B1b2EBF1010cb"
-  : "0xA8ebEc7ec4BDd36b603C1Bb46C92B8Cc93616e8F";
+const HOTWALLET = {
+  [mainnet.id]: "0x7F57d306a9422ee8175aDc25898B1b2EBF1010cb",
+  [base.id]: "0x7F57d306a9422ee8175aDc25898B1b2EBF1010cb",
+  [sepolia.id]: "0xA8ebEc7ec4BDd36b603C1Bb46C92B8Cc93616e8F",
+  [baseSepolia.id]: "0xA8ebEc7ec4BDd36b603C1Bb46C92B8Cc93616e8F",
+};
 
 const CONTRACT_ABI = isProduction ? contractABI : stagingContractABI;
 export function DepositScreen(props) {
@@ -48,11 +56,11 @@ export function DepositScreen(props) {
   const { data: signer } = useWalletClient({ chainId: CHAIN_ID });
 
   const { config } = usePrepareContractWrite({
-    address: RSCContractAddress,
+    address: RSCContractAddress[chain?.id],
     abi: CONTRACT_ABI,
     functionName: "transfer",
     args: [
-      HOTWALLET,
+      HOTWALLET[chain?.id],
       amount && ethersRef.current
         ? ethersRef.current.utils.parseEther(amount)._hex
         : 0,
@@ -76,7 +84,7 @@ export function DepositScreen(props) {
   const [balance, setBalance] = useState(0);
 
   const { data: RSCBalance, isError: isLoadingBalance } = useContractRead({
-    address: RSCContractAddress,
+    address: RSCContractAddress[chain?.id],
     abi: CONTRACT_ABI,
     functionName: "balanceOf",
     args: [address],
@@ -97,6 +105,21 @@ export function DepositScreen(props) {
 
   const [isTransacting, setIsTransacting] = useState(false);
 
+  const getNetworkName = (chainId) => {
+    switch (chainId) {
+      case mainnet.id:
+        return "ETHEREUM";
+      case sepolia.id:
+        return "ETHEREUM";
+      case base.id:
+        return "BASE";
+      case baseSepolia.id:
+        return "BASE";
+      default:
+        return "unknown";
+    }
+  };
+
   useEffect(() => {
     if (data?.hash) {
       setIsTransacting(false);
@@ -104,6 +127,7 @@ export function DepositScreen(props) {
         amount,
         transaction_hash: data.hash,
         from_address: address,
+        network: getNetworkName(chain?.id),
       };
 
       fetch(API.TRANSFER, API.POST_CONFIG(PAYLOAD))
@@ -135,9 +159,9 @@ export function DepositScreen(props) {
       return;
     }
 
-    if (chain.id !== CHAIN_ID) {
+    if (!CHAIN_ID.includes(chain?.id)) {
       setIsTransacting(false);
-      switchNetwork(CHAIN_ID);
+      switchNetwork(CHAIN_ID[0]); // Default to first supported chain
     }
 
     write?.();
