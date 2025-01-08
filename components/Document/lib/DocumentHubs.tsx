@@ -22,9 +22,13 @@ const DocumentHubs = ({
   numOfVisibleHubs?: number;
 }) => {
   const [showMore, setShowMore] = useState<boolean>(false);
-  const sortedHubs = hubs.sort((a, b) => {
-    return a.relevancyScore > b.relevancyScore ? -1 : 1;
-  });
+  let sortedHubs = hubs.filter((h) => h.isUsedForRep).concat(hubs.filter((h) => !h.isUsedForRep));
+
+  // If no hubs are used for rep, show all hubs.
+  if (sortedHubs.length === 0) {
+    sortedHubs = hubs;
+  }
+
   const visibleHubs = showMore ? sortedHubs : sortedHubs.slice(0, numOfVisibleHubs);
 
   return (
