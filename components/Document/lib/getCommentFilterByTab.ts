@@ -8,12 +8,12 @@ const getCommentFilterByTab = (
   | null
   | undefined => {
   switch (tabName) {
-    case "bounties":
+    case "grants":
       return "BOUNTY";
     case "reviews":
       return "REVIEW";
     case "conversation":
-      return "DISCUSSION";
+      return null;
     case "replicability":
       return "REPLICABILITY_COMMENT";
     default:
