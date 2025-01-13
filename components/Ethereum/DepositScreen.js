@@ -25,7 +25,7 @@ import { captureEvent } from "~/config/utils/events";
 
 const isProduction = process.env.REACT_APP_ENV === "production";
 
-const CHAIN_ID = isProduction
+const CHAIN_IDS = isProduction
   ? [mainnet.id, base.id]
   : [sepolia.id, baseSepolia.id];
 
@@ -53,7 +53,7 @@ export function DepositScreen(props) {
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
   const [amount, setAmount] = useState(0);
-  const { data: signer } = useWalletClient({ chainId: CHAIN_ID });
+  const { data: signer } = useWalletClient({ chainId: chain?.id });
 
   const { config } = usePrepareContractWrite({
     address: RSCContractAddress[chain?.id],
@@ -99,8 +99,26 @@ export function DepositScreen(props) {
     }
   }, [RSCBalance]);
 
+  // Initialize ethers earlier to avoid race conditions
+  useEffect(() => {
+    const ethers = require("ethers").ethers;
+    ethersRef.current = ethers;
+  }, []);
+
+  // Add error state
+  const [error, setError] = useState(null);
+
   const onChange = (e) => {
-    setAmount(e.target.value);
+    const value = e.target.value;
+    // Validate amount
+    if (value && (!Number(value) || Number(value) <= 0)) {
+      setError("Please enter a valid amount");
+    } else if (value && Number(value) > Number(balance)) {
+      setError("Amount exceeds balance");
+    } else {
+      setError(null);
+    }
+    setAmount(value);
   };
 
   const [isTransacting, setIsTransacting] = useState(false);
@@ -151,6 +169,12 @@ export function DepositScreen(props) {
 
   const signTransaction = async (e) => {
     e && e.preventDefault();
+
+    if (!amount || Number(amount) <= 0) {
+      setError("Please enter a valid amount");
+      return;
+    }
+
     setIsTransacting(true);
 
     if (!signer) {
@@ -159,9 +183,10 @@ export function DepositScreen(props) {
       return;
     }
 
-    if (!CHAIN_ID.includes(chain?.id)) {
+    if (!CHAIN_IDS.includes(chain?.id)) {
       setIsTransacting(false);
-      switchNetwork(CHAIN_ID[0]); // Default to first supported chain
+      switchNetwork(CHAIN_IDS[0]);
+      return;
     }
 
     write?.();
@@ -204,6 +229,7 @@ export function DepositScreen(props) {
         inputStyles={[styles.fullWidth]}
         rightAlignBalance={true}
         required={true}
+        error={error || (isError ? "Transaction failed" : null)}
       />
       <div className={css(styles.buttonContainer)}>
         <Button
