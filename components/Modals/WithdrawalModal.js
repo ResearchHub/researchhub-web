@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { mainnet, base, sepolia, baseSepolia } from "wagmi/chains";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -38,15 +39,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/pro-regular-svg-icons";
 
 const DepositScreen = dynamic(() => import("../Ethereum/DepositScreen"));
-
-const GOERLY_CHAIN_ID = "5";
-const MAINNET_CHAIN_ID = "1";
-
-const CURRENT_CHAIN_ID =
-  process.env.REACT_APP_ENV === "staging" ||
-  process.env.NODE_ENV !== "production"
-    ? GOERLY_CHAIN_ID
-    : MAINNET_CHAIN_ID;
+const Web3ReactModal = dynamic(() => import("../Web3ReactModal"), {
+  ssr: false,
+  loading: () => <Loader loading={true} />,
+});
 
 class WithdrawalModal extends Component {
   constructor(props) {
@@ -96,6 +92,14 @@ class WithdrawalModal extends Component {
   }
 
   componentDidMount() {
+    // Preload the Web3 libraries
+    if (typeof window !== "undefined") {
+      // Preload web3 dependencies
+      import("@web3-react/core");
+      import("@web3-react/injected-connector");
+      import("@web3-react/walletconnect-connector");
+    }
+
     if (this.props.auth.isLoggedIn) {
       this.getBalance();
       this.getTransactionFee();
@@ -162,36 +166,6 @@ class WithdrawalModal extends Component {
         // Clear loading state on error
         this.setState({ isLoadingFee: false });
       });
-  };
-
-  checkNetwork = () => {
-    if (!this.state.connectedMetaMask) {
-      ethereum
-        .send("eth_requestAccounts")
-        .then((accounts) => {
-          const account = accounts && accounts.result ? accounts.result[0] : [];
-          this.setState({
-            connectedMetaMask: true,
-            ethAccount: account,
-          });
-        })
-        .catch((error) => {
-          if (error.code === 4001) {
-            // EIP 1193 userRejectedRequest error
-          } else {
-            console.error(error);
-          }
-        });
-    }
-  };
-
-  updateAccount = (accounts) => {
-    let account = accounts && accounts[0] && accounts[0];
-    let valid = isAddress(account);
-    this.setState({
-      ethAccount: account,
-      ethAccountIsValid: valid,
-    });
   };
 
   closeModal = () => {
@@ -371,8 +345,8 @@ class WithdrawalModal extends Component {
           styles.toggle,
           this.state.metaMaskVisible && styles.activeToggle
         )}
-        onClick={async () => {
-          await this.props.openWeb3ReactModal();
+        onClick={() => {
+          this.props.openWeb3ReactModal();
           this.transitionScreen(() =>
             this.setState({
               metaMaskVisible: true,
@@ -481,33 +455,6 @@ class WithdrawalModal extends Component {
 
   setTransactionHash = (transactionHash) => {
     this.setState({ transactionHash });
-  };
-
-  renderSwitchNetworkMsg = () => {
-    const { transition } = this.state;
-    return (
-      <div className={css(styles.networkContainer)}>
-        {transition ? (
-          <Loader loading={true} />
-        ) : (
-          <Fragment>
-            <div className={css(styles.title)}>
-              Oops, you're on the wrong network
-            </div>
-            <div className={css(styles.subtitle)}>
-              Simply open MetaMask and switch over to the
-              <b>{" Main Ethereum Network"}</b>
-            </div>
-            <img
-              src={"/static/background/metamask.png"}
-              className={css(styles.image)}
-              draggable={false}
-              alt="Metamask Network Screen"
-            />
-          </Fragment>
-        )}
-      </div>
-    );
   };
 
   renderTransactionScreen = () => {
@@ -861,9 +808,7 @@ class WithdrawalModal extends Component {
         {this.renderTabs()}
         <div className={css(styles.content)}>
           {this.renderToggleContainer(css(styles.toggleContainer))}
-          {connectedMetaMask
-            ? this.renderSwitchNetworkMsg()
-            : this.renderTransactionScreen()}
+          {this.renderTransactionScreen()}
           <img
             src={"/static/icons/close.png"}
             className={css(styles.closeButton)}
