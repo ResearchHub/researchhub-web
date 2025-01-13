@@ -39,10 +39,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/pro-regular-svg-icons";
 
 const DepositScreen = dynamic(() => import("../Ethereum/DepositScreen"));
-const Web3ReactModal = dynamic(() => import("../Web3ReactModal"), {
-  ssr: false,
-  loading: () => <Loader loading={true} />,
-});
 
 class WithdrawalModal extends Component {
   constructor(props) {
@@ -92,14 +88,6 @@ class WithdrawalModal extends Component {
   }
 
   componentDidMount() {
-    // Preload the Web3 libraries
-    if (typeof window !== "undefined") {
-      // Preload web3 dependencies
-      import("@web3-react/core");
-      import("@web3-react/injected-connector");
-      import("@web3-react/walletconnect-connector");
-    }
-
     if (this.props.auth.isLoggedIn) {
       this.getBalance();
       this.getTransactionFee();
