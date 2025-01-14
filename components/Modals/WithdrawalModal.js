@@ -667,20 +667,26 @@ class WithdrawalModal extends Component {
 
     let explorerLink;
     let explorerName;
+    let title;
     if (depositScreen) {
       // For deposits, use the connected wallet's network
       explorerLink =
         currentChain?.id === base.id || currentChain?.id === baseSepolia.id
           ? getBasescanLink(transactionHash)
           : getEtherscanLink(transactionHash);
-      explorerName = "Etherscan";
+      explorerName =
+        currentChain?.id === base.id || currentChain?.id === baseSepolia.id
+          ? "Basescan"
+          : "Etherscan";
+      title = "Deposit Successful";
     } else {
       // For withdrawals, use the selected network from dropdown
       explorerLink =
         selectedNetwork === "BASE"
           ? getBasescanLink(transactionHash)
           : getEtherscanLink(transactionHash);
-      explorerName = "Basescan";
+      explorerName = selectedNetwork === "BASE" ? "Basescan" : "Etherscan";
+      title = "Withdrawal Successful";
     }
 
     const confirmationMessage = depositScreen ? (
@@ -690,7 +696,7 @@ class WithdrawalModal extends Component {
         }
         Review your transaction details and status on
         <a
-          href={explorerUrl}
+          href={explorerLink}
           rel="noopener noreferrer"
           target="_blank"
           className={css(styles.transactionHashLink)}
@@ -713,7 +719,7 @@ class WithdrawalModal extends Component {
         }
         Review your transaction details and status on
         <a
-          href={explorerUrl}
+          href={explorerLink}
           rel="noopener noreferrer"
           target="_blank"
           className={css(styles.transactionHashLink)}
