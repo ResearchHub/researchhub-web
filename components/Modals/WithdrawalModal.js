@@ -666,33 +666,100 @@ class WithdrawalModal extends Component {
     const { currentChain } = this.props;
 
     let explorerLink;
+    let explorerName;
     if (depositScreen) {
       // For deposits, use the connected wallet's network
       explorerLink =
         currentChain?.id === base.id || currentChain?.id === baseSepolia.id
           ? getBasescanLink(transactionHash)
           : getEtherscanLink(transactionHash);
+      explorerName = "Etherscan";
     } else {
       // For withdrawals, use the selected network from dropdown
       explorerLink =
         selectedNetwork === "BASE"
           ? getBasescanLink(transactionHash)
           : getEtherscanLink(transactionHash);
+      explorerName = "Basescan";
     }
+
+    const confirmationMessage = depositScreen ? (
+      <Fragment>
+        {
+          "Congrats! Your balance will update when the transfer is fully processed.\n\n"
+        }
+        Review your transaction details and status on
+        <a
+          href={explorerUrl}
+          rel="noopener noreferrer"
+          target="_blank"
+          className={css(styles.transactionHashLink)}
+        >
+          {explorerName}
+        </a>
+        {" or in your"}
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+          className={css(styles.transactionHashLink)}
+        >
+          profile page.
+        </Link>
+      </Fragment>
+    ) : (
+      <Fragment>
+        {
+          "Congrats! Your wallet balance will update when the transfer is fully processed.\n\n"
+        }
+        Review your transaction details and status on
+        <a
+          href={explorerUrl}
+          rel="noopener noreferrer"
+          target="_blank"
+          className={css(styles.transactionHashLink)}
+        >
+          {explorerName}
+        </a>
+        {" or in your"}
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+          className={css(styles.transactionHashLink)}
+        >
+          profile page.
+        </Link>
+      </Fragment>
+    );
 
     return (
       <div className={css(styles.content)}>
-        <div className={css(styles.confirmation)}>
-          {`Transaction submitted successfully!`}
-          <Link href={explorerLink} target="_blank" rel="noopener noreferrer">
-            <span className={css(styles.transactionHashLink)}>
-              View on Explorer
-            </span>
-          </Link>
-          <img src={partyPopper} className={css(styles.partyIcon)} />
-        </div>
-        <div className={css(styles.confirmationButtons)}>
-          <Button label="Close" onClick={this.closeModal} />
+        <img
+          src={"/static/icons/close.png"}
+          className={css(styles.closeButton)}
+          onClick={this.closeModal}
+          draggable={false}
+          alt="Close Button"
+        />
+        <div className={css(styles.networkContainer)}>
+          <div className={css(styles.successContainer)}>
+            <div className={css(styles.title)}>
+              {title}
+              <span className={css(styles.icon)}>
+                {partyPopper({ style: styles.partyIcon })}
+              </span>
+            </div>
+            <div className={css(styles.confirmation)} onClick={this.closeModal}>
+              {confirmationMessage}
+            </div>
+          </div>
+          <div className={css(styles.buttons)}>
+            <Button
+              label={"Finish"}
+              onClick={this.closeModal}
+              customButtonStyle={styles.button}
+              rippleClass={styles.button}
+            />
+          </div>
         </div>
       </div>
     );
