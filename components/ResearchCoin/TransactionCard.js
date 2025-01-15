@@ -10,7 +10,7 @@ import colors from "~/config/themes/colors";
 
 import { formatTransactionDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
-import { getEtherscanLink } from "~/config/utils/crypto";
+import { getEtherscanLink, getBasescanLink } from "~/config/utils/crypto";
 import { useExchangeRate } from "../contexts/ExchangeRateContext";
 
 const TransactionCard = (props) => {
@@ -42,7 +42,9 @@ const TransactionCard = (props) => {
 
   function openTransactionHash() {
     if (transaction.transaction_hash) {
-      let url = getEtherscanLink(transaction.transaction_hash);
+      let url = isBase
+        ? getBasescanLink(transaction.transaction_hash)
+        : getEtherscanLink(transaction.transaction_hash);
       let win = window.open(url, "_blank");
       win.focus();
     }
@@ -59,7 +61,10 @@ const TransactionCard = (props) => {
       : comment.post_slug &&
         `/post/${comment.post}/${comment.post_slug}/conversation`);
 
-  const etherscanLink = getEtherscanLink(transaction.source?.transaction_hash);
+  const isBase = transaction.source?.network === "BASE";
+  const explorerLink = isBase
+    ? getBasescanLink(transaction.source?.transaction_hash)
+    : getEtherscanLink(transaction.source?.transaction_hash);
 
   const getTitle = () => {
     let title =
@@ -117,15 +122,15 @@ const TransactionCard = (props) => {
           <div className={css(styles.maintext)}>{getTitle()}</div>
           {transaction.source?.transaction_hash ? (
             <a
-              href={etherscanLink}
+              href={explorerLink}
               target="_blank"
               className={css(styles.metatext, styles.noUnderline)}
               onClick={(e) => {
                 e.stopPropagation();
               }}
             >
-              <div className={css(styles.metatext, styles.etherscanLink)}>
-                {etherscanLink}
+              <div className={css(styles.metatext, styles.explorerLink)}>
+                {explorerLink}
               </div>
             </a>
           ) : null}
@@ -308,7 +313,7 @@ const styles = StyleSheet.create({
       fontSize: 14,
     },
   },
-  etherscanLink: {
+  explorerLink: {
     "@media only screen and (max-width: 767px)": {
       maxWidth: 300,
     },

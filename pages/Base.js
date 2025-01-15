@@ -24,7 +24,7 @@ import OrganizationContextProvider from "~/components/contexts/OrganizationConte
 import CustomHead from "../components/Head";
 import { WagmiConfig, createConfig, configureChains } from "wagmi";
 import { createPublicClient, http } from "viem";
-import { mainnet, sepolia } from "wagmi/chains";
+import { mainnet, sepolia, base, baseSepolia } from "wagmi/chains";
 import {
   EthereumClient,
   w3mConnectors,
@@ -48,14 +48,14 @@ import { MathJaxContext, MathJax } from "better-react-mathjax";
 
 LEFT_SIDEBAR_MIN_WIDTH;
 // WalletConnect project ID
-const projectId = "a3e8904e258fe256bf772b764d3acfab";
+const projectId = process.env.WEB3_WALLET_CONNECT_PROJECT_ID;
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [isProduction() ? mainnet : sepolia],
+  [isProduction() ? mainnet : sepolia, isProduction() ? base : baseSepolia],
   [
     w3mProvider({ projectId }),
     infuraProvider({
-      apiKey: "42fa8ef2001944acac0803b74614f301",
+      apiKey: process.env.WEB3_INFURA_API_KEY,
     }),
     publicProvider(),
   ]

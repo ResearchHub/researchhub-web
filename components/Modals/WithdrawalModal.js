@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { mainnet, base, sepolia, baseSepolia } from "wagmi/chains";
+import { useNetwork } from "wagmi";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -39,15 +41,6 @@ import { faExclamationTriangle } from "@fortawesome/pro-regular-svg-icons";
 
 const DepositScreen = dynamic(() => import("../Ethereum/DepositScreen"));
 
-const GOERLY_CHAIN_ID = "5";
-const MAINNET_CHAIN_ID = "1";
-
-const CURRENT_CHAIN_ID =
-  process.env.REACT_APP_ENV === "staging" ||
-  process.env.NODE_ENV !== "production"
-    ? GOERLY_CHAIN_ID
-    : MAINNET_CHAIN_ID;
-
 class WithdrawalModal extends Component {
   constructor(props) {
     super(props);
@@ -73,6 +66,7 @@ class WithdrawalModal extends Component {
       metaMaskVisible: false,
       walletLinkVisible: false,
       selectedNetwork: "BASE",
+      isLoadingFee: false,
     };
     this.state = {
       ...this.initialState,
@@ -140,7 +134,9 @@ class WithdrawalModal extends Component {
       network: this.state.selectedNetwork,
     };
 
-    // Convert params object to URL query string
+    // Set loading state
+    this.setState({ isLoadingFee: true });
+
     const queryString = new URLSearchParams(params).toString();
     const url = `${API.WITHDRAWAL_FEE}?${queryString}`;
 
@@ -149,71 +145,16 @@ class WithdrawalModal extends Component {
       .then(Helpers.parseJSON)
       .then((res) => {
         if (this.state.transactionFee !== res) {
-          this.setState({ transactionFee: res });
-        }
-      });
-  };
-
-  checkNetwork = () => {
-    if (!this.state.connectedMetaMask) {
-      ethereum
-        .send("eth_requestAccounts")
-        .then((accounts) => {
-          const account = accounts && accounts.result ? accounts.result[0] : [];
           this.setState({
-            connectedMetaMask: true,
-            ethAccount: account,
+            transactionFee: res,
+            isLoadingFee: false, // Clear loading state on success
           });
-        })
-        .catch((error) => {
-          if (error.code === 4001) {
-            // EIP 1193 userRejectedRequest error
-          } else {
-            console.error(error);
-          }
-        });
-    }
-  };
-
-  updateChainId = (chainId) => {
-    if (chainId !== this.state.networkVersion) {
-      let transition = false;
-      if (
-        this.state.networkVersion !== CURRENT_CHAIN_ID &&
-        chainId === CURRENT_CHAIN_ID
-      ) {
-        transition = true;
-      }
-      if (
-        this.state.networkVersion === CURRENT_CHAIN_ID &&
-        chainId !== CURRENT_CHAIN_ID
-      ) {
-        transition = true;
-      }
-      this.setState(
-        {
-          networkVersion: chainId, // shows the eth network
-          transition: transition,
-        },
-        () => {
-          this.state.transition &&
-            setTimeout(() => {
-              this.setState({
-                transition: false,
-              });
-            }, 200);
         }
-      );
-    }
-  };
-
-  updateAccount = (accounts) => {
-    let account = accounts && accounts[0] && accounts[0];
-    let valid = isAddress(account);
-    this.setState({
-      ethAccount: account,
-      ethAccountIsValid: valid,
-    });
+      })
+      .catch((err) => {
+        // Clear loading state on error
+        this.setState({ isLoadingFee: false });
+      });
   };
 
   closeModal = () => {
@@ -393,8 +334,8 @@ class WithdrawalModal extends Component {
           styles.toggle,
           this.state.metaMaskVisible && styles.activeToggle
         )}
-        onClick={async () => {
-          await this.props.openWeb3ReactModal();
+        onClick={() => {
+          this.props.openWeb3ReactModal();
           this.transitionScreen(() =>
             this.setState({
               metaMaskVisible: true,
@@ -407,17 +348,6 @@ class WithdrawalModal extends Component {
       </div>
     );
   };
-
-  setUpEthListeners() {
-    if (!this.state.listnerNetwork && !this.state.listenerAccount) {
-      this.setState({
-        listenerNetwork: ethereum.on("networkChanged", () =>
-          this.updateChainId(ethereum.networkVersion)
-        ),
-        listenerAccount: ethereum.on("accountsChanged", this.updateAccount),
-      });
-    }
-  }
 
   renderWalletLinkButton = () => {
     return (
@@ -516,33 +446,6 @@ class WithdrawalModal extends Component {
     this.setState({ transactionHash });
   };
 
-  renderSwitchNetworkMsg = () => {
-    const { transition } = this.state;
-    return (
-      <div className={css(styles.networkContainer)}>
-        {transition ? (
-          <Loader loading={true} />
-        ) : (
-          <Fragment>
-            <div className={css(styles.title)}>
-              Oops, you're on the wrong network
-            </div>
-            <div className={css(styles.subtitle)}>
-              Simply open MetaMask and switch over to the
-              <b>{" Main Ethereum Network"}</b>
-            </div>
-            <img
-              src={"/static/background/metamask.png"}
-              className={css(styles.image)}
-              draggable={false}
-              alt="Metamask Network Screen"
-            />
-          </Fragment>
-        )}
-      </div>
-    );
-  };
-
   renderTransactionScreen = () => {
     const { transactionHash, depositScreen } = this.state;
 
@@ -619,7 +522,13 @@ class WithdrawalModal extends Component {
   };
 
   renderWithdrawalForm = () => {
-    const { ethAccount, amount, transactionFee, selectedNetwork } = this.state;
+    const {
+      ethAccount,
+      amount,
+      transactionFee,
+      selectedNetwork,
+      isLoadingFee,
+    } = this.state;
     const isUnderInvestigation = this.props?.auth?.user?.probable_spammer;
 
     const isBase = selectedNetwork === "BASE";
@@ -696,7 +605,9 @@ class WithdrawalModal extends Component {
               Learn more about fees.
             </a>
           </div>
-          <div className={css(styles.right)}>{transactionFee}</div>
+          <div className={css(styles.right)}>
+            {isLoadingFee ? <span>--</span> : transactionFee}
+          </div>
         </div>
         <div className={css(styles.row)}>
           <div className={css(styles.left)}>
@@ -739,7 +650,7 @@ class WithdrawalModal extends Component {
 
         <div className={css(styles.buttons)}>
           <Button
-            disabled={!ethAccount || isUnderInvestigation}
+            disabled={!ethAccount || isLoadingFee || isUnderInvestigation}
             label={"Confirm"}
             type="submit"
             customButtonStyle={styles.button}
@@ -751,17 +662,32 @@ class WithdrawalModal extends Component {
   };
 
   renderSuccessScreen = () => {
-    const { depositScreen, transactionHash, selectedNetwork } = this.state;
+    const { transactionHash, depositScreen, selectedNetwork } = this.state;
+    const { currentChain } = this.props;
 
-    const title = depositScreen
-      ? "Deposit Successful"
-      : "Withdrawal Successful";
-
-    const isBase = selectedNetwork === "BASE";
-    const explorerUrl = isBase
-      ? getBasescanLink(transactionHash)
-      : getEtherscanLink(transactionHash);
-    const explorerName = isBase ? "Basescan" : "Etherscan";
+    let explorerLink;
+    let explorerName;
+    let title;
+    if (depositScreen) {
+      // For deposits, use the connected wallet's network
+      explorerLink =
+        currentChain?.id === base.id || currentChain?.id === baseSepolia.id
+          ? getBasescanLink(transactionHash)
+          : getEtherscanLink(transactionHash);
+      explorerName =
+        currentChain?.id === base.id || currentChain?.id === baseSepolia.id
+          ? "Basescan"
+          : "Etherscan";
+      title = "Deposit Successful";
+    } else {
+      // For withdrawals, use the selected network from dropdown
+      explorerLink =
+        selectedNetwork === "BASE"
+          ? getBasescanLink(transactionHash)
+          : getEtherscanLink(transactionHash);
+      explorerName = selectedNetwork === "BASE" ? "Basescan" : "Etherscan";
+      title = "Withdrawal Successful";
+    }
 
     const confirmationMessage = depositScreen ? (
       <Fragment>
@@ -770,7 +696,7 @@ class WithdrawalModal extends Component {
         }
         Review your transaction details and status on
         <a
-          href={explorerUrl}
+          href={explorerLink}
           rel="noopener noreferrer"
           target="_blank"
           className={css(styles.transactionHashLink)}
@@ -793,7 +719,7 @@ class WithdrawalModal extends Component {
         }
         Review your transaction details and status on
         <a
-          href={explorerUrl}
+          href={explorerLink}
           rel="noopener noreferrer"
           target="_blank"
           className={css(styles.transactionHashLink)}
@@ -886,9 +812,7 @@ class WithdrawalModal extends Component {
         {this.renderTabs()}
         <div className={css(styles.content)}>
           {this.renderToggleContainer(css(styles.toggleContainer))}
-          {connectedMetaMask && networkVersion !== CURRENT_CHAIN_ID
-            ? this.renderSwitchNetworkMsg()
-            : this.renderTransactionScreen()}
+          {this.renderTransactionScreen()}
           <img
             src={"/static/icons/close.png"}
             className={css(styles.closeButton)}
@@ -1431,4 +1355,15 @@ const mapDispatchToProps = {
   setWalletLink: AuthActions.setWalletLink,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WithdrawalModal);
+// Create a functional component wrapper to use hooks
+function WithdrawalModalWithHooks(props) {
+  const { chain } = useNetwork();
+
+  return <WithdrawalModal {...props} currentChain={chain} />;
+}
+
+// Update the export
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(WithdrawalModalWithHooks);
