@@ -10,7 +10,7 @@ import SearchEmpty from "~/components/Search/SearchEmpty";
 import { breakpoints } from "~/config/themes/screen";
 import dayjs from "dayjs";
 import { getNewestCommentTimestamp } from "./utils/AuthorFeedUtils";
-import BountyToggle from "~/components/Activity/BountyToggle";
+import BountyToggle from "~/components/Bounty/BountyToggle";
 import ContentBadge from "~/components/ContentBadge";
 import { formatBountyAmount } from "~/config/types/bounty";
 import { StyleSheet, css } from "aphrodite";

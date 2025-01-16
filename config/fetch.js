@@ -441,34 +441,6 @@ export const fetchPaperDraft = ({ paperId }) => {
   );
 };
 
-export const fetchLatestActivity = ({ hubIds }) => {
-  return fetch(
-    API.USER({ route: "following_latest_activity", hubIds }),
-    API.GET_CONFIG()
-  )
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .catch((_) => {
-      return { error: true };
-    });
-};
-
-export const followUser = ({ userId, followeeId }) => {
-  const PAYLOAD = {
-    followee_id: followeeId,
-  };
-
-  return fetch(API.USER({ userId, route: "follow" }), API.POST_CONFIG(PAYLOAD))
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
-};
-
-export const isFollowingUser = ({ authorId: userId }) => {
-  return fetch(API.USER({ route: "check_follow", userId }), API.GET_CONFIG())
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
-};
-
 export const saveReview = ({ unifiedDocumentId, review = null }) => {
   let config = review?.id ? API.PATCH_CONFIG(review) : API.POST_CONFIG(review);
 
