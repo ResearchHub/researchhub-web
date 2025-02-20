@@ -22,7 +22,7 @@ const editors = [
     {
       name: "Emilio Merheb, PhD",
       role: "Associate Editor",
-      bio: "Dr. Emilio Merheb is an Instructor at the Diabetes, Obesity, and Metabolism Institute (DOMI) at the Icahn School of Medicine at Mount Sinai. His scientific and research expertise specializes in endocrinology, metabolism, neuroscience, biochemistry, oncology, and molecular biology. Dr. Merheb completed his doctoral training and post-doctoral fellowship at the Albert Einstein College of Medicine. His research on neurodegeneration, islet biology, and β-cell therapies appears in top journals like Cell Metabolism, PNAS, and eLife. Notably, His dedication to science resulted in the recipient of multiple awards, including the Julius Marmur Award.",
+      bio: "Dr. Emilio Merheb holds a PhD in Biomedical Sciences from the Albert Einstein College of Medicine. Dr. Merheb is an Assistant Professor at the Dr. Kiran C. Patel College of Allopathic Medicine at Nova Southeastern University (NSU). He completed his graduate training at the Albert Einstein College of Medicine and postgraduate training at the Diabetes, Obesity, and Metabolism Institute (DOMI) at the Icahn School of Medicine at Mount Sinai. His areas of expertise span endocrinology, metabolism, neuroscience, biochemistry, genetics, and molecular and cell biology. Dr. Merheb's research on neurodegeneration, islet biology, and β-cell therapies appears in top journals like Cell Metabolism, PNAS, eLife & iScience. Notably, His dedication to science resulted in the recipient of multiple awards, including the Julius Marmur Award, recognizing his significant contributions to scientific inquiry.",
       image: "/static/editorial-board/EmilioMerheb.jpeg",
       authorId: "1872316",
       socialLinks: {
