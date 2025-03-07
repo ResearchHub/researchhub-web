@@ -67,9 +67,7 @@ export const getTabs = ({
   if (isPost(document) && document.postType === "preregistration") {
     _tabs = _tabs.filter(
       (tab) =>
-        tab.value !== "reviews" &&
-        tab.value !== "replicability" &&
-        tab.value !== "grants"
+        tab.value !== "replicability"
     );
   }
   if (!(isPaper(document) && isResearchHubPaper(document))) {
