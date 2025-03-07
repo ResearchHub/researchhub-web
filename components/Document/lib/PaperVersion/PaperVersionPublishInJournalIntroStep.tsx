@@ -16,7 +16,7 @@ const PaperVersionIntroStep = ({ onStart }: { onStart: () => void }) => {
         <h1 className={css(styles.title)}>Publish in the ResearchHub Journal</h1>
         <p className={css(styles.subtitle)}>
           Fast, affordable, and transparent publication process
-          <span className={css(styles.priceBadge)}>Flat fee of 100 USD for a limited time</span>
+          <span className={css(styles.priceBadge)}>Flat fee of 0 USD for a limited time</span>
         </p>
       </div>
       
