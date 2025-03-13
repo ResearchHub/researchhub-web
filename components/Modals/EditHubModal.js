@@ -87,13 +87,13 @@ class EditHubModal extends Component {
     let isUniqueOrCurrent = true;
     if (hubName) {
       isUniqueOrCurrent =
-        hubName == this.state.originalHubName ||
+        hubName.toLowerCase() == this.state.originalHubName.toLowerCase() ||
         (await this.isHubNameUnique(hubName));
     }
     if (isUniqueOrCurrent) {
       const data = new FormData();
       data.append("id", hub.id);
-      data.append("name", hubName ? hubName.toLowerCase() : hub.name);
+      data.append("name", hubName ? hubName : hub.name);
       if (hubDescription) {
         data.append("description", hubDescription);
       }
