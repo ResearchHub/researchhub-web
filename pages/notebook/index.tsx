@@ -29,8 +29,7 @@ export async function getServerSideProps(ctx) {
   let orgsResponse: Response;
   try {
     orgsResponse = await fetchUserOrgs({ url }, authToken);
-  }
-  catch (error: any) {
+  } catch (error: any) {
     if (error?.response?.status === 401) {
       return {
         redirect: {
@@ -38,13 +37,13 @@ export async function getServerSideProps(ctx) {
           permanent: false,
         },
       };
-    }
-    else {
+    } else {
+      console.log(error);
       return {
         props: {
           errorCode: 500,
         },
-      }
+      };
     }
   }
 
