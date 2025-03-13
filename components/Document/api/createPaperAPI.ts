@@ -66,6 +66,6 @@ export const createPaperAPI = ({
     })
     .catch((error) => {
       console.error("Request Failed:", error);
-      return [];
+      throw error;
     });
 };
