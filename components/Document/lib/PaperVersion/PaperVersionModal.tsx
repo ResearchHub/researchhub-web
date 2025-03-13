@@ -268,9 +268,12 @@ const PaperVersionModal = ({ isOpen, closeModal, versions = [], action = "PUBLIS
         return !Object.values(contentErrors).some(Boolean);
         
       case "AUTHORS_AND_METADATA":
+        const hasCorrespondingAuthor = authorsAndAffiliations.some(author => author.isCorrespondingAuthor);
         const authorErrors = {
           authors: authorsAndAffiliations.length === 0 
             ? "Add at least one author" 
+            : !hasCorrespondingAuthor
+            ? "Add at least one corresponding author"
             : null,
         };
         setFieldErrors(authorErrors);
