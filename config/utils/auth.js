@@ -40,7 +40,6 @@ export const getSharedCookieOptions = (expiryDays = 14) => {
 export const ENV_AUTH_TOKEN = `${getEnvPrefix()}.${AUTH_TOKEN}`;
 
 export const getAuthToken = () => {
-  console.log("NICKDEV - getAuthToken");
   const currentToken = Cookies.get(AUTH_TOKEN);
   if (currentToken) return currentToken;
   const envToken = Cookies.get(ENV_AUTH_TOKEN);
