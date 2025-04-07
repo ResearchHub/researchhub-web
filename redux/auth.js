@@ -14,6 +14,13 @@ import { HubActions } from "./hub";
 import Cookies from "js-cookie";
 import * as Sentry from "@sentry/browser";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import {
+  getEnvPrefix,
+  getParentDomain,
+  getSharedCookieOptions,
+  ENV_AUTH_TOKEN,
+  getAuthToken,
+} from "../config/utils/auth";
 
 export const AuthConstants = {
   LOGIN: "@@auth/LOGIN",
@@ -72,8 +79,9 @@ let getUserHelper = (dispatch, dispatchFetching) => {
       }
 
       if (json.results.length > 0) {
-        const token = Cookies.get(AUTH_TOKEN);
+        const token = getAuthToken();
         Cookies.set(AUTH_TOKEN, token, { expires: 14 });
+        Cookies.set(ENV_AUTH_TOKEN, token, getSharedCookieOptions());
         return dispatch({
           type: AuthConstants.GOT_USER,
           isFetchingUser: false,
@@ -93,6 +101,7 @@ let getUserHelper = (dispatch, dispatchFetching) => {
     .catch((error) => {
       Sentry.captureException(error);
       Cookies.remove(AUTH_TOKEN);
+      Cookies.remove(ENV_AUTH_TOKEN, getSharedCookieOptions());
       dispatch({
         type: AuthConstants.GOT_USER,
         isFetchingUser: false,
@@ -117,6 +126,7 @@ export const AuthActions = {
         .then(Helpers.parseJSON)
         .then((json) => {
           Cookies.set(AUTH_TOKEN, json.token, { expires: 14 });
+          Cookies.set(ENV_AUTH_TOKEN, json.token, getSharedCookieOptions());
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -161,6 +171,7 @@ export const AuthActions = {
         .then(Helpers.parseJSON)
         .then((json) => {
           Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
+          Cookies.set(ENV_AUTH_TOKEN, json.key, getSharedCookieOptions());
 
           return dispatch({
             type: AuthConstants.REGISTER,
@@ -199,6 +210,7 @@ export const AuthActions = {
         .then(Helpers.parseJSON)
         .then((json) => {
           Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
+          Cookies.set(ENV_AUTH_TOKEN, json.key, getSharedCookieOptions());
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -245,6 +257,7 @@ export const AuthActions = {
         .then(Helpers.parseJSON)
         .then((json) => {
           Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
+          Cookies.set(ENV_AUTH_TOKEN, json.key, getSharedCookieOptions());
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -277,6 +290,7 @@ export const AuthActions = {
         .then(Helpers.parseJSON)
         .then((json) => {
           Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
+          Cookies.set(ENV_AUTH_TOKEN, json.key, getSharedCookieOptions());
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -302,6 +316,7 @@ export const AuthActions = {
   orcidLogin: (params) => {
     return (dispatch) => {
       Cookies.set(AUTH_TOKEN, params["token"], { expires: 14 });
+      Cookies.set(ENV_AUTH_TOKEN, params["token"], getSharedCookieOptions());
       return dispatch({
         type: AuthConstants.LOGIN,
         isLoggedIn: true,
@@ -365,6 +380,7 @@ export const AuthActions = {
           }
           window.location.replace("/");
           Cookies.remove(AUTH_TOKEN);
+          Cookies.remove(ENV_AUTH_TOKEN, getSharedCookieOptions());
         });
     };
   },
