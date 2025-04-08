@@ -20,6 +20,7 @@ import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
 import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef, useCallback } from "react";
+import NewNoteBanner, { isNewNote } from "~/components/Notebook/NewNoteBanner";
 
 const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
@@ -399,21 +400,27 @@ const Notebook = ({ auth, user, wsResponse }) => {
         templates={templates}
         titles={titles}
       />
-      {currentNote && (
-        <ELNEditor
-          ELNLoading={ELNLoading}
-          currentNote={currentNote}
-          currentOrganization={currentOrganization}
-          handleEditorInput={handleEditorInput}
-          isOrgMember={_isOrgMember}
-          notePerms={currentNotePerms?.list || []}
-          redirectToNote={redirectToNote}
-          refetchNotePerms={fetchAndSetCurrentNotePermissions}
-          refetchTemplates={fetchAndSetOrgTemplates}
-          setELNLoading={setELNLoading}
-          user={user}
-          userOrgs={organizations}
-        />
+      {isNewNote(currentNote) ? (
+        <div className={css(styles.incompatibleNoteContainer)}>
+          <NewNoteBanner orgSlug={orgSlug} noteId={noteId} />
+        </div>
+      ) : (
+        currentNote && (
+          <ELNEditor
+            ELNLoading={ELNLoading}
+            currentNote={currentNote}
+            currentOrganization={currentOrganization}
+            handleEditorInput={handleEditorInput}
+            isOrgMember={_isOrgMember}
+            notePerms={currentNotePerms?.list || []}
+            redirectToNote={redirectToNote}
+            refetchNotePerms={fetchAndSetCurrentNotePermissions}
+            refetchTemplates={fetchAndSetOrgTemplates}
+            setELNLoading={setELNLoading}
+            user={user}
+            userOrgs={organizations}
+          />
+        )
       )}
     </div>
   );
@@ -427,6 +434,12 @@ const mapStateToProps = (state) => ({
 const styles = StyleSheet.create({
   container: {
     display: "flex",
+  },
+  incompatibleNoteContainer: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    padding: 20,
   },
 });
 
