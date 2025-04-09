@@ -1,4 +1,4 @@
-import { AUTH_TOKEN } from "~/config/constants";
+import { ENV_AUTH_TOKEN } from "~/config/utils/auth";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
 import { getFetchDefaults } from "~/components/UnifiedDocFeed/utils/getFetchDefaults";
@@ -20,7 +20,7 @@ const Index: NextPage = (props) => {
 Index.getInitialProps = async (ctx) => {
   const { query } = ctx;
   const cookies = nookies.get(ctx);
-  const authToken = cookies[AUTH_TOKEN];
+  const authToken = cookies[ENV_AUTH_TOKEN];
   const defaultProps = getFetchDefaults({ query, authToken });
 
   if (process.browser) {

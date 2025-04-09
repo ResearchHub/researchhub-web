@@ -3,7 +3,7 @@
   organization notebook.
 */
 import nookies from "nookies";
-import { AUTH_TOKEN } from "~/config/constants";
+import { ENV_AUTH_TOKEN } from "~/config/utils/auth";
 import { generateApiUrl } from "~/config/api";
 import { fetchUserOrgs } from "~/config/fetch";
 import { captureEvent } from "~/config/utils/events";
@@ -23,7 +23,7 @@ const NotebookPage = ({ errorCode }: Props) => {
 
 export async function getServerSideProps(ctx) {
   const cookies = nookies.get(ctx);
-  const authToken = cookies[AUTH_TOKEN];
+  const authToken = cookies[ENV_AUTH_TOKEN];
   const url = generateApiUrl(`organization/0/get_user_organizations`);
 
   let orgsResponse: Response;

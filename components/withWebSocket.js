@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { AUTH_TOKEN } from "~/config/constants";
 import { localWarn } from "~/config/utils/nullchecks";
-import Cookies from "js-cookie";
+import { getAuthToken } from "~/config/utils/auth";
 
 const ALLOWED_ORIGINS = [
   "localhost",
@@ -65,7 +64,7 @@ export default function withWebSocket(
 
       if (props.wsAuth) {
         try {
-          token = Cookies.get(AUTH_TOKEN);
+          token = getAuthToken();
 
           // Sometimes the .get operation will return undefined instead of throwing an error.
           // This ensure that websocket connection does not get established with undefined.

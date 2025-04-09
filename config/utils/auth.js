@@ -40,8 +40,18 @@ export const getSharedCookieOptions = (expiryDays = 14) => {
 export const ENV_AUTH_TOKEN = `${getEnvPrefix()}.${AUTH_TOKEN}`;
 
 export const getAuthToken = () => {
-  const currentToken = Cookies.get(AUTH_TOKEN);
-  if (currentToken) return currentToken;
   const envToken = Cookies.get(ENV_AUTH_TOKEN);
-  return envToken;
+  if (envToken) {
+    Cookies.remove(AUTH_TOKEN);
+    return envToken;
+  }
+
+  const currentToken = Cookies.get(AUTH_TOKEN);
+  if (currentToken) {
+    Cookies.set(ENV_AUTH_TOKEN, currentToken, getSharedCookieOptions());
+    Cookies.remove(AUTH_TOKEN);
+    return currentToken;
+  }
+
+  return null;
 };

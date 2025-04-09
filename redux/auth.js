@@ -80,7 +80,6 @@ let getUserHelper = (dispatch, dispatchFetching) => {
 
       if (json.results.length > 0) {
         const token = getAuthToken();
-        Cookies.set(AUTH_TOKEN, token, { expires: 14 });
         Cookies.set(ENV_AUTH_TOKEN, token, getSharedCookieOptions());
         return dispatch({
           type: AuthConstants.GOT_USER,
@@ -125,7 +124,6 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          Cookies.set(AUTH_TOKEN, json.token, { expires: 14 });
           Cookies.set(ENV_AUTH_TOKEN, json.token, getSharedCookieOptions());
           return dispatch({
             type: AuthConstants.LOGIN,
@@ -170,7 +168,6 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
           Cookies.set(ENV_AUTH_TOKEN, json.key, getSharedCookieOptions());
 
           return dispatch({
@@ -209,7 +206,6 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
           Cookies.set(ENV_AUTH_TOKEN, json.key, getSharedCookieOptions());
           return dispatch({
             type: AuthConstants.LOGIN,
@@ -256,7 +252,6 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
           Cookies.set(ENV_AUTH_TOKEN, json.key, getSharedCookieOptions());
           return dispatch({
             type: AuthConstants.LOGIN,
@@ -289,7 +284,6 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
           Cookies.set(ENV_AUTH_TOKEN, json.key, getSharedCookieOptions());
           return dispatch({
             type: AuthConstants.LOGIN,
@@ -315,7 +309,6 @@ export const AuthActions = {
    */
   orcidLogin: (params) => {
     return (dispatch) => {
-      Cookies.set(AUTH_TOKEN, params["token"], { expires: 14 });
       Cookies.set(ENV_AUTH_TOKEN, params["token"], getSharedCookieOptions());
       return dispatch({
         type: AuthConstants.LOGIN,

@@ -1,5 +1,4 @@
 import Cookies from "js-cookie";
-import { AUTH_TOKEN } from "../constants";
 import { getAuthToken } from "../utils/auth";
 
 /**

@@ -1,7 +1,6 @@
 import API from "~/config/api";
 import Loader from "~/components/Loader/Loader";
 import NotebookHeader from "~/components/Notebook/NotebookHeader";
-import { AUTH_TOKEN } from "~/config/constants";
 import {
   BUNDLE_VERSION,
   CKEditorCS as CKELNEditor,
@@ -19,7 +18,7 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
-import Cookies from "js-cookie";
+import { getAuthToken } from "~/config/utils/auth";
 
 const saveData = async ({
   editor,
@@ -182,9 +181,7 @@ const ELNEditor = ({
                   xhr.setRequestHeader(
                     "Authorization",
                     "Token " +
-                      (typeof window !== "undefined"
-                        ? Cookies.get(AUTH_TOKEN)
-                        : "")
+                      (typeof window !== "undefined" ? getAuthToken() : "")
                   );
                   xhr.send();
                 });
@@ -230,9 +227,7 @@ const ELNEditor = ({
                   headers: {
                     Authorization:
                       "Token " +
-                      (typeof window !== "undefined"
-                        ? Cookies.get(AUTH_TOKEN)
-                        : ""),
+                      (typeof window !== "undefined" ? getAuthToken() : ""),
                   },
                 },
                 collaboration: {

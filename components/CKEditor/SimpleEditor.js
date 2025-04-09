@@ -1,9 +1,8 @@
 import { Fragment, useState, useEffect, useRef } from "react";
-import { AUTH_TOKEN } from "~/config/constants";
 import { StyleSheet, css } from "aphrodite";
 import API from "~/config/api";
 import colors from "../../config/themes/colors";
-import Cookies from "js-cookie";
+import { getAuthToken } from "~/config/utils/auth";
 
 export default function SimpleEditor(props) {
   const {
@@ -37,8 +36,7 @@ export default function SimpleEditor(props) {
       // Headers sent along with the XMLHttpRequest to the upload server.
       headers: {
         Authorization:
-          "Token " +
-          (typeof window !== "undefined" ? Cookies.get(AUTH_TOKEN) : ""),
+          "Token " + (typeof window !== "undefined" ? getAuthToken() : ""),
       },
     },
   };
