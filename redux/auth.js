@@ -110,6 +110,16 @@ let getUserHelper = (dispatch, dispatchFetching) => {
     });
 };
 
+const getNewAppBaseUrl = () => {
+  if (process.env.REACT_APP_ENV === "staging") {
+    return "https://www.v2.staging.researchhub.com";
+  } else if (process.env.NODE_ENV === "production") {
+    return "https://new.researchhub.com";
+  } else {
+    return "http://localhost:3000";
+  }
+};
+
 export const AuthActions = {
   /***
    * Login with django-rest-auth
@@ -371,9 +381,20 @@ export const AuthActions = {
           } catch (error) {
             console.error(error);
           }
-          window.location.replace("/");
           Cookies.remove(AUTH_TOKEN);
           Cookies.remove(ENV_AUTH_TOKEN, getSharedCookieOptions());
+          try {
+            const callbackUrl = window.location.origin;
+            const newAppBaseUrl = getNewAppBaseUrl();
+            const logoutUrl = `${newAppBaseUrl}/api/auth/logout?callbackUrl=${encodeURIComponent(
+              callbackUrl
+            )}`;
+
+            // Redirect to the new app's logout endpoint
+            window.location.replace(logoutUrl);
+          } catch (error) {
+            window.location.replace("/");
+          }
         });
     };
   },
