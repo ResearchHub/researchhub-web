@@ -14,6 +14,13 @@ import { HubActions } from "./hub";
 import Cookies from "js-cookie";
 import * as Sentry from "@sentry/browser";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import {
+  getEnvPrefix,
+  getParentDomain,
+  getSharedCookieOptions,
+  ENV_AUTH_TOKEN,
+  getAuthToken,
+} from "../config/utils/auth";
 
 export const AuthConstants = {
   LOGIN: "@@auth/LOGIN",
@@ -72,8 +79,8 @@ let getUserHelper = (dispatch, dispatchFetching) => {
       }
 
       if (json.results.length > 0) {
-        const token = Cookies.get(AUTH_TOKEN);
-        Cookies.set(AUTH_TOKEN, token, { expires: 14 });
+        const token = getAuthToken();
+        Cookies.set(ENV_AUTH_TOKEN, token, getSharedCookieOptions());
         return dispatch({
           type: AuthConstants.GOT_USER,
           isFetchingUser: false,
@@ -93,6 +100,7 @@ let getUserHelper = (dispatch, dispatchFetching) => {
     .catch((error) => {
       Sentry.captureException(error);
       Cookies.remove(AUTH_TOKEN);
+      Cookies.remove(ENV_AUTH_TOKEN, getSharedCookieOptions());
       dispatch({
         type: AuthConstants.GOT_USER,
         isFetchingUser: false,
@@ -100,6 +108,18 @@ let getUserHelper = (dispatch, dispatchFetching) => {
       });
       return error;
     });
+};
+
+// Helper function to get the base URL for the new app.
+// Consider moving this to the envarinment variables
+const getNewAppBaseUrl = () => {
+  if (process.env.REACT_APP_ENV === "staging") {
+    return "https://www.v2.staging.researchhub.com";
+  } else if (process.env.NODE_ENV === "production") {
+    return "https://new.researchhub.com";
+  } else {
+    return "http://localhost:3000";
+  }
 };
 
 export const AuthActions = {
@@ -116,7 +136,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          Cookies.set(AUTH_TOKEN, json.token, { expires: 14 });
+          Cookies.set(ENV_AUTH_TOKEN, json.token, getSharedCookieOptions());
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -160,7 +180,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
+          Cookies.set(ENV_AUTH_TOKEN, json.key, getSharedCookieOptions());
 
           return dispatch({
             type: AuthConstants.REGISTER,
@@ -198,7 +218,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
+          Cookies.set(ENV_AUTH_TOKEN, json.key, getSharedCookieOptions());
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -244,7 +264,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
+          Cookies.set(ENV_AUTH_TOKEN, json.key, getSharedCookieOptions());
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -276,7 +296,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          Cookies.set(AUTH_TOKEN, json.key, { expires: 14 });
+          Cookies.set(ENV_AUTH_TOKEN, json.key, getSharedCookieOptions());
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -301,7 +321,7 @@ export const AuthActions = {
    */
   orcidLogin: (params) => {
     return (dispatch) => {
-      Cookies.set(AUTH_TOKEN, params["token"], { expires: 14 });
+      Cookies.set(ENV_AUTH_TOKEN, params["token"], getSharedCookieOptions());
       return dispatch({
         type: AuthConstants.LOGIN,
         isLoggedIn: true,
@@ -363,8 +383,20 @@ export const AuthActions = {
           } catch (error) {
             console.error(error);
           }
-          window.location.replace("/");
           Cookies.remove(AUTH_TOKEN);
+          Cookies.remove(ENV_AUTH_TOKEN, getSharedCookieOptions());
+          try {
+            const callbackUrl = window.location.origin;
+            const newAppBaseUrl = getNewAppBaseUrl();
+            const logoutUrl = `${newAppBaseUrl}/api/auth/logout?callbackUrl=${encodeURIComponent(
+              callbackUrl
+            )}`;
+
+            // Redirect to the new app's logout endpoint
+            window.location.replace(logoutUrl);
+          } catch (error) {
+            window.location.replace("/");
+          }
         });
     };
   },

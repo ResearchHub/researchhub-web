@@ -5,7 +5,7 @@ import { fetchPaperFeed } from "~/config/fetch";
 import { filterOptions } from "~/config/utils/options";
 
 import nookies from "nookies";
-import { AUTH_TOKEN } from "~/config/constants";
+import { ENV_AUTH_TOKEN } from "~/config/utils/auth";
 
 const Index = (props) => {
   return <HubPage home={true} {...props} />;
@@ -16,7 +16,7 @@ Index.getInitialProps = async (ctx) => {
   const { page } = query;
 
   const cookies = nookies.get(ctx);
-  const authToken = cookies[AUTH_TOKEN];
+  const authToken = cookies[ENV_AUTH_TOKEN];
 
   const defaultProps = {
     initialFeed: null,

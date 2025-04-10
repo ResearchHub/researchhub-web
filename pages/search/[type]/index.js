@@ -1,4 +1,4 @@
-import { AUTH_TOKEN } from "~/config/constants";
+import { ENV_AUTH_TOKEN } from "~/config/utils/auth";
 import { Fragment } from "react";
 import { Helpers } from "@quantfive/js-web-config";
 import { pickFiltersForApi, QUERY_PARAM } from "~/config/utils/search";
@@ -52,7 +52,7 @@ const Index = ({ apiResponse, hasError }) => {
 
 Index.getInitialProps = async (ctx) => {
   const cookies = nookies.get(ctx);
-  const authToken = cookies[AUTH_TOKEN];
+  const authToken = cookies[ENV_AUTH_TOKEN];
   const filters = pickFiltersForApi({
     searchType: ctx.query.type,
     query: ctx.query,

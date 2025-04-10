@@ -5,7 +5,7 @@ import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { useRouter } from "next/router";
 import { fetchNote } from "~/config/fetch";
 import nookies from "nookies";
-import { AUTH_TOKEN } from "~/config/constants";
+import { ENV_AUTH_TOKEN } from "~/config/utils/auth";
 import NextError from "next/error";
 import { Helpers } from "@quantfive/js-web-config";
 import ensureAuthenticated from "~/config/auth/ensureAuthenticated";
@@ -46,7 +46,7 @@ export async function getServerSideProps(ctx) {
 
   // Precondition: User is logged in
   const cookies = nookies.get(ctx);
-  const authToken = cookies[AUTH_TOKEN];
+  const authToken = cookies[ENV_AUTH_TOKEN];
   let response: Response;
   try {
     response = await fetchNote({ noteId: ctx.params.noteId }, authToken)

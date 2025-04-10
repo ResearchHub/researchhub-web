@@ -12,7 +12,7 @@ import colors from "../../config/themes/colors";
 import FormInput from "../../components/Form/FormInput";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import CustomHead from "~/components/Head";
-import { AUTH_TOKEN } from "~/config/constants";
+import { ENV_AUTH_TOKEN } from "~/config/utils/auth";
 import ReferredUserList from "~/components/Referral/ReferredUserList";
 
 import { breakpoints } from "~/config/themes/screen";
@@ -263,7 +263,7 @@ const mapStateToProps = (state) => ({
 
 export async function getServerSideProps(context) {
   const cookies = nookies.get(context);
-  const authToken = cookies[AUTH_TOKEN];
+  const authToken = cookies[ENV_AUTH_TOKEN];
 
   if (!authToken) {
     return {

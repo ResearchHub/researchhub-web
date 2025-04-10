@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { getAuthToken } from "../utils/auth";
 
 /**
  * Module define all API paths
@@ -34,7 +35,7 @@ function setupRequestHeaders(noContentType, authTokenName, overrideToken) {
   let token = "";
 
   if (process.browser) {
-    token = Cookies.get(authTokenName);
+    token = getAuthToken();
   }
 
   if (overrideToken && overrideToken !== "undefined") {

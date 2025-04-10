@@ -1,5 +1,5 @@
 import { API } from "./api/index";
-import { AUTH_TOKEN } from "../config/constants";
+import { ENV_AUTH_TOKEN } from "../config/utils/auth";
 import { isNullOrUndefined, doesNotExist } from "~/config/utils/nullchecks";
 import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "./utils/getUnifiedDocType";
 import { convertToBackendFilters } from "~/components/UnifiedDocFeed/utils/converToBackendFilters";
@@ -1312,7 +1312,7 @@ const routes = (BASE_URL) => {
 };
 
 const api = API({
-  authTokenName: AUTH_TOKEN,
+  authTokenName: ENV_AUTH_TOKEN,
   apiRoot,
   routes,
 });

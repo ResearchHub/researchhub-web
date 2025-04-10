@@ -3,7 +3,7 @@ import Error from "next/error";
 import HeadComponent from "~/components/Head";
 import Notebook from "~/components/Notebook/Notebook";
 import nookies from "nookies";
-import { AUTH_TOKEN } from "~/config/constants";
+import { ENV_AUTH_TOKEN } from "~/config/utils/auth";
 import { Helpers } from "@quantfive/js-web-config";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { captureEvent } from "~/config/utils/events";
@@ -36,7 +36,7 @@ export async function getServerSideProps(ctx) {
   const { orgSlug } = params;
 
   const cookies = nookies.get(ctx);
-  const authToken = cookies[AUTH_TOKEN];
+  const authToken = cookies[ENV_AUTH_TOKEN];
 
   // Create a new note if no notes exist in org, otherwise push to first note.
   let notes = {

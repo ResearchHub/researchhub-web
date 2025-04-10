@@ -1,4 +1,4 @@
-import { AUTH_TOKEN } from "~/config/constants";
+import { ENV_AUTH_TOKEN } from "~/config/utils/auth";
 import { connect } from "react-redux";
 import { fetchUserOrgs } from "~/config/fetch";
 import { generateApiUrl } from "~/config/api";
@@ -31,7 +31,7 @@ function Index(props) {
 
 export async function getServerSideProps(ctx) {
   const cookies = nookies.get(ctx);
-  const authToken = cookies[AUTH_TOKEN];
+  const authToken = cookies[ENV_AUTH_TOKEN];
   const calloutOpen =
     cookies["callout_open"] === undefined ? null : cookies["callout_open"];
 
