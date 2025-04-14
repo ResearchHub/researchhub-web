@@ -587,13 +587,6 @@ class UserSettings extends Component {
             </div>
             {this.renderOptOut()}
           </div>
-          <div>
-            <Button
-              label="Delete Account"
-              onClick={this.deleteAccount}
-              customButtonStyle={styles.deleteButton}
-            ></Button>
-          </div>
         </div>
       </ComponentWrapper>
     );
