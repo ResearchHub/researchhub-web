@@ -112,7 +112,7 @@ let getUserHelper = (dispatch, dispatchFetching) => {
 
 // Helper function to get the base URL for the new app.
 // Consider moving this to the envarinment variables
-const getNewAppBaseUrl = () => {
+export const getNewAppBaseUrl = () => {
   if (process.env.REACT_APP_ENV === "staging") {
     return "https://www.v2.staging.researchhub.com";
   } else if (process.env.NODE_ENV === "production") {
