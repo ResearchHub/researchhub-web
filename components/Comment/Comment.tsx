@@ -46,6 +46,7 @@ import getReviewCategoryScore from "./lib/quill/getReviewCategoryScore";
 import { captureEvent } from "~/config/utils/events";
 import CommentPrivacyBadge from "./CommentPrivacyBadge";
 import { faReply } from "@fortawesome/pro-solid-svg-icons";
+import { CommentReadOnlyTiptap } from "./CommentReadOnlyTiptap";
 const { setMessage, showMessage } = MessageActions;
 
 type CommentArgs = {
@@ -292,6 +293,8 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
     commentTreeState.context === COMMENT_CONTEXTS.SIDEBAR ||
     commentTreeState.context === COMMENT_CONTEXTS.DRAWER;
 
+  const isTiptap = comment.contentFormat === "TIPTAP";
+
   return (
     <div>
       <div>
@@ -329,7 +332,16 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                 />
               </div>
             )}
-            {isEditMode ? (
+            {isTiptap ? (
+              <div>
+                <CommentReadOnlyTiptap
+                  content={comment.content}
+                  contentFormat={comment.contentFormat}
+                  initiallyExpanded={false}
+                  showReadMoreButton={true}
+                />
+              </div>
+            ) : isEditMode ? (
               <CommentEditor
                 displayCurrentUser={annotationContext ? false : true}
                 editorStyleOverride={
