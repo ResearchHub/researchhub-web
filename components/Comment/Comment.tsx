@@ -339,6 +339,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                   contentFormat={comment.contentFormat}
                   initiallyExpanded={false}
                   showReadMoreButton={true}
+                  debug={process.env.NODE_ENV === "development"}
                 />
               </div>
             ) : isEditMode ? (

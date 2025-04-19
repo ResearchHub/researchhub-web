@@ -17,7 +17,6 @@ export const parseContent = (
   if (debug) {
     console.log("parseContent input:", content);
   }
-  console.log("NICKDEV", content);
 
   try {
     // Case 1: Content is wrapped in a top-level content property
