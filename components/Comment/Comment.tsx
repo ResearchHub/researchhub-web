@@ -47,6 +47,7 @@ import { captureEvent } from "~/config/utils/events";
 import CommentPrivacyBadge from "./CommentPrivacyBadge";
 import { faReply } from "@fortawesome/pro-solid-svg-icons";
 import { CommentReadOnlyTiptap } from "./CommentReadOnlyTiptap";
+import { NewCommentBanner } from "./NewCommentBanner";
 const { setMessage, showMessage } = MessageActions;
 
 type CommentArgs = {
@@ -333,15 +334,23 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
               </div>
             )}
             {isTiptap ? (
-              <div>
-                <CommentReadOnlyTiptap
-                  content={comment.content}
-                  contentFormat={comment.contentFormat}
-                  initiallyExpanded={false}
-                  showReadMoreButton={true}
-                  debug={process.env.NODE_ENV === "development"}
-                />
-              </div>
+              <>
+                {isEditMode && document && (
+                  <NewCommentBanner
+                    onClose={() => setIsEditMode(false)}
+                    document={document}
+                    commentId={comment.id?.toString()}
+                  />
+                )}
+                <div>
+                  <CommentReadOnlyTiptap
+                    content={comment.content}
+                    contentFormat={comment.contentFormat}
+                    initiallyExpanded={false}
+                    showReadMoreButton={true}
+                  />
+                </div>
+              </>
             ) : isEditMode ? (
               <CommentEditor
                 displayCurrentUser={annotationContext ? false : true}
