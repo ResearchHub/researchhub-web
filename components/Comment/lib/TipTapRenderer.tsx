@@ -2,6 +2,8 @@ import React, { ReactNode, ReactElement, useState } from 'react';
 import { SectionHeaderProps } from './renderUtils';
 import hljs from 'highlight.js';
 import { useEffect } from 'react';
+import { StyleSheet, css } from 'aphrodite';
+import colors from '~/config/themes/colors';
 
 interface TipTapRendererProps {
   content: any;
@@ -24,24 +26,24 @@ export const renderTextWithMarks = (text: string, marks: any[]): ReactElement | 
     [...marks].reverse().forEach((mark) => {
       switch (mark.type) {
         case 'bold':
-          result = <strong className="tiptap-bold">{result}</strong>;
+          result = <strong>{result}</strong>;
           break;
         case 'italic':
-          result = <em className="tiptap-italic">{result}</em>;
+          result = <em>{result}</em>;
           break;
         case 'underline':
-          result = <u className="tiptap-underline">{result}</u>;
+          result = <u>{result}</u>;
           break;
         case 'strike':
-          result = <s className="tiptap-strike">{result}</s>;
+          result = <s>{result}</s>;
           break;
         case 'code':
-          result = <code className="tiptap-inline-code bg-gray-100 px-1 rounded">{result}</code>;
+          result = <code className={css(styles.inlineCode)}>{result}</code>;
           break;
         case 'link':
           result = (
             <a
-              className="tiptap-link text-blue-600 hover:underline"
+              className={css(styles.link)}
               href={mark.attrs?.href}
               target={mark.attrs?.target || '_blank'}
               rel="noopener noreferrer"
@@ -149,7 +151,7 @@ const TipTapRenderer: React.FC<TipTapRendererProps> = ({
   }, [content]);
 
   return (
-    <div className="tiptap-renderer">
+    <div className={css(styles.renderer)}>
       <RenderNode
         node={documentContent}
         debug={debug}
@@ -257,12 +259,12 @@ const RenderNode: React.FC<RenderNodeProps> = ({
         renderedChildren.push(<span key="ellipsis">...</span>);
       }
 
-      return <div className="tiptap-doc">{renderedChildren}</div>;
+      return <div className={css(styles.doc)}>{renderedChildren}</div>;
     }
 
     // Normal rendering without truncation
     return (
-      <div className="tiptap-doc">
+      <div className={css(styles.doc)}>
         {node.content?.map((child: any, i: number) => (
           <RenderNode
             key={i}
@@ -309,7 +311,7 @@ const RenderNode: React.FC<RenderNodeProps> = ({
   // Handle paragraph nodes
   if (node.type === 'paragraph') {
     return (
-      <p className="tiptap-paragraph my-2">
+      <p className={css(styles.paragraph)}>
         {node.content?.map((child: any, i: number) => (
           <RenderNode
             key={i}
@@ -329,7 +331,7 @@ const RenderNode: React.FC<RenderNodeProps> = ({
   if (node.type === 'heading') {
     const HeadingTag = `h${node.attrs?.level || 1}` as keyof JSX.IntrinsicElements;
     return (
-      <HeadingTag className={`tiptap-heading tiptap-h${node.attrs?.level || 1} my-4`}>
+      <HeadingTag className={css(styles.heading, styles[`h${node.attrs?.level || 1}`])}>
         {node.content?.map((child: any, i: number) => (
           <RenderNode
             key={i}
@@ -348,7 +350,7 @@ const RenderNode: React.FC<RenderNodeProps> = ({
   // Handle blockquote nodes
   if (node.type === 'blockquote') {
     return (
-      <blockquote className="tiptap-blockquote border-l-4 border-gray-300 pl-4 italic text-gray-600 my-4">
+      <blockquote className={css(styles.blockquote)}>
         {node.content?.map((child: any, i: number) => (
           <RenderNode
             key={i}
@@ -365,11 +367,9 @@ const RenderNode: React.FC<RenderNodeProps> = ({
   }
 
   // Handle code block nodes
-  if (node.type === 'code_block') {
+  if (node.type === 'code_block' || node.type === 'codeBlock') {
     return (
-      <pre
-        className={`tiptap-code-block bg-gray-800 text-gray-100 p-4 rounded my-4 overflow-x-auto`}
-      >
+      <pre className={css(styles.codeBlock)}>
         <code>{node.content?.map((textNode: any) => textNode.text || '').join('')}</code>
       </pre>
     );
@@ -377,37 +377,18 @@ const RenderNode: React.FC<RenderNodeProps> = ({
 
   // Handle horizontal rule
   if (node.type === 'horizontalRule') {
-    return <hr className="tiptap-hr my-4" />;
+    return <hr className={css(styles.hr)} />;
   }
 
   // Handle hard break
   if (node.type === 'hardBreak') {
-    return <br className="tiptap-hard-break" />;
+    return <br />;
   }
 
   // Handle ordered list
-  if (node.type === 'orderedList') {
+  if (node.type === 'orderedList' || node.type === 'ordered_list') {
     return (
-      <ol className="tiptap-ordered-list list-decimal pl-5 my-4" start={node.attrs?.start || 1}>
-        {node.content?.map((child: any, i: number) => (
-          <RenderNode
-            key={i}
-            node={child}
-            debug={debug}
-            renderSectionHeader={renderSectionHeader}
-            truncate={truncate}
-            maxLength={maxLength}
-            currentLength={textLengthSoFar}
-          />
-        ))}
-      </ol>
-    );
-  }
-
-  // Handle ordered_list (compatibility with ProseMirror schema naming)
-  if (node.type === 'ordered_list') {
-    return (
-      <ol className="tiptap-ordered-list list-decimal pl-5 my-4" start={node.attrs?.start || 1}>
+      <ol className={css(styles.orderedList)} start={node.attrs?.start || 1}>
         {node.content?.map((child: any, i: number) => (
           <RenderNode
             key={i}
@@ -424,28 +405,9 @@ const RenderNode: React.FC<RenderNodeProps> = ({
   }
 
   // Handle bullet list
-  if (node.type === 'bulletList') {
+  if (node.type === 'bulletList' || node.type === 'bullet_list') {
     return (
-      <ul className="tiptap-bullet-list list-disc pl-5 my-4">
-        {node.content?.map((child: any, i: number) => (
-          <RenderNode
-            key={i}
-            node={child}
-            debug={debug}
-            renderSectionHeader={renderSectionHeader}
-            truncate={truncate}
-            maxLength={maxLength}
-            currentLength={textLengthSoFar}
-          />
-        ))}
-      </ul>
-    );
-  }
-
-  // Handle bullet_list (compatibility with ProseMirror schema naming)
-  if (node.type === 'bullet_list') {
-    return (
-      <ul className="tiptap-bullet-list list-disc pl-5 my-4">
+      <ul className={css(styles.bulletList)}>
         {node.content?.map((child: any, i: number) => (
           <RenderNode
             key={i}
@@ -462,28 +424,9 @@ const RenderNode: React.FC<RenderNodeProps> = ({
   }
 
   // Handle list item
-  if (node.type === 'list_item') {
+  if (node.type === 'listItem' || node.type === 'list_item') {
     return (
-      <li className="tiptap-list-item">
-        {node.content?.map((child: any, i: number) => (
-          <RenderNode
-            key={i}
-            node={child}
-            debug={debug}
-            renderSectionHeader={renderSectionHeader}
-            truncate={truncate}
-            maxLength={maxLength}
-            currentLength={textLengthSoFar}
-          />
-        ))}
-      </li>
-    );
-  }
-
-  // Handle listItem (TipTap naming)
-  if (node.type === 'listItem') {
-    return (
-      <li className="tiptap-list-item">
+      <li className={css(styles.listItem)}>
         {node.content?.map((child: any, i: number) => (
           <RenderNode
             key={i}
@@ -503,7 +446,7 @@ const RenderNode: React.FC<RenderNodeProps> = ({
   if (node.type === 'image') {
     return (
       <img
-        className="tiptap-image my-4"
+        className={css(styles.image)}
         src={node.attrs?.src}
         alt={node.attrs?.alt || ''}
         title={node.attrs?.title}
@@ -546,11 +489,11 @@ const RenderNode: React.FC<RenderNodeProps> = ({
     console.warn(`Unhandled node type: ${node.type}`, node);
     // Only in debug mode, render a visible indication of unhandled nodes
     return (
-      <div className="p-2 border border-red-500 my-2 text-xs">
+      <div className={css(styles.debugUnhandledNode)}>
         <div>
           Unhandled node type: <strong>{node.type}</strong>
         </div>
-        <pre className="mt-1 bg-gray-100 p-1 overflow-auto max-h-24">
+        <pre className={css(styles.debugNodeContent)}>
           {JSON.stringify(node, null, 2)}
         </pre>
       </div>
@@ -558,5 +501,105 @@ const RenderNode: React.FC<RenderNodeProps> = ({
   }
   return null;
 };
+
+const styles = StyleSheet.create({
+  renderer: {
+    width: '100%',
+    fontSize: 15, // Base font size
+  },
+  doc: {
+    width: '100%',
+  },
+  paragraph: {
+    marginTop: '0.5rem',
+    marginBottom: '0.5rem',
+    fontSize: 15, // Explicit base size
+  },
+  heading: {
+    marginTop: '1rem',
+    marginBottom: '1rem',
+  },
+  h1: { fontSize: 18, fontWeight: 600 },
+  h2: { fontSize: 17, fontWeight: 600 },
+  h3: { fontSize: 16, fontWeight: 600 },
+  h4: { fontSize: 15, fontWeight: 600 },
+  h5: { fontSize: 14, fontWeight: 600 },
+  h6: { fontSize: 12, fontWeight: 600 },
+  inlineCode: {
+    backgroundColor: colors.GREY(0.1),
+    padding: '0 0.25rem',
+    borderRadius: 4,
+    fontSize: 14, // Slightly smaller than base text
+  },
+  link: {
+    color: colors.BLUE(1),
+    textDecoration: 'none',
+    fontSize: 15, // Match base size
+    ':hover': {
+      textDecoration: 'underline',
+    },
+  },
+  blockquote: {
+    borderLeft: `4px solid ${colors.GREY(0.3)}`,
+    paddingLeft: '1rem',
+    fontStyle: 'italic',
+    color: colors.GREY_TEXT(0.6),
+    margin: '1rem 0',
+    fontSize: 15, // Match base size
+  },
+  codeBlock: {
+    backgroundColor: colors.BLACK(0.9),
+    color: colors.WHITE(1),
+    borderRadius: 4,
+    margin: '1rem 0',
+    overflowX: 'auto',
+    fontSize: 14, // Slightly smaller for code
+  },
+  hr: {
+    margin: '1rem 0',
+    border: 'none',
+    borderTop: `1px solid ${colors.GREY(0.3)}`,
+  },
+  orderedList: {
+    listStyleType: 'decimal',
+    paddingLeft: '1.25rem',
+    margin: '1rem 0',
+    fontSize: 15, // Match base size
+    '> li': {
+      marginTop: '0.25rem',
+    },
+  },
+  bulletList: {
+    listStyleType: 'disc',
+    paddingLeft: '1.25rem',
+    margin: '1rem 0',
+    fontSize: 15, // Match base size
+    '> li': {
+      marginTop: '0.25rem',
+    },
+  },
+  listItem: {
+    margin: '0.25rem 0',
+  },
+  image: {
+    margin: '1rem 0',
+    maxWidth: '100%',
+    height: 'auto',
+  },
+  debugUnhandledNode: {
+    padding: '0.5rem',
+    border: `1px solid ${colors.ERROR_BACKGROUND(1)}`,
+    margin: '0.5rem 0',
+    fontSize: 14, // Match debug text size
+  },
+  debugNodeContent: {
+    marginTop: '0.25rem',
+    backgroundColor: colors.GREY(0.1),
+    padding: '0.25rem',
+    overflowY: 'auto',
+    maxHeight: '6rem',
+  },
+});
+
 export default TipTapRenderer;
 

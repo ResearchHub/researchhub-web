@@ -1,7 +1,7 @@
 'use client';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/pro-solid-svg-icons";
+import { faStar, faAngleUp, faAngleDown } from "@fortawesome/pro-solid-svg-icons";
 import { Comment, ContentFormat } from "./lib/types";
 import 'highlight.js/styles/atom-one-dark.css';
 import React, { ReactNode, useState } from 'react';
@@ -9,6 +9,8 @@ import { parseContent, extractTextFromTipTap } from './lib/commentContentUtils';
 import { renderQuillContent, truncateContent } from './lib/renderUtils';
 import TipTapRenderer from './lib/TipTapRenderer';
 import { CommentContent } from './lib/types';
+import { StyleSheet, css } from 'aphrodite';
+import colors from '~/config/themes/colors';
 
 interface CommentReadOnlyProps {
   content: CommentContent;
@@ -22,14 +24,12 @@ interface CommentReadOnlyProps {
 // Replace Star component with FontAwesome
 const ReadOnlyStars = ({ rating }: { rating: number }) => {
   return (
-    <div className="flex items-center">
+    <div className={css(styles.starContainer)}>
       {[1, 2, 3, 4, 5].map((star) => (
         <FontAwesomeIcon
           key={star}
           icon={faStar}
-          className={`mr-0.5 ${
-            star <= rating ? 'text-yellow-400' : 'text-gray-300'
-          }`}
+          className={css(star <= rating ? styles.starActive : styles.starInactive)}
         />
       ))}
     </div>
@@ -45,12 +45,12 @@ interface SectionHeaderProps {
 // Review section header component
 const ReviewSectionHeader = ({ title, description, rating }: SectionHeaderProps) => {
   return (
-    <div className="mb-4 border-b pb-2">
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-lg">{title}</h3>
+    <div className={css(styles.sectionHeader)}>
+      <div className={css(styles.headerContent)}>
+        <h3 className={css(styles.headerTitle)}>{title}</h3>
         {rating && rating > 0 && <ReadOnlyStars rating={rating} />}
       </div>
-      {description && <p className="text-gray-600 mt-1">{description}</p>}
+      {description && <p className={css(styles.headerDescription)}>{description}</p>}
     </div>
   );
 };
@@ -198,23 +198,27 @@ export const CommentReadOnlyTiptap = ({
     // Only show the Read more button if content should be truncated and showReadMoreButton is true
     return (
       <>
-        <div className={contentFormat === 'QUILL_EDITOR' ? 'quill-content-container' : ''}>
+        <div className={contentFormat === 'QUILL_EDITOR' ? css(styles.quillContent) : ''}>
           {renderedContent}
         </div>
         {shouldTruncate && showReadMoreButton && (
-          <button
-            className="text-blue-600 hover:text-blue-800 hover:underline text-sm cursor-pointer mt-1"
+          <span 
+            className={css(styles.readMoreButton)}
             onClick={() => setIsExpanded(!isExpanded)}
           >
             {isExpanded ? 'Show less' : 'Read more'}
-          </button>
+            <FontAwesomeIcon
+              icon={isExpanded ? faAngleUp : faAngleDown}
+              style={{ marginLeft: 3, fontSize: 14 }}
+            />
+          </span>
         )}
       </>
     );
   };
 
   return (
-    <div className="comment-content prose prose-sm max-w-none">
+    <div className={`${css(styles.commentContent)} rh-comment-content`}>
       <style jsx global>{`
         /* Maintain common styling for backwards compatibility */
         .quill-content ol,
@@ -305,8 +309,110 @@ export const CommentReadOnlyTiptap = ({
           opacity: 0.5;
           */
         }
+
+        .rh-comment-content strong {
+          font-weight: 700 !important;
+        }
       `}</style>
       {getFormattedContent()}
     </div>
   );
 };
+
+const styles = StyleSheet.create({
+  commentContent: {
+    fontFamily: '"Prose", sans-serif',
+    fontSize: 16,
+    maxWidth: 'none',
+    lineHeight: 1.6,
+  },
+  starContainer: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  starActive: {
+    color: '#FACC15',
+    marginRight: 2,
+  },
+  starInactive: {
+    color: '#D1D5DB',
+    marginRight: 2,
+  },
+  sectionHeader: {
+    marginBottom: 16,
+    borderBottom: `1px solid ${colors.GREY_LINE(1)}`,
+    paddingBottom: 8,
+  },
+  headerContent: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerTitle: {
+    fontWeight: 600,
+    fontSize: 18,
+  },
+  headerDescription: {
+    color: colors.GREY_TEXT(0.6),
+    marginTop: 4,
+    fontSize: 14,
+  },
+  readMoreButton: {
+    color: colors.NEW_BLUE(),
+    fontSize: 14,
+    cursor: 'pointer',
+    marginTop: 4,
+    display: 'inline-flex',
+    alignItems: 'center',
+    ':hover': {
+      textDecoration: 'underline',
+    },
+  },
+  quillContent: {
+    // Quill specific styles
+    '& ol': {
+      listStyleType: 'decimal',
+      paddingLeft: '2rem',
+      margin: '1rem 0',
+      display: 'block',
+    },
+    '& ol li': {
+      display: 'list-item',
+      position: 'relative',
+      listStyleType: 'decimal',
+      listStylePosition: 'outside',
+      marginLeft: '0.5rem',
+    },
+    '& ul': {
+      listStyleType: 'disc',
+      paddingLeft: '2rem',
+      margin: '1rem 0',
+      display: 'block',
+    },
+    '& li': {
+      marginBottom: '0.5rem',
+      display: 'list-item',
+    },
+    '& p': {
+      margin: '0.75rem 0',
+    },
+    '& a': {
+      color: colors.BLUE(1),
+      textDecoration: 'none',
+      ':hover': {
+        textDecoration: 'underline',
+      },
+    },
+    '& strong': {
+      fontWeight: 600,
+    },
+    '& > p + p': {
+      marginTop: '1rem',
+    },
+    '& h1, & h2, & h3, & h4, & h5, & h6': {
+      marginTop: '1.5rem',
+      marginBottom: '1rem',
+      fontWeight: 600,
+    },
+  },
+});

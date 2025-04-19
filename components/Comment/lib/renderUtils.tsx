@@ -1,10 +1,79 @@
 import React, { ReactNode } from 'react';
+import { StyleSheet, css } from 'aphrodite';
+import colors from '~/config/themes/colors';
 
 export interface SectionHeaderProps {
   title: string;
   description?: string;
   rating: number;
 }
+
+const styles = StyleSheet.create({
+  spacer: {
+    height: '2rem', // h-8
+    marginTop: '1rem',
+    marginBottom: '1rem',
+  },
+  listItem: {
+    marginBottom: '0.5rem', // mb-2
+    fontSize: 16, // Match base size
+  },
+  link: {
+    color: colors.BLUE(1),
+    fontSize: 16, // Match base size
+    ':hover': {
+      textDecoration: 'underline',
+    },
+  },
+  orderedList: {
+    listStyleType: 'decimal',
+    paddingLeft: '1.5rem', // pl-6
+    margin: '1rem 0', // my-4
+    fontSize: 16, // Match base size
+    '> li': {
+      marginTop: '0.25rem', // space-y-1
+    },
+  },
+  bulletList: {
+    listStyleType: 'disc',
+    paddingLeft: '1.5rem', // pl-6
+    margin: '1rem 0', // my-4
+    fontSize: 16, // Match base size
+    '> li': {
+      marginTop: '0.25rem', // space-y-1
+    },
+  },
+  blockquote: {
+    borderLeft: `4px solid ${colors.GREY(0.3)}`, // border-l-4 border-gray-300
+    paddingLeft: '1rem', // pl-4
+    fontStyle: 'italic',
+    color: colors.GREY_TEXT(0.6), // text-gray-600
+    margin: '1rem 0', // my-4
+    fontSize: 16, // Match base size
+  },
+  codeBlock: {
+    backgroundColor: colors.BLACK(0.9), // bg-gray-800
+    color: colors.WHITE(1), // text-gray-100
+    padding: '1rem', // p-4
+    borderRadius: 4, // rounded
+    margin: '1rem 0', // my-4
+    overflowX: 'auto',
+    fontSize: 14, // Slightly smaller for code
+  },
+  header: {
+    fontWeight: 600, // font-bold
+    fontSize: 18, // Slightly larger for headers
+    margin: '1rem 0', // my-4
+  },
+  paragraph: {
+    margin: '0.5rem 0', // my-2
+    fontSize: 16, // Match base size
+  },
+  image: {
+    margin: '1rem 0', // my-4
+    maxWidth: '100%', // max-w-full
+  },
+});
 
 /**
  * Renders Quill content as React nodes
@@ -126,13 +195,11 @@ export const renderQuillContent = (quillContent: any): ReactNode[] | null => {
     // Handle different block types
     switch (block.type) {
       case 'spacer': {
-        // Add extra vertical space for consecutive newlines
         result.push(
           <div
             key={`spacer-${blockIndex}`}
-            className="h-8"
-            style={{ marginTop: '1rem', marginBottom: '1rem' }}
-          ></div>
+            className={css(styles.spacer)}
+          />
         );
         break;
       }
@@ -145,15 +212,11 @@ export const renderQuillContent = (quillContent: any): ReactNode[] | null => {
           const attributes = item.attributes || {};
 
           if (attributes.bold)
-            formattedText = (
-              <strong key={`bold-list-${blockIndex}-${itemIndex}`}>{formattedText}</strong>
-            );
+            formattedText = <strong key={`bold-list-${blockIndex}-${itemIndex}`}>{formattedText}</strong>;
           if (attributes.italic)
             formattedText = <em key={`italic-list-${blockIndex}-${itemIndex}`}>{formattedText}</em>;
           if (attributes.underline)
-            formattedText = (
-              <u key={`underline-list-${blockIndex}-${itemIndex}`}>{formattedText}</u>
-            );
+            formattedText = <u key={`underline-list-${blockIndex}-${itemIndex}`}>{formattedText}</u>;
           if (attributes.strike)
             formattedText = <s key={`strike-list-${blockIndex}-${itemIndex}`}>{formattedText}</s>;
           if (attributes.link) {
@@ -163,7 +226,7 @@ export const renderQuillContent = (quillContent: any): ReactNode[] | null => {
                 href={attributes.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
+                className={css(styles.link)}
               >
                 {formattedText}
               </a>
@@ -173,7 +236,7 @@ export const renderQuillContent = (quillContent: any): ReactNode[] | null => {
           return (
             <li
               key={`li-${blockIndex}-${itemIndex}`}
-              className="mb-2"
+              className={css(styles.listItem)}
               value={itemIndex + 1} // Explicitly set the number value
             >
               {formattedText}
@@ -184,10 +247,7 @@ export const renderQuillContent = (quillContent: any): ReactNode[] | null => {
         result.push(
           <ol
             key={`ol-${blockIndex}`}
-            className="list-decimal pl-6 my-4 space-y-1"
-            style={{
-              listStyleType: 'decimal',
-            }}
+            className={css(styles.orderedList)}
           >
             {listItems}
           </ol>
@@ -203,15 +263,11 @@ export const renderQuillContent = (quillContent: any): ReactNode[] | null => {
           const attributes = item.attributes || {};
 
           if (attributes.bold)
-            formattedText = (
-              <strong key={`bold-list-${blockIndex}-${itemIndex}`}>{formattedText}</strong>
-            );
+            formattedText = <strong key={`bold-list-${blockIndex}-${itemIndex}`}>{formattedText}</strong>;
           if (attributes.italic)
             formattedText = <em key={`italic-list-${blockIndex}-${itemIndex}`}>{formattedText}</em>;
           if (attributes.underline)
-            formattedText = (
-              <u key={`underline-list-${blockIndex}-${itemIndex}`}>{formattedText}</u>
-            );
+            formattedText = <u key={`underline-list-${blockIndex}-${itemIndex}`}>{formattedText}</u>;
           if (attributes.strike)
             formattedText = <s key={`strike-list-${blockIndex}-${itemIndex}`}>{formattedText}</s>;
           if (attributes.link) {
@@ -221,7 +277,7 @@ export const renderQuillContent = (quillContent: any): ReactNode[] | null => {
                 href={attributes.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
+                className={css(styles.link)}
               >
                 {formattedText}
               </a>
@@ -229,14 +285,14 @@ export const renderQuillContent = (quillContent: any): ReactNode[] | null => {
           }
 
           return (
-            <li key={`li-${blockIndex}-${itemIndex}`} className="mb-2">
+            <li key={`li-${blockIndex}-${itemIndex}`} className={css(styles.listItem)}>
               {formattedText}
             </li>
           );
         });
 
         result.push(
-          <ul key={`ul-${blockIndex}`} className="list-disc pl-6 my-4 space-y-1">
+          <ul key={`ul-${blockIndex}`} className={css(styles.bulletList)}>
             {listItems}
           </ul>
         );
@@ -257,7 +313,7 @@ export const renderQuillContent = (quillContent: any): ReactNode[] | null => {
             result.push(
               <blockquote
                 key={`blockquote-${blockIndex}-${index}`}
-                className="border-l-4 border-gray-300 pl-4 italic text-gray-600 my-4"
+                className={css(styles.blockquote)}
               >
                 {text}
               </blockquote>
@@ -269,7 +325,7 @@ export const renderQuillContent = (quillContent: any): ReactNode[] | null => {
             result.push(
               <pre
                 key={`code-${blockIndex}-${index}`}
-                className="bg-gray-800 text-gray-100 p-4 rounded my-4 overflow-x-auto"
+                className={css(styles.codeBlock)}
               >
                 <code>{text}</code>
               </pre>
@@ -280,7 +336,7 @@ export const renderQuillContent = (quillContent: any): ReactNode[] | null => {
           if (attributes.header) {
             const HeaderTag = `h${attributes.header}` as keyof JSX.IntrinsicElements;
             result.push(
-              <HeaderTag key={`h-${blockIndex}-${index}`} className="font-bold text-lg my-4">
+              <HeaderTag key={`h-${blockIndex}-${index}`} className={css(styles.header)}>
                 {text}
               </HeaderTag>
             );
@@ -305,7 +361,7 @@ export const renderQuillContent = (quillContent: any): ReactNode[] | null => {
                 href={attributes.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
+                className={css(styles.link)}
               >
                 {formattedText}
               </a>
@@ -319,7 +375,7 @@ export const renderQuillContent = (quillContent: any): ReactNode[] | null => {
         // Add the paragraph if it has content
         if (currentParagraph.length > 0) {
           result.push(
-            <p key={`p-${blockIndex}`} className="my-2">
+            <p key={`p-${blockIndex}`} className={css(styles.paragraph)}>
               {currentParagraph}
             </p>
           );
@@ -336,7 +392,7 @@ export const renderQuillContent = (quillContent: any): ReactNode[] | null => {
               key={`img-${blockIndex}`}
               src={op.insert.image}
               alt="Embedded content"
-              className="my-4 max-w-full"
+              className={css(styles.image)}
             />
           );
         }
