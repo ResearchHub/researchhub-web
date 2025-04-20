@@ -7,6 +7,8 @@ import {
 import { StyleSheet, css } from "aphrodite";
 import { GenericDocument } from "../Document/lib/types";
 import { getNewAppBaseUrl } from "../../redux/auth";
+import { useContext } from "react";
+import { DocumentContext } from "../Document/lib/DocumentContext";
 
 interface NewCommentBannerProps {
   document: GenericDocument;
@@ -20,24 +22,17 @@ export const NewCommentBanner = ({
   onClose,
 }: NewCommentBannerProps) => {
   const baseUrl = getNewAppBaseUrl();
+  const documentContext = useContext(DocumentContext);
+  const documentMetadata = documentContext?.metadata;
 
   const getEditUrl = (document: GenericDocument, commentId?: string): string => {
     const documentType = document.type;
     const documentId = document.id;
     const documentSlug = document.slug;
+    const hasFundraise = Boolean(documentMetadata?.fundraise);
+    const docTypeForUrl = hasFundraise ? "fund" : documentType;
 
-    switch (documentType) {
-      case "paper":
-        return `${baseUrl}/paper/${documentId}/${documentSlug}/conversation?commentId=${commentId}`;
-      case "post":
-        return `${baseUrl}/fund/${documentId}/${documentSlug}/conversation?commentId=${commentId}`;
-      case "hypothesis":
-        return `${baseUrl}/hypothesis/${documentId}/${documentSlug}/conversation?commentId=${commentId}`;
-      case "question":
-        return `${baseUrl}/question/${documentId}/${documentSlug}/conversation?commentId=${commentId}`;
-      default:
-        return baseUrl;
-    }
+    return `${baseUrl}/${docTypeForUrl}/${documentId}/${documentSlug}/conversation?commentId=${commentId}`
   };
 
   const editUrl = getEditUrl(document, commentId);

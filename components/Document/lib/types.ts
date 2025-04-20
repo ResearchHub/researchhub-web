@@ -219,6 +219,7 @@ export const parseGenericDocument = (raw: any): GenericDocument => {
     formats: [...(raw.file ? [{ type: "pdf", url: raw.file }] : [])],
     raw, // For legacy compatibility purposes
     images: [],
+    slug: raw.slug,
   };
 
   return parsed;
