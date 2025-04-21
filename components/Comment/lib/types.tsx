@@ -21,7 +21,10 @@ import {
   faMessagesQuestion,
   faStar,
 } from "@fortawesome/pro-solid-svg-icons";
-import { PEER_REVIEW_STATUSES, PeerReview } from "~/components/PeerReview/lib/types";
+import {
+  PEER_REVIEW_STATUSES,
+  PeerReview,
+} from "~/components/PeerReview/lib/types";
 
 export enum COMMENT_TYPES {
   DISCUSSION = "GENERIC_COMMENT",
@@ -82,10 +85,12 @@ export type CommentThread = {
   peerReview?: {
     id: ID;
     status: PEER_REVIEW_STATUSES;
-  }
+  };
 };
 
 export type CommentPrivacyFilter = "PUBLIC" | "PRIVATE" | "WORKSPACE";
+
+export type ContentFormat = "QUILL_EDITOR" | "TIPTAP";
 
 export type Comment = {
   id: ID;
@@ -108,6 +113,7 @@ export type Comment = {
   isAcceptedAnswer: boolean;
   review?: Review;
   thread: CommentThread;
+  contentFormat?: ContentFormat;
 };
 
 export const parseThread = (raw: any): CommentThread => {
@@ -120,10 +126,12 @@ export const parseThread = (raw: any): CommentThread => {
     privacy: raw.privacy_type,
     threadType: raw.thread_type,
     anchor: raw.anchor ? parseAnchor(raw.anchor) : null,
-    ...(raw.peer_review && { peerReview: {
-      id: raw.peer_review.id,
-      status: raw.peer_review.status,
-    } }),
+    ...(raw.peer_review && {
+      peerReview: {
+        id: raw.peer_review.id,
+        status: raw.peer_review.status,
+      },
+    }),
   };
 };
 
@@ -154,6 +162,8 @@ export const parseComment = ({
     tips: (raw.purchases || []).map((p: any) => parsePurchase(p)),
     isAcceptedAnswer: Boolean(raw.is_accepted_answer),
     ...(raw.review && { review: parseReview(raw.review) }),
+    contentFormat:
+      raw.comment_content_type === "TIPTAP" ? "TIPTAP" : "QUILL_EDITOR",
   };
 
   // Only parent comments have threads
@@ -211,3 +221,56 @@ export const groupByThread = (
 
   return threadGroups;
 };
+
+/**
+ * Represents a TipTap mark (formatting)
+ */
+export interface TipTapMark {
+  type: string;
+  attrs?: Record<string, any>;
+}
+
+/**
+ * Represents a TipTap text node
+ */
+export interface TipTapTextNode {
+  type: "text";
+  text: string;
+  marks?: Array<TipTapMark>;
+}
+
+/**
+ * Represents a TipTap node (paragraph, heading, etc.)
+ */
+export interface TipTapNode {
+  type: string;
+  content?: Array<TipTapNode | TipTapTextNode>;
+  attrs?: Record<string, any>;
+  text?: string;
+  marks?: Array<TipTapMark>;
+}
+
+/**
+ * Represents a TipTap document
+ */
+export interface TipTapDocument {
+  type: "doc";
+  content: Array<TipTapNode>;
+}
+
+/**
+ * Represents a nested TipTap document (sometimes found in the API)
+ */
+export interface NestedTipTapDocument {
+  content: TipTapDocument;
+}
+
+/**
+ * Represents all possible comment content formats
+ */
+export type CommentContent =
+  | TipTapDocument
+  | NestedTipTapDocument
+  | { content: Array<TipTapNode> }
+  | { type: string; content: any[] }
+  | string;

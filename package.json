@@ -69,6 +69,7 @@
     "ethers": "^5.7.2",
     "framer-motion": "^10.9.2",
     "fslightbox-react": "^1.4.9",
+    "highlight.js": "^11.11.1",
     "immutability-helper": "^3.0.1",
     "immutable": "^4.0.0-rc.12",
     "isomorphic-unfetch": "^3.0.0",
