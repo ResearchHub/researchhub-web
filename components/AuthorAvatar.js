@@ -51,19 +51,11 @@ const AuthorAvatar = (props) => {
 
     return (
       <>
-        {showBadgeIfVerified &&
-          !showModeratorBadge &&
-          (author?.is_verified_v2 || author?.isVerified) && (
-            <div
-              style={{ position: "absolute", right: -9, top: -3, zIndex: 1 }}
-            >
-              <VerifiedBadge
-                height={20}
-                width={20}
-                showTooltipOnHover={false}
-              />
-            </div>
-          )}
+        {showBadgeIfVerified && !showModeratorBadge && author?.isVerified && (
+          <div style={{ position: "absolute", right: -9, top: -3, zIndex: 1 }}>
+            <VerifiedBadge height={20} width={20} showTooltipOnHover={false} />
+          </div>
+        )}
         {author && profileImage && !error ? (
           <img
             src={profileImage}
