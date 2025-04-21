@@ -89,7 +89,7 @@ export const CommentReadOnlyTiptap = ({
 
     let renderedContent: ReactNode[] = [];
 
-    // Check if content is actually in Quill format regardless of contentFormat setting
+    // Check if content is actually in Quill format regardless of contentFormat setting..
     const isQuillFormat = parsedContent.ops && Array.isArray(parsedContent.ops);
 
     // Use the correct renderer based on actual content format
