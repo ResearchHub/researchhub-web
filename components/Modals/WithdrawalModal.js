@@ -452,15 +452,10 @@ class WithdrawalModal extends Component {
     if (depositScreen) {
       return (
         <div className={css(styles.networkContainer)}>
-          <DepositScreen
-            provider={this.provider}
-            ethAddressOnChange={this.handleNetworkAddressInput}
-            onSuccess={this.setTransactionHash}
-            setMessage={this.props.setMessage}
-            showMessage={this.props.showMessage}
-            openWeb3ReactModal={this.props.openWeb3ReactModal}
-            {...this.state}
-          />
+          <div className={css(styles.depositWarning)}>
+            Deposits are suspended for the time being. Please be patient as we
+            work to turn deposits back on.
+          </div>
         </div>
       );
     }
@@ -1336,6 +1331,15 @@ const styles = StyleSheet.create({
   selectedBadge: {
     backgroundColor: colors.NEW_BLUE(),
     color: colors.WHITE(),
+  },
+  depositWarning: {
+    marginTop: 20,
+    padding: 15,
+    background: "rgb(255, 244, 229)",
+    border: "1px solid #dedede",
+    borderRadius: 4,
+    color: colors.BLACK(0.9),
+    textAlign: "center",
   },
 });
 
