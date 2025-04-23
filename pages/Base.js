@@ -45,6 +45,7 @@ import {
 } from "~/components/contexts/HistoryManagerContext";
 import showGenericToast from "~/components/Notifications/lib/showGenericToast";
 import { MathJaxContext, MathJax } from "better-react-mathjax";
+import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
 
 LEFT_SIDEBAR_MIN_WIDTH;
 // WalletConnect project ID
@@ -101,6 +102,35 @@ const DynamicNavbar = dynamic(() => import("~/components/Navbar"));
 export const NavbarContext = createContext();
 
 const ethereumClient = new EthereumClient(config, chains);
+
+// Banner component for new ResearchHub version
+const NewVersionBanner = ({ auth }) => {
+  const { isDismissed, dismissFeature } = useDismissableFeature({
+    auth,
+    featureName: "newVersion",
+  });
+
+  if (isDismissed) {
+    return null;
+  }
+
+  return (
+    <div className={css(styles.bannerContainer)}>
+      <div className={css(styles.bannerContent)}>
+        <span>A new version of ResearchHub is available.</span>
+        <a
+          href="https://new.researchhub.com"
+          className={css(styles.bannerLink)}
+        >
+          Try it now
+        </a>
+      </div>
+      <button onClick={dismissFeature} className={css(styles.closeButton)}>
+        X
+      </button>
+    </div>
+  );
+};
 
 function Base({
   auth,
@@ -230,6 +260,7 @@ function Base({
                         >
                           {isDevEnv() && SPEC__reloadClientSideData()}
                           <div className={css(styles.pageWrapper)}>
+                            <NewVersionBanner auth={auth} />
                             <DynamicPermissionNotification />
                             <DynamicMessage />
                             {withSidebar && (
@@ -273,6 +304,7 @@ const styles = StyleSheet.create({
     minHeight: "100vh",
     position: "relative",
     width: "100%",
+    paddingTop: "44px",
   },
   main: {
     display: "flex",
@@ -280,6 +312,54 @@ const styles = StyleSheet.create({
     flex: 1,
     // Account for left sidebar in order to prevent page to overflow beyond 100vw
     width: `calc(100% - ${LEFT_SIDEBAR_MIN_WIDTH}px)`,
+  },
+  bannerContainer: {
+    backgroundColor: "#FFEB99",
+    padding: "12px 20px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    zIndex: 99999,
+    color: "#000",
+    fontWeight: 500,
+  },
+  bannerContent: {
+    display: "flex",
+    gap: "10px",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+  },
+  bannerLink: {
+    color: "#000",
+    textDecoration: "underline",
+    fontWeight: 600,
+    cursor: "pointer",
+  },
+  closeButton: {
+    background: "none",
+    border: "none",
+    fontSize: "16px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    color: "#000",
+    padding: "4px 8px",
+    position: "absolute",
+    right: "20px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "3px",
+    lineHeight: 1,
+    height: "24px",
+    width: "24px",
+    zIndex: 100000,
   },
 });
 
