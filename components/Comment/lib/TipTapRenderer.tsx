@@ -556,7 +556,7 @@ const RenderNode: React.FC<RenderNodeProps> = ({
           href={'/author/' + id}
           target="_blank"
           rel="noopener noreferrer"
-          className={css(styles.mention)}
+          className={css(styles.mentionAuthor)}
         >
           {displayText}
         </a>
@@ -755,7 +755,7 @@ const styles = StyleSheet.create({
     color: colors.BLUE(1),
     cursor: "pointer",
     textDecoration: "none",
-    fontWeight: 500,
+    fontWeight: 400,
     ":hover": {
       textDecoration: "underline",
     },
@@ -766,6 +766,20 @@ const styles = StyleSheet.create({
     cursor: "default",
     ":hover": {
       textDecoration: "underline",
+    },
+  },
+  mentionAuthor: {
+    background: "rgba(57, 113, 255, 0.1)",
+    padding: "2px 4px",
+    borderRadius: 4,
+    textDecoration: "none",
+    color: "#3971ff",
+    cursor: "pointer",
+    fontWeight: 400,
+    transition: "background 0.2s",
+    ":hover": {
+      background: "rgba(57, 113, 255, 0.2)",
+      textDecoration: "none",
     },
   },
 });
