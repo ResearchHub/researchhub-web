@@ -348,7 +348,6 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                     contentFormat={comment.contentFormat}
                     initiallyExpanded={false}
                     showReadMoreButton={true}
-                    debug={true} // TODO remove after compleating testing
                   />
                 </div>
               </>
