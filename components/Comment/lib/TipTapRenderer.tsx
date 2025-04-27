@@ -755,6 +755,7 @@ const styles = StyleSheet.create({
     color: colors.BLUE(1),
     cursor: "pointer",
     textDecoration: "none",
+    fontWeight: 500,
     ":hover": {
       textDecoration: "underline",
     },
