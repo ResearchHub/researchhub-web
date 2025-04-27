@@ -4,6 +4,7 @@ import hljs from "highlight.js";
 import { useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
+import { getNewAppBaseUrl } from "~/redux/auth";
 
 interface TipTapRendererProps {
   content: any;
@@ -12,6 +13,50 @@ interface TipTapRendererProps {
   truncate?: boolean;
   maxLength?: number;
 }
+
+/**
+ * Builds a work URL from an ID and optional slug
+ */
+export const buildWorkUrl = ({
+  id,
+  contentType,
+  doi,
+  slug,
+  tab,
+}: {
+  id?: string | number | null;
+  contentType: 'paper' | 'post' | 'funding_request' | 'preregistration';
+  doi?: string | null;
+  slug?: string;
+  tab?: 'reviews' | 'bounties' | 'conversation';
+}) => {
+  const baseUrl = getNewAppBaseUrl();
+  let url = '';
+
+  if (contentType === 'post') {
+    if (!id) return '#'; // Return a safe fallback for posts without ID
+    url = slug ? `/post/${id}/${slug}` : `/post/${id}`;
+  } else if (contentType === 'funding_request' || contentType === 'preregistration') {
+    if (!id) return '#'; // Return a safe fallback for funding requests without ID
+    url = slug ? `/fund/${id}/${slug}` : `/fund/${id}`;
+  } else {
+    // For papers
+    if (id) {
+      url = slug ? `/paper/${id}/${slug}` : `/paper/${id}`;
+    } else if (doi) {
+      url = `/paper?doi=${encodeURIComponent(doi)}`;
+    } else {
+      return '#'; // Return a safe fallback URL when neither id nor doi is available
+    }
+  }
+
+  // Append tab if provided
+  if (tab) {
+    url += `/${tab}`;
+  }
+
+  return `${baseUrl}${url}`;
+};
 
 /**
  * Applies formatting marks to content
@@ -76,6 +121,17 @@ export const extractPlainText = (node: any): string => {
   // If it's a text node, return its text content
   if (node.type === "text") {
     return node.text || "";
+  }
+
+  // If it's a mention node, return its label or displayName (including @ for people mentions)
+  if (node.type === 'mention') {
+    const entityType = node.attrs?.entityType;
+    const name = node.attrs?.displayName || node.attrs?.label || '';
+    // Add '@' prefix for user/author mentions, else just name
+    if (entityType === 'user' || entityType === 'author') {
+      return `@${name}`;
+    }
+    return name;
   }
 
   // If it has content, recursively extract text from all children
@@ -486,6 +542,68 @@ const RenderNode: React.FC<RenderNodeProps> = ({
     );
   }
 
+  // Handle mention nodes (user, author, paper, post, etc.)
+  if (node.type === 'mention') {
+    const entityType = node.attrs?.entityType;
+    const id = node.attrs?.id;
+    const label = node.attrs?.displayName || node.attrs?.label || '';
+
+    // Determine rendering based on entity type
+    if (entityType === 'user' || entityType === 'author') {
+      const displayText = `@${label}`;
+      return (
+        <a
+          href={'/author/' + id}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={css(styles.mention)}
+        >
+          {displayText}
+        </a>
+      );
+    }
+
+    // For papers
+    if (entityType === 'paper') {
+      const href = buildWorkUrl({ id, doi: node.attrs?.doi, contentType: 'paper' });
+      if (!href || href === '#') {
+        return <span className={css(styles.mentionNoPointer)}>{label}</span>;
+      }
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={css(styles.mention)}
+        >
+          {label}
+        </a>
+      );
+    }
+
+    // For posts
+    if (entityType === 'post') {
+      const href = buildWorkUrl({ id, contentType: 'post' });
+      if (!href || href === '#') {
+        return <span className={css(styles.mentionNoPointer)}>{label}</span>;
+      }
+
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={css(styles.mention)}
+        >
+          {label}
+        </a>
+      );
+    }
+
+    // Default fallback
+    return <span className={css(styles.mentionNoPointer)}>{label}</span>;
+  }
+
   // Handle section header (custom node type for reviews)
   if (node.type === "sectionHeader" && renderSectionHeader) {
     return (
@@ -632,6 +750,22 @@ const styles = StyleSheet.create({
     padding: "0.25rem",
     overflowY: "auto",
     maxHeight: "6rem",
+  },
+  mention: {
+    color: colors.BLUE(1),
+    cursor: "pointer",
+    textDecoration: "none",
+    ":hover": {
+      textDecoration: "underline",
+    },
+  },
+  mentionNoPointer: {
+    color: "#2563eb",
+    textDecoration: "none",
+    cursor: "default",
+    ":hover": {
+      textDecoration: "underline",
+    },
   },
 });
 
