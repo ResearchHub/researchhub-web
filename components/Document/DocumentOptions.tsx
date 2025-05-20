@@ -271,7 +271,7 @@ const DocumentOptions = ({ document: doc, metadata }: Props) => {
           isOpen={isNewVersionModalOpen}
           closeModal={() => setIsNewVersionModalOpen(false)}
           versions={doc.versions}
-          mode="NEW_VERSION"
+          action="PUBLISH_NEW_VERSION"
         />
       )}
     </div>
