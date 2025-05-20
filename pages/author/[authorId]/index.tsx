@@ -10,7 +10,6 @@ import { useRouter } from "next/router";
 import AuthorProfileHeader from "~/components/Author/Profile/AuthorProfileHeader";
 import { AuthorProfileContextProvider } from "~/components/Author/lib/AuthorProfileContext";
 import AuthorComments from "~/components/Author/Profile/AuthorComments";
-import CoAuthors from "~/components/Author/Profile/CoAuthors";
 import ALink from "~/components/ALink";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLongArrowAltRight } from "@fortawesome/pro-solid-svg-icons";
@@ -101,9 +100,6 @@ const AuthorProfilePage: NextPage<Args> = ({ profile, /*overview,*/ summary, ach
               </div>
 
               <div className={css(styles.miscSections)}>
-                <div className={css(styles.coauthorsSection, styles.miscSection)}>
-                  <CoAuthors coauthors={fullAuthorProfile.coauthors} />
-                </div>
                 {fullAuthorProfile.activityByYear.length > 0 && hasActivity && (
                   <div className={css(styles.miscSection, styles.activitySection)}>
                     <AuthorActivity activity={fullAuthorProfile.activityByYear} />
