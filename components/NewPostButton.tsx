@@ -179,7 +179,7 @@ export default function NewPostButton({
         isOpen={showPaperVersionModal}
         closeModal={() => setShowPaperVersionModal(false)}
         versions={[]}
-        mode="CREATE"
+        action="PUBLISH_RESEARCH"
       />
     </>
   );

@@ -147,7 +147,7 @@ const DocumentChangesPage: NextPage<Args> = ({
               isOpen={isNewVersionModalOpen}
               closeModal={() => setIsNewVersionModalOpen(false)}
               versions={document.versions}
-              mode="NEW_VERSION"
+              action="PUBLISH_NEW_VERSION"
             />
           )}
         </div>
