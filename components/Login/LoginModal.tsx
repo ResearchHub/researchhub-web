@@ -332,6 +332,7 @@ const LoginModal = ({
               required
               containerStyle={styles.inputContainer}
               placeholder="Email"
+              autoCapitalize="none"
               autoComplete="email"
               autoFocus={!isMobileScreen}
               error={emailError}
@@ -411,6 +412,7 @@ const LoginModal = ({
               required
               containerStyle={styles.inputContainer}
               placeholder="Email"
+              autoCapitalize="none"
               autoComplete="email"
               error={emailError}
               getRef={emailRef}
@@ -514,6 +516,7 @@ const LoginModal = ({
               required
               containerStyle={[styles.inputContainer]}
               placeholder="Email"
+              autoCapitalize="none"
               autoComplete="email"
               error={emailError}
               getRef={emailRef}
@@ -610,6 +613,7 @@ const LoginModal = ({
               required
               containerStyle={styles.inputContainer}
               placeholder="Email"
+              autoCapitalize="none"
               error={emailError}
               getRef={emailRef}
               errorClassName={styles.errorClassName}
