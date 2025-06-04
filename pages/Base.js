@@ -117,12 +117,12 @@ const NewVersionBanner = ({ auth }) => {
   return (
     <div className={css(styles.bannerContainer)}>
       <div className={css(styles.bannerContent)}>
-        <span>A new version of ResearchHub is available.</span>
+        <span>You are viewing an outdated version of ResearchHub.</span>
         <a
-          href="https://new.researchhub.com"
+          href="https://www.researchhub.com"
           className={css(styles.bannerLink)}
         >
-          Try it now
+          Visit the latest version →
         </a>
       </div>
       <button onClick={dismissFeature} className={css(styles.closeButton)}>
