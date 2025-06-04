@@ -104,16 +104,7 @@ export const NavbarContext = createContext();
 const ethereumClient = new EthereumClient(config, chains);
 
 // Banner component for new ResearchHub version
-const NewVersionBanner = ({ auth }) => {
-  const { isDismissed, dismissFeature } = useDismissableFeature({
-    auth,
-    featureName: "newVersion",
-  });
-
-  if (isDismissed) {
-    return null;
-  }
-
+const NewVersionBanner = () => {
   return (
     <div className={css(styles.bannerContainer)}>
       <div className={css(styles.bannerContent)}>
@@ -125,9 +116,6 @@ const NewVersionBanner = ({ auth }) => {
           Visit the latest version →
         </a>
       </div>
-      <button onClick={dismissFeature} className={css(styles.closeButton)}>
-        X
-      </button>
     </div>
   );
 };
@@ -260,7 +248,7 @@ function Base({
                         >
                           {isDevEnv() && SPEC__reloadClientSideData()}
                           <div className={css(styles.pageWrapper)}>
-                            <NewVersionBanner auth={auth} />
+                            <NewVersionBanner />
                             <DynamicPermissionNotification />
                             <DynamicMessage />
                             {withSidebar && (
