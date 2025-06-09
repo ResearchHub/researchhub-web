@@ -317,7 +317,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     lastName: raw.last_name,
     url,
     description: raw.description,
-    isVerified: raw.is_verified_v2,
+    isVerified: raw.is_verified,
     headline: raw?.headline?.title || "",
     isHubEditor: raw.is_hub_editor,
     openAlexIds: raw.openalex_ids || [],
@@ -381,7 +381,7 @@ export const parseUser = (raw: any): RHUser => {
     reputation: _raw.reputation,
     createdAt: _raw.created_date,
     balance: _raw.balance,
-    isVerified: _raw.is_verified_v2,
+    isVerified: _raw.is_verified,
     moderator: _raw.moderator,
     createdDate: _raw.created_date
       ? formatDateStandard(_raw.created_date, "MM-DD-YYYY")
