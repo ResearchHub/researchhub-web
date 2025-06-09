@@ -1,3 +1,9 @@
+<div align="center">
+  <h3>⚠️ NO LONGER ACTIVELY MAINTAINED ⚠️</h3>
+  <p><strong>This repository is archived and no longer actively maintained.</strong></p>
+  <p>We will post a link to our new application repository shortly.</p>
+</div>
+
 <p align="left">    
     <h1 align="left">The <a aria-label="RH logo" href="https://researchhub.com">ResearchHub</a> Next.js Web App </h1>
 </p>
