@@ -1,7 +1,7 @@
 <div align="center">
   <h3>⚠️ NO LONGER ACTIVELY MAINTAINED ⚠️</h3>
   <p><strong>This repository is archived and no longer actively maintained.</strong></p>
-  <p>We will post a link to our new application repository shortly.</p>
+  <p>Please visit the new application repository at https://github.com/ResearchHub/web.</p>
 </div>
 
 <p align="left">    
