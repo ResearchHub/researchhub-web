@@ -18,7 +18,6 @@ import "react-toastify/dist/ReactToastify.css";
 import "pdfjs-dist/web/pdf_viewer.css";
 import { Analytics } from "@vercel/analytics/react";
 import { configureStore } from "~/redux/configureStore";
-import { init as initApm } from "@elastic/apm-rum";
 import { MessageActions } from "~/redux/message";
 import { Provider } from "react-redux";
 import { SIFT_BEACON_KEY } from "~/config/constants";
@@ -31,31 +30,6 @@ import withRedux from "next-redux-wrapper";
 import MaintenancePage from "./maintenance";
 
 const MAINTENANCE_MODE = false;
-
-if (process.env.ELASTIC_APM_URL) {
-  initApm({
-    // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
-    serviceName:
-      process.env.REACT_APP_ENV === "staging"
-        ? "researchhub-staging-web"
-        : process.env.NODE_ENV === "production"
-        ? "researchhub-production-web"
-        : "researchhub-development-web",
-    environment:
-      process.env.REACT_APP_ENV === "staging"
-        ? "staging"
-        : process.env.NODE_ENV === "production"
-        ? "production"
-        : "development",
-    // Set custom APM Server URL (default: http://localhost:8200)
-    serverUrl: process.env.ELASTIC_APM_URL,
-
-    // Set service version (required for sourcemap feature)
-    serviceVersion: process.env.SENTRY_RELEASE,
-
-    transactionSampleRate: 0.1,
-  });
-}
 
 const MyApp = ({
   Component,
